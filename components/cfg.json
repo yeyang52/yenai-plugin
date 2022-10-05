@@ -1,0 +1,15 @@
+{
+	"sys": {
+		"help": true,
+		"scale": 100
+	},
+	"char": {
+		"wife": false,
+		"char": true
+	},
+	"wiki": {
+		"abyss": true,
+		"wiki": false,
+		"stat": true
+	}
+}

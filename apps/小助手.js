@@ -238,7 +238,8 @@ export class example extends plugin {
 
       if (!Bot.gl.get(Number(groupPhotoid))) return e.reply("❎ 群聊列表查无此群");
     } else {
-      if (e.member.is_admin || e.member.is_owner) {
+      //判断身份
+      if (e.member.is_admin || e.member.is_owner || e.isMaster) {
         groupPhotoid = e.group_id
       } else {
         return e.reply(["哼~你不是管理员人家不听你的", segment.face(231)])
@@ -305,7 +306,7 @@ export class example extends plugin {
       if (!Bot.gl.get(Number(msg[1]))) return e.reply("❎ 群聊列表查无此群");
 
     } else {
-      if (e.member.is_admin || e.member.is_owner) {
+      if (e.member.is_admin || e.member.is_owner || e.isMaster) {
         group = e.group_id
         card = e.msg.replace(/#|改群昵称/g, "").trim()
       } else {

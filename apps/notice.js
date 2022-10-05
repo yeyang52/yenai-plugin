@@ -1,14 +1,8 @@
-/*
- * @作者: 超市椰羊(746659424)
- * @介绍: 提供账号的一些事件通知，如：闪照，撤回，好友申请，群邀请,群|好友列表变动...
- * @使用: 可用 "通知帮助" 来查看指令
- * @可用指令来开启或关闭某项功能 或 直接修改配置文件(生成在当前文件夹下可参考655行的注释来修改配置文件)修改后重启或用指令来刷新配置
- */
-import plugin from '../../lib/plugins/plugin.js'
+import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
-import cfg from '../../lib/config/config.js'
-import common from '../../lib/common/common.js'
-import fs from 'fs'
+import cfg from '../../../lib/config/config.js'
+import common from '../../../lib/common/common.js'
+import xcfg from "../model/Config"
 
 let config = {}
 
@@ -27,6 +21,11 @@ export class Friends extends plugin {
             event: 'notice.friend',
             priority: 5000
         })
+        this.configpath = './plugins/yenai-plugin/config/config.json'
+    }
+
+    async init() {
+        config = await xcfg.getread(this.configpath)
     }
 
     async accept(e) {
@@ -756,176 +755,7 @@ export class anotice extends plugin {
             .catch((err) => e.reply(`❎ 发送失败\n错误信息为:${err.message}`))
     }
 }
-export class NewConfig extends plugin {
-    constructor() {
-        super({
-            name: '配置',
-            dsc: '配置文件',
-            event: 'message',
-            priority: 5000,
-            rule: [
-                {
-                    /** 命令正则匹配 */
-                    reg: '^#?(.*)通知(开启|关闭)$',
-                    /** 执行方法 */
-                    fnc: 'Config_manage'
-                },
-                {
-                    /** 命令正则匹配 */
-                    reg: '^#?设置删除缓存时间(.*)$',
-                    /** 执行方法 */
-                    fnc: 'Config_deltime'
-                },
-                {
-                    /** 命令正则匹配 */
-                    reg: '^#?通知帮助$',
-                    /** 执行方法 */
-                    fnc: 'help'
-                },
-                {
-                    /** 命令正则匹配 */
-                    reg: '^#?查看通知设置$',
-                    /** 执行方法 */
-                    fnc: 'SeeConfig'
-                },
-                {
-                    /** 命令正则匹配 */
-                    reg: '^#?刷新通知设置$',
-                    /** 执行方法 */
-                    fnc: 'SeeConfig'
-                }
-            ]
-        })
-        this.path = './plugins/example/通知配置'
-        this.configpath = './plugins/example/通知配置/config.json'
-    }
 
-    // 初始化
-    async init() {
-        if (!fs.existsSync(this.path)) {
-            fs.mkdirSync(this.path)
-        }
-        // 检测有无配置文件，没有就创建默认配置文件
-        if (!fs.existsSync(this.configpath)) {
-            let configs = {
-                privateMessage: true, // 好友消息
-                groupMessage: false, // 群|讨论组消息(不建议开启)
-                grouptemporaryMessage: true, // 群临时消息
-                groupRecall: true, // 群撤回
-                PrivateRecall: true, // 好友撤回
-                // 申请通知
-                friendRequest: true, // 好友申请
-                groupInviteRequest: true, // 群邀请
-                // 信息变动
-                groupAdminChange: true, // 群管理变动
-                // 列表变动
-                friendNumberChange: true, // 好友列表变动
-                groupNumberChange: true, // 群聊列表变动
-                groupMemberNumberChange: false, // 群成员变动
-                // 其他通知
-                flashPhoto: true, // 闪照
-                botBeenBanned: true, // 机器人被禁言
-                // 是否给全部管理发送通知(默认只通知第一个管理)
-                notificationsAll: false,
-                // 设置删除消息缓存的时间单位s(用于撤回监听)
-                deltime: 600 // 不建议太大
-            }
-            await getwrite(this.configpath, configs)
-        }
-        // 读取配置
-        config = await getread(this.configpath)
-    }
-
-    // 帮助
-    async help() {
-        let msg = [
-            segment.image('https://api.ixiaowai.cn/api/api.php'),
-            '通知帮助 by 超市椰羊\n',
-            '---------------------\n',
-            '#闪照通知 (开启|关闭)\n',
-            '#禁言通知 (开启|关闭)\n',
-            '#群撤回通知 (开启|关闭)\n',
-            '#群消息通知 (开启|关闭)\n',
-            '#群邀请通知 (开启|关闭)\n',
-            '#好友撤回通知 (开启|关闭)\n',
-            '#好友消息通知 (开启|关闭)\n',
-            '#好友申请通知 (开启|关闭)\n',
-            '#全部管理通知 (开启|关闭)\n',
-            '#群临时消息通知 (开启|关闭)\n',
-            '#群管理变动通知 (开启|关闭)\n',
-            '#群成员变动通知 (开启|关闭)\n',
-            '#好友列表变动通知 (开启|关闭)\n',
-            '#群聊列表变动通知 (开启|关闭)\n',
-            '#设置删除缓存时间 <时间>(s)\n',
-            '#查看通知设置\n',
-            '#刷新通知设置'
-        ]
-        this.e.reply(msg)
-    }
-
-    // 更改配置
-    async Config_manage(e) {
-        this.init()
-        if (!e.isMaster) return
-        // 解析消息
-        let index = e.msg.indexOf('通知')
-        let option = e.msg.slice(0, index)
-        option = option.replace(/#/, '').trim()
-        // 开启还是关闭
-        let yes = false
-        if (/开启/.test(e.msg)) yes = true
-        // 回复
-        if (await getcfg(option, yes)) {
-            e.reply(`✅ 已${yes ? '开启' : '关闭'}${option}通知`)
-        }
-    }
-
-    // 设置删除缓存时间
-    async Config_deltime(e) {
-        this.init()
-        if (!e.isMaster) return
-
-        let time = e.msg.replace(/#|设置删除缓存时间/, '').trim()
-
-        time = time.match(/\d*/g)
-
-        if (!time) return e.reply('❎ 请输入正确的时间(单位s)')
-
-        if (time < 120) return e.reply('❎ 时间不能小于两分钟')
-
-        if (await getcfg('缓存时间', Number(time))) {
-            e.reply(`✅ 已设置删除缓存时间为${getsecond(time)}`)
-        }
-    }
-
-    async SeeConfig() {
-        this.init()
-
-        if (/刷新通知设置/.test(this.e.msg)) {
-            config = await getread(this.configpath)
-            await this.e.reply('✅ 已刷新，当前的设置为：')
-        }
-
-        let msg = [
-            `闪照 ${config.flashPhoto ? '✅' : '❎'}\n`,
-            `禁言 ${config.botBeenBanned ? '✅' : '❎'}\n`,
-            `群消息 ${config.groupMessage ? '✅' : '❎'}\n`,
-            `群撤回 ${config.groupRecall ? '✅' : '❎'}\n`,
-            `群邀请 ${config.groupInviteRequest ? '✅' : '❎'}\n`,
-            `好友消息 ${config.privateMessage ? '✅' : '❎'}\n`,
-            `好友撤回 ${config.PrivateRecall ? '✅' : '❎'}\n`,
-            `好友申请 ${config.friendRequest ? '✅' : '❎'}\n`,
-            `群成员变动 ${config.groupMemberNumberChange ? '✅' : '❎'}\n`,
-            `群管理变动 ${config.groupAdminChange ? '✅' : '❎'}\n`,
-            `群临时消息 ${config.grouptemporaryMessage ? '✅' : '❎'}\n`,
-            `好友列表变动 ${config.friendNumberChange ? '✅' : '❎'}\n`,
-            `群聊列表变动 ${config.groupNumberChange ? '✅' : '❎'}\n`,
-            `全部管理发送 ${config.notificationsAll ? '✅' : '❎'}\n`,
-            `删除缓存时间：${config.deltime}`
-        ]
-        await this.e.reply(msg)
-    }
-}
 
 /** 发消息 */
 async function getSend(msg) {
@@ -992,67 +822,4 @@ function getsecond(value) {
         result = parseInt(hourTime) + '小时' + result
     }
     return result
-}
-
-/** 读取文件 */
-async function getread(path) {
-    return await fs.promises
-        .readFile(path, 'utf8')
-        .then((data) => {
-            return JSON.parse(data)
-        })
-        .catch((err) => {
-            logger.error('读取失败')
-            console.error(err)
-            return false
-        })
-}
-
-/** 写入文件 */
-async function getwrite(path, cot) {
-    return await fs.promises
-        .writeFile(path, JSON.stringify(cot, '', '\t'))
-        .then(() => {
-            return true
-        })
-        .catch((err) => {
-            logger.error('写入失败')
-            console.error(err)
-            return false
-        })
-}
-
-async function getcfg(key, value) {
-    // 路径
-    let path = './plugins/example/通知配置/config.json'
-    // 配置类
-    const parameter = {
-        好友消息: 'privateMessage',
-        群消息: 'groupMessage',
-        群临时消息: 'grouptemporaryMessage',
-        群撤回: 'groupRecall',
-        好友撤回: 'PrivateRecall',
-        好友申请: 'friendRequest',
-        群邀请: 'groupInviteRequest',
-        群管理变动: 'groupAdminChange',
-        好友列表变动: 'friendNumberChange',
-        群聊列表变动: 'groupNumberChange',
-        群成员变动: 'groupMemberNumberChange',
-        闪照: 'flashPhoto',
-        禁言: 'botBeenBanned',
-        全部管理: 'notificationsAll',
-        缓存时间: 'deltime'
-    }
-    // 判断是否有这一项类
-    if (!parameter.hasOwnProperty(key)) return false
-    // 读取配置
-    let cfg = await getread(path)
-    // 更改配置
-    cfg[parameter[key]] = value
-    // 写入
-    await getwrite(path, cfg)
-    // 刷新
-    config = await getread(path)
-
-    return true
 }

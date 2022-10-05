@@ -1,0 +1,17 @@
+{
+  "privateMessage": true,
+  "groupMessage": false,
+  "grouptemporaryMessage": true,
+  "groupRecall": true,
+  "PrivateRecall": true,
+  "friendRequest": true,
+  "groupInviteRequest": true,
+  "groupAdminChange": true,
+  "friendNumberChange": true,
+  "groupNumberChange": true,
+  "groupMemberNumberChange": false,
+  "flashPhoto": true,
+  "botBeenBanned": true,
+  "notificationsAll": false,
+  "deltime": 600
+}

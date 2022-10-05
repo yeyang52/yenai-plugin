@@ -1,9 +1,12 @@
 import fs from 'node:fs'
-import common from '../../lib/common/common.js'
 
-const files = fs.readdirSync('./plugins/suiyue/apps').filter(file => file.endsWith('.js'))
+const files = fs.readdirSync('./plugins/yenai-plugin/apps').filter(file => file.endsWith('.js'))
 
 let ret = []
+
+logger.info('-----------')
+logger.info('椰奶插件初始化~')
+logger.info('-----------')
 
 files.forEach((file) => {
     ret.push(import(`./apps/${file}`))
@@ -20,23 +23,6 @@ for (let i in files) {
         logger.error(ret[i].reason)
         continue
     }
-
-    apps[name] = ret[i].value[name]
+    apps[name] = ret[i].value[Object.keys(ret[i].value)[0]]
 }
-
-logger.info('-----------')
-logger.info('加载碎月插件完成..[v1.0.0]')
-logger.info('-----------')
-
-let restart = await redis.get(`Yunzai:suiyue:restart`);
-if (restart) {
-    restart = JSON.parse(restart);
-    if (restart.isGroup) {
-        Bot.pickGroup(restart.id).sendMsg(`重启成功`);
-    } else {
-        common.relpyPrivate(restart.id, `重启成功`);
-    }
-    redis.del(`Yunzai:suiyue:restart`);
-}
-
 export { apps }

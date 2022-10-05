@@ -1,8 +1,4 @@
-
-
-
-
-![100159436_p0_master1200](D:\桌面\Yunzai-Bot\plugins\yenai-plugin\resources\img\100159436_p0_master1200.jpg)
+![椰羊](resources/img/100159436_p0_master1200.jpg)
 
 # Yenai-Plugin说明
 

@@ -45,13 +45,20 @@ export class NewConfig extends plugin {
         if (/开启/.test(e.msg)) {
             // 回复
             res = await redis.set(`yenai:notice:${configs[option]}`, "1")
+            if (res) {
+                e.reply(`✅ 已开启${option}通知`)
+            } else {
+                e.reply(`❎ 未知错误`)
+            }
+            return
         } else {
-            res = await redis.del(`yenai:notice:${configs[option]}`,)
-        }
-
-
-        if (res == "OK") {
-            e.reply(`✅ 已${/开启/.test(e.msg) ? '开启' : '关闭'}${option}通知`)
+            res = await redis.del(`yenai:notice:${configs[option]}`)
+            if (res) {
+                e.reply(`✅ 已关闭${option}通知`)
+            } else {
+                e.reply(`❎ ${option}通知已是关闭状态`)
+            }
+            return
         }
     }
 

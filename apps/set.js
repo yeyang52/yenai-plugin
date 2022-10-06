@@ -1,5 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
 
+
 export class NewConfig extends plugin {
     constructor() {
         super({
@@ -80,7 +81,7 @@ export class NewConfig extends plugin {
         }
     }
 
-    async SeeConfig() {
+    async SeeConfig(e) {
         let config = {}
         for (let i in configs) {
             let res = await redis.get(`yenai:notice:${configs[i]}`)
@@ -102,7 +103,7 @@ export class NewConfig extends plugin {
             `群聊列表变动 ${config.groupNumberChange ? '✅' : '❎'}\n`,
             `全部管理发送 ${config.notificationsAll ? '✅' : '❎'}\n`,
             `删除缓存时间：${config.deltime}`
-        ]
+        ]      
         await this.e.reply(msg)
     }
 }

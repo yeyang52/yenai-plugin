@@ -1,5 +1,4 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import { segment } from 'oicq'
 
 export class Help extends plugin {
     constructor() {
@@ -25,9 +24,6 @@ export class Help extends plugin {
     // 帮助
     async help() {
         let msg = [
-            segment.image('https://api.ixiaowai.cn/api/api.php'),
-            '通知帮助 by 超市椰羊\n',
-            '---------------------\n',
             '#闪照通知 (开启|关闭)\n',
             '#禁言通知 (开启|关闭)\n',
             '#群撤回通知 (开启|关闭)\n',
@@ -43,15 +39,12 @@ export class Help extends plugin {
             '#好友列表变动通知 (开启|关闭)\n',
             '#群聊列表变动通知 (开启|关闭)\n',
             '#设置删除缓存时间 <时间>(s)\n',
-            '#通知设置\n',
+            '#通知设置',
         ]
         this.e.reply(msg)
     }
     async helps(e) {
         let msg = [
-            segment.image("https://api.ixiaowai.cn/api/api.php"),
-            "小助手 by 超市椰羊 \n",
-            "--------------------\n",
             "#发群聊 <群号> <内容> \n",
             "#发好友 <QQ> <内容> \n",
             "#改头像 <图片> \n",

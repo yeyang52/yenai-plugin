@@ -9,7 +9,7 @@ Yenai-Plugin是一个Yunzai-Bot的升级插件，提供对bot的一些便携操�
 
 请将Yenai-Plugin放置在Yunzai-Bot的plugins目录下，重启Yunzai-Bot后即可使用。
 
-推荐使用git进行安装，以方便后续升级。在Yunzai根目录夹打开终端，运行
+推荐使用git进行安装，以方便后续升级。在Yunzai/plugins目录打开终端，运行
 
 ```
 // 使用gitee
@@ -18,7 +18,43 @@ git clone https://gitee.com/yeyang52/yenai-plugin.git
 
 #### 功能介绍
 
-1.
+Yenai-Plugin为您提供以下功能
+
+1.Bot事件通知
+
+- 闪照
+
+- 撤回监听
+
+- 好友申请
+
+- 群邀请
+
+- 好友|群 列表变动
+
+- 好友|群 消息
+
+  ……
+
+2.助手(修改Bot的各种信息包括但不限于以下功能)
+
+- 发送群聊消息
+
+- 发送好友消息
+
+- 改头像 | 改昵称 ……
+
+- 删好友
+
+- 退群
+
+- 获取好友|群列表
+
+  ……
+
+3.娱乐功能
+
+​       ……
 
 #### 参与贡献
 
@@ -28,4 +64,11 @@ git clone https://gitee.com/yeyang52/yenai-plugin.git
 4.  新建 Pull Request
 
 
-#### 其他
+#### 免责声明
+
+1. 功能仅限内部交流与小范围使用，请勿将Yunzai-Bot及yiyi-Plugin用于任何以盈利为目的的场景.
+2. 图片与其他素材均来自于网络，仅供交流学习使用，如有侵权请联系，会立即删除.
+
+#### 联系方式
+
+QQ：746659424

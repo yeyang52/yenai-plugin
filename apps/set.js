@@ -1,5 +1,4 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import xcfg from "../model/Config"
 
 export class NewConfig extends plugin {
     constructor() {
@@ -29,40 +28,6 @@ export class NewConfig extends plugin {
                 },
             ]
         })
-        this.path = './plugins/yenai-plugin/config'
-        this.configpath = './plugins/yenai-plugin/config/config.json'
-    }
-    async init() {
-        if (!fs.existsSync(this.path)) {
-            fs.mkdirSync(this.path)
-        }
-        // 检测有无配置文件，没有就创建默认配置文件
-        if (!fs.existsSync(this.configpath)) {
-            let configs = {
-                privateMessage: true, // 好友消息
-                groupMessage: false, // 群|讨论组消息(不建议开启)
-                grouptemporaryMessage: true, // 群临时消息
-                groupRecall: true, // 群撤回
-                PrivateRecall: true, // 好友撤回
-                // 申请通知
-                friendRequest: true, // 好友申请
-                groupInviteRequest: true, // 群邀请
-                // 信息变动
-                groupAdminChange: true, // 群管理变动
-                // 列表变动
-                friendNumberChange: true, // 好友列表变动
-                groupNumberChange: true, // 群聊列表变动
-                groupMemberNumberChange: false, // 群成员变动
-                // 其他通知
-                flashPhoto: true, // 闪照
-                botBeenBanned: true, // 机器人被禁言
-                // 是否给全部管理发送通知(默认只通知第一个管理)
-                notificationsAll: false,
-                // 设置删除消息缓存的时间单位s(用于撤回监听)
-                deltime: 600 // 不建议太大
-            }
-            await xcfg.getwrite(this.configpath, configs)
-        }
     }
 
     // 更改配置
@@ -76,7 +41,10 @@ export class NewConfig extends plugin {
         let yes = false
         if (/开启/.test(e.msg)) yes = true
         // 回复
-        if (await getcfg(option, yes)) {
+        let res = await redis.set(`yenai:notice:${configs[option]}`, yes)
+
+
+        if (res == "OK") {
             e.reply(`✅ 已${yes ? '开启' : '关闭'}${option}通知`)
         }
     }
@@ -93,14 +61,18 @@ export class NewConfig extends plugin {
 
         if (time < 120) return e.reply('❎ 时间不能小于两分钟')
 
-        if (await getcfg('缓存时间', Number(time))) {
+        let res = await redis.set(`yenai:notice:deltime`, Number(time))
+        if (res == "OK") {
             e.reply(`✅ 已设置删除缓存时间为${getsecond(time)}`)
         }
     }
 
     async SeeConfig() {
-
-        let config = await xcfg.getread(this.configpath)
+        let config = {}
+        for (let i in configs) {
+            let res = await redis.get(`yenai:notice:${configs[i]}`)
+            config[i] = res
+        }
 
         let msg = [
             `闪照 ${config.flashPhoto ? '✅' : '❎'}\n`,
@@ -122,36 +94,25 @@ export class NewConfig extends plugin {
         await this.e.reply(msg)
     }
 }
-/**更改配置 */
-async function getcfg(key, value) {
-    // 路径
-    let path = './plugins/yenai-plugin/config/config.json'
-    // 配置类
-    const parameter = {
-        好友消息: 'privateMessage',
-        群消息: 'groupMessage',
-        群临时消息: 'grouptemporaryMessage',
-        群撤回: 'groupRecall',
-        好友撤回: 'PrivateRecall',
-        好友申请: 'friendRequest',
-        群邀请: 'groupInviteRequest',
-        群管理变动: 'groupAdminChange',
-        好友列表变动: 'friendNumberChange',
-        群聊列表变动: 'groupNumberChange',
-        群成员变动: 'groupMemberNumberChange',
-        闪照: 'flashPhoto',
-        禁言: 'botBeenBanned',
-        全部管理: 'notificationsAll',
-        缓存时间: 'deltime'
-    }
-    // 判断是否有这一项类
-    if (!parameter.hasOwnProperty(key)) return false
-    // 读取配置
-    let cfg = await xcfg.getread(path)
-    // 更改配置
-    cfg[parameter[key]] = value
-    // 写入
-    await xcfg.getwrite(path, cfg)
 
-    return true
+const configs = {
+    好友消息: "privateMessage",
+    群消息: "groupMessage",
+    群临时消息: "grouptemporaryMessage",
+    群撤回: "groupRecall",
+    好友撤回: "PrivateRecall",
+    // 申请通知
+    好友申请: "friendRequest",
+    群邀请: "groupInviteRequest",
+    // 信息变动
+    群管理变动: "groupAdminChange",
+    // 列表变动
+    好友列表变动: "friendNumberChange",
+    群聊列表变动: "groupNumberChange",
+    群成员变动: "groupMemberNumberChange",
+    // 其他通知
+    闪照: "flashPhoto",
+    禁言: "botBeenBanned",
+    全部通知: "notificationsAll",
+    删除缓存: "deltime"
 }

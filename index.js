@@ -8,6 +8,11 @@ logger.info('-----------')
 logger.info('椰奶插件初始化~')
 logger.info('-----------')
 
+if (!await redis.get(`yenai:notice:deltime`)) {
+    await redis.set(`yenai:notice:deltime`, "600")
+}
+
+
 files.forEach((file) => {
     ret.push(import(`./apps/${file}`))
 })

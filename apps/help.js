@@ -74,7 +74,6 @@ export class Help extends plugin {
             "#清空留言\n",
             "#取直链 <图片>\n",
             "#取face <face表情>",
-            "#查Q绑 <QQ>"
         ]
         e.reply(msg);
     }

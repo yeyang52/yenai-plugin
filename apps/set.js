@@ -38,6 +38,9 @@ export class NewConfig extends plugin {
         let option = e.msg.slice(0, index)
         option = option.replace(/#/, '').trim()
         // 开启还是关闭
+
+        if (!configs.hasOwnProperty(option)) return
+
         let res
         if (/开启/.test(e.msg)) {
             // 回复
@@ -76,7 +79,6 @@ export class NewConfig extends plugin {
             let res = await redis.get(`yenai:notice:${configs[i]}`)
             config[configs[i]] = res
         }
-        console.log(config);
         let msg = [
             `闪照 ${config.flashPhoto ? '✅' : '❎'}\n`,
             `禁言 ${config.botBeenBanned ? '✅' : '❎'}\n`,

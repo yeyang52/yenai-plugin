@@ -20,7 +20,7 @@ export class example extends plugin {
       /** https://oicqjs.github.io/oicq/#events */
       event: 'message',
       /** 优先级，数字越小等级越高 */
-      priority: 5000,
+      priority: 2000,
       rule: [
         {
           /** 命令正则匹配 */

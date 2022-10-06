@@ -1,4 +1,4 @@
-![椰羊](resources/img/100159436_p0_master1200.jpg)
+![椰羊](resources/img/yeyang.png)
 
 # Yenai-Plugin说明
 

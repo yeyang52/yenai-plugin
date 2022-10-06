@@ -1,73 +1,76 @@
 import plugin from '../../../lib/plugins/plugin.js'
+import fs from 'fs'
+import lodash from 'lodash'
+import { segment } from "oicq";
+import puppeteer from '../../../lib/puppeteer/puppeteer.js'
+import cfg from '../../../lib/config/config.js'
+import { Cfg, Common, Data, Version, Plugin_Name, Plugin_Path } from '../components/index.js'
+import Theme from './help/theme.js'
 
-export class Help extends plugin {
-    constructor() {
-        super({
-            name: '帮助',
-            dsc: '通知帮助',
-            event: 'message',
-            priority: 5000,
-            rule: [
-                {
-                    reg: '^#?通知帮助$',
-                    fnc: 'help'
-                },
-                {
-                    reg: '^#?助手帮助$',
-                    fnc: 'helps'
-                },
-            ]
-        })
+export class yenai_help extends plugin {
+  constructor() {
+    super({
+      /** 功能名称 */
+      name: '椰奶插件_帮助',
+      /** 功能描述 */
+      dsc: '',
+      /** https://oicqjs.github.io/oicq/#events */
+      event: 'message',
+      /** 优先级，数字越小等级越高 */
+      priority: 2000,
+      rule: [
+        {
+          /** 命令正则匹配 */
+          reg: '^#?椰奶(插件)?帮助$',
+          /** 执行方法 */
+          fnc: 'message'
+        }
+      ]
+    });
+  }
+
+  async message() {
+    return await help(this.e);
+  }
+
+}
+
+async function help(e) {
+  let custom = {}
+  let help = {}
+
+  let { diyCfg, sysCfg } = await Data.importCfg('help')
+
+  custom = help
+
+  let helpConfig = lodash.defaults(diyCfg.helpCfg || {}, custom.helpCfg, sysCfg.helpCfg)
+  let helpList = diyCfg.helpList || custom.helpList || sysCfg.helpList
+  let helpGroup = []
+
+  lodash.forEach(helpList, (group) => {
+    if (group.auth && group.auth === 'master' && !e.isMaster) {
+      return true
     }
 
+    lodash.forEach(group.list, (help) => {
+      let icon = help.icon * 1
+      if (!icon) {
+        help.css = 'display:none'
+      } else {
+        let x = (icon - 1) % 10
+        let y = (icon - x - 1) / 10
+        help.css = `background-position:-${x * 50}px -${y * 50}px`
+      }
+    })
 
-    // 帮助
-    async help() {
-        let msg = [
-            '#闪照通知 (开启|关闭)\n',
-            '#禁言通知 (开启|关闭)\n',
-            '#群撤回通知 (开启|关闭)\n',
-            '#群消息通知 (开启|关闭)\n',
-            '#群邀请通知 (开启|关闭)\n',
-            '#好友撤回通知 (开启|关闭)\n',
-            '#好友消息通知 (开启|关闭)\n',
-            '#好友申请通知 (开启|关闭)\n',
-            '#全部管理通知 (开启|关闭)\n',
-            '#群临时消息通知 (开启|关闭)\n',
-            '#群管理变动通知 (开启|关闭)\n',
-            '#群成员变动通知 (开启|关闭)\n',
-            '#好友列表变动通知 (开启|关闭)\n',
-            '#群聊列表变动通知 (开启|关闭)\n',
-            '#设置删除缓存时间 <时间>(s)\n',
-            '#通知设置',
-        ]
-        this.e.reply(msg)
-    }
-    async helps(e) {
-        let msg = [
-            "#发群聊 <群号> <内容> \n",
-            "#发好友 <QQ> <内容> \n",
-            "#改头像 <图片> \n",
-            "#改状态 <状态> \n",
-            "#改昵称 <昵称> \n",
-            "#改签名 <签名> \n",
-            "#改性别 <性别> \n",
-            "#改群名片 <名片> \n",
-            "#改群昵称 <昵称> \n",
-            "#改群头像 <图片> \n",
-            "#删好友 <QQ> \n",
-            "#退群 <群号> \n",
-            "#获取群列表\n",
-            "#获取好友列表\n",
-            "#取说说列表 <页数> \n",
-            "#发说说 <内容> \n",
-            "#删说说 <序号>\n",
-            "#清空说说\n",
-            "#清空留言\n",
-            "#取直链 <图片>\n",
-            "#取face <face表情>",
-        ]
-        e.reply(msg);
-    }
+    helpGroup.push(group)
+  })
+  let themeData = await Theme.getThemeData(diyCfg.helpCfg || {}, sysCfg.helpCfg || {})
 
+  return await Common.render('help/index', {
+    helpCfg: helpConfig,
+    helpGroup,
+    ...themeData,
+    element: 'default'
+  }, { e, scale: 1.2 })
 }

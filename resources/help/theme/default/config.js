@@ -13,7 +13,7 @@ export const style = {
   contBgColor: 'rgba(6, 21, 31, .5)',
 
   // 面板底图毛玻璃效果，数字越大越模糊，0-10 ，可为小数
-  contBgBlur: 3,
+  contBgBlur: 0,
 
   // 板块标题栏底色
   headerBgColor: 'rgba(6, 21, 31, .4)',

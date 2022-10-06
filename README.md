@@ -9,11 +9,11 @@ Yenai-Plugin是一个Yunzai-Bot的升级插件，提供对bot的一些便携操�
 
 请将Yenai-Plugin放置在Yunzai-Bot的plugins目录下，重启Yunzai-Bot后即可使用。
 
-推荐使用git进行安装，以方便后续升级。在Yunzai/plugins目录打开终端，运行
+推荐使用git进行安装，以方便后续升级。在Yunzai目录打开终端，运行
 
 ```
 // 使用gitee
-git clone https://gitee.com/yeyang52/yenai-plugin.git
+git clone https://gitee.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 ```
 
 #### 功能介绍

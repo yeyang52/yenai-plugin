@@ -3,6 +3,7 @@
 # Yenai-Plugin说明
 
 Yenai-Plugin是一个Yunzai-Bot的升级插件，提供对bot的一些便携操作。
+ **Tip:本Plugin仅适配Yunzai-BotV3!!!** 
 
 
 #### 安装教程

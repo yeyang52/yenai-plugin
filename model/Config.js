@@ -1,5 +1,7 @@
-import fs from 'fs'
-
+import plugin from '../../../lib/plugins/plugin.js'
+import { segment } from 'oicq'
+import cfg from '../../../lib/config/config.js'
+import common from '../../../lib/common/common.js'
 
 class Config {
 
@@ -31,6 +33,19 @@ class Config {
             })
     }
 
+    /** 发消息 */
+    async getSend(msg) {
+        if (await redis.del(`yenai:notice:notificationsAll`,)) {
+            // 发送全部管理
+            for (let index of cfg.masterQQ) {
+                await common.relpyPrivate(index, msg)
+            }
+        } else {
+            // 发给第一个管理
+            await common.relpyPrivate(cfg.masterQQ[0], msg)
+            await common.sleep(200)
+        }
+    }
 }
 
 

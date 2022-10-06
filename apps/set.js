@@ -38,14 +38,17 @@ export class NewConfig extends plugin {
         let option = e.msg.slice(0, index)
         option = option.replace(/#/, '').trim()
         // 开启还是关闭
-        let yes = false
-        if (/开启/.test(e.msg)) yes = true
-        // 回复
-        let res = await redis.set(`yenai:notice:${configs[option]}`, yes)
+        let res
+        if (/开启/.test(e.msg)) {
+            // 回复
+            res = await redis.set(`yenai:notice:${configs[option]}`, "1")
+        } else {
+            res = await redis.del(`yenai:notice:${configs[option]}`,)
+        }
 
 
         if (res == "OK") {
-            e.reply(`✅ 已${yes ? '开启' : '关闭'}${option}通知`)
+            e.reply(`✅ 已${/开启/.test(e.msg) ? '开启' : '关闭'}${option}通知`)
         }
     }
 
@@ -71,9 +74,9 @@ export class NewConfig extends plugin {
         let config = {}
         for (let i in configs) {
             let res = await redis.get(`yenai:notice:${configs[i]}`)
-            config[i] = res
+            config[configs[i]] = res
         }
-
+        console.log(config);
         let msg = [
             `闪照 ${config.flashPhoto ? '✅' : '❎'}\n`,
             `禁言 ${config.botBeenBanned ? '✅' : '❎'}\n`,

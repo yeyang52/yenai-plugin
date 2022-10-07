@@ -5,7 +5,7 @@ const files = fs.readdirSync('./plugins/yenai-plugin/apps').filter(file => file.
 let ret = []
 
 logger.info('-----------')
-logger.info('椰奶插件初始化~')
+logger.info('椰奶插件1.0.0初始化~')
 logger.info('-----------')
 
 if (!await redis.get(`yenai:notice:deltime`)) {

@@ -7,7 +7,7 @@ export class NewConfig extends plugin {
             name: '修改配置',
             dsc: '配置文件',
             event: 'message',
-            priority: 5000,
+            priority: 2000,
             rule: [
                 {
                     /** 命令正则匹配 */

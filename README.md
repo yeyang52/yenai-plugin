@@ -5,11 +5,9 @@
 <h1>Yenai-Plugin说明</h1>
 <b>Yenai-Plugin是一个Yunzai-Bot的升级插件，提供对bot的一些便携操作。</b>
 
-<font color="red">**Tip：Yenai-Plugin仅适配Yunzai-BotV3!!!**</font>
-
-
-
 </div>
+
+**Tip：Yenai-Plugin仅适配Yunzai-BotV3!!!**
 
 
 #### 安装教程

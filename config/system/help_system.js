@@ -41,7 +41,7 @@ export const helpList = [{
   },
   { "icon": 62, "title": "#改状态 <状态> ", "desc": "顾名思义" },
   { "icon": 58, "title": "#改昵称 <昵称> ", "desc": "顾名思义" },
-  { "icon": 59, "title": "#改签名 <签名> ", "desc": "查看老婆、老公" },
+  { "icon": 59, "title": "#改签名 <签名> ", "desc": "顾名思义" },
   { "title": "#改性别 <性别> ", "desc": "顾名思义", "icon": 71 },
   { "title": "#改群名片 <名片> ", "desc": "群里Bot自己的名片", "icon": 29 },
   { "title": "#改群昵称 <昵称>", "desc": "改群的昵称", "icon": 57 },
@@ -57,27 +57,28 @@ export const helpList = [{
   { "title": "#清空留言", "desc": "一键清空留言", "icon": 57 }]
 },
 {
-  "group": "通知",
-  "desc": "需要绑定cookie",
-  "list": [{
-    "icon": 15,
-    "title": "#通知设置",
-    "desc": "各种通知"
-  }]
-},
-{
   "group": "管理命令，仅管理员可用",
   "auth": "master",
   "list": [{
     "icon": 32,
     "title": "#椰奶设置",
-    "desc": "正在施工中"
+    "desc": "查看椰奶设置"
+  },
+  {
+    "icon": 42,
+    "title": "#椰奶(强制)更新",
+    "desc": "更新椰奶"
   },
   {
     "icon": 35,
-    "title": "#椰奶(强制)更新",
-    "desc": "更新椰奶"
-  }]
+    "title": "#椰奶版本",
+    "desc": "查看版本信息"
+  },
+  {
+    "icon": 35,
+    "title": "#椰奶更新日志",
+    "desc": "查看更新日志"
+  },]
 }]
 
 export const isSys = true

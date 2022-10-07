@@ -1,4 +1,10 @@
 import plugin from '../../../lib/plugins/plugin.js'
+import fs from "fs";
+import lodash from "lodash";
+import { createRequire } from "module";
+import { exec } from "child_process";
+import { Cfg } from "../components/index.js";
+import Common from "../components/Common.js";
 
 
 export class NewConfig extends plugin {
@@ -11,13 +17,13 @@ export class NewConfig extends plugin {
             rule: [
                 {
                     /** 命令正则匹配 */
-                    reg: '^#?(.*)通知(开启|关闭)$',
+                    reg: '^#?椰奶设置(.*)(开启|关闭)$',
                     /** 执行方法 */
                     fnc: 'Config_manage'
                 },
                 {
                     /** 命令正则匹配 */
-                    reg: '^#?设置删除缓存时间(.*)$',
+                    reg: '^#?椰奶设置删除缓存时间(.*)$',
                     /** 执行方法 */
                     fnc: 'Config_deltime'
                 },
@@ -27,6 +33,12 @@ export class NewConfig extends plugin {
                     /** 执行方法 */
                     fnc: 'SeeConfig'
                 },
+                {
+                    /** 命令正则匹配 */
+                    reg: '^#?椰奶设置$',
+                    /** 执行方法 */
+                    fnc: 'yenaiset'
+                },
             ]
         })
     }
@@ -35,79 +47,103 @@ export class NewConfig extends plugin {
     async Config_manage(e) {
         if (!e.isMaster) return
         // 解析消息
-        let index = e.msg.indexOf('通知')
-        let option = e.msg.slice(0, index)
-        option = option.replace(/#/, '').trim()
+        let index = e.msg.replace(/#|椰奶设置|开启|关闭/g, "")
+        console.log(index);
+        if (!configs.hasOwnProperty(index)) return
         // 开启还是关闭
-
-        if (!configs.hasOwnProperty(option)) return
-
-        let res
         if (/开启/.test(e.msg)) {
-            // 回复
-            res = await redis.set(`yenai:notice:${configs[option]}`, "1")
-            if (res) {
-                e.reply(`✅ 已开启${option}通知`)
-            } else {
-                e.reply(`❎ 未知错误`)
-            }
-            return
+            await redis.set(`yenai:notice:${configs[index]}`, "1")
         } else {
-            res = await redis.del(`yenai:notice:${configs[option]}`)
-            if (res) {
-                e.reply(`✅ 已关闭${option}通知`)
-            } else {
-                e.reply(`❎ ${option}通知已是关闭状态`)
-            }
-            return
+            await redis.del(`yenai:notice:${configs[index]}`)
         }
+        this.yenaiset(e)
+        return
     }
 
     // 设置删除缓存时间
     async Config_deltime(e) {
         if (!e.isMaster) return
 
-        let time = e.msg.replace(/#|设置删除缓存时间/, '').trim()
+        let time = e.msg.replace(/#|椰奶设置删除缓存时间/g, '').trim()
 
-        time = time.match(/\d*/g)
+        time = time.match(/\d+/g)
 
         if (!time) return e.reply('❎ 请输入正确的时间(单位s)')
 
         if (time < 120) return e.reply('❎ 时间不能小于两分钟')
-
-        let res = await redis.set(`yenai:notice:deltime`, String(time[0]))
-        if (res == "OK") {
-            e.reply(`✅ 已设置删除缓存时间为${getsecond(time)}`)
-        }
+        console.log(time);
+        await redis.set(`yenai:notice:deltime`, String(time[0]))
+        console.log(await redis.get(`yenai:notice:deltime`));
+        this.yenaiset(e)
     }
 
-    async SeeConfig(e) {
+    async yenaiset(e) {
+
         let config = {}
         for (let i in configs) {
             let res = await redis.get(`yenai:notice:${configs[i]}`)
             config[configs[i]] = res
         }
-        let msg = [
-            `闪照 ${config.flashPhoto ? '✅' : '❎'}\n`,
-            `禁言 ${config.botBeenBanned ? '✅' : '❎'}\n`,
-            `群消息 ${config.groupMessage ? '✅' : '❎'}\n`,
-            `群撤回 ${config.groupRecall ? '✅' : '❎'}\n`,
-            `群邀请 ${config.groupInviteRequest ? '✅' : '❎'}\n`,
-            `好友消息 ${config.privateMessage ? '✅' : '❎'}\n`,
-            `好友撤回 ${config.PrivateRecall ? '✅' : '❎'}\n`,
-            `好友申请 ${config.friendRequest ? '✅' : '❎'}\n`,
-            `群成员变动 ${config.groupMemberNumberChange ? '✅' : '❎'}\n`,
-            `群管理变动 ${config.groupAdminChange ? '✅' : '❎'}\n`,
-            `群临时消息 ${config.grouptemporaryMessage ? '✅' : '❎'}\n`,
-            `好友列表变动 ${config.friendNumberChange ? '✅' : '❎'}\n`,
-            `群聊列表变动 ${config.groupNumberChange ? '✅' : '❎'}\n`,
-            `全部管理发送 ${config.notificationsAll ? '✅' : '❎'}\n`,
-            `删除缓存时间：${config.deltime}`
-        ]      
-        await this.e.reply(msg)
+
+        let cfg = {
+            //好友消息
+            privateMessage: getStatus(config.privateMessage),
+            //群消息
+            groupMessage: getStatus(config.groupMessage),
+            //群临时消息
+            grouptemporaryMessage: getStatus(config.grouptemporaryMessage),
+            //群撤回
+            groupRecall: getStatus(config.groupRecall),
+            //好友撤回
+            PrivateRecall: getStatus(config.PrivateRecall),
+            //好友申请
+            friendRequest: getStatus(config.friendRequest),
+            //群邀请
+            groupInviteRequest: getStatus(config.groupInviteRequest),
+            //群管理变动
+            groupAdminChange: getStatus(config.groupAdminChange),
+            //好友列表变动
+            friendNumberChange: getStatus(config.friendNumberChange),
+            //群聊列表变动
+            groupNumberChange: getStatus(config.groupNumberChange),
+            //群成员变动
+            groupMemberNumberChange: getStatus(config.groupMemberNumberChange),
+            //闪照
+            flashPhoto: getStatus(config.flashPhoto),
+            //禁言
+            botBeenBanned: getStatus(config.botBeenBanned),
+            //全部通知
+            notificationsAll: getStatus(config.notificationsAll),
+            //删除缓存时间
+            deltime: Number(config.deltime),
+            bg: await rodom(), //获取底图
+        }
+        //渲染图像
+        return await Common.render("admin/index", {
+            ...cfg,
+        }, {
+            e,
+            scale: 1.4
+        });
     }
 }
+const rodom = async function () {
+    var image = fs.readdirSync(`./plugins/yenai-plugin/resources/admin/imgs/bg`);
+    var list_img = [];
+    for (let val of image) {
+        list_img.push(val)
+    }
+    var imgs = list_img.length == 1 ? list_img[0] : list_img[lodash.random(0, list_img.length - 1)];
+    return imgs;
+}
+const getStatus = function (rote) {
+    if (rote) {
+        return `<div class="cfg-status" >已开启</div>`;
+    } else {
+        return `<div class="cfg-status status-off">已关闭</div>`;
+    }
 
+}
 const configs = {
     好友消息: "privateMessage",
     群消息: "groupMessage",

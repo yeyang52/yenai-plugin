@@ -22,7 +22,7 @@ git clone https://gitee.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 
 Yenai-Plugin为您提供以下功能
 
-1.Bot事件通知
+1.Bot事件通知(具体使用**#椰奶设置**查看)
 
 - 闪照
 

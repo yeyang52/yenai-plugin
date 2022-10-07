@@ -1,9 +1,12 @@
-![椰羊](resources/img/yeyang.png)
+<div align="center">
+  <img src="resources/img/yeyang.jpg" alt="甘雨" width = "800">
+  </a><br>
 
-# Yenai-Plugin说明
+<h1>Yenai-Plugin说明</h1>
+</div>
 
 Yenai-Plugin是一个Yunzai-Bot的升级插件，提供对bot的一些便携操作。
- 
+
 **Tip：Yenai-Plugin仅适配Yunzai-BotV3!!!** 
 
 

@@ -26,17 +26,22 @@ body {
   overflow: hidden;
   /* box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.15); */
   position: relative;
+  font-size: 20px;
   background: rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   backdrop-filter: blur(0px);
   -webkit-backdrop-filter: blur(0px);
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.18);
-  color: #ed7662;
+  /* color: #ed7662; */
+
+  background: linear-gradient(to right, red, blue);
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 .help-group {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
   padding: 15px 15px 10px 20px;
 }
@@ -90,9 +95,12 @@ body {
 
 .help-title {
   display: block;
-  color: #ed7662;
+  /* color: #ed7662; */
   font-size: 16px;
   line-height: 24px;
+  background: linear-gradient(to right, red, blue);
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 .help-desc {

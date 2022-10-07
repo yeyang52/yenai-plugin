@@ -16,7 +16,7 @@ export class example extends plugin {
       rule: [
         {
           /** 命令正则匹配 */
-          reg: '^唱歌$',
+          reg: '^#?唱歌$',
           /** 执行方法 */
           fnc: 'Sing'
         }

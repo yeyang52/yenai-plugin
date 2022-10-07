@@ -2,6 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import fs from "fs";
 import lodash from "lodash";
 import Common from "../components/Common.js";
+import common from '../../../lib/common/common.js'
 
 
 export class NewConfig extends plugin {
@@ -36,6 +37,12 @@ export class NewConfig extends plugin {
                     /** 执行方法 */
                     fnc: 'yenaiset'
                 },
+                {
+                    /** 命令正则匹配 */
+                    reg: '^#?椰奶(启用|禁用)全部通知$',
+                    /** 执行方法 */
+                    fnc: 'SetAll'
+                },
             ]
         })
     }
@@ -54,7 +61,7 @@ export class NewConfig extends plugin {
             await redis.del(`yenai:notice:${configs[index]}`)
         }
         this.yenaiset(e)
-        return
+        return true;
     }
 
     // 设置删除缓存时间
@@ -72,8 +79,33 @@ export class NewConfig extends plugin {
         await redis.set(`yenai:notice:deltime`, String(time[0]))
         console.log(await redis.get(`yenai:notice:deltime`));
         this.yenaiset(e)
+        return true;
     }
 
+    async SetAll(e) {
+        if (!e.isMaster) return
+        let yes = false;
+        if (/启用/.test(e.msg)) {
+            yes = true;
+        }
+
+        if (yes) {
+            for (let i in configs) {
+                if (configs[i] == "deltime") continue
+                await redis.set(`yenai:notice:${configs[i]}`, "1");
+                console.log(1);
+                await common.sleep(200)
+            }
+        } else {
+            for (let i in configs) {
+                if (configs[i] == "deltime") continue
+                await redis.del(`yenai:notice:${configs[i]}`);
+                await common.sleep(200)
+            }
+        }
+        this.yenaiset(e)
+        return true;
+    }
     async yenaiset(e) {
         if (!e.isMaster) return
 

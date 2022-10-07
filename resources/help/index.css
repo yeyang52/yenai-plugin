@@ -1,11 +1,11 @@
 body {
   transform: scale(1);
   width: 830px;
-  background: url("../common/theme/bg-01.jpg");
+  /* background: url("../common/theme/bg-01.jpg"); */
 }
 
 .container {
-  background: url(../common/theme/main-01.png) top center no-repeat;
+  background: url(./main.png) right center no-repeat;
   background-size: cover;
   width: 830px;
 }
@@ -20,12 +20,19 @@ body {
 }
 
 .cont-box {
-  border-radius: 15px;
+  /* border-radius: 15px; */
   margin-top: 20px;
   margin-bottom: 20px;
   overflow: hidden;
-  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.15);
+  /* box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.15); */
   position: relative;
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ed7662;
 }
 
 .help-group {
@@ -42,7 +49,7 @@ body {
   display: table;
   overflow: hidden;
   width: 100%;
-  color: #fff;
+  color: rgb(0, 0, 0);
 }
 
 .help-table .tr {
@@ -83,7 +90,7 @@ body {
 
 .help-title {
   display: block;
-  color: #d3bc8e;
+  color: #ed7662;
   font-size: 16px;
   line-height: 24px;
 }

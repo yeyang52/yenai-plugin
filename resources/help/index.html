@@ -1,9 +1,9 @@
 {{extend defaultLayout}}
 
 {{block 'css'}}
-<link rel="stylesheet" type="text/css" href="{{_res_path}}/help/index.css"/>
-<% style = style.replace(/{{_res_path}}/g, _res_path) %>
-{{@style}}
+<link rel="stylesheet" type="text/css" href="{{_res_path}}/help/index.css" />
+<!-- <% style = style.replace(/{{_res_path}}/g, _res_path) %> -->
+<!-- {{@style}} -->
 {{/block}}
 
 {{block 'main'}}
@@ -28,17 +28,16 @@
         <strong class="help-title">{{help.title}}</strong>
         <span class="help-desc">{{help.desc}}</span>
       </div>
-      {{if idx%colCount === colCount-1 && idx>0 && idx< len-1}}
+      {{if idx%colCount === colCount-1 && idx>0 && idx< len-1}} </div>
+        <div class="tr">
+          {{/if}}
+          {{/each}}
+          <% for(let i=(len-1)%colCount; i< colCount-1 ; i++){ %>
+            <div class="td"></div>
+            <% } %>
+        </div>
     </div>
-    <div class="tr">
-      {{/if}}
-      {{/each}}
-      <% for(let i=(len-1)%colCount; i< colCount-1 ; i++){ %>
-      <div class="td"></div>
-      <% } %>
-    </div>
+    {{/if}}
   </div>
-  {{/if}}
-</div>
-{{/each}}
-{{/block}}
+  {{/each}}
+  {{/block}}

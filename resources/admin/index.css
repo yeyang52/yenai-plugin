@@ -23,7 +23,7 @@ body {
 }
 .cfg-group {
   color: #ceb78b;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: bold;
   padding: 10px 20px;
 }
@@ -46,7 +46,7 @@ body {
   background-size: auto 36px;
 }
 .cfg-hint {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: normal;
   margin-top: 3px;
   margin-bottom: -3px;
@@ -59,7 +59,7 @@ body {
   width: 160px;
   text-align: center;
   line-height: 36px;
-  font-size: 16px;
+  font-size: 20px;
   color: #495366;
   font-weight: bold;
   border-radius: 0 16px 16px 0;
@@ -68,7 +68,7 @@ body {
   color: #a95151;
 }
 .cfg-desc {
-  font-size: 12px;
+  font-size: 16px;
   color: #cbc4be;
   margin: 5px 0 5px 20px;
 }

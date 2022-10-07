@@ -17,7 +17,7 @@ Yenai-Plugin是一个Yunzai-Bot的升级插件，提供对bot的一些便携操�
 // 使用gitee
 git clone https://gitee.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 // 使用github
-https://github.com/746659424/yenai-plugin.git ./plugins/yenai-plugin
+git clone https://github.com/746659424/yenai-plugin.git ./plugins/yenai-plugin
 ```
 
 #### 功能介绍

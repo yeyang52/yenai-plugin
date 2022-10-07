@@ -78,6 +78,7 @@ export class NewConfig extends plugin {
     }
 
     async yenaiset(e) {
+        if (!e.isMaster) return
 
         let config = {}
         for (let i in configs) {

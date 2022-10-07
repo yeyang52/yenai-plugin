@@ -23,7 +23,7 @@ export class admin extends plugin {
             priority: 400,
             rule: [
                 {
-                    reg: "^#椰奶(插件)?(强制)?更新$",
+                    reg: "^#?椰奶(插件)?(强制)?更新$",
                     fnc: "checkout",
                 },
                 {

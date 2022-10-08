@@ -2,6 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js';
 import { segment } from "oicq";
 import fetch from 'node-fetch';
 import cfg from '../../../lib/config/config.js';
+import Config from '../model/Config.js';
 let Qzonedetermine;
 let groupPhotoid;
 
@@ -51,7 +52,7 @@ export class example extends plugin {
         },
         {
           reg: '^#?取直链.*$',
-          fnc: 'Picture'
+          fnc: 'Pictures'
         },
         {
           reg: '^#?取face.*$',
@@ -98,7 +99,7 @@ export class example extends plugin {
 
     if (!e.img) {
       this.setContext('Photos')
-      e.reply("✳️ 请发送图片");
+      e.reply("✅ 请发送图片");
       return;
     }
 
@@ -205,7 +206,7 @@ export class example extends plugin {
     if (Bot.pickGroup(groupPhotoid).is_admin || Bot.pickGroup(groupPhotoid).is_owner) {
       if (!e.img) {
         this.setContext('picture')
-        e.reply("✳️ 请发送图片");
+        e.reply("✅ 请发送图片");
         return;
       }
 
@@ -456,17 +457,24 @@ export class example extends plugin {
   }
 
   /**取直链 */
-  async Picture(e) {
+  async Pictures(e) {
     if (!e.img) {
       this.setContext('imgs')
-      await this.reply('✳️ 请发送图片')
+      await this.reply('✅ 请发送图片')
       return;
     }
     await e.reply(`✅ 检测到${e.img.length}张图片`)
-    for (let i of e.img) {
-      await e.reply([segment.image(i), "直链:", i])
+    if (e.img.length >= 2) {
+      //大于两张图片以转发消息发送
+      let msg = []
+      for (let i of e.img) {
+        msg.push([segment.image(i), "直链:", i])
+      }
+      Config.getforwardMsg(msg, e)
+    } else {
+      await e.reply([segment.image(e.img[0]), "直链:", e.img[0]])
     }
-
+    return true;
   }
   async imgs() {
     let img = this.e.img
@@ -505,10 +513,12 @@ export class example extends plugin {
       ]
     })
 
-    for (let i of res) {
-      await e.reply(i)
+    if (res.length >= 2) {
+      Config.getforwardMsg(res, e)
+    } else {
+      await e.reply(res)
     }
-
+    return true;
   }
   /**QQ空间 说说列表*/
   async Qzonelist(e) {
@@ -666,26 +676,9 @@ export class example extends plugin {
       message.push("可使用 #删好友123456789 来删除某人")
     }
 
-    //制作转发消息
-    let forwardMsg = []
-    for (let i of message) {
-      forwardMsg.push(
-        {
-          message: i,
-          nickname: Bot.nickname,
-          user_id: Bot.uin
-        }
-      )
-    }
+    Config.getforwardMsg(message, e)
 
-    if (e.isGroup) {
-      forwardMsg = await e.group.makeForwardMsg(forwardMsg)
-    } else {
-      forwardMsg = await e.friend.makeForwardMsg(forwardMsg)
-    }
-
-    //发送消息
-    e.reply(forwardMsg)
+    return true
 
   }
 

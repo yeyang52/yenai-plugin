@@ -78,6 +78,31 @@ class Config {
         }
         return result
     }
+
+    //以Bot发送转发消息
+    async getforwardMsg(message,e) {
+        //制作转发消息
+        let forwardMsg = []
+        for (let i of message) {
+            forwardMsg.push(
+                {
+                    message: i,
+                    nickname: Bot.nickname,
+                    user_id: Bot.uin
+                }
+            )
+        }
+        //发送
+        if (e.isGroup) {
+            forwardMsg = await e.group.makeForwardMsg(forwardMsg)
+        } else {
+            forwardMsg = await e.friend.makeForwardMsg(forwardMsg)
+        }
+
+        //发送消息
+        e.reply(forwardMsg)
+        
+    }
 }
 
 

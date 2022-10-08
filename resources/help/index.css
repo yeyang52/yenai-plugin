@@ -30,15 +30,13 @@ body {
   font-size: 20px;
   background: rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  /* 毛玻璃 */
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
+
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.18);
-  /* color: #ed7662; */
-
-  background: linear-gradient(to left, red, rgb(75, 0, 125));
-  -webkit-background-clip: text;
-  color: transparent;
+  color: #dd2d8e;
 }
 
 .help-group {
@@ -97,12 +95,9 @@ body {
 
 .help-title {
   display: block;
-  /* color: #ed7662; */
+  color: #dd2d8e;
   font-size: 16px;
   line-height: 24px;
-  background: linear-gradient(to left, red, rgb(75, 0, 125));
-  -webkit-background-clip: text;
-  color: transparent;
 }
 
 .help-desc {

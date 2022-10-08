@@ -27,7 +27,7 @@ export class GHIMG extends plugin {
 
   async GH(e) {
     const api = "https://opengraph.githubassets.com";
-    reg = /github.com\/[a-zA-Z0-9-]{1,39}\/[a-zA-Z0-9_-]{1,100}/
+    let reg = /github.com\/[a-zA-Z0-9-]{1,39}\/[a-zA-Z0-9_-]{1,100}/
     const isMatched = e.msg.match(reg);
     const id = "Yenai";
     if (isMatched) {

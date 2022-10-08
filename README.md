@@ -1,16 +1,18 @@
 
 
 <div align="center">
-  <img src="resources/img/yeyang.jpg" alt="甘雨" width = "500">
+  <img src="resources/img/yeyang.jpg" alt="甘雨" width = "600">
   </a><br>
+
 
 
 <h1>Yenai-Plugin说明</h1>
 
-<b>Yenai-Plugin是一个Yunzai-Bot的升级插件，提供对bot的一些便携操作。</b>
-<br><img src="https://count.getloli.com/get/@:yenai-plugin" /> <br>
+Yenai-Plugin是一个Yunzai-Bot的升级插件，提供对bot的一些便携操作。<br><br><img src="https://count.getloli.com/get/@:yenai-plugin" /> <br>
 
 [![YunzaiBot](https://img.shields.io/badge/云崽-v3.0.0-black?style=flat-square&logo=dependabot)](https://gitee.com/Le-niao/Yunzai-Bot) [![tencent-qq](https://img.shields.io/badge/群号-904667253-red?style=flat-square&logo=tencent-qq)](https://jq.qq.com/?_wv=1027&k=frIYjDPe) [![tencent-qq](https://img.shields.io/badge/QQ-746659424-success?style=flat-square&logo=tencent-qq)](https://qm.qq.com/cgi-bin/qm/qr?k=m6tyVb1v5y7a5_YK8CU7AoKyuR51aEaI&noverify=0&personal_qrcode_source=4)
+
+<br>
 
 </div>
 

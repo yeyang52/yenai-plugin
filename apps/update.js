@@ -1,6 +1,7 @@
 import plugin from "../../../lib/plugins/plugin.js";
 import { createRequire } from "module";
 import lodash from "lodash";
+import { Restart } from '../../other/restart.js'
 
 const require = createRequire(import.meta.url);
 const { exec, execSync } = require("child_process");
@@ -25,8 +26,6 @@ export class update extends plugin {
         },
       ],
     });
-
-    // this.versionData = xxCfg.getdefSet("version", "version");
   }
 
   /**
@@ -52,10 +51,14 @@ export class update extends plugin {
 
     /** 是否需要重启 */
     if (this.isUp) {
-      await this.reply("更新完毕，请重启云崽后生效")
+      // await this.reply("更新完毕，请重启云崽后生效")
+      setTimeout(() => this.restart(), 2000)
     }
   }
 
+  restart() {
+    new Restart(this.e).restart()
+  }
 
   /**
    * 椰奶插件更新函数

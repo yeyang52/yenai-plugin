@@ -23,6 +23,7 @@ body {
   /* border-radius: 15px; */
   margin-top: 20px;
   margin-bottom: 20px;
+  margin-right: 5px;
   overflow: hidden;
   /* box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.15); */
   position: relative;
@@ -35,7 +36,7 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.18);
   /* color: #ed7662; */
 
-  background: linear-gradient(to right, red, blue);
+  background: linear-gradient(to left, red, rgb(75, 0, 125));
   -webkit-background-clip: text;
   color: transparent;
 }
@@ -70,6 +71,7 @@ body {
   line-height: 24px;
   position: relative;
   text-align: left;
+  width: 33%;
 }
 
 .help-table .tr:last-child .td {
@@ -98,7 +100,7 @@ body {
   /* color: #ed7662; */
   font-size: 16px;
   line-height: 24px;
-  background: linear-gradient(to right, red, blue);
+  background: linear-gradient(to left, red, rgb(75, 0, 125));
   -webkit-background-clip: text;
   color: transparent;
 }

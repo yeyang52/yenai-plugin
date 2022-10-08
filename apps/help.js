@@ -72,5 +72,5 @@ async function help(e) {
     helpGroup,
     ...themeData,
     element: 'default'
-  }, { e, scale: 1.2 })
+  }, { e, scale: 2.0 })
 }

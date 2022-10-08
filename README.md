@@ -1,8 +1,16 @@
+
+
+
 <div align="center">
   <img src="resources/img/yeyang.jpg" alt="甘雨" width = "800">
   </a><br>
 
+<img src="https://count.getloli.com/get/@:yenai-plugin" /> <br>
+[![Stars](https://img.shields.io/github/stars/746659424/yenai-plugin?color=yellow&label=收藏)](../../stargazers)
+ [![tencent-qq](https://img.shields.io/badge/群号-904667253-red?style=flat-square&logo=tencent-qq)](https://jq.qq.com/?_wv=1027&k=frIYjDPe)
+
 <h1>Yenai-Plugin说明</h1>
+
 <b>Yenai-Plugin是一个Yunzai-Bot的升级插件，提供对bot的一些便携操作。</b>
 
 </div>

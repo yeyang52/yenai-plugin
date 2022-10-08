@@ -24,7 +24,7 @@ export class invitation extends plugin {
         if (!await redis.get(`yenai:notice:groupInviteRequest`)) return
 
         if (cfg.masterQQ.includes(e.user_id)) return
-
+        logger.info("[椰奶]邀请机器人进群")
         msg = [
             segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/0`),
             '[通知 - 邀请机器人进群]\n',

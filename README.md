@@ -5,8 +5,7 @@
   </a><br>
 
 
-
-<h1>Yenai-Plugin说明</h1>
+<h1>Yenai-Plugin</h1>
 
 Yenai-Plugin是一个Yunzai-Bot的升级插件，提供对bot的一些便携操作。<br><br><img src="https://count.getloli.com/get/@:yenai-plugin?theme=rule34" /> <br>
 

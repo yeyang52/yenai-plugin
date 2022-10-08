@@ -50,6 +50,7 @@ export class anotice extends plugin {
             e.message_type === 'group' &&
             await redis.get(`yenai:notice:flashPhoto`)
         ) {
+            logger.info("[椰奶]群聊闪照")
             msg = [
                 segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`),
                 '[消息 - 闪照消息]\n',
@@ -64,6 +65,7 @@ export class anotice extends plugin {
             e.message_type === 'discuss' &&
             await redis.get(`yenai:notice:flashPhoto`)
         ) {
+            logger.info("[椰奶]讨论组闪照")
             msg = [
                 segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
                 '[消息 - 闪照消息]\n',
@@ -78,6 +80,7 @@ export class anotice extends plugin {
             e.message_type === 'private' &&
             await redis.get(`yenai:notice:flashPhoto`)
         ) {
+            logger.info("[椰奶]好友闪照")
             msg = [
                 segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
                 '[消息 - 闪照消息]\n',
@@ -95,7 +98,7 @@ export class anotice extends plugin {
                 forwardMsg = arr.msg
                 res = arr.type
             }
-
+            logger.info("[椰奶]好友消息")
             msg = [
                 segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
                 '[消息 - 好友消息]\n',
@@ -123,6 +126,7 @@ export class anotice extends plugin {
                 forwardMsg = arr.msg
                 res = arr.type
             }
+            logger.info("[椰奶]群临时消息")
             // 发送的消息
             msg = [
                 segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
@@ -141,7 +145,7 @@ export class anotice extends plugin {
                 forwardMsg = arr.msg
                 res = arr.type
             }
-
+            logger.info("[椰奶]群聊消息")
             msg = [
                 segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`),
                 '[消息 - 群聊消息]\n',
@@ -154,6 +158,7 @@ export class anotice extends plugin {
             ]
         } else if (e.message_type === 'discuss') {
             if (!await redis.get(`yenai:notice:groupMessage`)) return
+            logger.info("[椰奶]讨论组消息")
             msg = [
                 segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
                 '[消息 - 群聊消息]\n',

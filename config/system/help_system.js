@@ -24,7 +24,7 @@ export const helpCfg = {
 }
 
 export const helpList = [{
-  "group": "助手",
+  "group": "Bot相关",
   "list": [{
     "icon": 1,
     "title": "#发好友 <QQ> <消息>", "desc": "给好友发送一条涩涩的消息"
@@ -157,6 +157,18 @@ export const helpList = [{
     "icon": 9,
     "title": "#收益曲线帮助",
     "desc": "=-="
+  }]
+},
+{
+  "group": "其他功能",
+  "list": [{
+    "icon": 7,
+    "title": "#取直链 <图片>",
+    "desc": "取图片的链接"
+  }, {
+    "icon": 20,
+    "title": "#取face <face表情>",
+    "desc": "没啥用=-="
   }]
 },
 {

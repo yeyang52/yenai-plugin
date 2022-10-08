@@ -7,10 +7,9 @@
 
 </div>
 
-**Tip：Yenai-Plugin仅适配Yunzai-BotV3!!!**
-
 
 #### 安装教程
+**Tip：Yenai-Plugin仅适配Yunzai-BotV3!!!**
 
 请将Yenai-Plugin放置在Yunzai-Bot的plugins目录下，重启Yunzai-Bot后即可使用。
 

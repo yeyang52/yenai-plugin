@@ -222,7 +222,7 @@ export class newgroups extends plugin {
                     special = '[合并消息]'
                 } else {
                     // 正常处理
-                    forwardMsg = await e.group.makeForwardMsg([
+                    forwardMsg = await Bot.pickFriend(cfg.masterQQ[0]).makeForwardMsg([
                         {
                             message: res,
                             nickname: e.group.pickMember(e.user_id).card,

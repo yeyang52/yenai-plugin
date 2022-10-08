@@ -1,9 +1,7 @@
 import plugin from "../../../lib/plugins/plugin.js";
 import { createRequire } from "module";
 import lodash from "lodash";
-import Version from "../model/version.js";
 import xxCfg from "../model/xxCfg.js";
-import puppeteer from "../../../lib/puppeteer/puppeteer.js";
 
 const require = createRequire(import.meta.url);
 const { exec, execSync } = require("child_process");
@@ -29,7 +27,7 @@ export class update extends plugin {
       ],
     });
 
-    this.versionData = xxCfg.getdefSet("version", "version");
+    // this.versionData = xxCfg.getdefSet("version", "version");
   }
 
   /**

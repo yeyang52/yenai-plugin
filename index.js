@@ -1,11 +1,12 @@
 import fs from 'node:fs'
+import Ver from './components/Version.js'
 
 const files = fs.readdirSync('./plugins/yenai-plugin/apps').filter(file => file.endsWith('.js'))
 
 let ret = []
 
 logger.info('-----------')
-logger.info('椰奶插件1.0.0初始化~')
+logger.info(`椰奶插件${Ver.ver}初始化~`)
 logger.info('-----------')
 
 if (!await redis.get(`yenai:notice:deltime`)) {

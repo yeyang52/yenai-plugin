@@ -1,7 +1,6 @@
 import plugin from "../../../lib/plugins/plugin.js";
 import { createRequire } from "module";
 import lodash from "lodash";
-import xxCfg from "../model/xxCfg.js";
 
 const require = createRequire(import.meta.url);
 const { exec, execSync } = require("child_process");

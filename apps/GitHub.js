@@ -15,7 +15,7 @@ export class GHIMG extends plugin {
       rule: [
         {
           /** 命令正则匹配 */
-          reg: '/github.com\/[a-zA-Z0-9-]{1,39}\/[a-zA-Z0-9_-]{1,100}/',
+          reg: 'github.com\/[a-zA-Z0-9-]{1,39}\/[a-zA-Z0-9_-]{1,100}',
           /** 执行方法 */
           fnc: 'GH'
         }
@@ -27,7 +27,8 @@ export class GHIMG extends plugin {
 
   async GH(e) {
     const api = "https://opengraph.githubassets.com";
-    const isMatched = raw_message.match(reg);
+    reg = /github.com\/[a-zA-Z0-9-]{1,39}\/[a-zA-Z0-9_-]{1,100}/
+    const isMatched = e.msg.match(reg);
     const id = "Yenai";
     if (isMatched) {
       const res = isMatched[0].split("/");

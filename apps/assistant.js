@@ -693,10 +693,12 @@ export class example extends plugin {
     let url = `http://xiaobai.klizi.cn/API/qqgn/qun_xj.php?data=&uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&group=${e.group_id}`
     let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
     if (!result) return e.reply("❎ 接口失效")
+    let str = "⭐"
+    str = str.repeat(result.uiGroupLevel)
     e.reply([
       `群名：${result.group_name}\n`,
       `群号：${result.group_uin}\n`,
-      `群星级：${result.uiGroupLevel}`
+      `群星级：${str}`
     ])
   }
 

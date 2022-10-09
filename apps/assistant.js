@@ -695,7 +695,7 @@ export class example extends plugin {
 
     let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
 
-    // if (!result) return e.reply("❎ 接口失效")
+    if (!result) return e.reply("❎ 接口失效")
 
     let str = "⭐"
     str = str.repeat(result.uiGroupLevel)

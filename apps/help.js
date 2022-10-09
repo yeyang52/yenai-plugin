@@ -5,7 +5,7 @@ import { segment } from "oicq";
 import puppeteer from '../../../lib/puppeteer/puppeteer.js'
 import cfg from '../../../lib/config/config.js'
 import { Cfg, Common, Data, Version, Plugin_Name, Plugin_Path } from '../components/index.js'
-import Theme from './help/theme.js'
+// import Theme from './help/theme.js'
 
 export class yenai_help extends plugin {
   constructor() {
@@ -65,12 +65,26 @@ async function help(e) {
 
     helpGroup.push(group)
   })
-  let themeData = await Theme.getThemeData(diyCfg.helpCfg || {}, sysCfg.helpCfg || {})
-
+  let bg = await rodom()
+  let colCount = 3;
   return await Common.render('help/index', {
     helpCfg: helpConfig,
     helpGroup,
-    ...themeData,
-    element: 'default'
-  }, { e, scale: 2.0 })
+    bg,
+    colCount,
+    // element: 'default'
+  }, {
+    e,
+    scale: 2.0
+  })
+}
+
+const rodom = async function () {
+  var image = fs.readdirSync(`./plugins/yenai-plugin/resources/help/imgs/`);
+  var list_img = [];
+  for (let val of image) {
+    list_img.push(val)
+  }
+  var imgs = list_img.length == 1 ? list_img[0] : list_img[lodash.random(0, list_img.length - 1)];
+  return imgs;
 }

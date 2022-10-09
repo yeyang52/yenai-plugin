@@ -1,7 +1,7 @@
 body {
   transform: scale(1);
   width: 830px;
-  /* background: url("../common/theme/bg-01.jpg"); */
+  background: url("../common/theme/bg-01.jpg");
 }
 
 .container {

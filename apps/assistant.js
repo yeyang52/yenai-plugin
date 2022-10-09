@@ -695,7 +695,7 @@ export class example extends plugin {
     if (!result) return e.reply("❎ 接口失效")
     e.reply([
       `群名：${result.group_name}\n`,
-      `群号：${result.group_owner}\n`,
+      `群号：${result.group_uin}\n`,
       `群星级：${result.uiGroupLevel}`
     ])
   }

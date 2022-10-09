@@ -91,7 +91,7 @@ export class example extends plugin {
           fnc: 'Grouplist'
         },
         {
-          reg: '^#?群星级$',
+          reg: '^#群星级$',
           fnc: 'Group_xj'
         },
       ]
@@ -690,9 +690,13 @@ export class example extends plugin {
     if (e.isPrivate) return e.reply("请在群聊使用哦~")
 
     let ck = getck("qqweb.qq.com")
+
     let url = `http://xiaobai.klizi.cn/API/qqgn/qun_xj.php?data=&uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&group=${e.group_id}`
+
     let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
-    if (!result) return e.reply("❎ 接口失效")
+
+    // if (!result) return e.reply("❎ 接口失效")
+
     let str = "⭐"
     str = str.repeat(result.uiGroupLevel)
     e.reply([

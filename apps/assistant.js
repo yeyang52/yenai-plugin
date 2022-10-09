@@ -686,8 +686,9 @@ export class example extends plugin {
 
   }
   async Group_xj(e) {
-
     if (e.isPrivate) return e.reply("请在群聊使用哦~")
+
+    if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply("❎ 该命令仅限管理员可用", true);
 
     let ck = getck("qqweb.qq.com")
 

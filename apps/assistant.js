@@ -90,6 +90,10 @@ export class example extends plugin {
           reg: '^#?获取(群|好友)列表$',
           fnc: 'Grouplist'
         },
+        {
+          reg: '^#?群星级$',
+          fnc: 'Group_xj'
+        },
       ]
     })
   }
@@ -557,7 +561,7 @@ export class example extends plugin {
     let list = await getlist()
 
     if (!list.msglist) return e.reply(`❎ 说说列表为空`)
-    let ck = getck()
+    let ck = getck('qzone.qq.com')
     if ((res - 1) >= list.msglist.length) return e.reply(`❎ 序号超过最大值`)
     let something = list.msglist[res - 1]
 
@@ -577,7 +581,7 @@ export class example extends plugin {
     if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
 
     let res = e.message[0].text.replace(/#|发说说/g, "").trim()
-    let ck = getck()
+    let ck = getck('qzone.qq.com')
     let url;
     if (e.img) {
       url = `https://xiaobai.klizi.cn/API/qqgn/ss_sendimg.php?uin=${cfg.qq}&skey=${ck.skey}&pskey=${ck.p_skey}&url=${e.img[0]}&msg=${res}`
@@ -614,7 +618,7 @@ export class example extends plugin {
     let msg = this.e.msg
     if (msg == "确认清空") {
       this.finish('QzonedelAll')
-      let ck = getck()
+      let ck = getck('qzone.qq.com')
 
       let url
       if (Qzonedetermine) {
@@ -681,7 +685,20 @@ export class example extends plugin {
     return true
 
   }
+  async Group_xj(e) {
 
+    if (e.isPrivate) return e.reply("请在群聊使用哦~")
+
+    let ck = getck("qqweb.qq.com")
+    let url = `http://xiaobai.klizi.cn/API/qqgn/qun_xj.php?data=&uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&group=${e.group_id}`
+    let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
+    if (!result) return e.reply("❎ 接口失效")
+    e.reply([
+      `群名：${result.group_name}\n`,
+      `群号：${result.group_owner}\n`,
+      `群星级：${result.uiGroupLevel}`
+    ])
+  }
 
 
 
@@ -725,7 +742,7 @@ function formatDate(time) {
 
 /**取说说列表*/
 async function getlist() {
-  let ck = getck()
+  let ck = getck('qzone.qq.com')
   let url = `https://xiaobai.klizi.cn/API/qqgn/ss_list.php?data=json&uin=${cfg.qq}&skey=${ck.skey}&pskey=${ck.p_skey}&qq=${cfg.qq}`
   let list = await fetch(url).then(res => res.json()).catch(err => console.log(err))
 
@@ -737,8 +754,8 @@ async function getlist() {
 
 }
 /**取cookies */
-function getck() {
-  let cookie = Bot.cookies['qzone.qq.com']
+function getck(data) {
+  let cookie = Bot.cookies[data]
   let ck = cookie.replace(/=/g, `":"`).replace(/;/g, `","`).replace(/ /g, "").trim()
   ck = ck.substring(0, ck.length - 2)
   ck = `{"`.concat(ck).concat("}")

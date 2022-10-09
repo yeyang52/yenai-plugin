@@ -144,7 +144,7 @@ export const helpList = [{
     "desc": "随机唱鸭"
   },
   {
-    "icon": 5,
+    "icon": 13,
     "title": "#赞我",
     "desc": "给你点一个大大的赞"
   },
@@ -169,6 +169,10 @@ export const helpList = [{
     "icon": 20,
     "title": "#取face <face表情>",
     "desc": "没啥用=-="
+  }, {
+    "icon": 1,
+    "title": "#群星级",
+    "desc": "查看群星级"
   }]
 },
 {

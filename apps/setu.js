@@ -77,7 +77,7 @@ export class sese extends plugin {
 
     if (cds) return e.reply(`你是被下半身控制了大脑吗，等${cds}再来冲吧~~`, false, { at: true })
 
-    let msg = e.msg.replace(/#|涩图tag/g, "").trim()
+    let msg = e.msg.replace(/#|椰奶tag/g, "").trim()
 
     if (!msg) return e.reply("tag为空！！！", false, { at: true })
 

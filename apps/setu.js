@@ -197,13 +197,13 @@ export class sese extends plugin {
 
   //单独设置私聊cd
   async atcd(e) {
+    if (e.message[0].type != "at") return;
+
     if (!e.isGroup) return e.reply("请在群聊使用此指令");
 
     if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
 
     this.file();
-
-    if (e.message[0].type != "at") return;
 
     let cd = e.msg.match(/[0-9]\d*/g)
 

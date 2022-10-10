@@ -554,8 +554,11 @@ export class example extends plugin {
     if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
 
     let res = e.message[0].text.replace(/#|删说说/g, "").trim()
+
     if (!res) return e.reply(`❎ 序号不可为空`)
+    
     res = res.match(/\d/)
+    
     if (!res) return e.reply(`❎ 请检查序号是否正确`)
 
     let list = await getlist()

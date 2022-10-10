@@ -2,6 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
 import cfg from '../../../lib/config/config.js'
 import common from '../../../lib/common/common.js'
+import fs from 'fs'
 
 class Config {
 
@@ -20,7 +21,7 @@ class Config {
     }
 
     /** 写入文件 */
-    async getwrite(path, cot) {
+    async getwrite(path, cot = {}) {
         return await fs.promises
             .writeFile(path, JSON.stringify(cot, '', '\t'))
             .then(() => {
@@ -46,7 +47,7 @@ class Config {
             await common.sleep(200)
         }
     }
-    // 秒转换
+    /**秒转换*/
     getsecond(value) {
         let secondTime = parseInt(value) // 秒
         let minuteTime = 0 // 分
@@ -79,8 +80,8 @@ class Config {
         return result
     }
 
-    //以Bot发送转发消息
-    async getforwardMsg(message,e) {
+    /**以Bot发送转发消息 */
+    async getforwardMsg(message, e) {
         //制作转发消息
         let forwardMsg = []
         for (let i of message) {
@@ -101,7 +102,7 @@ class Config {
 
         //发送消息
         e.reply(forwardMsg)
-        
+
     }
 }
 

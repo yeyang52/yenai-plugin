@@ -6,9 +6,9 @@ export class example extends plugin {
   constructor() {
     super({
       /** 功能名称 */
-      name: '随机唱鸭',
+      name: '娱乐功能',
       /** 功能描述 */
-      dsc: '随机唱鸭',
+      dsc: '娱乐',
       /** https://oicqjs.github.io/oicq/#events */
       event: 'message',
       /** 优先级，数字越小等级越高 */
@@ -16,9 +16,15 @@ export class example extends plugin {
       rule: [
         {
           /** 命令正则匹配 */
-          reg: '^#?唱歌$',
+          reg: '^#唱歌$',
           /** 执行方法 */
           fnc: 'Sing'
+        },
+        {
+          /** 命令正则匹配 */
+          reg: '^#支付宝到账.*$',
+          /** 执行方法 */
+          fnc: 'ZFB'
         }
       ]
     })
@@ -47,5 +53,16 @@ export class example extends plugin {
     lyric[lyric.length - 1] = data.lyrics[data.lyrics.length - 1]
     await e.reply(lyric)
     return true;
+  }
+
+  async ZFB(e) {
+    let amount = e.msg.replace(/#|支付宝到账/g, "").trim()
+
+    if (!/^\d+(\.\d{1,2})?$/.test(amount)) return e.reply("你觉得这河里吗！！", true);
+
+    if (!(0.01 <= amount && amount <= 999999999999.99)) {
+      return e.reply("数字大小超出限制，支持范围为0.01~999999999999.99")
+    }
+    e.reply([segment.record(`https://mm.cqu.cc/share/zhifubaodaozhang/mp3/${amount}.mp3`)]);
   }
 }

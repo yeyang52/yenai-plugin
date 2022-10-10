@@ -157,6 +157,10 @@ export const helpList = [{
     "icon": 9,
     "title": "#收益曲线帮助",
     "desc": "=-="
+  }, {
+    "icon": 15,
+    "title": "#支付宝到账<数字>",
+    "desc": "听到账爽一下"
   }]
 },
 {

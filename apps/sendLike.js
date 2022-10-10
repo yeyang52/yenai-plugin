@@ -41,8 +41,9 @@ export class example extends plugin {
     /** 点赞成功回复的图片*/
     let imgs = [
       "https://xiaobai.klizi.cn/API/ce/zan.php?qq=",
-      "https://xiaobapi.top/api/xb/api/bixin.php?qq=",
-      "https://xiaobapi.top/api/xb/api/zan.php?qq="]
+      "https://xiaobai.klizi.cn/API/ce/xin.php?qq=",
+      "https://ovooa.com/API/zan/api.php?QQ=2354452553",
+    ]
     /** 一个随机数 */
     let random = Math.floor(Math.random() * (imgs.length - 0))
     let success_img = segment.image(imgs[random] + e.user_id)

@@ -90,7 +90,7 @@ export class sese extends plugin {
 
     if (cds) return e.reply(`CD中请等待${cds}`)
 
-    let msg = e.message[0].text.replace(/#|涩图tag/g, "").trim()
+    let msg = e.msg.replace(/#|涩图tag/g, "").trim()
 
     if (!msg) return e.reply("tag为空！！！")
 

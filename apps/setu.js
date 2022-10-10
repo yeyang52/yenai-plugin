@@ -23,11 +23,11 @@ export class sese extends plugin {
       priority: 5000,
       rule: [
         {
-          reg: '^#涩图tag(.*)$',
+          reg: '^#椰奶tag(.*)$',
           fnc: 'setutag'
         },
         {
-          reg: '^#(涩图|setu|无内鬼|色图)$',
+          reg: '^#(setu|无内鬼)$',
           fnc: 'setu'
         },
         {

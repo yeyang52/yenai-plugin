@@ -56,7 +56,8 @@ export class sese extends plugin {
     this.path = "./plugins/yenai-plugin/config/setu.json"
     this.path_s = "./plugins/yenai-plugin/config/setu_s.json"
   }
-  async init() {
+
+  async file() {
     if (!fs.existsSync(this.path)) {
       Config.getwrite(this.path)
     }
@@ -118,9 +119,10 @@ export class sese extends plugin {
   //设置撤回间隔
   async setrecall(e) {
     if (!e.isGroup) return e.reply("请在群聊使用此指令");
+
     if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
 
-    this.init();
+    this.file();
 
     let recall = e.msg.replace(/#|撤回间隔/g, "").trim()
 
@@ -142,7 +144,7 @@ export class sese extends plugin {
   async groupcd(e) {
     if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
 
-    this.init();
+    this.file();
 
     let cd = e.msg.replace(/#|群cd/g, "").trim()
 
@@ -153,7 +155,7 @@ export class sese extends plugin {
     res[e.group_id].cd = Number(cd)
 
     if (await Config.getwrite(this.path, res)) {
-      e.reply(`设置群${e.group_id}cd${cd}s成功`)
+      e.reply(`设置群${e.group_id}CD成功，CD为${cd}s`)
       temp = {};
     } else {
       e.reply(`设置失败`)
@@ -162,6 +164,7 @@ export class sese extends plugin {
   //开启r18
   async setsese(e) {
     if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
+    this.file();
     let yes = false
     let res;
 
@@ -197,6 +200,8 @@ export class sese extends plugin {
     if (!e.isGroup) return e.reply("请在群聊使用此指令");
 
     if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
+
+    this.file();
 
     if (e.message[0].type != "at") return;
 

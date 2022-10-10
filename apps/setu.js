@@ -7,11 +7,7 @@ import Config from '../model/Config.js';
 let def = {
   r18: 0,
   recall: 30,
-  cd: 3600,
-}
-let Friend = {
-  cd: 3600,
-  r18: 0
+  cd: 300,
 }
 //存cd的变量
 let temp = {};
@@ -47,29 +43,20 @@ export class sese extends plugin {
           fnc: 'setsese'
         },
         {
-          reg: '^.*cd.*$',
+          reg: '^.*cd[0-9]+$',
           fnc: 'atcd'
         }
       ]
     })
     this.fk = "./plugins/yenai-plugin/resources/img/风控.png"
-    this.path = "./plugins/yenai-plugin/config/setu.json"
-    this.path_s = "./plugins/yenai-plugin/config/setu_s.json"
-  }
-
-  async file() {
-    if (!fs.existsSync(this.path)) {
-      Config.getwrite(this.path)
-    }
-    if (!fs.existsSync(this.path_s)) {
-      Config.getwrite(this.path_s)
-    }
+    this.path = "./plugins/yenai-plugin/config/setu/setu.json"
+    this.path_s = "./plugins/yenai-plugin/config/setu/setu_s.json"
   }
 
   async setu(e) {
     let cds = await this.getcd(e)
 
-    if (cds) return e.reply(`CD中请等待${cds}`)
+    if (cds) return e.reply(`你是被下半身控制了大脑吗，等${cds}再来冲吧~~`, false, { at: true })
 
     let r18 = await this.getr18(e)
 
@@ -88,15 +75,15 @@ export class sese extends plugin {
 
     let cds = await this.getcd(e)
 
-    if (cds) return e.reply(`CD中请等待${cds}`)
+    if (cds) return e.reply(`你是被下半身控制了大脑吗，等${cds}再来冲吧~~`, false, { at: true })
 
     let msg = e.msg.replace(/#|涩图tag/g, "").trim()
 
-    if (!msg) return e.reply("tag为空！！！")
+    if (!msg) return e.reply("tag为空！！！", false, { at: true })
 
     msg = msg.split(" ")
 
-    if (msg.length > 3) return e.reply("tag最多只能指定三个哦~")
+    if (msg.length > 3) return e.reply("tag最多只能指定三个哦~", false, { at: true })
 
     msg = msg.map((item) => {
       return `&tag=${item}`
@@ -108,34 +95,37 @@ export class sese extends plugin {
     //接口
     let res = await this.setuapi(r18, 1, msg)
 
-    if (!res) return e.reply("接口失效")
+    if (!res) return e.reply("❎ 接口失效")
 
-    if (res.length == 0) return e.reply("没有找到相关的tag")
+    if (res.length == 0) return e.reply("没有找到相关的tag", false, { at: true })
 
     let imgs = res[0]
     //发送消息
     this.sendMsg(e, imgs.urls.original, imgs.pid)
   }
+
   //设置撤回间隔
   async setrecall(e) {
-    if (!e.isGroup) return e.reply("请在群聊使用此指令");
+    if (!e.isGroup) return e.reply("❎ 请在群聊使用此指令");
 
     if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
 
-    this.file();
-
     let recall = e.msg.replace(/#|撤回间隔/g, "").trim()
 
-    let res = await Config.getread(this.path)
+    let res = {};
+
+    if (!fs.existsSync(this.path)) {
+      res = await Config.getread(this.path)
+    }
 
     if (!res[e.group_id]) res[e.group_id] = def
 
     res[e.group_id].recall = Number(recall)
 
     if (await Config.getwrite(this.path, res)) {
-      e.reply(`设置群${e.group_id}撤回间隔${recall}s成功`)
+      e.reply(`✅ 设置群${e.group_id}撤回间隔${recall}s成功`)
     } else {
-      e.reply(`设置失败`)
+      e.reply(`❎ 设置失败`)
     }
 
   }
@@ -144,43 +134,55 @@ export class sese extends plugin {
   async groupcd(e) {
     if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
 
-    this.file();
-
     let cd = e.msg.replace(/#|群cd/g, "").trim()
 
-    let res = await Config.getread(this.path)
+    let res = {};
+
+    if (fs.existsSync(this.path)) {
+      res = await Config.getread(this.path)
+    }
 
     if (!res[e.group_id]) res[e.group_id] = def
 
     res[e.group_id].cd = Number(cd)
 
     if (await Config.getwrite(this.path, res)) {
-      e.reply(`设置群${e.group_id}CD成功，CD为${cd}s`)
+      e.reply(`✅ 设置群${e.group_id}CD成功，CD为${cd}s`)
       temp = {};
     } else {
-      e.reply(`设置失败`)
+      e.reply(`❎ 设置失败`)
     }
   }
+
   //开启r18
   async setsese(e) {
     if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
-    this.file();
+
     let yes = false
-    let res;
+    let res = {};
 
     if (/开启/.test(e.msg)) yes = true
 
     if (/私聊/.test(e.msg) || !e.isGroup) {
-      res = await Config.getread(this.path_s)
-      res.friendr18 = yes ? 1 : 0
-      if (await Config.getwrite(this.path_s, res)) {
-        e.reply(`已${yes ? "开启" : "关闭"}私聊涩涩功能~`)
-      } else {
-        e.reply(`设置失败`)
+
+      if (fs.existsSync(this.path_s)) {
+        res = await Config.getread(this.path_s)
       }
+
+      res.friendr18 = yes ? 1 : 0
+
+      if (await Config.getwrite(this.path_s, res)) {
+        e.reply(`✅ 已${yes ? "开启" : "关闭"}私聊涩涩功能~`)
+      } else {
+        e.reply(`❎ 设置失败`)
+      }
+
       return;
     }
-    res = await Config.getread(this.path)
+
+    if (fs.existsSync(this.path)) {
+      res = await Config.getread(this.path)
+    }
 
     if (!res[e.group_id]) res[e.group_id] = def
 
@@ -188,9 +190,9 @@ export class sese extends plugin {
     res[e.group_id].r18 = yes ? 1 : 0
 
     if (await Config.getwrite(this.path, res)) {
-      e.reply(`已${yes ? "开启" : "关闭"}${e.group_id}的涩涩功能~`)
+      e.reply(`✅ 已${yes ? "开启" : "关闭"}${e.group_id}的涩涩模式~`)
     } else {
-      e.reply(`设置失败`)
+      e.reply(`❎ 设置失败`)
     }
 
   }
@@ -199,25 +201,29 @@ export class sese extends plugin {
   async atcd(e) {
     if (e.message[0].type != "at") return;
 
-    if (!e.isGroup) return e.reply("请在群聊使用此指令");
+    if (!e.isGroup) return e.reply("❎ 请在群聊使用此指令");
 
     if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
 
-    this.file();
-
     let cd = e.msg.match(/[0-9]\d*/g)
+
+    if (!cd) return e.reply("❎ CD为空，请检查", true);
 
     let qq = e.message[0].qq
 
-    let res = await Config.getread(this.path_s)
+    let res = {};
+    if (fs.existsSync(this.path_s)) {
+      res = await Config.getread(this.path_s)
+    }
 
     res[qq] = Number(cd)
     if (await Config.getwrite(this.path_s, res)) {
-      e.reply(`设置用户${qq}的cd成功，cd时间为${cd}秒`)
+      e.reply(`✅ 设置用户${qq}的cd成功，cd时间为${cd}秒`)
       delete temp[qq]
     } else {
-      e.reply(`设置失败`)
+      e.reply(`❎ 设置失败`)
     }
+
   }
 
   //请求api
@@ -232,7 +238,10 @@ export class sese extends plugin {
   //发送消息
   async sendMsg(e, imgs, pid) {
     //获取配置
-    let cfgs = await Config.getread(this.path)
+    let cfgs = {};
+    if (fs.existsSync(this.path)) {
+      cfgs = await Config.getread(this.path)
+    }
     //默认撤回间隔
     let time = def.recall
     //默认CD
@@ -272,11 +281,14 @@ export class sese extends plugin {
       }
     } else {
       //私聊
-      let CD = await Config.getread(this.path_s)
+      let CD = {};
+      if (fs.existsSync(this.path_s)) {
+        CD = await Config.getread(this.path_s)
+      }
       if (CD[e.user_id]) {
         CD = CD[e.user_id]
       } else {
-        CD = Friend.cd
+        CD = def.cd
       }
 
       await e.friend.sendMsg(msg)
@@ -323,10 +335,12 @@ export class sese extends plugin {
 
   //获取r18
   async getr18(e) {
-
+    let cfgs
     if (e.isGroup) {
       //获取配置
-      let cfgs = await Config.getread(this.path)
+      if (fs.existsSync(this.path)) {
+        cfgs = await Config.getread(this.path)
+      } else return def.r18
 
       if (cfgs[e.group_id]) {
         return cfgs[e.group_id].r18
@@ -334,7 +348,10 @@ export class sese extends plugin {
         return def.r18
       }
     } else {
-      let cfgs = await Config.getread(this.path_s)
+      if (fs.existsSync(this.path)) {
+        cfgs = await Config.getread(this.path_s)
+      } else return def.r18
+
       if (cfgs.friendr18) {
         return cfgs.friendr18
       } else {

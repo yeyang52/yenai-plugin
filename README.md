@@ -9,7 +9,7 @@
 
 Yenai-Plugin是一个Yunzai-Bot的升级插件，提供对Bot的一些便捷操作。<br><br><img src="https://count.getloli.com/get/@:yenai-plugin?theme=rule34" /> <br>
 
-[![GitHub](https://img.shields.io/badge/GitHub-Yenai-black?style=flat-square&logo=github)](https://github.com/yeyang52/yenai-plugin) [![YunzaiBot](https://img.shields.io/badge/云崽-v3.0.0-black?style=flat-square&logo=dependabot)](https://gitee.com/Le-niao/Yunzai-Bot) [![tencent-qq](https://img.shields.io/badge/群号-904667253-red?style=flat-square&logo=tencent-qq)](https://jq.qq.com/?_wv=1027&k=frIYjDPe) [![tencent-qq](https://img.shields.io/badge/QQ-746659424-success?style=flat-square&logo=tencent-qq)](https://qm.qq.com/cgi-bin/qm/qr?k=m6tyVb1v5y7a5_YK8CU7AoKyuR51aEaI&noverify=0&personal_qrcode_source=4)
+[![GitHub](https://img.shields.io/badge/GitHub-Yenai-black?style=flat-square&logo=github)](https://github.com/yeyang52/yenai-plugin) [![YunzaiBot](https://img.shields.io/badge/云崽-v3.0.0-black?style=flat-square&logo=dependabot)](https://gitee.com/Le-niao/Yunzai-Bot) [![tencent-qq](https://img.shields.io/badge/群号-254974507-red?style=flat-square&logo=tencent-qq)](https://jq.qq.com/?_wv=1027&k=o8FTig5Z) [![tencent-qq](https://img.shields.io/badge/QQ-746659424-success?style=flat-square&logo=tencent-qq)](https://qm.qq.com/cgi-bin/qm/qr?k=m6tyVb1v5y7a5_YK8CU7AoKyuR51aEaI&noverify=0&personal_qrcode_source=4)
 
 <br>
 
@@ -95,4 +95,4 @@ Yenai-Plugin为您提供以下功能(可使用 **#椰奶帮助**  查看)
 
 QQ：746659424
 
-群号：904667253
+群号：254974507

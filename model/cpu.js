@@ -12,7 +12,6 @@ class OSUtils {
   /**
   * 获取某时间段 CPU 利用率
   * @param { Number } Options.ms [时间段，默认是 1000ms，即 1 秒钟]
-  * @param { Boolean } Options.percentage [true（以百分比结果返回）|false] 
   * @returns { Promise }
   */
   async getCPUUsage(options) {
@@ -65,13 +64,18 @@ class OSUtils {
   getmaxspeed() {
 
     let res = os.cpus()
-    let max = res[0].speed
-    for (let i of res) {
-      if (i.speed > max) {
-        i.speed > max
+    try {
+      let max = res[0].speed
+      for (let i of res) {
+        if (i.speed > max) {
+          i.speed > max
+        }
       }
+      return `最大${max}MHz`
+    } catch {
+      return `无法获取MHz`
     }
-    return `最大${max}MHz`
+
   }
   getfilesize(size) {//把字节转换成正常文件大小
     if (!size) return "";

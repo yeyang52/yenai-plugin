@@ -22,6 +22,8 @@ export class example extends plugin {
 
 
   async state(e) {
+    this.date = moment().format('MMDD')
+
     let portrait = `https://q1.qlogo.cn/g?b=qq&s=0&nk=${Bot.uin}`
     //cpu使用率
     let cpu_info = await CPU.getCPUUsage()
@@ -61,7 +63,7 @@ export class example extends plugin {
       //收
       recv: Bot.statistics.recv_msg_cnt,
       //发
-      sent: Bot.statistics.sent_msg_cnt,
+      sent: await redis.get(`Yz:count:sendMsg:total`) || 0,
       //cpu占比
       cpu_leftCircle,
       cpu_rightCircle,
@@ -86,7 +88,10 @@ export class example extends plugin {
       nodeversion: process.version,
       //网络
       // network: Object.keys(os.networkInterfaces())[0]
+      //发送的图片
+      // sentimg: await redis.get(`Yz:count:screenshot:day:${this.date}`) || 0
     }
+    //渲染图片
     await Common.render('state/state', {
       ...data,
     }, {

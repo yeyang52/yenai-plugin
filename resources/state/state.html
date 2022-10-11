@@ -1,0 +1,123 @@
+{{extend defaultLayout}}
+
+{{block 'css'}}
+<link rel="stylesheet" href="{{dz}}\plugins\yenai-plugin\resources\state\state.css">
+<style>
+    .current {
+        width: 75%;
+    }
+</style>
+{{/block}}
+{{block 'main'}}
+<div class="box">
+    <div class="tb">
+        <img src="{{portrait}}" alt="">
+        <div class="header">
+            <h1>{{nickname}}</h1>
+            <hr noshade>
+            <p> nodejs已运行 {{uptime}} | 收{{recv}} | 发{{sent}} </p>
+            <p>YunzaiBot 已运行 {{runTime}} | 系统运行 {{systime}}</p>
+            <p>Node{{nodeversion}}</p>
+        </div>
+    </div>
+
+</div>
+<div class="box">
+    <ul class="info">
+        <li class="li">
+            <div class="cpu">
+                <div class="left">
+                    <div class="left-circle" {{cpu_leftCircle}}>
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="right-circle" {{cpu_rightCircle}}>
+                    </div>
+                </div>
+                <div class="inner">
+                    {{cpu_info}}
+                </div>
+            </div>
+            <article>
+                <p>CPU</p>
+                <p>{{hx}}</p>
+                <p>{{maxspeed}}</p>
+            </article>
+        </li>
+        <li class="li">
+            <div class="cpu">
+                <div class="left">
+                    <div class="left-circle" {{ram_leftCircle}}>
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="right-circle" {{ram_rightCircle}}>
+                    </div>
+                </div>
+                <div class="inner">
+                    {{MemUsage}}
+                </div>
+            </div>
+            <article>
+                <p>RPM</p>
+                <p>已用 {{Usingmemory}}</p>
+                <p>空闲 {{freemem}}</p>
+            </article>
+        </li>
+        <!-- <li class="li">
+            <div class="cpu">
+                <div class="left">
+                    <div class="left-circle">
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="right-circle">
+                    </div>
+                </div>
+                <div class="inner">
+                    75%
+                </div>
+            </div>
+            <article>
+                <p>CPU</p>
+                <p>2核 2线程</p>
+                <p>最大 2594Mhz</p>
+            </article>
+        </li> -->
+
+
+
+
+    </ul>
+</div>
+<!-- <div class="box memory">
+    <ul>
+        <li>
+            <div class="word">C:\</div>
+            <div class="progress">
+                <div class="word">25G / 39.66G</div>
+                <div class="current"></div>
+            </div>
+            <div>64%</div>
+        </li>
+        <li>
+            <div class="word">C:\</div>
+            <div class="progress">
+                <div class="word">25G / 39.66G</div>
+                <div class="current"></div>
+            </div>
+            <div>64%</div>
+        </li>
+    </ul>
+</div> -->
+<div class="box">
+    <!-- <div class="speed">
+        <p>{{network}}</p>
+        <p>↑ 454 | ↓ 46545</p>
+    </div> -->
+    <div class="speed">
+        <p>系统</p>
+        <p>{{hostname}}</p>
+    </div>
+</div>
+{{/block}}

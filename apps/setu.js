@@ -54,6 +54,8 @@ export class sese extends plugin {
   }
 
   async setu(e) {
+    if (!await redis.get(`yenai:notice:sese`)) return;
+
     let cds = await this.getcd(e)
 
     if (cds) return e.reply(`你是被下半身控制了大脑吗，等${cds}再来冲吧~~`, false, { at: true })
@@ -72,6 +74,7 @@ export class sese extends plugin {
 
   //tag搜图
   async setutag(e) {
+    if (!await redis.get(`yenai:notice:sese`)) return;
 
     let cds = await this.getcd(e)
 

@@ -75,9 +75,9 @@ export class NewConfig extends plugin {
         if (!time) return e.reply('❎ 请输入正确的时间(单位s)')
 
         if (time < 120) return e.reply('❎ 时间不能小于两分钟')
-        console.log(time);
+        
         await redis.set(`yenai:notice:deltime`, String(time[0]))
-        console.log(await redis.get(`yenai:notice:deltime`));
+        
         this.yenaiset(e)
         return true;
     }
@@ -196,5 +196,6 @@ const configs = {
     闪照: "flashPhoto",
     禁言: "botBeenBanned",
     全部通知: "notificationsAll",
-    删除缓存: "deltime"
+    删除缓存: "deltime",
+    涩涩: "sese"
 }

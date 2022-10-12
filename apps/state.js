@@ -52,15 +52,34 @@ export class example extends plugin {
     //最大mhz
     let maxspeed = CPU.getmaxspeed()
     //核心
-    let hx = os.cpus().length + "核"
+    let hx = os.cpus()
     let sent
+    //发送消息数
     if (e.group_id) {
       sent = await redis.get(`${this.key}sendMsg:day:${this.date}`) || 0;
     } else {
       sent = await redis.get(`${this.key}sendMsg:total`) || 0;
     }
-    //发送消息
-
+    //群数
+    let group_quantity = Array.from(Bot.gl.values()).length
+    //好友数
+    let friend_quantity = Array.from(Bot.fl.values()).length
+    //登录设备
+    let platform = {
+      "1": "安卓手机",
+      "2": "aPad",
+      "3": "安卓手表",
+      "4": "MacOS",
+      "5": "iPad"
+    }
+    let status = {
+      "31": "离开",
+      "50": "忙碌",
+      "70": "请勿打扰",
+      "41": "隐身",
+      "11": "我在线上",
+      "60": "Q我吧",
+    };
     let data = {
       //路径
       tplFile: `./plugins/yenai-plugin/resources/state/state.html`,
@@ -85,7 +104,8 @@ export class example extends plugin {
       cpu_rightCircle,
       cpu_info: parseInt(cpu_info * 100) + "%",
       //核心
-      hx,
+      hx: hx.length + "核",
+      hxmodel: hx[0].model.substr(0, 3) || "",
       //最大MHZ
       maxspeed,
       //系统名
@@ -99,7 +119,7 @@ export class example extends plugin {
       //已用内存
       Usingmemory,
       //nodejs运行时间
-      uptime: getuptime(),
+      // uptime: getuptime(),
       //nodejs版本
       nodeversion: process.version,
       //nodejs占用
@@ -107,7 +127,14 @@ export class example extends plugin {
       node_rightCircle,
       nodeoccupy,
       node_info: parseInt(nodeoccupy.occupy * 100) + "%",
-
+      //群数
+      group_quantity,
+      //好友数
+      friend_quantity,
+      //登陆设备
+      platform: platform[Bot.config.platform],
+      //在线状态
+      status: status[Bot.status]
     }
     //渲染图片
     await Common.render('state/state', {

@@ -97,7 +97,7 @@ class OSUtils {
     let rss = this.getfilesize(memory.rss);
     let heapTotal = this.getfilesize(memory.heapTotal);
     let heapUsed = this.getfilesize(memory.heapUsed);
-    let occupy = (memory.rss / os.totalmem()).toFixed(2)
+    let occupy = (memory.rss / (os.totalmem() - os.freemem())).toFixed(2)
     return { rss, heapTotal, heapUsed, occupy }
   }
 

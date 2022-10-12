@@ -161,6 +161,10 @@ export const helpList = [{
     "icon": 15,
     "title": "#支付宝到账<数字>",
     "desc": "听到账爽一下"
+  }, {
+    "icon": 17,
+    "title": "#翻译",
+    "desc": "有道翻译"
   }]
 },
 {

@@ -45,7 +45,7 @@ export class anotice extends plugin {
             e.reply('❎ 请输入正确的QQ号')
             return false
         }
-        logger.info("[椰奶]同意好友申请")
+        logger.mark("[椰奶]同意好友申请")
         await Bot.pickFriend(qq)
             .setFriendReq()
             .then(() => e.reply(`✅ 已同意${qq}的好友申请`))
@@ -74,7 +74,7 @@ export class anotice extends plugin {
             let qq = res[1].match(/[1-9]\d*/g)
             if (Bot.fl.get(Number(qq))) return e.reply('❎ 已经同意过该申请了哦~')
 
-            logger.info(`[椰奶]${yes ? '同意' : '拒绝'}好友申请`)
+            logger.mark(`[椰奶]${yes ? '同意' : '拒绝'}好友申请`)
 
             Bot.pickFriend(qq)
                 .setFriendReq('', yes)
@@ -91,7 +91,7 @@ export class anotice extends plugin {
             let qq = res[3].match(/[1-9]\d*/g)
             let seq = res[6].match(/[1-9]\d*/g)
 
-            logger.info(`[椰奶]${yes ? '同意' : '拒绝'}群邀请`)
+            logger.mark(`[椰奶]${yes ? '同意' : '拒绝'}群邀请`)
 
             Bot.pickUser(qq)
                 .setGroupInvite(groupid, seq, yes)
@@ -145,7 +145,7 @@ export class anotice extends plugin {
 
         if (e.message.length === 0) return e.reply('❎ 消息不能为空')
 
-        logger.info(`[椰奶]回复好友消息`)
+        logger.mark(`[椰奶]回复好友消息`)
         
         Bot.pickFriend(qq)
             .sendMsg(e.message)

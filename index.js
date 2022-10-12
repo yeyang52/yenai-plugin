@@ -1,13 +1,14 @@
 import fs from 'node:fs'
 import Ver from './components/Version.js'
+import chalk from 'chalk'
 
 const files = fs.readdirSync('./plugins/yenai-plugin/apps').filter(file => file.endsWith('.js'))
 
 let ret = []
 
-logger.info('-----------')
-logger.info(`椰奶插件${Ver.ver}初始化~`)
-logger.info('-----------')
+logger.info(chalk.green('------^-^------'))
+logger.info(chalk.yellow(`椰奶插件${Ver.ver}初始化~`))
+logger.info(chalk.green('---------------'))
 
 if (!await redis.get(`yenai:notice:deltime`)) {
     await redis.set(`yenai:notice:deltime`, "600")

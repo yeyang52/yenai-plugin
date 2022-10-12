@@ -15,7 +15,7 @@ export class application extends plugin {
 
     async accept(e) {
         if (!await redis.get(`yenai:notice:friendRequest`)) return
-        logger.info("[椰奶]好友申请")
+        logger.mark("[椰奶]好友申请")
         let msg = [
             segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
             '[通知 - 添加好友申请]\n',

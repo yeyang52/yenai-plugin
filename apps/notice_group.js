@@ -23,7 +23,7 @@ export class newgroups extends plugin {
                 if (e.user_id === cfg.qq) {
                     if (!await redis.get(`yenai:notice:groupNumberChange`)) return
 
-                    logger.info("[椰奶]新增群聊")
+                    logger.mark("[椰奶]新增群聊")
 
                     msg = [
                         segment.image(
@@ -35,7 +35,7 @@ export class newgroups extends plugin {
                 } else {
                     if (!await redis.get(`yenai:notice:groupMemberNumberChange`)) return
 
-                    logger.info("[椰奶]新增群员")
+                    logger.mark("[椰奶]新增群员")
 
                     msg = [
                         segment.image(
@@ -53,7 +53,7 @@ export class newgroups extends plugin {
                 if (e.dismiss) {
                     if (!await redis.get(`yenai:notice:groupNumberChange`)) return
 
-                    logger.info("[椰奶]群聊被解散")
+                    logger.mark("[椰奶]群聊被解散")
 
                     msg = [
                         segment.image(
@@ -66,7 +66,7 @@ export class newgroups extends plugin {
                 } else if (e.user_id === cfg.qq && e.operator_id !== cfg.qq) {
                     if (!await redis.get(`yenai:notice:groupNumberChange`)) return
 
-                    logger.info("[椰奶]机器人被踢")
+                    logger.mark("[椰奶]机器人被踢")
 
                     msg = [
                         segment.image(
@@ -79,7 +79,7 @@ export class newgroups extends plugin {
                 } else if (e.user_id === cfg.qq && e.operator_id === cfg.qq) {
                     if (!await redis.get(`yenai:notice:groupNumberChange`)) return
 
-                    logger.info("[椰奶]机器人退群")
+                    logger.mark("[椰奶]机器人退群")
 
                     msg = [
                         segment.image(
@@ -91,7 +91,7 @@ export class newgroups extends plugin {
                 } else if (e.operator_id === e.user_id) {
                     if (!await redis.get(`yenai:notice:groupMemberNumberChange`)) return
 
-                    logger.info("[椰奶]群员退群")
+                    logger.mark("[椰奶]群员退群")
 
                     msg = [
                         segment.image(
@@ -110,7 +110,7 @@ export class newgroups extends plugin {
                 } else if (e.operator_id !== e.user_id) {
                     if (!await redis.get(`yenai:notice:groupMemberNumberChange`)) return
 
-                    logger.info("[椰奶]群员被踢")
+                    logger.mark("[椰奶]群员被踢")
 
                     msg = [
                         segment.image(
@@ -134,7 +134,7 @@ export class newgroups extends plugin {
             case 'admin': {
                 if (!await redis.get(`yenai:notice:groupAdminChange`)) return
 
-                e.set ? logger.info("[椰奶]机器人被设置管理") : logger.info("[椰奶]机器人被取消管理")
+                e.set ? logger.mark("[椰奶]机器人被设置管理") : logger.mark("[椰奶]机器人被取消管理")
                 if (e.user_id === cfg.qq) {
 
                     msg = [
@@ -149,7 +149,7 @@ export class newgroups extends plugin {
 
                 } else {
 
-                    e.set ? logger.info("[椰奶]新增群管理员") : logger.info("[椰奶]取消群管理员")
+                    e.set ? logger.mark("[椰奶]新增群管理员") : logger.mark("[椰奶]取消群管理员")
 
                     msg = [
                         segment.image(
@@ -171,7 +171,7 @@ export class newgroups extends plugin {
                 if (e.user_id != cfg.qq) return
 
                 if (e.duration == 0) {
-                    logger.info("[椰奶]机器人被解除禁言")
+                    logger.mark("[椰奶]机器人被解除禁言")
                     msg = [
                         segment.image(
                             `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
@@ -182,7 +182,7 @@ export class newgroups extends plugin {
                     ]
                 } else if (e.user_id === cfg.qq) {
 
-                    logger.info("[椰奶]机器人被禁言")
+                    logger.mark("[椰奶]机器人被禁言")
 
                     msg = [
                         segment.image(
@@ -200,7 +200,7 @@ export class newgroups extends plugin {
             case 'transfer': {
                 if (!await redis.get(`yenai:notice:groupNumberChange`)) return
 
-                logger.info("[椰奶]群聊转让")
+                logger.mark("[椰奶]群聊转让")
 
                 msg = [
                     segment.image(
@@ -267,7 +267,7 @@ export class newgroups extends plugin {
                     isManage = `撤回管理：${e.group.pickMember(e.operator_id).card}(${e.operator_id
                         })\n`
                 }
-                isManage ? logger.info("[椰奶]群聊管理撤回") : logger.info("[椰奶]群聊撤回")
+                isManage ? logger.mark("[椰奶]群聊管理撤回") : logger.mark("[椰奶]群聊撤回")
                 // 发送的消息
                 msg = [
                     segment.image(

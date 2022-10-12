@@ -279,7 +279,7 @@ export class sese extends plugin {
       if (time > 0 && res && res.message_id) {
         setTimeout(() => {
           e.group.recallMsg(res.message_id);
-          logger.info("[椰奶]执行撤回")
+          logger.mark("[椰奶]执行撤回")
         }, time * 1000);
       }
     } else {

@@ -86,7 +86,7 @@ export class example extends plugin {
       //头像
       portrait,
       //运行时间
-      runTime: await this.statusTime(),
+      runTime: await statusTime(),
       //版本
       version: Version.ver,
       //地址
@@ -118,8 +118,6 @@ export class example extends plugin {
       freemem,
       //已用内存
       Usingmemory,
-      //nodejs运行时间
-      // uptime: getuptime(),
       //nodejs版本
       nodeversion: process.version,
       //nodejs占用
@@ -145,30 +143,31 @@ export class example extends plugin {
     })
   }
 
-  async statusTime() {
-    let runTime = moment().diff(moment.unix(Bot.stat.start_time), 'seconds')
-    let Day = Math.floor(runTime / 3600 / 24)
-    let Hour = Math.floor((runTime / 3600) % 24)
-    let Min = Math.floor((runTime / 60) % 60)
-    Day = Day < 10 ? "0" + Day : Day
-    Hour = Hour < 10 ? "0" + Hour : Hour
-    Min = Min < 10 ? "0" + Min : Min
-    if (Day > 0) {
-      runTime = `${Day}:${Hour}:${Min}`
-    } else {
-      runTime = `${Hour}:${Min}`
-    }
-    return runTime
-  }
+
 }
+
+/**运行时间 */
+async function statusTime() {
+  let runTime = moment().diff(moment.unix(Bot.stat.start_time), 'seconds')
+  let Day = Math.floor(runTime / 3600 / 24)
+  let Hour = Math.floor((runTime / 3600) % 24)
+  let Min = Math.floor((runTime / 60) % 60)
+  Day = Day < 10 ? "0" + Day : Day
+  Hour = Hour < 10 ? "0" + Hour : Hour
+  Min = Min < 10 ? "0" + Min : Min
+  if (Day > 0) {
+    runTime = `${Day}:${Hour}:${Min}`
+  } else {
+    runTime = `${Hour}:${Min}`
+  }
+  return runTime
+}
+
 
 function Formatting() {
   let second = os.uptime()
-  //  分
   let minute = 0
-  //  小时
   let hour = 0
-  //  天
   let day = 0
   //  如果秒数大于60，将秒数转换成整数
   if (second > 60) {
@@ -176,28 +175,29 @@ function Formatting() {
     minute = parseInt(second / 60)
     //  获取秒数，秒数取佘，得到整数秒数
     second = parseInt(second % 60)
-    //  如果分钟大于60，将分钟转换成小时
   }
+  //  如果分钟大于60，将分钟转换成小时
   if (minute > 60) {
     //  获取小时，获取分钟除以60，得到整数小时
     hour = parseInt(minute / 60)
     //  获取小时后取佘的分，获取分钟除以60取佘的分
     minute = parseInt(minute % 60)
-    //  如果小时大于24，将小时转换成天
-    if (hour > 23) {
-      //  获取天数，获取小时除以24，得到整天数
-      day = parseInt(hour / 24)
-      //  获取天数后取余的小时，获取小时除以24取余的小时
-      hour = parseInt(hour % 24)
-    }
   }
+  //  如果小时大于24，将小时转换成天
+  if (hour > 23) {
+    //  获取天数，获取小时除以24，得到整天数
+    day = parseInt(hour / 24)
+    //  获取天数后取余的小时，获取小时除以24取余的小时
+    hour = parseInt(hour % 24)
+  }
+
   hour = hour < 10 ? "0" + hour : hour
   minute = minute < 10 ? "0" + minute : minute
   second = second < 10 ? "0" + second : second
   return day + "天 " + hour + ":" + minute + ":" + second
 
 }
-
+/**圆形进度条渲染 */
 function Circle(res) {
   let num = (res * 360).toFixed(0)
   let leftCircle = `style=transform:rotate(-180deg)`;
@@ -208,22 +208,4 @@ function Circle(res) {
     rightCircle = `style=transform:rotate(-${180 - num}deg)`;
   }
   return [leftCircle, rightCircle]
-}
-function getuptime() {
-  let second = parseInt(process.uptime())
-  let minute = 0
-  let hour = 0
-  if (second > 60) {
-    minute = parseInt(second / 60)
-    second = parseInt(second % 60)
-  }
-  if (minute > 60) {
-    hour = parseInt(minute / 60)
-    minute = parseInt(minute % 60)
-  }
-  hour = hour < 10 ? "0" + hour : hour
-  minute = minute < 10 ? "0" + minute : minute
-  second = second < 10 ? "0" + second : second
-  return hour + ":" + minute + ":" + second
-
 }

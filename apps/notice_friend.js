@@ -21,7 +21,7 @@ export class Friends extends plugin {
         switch (e.sub_type) {
             case 'increase': {
                 if (!await redis.get(`yenai:notice:friendNumberChange`)) return
-                logger.info("[椰奶]新增好友")
+                logger.mark("[椰奶]新增好友")
                 msg = [
                     segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
                     '[通知 - 新增好友]\n',
@@ -32,7 +32,7 @@ export class Friends extends plugin {
             }
             case 'decrease': {
                 if (!await redis.get(`yenai:notice:friendNumberChange`)) return
-                logger.info("[椰奶]好友减少")
+                logger.mark("[椰奶]好友减少")
                 msg = [
                     segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
                     '[通知 - 好友减少]\n',
@@ -47,7 +47,7 @@ export class Friends extends plugin {
                 if (e.user_id == cfg.qq) return
 
                 if (cfg.masterQQ.includes(e.user_id)) return
-                logger.info("[椰奶]好友撤回")
+                logger.mark("[椰奶]好友撤回")
                 // 读取
                 let res = JSON.parse(
                     await redis.get(`notice:messagePrivate:${e.message_id}`)
@@ -84,7 +84,7 @@ export class Friends extends plugin {
             }
             case 'poke': {
                 if (!await redis.get(`yenai:notice:privateMessage`)) return
-                logger.info("[椰奶]好友戳一戳")
+                logger.mark("[椰奶]好友戳一戳")
                 msg = [
                     segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
                     '[消息 - 戳一戳]\n',

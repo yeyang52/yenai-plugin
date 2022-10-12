@@ -93,14 +93,14 @@ export class NewConfig extends plugin {
             for (let i in configs) {
                 if (configs[i] == "deltime" || configs[i] == "notificationsAll") continue
                 await redis.set(`yenai:notice:${configs[i]}`, "1");
-                logger.info(`[椰奶]已启用${i}`)
+                logger.mark(`[椰奶]已启用${i}`)
                 await common.sleep(200)
             }
         } else {
             for (let i in configs) {
                 if (configs[i] == "deltime" || configs[i] == "notificationsAll") continue
                 await redis.del(`yenai:notice:${configs[i]}`);
-                logger.info(`[椰奶]已禁用${i}`)
+                logger.mark(`[椰奶]已禁用${i}`)
                 await common.sleep(200)
             }
         }

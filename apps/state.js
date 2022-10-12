@@ -83,7 +83,7 @@ export class example extends plugin {
       //cpu占比
       cpu_leftCircle,
       cpu_rightCircle,
-      cpu_info: parseInt(cpu_info) * 100 + "%",
+      cpu_info: parseInt(cpu_info * 100) + "%",
       //核心
       hx,
       //最大MHZ

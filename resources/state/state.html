@@ -64,26 +64,27 @@
                 <p>空闲 {{freemem}}</p>
             </article>
         </li>
-        <!-- <li class="li">
+        <li class="li">
             <div class="cpu">
                 <div class="left">
-                    <div class="left-circle">
+                    <div class="left-circle" {{node_leftCircle}}>
                     </div>
                 </div>
                 <div class="right">
-                    <div class="right-circle">
+                    <div class="right-circle" {{node_rightCircle}}>
                     </div>
                 </div>
                 <div class="inner">
-                    75%
+                    {{node_info}}
                 </div>
             </div>
             <article>
-                <p>CPU</p>
-                <p>2核 2线程</p>
-                <p>最大 2594Mhz</p>
+                <p>Nodejs</p>
+                <p>总 {{nodeoccupy.rss}}</p>
+                <p>堆 {{nodeoccupy.heapTotal}}</p>
+                <p>栈 {{nodeoccupy.heapUsed}}</p>
             </article>
-        </li> -->
+        </li>
 
 
 

@@ -59,7 +59,7 @@ class OSUtils {
       total,
     }
   }
-
+  //获取最大Mhz
   getmaxspeed() {
 
     let res = os.cpus()
@@ -76,18 +76,30 @@ class OSUtils {
     }
 
   }
+  /**字节转换 */
   getfilesize(size) {//把字节转换成正常文件大小
     if (!size) return "";
     var num = 1024.00; //byte
     if (size < num)
       return size + "B";
     if (size < Math.pow(num, 2))
-      return (size / num).toFixed(2) + "K"; //kb
+      return (size / num).toFixed(2) + "Kb"; //kb
     if (size < Math.pow(num, 3))
-      return (size / Math.pow(num, 2)).toFixed(2) + "M"; //M
+      return (size / Math.pow(num, 2)).toFixed(2) + "Mb"; //M
     if (size < Math.pow(num, 4))
       return (size / Math.pow(num, 3)).toFixed(2) + "G"; //G
     return (size / Math.pow(num, 4)).toFixed(2) + "T"; //T
   }
+
+  /**获取nodejs内存情况 */
+  getmemory() {
+    let memory = process.memoryUsage()
+    let rss = this.getfilesize(memory.rss);
+    let heapTotal = this.getfilesize(memory.heapTotal);
+    let heapUsed = this.getfilesize(memory.heapUsed);
+    let occupy = (memory.rss / os.totalmem()).toFixed(2)
+    return { rss, heapTotal, heapUsed, occupy }
+  }
+
 }
 export default new OSUtils();

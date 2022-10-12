@@ -39,7 +39,10 @@ export class example extends plugin {
 
     //使用内存
     let Usingmemory = CPU.getfilesize((os.totalmem() - os.freemem()))
-
+    //nodejs占用
+    let nodeoccupy = CPU.getmemory();
+    let node = Circle(nodeoccupy.occupy)
+    let [node_leftCircle, node_rightCircle] = node
     //cpu
     let cpu = Circle(cpu_info)
     let [cpu_leftCircle, cpu_rightCircle] = cpu
@@ -80,7 +83,7 @@ export class example extends plugin {
       //cpu占比
       cpu_leftCircle,
       cpu_rightCircle,
-      cpu_info: cpu_info * 100 + "%",
+      cpu_info: parseInt(cpu_info) * 100 + "%",
       //核心
       hx,
       //最大MHZ
@@ -99,10 +102,12 @@ export class example extends plugin {
       uptime: getuptime(),
       //nodejs版本
       nodeversion: process.version,
-      //网络
-      // network: Object.keys(os.networkInterfaces())[0]
-      //发送的图片
-      // sentimg: await redis.get(`Yz:count:screenshot:day:${this.date}`) || 0
+      //nodejs占用
+      node_leftCircle,
+      node_rightCircle,
+      nodeoccupy,
+      node_info: parseInt(nodeoccupy.occupy * 100) + "%",
+
     }
     //渲染图片
     await Common.render('state/state', {

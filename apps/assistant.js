@@ -520,7 +520,7 @@ export class example extends plugin {
     if (res.length >= 2) {
       Config.getforwardMsg(res, e)
     } else {
-      await e.reply(res)
+      await e.reply(res[0])
     }
     return true;
   }
@@ -556,9 +556,9 @@ export class example extends plugin {
     let res = e.message[0].text.replace(/#|删说说/g, "").trim()
 
     if (!res) return e.reply(`❎ 序号不可为空`)
-    
+
     res = res.match(/\d/)
-    
+
     if (!res) return e.reply(`❎ 请检查序号是否正确`)
 
     let list = await getlist()

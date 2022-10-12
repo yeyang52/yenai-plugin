@@ -177,6 +177,10 @@ export const helpList = [{
     "icon": 1,
     "title": "#群星级",
     "desc": "查看群星级"
+  }, {
+    "icon": 8,
+    "title": "#运行状态",
+    "desc": "查看系统状态"
   }]
 },
 {

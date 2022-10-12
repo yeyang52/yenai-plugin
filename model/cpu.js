@@ -1,7 +1,6 @@
 ///CPU利用率
 import os from 'os';
-//系统架构
-// console.log(os.arch());
+
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 class OSUtils {
@@ -16,7 +15,7 @@ class OSUtils {
   */
   async getCPUUsage(options) {
     const that = this;
-    let cpuUsageMS = options;
+    let cpuUsageMS = options * 1000;
     cpuUsageMS = cpuUsageMS || that.cpuUsageMSDefault;
     const t1 = that._getCPUInfo(); // t1 时间点 CPU 信息
 
@@ -83,14 +82,12 @@ class OSUtils {
     if (size < num)
       return size + "B";
     if (size < Math.pow(num, 2))
-      return (size / num).toFixed(2) + "KB"; //kb
+      return (size / num).toFixed(2) + "Kb"; //kb
     if (size < Math.pow(num, 3))
-      return (size / Math.pow(num, 2)).toFixed(2) + "MB"; //M
+      return (size / Math.pow(num, 2)).toFixed(2) + "Mb"; //M
     if (size < Math.pow(num, 4))
       return (size / Math.pow(num, 3)).toFixed(2) + "G"; //G
     return (size / Math.pow(num, 4)).toFixed(2) + "T"; //T
   }
 }
-// const cpuUsage = new OSUtils().getCPUUsage({ percentage: true });
-// console.log('cpuUsage: ', cpuUsage.then( data => console.log(data)), "\n");
 export default new OSUtils();

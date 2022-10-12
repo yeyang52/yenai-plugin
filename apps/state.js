@@ -23,6 +23,11 @@ export class example extends plugin {
 
   async state(e) {
     this.date = moment().format('MMDD')
+    this.key = 'Yz:count:'
+
+    if (e.group_id) {
+      this.key += `group:${e.group_id}:`
+    }
 
     let portrait = `https://q1.qlogo.cn/g?b=qq&s=0&nk=${Bot.uin}`
     //cpu使用率
@@ -45,6 +50,14 @@ export class example extends plugin {
     let maxspeed = CPU.getmaxspeed()
     //核心
     let hx = os.cpus().length + "核"
+    let sent
+    if (e.group_id) {
+      sent = await redis.get(`${this.key}sendMsg:day:${this.date}`) || 0;
+    } else {
+      sent = await redis.get(`${this.key}sendMsg:total`) || 0;
+    }
+    //发送消息
+
     let data = {
       //路径
       tplFile: `./plugins/yenai-plugin/resources/state/state.html`,
@@ -63,7 +76,7 @@ export class example extends plugin {
       //收
       recv: Bot.statistics.recv_msg_cnt,
       //发
-      sent: await redis.get(`Yz:count:sendMsg:total`) || 0,
+      sent,
       //cpu占比
       cpu_leftCircle,
       cpu_rightCircle,
@@ -166,7 +179,6 @@ function Circle(res) {
 }
 function getuptime() {
   let second = parseInt(process.uptime())
-  console.log(second);
   let minute = 0
   let hour = 0
   if (second > 60) {

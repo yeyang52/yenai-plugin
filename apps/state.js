@@ -1,7 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import moment from 'moment';
 import os from 'os';
-import { Version, Common, Plugin_Name } from '../components/index.js'
+import { Version, Common, Plugin_Name, Data } from '../components/index.js'
 import CPU from '../model/cpu.js';
 export class example extends plugin {
   constructor() {
@@ -9,10 +8,10 @@ export class example extends plugin {
       name: '状态',
       dsc: '状态',
       event: 'message',
-      priority: 5000,
+      priority: 50,
       rule: [
         {
-          reg: '^#?运行状态$',
+          reg: '^#?(椰奶)?状态$',
           fnc: 'state'
         }
       ]
@@ -22,11 +21,8 @@ export class example extends plugin {
 
 
   async state(e) {
-    this.date = moment().format('MMDD')
-    this.key = 'Yz:count:'
-
-    if (e.group_id) {
-      this.key += `group:${e.group_id}:`
+    if (!/椰奶/.test(e.msg) && !await redis.get("yenai:notice:state")) {
+      return false;
     }
 
     let portrait = `https://q1.qlogo.cn/g?b=qq&s=0&nk=${Bot.uin}`
@@ -53,13 +49,6 @@ export class example extends plugin {
     let maxspeed = CPU.getmaxspeed()
     //核心
     let hx = os.cpus()
-    let sent
-    //发送消息数
-    if (e.group_id) {
-      sent = await redis.get(`${this.key}sendMsg:day:${this.date}`) || 0;
-    } else {
-      sent = await redis.get(`${this.key}sendMsg:total`) || 0;
-    }
     //群数
     let group_quantity = Array.from(Bot.gl.values()).length
     //好友数
@@ -98,7 +87,7 @@ export class example extends plugin {
       //收
       recv: Bot.statistics.recv_msg_cnt,
       //发
-      sent,
+      sent: await redis.get(`Yz:count:sendMsg:total`) || 0,
       //cpu占比
       cpu_leftCircle,
       cpu_rightCircle,
@@ -148,24 +137,39 @@ export class example extends plugin {
 
 /**运行时间 */
 async function statusTime() {
-  let runTime = moment().diff(moment.unix(Bot.stat.start_time), 'seconds')
-  let Day = Math.floor(runTime / 3600 / 24)
-  let Hour = Math.floor((runTime / 3600) % 24)
-  let Min = Math.floor((runTime / 60) % 60)
-  Day = Day < 10 ? "0" + Day : Day
-  Hour = Hour < 10 ? "0" + Hour : Hour
-  Min = Min < 10 ? "0" + Min : Min
-  if (Day > 0) {
-    runTime = `${Day}:${Hour}:${Min}`
-  } else {
-    runTime = `${Hour}:${Min}`
-  }
-  return runTime
+  let present = new Date().getTime() / 1000
+  let runTime = getsecond(present - Bot.stat.start_time, true)
+
+  let { second, minute, hour } = runTime
+
+  return hour + ":" + minute + ":" + second
 }
 
 
 function Formatting() {
-  let second = os.uptime()
+  let time = getsecond(os.uptime(), true)
+  let { second, minute, hour, day } = time
+
+  return day + "天 " + hour + ":" + minute + ":" + second
+
+}
+
+/**圆形进度条渲染 */
+function Circle(res) {
+  let num = (res * 360).toFixed(0)
+  let leftCircle = `style=transform:rotate(-180deg)`;
+  let rightCircle;
+  if (num > 180) {
+    leftCircle = `style=transform:rotate(${num}deg)`
+  } else {
+    rightCircle = `style=transform:rotate(-${180 - num}deg)`;
+  }
+  return [leftCircle, rightCircle]
+}
+
+/*转换秒*/
+function getsecond(time, repair) {
+  let second = parseInt(time)
   let minute = 0
   let hour = 0
   let day = 0
@@ -190,22 +194,16 @@ function Formatting() {
     //  获取天数后取余的小时，获取小时除以24取余的小时
     hour = parseInt(hour % 24)
   }
-
-  hour = hour < 10 ? "0" + hour : hour
-  minute = minute < 10 ? "0" + minute : minute
-  second = second < 10 ? "0" + second : second
-  return day + "天 " + hour + ":" + minute + ":" + second
-
-}
-/**圆形进度条渲染 */
-function Circle(res) {
-  let num = (res * 360).toFixed(0)
-  let leftCircle = `style=transform:rotate(-180deg)`;
-  let rightCircle;
-  if (num > 180) {
-    leftCircle = `style=transform:rotate(${num}deg)`
-  } else {
-    rightCircle = `style=transform:rotate(-${180 - num}deg)`;
+  //是否需要补零
+  if (repair) {
+    hour = hour < 10 ? "0" + hour : hour
+    minute = minute < 10 ? "0" + minute : minute
+    second = second < 10 ? "0" + second : second
   }
-  return [leftCircle, rightCircle]
+  return {
+    day,
+    hour,
+    minute,
+    second
+  }
 }

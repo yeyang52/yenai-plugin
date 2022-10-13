@@ -75,9 +75,9 @@ export class NewConfig extends plugin {
         if (!time) return e.reply('❎ 请输入正确的时间(单位s)')
 
         if (time < 120) return e.reply('❎ 时间不能小于两分钟')
-        
+
         await redis.set(`yenai:notice:deltime`, String(time[0]))
-        
+
         this.yenaiset(e)
         return true;
     }
@@ -147,6 +147,9 @@ export class NewConfig extends plugin {
             notificationsAll: getStatus(config.notificationsAll),
             //删除缓存时间
             deltime: Number(config.deltime),
+            //默认状态
+            state: getStatus(config.state),
+
             bg: await rodom(), //获取底图
         }
         //渲染图像
@@ -154,7 +157,7 @@ export class NewConfig extends plugin {
             ...cfg,
         }, {
             e,
-            scale: 1.4
+            scale: 1.5
         });
     }
 }
@@ -197,5 +200,6 @@ const configs = {
     禁言: "botBeenBanned",
     全部通知: "notificationsAll",
     删除缓存: "deltime",
-    涩涩: "sese"
+    涩涩: "sese",
+    状态: "state"
 }

@@ -1,5 +1,5 @@
 .container {
-    background: url("https://api.gmit.vip/Api/DmImg?format=image") #000144 center top no-repeat;
+    background: url("https://api.gmit.vip/Api/DmImg?format=image") white center top no-repeat;
     background-size: cover;
 }
 

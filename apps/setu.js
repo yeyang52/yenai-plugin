@@ -49,8 +49,15 @@ export class sese extends plugin {
       ]
     })
     this.fk = "./plugins/yenai-plugin/resources/img/风控.png"
+    this.path_folder = "./plugins/yenai-plugin/config/setu"
     this.path = "./plugins/yenai-plugin/config/setu/setu.json"
     this.path_s = "./plugins/yenai-plugin/config/setu/setu_s.json"
+  }
+
+  async init() {
+    if (!fs.existsSync(this.path_folder)) {
+      fs.mkdirSync(this.path_folder)
+    }
   }
 
   async setu(e) {

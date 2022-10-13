@@ -95,6 +95,10 @@ export class example extends plugin {
           reg: '^#群星级$',
           fnc: 'Group_xj'
         },
+        {
+          reg: '^#(开启|关闭)戳一戳$',
+          fnc: 'cyc'
+        },
       ]
     })
   }
@@ -732,6 +736,7 @@ export class example extends plugin {
     return true
 
   }
+  /**群星级 */
   async Group_xj(e) {
     if (e.isPrivate) return e.reply("请在群聊使用哦~")
 
@@ -754,8 +759,22 @@ export class example extends plugin {
     ])
   }
 
+  /**戳一戳 */
+  async cyc(e) {
+    if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
 
+    let yes = 1;
+    if (/开启/.test(e.msg)) yes = 0;
+    let ck = getck("vip.qq.com")
+    let url = `http://xiaobai.klizi.cn/API/qqgn/qun_cyc.php?uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&switch=${yes}`
 
+    let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
+
+    if (!result) return e.reply("❎ 接口失效")
+
+    e.reply(`✅ 已${yes ? '开启' : '关闭'}戳一戳功能`)
+
+  }
 
 
 }

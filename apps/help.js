@@ -1,11 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import fs from 'fs'
 import lodash from 'lodash'
-import { segment } from "oicq";
-import puppeteer from '../../../lib/puppeteer/puppeteer.js'
-import cfg from '../../../lib/config/config.js'
-import { Cfg, Common, Data, Version, Plugin_Name, Plugin_Path } from '../components/index.js'
-// import Theme from './help/theme.js'
+import { Common, Data } from '../components/index.js'
 
 export class yenai_help extends plugin {
   constructor() {
@@ -72,7 +68,7 @@ async function help(e) {
     helpGroup,
     bg,
     colCount,
-    // element: 'default'
+    element: 'default'
   }, {
     e,
     scale: 2.0

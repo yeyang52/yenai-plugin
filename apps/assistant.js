@@ -3,6 +3,7 @@ import { segment } from "oicq";
 import fetch from 'node-fetch';
 import cfg from '../../../lib/config/config.js';
 import Config from '../model/Config.js';
+import common from '../../../lib/common/common.js'
 let Qzonedetermine;
 let groupPhotoid;
 
@@ -380,19 +381,54 @@ export class example extends plugin {
 
     if (msgs.length < 2) return e.reply("❎ 您输入的指令不合法");
 
-    if (!/^\d+$/.test(msgs[1])) return e.reply("❎ 您输入的群号不合法");
-
-    if (!Bot.gl.get(Number(msgs[1]))) return e.reply("❎ 群聊列表查无此群");
-
     if (!e.message[0].text) e.message.shift()
 
     if (e.message.length === 0) return e.reply("❎ 消息不能为空");
 
+    //根据列表发送消息
+    if (/\d,\d/.test(msgs[1]) || /^\d$/.test(msgs[1])) {
+      let groupidList = [];
+      let sendList = [];
+
+      //获取群列表
+      let listMap = Array.from(Bot.gl.values());
+
+      listMap.forEach((item) => {
+        groupidList.push(item.group_id);
+      })
+
+      let groupids = msgs[1].split(",");
+
+      groupids.forEach((item) => {
+        sendList.push(groupidList[Number(item) - 1]);
+      })
+
+      if (sendList.length > 3) return e.reply("❎ 不能同时发太多群聊，号寄概率增加！！！")
+
+      if (sendList.length === 1) {
+        await Bot.pickGroup(sendList[0]).sendMsg(e.message)
+          .then(() => e.reply("✅ " + sendList[0] + " 群聊消息已送达"))
+          .catch((err) => e.reply(`❎ ${sendList[0]} 发送失败\n错误信息为:${err.message}`))
+      } else {
+        for (let i of sendList) {
+          await Bot.pickGroup(i).sendMsg(e.message)
+            .then(() => e.reply("✅ " + i + " 群聊消息已送达"))
+            .catch((err) => e.reply(`❎ ${i} 发送失败\n错误信息为:${err.message}`))
+          await common.sleep(200)
+        }
+      }
+      return false;
+    }
+
+    if (!/^\d+$/.test(msgs[1])) return e.reply("❎ 您输入的群号不合法");
+
+    if (!Bot.gl.get(Number(msgs[1]))) return e.reply("❎ 群聊列表查无此群");
 
     await Bot.pickGroup(msgs[1]).sendMsg(e.message)
       .then(() => e.reply("✅ 群聊消息已送达"))
       .catch((err) => e.reply(`❎ 发送失败\n错误信息为:${err.message}`))
   }
+
 
   /**退群 */
   async Quit(e) {
@@ -592,7 +628,7 @@ export class example extends plugin {
     } else {
       url = `http://xiaobai.klizi.cn/API/qqgn/ss_send.php?data=json&uin=${cfg.qq}&skey=${ck.skey}&pskey=${ck.p_skey}&msg=${res}`
     }
-    
+
     let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
 
     if (!result) return e.reply("接口失效")
@@ -685,6 +721,8 @@ export class example extends plugin {
     message.push(list)
     if (yes) {
       message.push("可使用 #退群123456789 来退出某群")
+      message.push("可使用 #发群聊 <序号> <消息> 来快速发送消息")
+      message.push(`多个群聊请用 "," 分隔 不能大于3 容易寄`)
     } else {
       message.push("可使用 #删好友123456789 来删除某人")
     }

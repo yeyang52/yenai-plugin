@@ -181,10 +181,6 @@ export const helpList = [{
     "icon": 1,
     "title": "#群星级",
     "desc": "查看群星级"
-  }, {
-    "icon": 8,
-    "title": "#运行状态",
-    "desc": "查看系统状态"
   }]
 },
 {
@@ -209,7 +205,11 @@ export const helpList = [{
     "icon": 12,
     "title": "#椰奶更新日志",
     "desc": "查看更新日志"
-  },]
+  }, {
+    "icon": 8,
+    "title": "#椰奶状态",
+    "desc": "查看系统状态"
+  }]
 }]
 
 export const isSys = true

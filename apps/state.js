@@ -2,6 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import os from 'os';
 import { Version, Common, Plugin_Name, Data } from '../components/index.js'
 import CPU from '../model/cpu.js';
+import Cfg from '../model/Config.js';
 export class example extends plugin {
   constructor() {
     super({
@@ -138,19 +139,28 @@ export class example extends plugin {
 /**运行时间 */
 async function statusTime() {
   let present = new Date().getTime() / 1000
-  let runTime = getsecond(present - Bot.stat.start_time, true)
+  let runTime = Cfg.getsecond(present - Bot.stat.start_time, true)
 
-  let { second, minute, hour } = runTime
+  let { second, minute, hour, day } = runTime
 
-  return hour + ":" + minute + ":" + second
+  if (day > 0) {
+    return day + "天 " + hour + ":" + minute + ":" + second
+  } else {
+    return hour + ":" + minute + ":" + second
+  }
 }
 
 
 function Formatting() {
-  let time = getsecond(os.uptime(), true)
+  let time = Cfg.getsecond(os.uptime(), true)
+
   let { second, minute, hour, day } = time
 
-  return day + "天 " + hour + ":" + minute + ":" + second
+  if (day > 0) {
+    return day + "天 " + hour + ":" + minute + ":" + second
+  } else {
+    return hour + ":" + minute + ":" + second
+  }
 
 }
 
@@ -165,45 +175,4 @@ function Circle(res) {
     rightCircle = `style=transform:rotate(-${180 - num}deg)`;
   }
   return [leftCircle, rightCircle]
-}
-
-/*转换秒*/
-function getsecond(time, repair) {
-  let second = parseInt(time)
-  let minute = 0
-  let hour = 0
-  let day = 0
-  //  如果秒数大于60，将秒数转换成整数
-  if (second > 60) {
-    //  获取分钟，除以60取整数，得到整数分钟
-    minute = parseInt(second / 60)
-    //  获取秒数，秒数取佘，得到整数秒数
-    second = parseInt(second % 60)
-  }
-  //  如果分钟大于60，将分钟转换成小时
-  if (minute > 60) {
-    //  获取小时，获取分钟除以60，得到整数小时
-    hour = parseInt(minute / 60)
-    //  获取小时后取佘的分，获取分钟除以60取佘的分
-    minute = parseInt(minute % 60)
-  }
-  //  如果小时大于24，将小时转换成天
-  if (hour > 23) {
-    //  获取天数，获取小时除以24，得到整天数
-    day = parseInt(hour / 24)
-    //  获取天数后取余的小时，获取小时除以24取余的小时
-    hour = parseInt(hour % 24)
-  }
-  //是否需要补零
-  if (repair) {
-    hour = hour < 10 ? "0" + hour : hour
-    minute = minute < 10 ? "0" + minute : minute
-    second = second < 10 ? "0" + second : second
-  }
-  return {
-    day,
-    hour,
-    minute,
-    second
-  }
 }

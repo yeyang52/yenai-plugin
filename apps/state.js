@@ -95,7 +95,7 @@ export class example extends plugin {
       cpu_info: parseInt(cpu_info * 100) + "%",
       //核心
       hx: hx.length + "核",
-      hxmodel: hx[0].model.substr(0, 3) || "",
+      hxmodel: hx[0]?.model.substr(0, 3) || "",
       //最大MHZ
       maxspeed,
       //系统名

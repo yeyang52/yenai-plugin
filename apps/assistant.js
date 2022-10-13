@@ -583,17 +583,23 @@ export class example extends plugin {
   async Qzonesay(e) {
     if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
 
-    let res = e.message[0].text.replace(/#|发说说/g, "").trim()
+    let res = e.message[0].text.replace(/#|发说说| /g, "").trim()
     let ck = getck('qzone.qq.com')
+
     let url;
     if (e.img) {
       url = `https://xiaobai.klizi.cn/API/qqgn/ss_sendimg.php?uin=${cfg.qq}&skey=${ck.skey}&pskey=${ck.p_skey}&url=${e.img[0]}&msg=${res}`
     } else {
       url = `http://xiaobai.klizi.cn/API/qqgn/ss_send.php?data=json&uin=${cfg.qq}&skey=${ck.skey}&pskey=${ck.p_skey}&msg=${res}`
     }
+    
     let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
-    let msg = [`✅ 说说发表成功，内容：\n`, getLimit(result.content)]
+
+    if (!result) return e.reply("接口失效")
+
     if (result.code != 0) return e.reply(`❎ 说说发表失败\n错误信息:${result.message}`)
+
+    let msg = [`✅ 说说发表成功，内容：\n`, getLimit(result.content)]
     if (result.pic) {
       msg.push(segment.image(result.pic[0].url1))
     }
@@ -724,6 +730,7 @@ export class example extends plugin {
 
 /**字数限制 */
 function getLimit(str) {
+  console.log(str);
   let s = str.slice(0, 10)
   return str.length > 10 ? s + "..." : str
 }

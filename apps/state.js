@@ -3,6 +3,7 @@ import os from 'os';
 import { Version, Common, Plugin_Name, Data } from '../components/index.js'
 import CPU from '../model/cpu.js';
 import Cfg from '../model/Config.js';
+import fs from 'fs'
 export class example extends plugin {
   constructor() {
     super({
@@ -122,7 +123,11 @@ export class example extends plugin {
       //登陆设备
       platform: platform[Bot.config.platform],
       //在线状态
-      status: status[Bot.status]
+      status: status[Bot.status],
+      // 取插件包
+      takeplugin: textFile() || 0,
+      //取插件
+      takejs: fs.readdirSync("./plugins/example")?.length || 0
     }
     //渲染图片
     await Common.render('state/state', {
@@ -175,4 +180,28 @@ function Circle(res) {
     rightCircle = `style=transform:rotate(-${180 - num}deg)`;
   }
   return [leftCircle, rightCircle]
+}
+
+/**取插件包 */
+function textFile() {
+  let str = "./plugins"
+  let arr = fs.readdirSync(str);
+  let plugin = [];
+  arr.forEach((val, idx) => {
+    let ph = fs.statSync(str + '/' + val);
+    if (ph.isDirectory()) {
+      plugin.push(val)
+    }
+  })
+  let del = ['example', 'genshin', 'other', 'system']
+
+  for (let i of del) {
+    try {
+      plugin.splice([plugin.indexOf(i)], 1)
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  return plugin?.length;
 }

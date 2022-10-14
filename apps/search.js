@@ -111,7 +111,7 @@ export class example extends plugin {
     console.log(title);
 
     // 网页加载最大高度
-    const max_height_px = 20000;
+    const max_height_px = 2000;
     // 滚动高度
     let scrollStep = 1080;
     let height_limit = false;

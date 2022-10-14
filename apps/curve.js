@@ -34,7 +34,7 @@ export class curve extends plugin {
     if (/#?收益曲线帮助/.test(this.e.msg)) role.name = "帮助"
     else role = gsCfg.getRole(this.e.msg, '收益曲线')
 
-    if (!role) return logger.error("指令可能错误")
+    if (!role) return logger.error("[收益曲线]指令可能错误", role)
 
 
     /** 主角特殊处理 */

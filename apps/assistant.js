@@ -418,7 +418,7 @@ export class example extends plugin {
           await Bot.pickGroup(i).sendMsg(e.message)
             .then(() => e.reply("✅ " + i + " 群聊消息已送达"))
             .catch((err) => e.reply(`❎ ${i} 发送失败\n错误信息为:${err.message}`))
-          await common.sleep(200)
+          await common.sleep(2000)
         }
       }
       return false;
@@ -772,7 +772,7 @@ export class example extends plugin {
 
     if (!result) return e.reply("❎ 接口失效")
 
-    e.reply(`✅ 已${yes ? '开启' : '关闭'}戳一戳功能`)
+    e.reply(`✅ 已${yes ? '关闭' : '开启'}戳一戳功能`)
 
   }
 

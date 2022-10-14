@@ -8,7 +8,7 @@ export class example extends plugin {
       name: '娱乐功能',
       dsc: '娱乐',
       event: 'message',
-      priority: 2000,
+      priority: 500,
       rule: [
         {
           reg: '^#唱歌$',
@@ -58,6 +58,7 @@ export class example extends plugin {
     })
     lyric[lyric.length - 1] = data.lyrics[data.lyrics.length - 1]
     await e.reply(lyric)
+
     return true;
   }
   /**支付宝语音 */
@@ -91,6 +92,8 @@ export class example extends plugin {
     let results = await fetch(`https://xiaobai.klizi.cn/API/other/trans.php?data=&msg=${msg}`).then(res => res.text()).catch(err => console.log(err))
     if (!results) return e.reply("接口失效")
     e.reply(results)
+
+    return true;
   }
 
   /**点赞 */
@@ -147,5 +150,7 @@ export class example extends plugin {
       const [user, repo] = [res[1], res[2].split("#")[0]];
       e.reply(segment.image(`${api}/${id}/${user}/${repo}`));
     }
+
+    return true;
   }
 }

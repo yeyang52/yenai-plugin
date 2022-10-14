@@ -25,6 +25,12 @@ export class example extends plugin {
         {
           reg: '^(我要|给我)?(资料卡)?(点赞|赞我)$',
           fnc: 'zan'
+        },
+        {
+          /** 命令正则匹配 */
+          reg: 'github.com\/[a-zA-Z0-9-]{1,39}\/[a-zA-Z0-9_-]{1,100}',
+          /** 执行方法 */
+          fnc: 'GH'
         }
       ]
     })
@@ -126,5 +132,20 @@ export class example extends plugin {
     await e.reply(msg)
 
     return true
+  }
+
+  //github
+  async GH(e) {
+    const api = "https://opengraph.githubassets.com";
+    console.log(e.msg);
+    let reg = /github.com\/[a-zA-Z0-9-]{1,39}\/[a-zA-Z0-9_-]{1,100}/
+    const isMatched = e.msg.match(reg);
+    console.log(isMatched);
+    const id = "Yenai";
+    if (isMatched) {
+      const res = isMatched[0].split("/");
+      const [user, repo] = [res[1], res[2].split("#")[0]];
+      e.reply(segment.image(`${api}/${id}/${user}/${repo}`));
+    }
   }
 }

@@ -7,7 +7,7 @@ let image;
 export class curve extends plugin {
   constructor() {
     super({
-      name: 'nga收益曲线',
+      name: 'NGA',
       dsc: '收益曲线',
       event: 'message',
       priority: 500,

@@ -165,6 +165,10 @@ export const helpList = [{
     "icon": 17,
     "title": "#翻译",
     "desc": "有道翻译"
+  }, {
+    "icon": 9,
+    "title": "#搜索菜单",
+    "desc": "各大引擎搜索"
   }]
 },
 {

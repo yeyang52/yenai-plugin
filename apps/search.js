@@ -92,7 +92,8 @@ export class example extends plugin {
   }
   async search(e) {
     let regRet = searchReg.exec(e.msg)
-    let content = e.msg.replace(regRet[1] + '搜索', "")
+    let reg = new RegExp(`#?${regRet[1]}搜索`)
+    let content = e.msg.replace(reg, "")
     let url = SEARCH_MAP[regRet[1]] + encodeURIComponent(content)
 
     const puppeteer = require('puppeteer');

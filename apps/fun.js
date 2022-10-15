@@ -60,7 +60,7 @@ export class example extends plugin {
   }
   /**支付宝语音 */
   async ZFB(e) {
-    let amount = e.msg.replace(/#|支付宝到账/g, "").trim()
+    let amount = parseFloat(e.msg.replace(/#|支付宝到账/g, "").trim())
 
     if (!/^\d+(\.\d{1,2})?$/.test(amount)) return e.reply("你觉得这河里吗！！", true);
 

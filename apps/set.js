@@ -168,7 +168,7 @@ export class NewConfig extends plugin {
             ...cfg,
         }, {
             e,
-            scale: 1.5
+            scale: 2.0
         });
     }
 }

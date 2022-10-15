@@ -8,7 +8,6 @@ export class example extends plugin {
   constructor() {
     super({
       name: '状态',
-      dsc: '状态',
       event: 'message',
       priority: 50,
       rule: [

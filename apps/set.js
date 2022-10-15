@@ -3,44 +3,34 @@ import fs from "fs";
 import lodash from "lodash";
 import Common from "../components/Common.js";
 import common from '../../../lib/common/common.js'
+import cfg from "../../../lib/config/config.js";
 
 
 export class NewConfig extends plugin {
     constructor() {
         super({
-            name: '修改配置',
-            dsc: '配置文件',
+            name: '配置',
             event: 'message',
             priority: 2000,
             rule: [
                 {
-                    /** 命令正则匹配 */
                     reg: '^#?椰奶设置(.*)(开启|关闭)$',
-                    /** 执行方法 */
                     fnc: 'Config_manage'
                 },
                 {
-                    /** 命令正则匹配 */
                     reg: '^#?椰奶设置删除缓存时间(.*)$',
-                    /** 执行方法 */
                     fnc: 'Config_deltime'
                 },
                 {
-                    /** 命令正则匹配 */
                     reg: '^#?通知设置$',
-                    /** 执行方法 */
                     fnc: 'SeeConfig'
                 },
                 {
-                    /** 命令正则匹配 */
                     reg: '^#?椰奶设置$',
-                    /** 执行方法 */
                     fnc: 'yenaiset'
                 },
                 {
-                    /** 命令正则匹配 */
                     reg: '^#?椰奶(启用|禁用)全部通知$',
-                    /** 执行方法 */
                     fnc: 'SetAll'
                 },
             ]
@@ -52,13 +42,27 @@ export class NewConfig extends plugin {
         if (!e.isMaster) return
         // 解析消息
         let index = e.msg.replace(/#|椰奶设置|开启|关闭/g, "")
-        console.log(index);
+
+        let groupCfg = cfg.getConfig('group')?.default
+
+        if (groupCfg.onlyReplyAt == 1 && configs[index] == "groupRecall") {
+            return e.reply('❎ 因您开启了"仅关注主动@机器人的消息"，群撤回监听无法生效!!!')
+        }
+
         if (!configs.hasOwnProperty(index)) return
         // 开启还是关闭
         if (/开启/.test(e.msg)) {
-            await redis.set(`yenai:notice:${configs[index]}`, "1")
+            await redis.set(`yenai:notice:${configs[index]}`, "1").then(() => {
+                logger.mark(`[椰奶]已启用${index}`)
+            }).catch(err => {
+                logger.error(`[椰奶]启用失败${index}`, err)
+            })
         } else {
-            await redis.del(`yenai:notice:${configs[index]}`)
+            await redis.del(`yenai:notice:${index}`).then(() => {
+                logger.mark(`[椰奶]已禁用${index}`)
+            }).catch(err => {
+                logger.error(`[椰奶]禁用失败${index}`, err)
+            })
         }
         this.yenaiset(e)
         return true;
@@ -76,7 +80,11 @@ export class NewConfig extends plugin {
 
         if (time < 120) return e.reply('❎ 时间不能小于两分钟')
 
-        await redis.set(`yenai:notice:deltime`, String(time[0]))
+        await redis.set(`yenai:notice:deltime`, String(time[0])).then(() => {
+            logger.mark(`[椰奶]设置删除缓存时间为${time[0]}`)
+        }).catch(err => {
+            logger.error(`[椰奶]设置删除缓存时间失败`, err)
+        })
 
         this.yenaiset(e)
         return true;
@@ -88,19 +96,35 @@ export class NewConfig extends plugin {
         if (/启用/.test(e.msg)) {
             yes = true;
         }
+        let no = ["sese", "deltime", "notificationsAll"]
+
+        let groupCfg = cfg.getConfig('group')?.default
 
         if (yes) {
             for (let i in configs) {
-                if (configs[i] == "deltime" || configs[i] == "notificationsAll") continue
-                await redis.set(`yenai:notice:${configs[i]}`, "1");
-                logger.mark(`[椰奶]已启用${i}`)
+                if (no.includes(configs[i])) continue
+
+                if (groupCfg.onlyReplyAt == 1 && configs[i] == "groupRecall") {
+                    e.reply('❎ 因您开启了"仅关注主动@机器人的消息"，群撤回监听无法生效!!!')
+                    continue
+                }
+
+                await redis.set(`yenai:notice:${configs[i]}`, "1").then(() => {
+                    logger.mark(`[椰奶]已启用${i}`)
+                }).catch(err => {
+                    logger.error(`[椰奶]启用失败${i}`, err)
+                })
+
                 await common.sleep(200)
             }
         } else {
             for (let i in configs) {
-                if (configs[i] == "deltime" || configs[i] == "notificationsAll") continue
-                await redis.del(`yenai:notice:${configs[i]}`);
-                logger.mark(`[椰奶]已禁用${i}`)
+                if (no.includes(configs[i])) continue
+                await redis.del(`yenai:notice:${configs[i]}`).then(() => {
+                    logger.mark(`[椰奶]已禁用${i}`)
+                }).catch(err => {
+                    logger.error(`[椰奶]禁用失败${i}`, err)
+                })
                 await common.sleep(200)
             }
         }

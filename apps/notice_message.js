@@ -7,8 +7,8 @@ export class anotice extends plugin {
     constructor() {
         super({
             name: '消息',
-            dsc: '闪照等消息',
             event: 'message',
+            priority: 2000,
         })
     }
 

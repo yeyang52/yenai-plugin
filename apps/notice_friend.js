@@ -9,7 +9,6 @@ export class Friends extends plugin {
     constructor() {
         super({
             name: '好友通知',
-            dsc: '好友通知',
             event: 'notice.friend',
             priority: 5000
         })

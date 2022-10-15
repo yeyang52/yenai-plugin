@@ -66,8 +66,7 @@ const searchReg = new RegExp(`^#?(${lodash.keys(SEARCH_MAP).join('|')})搜索.*`
 export class example extends plugin {
   constructor() {
     super({
-      name: '聚合搜索',
-      dsc: '搜索',
+      name: '搜索',
       event: 'message',
       priority: 5000,
       rule: [

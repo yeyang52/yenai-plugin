@@ -5,10 +5,9 @@ import { segment } from "oicq";
 export class example extends plugin {
   constructor() {
     super({
-      name: '娱乐功能',
-      dsc: '娱乐',
+      name: '娱乐',
       event: 'message',
-      priority: 500,
+      priority: 2000,
       rule: [
         {
           reg: '^#唱歌$',
@@ -27,9 +26,7 @@ export class example extends plugin {
           fnc: 'zan'
         },
         {
-          /** 命令正则匹配 */
           reg: 'github.com\/[a-zA-Z0-9-]{1,39}\/[a-zA-Z0-9_-]{1,100}',
-          /** 执行方法 */
           fnc: 'GH'
         }
       ]

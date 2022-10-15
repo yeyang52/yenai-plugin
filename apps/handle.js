@@ -4,26 +4,20 @@ import plugin from '../../../lib/plugins/plugin.js'
 export class anotice extends plugin {
     constructor() {
         super({
-            name: '处理',
-            dsc: '申请处理',
+            name: '申请处理',
             event: 'message',
+            priority: 500,
             rule: [
                 {
-                    /** 命令正则匹配 */
                     reg: '^#?同意申请.*$',
-                    /** 执行方法 */
                     fnc: 'agree'
                 },
                 {
-                    /** 命令正则匹配 */
                     reg: '^#?(同意|拒绝)$',
-                    /** 执行方法 */
                     fnc: 'agrees'
                 },
                 {
-                    /** 命令正则匹配 */
                     reg: '^#?回复.*$',
-                    /** 执行方法 */
                     fnc: 'Replys'
                 }
             ]
@@ -146,7 +140,7 @@ export class anotice extends plugin {
         if (e.message.length === 0) return e.reply('❎ 消息不能为空')
 
         logger.mark(`[椰奶]回复好友消息`)
-        
+
         Bot.pickFriend(qq)
             .sendMsg(e.message)
             .then(() => { e.reply('✅ 已把消息发给它了哦~') })

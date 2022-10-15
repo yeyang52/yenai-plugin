@@ -10,8 +10,8 @@ export class newgroups extends plugin {
     constructor() {
         super({
             name: '群通知',
-            dsc: '群通知',
-            event: 'notice.group'
+            event: 'notice.group',
+            priority: 2000,
         })
     }
 

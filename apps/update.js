@@ -16,9 +16,8 @@ export class update extends plugin {
   constructor() {
     super({
       name: "更新插件",
-      dsc: "更新插件代码",
       event: "message",
-      priority: 1145,
+      priority: 1000,
       rule: [
         {
           reg: "^#*椰奶(插件)?(强制)?更新",

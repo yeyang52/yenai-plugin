@@ -11,9 +11,8 @@ export class example extends plugin {
   constructor() {
     super({
       name: '助手',
-      dsc: '远程对机器人进行一些操作',
       event: 'message',
-      priority: 5000,
+      priority: 2000,
       rule: [
         {
           reg: '^#?改头像.*$',

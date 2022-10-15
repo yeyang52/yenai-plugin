@@ -6,19 +6,12 @@ import { Common, Data } from '../components/index.js'
 export class yenai_help extends plugin {
   constructor() {
     super({
-      /** 功能名称 */
-      name: '椰奶插件_帮助',
-      /** 功能描述 */
-      dsc: '',
-      /** https://oicqjs.github.io/oicq/#events */
+      name: '椰奶帮助',
       event: 'message',
-      /** 优先级，数字越小等级越高 */
       priority: 2000,
       rule: [
         {
-          /** 命令正则匹配 */
-          reg: '^#?椰奶(插件)?帮助$',
-          /** 执行方法 */
+          reg: '^#?椰奶(插件)?(帮助|菜单|功能)$',
           fnc: 'message'
         }
       ]

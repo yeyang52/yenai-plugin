@@ -8,8 +8,8 @@ export class application extends plugin {
     constructor() {
         super({
             name: '好友申请',
-            dsc: '好友申请',
-            event: 'request.friend'
+            event: 'request.friend',
+            priority: 2000,
         })
     }
 

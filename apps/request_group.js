@@ -14,8 +14,8 @@ export class invitation extends plugin {
     constructor() {
         super({
             name: '群邀请',
-            dsc: '群邀请',
-            event: 'request.group.invite'
+            event: 'request.group.invite',
+            priority: 2000,
         })
     }
 

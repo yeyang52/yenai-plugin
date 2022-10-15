@@ -18,7 +18,6 @@ export class sese extends plugin {
   constructor() {
     super({
       name: 'setu',
-      dsc: '涩涩',
       event: 'message',
       priority: 5000,
       rule: [

@@ -137,7 +137,7 @@ export class example extends plugin {
   //github
   async GH(e) {
     const api = "https://opengraph.githubassets.com";
-    console.log(e.msg);
+
     let reg = /github.com\/[a-zA-Z0-9-]{1,39}\/[a-zA-Z0-9_-]{1,100}/
     const isMatched = e.msg.match(reg);
     console.log(isMatched);

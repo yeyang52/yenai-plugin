@@ -132,7 +132,7 @@ export class example extends plugin {
     /**判断点赞是否成功*/
     let msg = n > 0 ? success_result : failds_result
     /**回复 */
-    await e.reply(msg)
+    await e.reply(msg, false, { at: true })
 
     return true
   }

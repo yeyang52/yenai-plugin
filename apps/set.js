@@ -3,7 +3,6 @@ import fs from "fs";
 import lodash from "lodash";
 import Common from "../components/Common.js";
 import common from '../../../lib/common/common.js'
-import cfg from "../../../lib/config/config.js";
 
 
 export class NewConfig extends plugin {
@@ -43,11 +42,6 @@ export class NewConfig extends plugin {
         // 解析消息
         let index = e.msg.replace(/#|椰奶设置|开启|关闭/g, "")
 
-        let groupCfg = cfg.getConfig('group')?.default
-
-        if (groupCfg.onlyReplyAt == 1 && configs[index] == "groupRecall") {
-            return e.reply('❎ 因您开启了"仅关注主动@机器人的消息"，群撤回监听无法生效!!!')
-        }
 
         if (!configs.hasOwnProperty(index)) return
         // 开启还是关闭
@@ -58,7 +52,7 @@ export class NewConfig extends plugin {
                 logger.error(`[椰奶]启用失败${index}`, err)
             })
         } else {
-            await redis.del(`yenai:notice:${index}`).then(() => {
+            await redis.del(`yenai:notice:${configs[index]}`).then(() => {
                 logger.mark(`[椰奶]已禁用${index}`)
             }).catch(err => {
                 logger.error(`[椰奶]禁用失败${index}`, err)
@@ -98,16 +92,9 @@ export class NewConfig extends plugin {
         }
         let no = ["sese", "deltime", "notificationsAll"]
 
-        let groupCfg = cfg.getConfig('group')?.default
-
         if (yes) {
             for (let i in configs) {
                 if (no.includes(configs[i])) continue
-
-                if (groupCfg.onlyReplyAt == 1 && configs[i] == "groupRecall") {
-                    e.reply('❎ 因您开启了"仅关注主动@机器人的消息"，群撤回监听无法生效!!!')
-                    continue
-                }
 
                 await redis.set(`yenai:notice:${configs[i]}`, "1").then(() => {
                     logger.mark(`[椰奶]已启用${i}`)

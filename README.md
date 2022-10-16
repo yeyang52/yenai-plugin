@@ -97,3 +97,5 @@ Yenai-Plugin为您提供以下功能(可使用 **#椰奶帮助**  查看)
 QQ：[746659424](https://qm.qq.com/cgi-bin/qm/qr?k=m6tyVb1v5y7a5_YK8CU7AoKyuR51aEaI&noverify=0&personal_qrcode_source=4)
 
 群号：[254974507](https://jq.qq.com/?_wv=1027&k=o8FTig5Z)
+
+投喂：[爱发电](https://afdian.net/a/yeyang52)

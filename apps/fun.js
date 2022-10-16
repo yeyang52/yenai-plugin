@@ -18,7 +18,7 @@ export class example extends plugin {
           fnc: 'ZFB'
         },
         {
-          reg: '^#?翻译.*$',
+          reg: '^#翻译.*$',
           fnc: 'youdao'
         },
         {

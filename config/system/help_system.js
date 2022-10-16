@@ -115,6 +115,10 @@ export const helpList = [{
     "title": "#清空留言",
     "desc": "一键清空留言",
     "icon": 19
+  }, {
+    "title": "#开启|关闭戳一戳",
+    "desc": "QQ的戳一戳开关",
+    "icon": 5
   }]
 },
 {

@@ -401,6 +401,8 @@ export class example extends plugin {
       })
 
       let groupids = msgs[1].split(",");
+      //判断是否大于群数量
+      if (groupids.every((item) => item > listMap.length)) return e.reply("❎ 超过群聊最大数")
 
       groupids.forEach((item) => {
         sendList.push(groupidList[Number(item) - 1]);

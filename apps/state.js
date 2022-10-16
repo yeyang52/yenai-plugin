@@ -25,7 +25,9 @@ export class example extends plugin {
     if (!/椰奶/.test(e.msg) && !await redis.get("yenai:notice:state")) {
       return false;
     }
-
+    //现在的时间戳(秒)
+    let present_time = new Date().getTime() / 1000
+    //头像
     let portrait = `https://q1.qlogo.cn/g?b=qq&s=0&nk=${Bot.uin}`
     //cpu使用率
     let cpu_info = await CPU.getCPUUsage()
@@ -76,7 +78,7 @@ export class example extends plugin {
       //头像
       portrait,
       //运行时间
-      runTime: await statusTime(),
+      runTime: Formatting(present_time - Bot.stat.start_time, true),
       //版本
       version: Version.ver,
       //地址
@@ -84,7 +86,7 @@ export class example extends plugin {
       //昵称
       nickname: Bot.nickname,
       //系统运行时间
-      systime: Formatting(),
+      systime: Formatting(os.uptime(), true),
       //收
       recv: Bot.statistics.recv_msg_cnt,
       //发
@@ -140,25 +142,16 @@ export class example extends plugin {
 
 }
 
-/**运行时间 */
-async function statusTime() {
-  let present = new Date().getTime() / 1000
-  let runTime = Cfg.getsecond(present - Bot.stat.start_time, true)
+/**
+ * @description: 格式化时间
+ * @param {Number} time 秒数
+ * @param {boolean} yes  是否补零
+ * @return {String} 天:?时:分:秒
+ */
+function Formatting(time, repair) {
+  let times = Cfg.getsecond(time, repair)
 
-  let { second, minute, hour, day } = runTime
-
-  if (day > 0) {
-    return day + "天 " + hour + ":" + minute + ":" + second
-  } else {
-    return hour + ":" + minute + ":" + second
-  }
-}
-
-
-function Formatting() {
-  let time = Cfg.getsecond(os.uptime(), true)
-
-  let { second, minute, hour, day } = time
+  let { second, minute, hour, day } = times
 
   if (day > 0) {
     return day + "天 " + hour + ":" + minute + ":" + second
@@ -168,7 +161,11 @@ function Formatting() {
 
 }
 
-/**圆形进度条渲染 */
+/**
+ * @description: 圆形进度条渲染
+ * @param {Number} res 百分比小数
+ * @return {*} css样式
+ */
 function Circle(res) {
   let num = (res * 360).toFixed(0)
   let leftCircle = `style=transform:rotate(-180deg)`;
@@ -181,7 +178,10 @@ function Circle(res) {
   return [leftCircle, rightCircle]
 }
 
-/**取插件包 */
+/**
+ * @description: 取插件包
+ * @return {*} 插件包数量
+ */
 function textFile() {
   let str = "./plugins"
   let arr = fs.readdirSync(str);

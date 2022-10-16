@@ -52,7 +52,7 @@ class Config {
      * @description: 秒转换
      * @param {Number} time  秒数
      * @param {boolean} repair  是否需要补零
-     * @return {object} 包含天，时，分，秒的对象
+     * @return {object} 包含天，时，分，秒
      */
     getsecond(time, repair) {
         let second = parseInt(time)

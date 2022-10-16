@@ -1,19 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import { createRequire } from "module"
-import { execSync } from 'child_process'
 import { update } from '../../other/update.js'
 import { Version, Common, Plugin_Name } from '../components/index.js'
 
-/**
- * 全局
- */
-const require = createRequire(import.meta.url)
-const { exec } = require("child_process")
-const _path = process.cwd()
-let timer
-/**
- * 管理员
- */
 export class admin extends plugin {
     constructor() {
         super({

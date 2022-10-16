@@ -22,7 +22,7 @@ export class example extends plugin {
           fnc: 'youdao'
         },
         {
-          reg: '^(我要|给我)?(资料卡)?(点赞|赞我)$',
+          reg: '^#?(我要|给我)?(资料卡)?(点赞|赞我)$',
           fnc: 'zan'
         },
         {

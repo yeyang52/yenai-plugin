@@ -258,7 +258,23 @@ export class sese extends plugin {
     //获取当前时间
     let present = parseInt(new Date().getTime() / 1000)
     //消息
-    let msg = [segment.at(e.user_id), segment.image(imgs), `https://www.pixiv.net/artworks/${pid}`]
+    let msg = [segment.image(`https://pixiv.cat/${pid}.png`), `https://www.pixiv.net/artworks/${pid}`]
+    //制作转发消息
+    let forwardMsg = []
+    for (let i of msg) {
+      forwardMsg.push(
+        {
+          message: i,
+          nickname: Bot.nickname,
+          user_id: Bot.uin
+        }
+      )
+    }
+    if (e.isGroup) {
+      forwardMsg = await e.group.makeForwardMsg(forwardMsg)
+    } else {
+      forwardMsg = await e.friend.makeForwardMsg(forwardMsg)
+    }
     if (e.isGroup) {
       //看看有没有设置
       if (cfgs[e.group_id]) {
@@ -266,7 +282,7 @@ export class sese extends plugin {
         cd = cfgs[e.group_id].cd
       }
       //发送消息并写入cd
-      let res = await e.group.sendMsg(msg)
+      let res = await e.group.sendMsg(forwardMsg)
         .then((item) => {
           if (!e.isMaster) {
             if (cd != 0) {
@@ -300,7 +316,7 @@ export class sese extends plugin {
         CD = def.cd
       }
 
-      await e.friend.sendMsg(msg)
+      await e.friend.sendMsg(forwardMsg)
         .then(() => {
           if (!e.isMaster) {
             if (CD != 0) {

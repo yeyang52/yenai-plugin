@@ -346,7 +346,7 @@ export class sese extends plugin {
 
         let over = (temp[e.user_id + e.group_id] - present)
 
-        return Config.getsecond(over)
+        return getsecond(over)
 
       } else return false
 
@@ -355,7 +355,7 @@ export class sese extends plugin {
 
         let over = (temp[e.user_id] - present)
 
-        return Config.getsecond(over)
+        return getsecond(over)
 
       } else return false
     }
@@ -389,4 +389,25 @@ export class sese extends plugin {
     }
   }
 
+}
+// 秒转换
+function getsecond(value) {
+  let time = Config.getsecond(value)
+
+  let { second, minute, hour, day } = time
+  // 处理返回消息
+  let result = ''
+  if (second != 0) {
+    result = parseInt(second) + '秒'
+  }
+  if (minute > 0) {
+    result = parseInt(minute) + '分' + result
+  }
+  if (hour > 0) {
+    result = parseInt(hour) + '小时' + result
+  }
+  if (day > 0) {
+    result = parseInt(day) + '天' + result
+  }
+  return result
 }

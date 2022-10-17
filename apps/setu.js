@@ -15,6 +15,20 @@ let temp = {};
 
 let api = "https://api.lolicon.app/setu/v2";
 
+let startMsg = [
+  "正在给你找setu了，你先等等再冲~",
+  "你先别急，正在找了~",
+]
+let CDMsg = [
+  "你这么喜欢色图，还不快点冲！",
+  "你的色图不出来了！",
+  "注意身体，色图看多了对身体不太好",
+  "憋住不准冲！",
+  "呃...好像冲了好多次...感觉不太好呢...",
+  "憋冲了！你已经冲不出来了！",
+  "你急啥呢？",
+  "你是被下半身控制了大脑吗？"
+]
 export class sese extends plugin {
   constructor() {
     super({
@@ -65,15 +79,15 @@ export class sese extends plugin {
 
     let cds = await this.getcd(e)
 
-    if (cds) return e.reply(`你是被下半身控制了大脑吗，等${cds}再来冲吧~~`, false, { at: true })
+    if (cds) return e.reply(` ${lodash.sample(CDMsg)}你的CD还有${cds}`, false, { at: true })
+
+    await e.reply(lodash.sample(startMsg))
 
     let r18 = await this.getr18(e)
 
     let res = await this.setuapi(r18)
-    console.log(r18);
 
     if (!res) return e.reply("接口失效")
-
 
     this.sendMsg(e, res[0])
 
@@ -85,7 +99,7 @@ export class sese extends plugin {
 
     let cds = await this.getcd(e)
 
-    if (cds) return e.reply(`你是被下半身控制了大脑吗，等${cds}再来冲吧~~`, false, { at: true })
+    if (cds) return e.reply(` ${lodash.sample(CDMsg)}你的CD还有${cds}`, false, { at: true })
 
     let msg = e.msg.replace(/#|椰奶tag/g, "").trim()
 
@@ -108,7 +122,8 @@ export class sese extends plugin {
     if (!res) return e.reply("❎ 接口失效")
 
     if (res.length == 0) return e.reply("没有找到相关的tag", false, { at: true })
-
+    //发送开始找涩图
+    await e.reply(lodash.sample(startMsg))
     //发送消息
     this.sendMsg(e, res[0])
   }

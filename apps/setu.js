@@ -258,7 +258,7 @@ export class sese extends plugin {
     //获取当前时间
     let present = parseInt(new Date().getTime() / 1000)
     //消息
-    let msg = [segment.image(`https://pixiv.cat/${pid}.png`), `https://www.pixiv.net/artworks/${pid}`]
+    let msg = [segment.image(imgs), `https://www.pixiv.net/artworks/${pid}`]
     //制作转发消息
     let forwardMsg = []
     for (let i of msg) {

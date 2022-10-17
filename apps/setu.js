@@ -259,7 +259,7 @@ export class sese extends plugin {
     //获取当前时间
     let present = parseInt(new Date().getTime() / 1000)
 
-    let img = await Browser.webPreview(`https://pixiv.cat/${pid}.jpg`, 1000)
+    let img = await Browser.webPreview(`https://pixiv.re/${pid}.jpg`, 1000)
     //消息
     let msg = [segment.image(img), `https://www.pixiv.net/artworks/${pid}`]
     //制作转发消息

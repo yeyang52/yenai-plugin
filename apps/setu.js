@@ -3,7 +3,7 @@ import { segment } from "oicq";
 import fetch from 'node-fetch'
 import fs from 'fs'
 import Config from '../model/Config.js';
-import Browser from '../model/Browser.js'
+import lodash from "lodash";
 //默认配置
 let def = {
   r18: 0,
@@ -70,12 +70,12 @@ export class sese extends plugin {
     let r18 = await this.getr18(e)
 
     let res = await this.setuapi(r18)
+    console.log(r18);
 
     if (!res) return e.reply("接口失效")
 
-    let imgs = res[0]
 
-    this.sendMsg(e, imgs.urls.original, imgs.pid)
+    this.sendMsg(e, res[0])
 
   }
 
@@ -109,9 +109,8 @@ export class sese extends plugin {
 
     if (res.length == 0) return e.reply("没有找到相关的tag", false, { at: true })
 
-    let imgs = res[0]
     //发送消息
-    this.sendMsg(e, imgs.urls.original, imgs.pid)
+    this.sendMsg(e, res[0])
   }
 
   //设置撤回间隔
@@ -246,7 +245,7 @@ export class sese extends plugin {
 
 
   //发送消息
-  async sendMsg(e, imgs, pid) {
+  async sendMsg(e, img) {
     //获取配置
     let cfgs = {};
     if (fs.existsSync(this.path)) {
@@ -258,25 +257,22 @@ export class sese extends plugin {
     let cd = def.cd
     //获取当前时间
     let present = parseInt(new Date().getTime() / 1000)
-
-    let img = await Browser.webPreview(`https://pixiv.re/${pid}.jpg`, 1000)
+    let { pid, title, tags, author, r18 } = img
     //消息
-    let msg = [segment.image(img), `https://www.pixiv.net/artworks/${pid}`]
+    let msg = [`标题：${title}\n画师：${author}\npid：${pid}\nr18：${r18}\ntag：${lodash.truncate(tags.join(","))}`,
+    `https://www.pixiv.net/artworks/${pid}`,
+    segment.image(`https://pixiv.re/${pid}.jpg`),
+    ]
     //制作转发消息
     let forwardMsg = []
     for (let i of msg) {
       forwardMsg.push(
         {
           message: i,
-          nickname: Bot.nickname,
-          user_id: Bot.uin
+          nickname: e.sender.nickname,
+          user_id: e.sender.user_id
         }
       )
-    }
-    if (e.isGroup) {
-      forwardMsg = await e.group.makeForwardMsg(forwardMsg)
-    } else {
-      forwardMsg = await e.friend.makeForwardMsg(forwardMsg)
     }
     if (e.isGroup) {
       //看看有没有设置
@@ -285,6 +281,7 @@ export class sese extends plugin {
         cd = cfgs[e.group_id].cd
       }
       //发送消息并写入cd
+      forwardMsg = await e.group.makeForwardMsg(forwardMsg)
       let res = await e.group.sendMsg(forwardMsg)
         .then((item) => {
           if (!e.isMaster) {
@@ -318,7 +315,7 @@ export class sese extends plugin {
       } else {
         CD = def.cd
       }
-
+      forwardMsg = await e.friend.makeForwardMsg(forwardMsg)
       await e.friend.sendMsg(forwardMsg)
         .then(() => {
           if (!e.isMaster) {
@@ -331,6 +328,7 @@ export class sese extends plugin {
           }
         }).catch((err) => {
           e.reply(segment.image(this.fk))
+          console.log(err);
         })
     }
   }
@@ -346,7 +344,7 @@ export class sese extends plugin {
 
         let over = (temp[e.user_id + e.group_id] - present)
 
-        return getsecond(over)
+        return Secondformat(over)
 
       } else return false
 
@@ -355,7 +353,7 @@ export class sese extends plugin {
 
         let over = (temp[e.user_id] - present)
 
-        return getsecond(over)
+        return Secondformat(over)
 
       } else return false
     }
@@ -376,7 +374,7 @@ export class sese extends plugin {
         return def.r18
       }
     } else {
-      if (fs.existsSync(this.path)) {
+      if (fs.existsSync(this.path_s)) {
         cfgs = await Config.getread(this.path_s)
       } else return def.r18
 
@@ -391,7 +389,7 @@ export class sese extends plugin {
 
 }
 // 秒转换
-function getsecond(value) {
+function Secondformat(value) {
   let time = Config.getsecond(value)
 
   let { second, minute, hour, day } = time

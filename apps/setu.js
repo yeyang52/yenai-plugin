@@ -3,6 +3,7 @@ import { segment } from "oicq";
 import fetch from 'node-fetch'
 import fs from 'fs'
 import Config from '../model/Config.js';
+import Browser from '../model/Browser.js'
 //默认配置
 let def = {
   r18: 0,
@@ -257,8 +258,10 @@ export class sese extends plugin {
     let cd = def.cd
     //获取当前时间
     let present = parseInt(new Date().getTime() / 1000)
+
+    let img = await Browser.webPreview(`https://pixiv.cat/${pid}.jpg`, 1000)
     //消息
-    let msg = [segment.image(imgs), `https://www.pixiv.net/artworks/${pid}`]
+    let msg = [segment.image(img), `https://www.pixiv.net/artworks/${pid}`]
     //制作转发消息
     let forwardMsg = []
     for (let i of msg) {

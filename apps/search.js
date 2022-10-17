@@ -1,8 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import { segment } from "oicq";
-import { createRequire } from 'module'
 import lodash from 'lodash'
-const require = createRequire(import.meta.url)
+import Browser from '../model/Browser.js'
+import { segment } from "oicq";
 
 const SEARCH_MAP = {
 
@@ -94,89 +93,13 @@ export class example extends plugin {
     let reg = new RegExp(`#?${regRet[1]}搜索`)
     let content = e.msg.replace(reg, "")
     let url = SEARCH_MAP[regRet[1]] + encodeURIComponent(content)
+    let res = await Browser.webPreview(url)
 
-    const puppeteer = require('puppeteer');
-    // 启动Chromium
-    const browser = await puppeteer.launch({ ignoreHTTPSErrors: true, headless: false, args: ['--no-sandbox'] });
-    // 打开新页面
-    const page = await browser.newPage();
-    // 设置页面分辨率
-    await page.setViewport({ width: 1920, height: 1080 });
-
-    let request_url = url;
-    // 访问
-    await page.goto(request_url, { waitUntil: 'domcontentloaded' }).catch(err => console.log(err));
-    await page.waitFor(1000);
-    let title = await page.title();
-    console.log(title);
-
-    // 网页加载最大高度
-    const max_height_px = 2000;
-    // 滚动高度
-    let scrollStep = 1080;
-    let height_limit = false;
-    let mValues = { 'scrollEnable': true, 'height_limit': height_limit };
-
-    while (mValues.scrollEnable) {
-      mValues = await page.evaluate((scrollStep, max_height_px, height_limit) => {
-
-        // 防止网页没有body时，滚动报错
-        if (document.scrollingElement) {
-          let scrollTop = document.scrollingElement.scrollTop;
-          document.scrollingElement.scrollTop = scrollTop + scrollStep;
-
-          if (null != document.body && document.body.clientHeight > max_height_px) {
-            height_limit = true;
-          } else if (document.scrollingElement.scrollTop + scrollStep > max_height_px) {
-            height_limit = true;
-          }
-
-          let scrollEnableFlag = false;
-          if (null != document.body) {
-            scrollEnableFlag = document.body.clientHeight > scrollTop + 1081 && !height_limit;
-          } else {
-            scrollEnableFlag = document.scrollingElement.scrollTop + scrollStep > scrollTop + 1081 && !height_limit;
-          }
-
-          return {
-            'scrollEnable': scrollEnableFlag,
-            'height_limit': height_limit,
-            'document_scrolling_Element_scrollTop': document.scrollingElement.scrollTop
-          };
-        }
-
-      }, scrollStep, max_height_px, height_limit);
-
-      await sleep(800);
-    }
-
-    try {
-      await this.reply([segment.image(await page.screenshot({
-        fullPage: true
-      })), url]).catch(err => {
-        console.log('截图失败');
-        console.log(err);
-      });
-      await page.waitFor(5000);
-
-    } catch (e) {
-      console.log('执行异常');
-    } finally {
-      await browser.close();
+    if (res) {
+      e.reply([segment.image(res), url]);
+    } else {
+      e.reply("截图失败");
     }
 
   }
-
-}
-//延时函数
-function sleep(delay) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      try {
-        resolve(1)
-      } catch (e) {
-        reject(0)
-      }
-    }, delay)
-  })
 }

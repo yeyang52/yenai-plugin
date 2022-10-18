@@ -1,6 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import os from 'os';
-import { Version, Common, Plugin_Name, Data } from '../components/index.js'
+import { Version, Common, Config } from '../components/index.js'
 import CPU from '../model/CPU.js';
 import Cfg from '../model/Config.js';
 import fs from 'fs'

@@ -2,8 +2,9 @@ import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from "oicq";
 import fetch from 'node-fetch'
 import fs from 'fs'
-import Config from '../model/Config.js';
+import Cfg from '../model/Config.js';
 import lodash from "lodash";
+import { Config } from '../components/index.js'
 //默认配置
 let def = {
   r18: 0,
@@ -140,14 +141,14 @@ export class sese extends plugin {
     let res = {};
 
     if (!fs.existsSync(this.path)) {
-      res = await Config.getread(this.path)
+      res = await Cfg.getread(this.path)
     }
 
     if (!res[e.group_id]) res[e.group_id] = def
 
     res[e.group_id].recall = Number(recall)
 
-    if (await Config.getwrite(this.path, res)) {
+    if (await Cfg.getwrite(this.path, res)) {
       e.reply(`✅ 设置群${e.group_id}撤回间隔${recall}s成功`)
     } else {
       e.reply(`❎ 设置失败`)
@@ -164,14 +165,14 @@ export class sese extends plugin {
     let res = {};
 
     if (fs.existsSync(this.path)) {
-      res = await Config.getread(this.path)
+      res = await Cfg.getread(this.path)
     }
 
     if (!res[e.group_id]) res[e.group_id] = def
 
     res[e.group_id].cd = Number(cd)
 
-    if (await Config.getwrite(this.path, res)) {
+    if (await Cfg.getwrite(this.path, res)) {
       e.reply(`✅ 设置群${e.group_id}CD成功，CD为${cd}s`)
       temp = {};
     } else {
@@ -191,12 +192,12 @@ export class sese extends plugin {
     if (/私聊/.test(e.msg) || !e.isGroup) {
 
       if (fs.existsSync(this.path_s)) {
-        res = await Config.getread(this.path_s)
+        res = await Cfg.getread(this.path_s)
       }
 
       res.friendr18 = yes ? 1 : 0
 
-      if (await Config.getwrite(this.path_s, res)) {
+      if (await Cfg.getwrite(this.path_s, res)) {
         e.reply(`✅ 已${yes ? "开启" : "关闭"}私聊涩涩功能~`)
       } else {
         e.reply(`❎ 设置失败`)
@@ -206,7 +207,7 @@ export class sese extends plugin {
     }
 
     if (fs.existsSync(this.path)) {
-      res = await Config.getread(this.path)
+      res = await Cfg.getread(this.path)
     }
 
     if (!res[e.group_id]) res[e.group_id] = def
@@ -214,7 +215,7 @@ export class sese extends plugin {
 
     res[e.group_id].r18 = yes ? 1 : 0
 
-    if (await Config.getwrite(this.path, res)) {
+    if (await Cfg.getwrite(this.path, res)) {
       e.reply(`✅ 已${yes ? "开启" : "关闭"}${e.group_id}的涩涩模式~`)
     } else {
       e.reply(`❎ 设置失败`)
@@ -238,11 +239,11 @@ export class sese extends plugin {
 
     let res = {};
     if (fs.existsSync(this.path_s)) {
-      res = await Config.getread(this.path_s)
+      res = await Cfg.getread(this.path_s)
     }
 
     res[qq] = Number(cd)
-    if (await Config.getwrite(this.path_s, res)) {
+    if (await Cfg.getwrite(this.path_s, res)) {
       e.reply(`✅ 设置用户${qq}的cd成功，cd时间为${cd}秒`)
       delete temp[qq]
     } else {
@@ -265,7 +266,7 @@ export class sese extends plugin {
     //获取配置
     let cfgs = {};
     if (fs.existsSync(this.path)) {
-      cfgs = await Config.getread(this.path)
+      cfgs = await Cfg.getread(this.path)
     }
     //默认撤回间隔
     let time = def.recall
@@ -324,7 +325,7 @@ export class sese extends plugin {
       //私聊
       let CD = {};
       if (fs.existsSync(this.path_s)) {
-        CD = await Config.getread(this.path_s)
+        CD = await Cfg.getread(this.path_s)
       }
       if (CD[e.user_id]) {
         CD = CD[e.user_id]
@@ -381,7 +382,7 @@ export class sese extends plugin {
     if (e.isGroup) {
       //获取配置
       if (fs.existsSync(this.path)) {
-        cfgs = await Config.getread(this.path)
+        cfgs = await Cfg.getread(this.path)
       } else return def.r18
 
       if (cfgs[e.group_id]) {
@@ -391,7 +392,7 @@ export class sese extends plugin {
       }
     } else {
       if (fs.existsSync(this.path_s)) {
-        cfgs = await Config.getread(this.path_s)
+        cfgs = await Cfg.getread(this.path_s)
       } else return def.r18
 
       if (cfgs.friendr18) {
@@ -406,7 +407,7 @@ export class sese extends plugin {
 }
 // 秒转换
 function Secondformat(value) {
-  let time = Config.getsecond(value)
+  let time = Cfg.getsecond(value)
 
   let { second, minute, hour, day } = time
   // 处理返回消息

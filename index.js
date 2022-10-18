@@ -10,10 +10,6 @@ logger.info(chalk.green('------^-^------'))
 logger.info(chalk.yellow(`椰奶插件${Ver.ver}初始化~`))
 logger.info(chalk.green('---------------'))
 
-if (!await redis.get(`yenai:notice:deltime`)) {
-    await redis.set(`yenai:notice:deltime`, "600")
-}
-
 
 files.forEach((file) => {
     ret.push(import(`./apps/${file}`))

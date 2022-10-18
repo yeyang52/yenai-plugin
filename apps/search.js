@@ -93,8 +93,8 @@ export class example extends plugin {
     let reg = new RegExp(`#?${regRet[1]}搜索`)
     let content = e.msg.replace(reg, "")
     let url = SEARCH_MAP[regRet[1]] + encodeURIComponent(content)
-    let res = await Browser.webPreview(url)
-
+    let res = await Browser.Webpage(url)
+    logger.mark("开始搜索")
     if (res) {
       e.reply([segment.image(res), url]);
     } else {

@@ -67,7 +67,7 @@ export class example extends plugin {
     super({
       name: '搜索',
       event: 'message',
-      priority: 5000,
+      priority: 2000,
       rule: [
         {
           reg: searchReg,

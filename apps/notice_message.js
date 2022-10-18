@@ -51,9 +51,9 @@ Bot.on("message", async (e) => {
     let forwardMsg
     if (
         e.message[0].type == 'flash' &&
-        e.message_type === 'group' &&
-        Config.Notice.flashPhoto
+        e.message_type === 'group'
     ) {
+        if (!Config.getGroup(e.group_id).flashPhoto) return
         logger.mark("[椰奶]群聊闪照")
         msg = [
             segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`),

@@ -8,6 +8,7 @@
   groupNumberChange: false #群聊列表变动
   groupMemberNumberChange: false #群成员变动
   botBeenBanned: false #禁言
+  flashPhoto: false #闪照
 
 #请严格按照此格式 不需要的设置项可删除
 123456:

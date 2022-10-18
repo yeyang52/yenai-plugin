@@ -76,7 +76,7 @@ export class sese extends plugin {
   }
 
   async setu(e) {
-    if (!await redis.get(`yenai:notice:sese`)) return;
+    if (!Config.Notice.sese) return
 
     let cds = await this.getcd(e)
 
@@ -96,7 +96,7 @@ export class sese extends plugin {
 
   //tag搜图
   async setutag(e) {
-    if (!await redis.get(`yenai:notice:sese`)) return;
+    if (!Config.Notice.sese) return
 
     let cds = await this.getcd(e)
 

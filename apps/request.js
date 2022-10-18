@@ -24,7 +24,6 @@ export class invitation extends plugin {
 Bot.on('request.group.invite', async (e) => {
     let msg = ''
     if (!Config.Notice.groupInviteRequest) return
-    // if (!await redis.get(`yenai:notice:groupInviteRequest`)) return
 
     if (cfg.masterQQ.includes(e.user_id)) return
     logger.mark("[椰奶]邀请机器人进群")
@@ -49,7 +48,6 @@ Bot.on('request.group.invite', async (e) => {
 //好友申请
 Bot.on('request.friend', async (e) => {
     if (!Config.Notice.friendRequest) return
-    // if (!await redis.get(`yenai:notice:friendRequest`)) return
     logger.mark("[椰奶]好友申请")
     let msg = [
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),

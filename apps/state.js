@@ -22,7 +22,7 @@ export class example extends plugin {
 
 
   async state(e) {
-    if (!/椰奶/.test(e.msg) && !await redis.get("yenai:notice:state")) {
+    if (!/椰奶/.test(e.msg) && !Config.Notice.state) {
       return false;
     }
     //现在的时间戳(秒)

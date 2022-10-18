@@ -10,7 +10,7 @@
   botBeenBanned: false #禁言
   flashPhoto: false #闪照
 
-#请严格按照此格式 不需要的设置项可删除
-123456:
+#请严格按照yaml格式设置 不需要的设置项可删除
+456789:
   groupMessage: false #群消息
   grouptemporaryMessage: false #群临时消息

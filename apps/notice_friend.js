@@ -2,6 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
 import cfg from '../../../lib/config/config.js'
 import xcfg from '../model/Config.js'
+import { Config } from '../components/index.js'
 
 
 /** 好友通知 */
@@ -19,7 +20,7 @@ export class Friends extends plugin {
         let forwardMsg
         switch (e.sub_type) {
             case 'increase': {
-                if (!await redis.get(`yenai:notice:friendNumberChange`)) return
+                if (!Config.Notice.friendNumberChange) return
                 logger.mark("[椰奶]新增好友")
                 msg = [
                     segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
@@ -30,7 +31,7 @@ export class Friends extends plugin {
                 break
             }
             case 'decrease': {
-                if (!await redis.get(`yenai:notice:friendNumberChange`)) return
+                if (!Config.Notice.friendNumberChange) return
                 logger.mark("[椰奶]好友减少")
                 msg = [
                     segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
@@ -41,7 +42,7 @@ export class Friends extends plugin {
                 break
             }
             case 'recall': {
-                if (!await redis.get(`yenai:notice:PrivateRecall`)) return
+                if (!Config.Notice.PrivateRecall) return
 
                 if (e.user_id == cfg.qq) return
 
@@ -82,7 +83,7 @@ export class Friends extends plugin {
                 break
             }
             case 'poke': {
-                if (!await redis.get(`yenai:notice:privateMessage`)) return
+                if (!Config.Notice.privateMessage) return
                 logger.mark("[椰奶]好友戳一戳")
                 msg = [
                     segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),

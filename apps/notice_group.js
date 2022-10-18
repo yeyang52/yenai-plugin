@@ -2,6 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
 import cfg from '../../../lib/config/config.js'
 import xcfg from '../model/Config.js'
+import { Config } from '../components/index.js'
 
 
 
@@ -21,7 +22,7 @@ export class newgroups extends plugin {
         switch (e.sub_type) {
             case 'increase': {
                 if (e.user_id === cfg.qq) {
-                    if (!await redis.get(`yenai:notice:groupNumberChange`)) return
+                    if (!Config.getGroup(e.group_id).groupNumberChange) return
 
                     logger.mark("[椰奶]新增群聊")
 
@@ -33,7 +34,7 @@ export class newgroups extends plugin {
                         `新增群号：${e.group_id}`
                     ]
                 } else {
-                    if (!await redis.get(`yenai:notice:groupMemberNumberChange`)) return
+                    if (!Config.getGroup(e.group_id).groupMemberNumberChange) return
 
                     logger.mark("[椰奶]新增群员")
 
@@ -51,7 +52,7 @@ export class newgroups extends plugin {
             }
             case 'decrease': {
                 if (e.dismiss) {
-                    if (!await redis.get(`yenai:notice:groupNumberChange`)) return
+                    if (!Config.getGroup(e.group_id).groupNumberChange) return
 
                     logger.mark("[椰奶]群聊被解散")
 
@@ -64,7 +65,7 @@ export class newgroups extends plugin {
                         `解散群号：${e.group_id}`
                     ]
                 } else if (e.user_id === cfg.qq && e.operator_id !== cfg.qq) {
-                    if (!await redis.get(`yenai:notice:groupNumberChange`)) return
+                    if (!Config.getGroup(e.group_id).groupNumberChange) return
 
                     logger.mark("[椰奶]机器人被踢")
 
@@ -77,7 +78,7 @@ export class newgroups extends plugin {
                         `被踢群号：${e.group_id}`
                     ]
                 } else if (e.user_id === cfg.qq && e.operator_id === cfg.qq) {
-                    if (!await redis.get(`yenai:notice:groupNumberChange`)) return
+                    if (!Config.getGroup(e.group_id).groupNumberChange) return
 
                     logger.mark("[椰奶]机器人退群")
 
@@ -89,7 +90,7 @@ export class newgroups extends plugin {
                         `退出群号：${e.group_id}`
                     ]
                 } else if (e.operator_id === e.user_id) {
-                    if (!await redis.get(`yenai:notice:groupMemberNumberChange`)) return
+                    if (!Config.getGroup(e.group_id).groupMemberNumberChange) return
 
                     logger.mark("[椰奶]群员退群")
 
@@ -108,7 +109,7 @@ export class newgroups extends plugin {
                         `退出群号：${e.group_id}`
                     ]
                 } else if (e.operator_id !== e.user_id) {
-                    if (!await redis.get(`yenai:notice:groupMemberNumberChange`)) return
+                    if (!Config.getGroup(e.group_id).groupMemberNumberChange) return
 
                     logger.mark("[椰奶]群员被踢")
 
@@ -132,7 +133,7 @@ export class newgroups extends plugin {
             }
             // 群管理变动
             case 'admin': {
-                if (!await redis.get(`yenai:notice:groupAdminChange`)) return
+                if (!Config.getGroup(e.group_id).groupAdminChange) return
 
                 e.set ? logger.mark("[椰奶]机器人被设置管理") : logger.mark("[椰奶]机器人被取消管理")
                 if (e.user_id === cfg.qq) {
@@ -166,7 +167,7 @@ export class newgroups extends plugin {
             case 'ban': {
                 let Forbiddentime = getsecond(e.duration)
 
-                if (!await redis.get(`yenai:notice:botBeenBanned`)) return
+                if (!Config.getGroup(e.group_id).botBeenBanned) return
 
                 if (e.user_id != cfg.qq) return
 
@@ -198,7 +199,7 @@ export class newgroups extends plugin {
             }
             // 群转让
             case 'transfer': {
-                if (!await redis.get(`yenai:notice:groupNumberChange`)) return
+                if (!Config.getGroup(e.group_id).groupNumberChange) return
 
                 logger.mark("[椰奶]群聊转让")
 
@@ -216,7 +217,7 @@ export class newgroups extends plugin {
             // 群撤回
             case 'recall': {
                 // 开启或关闭
-                if (!await redis.get(`yenai:notice:groupRecall`)) return
+                if (!Config.getGroup(e.group_id).groupRecall) return
                 // 是否为机器人撤回
                 if (e.user_id == cfg.qq) return
                 // 是否为主人撤回

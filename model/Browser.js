@@ -1,9 +1,11 @@
-import { createRequire } from 'module'
-const require = createRequire(import.meta.url)
-const puppeteer = require('puppeteer');
-
+import puppeteer from 'puppeteer'
 
 class Browser {
+    /**
+     * @description: 返回网页截图
+     * @param {String} url 网页链接
+     * @return {image} 图片
+     */
     async Webpage(url) {
         const browser = await puppeteer.launch({
             args: ["--no-sandbox", "--disable-setuid-sandbox"]
@@ -40,7 +42,7 @@ class Browser {
      * @param {String} url 网页链接
      * @param {Number} width 页面的宽度
      * @param {Number} height 页面的高度
-     * @return {img} 图片
+     * @return {image} 图片
      */
     async webPreview(url, width = 1920, height = 1080) {
 
@@ -69,18 +71,6 @@ class Browser {
 
         await browser.close();
         return res
-    }
-    //延时函数
-    sleep(delay) {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                try {
-                    resolve(1)
-                } catch (e) {
-                    reject(0)
-                }
-            }, delay)
-        })
     }
 }
 

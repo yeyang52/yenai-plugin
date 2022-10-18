@@ -2,7 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import fs from "fs";
 import lodash from "lodash";
 import Common from "../components/Common.js";
-import common from '../../../lib/common/common.js'
+import { Config } from '../components/index.js'
 
 
 export class NewConfig extends plugin {
@@ -42,22 +42,14 @@ export class NewConfig extends plugin {
         // 解析消息
         let index = e.msg.replace(/#|椰奶设置|开启|关闭/g, "")
 
-
         if (!configs.hasOwnProperty(index)) return
         // 开启还是关闭
         if (/开启/.test(e.msg)) {
-            await redis.set(`yenai:notice:${configs[index]}`, "1").then(() => {
-                logger.mark(`[椰奶]已启用${index}`)
-            }).catch(err => {
-                logger.error(`[椰奶]启用失败${index}`, err)
-            })
+            Config.modify("whole", configs[index], true)
         } else {
-            await redis.del(`yenai:notice:${configs[index]}`).then(() => {
-                logger.mark(`[椰奶]已禁用${index}`)
-            }).catch(err => {
-                logger.error(`[椰奶]禁用失败${index}`, err)
-            })
+            Config.modify("whole", configs[index], false)
         }
+        // await 
         this.yenaiset(e)
         return true;
     }
@@ -74,13 +66,10 @@ export class NewConfig extends plugin {
 
         if (time < 120) return e.reply('❎ 时间不能小于两分钟')
 
-        await redis.set(`yenai:notice:deltime`, String(time[0])).then(() => {
-            logger.mark(`[椰奶]设置删除缓存时间为${time[0]}`)
-        }).catch(err => {
-            logger.error(`[椰奶]设置删除缓存时间失败`, err)
-        })
+        Config.modify("whole", `deltime`, Number(time[0]))
 
         this.yenaiset(e)
+
         return true;
     }
 
@@ -95,24 +84,12 @@ export class NewConfig extends plugin {
         if (yes) {
             for (let i in configs) {
                 if (no.includes(configs[i])) continue
-
-                await redis.set(`yenai:notice:${configs[i]}`, "1").then(() => {
-                    logger.mark(`[椰奶]已启用${i}`)
-                }).catch(err => {
-                    logger.error(`[椰奶]启用失败${i}`, err)
-                })
-
-                await common.sleep(200)
+                Config.modify("whole", configs[i], yes)
             }
         } else {
             for (let i in configs) {
                 if (no.includes(configs[i])) continue
-                await redis.del(`yenai:notice:${configs[i]}`).then(() => {
-                    logger.mark(`[椰奶]已禁用${i}`)
-                }).catch(err => {
-                    logger.error(`[椰奶]禁用失败${i}`, err)
-                })
-                await common.sleep(200)
+                Config.modify("whole", configs[i], yes)
             }
         }
         this.yenaiset(e)
@@ -121,11 +98,7 @@ export class NewConfig extends plugin {
     async yenaiset(e) {
         if (!e.isMaster) return
 
-        let config = {}
-        for (let i in configs) {
-            let res = await redis.get(`yenai:notice:${configs[i]}`)
-            config[configs[i]] = res
-        }
+        let config = await Config.Notice
 
         let cfg = {
             //好友消息

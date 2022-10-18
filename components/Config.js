@@ -10,96 +10,113 @@ class Config {
     this.config = {}
 
     /** 监听文件 */
-    this.watcher = {}
+    this.watcher = { config: {}, defSet: {} }
 
-    this.ignore = []
+    this.initCfg()
+  }
+  /** 初始化配置 */
+  initCfg() {
+    let path = `${Plugin_Path}/config/config/`
+    let pathDef = `${Plugin_Path}/config/default_config/`
+    const files = fs.readdirSync(pathDef).filter(file => file.endsWith('.yaml'))
+    for (let file of files) {
+      if (!fs.existsSync(`${path}${file}`)) {
+        fs.copyFileSync(`${pathDef}${file}`, `${path}${file}`)
+      }
+    }
   }
 
-  /**
-   * @param app  功能
-   * @param name 配置文件名称
-   */
-  getdefSet(app, name) {
-    return this.getYaml(app, name, 'defSet')
+  /** 群配置 */
+  getGroup(groupId = '') {
+    let config = this.getConfig('whole')
+    let group = this.getConfig("group")
+    let defCfg = this.getdefSet('whole')
+
+    if (group[groupId]) {
+      return { ...defCfg, ...config, ...group[groupId] }
+    }
+    return { ...defCfg, ...config }
+  }
+
+  //获取全局设置
+  get Notice() {
+    return this.getNotice()
+  }
+
+  /** 通知配置 */
+  getNotice() {
+    let def = this.getdefSet('whole')
+    let config = this.getConfig('whole')
+    return { ...def, ...config }
+  }
+
+  /** 默认配置 */
+  getdefSet(name) {
+    return this.getYaml('default_config', name)
   }
 
   /** 用户配置 */
-  getConfig(app, name) {
-    return this.getYaml(app, name, 'config')
+  getConfig(name) {
+    return this.getYaml('config', name)
   }
 
   /**
    * 获取配置yaml
-   * @param app 功能
-   * @param name 名称
    * @param type 默认跑配置-defSet，用户配置-config
+   * @param name 名称
    */
-  getYaml(app, name, type) {
-    let file = this.getFilePath(app, name, type)
-    let key = `${app}.${name}`
+  getYaml(type, name) {
+    let file = `${Plugin_Path}/config/${type}/${name}.yaml`
+    let key = `${type}.${name}`
 
-    if (this.config[type][key]) return this.config[type][key]
+    if (this.config[key]) return this.config[key]
 
-    try {
-      this.config[type][key] = YAML.parse(
-        fs.readFileSync(file, 'utf8')
-      )
-    } catch (error) {
-      logger.error(`[${app}][${name}] 格式错误 ${error}`)
-      return false
-    }
+    this.config[key] = YAML.parse(
+      fs.readFileSync(file, 'utf8')
+    )
 
-    this.watch(file, app, name, type)
+    this.watch(file, name, type)
 
-    return this[type][key]
-  }
-
-  getFilePath(app, name, type) {
-    if (!this.config[type]) {
-      this.config[type] = {};
-    }
-
-    if (!this.watcher[type]) {
-      this.watcher[type] = {};
-    }
-
-    let config_path = `${Plugin_Path}/${type}/`;
-    let file = `${config_path}${app}.${name}.yaml`;
-    try {
-      if (!fs.existsSync(file)) {
-        let default_file = `${config_path}default/${app}.${name}.yaml`;
-        fs.copyFileSync(default_file, file);
-      }
-    } catch (err) { }
-    return file;
+    return this.config[key]
   }
 
   /** 监听配置文件 */
-  watch(file, app, name, type = 'defSet') {
-    let key = `${app}.${name}`
+  watch(file, name, type = 'default_config') {
+    let key = `${type}.${name}`
 
-    if (this.watcher[type][key]) return
+    if (this.watcher[key]) return
 
     const watcher = chokidar.watch(file)
     watcher.on('change', path => {
-      delete this[type][key]
-      logger.mark(`[修改配置文件][${type}][${app}][${name}]`)
-      if (this[`change_${app}${name}`]) {
-        this[`change_${app}${name}`]()
+      delete this.config[key]
+      if (typeof Bot == 'undefined') return
+      logger.mark(`[椰奶修改配置文件][${type}][${name}]`)
+      if (this[`change_${name}`]) {
+        this[`change_${name}`]()
       }
     })
 
-    this.watcher[type][key] = watcher
+    this.watcher[key] = watcher
   }
 
-
-  save(app, name, type) {
-    let file = this.getFilePath(app, name, type)
-    if (lodash.isEmpty(data)) {
-      fs.existsSync(file) && fs.unlinkSync(file)
-    } else {
-      let yaml = YAML.stringify(data)
-      fs.writeFileSync(file, yaml, 'utf8')
+  /**
+   * @description: 修改设置
+   * @param {String} name 文件名
+   * @param {String} key 修改的key值
+   * @param {*} value 修改的value值
+   * @return {Boolean} 返回是否成功写入
+   */
+  modify(name, key, value) {
+    let path = `${Plugin_Path}/config/config/${name}.yaml`
+    let config = this.Notice
+    config[key] = value
+    try {
+      fs.writeFileSync(path, YAML.stringify(config), 'utf8')
+      delete this.config[`config.${name}`]
+      return true;
+    } catch (e) {
+      console.log(e);
+      return false;
     }
   }
 

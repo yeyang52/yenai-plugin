@@ -2,6 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
 import cfg from '../../../lib/config/config.js'
 import xcfg from '../model/Config.js'
+import { Config } from '../components/index.js'
 
 export class anotice extends plugin {
     constructor() {
@@ -20,28 +21,29 @@ Bot.on("message", async (e) => {
     // 判断是否主人消息
     if (cfg.masterQQ.includes(e.user_id)) return
     //删除缓存时间
-    let deltime = Number(await redis.get(`yenai:notice:deltime`))
+    let deltime = Config.Notice.deltime
     // 判断群聊还是私聊
     if (e.isGroup) {
         // 关闭撤回停止存储
-        if (await redis.get(`yenai:notice:groupRecall`)) {
-            // 写入
-            await redis.set(
-                `notice:messageGroup:${e.message_id}`,
-                JSON.stringify(e.message),
-                { EX: deltime }
-            )
-        }
+        if (!Config.getGroup(e.group_id).groupRecall) return
+        // 写入
+        await redis.set(
+            `notice:messageGroup:${e.message_id}`,
+            JSON.stringify(e.message),
+            { EX: deltime }
+        )
+
     } else if (e.isPrivate) {
+        if (!Config.Notice.PrivateRecall) return
         // 关闭撤回停止存储
-        if (await redis.get(`yenai:notice:PrivateRecall`)) {
-            // 写入
-            await redis.set(
-                `notice:messagePrivate:${e.message_id}`,
-                JSON.stringify(e.message),
-                { EX: deltime }
-            )
-        }
+        if (await redis.get(`yenai:notice:PrivateRecall`)) return
+        // 写入
+        await redis.set(
+            `notice:messagePrivate:${e.message_id}`,
+            JSON.stringify(e.message),
+            { EX: deltime }
+        )
+
     }
 
     // 消息通知
@@ -50,7 +52,7 @@ Bot.on("message", async (e) => {
     if (
         e.message[0].type == 'flash' &&
         e.message_type === 'group' &&
-        await redis.get(`yenai:notice:flashPhoto`)
+        Config.Notice.flashPhoto
     ) {
         logger.mark("[椰奶]群聊闪照")
         msg = [
@@ -65,7 +67,7 @@ Bot.on("message", async (e) => {
     } else if (
         e.message[0].type == 'flash' &&
         e.message_type === 'discuss' &&
-        await redis.get(`yenai:notice:flashPhoto`)
+        Config.Notice.flashPhoto
     ) {
         logger.mark("[椰奶]讨论组闪照")
         msg = [
@@ -80,7 +82,7 @@ Bot.on("message", async (e) => {
     } else if (
         e.message[0].type == 'flash' &&
         e.message_type === 'private' &&
-        await redis.get(`yenai:notice:flashPhoto`)
+        Config.Notice.flashPhoto
     ) {
         logger.mark("[椰奶]好友闪照")
         msg = [
@@ -91,7 +93,7 @@ Bot.on("message", async (e) => {
             `闪照链接:${e.message[0].url}`
         ]
     } else if (e.message_type === 'private' && e.sub_type === 'friend') {
-        if (!await redis.get(`yenai:notice:privateMessage`)) return
+        if (!Config.Notice.privateMessage) return
 
         let res = e.message
         // 特殊消息处理
@@ -120,7 +122,7 @@ Bot.on("message", async (e) => {
             )
         }
     } else if (e.message_type === 'private' && e.sub_type === 'group') {
-        if (!await redis.get(`yenai:notice:grouptemporaryMessage`)) return
+        if (!Config.getGroup(e.group_id).grouptemporaryMessage) return
         // 特殊消息处理
         let res = e.message
         let arr = getSpecial(e.message)
@@ -139,7 +141,7 @@ Bot.on("message", async (e) => {
             ...res
         ]
     } else if (e.message_type === 'group') {
-        if (!await redis.get(`yenai:notice:groupMessage`)) return
+        if (!Config.getGroup(e.group_id).groupMessage) return
         // 特殊消息处理
         let res = e.message
         let arr = getSpecial(e.message)
@@ -159,7 +161,7 @@ Bot.on("message", async (e) => {
             ...res
         ]
     } else if (e.message_type === 'discuss') {
-        if (!await redis.get(`yenai:notice:groupMessage`)) return
+        if (!Config.getGroup(e.group_id).groupMessage) return
         logger.mark("[椰奶]讨论组消息")
         msg = [
             segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),

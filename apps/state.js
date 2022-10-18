@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import os from 'os';
 import { Version, Common, Plugin_Name, Data } from '../components/index.js'
-import CPU from '../model/cpu.js';
+import CPU from '../model/CPU.js';
 import Cfg from '../model/Config.js';
 import fs from 'fs'
 export class example extends plugin {

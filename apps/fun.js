@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import fetch from 'node-fetch'
 import { segment } from "oicq";
-
+import cfg from "../model/Config.js"
 export class example extends plugin {
   constructor() {
     super({
@@ -28,6 +28,10 @@ export class example extends plugin {
         {
           reg: 'github.com\/[a-zA-Z0-9-]{1,39}\/[a-zA-Z0-9_-]{1,100}',
           fnc: 'GH'
+        },
+        {
+          reg: '#?coser',
+          fnc: 'cos'
         }
       ]
     })
@@ -149,5 +153,22 @@ export class example extends plugin {
     }
 
     return true;
+  }
+
+  async cos(e) {
+    await e.reply("少女祈祷中~")
+
+    const api = "https://ovooa.com/API/cosplay/api.php"
+
+    let res = await fetch(api).then((res) => res.json()).catch((err) => console.error(err))
+    console.log(res);
+    if (!res) return e.reply("接口失效")
+
+    res = res.data
+    let msg = [res.Title]
+    for (let i of res.data) {
+      msg.push(segment.image(i))
+    }
+    cfg.getforwardMsg(msg, e)
   }
 }

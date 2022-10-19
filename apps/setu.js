@@ -166,7 +166,7 @@ export class sese extends plugin {
 
     if (num > 20) {
       return e.reply("❎ 最大张数不能大于20张")
-    } else if (num > 5) {
+    } else if (num > 6) {
       e.reply("你先等等，你冲的有点多~")
     } else {
       e.reply(lodash.sample(startMsg))
@@ -319,7 +319,13 @@ export class sese extends plugin {
 
   //请求api
   async setuapi(r18, num = 1, tag = "") {
-    let url = `${api}?r18=${r18}&num=${num}${tag}`;
+    let size = "original"
+    if (num <= 6 && num > 1) {
+      size = "regular"
+    } else if (num > 6) {
+      size = "small"
+    }
+    let url = `${api}?r18=${r18}&num=${num}${tag}&proxy=proxy.pixivel.moe&size=${size}`;
     let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
     if (!result) return false;
     return result.data
@@ -343,8 +349,7 @@ export class sese extends plugin {
     let msg = [];
     for (let i of img) {
       let { pid, title, tags, author, r18, urls } = i
-      let url = urls.original.replace("i.pixiv.re", "proxy.pixivel.moe")
-      
+      console.log(urls);
       msg.push([
         `${lodash.sample(sendMsg)}\n`,
         `标题：${title}\n`,
@@ -353,7 +358,7 @@ export class sese extends plugin {
         `r18：${r18}\n`,
         `tag：${lodash.truncate(tags.join(","))}`,
         // segment.image(`https://pixiv.re/${pid}.png`),
-        segment.image(url),
+        segment.image(urls.original || urls.regular || urls.small),
       ])
     }
 

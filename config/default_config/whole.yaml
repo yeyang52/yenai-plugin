@@ -1,5 +1,5 @@
 #群通知类
-groupMessage: true #群消息
+groupMessage: false #群消息
 grouptemporaryMessage: false #群临时消息
 groupRecall: false #群撤回
 groupInviteRequest: false #群邀请
@@ -7,10 +7,10 @@ groupAdminChange: false #群管理变动
 groupNumberChange: false #群聊列表变动
 groupMemberNumberChange: false #群成员变动
 #好友通知类
-privateMessage: true #好友消息
+privateMessage: false #好友消息
 PrivateRecall: false #好友撤回
 friendRequest: false #好友申请
-friendNumberChange: true #好友列表变动
+friendNumberChange: false #好友列表变动
 #其他设置
 flashPhoto: false #闪照
 botBeenBanned: false #禁言

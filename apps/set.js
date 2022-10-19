@@ -79,7 +79,7 @@ export class NewConfig extends plugin {
         if (/启用/.test(e.msg)) {
             yes = true;
         }
-        let no = ["sese", "deltime", "notificationsAll"]
+        let no = ["sese", "deltime", "notificationsAll", "state"]
 
         if (yes) {
             for (let i in configs) {

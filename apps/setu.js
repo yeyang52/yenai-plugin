@@ -342,7 +342,9 @@ export class sese extends plugin {
     //消息
     let msg = [];
     for (let i of img) {
-      let { pid, title, tags, author, r18 } = i
+      let { pid, title, tags, author, r18, urls } = i
+      let url = urls.original.replace("i.pixiv.re", "proxy.pixivel.moe")
+      
       msg.push([
         `${lodash.sample(sendMsg)}\n`,
         `标题：${title}\n`,
@@ -350,7 +352,8 @@ export class sese extends plugin {
         `pid：${pid}\n`,
         `r18：${r18}\n`,
         `tag：${lodash.truncate(tags.join(","))}`,
-        segment.image(`https://pixiv.re/${pid}.png`),
+        // segment.image(`https://pixiv.re/${pid}.png`),
+        segment.image(url),
       ])
     }
 

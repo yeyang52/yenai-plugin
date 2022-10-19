@@ -7,7 +7,7 @@ export class example extends plugin {
     super({
       name: '娱乐',
       event: 'message',
-      priority: 2000,
+      priority: 500,
       rule: [
         {
           reg: '^#唱歌$',
@@ -175,6 +175,7 @@ export class example extends plugin {
         item++
       }
     }
-    cfg.getforwardMsg(msg, e)
+    await cfg.getforwardMsg(msg, e)
+    return true
   }
 }

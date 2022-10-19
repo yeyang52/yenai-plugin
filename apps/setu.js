@@ -103,7 +103,7 @@ export class sese extends plugin {
     let r18 = await this.getr18(e)
 
     let res = await this.setuapi(r18, num)
-    
+
     if (!res) return e.reply("接口失效")
 
     this.sendMsg(e, res)
@@ -128,7 +128,7 @@ export class sese extends plugin {
       msg = msg.replace(num[0], "").trim()
       num = num[0].replace("张", "").trim()
     }
-    
+
     if (num > 20) {
       return e.reply("❎ 最大张数不能大于20张")
     } else if (num > 5) {
@@ -395,7 +395,9 @@ export class sese extends plugin {
 
         let over = (temp[e.user_id + e.group_id] - present)
 
-        return Secondformat(over)
+        if (over > 0) {
+          return Secondformat(over)
+        } else return false
 
       } else return false
 
@@ -403,8 +405,10 @@ export class sese extends plugin {
       if (temp[e.user_id]) {
 
         let over = (temp[e.user_id] - present)
-
-        return Secondformat(over)
+        
+        if (over > 0) {
+          return Secondformat(over)
+        } else return false
 
       } else return false
     }
@@ -438,7 +442,11 @@ export class sese extends plugin {
     }
   }
 }
-// 秒转换
+/**
+ * @description: 格式化秒
+ * @param {Number} value 秒
+ * @return {String} 
+ */
 function Secondformat(value) {
   let time = Cfg.getsecond(value)
 

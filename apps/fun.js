@@ -156,18 +156,24 @@ export class example extends plugin {
   }
 
   async cos(e) {
-    await e.reply("少女祈祷中~")
+    await e.reply("少女祈祷中......")
 
     const api = "https://ovooa.com/API/cosplay/api.php"
 
     let res = await fetch(api).then((res) => res.json()).catch((err) => console.error(err))
-    console.log(res);
+
     if (!res) return e.reply("接口失效")
 
     res = res.data
+    let item = 1;
     let msg = [res.Title]
     for (let i of res.data) {
       msg.push(segment.image(i))
+      if (item >= 20) {
+        break
+      } else {
+        item++
+      }
     }
     cfg.getforwardMsg(msg, e)
   }

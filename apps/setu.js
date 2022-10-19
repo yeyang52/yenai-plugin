@@ -19,6 +19,7 @@ let api = "https://api.lolicon.app/setu/v2";
 let startMsg = [
   "正在给你找setu了，你先等等再冲~",
   "你先别急，正在找了~",
+  "马上去给你找涩图，你先憋一会~"
 ]
 
 let CDMsg = [

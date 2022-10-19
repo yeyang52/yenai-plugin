@@ -78,7 +78,9 @@ export class sese extends plugin {
   }
 
   async setu(e) {
-    if (!Config.Notice.sese) return
+    if (!e.isMaster) {
+      if (!Config.Notice.sese) return
+    }
 
     let cds = await this.getcd(e)
 
@@ -112,7 +114,9 @@ export class sese extends plugin {
 
   //tag搜图
   async setutag(e) {
-    if (!Config.Notice.sese) return
+    if (!e.isMaster) {
+      if (!Config.Notice.sese) return
+    }
 
     let cds = await this.getcd(e)
 
@@ -405,7 +409,7 @@ export class sese extends plugin {
       if (temp[e.user_id]) {
 
         let over = (temp[e.user_id] - present)
-        
+
         if (over > 0) {
           return Secondformat(over)
         } else return false

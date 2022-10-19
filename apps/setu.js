@@ -43,7 +43,7 @@ export class sese extends plugin {
           fnc: 'setutag'
         },
         {
-          reg: '^#(setu|无内鬼)$',
+          reg: '^#(setu|无内鬼)(\\s?\\d+?张)?$',
           fnc: 'setu'
         },
         {
@@ -83,15 +83,29 @@ export class sese extends plugin {
 
     if (cds) return e.reply(` ${lodash.sample(CDMsg)}你的CD还有${cds}`, false, { at: true })
 
-    await e.reply(lodash.sample(startMsg))
+    let num = e.msg.match(/\d?\d张/)
+
+    if (!num) {
+      num = 1
+    } else {
+      num = num[0].replace("张", "").trim()
+    }
+
+    if (num > 20) {
+      return e.reply("❎ 最大张数不能大于20张")
+    } else if (num > 5) {
+      e.reply("你先等等，你冲的有点多~")
+    } else {
+      e.reply(lodash.sample(startMsg))
+    }
 
     let r18 = await this.getr18(e)
 
-    let res = await this.setuapi(r18)
-
+    let res = await this.setuapi(r18, num)
+    
     if (!res) return e.reply("接口失效")
 
-    this.sendMsg(e, res[0])
+    this.sendMsg(e, res)
 
   }
 
@@ -104,6 +118,23 @@ export class sese extends plugin {
     if (cds) return e.reply(` ${lodash.sample(CDMsg)}你的CD还有${cds}`, false, { at: true })
 
     let msg = e.msg.replace(/#|椰奶tag/g, "").trim()
+
+    let num = e.msg.match(/\d?\d张/)
+
+    if (!num) {
+      num = 1
+    } else {
+      msg = msg.replace(num[0], "").trim()
+      num = num[0].replace("张", "").trim()
+    }
+    
+    if (num > 20) {
+      return e.reply("❎ 最大张数不能大于20张")
+    } else if (num > 5) {
+      e.reply("你先等等，你冲的有点多~")
+    } else {
+      e.reply(lodash.sample(startMsg))
+    }
 
     if (!msg) return e.reply("tag为空！！！", false, { at: true })
 
@@ -119,15 +150,13 @@ export class sese extends plugin {
 
     let r18 = await this.getr18(e)
     //接口
-    let res = await this.setuapi(r18, 1, msg)
+    let res = await this.setuapi(r18, num, msg)
 
     if (!res) return e.reply("❎ 接口失效")
 
     if (res.length == 0) return e.reply("没有找到相关的tag", false, { at: true })
-    //发送开始找涩图
-    await e.reply(lodash.sample(startMsg))
     //发送消息
-    this.sendMsg(e, res[0])
+    this.sendMsg(e, res)
   }
 
   //设置撤回间隔
@@ -274,12 +303,16 @@ export class sese extends plugin {
     let cd = def.cd
     //获取当前时间
     let present = parseInt(new Date().getTime() / 1000)
-    let { pid, title, tags, author, r18 } = img
     //消息
-    let msg = [`标题：${title}\n画师：${author}\npid：${pid}\nr18：${r18}\ntag：${lodash.truncate(tags.join(","))}`,
-    `https://www.pixiv.net/artworks/${pid}`,
-    segment.image(`https://pixiv.re/${pid}.jpg`),
-    ]
+    let msg = [];
+    for (let i of img) {
+      let { pid, title, tags, author, r18 } = i
+      msg.push([`标题：${title}\n画师：${author}\npid：${pid}\nr18：${r18}\ntag：${lodash.truncate(tags.join(","))}`,
+      segment.image(`https://pixiv.re/${pid}.jpg`),
+      ])
+    }
+
+
     //制作转发消息
     let forwardMsg = []
     for (let i of msg) {
@@ -403,7 +436,6 @@ export class sese extends plugin {
 
     }
   }
-
 }
 // 秒转换
 function Secondformat(value) {

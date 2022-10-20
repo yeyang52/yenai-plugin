@@ -415,11 +415,12 @@ export class example extends plugin {
           .then(() => e.reply("✅ " + sendList[0] + " 群聊消息已送达"))
           .catch((err) => e.reply(`❎ ${sendList[0]} 发送失败\n错误信息为:${err.message}`))
       } else {
+        e.reply("发送多个群聊，将每5秒发送一条消息！")
         for (let i of sendList) {
           await Bot.pickGroup(i).sendMsg(e.message)
             .then(() => e.reply("✅ " + i + " 群聊消息已送达"))
             .catch((err) => e.reply(`❎ ${i} 发送失败\n错误信息为:${err.message}`))
-          await common.sleep(2000)
+          await common.sleep(5000)
         }
       }
       return false;

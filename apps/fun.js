@@ -2,6 +2,8 @@ import plugin from '../../../lib/plugins/plugin.js'
 import fetch from 'node-fetch'
 import { segment } from "oicq";
 import cfg from "../model/Config.js"
+import lodash from 'lodash'
+
 export class example extends plugin {
   constructor() {
     super({
@@ -32,6 +34,10 @@ export class example extends plugin {
         {
           reg: '#?coser',
           fnc: 'cos'
+        },
+        {
+          reg: 'waifu',
+          fnc: 'AiWife'
         }
       ]
     })
@@ -177,5 +183,8 @@ export class example extends plugin {
     }
     await cfg.getforwardMsg(msg, e)
     return true
+  }
+  async AiWife(e) {
+    e.reply(segment.image(`https://www.thiswaifudoesnotexist.net/example-${lodash.random(100000)}.jpg`))
   }
 }

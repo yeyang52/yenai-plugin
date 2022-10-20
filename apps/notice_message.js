@@ -15,7 +15,7 @@ export class anotice extends plugin {
 }
 
 Bot.on("message", async (e) => {
-
+    console.log("123");
     // 判断是否为机器人消息
     if (e.user_id == cfg.qq) return
     // 判断是否主人消息
@@ -25,24 +25,25 @@ Bot.on("message", async (e) => {
     // 判断群聊还是私聊
     if (e.isGroup) {
         // 关闭撤回停止存储
-        if (!Config.getGroup(e.group_id).groupRecall) return
-        // 写入
-        await redis.set(
-            `notice:messageGroup:${e.message_id}`,
-            JSON.stringify(e.message),
-            { EX: deltime }
-        )
+        if (Config.getGroup(e.group_id).groupRecall) {
+            // 写入
+            await redis.set(
+                `notice:messageGroup:${e.message_id}`,
+                JSON.stringify(e.message),
+                { EX: deltime }
+            )
+        }
 
     } else if (e.isPrivate) {
-        if (!Config.Notice.PrivateRecall) return
         // 关闭撤回停止存储
-        if (await redis.get(`yenai:notice:PrivateRecall`)) return
-        // 写入
-        await redis.set(
-            `notice:messagePrivate:${e.message_id}`,
-            JSON.stringify(e.message),
-            { EX: deltime }
-        )
+        if (Config.Notice.PrivateRecall) {
+            // 写入
+            await redis.set(
+                `notice:messagePrivate:${e.message_id}`,
+                JSON.stringify(e.message),
+                { EX: deltime }
+            )
+        }
 
     }
 

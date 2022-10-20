@@ -336,6 +336,7 @@ export class sese extends plugin {
   async sendMsg(e, img) {
     //获取配置
     let cfgs = {};
+    let isfk = `呃....被风控了，感觉不太妙呢~给你个链接冲吧~\nhttps://pixiv.re/${img[0].pid}.jpg`
     if (fs.existsSync(this.path)) {
       cfgs = await Cfg.getread(this.path)
     }
@@ -394,7 +395,7 @@ export class sese extends plugin {
           }
           return item
         }).catch(() => {
-          e.reply(`呃....被风控了，感觉不太妙呢~给你个链接冲吧~\nhttps://pixiv.cat/${img[0].pid}`)
+          e.reply(isfk)
           logger.error("[椰奶]Bot被风控，发送被风控图片")
         })
       //撤回间隔
@@ -427,7 +428,7 @@ export class sese extends plugin {
             }
           }
         }).catch((err) => {
-          e.reply(`呃....被风控了，感觉不太妙呢~给你个链接冲吧~\nhttps://pixiv.cat/${img[0].pid}`)
+          e.reply(isfk)
           console.log(err);
         })
     }

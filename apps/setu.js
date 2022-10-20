@@ -96,7 +96,7 @@ export class sese extends plugin {
         }
       ]
     })
-    this.fk = "./plugins/yenai-plugin/resources/img/风控.png"
+    // this.fk = "./plugins/yenai-plugin/resources/img/风控.png"
     this.path_folder = "./plugins/yenai-plugin/config/setu"
     this.path = "./plugins/yenai-plugin/config/setu/setu.json"
     this.path_s = "./plugins/yenai-plugin/config/setu/setu_s.json"
@@ -394,7 +394,7 @@ export class sese extends plugin {
           }
           return item
         }).catch(() => {
-          e.reply(segment.image(this.fk))
+          e.reply(`呃....被风控了，感觉不太秒呢~给你个链接冲吧~\nhttps://pixiv.cat/${img[0].pid}`)
           logger.error("[椰奶]Bot被风控，发送被风控图片")
         })
       //撤回间隔
@@ -427,7 +427,7 @@ export class sese extends plugin {
             }
           }
         }).catch((err) => {
-          e.reply(segment.image(this.fk))
+          e.reply(`呃....被风控了，感觉不太秒呢~给你个链接冲吧~\nhttps://pixiv.cat/${img[0].pid}`)
           console.log(err);
         })
     }

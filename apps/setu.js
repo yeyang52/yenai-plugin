@@ -127,7 +127,7 @@ export class sese extends plugin {
 
     if (num > 20) {
       return e.reply("❎ 最大张数不能大于20张")
-    } else if (num > 5) {
+    } else if (num > 6) {
       e.reply("你先等等，你冲的有点多~")
     } else {
       e.reply(lodash.sample(startMsg))

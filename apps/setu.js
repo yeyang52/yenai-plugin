@@ -394,7 +394,7 @@ export class sese extends plugin {
           }
           return item
         }).catch(() => {
-          e.reply(`呃....被风控了，感觉不太秒呢~给你个链接冲吧~\nhttps://pixiv.cat/${img[0].pid}`)
+          e.reply(`呃....被风控了，感觉不太妙呢~给你个链接冲吧~\nhttps://pixiv.cat/${img[0].pid}`)
           logger.error("[椰奶]Bot被风控，发送被风控图片")
         })
       //撤回间隔

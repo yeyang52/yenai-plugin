@@ -88,9 +88,10 @@ class Config {
      * @description: 
      * @param {Array} message 发送的消息
      * @param {*} e oicq
-     * @return {*} 
+     * @param {Number} time 撤回时间
+     * @return {Boolean} 
      */
-    async getforwardMsg(message, e) {
+    async getforwardMsg(message, e, time = 0) {
         //制作转发消息
         let forwardMsg = []
         for (let i of message) {
@@ -110,8 +111,15 @@ class Config {
         }
 
         //发送消息
-        e.reply(forwardMsg)
-
+        let res = await e.reply(forwardMsg)
+        if (!res) return false
+        if (time > 0 && res && res.message_id) {
+            setTimeout(() => {
+                e.group.recallMsg(res.message_id);
+                logger.mark("[椰奶]执行撤回")
+            }, time * 1000);
+        }
+        return true;
     }
 }
 

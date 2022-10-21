@@ -36,7 +36,7 @@ export class example extends plugin {
           fnc: 'cos'
         },
         {
-          reg: 'waifu',
+          reg: '#?waifu',
           fnc: 'AiWife'
         }
       ]

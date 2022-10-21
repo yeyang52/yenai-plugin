@@ -113,7 +113,7 @@ class Config {
         //发送消息
         let res = await e.reply(forwardMsg)
         if (!res) return false
-        if (time > 0 && res && res.message_id) {
+        if (time > 0 && res && res.message_id && e.isGroup) {
             setTimeout(() => {
                 e.group.recallMsg(res.message_id);
                 logger.mark("[椰奶]执行撤回")

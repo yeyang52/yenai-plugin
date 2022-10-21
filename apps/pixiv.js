@@ -14,6 +14,8 @@ let type = {
 }
 
 let listreg = new RegExp(`^#?看看(${Object.keys(type).join("|")})榜\\s?(第(\\d+)页)?$`)
+let tagreg = new RegExp('^#?tag搜图(.*)$', "i")
+let pidreg = new RegExp('^#?pid搜图(\\d+)$', "i")
 
 export class example extends plugin {
     constructor() {
@@ -23,12 +25,16 @@ export class example extends plugin {
             priority: 500,
             rule: [
                 {
-                    reg: '^(p|P)(i|I)(d|D)搜图(\\d+)$',
+                    reg: pidreg,
                     fnc: 'saucenaoPid'
                 },
                 {
                     reg: listreg,
                     fnc: 'pixivList'
+                },
+                {
+                    reg: tagreg,
+                    fnc: 'Tags'
                 }
             ]
         })
@@ -37,8 +43,9 @@ export class example extends plugin {
 
     //pid搜图
     async saucenaoPid(e) {
-        let pids = e.msg.replace(/#|(p|P)(i|I)(d|D)搜图/g, "").trim()
-        let res = await Pixiv.Worker(pids)
+        let regRet = pidreg.exec(e.msg)
+
+        let res = await Pixiv.Worker(regRet[1])
 
         if (!res) return e.reply("可能接口失效或无该Pid信息")
 
@@ -48,7 +55,7 @@ export class example extends plugin {
             `插画ID：${pid}\n`,
             `画师：${uresname}\n`,
             `画师ID：${uresid}\n`,
-            `tag：${tags.join(",")}\n`,
+            `Tag：${tags}\n`,
             `直链：https://pixiv.re/${pid}.jpg`,
         ]
         await e.reply(msg)
@@ -82,6 +89,36 @@ export class example extends plugin {
 
         return true;
     }
+
+    async Tags(e) {
+        let regRet = tagreg.exec(e.msg)
+
+        let tag = regRet[1]
+
+        let pagereg = new RegExp("第(\\d+)页")
+
+        let page = pagereg.exec(e.msg)
+
+        if (page) {
+            tag = tag.replace(page[0], "")
+            page = page[1]
+        } else {
+            page = "1"
+        }
+
+        let res = await Pixiv.searchTags(tag, page)
+
+        if (!res) return e.reply("接口失效")
+
+        if (!await this.getsendMsg(e, res)) e.reply("消息发送失败，可能被风控")
+
+        return true;
+    }
+
+
+
+
+
     /**
      * @description: 
      * @param {*} e oicq

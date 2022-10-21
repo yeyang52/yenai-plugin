@@ -15,79 +15,79 @@ export class example extends plugin {
       priority: 2000,
       rule: [
         {
-          reg: '^#?改头像.*$',
+          reg: '^#改头像.*$',
           fnc: 'Photo'
         },
         {
-          reg: '^#?改昵称.*$',
+          reg: '^#改昵称.*$',
           fnc: 'Myname'
         },
         {
-          reg: '^#?改签名.*$',
+          reg: '^#改签名.*$',
           fnc: 'Sign'
         },
         {
-          reg: '^#?改状态.*$',
+          reg: '^#改状态.*$',
           fnc: 'State'
         },
         {
-          reg: '^#?发好友.*$',
+          reg: '^#发好友.*$',
           fnc: 'Friends'
         },
         {
-          reg: '^#?发群聊.*$',
+          reg: '^#发群聊.*$',
           fnc: 'Groupmsg'
         },
         {
-          reg: '^#?退群.*$',
+          reg: '^#退群.*$',
           fnc: 'Quit'
         },
         {
-          reg: '^#?删好友.*$',
+          reg: '^#删好友.*$',
           fnc: 'Deletes'
         },
         {
-          reg: '^#?改性别.*$',
+          reg: '^#改性别.*$',
           fnc: 'Sex'
         },
         {
-          reg: '^#?取直链.*$',
+          reg: '^#取直链.*$',
           fnc: 'Pictures'
         },
         {
-          reg: '^#?取face.*$',
+          reg: '^#取face.*$',
           fnc: 'Face'
         },
         {
-          reg: '^#?取说说列表.*$',
+          reg: '^#取说说列表.*$',
           fnc: 'Qzonelist'
         },
         {
-          reg: '^#?删说说.*$',
+          reg: '^#删说说.*$',
           fnc: 'Qzonedel'
         },
         {
-          reg: '^#?发说说.*$',
+          reg: '^#发说说.*$',
           fnc: 'Qzonesay'
         },
         {
-          reg: '^#?(清空说说|清空留言)$',
+          reg: '^#(清空说说|清空留言)$',
           fnc: 'QzoneEmpty'
         },
         {
-          reg: '^#?改群名片.*$',
+          reg: '^#改群名片.*$',
           fnc: 'MyGroupname'
         },
         {
-          reg: '^#?改群头像.*$',
+          reg: '^#改群头像.*$',
           fnc: 'GroupPhoto'
         },
         {
-          reg: '^#?改群昵称.*$',
+          reg: '^#改群昵称.*$',
           fnc: 'Groupname'
         },
         {
-          reg: '^#?获取(群|好友)列表$',
+          reg: '^#获取(群|好友)列表$',
           fnc: 'Grouplist'
         },
         {

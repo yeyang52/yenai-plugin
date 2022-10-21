@@ -15,7 +15,7 @@ export class anotice extends plugin {
 }
 
 Bot.on("message", async (e) => {
-    console.log("123");
+    
     // 判断是否为机器人消息
     if (e.user_id == cfg.qq) return
     // 判断是否主人消息

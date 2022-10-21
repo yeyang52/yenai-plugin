@@ -173,6 +173,14 @@ export const helpList = [{
     "icon": 9,
     "title": "#搜索菜单",
     "desc": "各大引擎搜索"
+  }, {
+    "icon": 15,
+    "title": "#coser",
+    "desc": "养眼=-="
+  }, {
+    "icon": 1,
+    "title": "#waifu",
+    "desc": "=-="
   }]
 },
 {

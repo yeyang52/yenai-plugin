@@ -18,10 +18,9 @@ let listreg = new RegExp(`^#?看看(${Object.keys(type).join("|")})榜\\s?(第(\
 export class example extends plugin {
     constructor() {
         super({
-            name: '涩涩',
-            dsc: '涩涩',
+            name: 'pixiv',
             event: 'message',
-            priority: 5000,
+            priority: 500,
             rule: [
                 {
                     reg: '^(p|P)(i|I)(d|D)搜图(\\d+)$',

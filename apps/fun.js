@@ -4,7 +4,8 @@ import { segment } from "oicq";
 import cfg from "../model/Config.js"
 import lodash from 'lodash'
 import Cfg from '../model/Config.js';
-let type = {
+
+let heisitype = {
   "白丝": "baisi",
   "黑丝": "heisi",
   "巨乳": "juru",
@@ -13,7 +14,7 @@ let type = {
   "美足": "meizu"
 }
 
-let heisiwreg = new RegExp(`#?来点(${Object.keys(type).join("|")})`)
+let heisiwreg = new RegExp(`#?来点(${Object.keys(heisitype).join("|")})`)
 export class example extends plugin {
   constructor() {
     super({
@@ -208,7 +209,7 @@ export class example extends plugin {
   async heisiwu(e) {
     await e.reply("少女祈祷中......")
     let types = heisiwreg.exec(e.msg)
-    let api = `http://hs.heisiwu.com/${type[types[1]]}#/page/${lodash.random(1, 20)}`
+    let api = `http://hs.heisiwu.com/${heisitype[types[1]]}#/page/${lodash.random(1, 20)}`
     let res = await fetch(api).then(res => res.text()).catch(err => console.error(err))
     if (!res) return e.reply("接口失效")
 

@@ -12,7 +12,7 @@
 * 增加`#翻译`**有道翻译**
 * 增加`#搜索菜单`**使用各大引擎搜索返回图片**
 * 支持群通知可单独设置
-* 请在**yenai-plugin/config/config/group.yaml**进行配置
+  * 请在**yenai-plugin/config/config/group.yaml**进行配置
 
 # 1.0.1
 

@@ -111,13 +111,41 @@ class Config {
 
         //发送消息
         let res = await e.reply(forwardMsg)
-        if (!res) return false
+        if (!res) {
+            await e.reply("消息发送失败，可能被风控")
+            return false
+        }
         if (time > 0 && res && res.message_id && e.isGroup) {
             setTimeout(() => {
                 e.group.recallMsg(res.message_id);
                 logger.mark("[椰奶]执行撤回")
             }, time * 1000);
         }
+        return true;
+    }
+
+
+    /**
+     * @description: 获取配置的cd发送消息
+     * @param {*} e oicq
+     * @param {Array} msg 发送的消息
+     * @return {Boolean}
+     */
+    async getCDsendMsg(e, msg) {
+        let path = "./plugins/yenai-plugin/config/setu/setu.json"
+        //获取CD
+        let cfgs = {}
+        let time = 120
+        if (fs.existsSync(path)) {
+            cfgs = await this.getread(path)
+        }
+
+        if (cfgs[e.group_id]) {
+            time = cfgs[e.group_id].recall
+        }
+        let res = await this.getforwardMsg(msg, e, time)
+        if (!res) return false;
+
         return true;
     }
 }

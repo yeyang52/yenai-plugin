@@ -1,9 +1,8 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import fetch from 'node-fetch'
 import { segment } from "oicq";
-import cfg from "../model/Config.js"
 import lodash from 'lodash'
-import Cfg from '../model/Config.js';
+import Config from '../model/Config.js';
 
 let heisitype = {
   "白丝": "baisi",
@@ -196,7 +195,7 @@ export class example extends plugin {
         item++
       }
     }
-    await cfg.getforwardMsg(msg, e)
+    Config.getCDsendMsg(e, msg)
     return true
   }
 
@@ -237,6 +236,6 @@ export class example extends plugin {
       }
     }
 
-    Cfg.getforwardMsg(imglist, e, 120)
+    Config.getCDsendMsg(e, imglist)
   }
 }

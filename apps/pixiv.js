@@ -3,7 +3,6 @@ import { segment } from "oicq";
 import Pixiv from '../model/Pixiv.js'
 import Config from '../model/Config.js';
 import moment from 'moment';
-import fs from 'fs'
 import fetch from "node-fetch";
 
 let type = {
@@ -47,7 +46,6 @@ export class example extends plugin {
                 }
             ]
         })
-        this.path = "./plugins/yenai-plugin/config/setu/setu.json"
     }
 
     //pid搜图
@@ -74,7 +72,7 @@ export class example extends plugin {
             img.push(segment.image(i))
         }
 
-        if (!await this.getsendMsg(e, img)) e.reply("消息发送失败，可能被风控")
+        Config.getCDsendMsg(e, img)
 
         return true;
     }
@@ -96,7 +94,7 @@ export class example extends plugin {
 
         if (!res) return e.reply("可能接口失效或无榜单信息")
 
-        if (!await this.getsendMsg(e, res)) e.reply("消息发送失败，可能被风控")
+        Config.getCDsendMsg(e, res)
 
         return true;
     }
@@ -122,7 +120,7 @@ export class example extends plugin {
 
         if (!res) return e.reply("接口失效")
 
-        if (!await this.getsendMsg(e, res)) e.reply("消息发送失败，可能被风控")
+        Config.getCDsendMsg(e, res)
 
         return true;
     }
@@ -143,29 +141,5 @@ export class example extends plugin {
         e.reply(msg)
     }
 
-
-
-
-    /**
-     * @description: 
-     * @param {*} e oicq
-     * @param {Array} msg 发送的消息
-     * @return {Boolean}
-     */
-    async getsendMsg(e, msg) {
-        //获取CD
-        let cfgs = {}
-        let time = 120
-        if (fs.existsSync(this.path)) {
-            cfgs = await Config.getread(this.path)
-        }
-
-        if (cfgs[e.group_id]) {
-            time = cfgs[e.group_id].recall
-        }
-        let res = await Config.getforwardMsg(msg, e, time)
-        if (!res) return false;
-        return true;
-    }
 }
 

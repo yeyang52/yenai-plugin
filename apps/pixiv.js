@@ -11,6 +11,10 @@ let type = {
     "月": "month",
     "男性向": 'male',
     "女性向": 'female',
+    "漫画日": "day_manga",
+    "漫画周": "week_manga",
+    "漫画月": "month_manga",
+    "漫画新秀周": "week_rookie_manga",
 }
 
 let listreg = new RegExp(`^#?看看(${Object.keys(type).join("|")})榜\\s?(第(\\d+)页)?$`)

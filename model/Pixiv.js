@@ -48,6 +48,10 @@ class Pixiv {
             "month": "月榜",
             'male': "男性向榜",
             'female': "女性向榜",
+            "day_manga":"漫画日榜",
+            "week_manga":"漫画周榜",
+            "month_manga":"漫画月榜",
+            "week_rookie_manga":"漫画新秀周榜",
         }
         let api = `https://api.bbmang.me/ranks?page=${page}&date=${date}&mode=${mode}&pageSize=30`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))

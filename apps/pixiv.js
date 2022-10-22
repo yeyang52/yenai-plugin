@@ -4,6 +4,7 @@ import Pixiv from '../model/Pixiv.js'
 import Config from '../model/Config.js';
 import moment from 'moment';
 import fs from 'fs'
+import fetch from "node-fetch";
 
 let type = {
     "日": "day",
@@ -39,6 +40,10 @@ export class example extends plugin {
                 {
                     reg: tagreg,
                     fnc: 'Tags'
+                },
+                {
+                    reg: '^#?获取热门(t|T)(a|A)(g|G)$',
+                    fnc: 'trend_tags'
                 }
             ]
         })
@@ -95,7 +100,8 @@ export class example extends plugin {
 
         return true;
     }
-
+    
+    /**关键词搜图 */
     async Tags(e) {
         let regRet = tagreg.exec(e.msg)
 
@@ -121,6 +127,21 @@ export class example extends plugin {
         return true;
     }
 
+    /**获取热门tag */ 
+    async trend_tags(e) {
+        let api = "https://api.imki.moe/api/pixiv/tags"
+        let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
+        if (!res) return false
+        let tag = res.trend_tags.map(res => res.tag).join("，")
+        let translated_tag = res.trend_tags.map(res => res.translated_name).join("，")
+        let msg = [
+            "现热门的Tag如下：\n",
+            `tag：${tag}\n`,
+            "--------------------\n",
+            `翻译: ${translated_tag}`
+        ]
+        e.reply(msg)
+    }
 
 
 

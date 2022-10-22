@@ -81,6 +81,12 @@ class Pixiv {
         }
         return list
     }
+    /**
+     * @description: 根据关键词搜图
+     * @param {String} tag 关键词
+     * @param {String} page 页数
+     * @return {Array}
+     */
     async searchTags(tag, page = "1") {
         let api = `https://www.vilipix.com/api/v1/picture/public?limit=30&tags=${tag}&sort=new&offset=${(page - 1) * 30}`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))

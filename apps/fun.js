@@ -84,7 +84,7 @@ export class example extends plugin {
   }
   /**支付宝语音 */
   async ZFB(e) {
-    let amount = parseFloat(e.msg.replace(/#|支付宝到账/g, "").trim())
+    let amount = parseFloat(e.msg.replace(/#|支付宝到账|元|圆/g, "").trim())
 
     if (!/^\d+(\.\d{1,2})?$/.test(amount)) return e.reply("你觉得这河里吗！！", true);
 
@@ -111,7 +111,7 @@ export class example extends plugin {
     msg = msg.replace(/#|翻译/g, "").trim()
     if (!msg) return;
     let results = await fetch(`https://xiaobai.klizi.cn/API/other/trans.php?data=&msg=${msg}`).then(res => res.text()).catch(err => console.log(err))
-    if (!results) return e.reply("接口失效")
+    if (!results) return e.reply("接口失效辣！！！")
     e.reply(results)
 
     return true;
@@ -185,7 +185,7 @@ export class example extends plugin {
 
     let res = await fetch(api).then((res) => res.json()).catch((err) => console.error(err))
 
-    if (!res) return e.reply("接口失效")
+    if (!res) return e.reply("接口失效辣！！！")
 
     res = res.data
     let item = 1;
@@ -216,14 +216,14 @@ export class example extends plugin {
     let types = heisiwreg.exec(e.msg)
     let api = `http://hs.heisiwu.com/${heisitype[types[1]]}#/page/${lodash.random(1, 20)}`
     let res = await fetch(api).then(res => res.text()).catch(err => console.error(err))
-    if (!res) return e.reply("接口失效")
+    if (!res) return e.reply("接口失效辣！！！")
 
     let reg = /<a target(.*?)html/g
     let regs = /href="(.*)/
     let list = res.match(reg);
     list = regs.exec(lodash.sample(list))
     let heis = await fetch(list[1]).then(res => res.text()).catch(err => console.error(err))
-    if (!heis) return e.reply("接口失效")
+    if (!heis) return e.reply("接口失效辣！！！")
 
     let hsreg = /<img loading(.*?)jpg/g
     let img = heis.match(hsreg);

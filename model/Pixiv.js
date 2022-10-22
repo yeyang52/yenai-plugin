@@ -41,7 +41,7 @@ class Pixiv {
      * @param {String} mode 榜单类型
      * @return {Array} 
      */
-    async Rank(page, date, mode = "day") {
+    async Rank(page, date, mode = "day", e) {
         let type = {
             "day": "日榜",
             "week": "周榜",
@@ -55,8 +55,14 @@ class Pixiv {
         }
         let api = `https://api.bbmang.me/ranks?page=${page}&date=${date}&mode=${mode}&pageSize=30`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
-        if (!res) return false;
-        if (!res.data) return false;
+        if (!res) {
+            e.reply("接口失效辣！！！")
+            return false
+        };
+        if (!res.data) {
+            e.reply("可能没有榜单哦~")
+            return false
+        };
         let list = [
             `${date}的${type[mode]}`,
             `当前为第${page}页`
@@ -87,11 +93,25 @@ class Pixiv {
      * @param {String} page 页数
      * @return {Array}
      */
-    async searchTags(tag, page = "1") {
+    async searchTags(tag, page = "1", e) {
         let api = `https://www.vilipix.com/api/v1/picture/public?limit=30&tags=${tag}&sort=new&offset=${(page - 1) * 30}`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
-        if (!res) return false;
+        if (!res) {
+            e.reply("接口失效辣！！！")
+            return false
+        };
+        if (res.data.count == 0) {
+            e.reply("呜呜呜，人家没有找到相关的插画>_<")
+            return false;
+        }
+
         let pageall = Math.ceil(res.data.count / 30)
+
+        if (page > pageall) {
+            e.reply(["你他喵的觉得这河里吗！！！", segment.face(215)])
+            return false
+        }
+
         let list = [
             `共找到${res.data.count}张插画`,
             `当前为第${page}页，共${pageall}页`
@@ -105,7 +125,7 @@ class Pixiv {
                 segment.image(regular_url)
             ])
         }
-        if (page > pageall) list = [["你他喵的觉得这河里吗！！！", segment.face(215)]]
+
 
         return list
     }

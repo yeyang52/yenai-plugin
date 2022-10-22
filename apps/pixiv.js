@@ -96,15 +96,15 @@ export class example extends plugin {
 
         let page = regRet[3] ? regRet[3] : "1"
 
-        let res = await Pixiv.Rank(page, date, mode)
+        let res = await Pixiv.Rank(page, date, mode, e)
 
-        if (!res) return e.reply("可能接口失效或无榜单信息")
+        if (!res) return
 
         Cfg.getCDsendMsg(e, res)
 
         return true;
     }
-    
+
     /**关键词搜图 */
     async Tags(e) {
         if (!e.isMaster) {
@@ -125,16 +125,16 @@ export class example extends plugin {
             page = "1"
         }
 
-        let res = await Pixiv.searchTags(tag, page)
+        let res = await Pixiv.searchTags(tag, page, e)
 
-        if (!res) return e.reply("接口失效")
+        if (!res) return
 
         Cfg.getCDsendMsg(e, res)
 
         return true;
     }
 
-    /**获取热门tag */ 
+    /**获取热门tag */
     async trend_tags(e) {
         let api = "https://api.imki.moe/api/pixiv/tags"
 

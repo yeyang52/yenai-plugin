@@ -47,7 +47,7 @@ export class example extends plugin {
 
         let res = await Pixiv.Worker(regRet[1])
 
-        if (!res) return e.reply("可能接口失效或无该Pid信息")
+        if (!res) return e.reply("口字很拉跨，多半是寄寄寄")
 
         let { title, pid, uresname, uresid, tags, url } = res
         let msg = [

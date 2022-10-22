@@ -83,12 +83,12 @@ class Pixiv {
             `当前为第${page}页，共${pageall}页`
         ];
         for (let i of res.data.rows) {
-            let { picture_id, title, original_url, tags } = i
+            let { picture_id, title, regular_url, tags } = i
             list.push([
                 `标题：${title}\n`,
                 `插画ID：${picture_id}\n`,
                 `Tag：${lodash.truncate(tags)}\n`,
-                segment.image(original_url)
+                segment.image(regular_url)
             ])
         }
         if (page > pageall) list = [["你他喵的觉得这河里吗！！！", segment.face(215)]]

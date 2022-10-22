@@ -60,7 +60,11 @@ class Pixiv {
         for (let i of res.data) {
             let { title, id: pid } = i
             let { name: uresname, id: uresid } = i.artistPreView
+
+            if (title == "wx" && uresname == "wx") continue
+
             let tags = i.tags ? lodash.truncate(i.tags.map((item) => item.name)) : ""
+
             let url = i.imageUrls[0].large.replace("i.pximg.net", "proxy.pixivel.moe")
             list.push([
                 `标题：${title}\n`,

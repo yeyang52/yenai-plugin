@@ -81,7 +81,9 @@ export class example extends plugin {
 
         let mode = `${type[regRet[1]]}`;
 
-        let date = moment().subtract(2, "days").format("YYYY-MM-DD")
+        let day = /漫画/.test(e.msg) ? 3 : 2
+
+        let date = moment().subtract(day, "days").format("YYYY-MM-DD")
 
         let page = regRet[3] ? regRet[3] : "1"
 

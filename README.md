@@ -9,7 +9,7 @@
 
 Yenai-Plugin是一个Yunzai-Bot的扩展插件，提供对Bot的一些便捷操作。<br><br><img src="https://count.getloli.com/get/@:yenai-plugin?theme=rule34" /> <br>
 
-[![GitHub](https://img.shields.io/badge/GitHub-Yenai-black?style=flat-square&logo=github)](https://github.com/yeyang52/yenai-plugin) [![YunzaiBot](https://img.shields.io/badge/云崽-v3.0.0-black?style=flat-square&logo=dependabot)](https://gitee.com/Le-niao/Yunzai-Bot) [![tencent-qq](https://img.shields.io/badge/群号-254974507-red?style=flat-square&logo=tencent-qq)](https://jq.qq.com/?_wv=1027&k=o8FTig5Z) [![tencent-qq](https://img.shields.io/badge/QQ-746659424-success?style=flat-square&logo=tencent-qq)](https://qm.qq.com/cgi-bin/qm/qr?k=m6tyVb1v5y7a5_YK8CU7AoKyuR51aEaI&noverify=0&personal_qrcode_source=4)
+[![GitHub](https://img.shields.io/badge/GitHub-Yenai-black?style=flat-square&logo=github)](https://github.com/yeyang52/yenai-plugin) [![YunzaiBot](https://img.shields.io/badge/云崽-v3.0.0-black?style=flat-square&logo=dependabot)](https://gitee.com/Le-niao/Yunzai-Bot) [![插件库](https://img.shields.io/badge/Gitee-插件库-black?style=flat-square&logo=gitee)](https://gitee.com/yhArcadia/Yunzai-Bot-plugins-index) [![tencent-qq](https://img.shields.io/badge/群号-254974507-red?style=flat-square&logo=tencent-qq)](https://jq.qq.com/?_wv=1027&k=o8FTig5Z) [![tencent-qq](https://img.shields.io/badge/QQ-746659424-success?style=flat-square&logo=tencent-qq)](https://qm.qq.com/cgi-bin/qm/qr?k=m6tyVb1v5y7a5_YK8CU7AoKyuR51aEaI&noverify=0&personal_qrcode_source=4)
 
 <br>
 
@@ -78,19 +78,29 @@ Yenai-Plugin为您提供以下功能(可使用 **#椰奶帮助**  查看)
 4、娱乐功能
 
 - 随机唱鸭
+  
 - 角色收益曲线
+  
 - 赞我
+  
 - coser
+  
 - waifu
 
 5、Pixiv功能
 
 - Pixiv排行榜
+  
   - 看看(日|周|月)榜
-  - 看看漫画(日|周|月|新秀周)榜  
+  
+  - 看看漫画(日|周|月|新秀周)榜 
+   
   - 看看(男|女)性向榜
+  
 - Tag搜图
+  
 - Pid搜图
+  
 - 获取热门Tag
 
 

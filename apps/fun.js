@@ -3,7 +3,17 @@ import fetch from 'node-fetch'
 import { segment } from "oicq";
 import cfg from "../model/Config.js"
 import lodash from 'lodash'
+import Cfg from '../model/Config.js';
+let type = {
+  "白丝": "baisi",
+  "黑丝": "heisi",
+  "巨乳": "juru",
+  "jk": "jk",
+  "网红": "mcn",
+  "美足": "meizu"
+}
 
+let heisiwreg = new RegExp(`#?来点(${Object.keys(type).join("|")})`)
 export class example extends plugin {
   constructor() {
     super({
@@ -38,6 +48,10 @@ export class example extends plugin {
         {
           reg: '#?waifu',
           fnc: 'AiWife'
+        },
+        {
+          reg: heisiwreg,
+          fnc: 'heisiwu'
         }
       ]
     })
@@ -160,7 +174,7 @@ export class example extends plugin {
 
     return true;
   }
-
+  //coser
   async cos(e) {
     await e.reply("少女祈祷中......")
 
@@ -184,7 +198,44 @@ export class example extends plugin {
     await cfg.getforwardMsg(msg, e)
     return true
   }
+
+  //AiWife
   async AiWife(e) {
     e.reply(segment.image(`https://www.thiswaifudoesnotexist.net/example-${lodash.random(100000)}.jpg`))
+  }
+
+  //黑丝
+  async heisiwu(e) {
+    await e.reply("少女祈祷中......")
+    let types = heisiwreg.exec(e.msg)
+    let api = `http://hs.heisiwu.com/${type[types[1]]}#/page/${lodash.random(1, 20)}`
+    let res = await fetch(api).then(res => res.text()).catch(err => console.error(err))
+    if (!res) return e.reply("接口失效")
+
+    let reg = /<a target(.*?)html/g
+    let regs = /href="(.*)/
+    let list = res.match(reg);
+    list = regs.exec(lodash.sample(list))
+    let heis = await fetch(list[1]).then(res => res.text()).catch(err => console.error(err))
+    if (!heis) return e.reply("接口失效")
+
+    let hsreg = /<img loading(.*?)jpg/g
+    let img = heis.match(hsreg);
+    let imgreg = /src="(.*)/
+    let imglist = [];
+    let item = 1;
+    for (let i of img) {
+      imglist.push(
+        segment.image(imgreg.exec(i)[1])
+      )
+
+      if (item >= 20) {
+        break
+      } else {
+        item++
+      }
+    }
+
+    Cfg.getforwardMsg(imglist, e, 120)
   }
 }

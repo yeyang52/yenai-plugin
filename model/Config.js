@@ -85,14 +85,13 @@ class Config {
     }
 
     /**
-     * @description: 
+     * @description: //发送转发消息
      * @param {Array} message 发送的消息
      * @param {*} e oicq
      * @param {Number} time 撤回时间
      * @return {Boolean} 
      */
     async getforwardMsg(message, e, time = 0) {
-        //制作转发消息
         let forwardMsg = []
         for (let i of message) {
             forwardMsg.push(

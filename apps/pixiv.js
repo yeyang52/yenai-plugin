@@ -1,9 +1,10 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from "oicq";
 import Pixiv from '../model/Pixiv.js'
-import Config from '../model/Config.js';
+import Cfg from '../model/Config.js';
 import moment from 'moment';
 import fetch from "node-fetch";
+import { Config } from '../components/index.js'
 
 let type = {
     "日": "day",
@@ -50,11 +51,14 @@ export class example extends plugin {
 
     //pid搜图
     async saucenaoPid(e) {
+        if (!e.isMaster) {
+            if (!Config.Notice.sese) return
+        }
         let regRet = pidreg.exec(e.msg)
 
         let res = await Pixiv.Worker(regRet[1])
 
-        if (!res) return e.reply("口字很拉跨，多半是寄寄寄")
+        if (!res) return e.reply("口字很拉跨，多半是寄寄寄>_<")
 
         let { title, pid, uresname, uresid, tags, url } = res
         let msg = [
@@ -72,14 +76,16 @@ export class example extends plugin {
             img.push(segment.image(i))
         }
 
-        Config.getCDsendMsg(e, img)
+        Cfg.getCDsendMsg(e, img)
 
         return true;
     }
 
     //p站排行榜
     async pixivList(e) {
-
+        if (!e.isMaster) {
+            if (!Config.Notice.sese) return
+        }
         let regRet = listreg.exec(e.msg)
 
         let mode = `${type[regRet[1]]}`;
@@ -94,13 +100,16 @@ export class example extends plugin {
 
         if (!res) return e.reply("可能接口失效或无榜单信息")
 
-        Config.getCDsendMsg(e, res)
+        Cfg.getCDsendMsg(e, res)
 
         return true;
     }
     
     /**关键词搜图 */
     async Tags(e) {
+        if (!e.isMaster) {
+            if (!Config.Notice.sese) return
+        }
         let regRet = tagreg.exec(e.msg)
 
         let tag = regRet[1]
@@ -120,7 +129,7 @@ export class example extends plugin {
 
         if (!res) return e.reply("接口失效")
 
-        Config.getCDsendMsg(e, res)
+        Cfg.getCDsendMsg(e, res)
 
         return true;
     }
@@ -128,10 +137,15 @@ export class example extends plugin {
     /**获取热门tag */ 
     async trend_tags(e) {
         let api = "https://api.imki.moe/api/pixiv/tags"
+
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
-        if (!res) return false
+
+        if (!res) return e.reply("口子太拉，多半是寄了>_<")
+
         let tag = res.trend_tags.map(res => res.tag).join("，")
+
         let translated_tag = res.trend_tags.map(res => res.translated_name).join("，")
+
         let msg = [
             "现热门的Tag如下：\n",
             `tag：${tag}\n`,

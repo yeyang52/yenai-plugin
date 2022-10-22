@@ -2,8 +2,8 @@ import plugin from '../../../lib/plugins/plugin.js'
 import fetch from 'node-fetch'
 import { segment } from "oicq";
 import lodash from 'lodash'
-import Config from '../model/Config.js';
-
+import Cfg from '../model/Config.js';
+import { Config } from '../components/index.js'
 let heisitype = {
   "白丝": "baisi",
   "黑丝": "heisi",
@@ -176,6 +176,9 @@ export class example extends plugin {
   }
   //coser
   async cos(e) {
+    if (!e.isMaster) {
+      if (!Config.Notice.sese) return
+    }
     await e.reply("少女祈祷中......")
 
     const api = "https://ovooa.com/API/cosplay/api.php"
@@ -195,7 +198,7 @@ export class example extends plugin {
         item++
       }
     }
-    Config.getCDsendMsg(e, msg)
+    Cfg.getCDsendMsg(e, msg)
     return true
   }
 
@@ -206,6 +209,9 @@ export class example extends plugin {
 
   //黑丝
   async heisiwu(e) {
+    if (!e.isMaster) {
+      if (!Config.Notice.sese) return
+    }
     await e.reply("少女祈祷中......")
     let types = heisiwreg.exec(e.msg)
     let api = `http://hs.heisiwu.com/${heisitype[types[1]]}#/page/${lodash.random(1, 20)}`
@@ -236,6 +242,6 @@ export class example extends plugin {
       }
     }
 
-    Config.getCDsendMsg(e, imglist)
+    Cfg.getCDsendMsg(e, imglist)
   }
 }

@@ -155,7 +155,7 @@ class Pixiv {
             list.push(
                 [
                     `Tag：${tag}\n`,
-                    `translated：${translated_name}\n`,
+                    `Translated：${translated_name}\n`,
                     `Pid：${i.illust.id}\n`,
                     segment.image(url)
                 ]

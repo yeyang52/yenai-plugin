@@ -13,7 +13,7 @@ let heisitype = {
   "美足": "meizu"
 }
 
-let heisiwreg = new RegExp(`#?来点(${Object.keys(heisitype).join("|")})`)
+let heisiwreg = new RegExp(`#?来点(${Object.keys(heisitype).join("|")})$`)
 export class example extends plugin {
   constructor() {
     super({

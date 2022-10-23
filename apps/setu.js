@@ -350,7 +350,6 @@ export class sese extends plugin {
     let msg = [];
     for (let i of img) {
       let { pid, title, tags, author, r18, urls } = i
-      console.log(urls);
       msg.push([
         `${lodash.sample(sendMsg)}\n`,
         `标题：${title}\n`,
@@ -358,52 +357,30 @@ export class sese extends plugin {
         `pid：${pid}\n`,
         `r18：${r18}\n`,
         `tag：${lodash.truncate(tags.join(","))}`,
-        // segment.image(`https://pixiv.re/${pid}.png`),
         segment.image(urls.original || urls.regular || urls.small),
       ])
     }
 
-
-    //制作转发消息
-    let forwardMsg = []
-    for (let i of msg) {
-      forwardMsg.push(
-        {
-          message: i,
-          nickname: e.sender.nickname,
-          user_id: e.sender.user_id
-        }
-      )
-    }
     if (e.isGroup) {
-      //看看有没有设置
+      //获取CD
       if (cfgs[e.group_id]) {
         time = cfgs[e.group_id].recall
         cd = cfgs[e.group_id].cd
       }
       //发送消息并写入cd
-      forwardMsg = await e.group.makeForwardMsg(forwardMsg)
-      let res = await e.group.sendMsg(forwardMsg)
-        .then((item) => {
-          if (!e.isMaster) {
-            if (cd != 0) {
-              temp[e.user_id + e.group_id] = present + cd
-              setTimeout(() => {
-                delete temp[e.user_id + e.group_id];
-              }, cd * 1000);
-            }
+      let res = Cfg.getCDsendMsg(e, msg, false, false)
+      if (res) {
+        if (!e.isMaster) {
+          if (cd != 0) {
+            temp[e.user_id + e.group_id] = present + cd
+            setTimeout(() => {
+              delete temp[e.user_id + e.group_id];
+            }, cd * 1000);
           }
-          return item
-        }).catch(() => {
-          e.reply(isfk)
-          logger.error("[椰奶]Bot被风控，发送被风控图片")
-        })
-      //撤回间隔
-      if (time > 0 && res && res.message_id) {
-        setTimeout(() => {
-          e.group.recallMsg(res.message_id);
-          logger.mark("[椰奶]执行撤回")
-        }, time * 1000);
+        }
+      } else {
+        e.reply(isfk)
+        logger.error("[椰奶]Bot被风控，发送被风控图片")
       }
     } else {
       //私聊
@@ -416,21 +393,20 @@ export class sese extends plugin {
       } else {
         CD = def.cd
       }
-      forwardMsg = await e.friend.makeForwardMsg(forwardMsg)
-      await e.friend.sendMsg(forwardMsg)
-        .then(() => {
-          if (!e.isMaster) {
-            if (CD != 0) {
-              temp[e.user_id] = present + CD
-              setTimeout(() => {
-                delete temp[e.user_id];
-              }, CD * 1000);
-            }
+      //发送消息
+      let res = Cfg.getforwardMsg(msg, e, 0, false, true)
+      if (res) {
+        if (!e.isMaster) {
+          if (CD != 0) {
+            temp[e.user_id] = present + CD
+            setTimeout(() => {
+              delete temp[e.user_id];
+            }, CD * 1000);
           }
-        }).catch((err) => {
-          e.reply(isfk)
-          console.log(err);
-        })
+        }
+      } else {
+        e.reply(isfk)
+      }
     }
   }
 

@@ -88,17 +88,19 @@ class Config {
      * @description: //发送转发消息
      * @param {Array} message 发送的消息
      * @param {*} e oicq
-     * @param {Number} time 撤回时间
-     * @return {Boolean} 
+     * @param {Number} time  撤回时间
+     * @param {Boolean} isBot 转发信息是否以bot信息发送
+     * @param {Boolean} isfk 是否发送默认风控消息
+     * @return {Boolean}
      */
-    async getforwardMsg(message, e, time = 0) {
+    async getforwardMsg(message, e, time = 0, isBot = true, isfk = true) {
         let forwardMsg = []
         for (let i of message) {
             forwardMsg.push(
                 {
                     message: i,
-                    nickname: Bot.nickname,
-                    user_id: Bot.uin
+                    nickname: isBot ? Bot.nickname : e.sender.nickname,
+                    user_id: isBot ? Bot.uin : e.sender.user_id
                 }
             )
         }
@@ -112,7 +114,9 @@ class Config {
         //发送消息
         let res = await e.reply(forwardMsg)
         if (!res) {
-            await e.reply("消息发送失败，可能被风控")
+            if (isfk) {
+                await e.reply("消息发送失败，可能被风控")
+            }
             return false
         }
         if (time > 0 && res && res.message_id && e.isGroup) {
@@ -129,9 +133,11 @@ class Config {
      * @description: 获取配置的cd发送消息
      * @param {*} e oicq
      * @param {Array} msg 发送的消息
+     * @param {Boolean} isBot 转发信息是否以bot信息发送
+     * @param {Boolean} isfk  是否发送默认风控消息
      * @return {Boolean}
      */
-    async getCDsendMsg(e, msg) {
+    async getCDsendMsg(e, msg, isBot = true, isfk = true) {
         let path = "./plugins/yenai-plugin/config/setu/setu.json"
         //获取CD
         let cfgs = {}
@@ -143,7 +149,7 @@ class Config {
         if (cfgs[e.group_id]) {
             time = cfgs[e.group_id].recall
         }
-        let res = await this.getforwardMsg(msg, e, time)
+        let res = await this.getforwardMsg(msg, e, time, isBot, isfk)
         if (!res) return false;
 
         return true;

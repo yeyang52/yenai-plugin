@@ -76,7 +76,7 @@ export class example extends plugin {
             img.push(segment.image(i))
         }
 
-        Cfg.getCDsendMsg(e, img)
+        Cfg.getCDsendMsg(e, img,false)
 
         return true;
     }
@@ -100,7 +100,7 @@ export class example extends plugin {
 
         if (!res) return
 
-        Cfg.getCDsendMsg(e, res)
+        Cfg.getCDsendMsg(e, res, false)
 
         return true;
     }
@@ -129,7 +129,7 @@ export class example extends plugin {
 
         if (!res) return
 
-        Cfg.getCDsendMsg(e, res)
+        Cfg.getCDsendMsg(e, res,false)
 
         return true;
     }

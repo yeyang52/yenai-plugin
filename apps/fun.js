@@ -198,7 +198,7 @@ export class example extends plugin {
         item++
       }
     }
-    Cfg.getCDsendMsg(e, msg)
+    Cfg.getCDsendMsg(e, msg, false)
     return true
   }
 
@@ -242,6 +242,6 @@ export class example extends plugin {
       }
     }
 
-    Cfg.getCDsendMsg(e, imglist)
+    Cfg.getCDsendMsg(e, imglist, false)
   }
 }

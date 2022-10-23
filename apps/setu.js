@@ -356,7 +356,7 @@ export class sese extends plugin {
         `画师：${author}\n`,
         `pid：${pid}\n`,
         `r18：${r18}\n`,
-        `tag：${lodash.truncate(tags.join(","))}`,
+        `tag：${lodash.truncate(tags.join(","))}\n`,
         segment.image(urls.original || urls.regular || urls.small),
       ])
     }

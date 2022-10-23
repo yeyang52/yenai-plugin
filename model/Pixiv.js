@@ -129,6 +129,41 @@ class Pixiv {
 
         return list
     }
+
+    /**
+     * @description: 获取热门tag
+     * @param {*} e oicq
+     * @return {Array}
+     */
+    async gettrend_tags(e) {
+        let api = "https://api.imki.moe/api/pixiv/tags"
+
+        let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
+
+        if (!res) {
+            e.reply("口子太拉，多半是寄了>_<")
+            return false
+        }
+        if (!res.trend_tags) {
+            e.reply("呜呜呜，没有获取到数据>_<")
+            return false
+        }
+        let list = []
+        for (let i of res.trend_tags) {
+            let { tag, translated_name } = i
+            let url = i.illust.image_urls.large.replace("i.pximg.net", "proxy.pixivel.moe")
+            list.push(
+                [
+                    `Tag：${tag}\n`,
+                    `translated：${translated_name}\n`,
+                    `Pid：${i.illust.id}\n`,
+                    segment.image(url)
+                ]
+            )
+        }
+        return list
+
+    }
 }
 
 

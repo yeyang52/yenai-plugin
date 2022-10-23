@@ -360,6 +360,8 @@ export class sese extends plugin {
         segment.image(urls.original || urls.regular || urls.small),
       ])
     }
+    //发送消息
+    let res = Cfg.getCDsendMsg(e, msg, false, false)
 
     if (e.isGroup) {
       //获取CD
@@ -367,8 +369,7 @@ export class sese extends plugin {
         time = cfgs[e.group_id].recall
         cd = cfgs[e.group_id].cd
       }
-      //发送消息并写入cd
-      let res = Cfg.getCDsendMsg(e, msg, false, false)
+
       if (res) {
         if (!e.isMaster) {
           if (cd != 0) {
@@ -393,8 +394,7 @@ export class sese extends plugin {
       } else {
         CD = def.cd
       }
-      //发送消息
-      let res = Cfg.getforwardMsg(msg, e, 0, false, true)
+
       if (res) {
         if (!e.isMaster) {
           if (CD != 0) {

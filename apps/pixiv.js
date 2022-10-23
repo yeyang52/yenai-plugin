@@ -42,7 +42,7 @@ export class example extends plugin {
                     fnc: 'Tags'
                 },
                 {
-                    reg: '^#?获取热门(t|T)(a|A)(g|G)$',
+                    reg: '^#?查看热门(t|T)(a|A)(g|G)$',
                     fnc: 'trend_tags'
                 }
             ]
@@ -76,7 +76,7 @@ export class example extends plugin {
             img.push(segment.image(i))
         }
 
-        Cfg.getCDsendMsg(e, img,false)
+        Cfg.getCDsendMsg(e, img, false)
 
         return true;
     }
@@ -129,30 +129,22 @@ export class example extends plugin {
 
         if (!res) return
 
-        Cfg.getCDsendMsg(e, res,false)
+        Cfg.getCDsendMsg(e, res, false)
 
         return true;
     }
 
     /**获取热门tag */
     async trend_tags(e) {
-        let api = "https://api.imki.moe/api/pixiv/tags"
+        if (!e.isMaster) {
+            if (!Config.Notice.sese) return
+        }
 
-        let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
+        let res = await Pixiv.gettrend_tags(e)
 
-        if (!res) return e.reply("口子太拉，多半是寄了>_<")
+        if (!res) return
 
-        let tag = res.trend_tags.map(res => res.tag).join("，")
-
-        let translated_tag = res.trend_tags.map(res => res.translated_name).join("，")
-
-        let msg = [
-            "现热门的Tag如下：\n",
-            `tag：${tag}\n`,
-            "--------------------\n",
-            `翻译: ${translated_tag}`
-        ]
-        e.reply(msg)
+        Cfg.getCDsendMsg(e, res, false)
     }
 
 }

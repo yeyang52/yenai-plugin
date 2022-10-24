@@ -13,14 +13,12 @@ export default class Pixiv {
      */
     async Worker(ids) {
         let api = `https://api.imki.moe/api/pixiv/illust?id=${ids}`
-        let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
+        let res = await this.getfetch(api)
 
-        if (!res) {
-            this.e.reply("接口失效辣！！！")
-            return false
-        };
+        if (!res) return false
         if (res.error) {
             this.e.reply("口字很拉跨，请稍后重试>_<")
+            this.e.reply(`先用直链解决一下：https://pixiv.re/${ids}.jpg`)
             return false;
         }
         res = res.illust
@@ -64,11 +62,8 @@ export default class Pixiv {
             "week_rookie_manga": "漫画新秀周榜",
         }
         let api = `https://api.bbmang.me/ranks?page=${page}&date=${date}&mode=${mode}&pageSize=30`
-        let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
-        if (!res) {
-            this.e.reply("接口失效辣！！！")
-            return false
-        };
+        let res = await this.getfetch(api)
+        if (!res) return false
         if (!res.data) {
             this.e.reply("可能没有榜单哦~")
             return false
@@ -105,11 +100,8 @@ export default class Pixiv {
      */
     async searchTags(tag, page = "1") {
         let api = `https://www.vilipix.com/api/v1/picture/public?limit=30&tags=${tag}&sort=new&offset=${(page - 1) * 30}`
-        let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
-        if (!res) {
-            this.e.reply("接口失效辣！！！")
-            return false
-        };
+        let res = await this.getfetch(api)
+        if (!res) return false
         if (res.data.count == 0) {
             this.e.reply("呜呜呜，人家没有找到相关的插画>_<")
             return false;
@@ -118,7 +110,7 @@ export default class Pixiv {
         let pageall = Math.ceil(res.data.count / 30)
 
         if (page > pageall) {
-            this.e.reply(["你他喵的觉得这河里吗！！！", segment.face(215)])
+            this.e.reply("啊啊啊，淫家给不了你那么多辣~~")
             return false
         }
 
@@ -147,12 +139,9 @@ export default class Pixiv {
     async gettrend_tags() {
         let api = "https://api.imki.moe/api/pixiv/tags"
 
-        let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
+        let res = await this.getfetch(api)
 
-        if (!res) {
-            this.e.reply("口子太拉，多半是寄了>_<")
-            return false
-        }
+        if (!res) return false
         if (!res.trend_tags) {
             this.e.reply("呜呜呜，没有获取到数据>_<")
             return false
@@ -173,5 +162,68 @@ export default class Pixiv {
         }
         return list
 
+    }
+
+
+    /**
+     * @description: 用户uid搜图
+     * @param {String} uid 用户uid
+     * @param {String} page 页数
+     * @return {Array}
+     */
+    async public(keyword, page = "1") {
+        let userapi = `https://www.vilipix.com/api/v1/search/user?type=author&keyword=${keyword}&limit=30&offset=0`
+        let user = await this.getfetch(userapi)
+        if (!user) return false
+        if (user.data.count == 0) {
+            this.e.reply("呜呜呜，人家没有找到这个淫>_<")
+            return false;
+        }
+        let { user_id: uid, nick_name, avatar, desc } = user.data.rows[0]
+        let api = `https://www.vilipix.com/api/v1/picture/public?sort=new&type=0&author_user_id=${uid}&limit=30&offset=${(page - 1) * 30}`
+        let res = await this.getfetch(api)
+        if (!res) return false
+        if (res.data.count == 0) {
+            this.e.reply("Σ(っ °Д °;)っ这个淫居然没有插画")
+            return false;
+        }
+        let pageall = Math.ceil(res.data.count / 30)
+        if (page > pageall) {
+            this.e.reply("这个淫已经没有涩图给你辣~~")
+            return false
+        }
+        let list = [
+            [
+                segment.image(avatar),
+                `\nuid：${uid}\n`,
+                `画师：${nick_name}\n`,
+                `介绍：${lodash.truncate(desc)}`
+            ],
+            `共找到${res.data.count}张插画`,
+            `当前为第${page}页，共${pageall}页`
+        ]
+        for (let i of res.data.rows) {
+            let { picture_id, title, regular_url, tags } = i
+            list.push([
+                `标题：${title}\n`,
+                `插画ID：${picture_id}\n`,
+                `Tag：${lodash.truncate(tags)}\n`,
+                segment.image(regular_url)
+            ])
+        }
+        return list
+    }
+
+    /**
+     * @description: 请求api
+     * @param {String} url 链接
+     * @return {Object}
+     */
+    async getfetch(url) {
+        return await fetch(url).then(res => res.json()).catch(err => {
+            this.e.reply("接口失效辣！！！")
+            console.log(err)
+            return false;
+        })
     }
 }

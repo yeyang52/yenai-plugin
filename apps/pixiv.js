@@ -20,6 +20,7 @@ let type = {
 let listreg = new RegExp(`^#?看看(${Object.keys(type).join("|")})榜\\s?(第(\\d+)页)?$`)
 let tagreg = new RegExp('^#?tag搜图(.*)$', "i")
 let pidreg = new RegExp('^#?pid搜图(\\d+)$', "i")
+let uidreg = new RegExp('^#?uid搜图(.*)$', "i")
 
 export class example extends plugin {
     constructor() {
@@ -43,7 +44,11 @@ export class example extends plugin {
                 {
                     reg: '^#?查看热门(t|T)(a|A)(g|G)$',
                     fnc: 'trend_tags'
-                }
+                },
+                {
+                    reg: uidreg,
+                    fnc: 'saucenaoUid'
+                },
             ]
         })
     }
@@ -93,7 +98,7 @@ export class example extends plugin {
 
         let date = moment().subtract(day, "days").format("YYYY-MM-DD")
 
-        let page = regRet[3] ? regRet[3] : "1"
+        let page = regRet[3] || "1"
 
         let res = await new Pixiv(e).Rank(page, date, mode)
 
@@ -146,5 +151,31 @@ export class example extends plugin {
         Cfg.getCDsendMsg(e, res, false)
     }
 
+    /**以uid搜图**/
+    async saucenaoUid(e) {
+        if (!e.isMaster) {
+            if (!Config.Notice.sese) return
+        }
+        let regRet = uidreg.exec(e.msg)
+
+        let key = regRet[1]
+
+        let pagereg = new RegExp("第(\\d+)页")
+
+        let page = pagereg.exec(e.msg)
+
+        if (page) {
+            key = key.replace(page[0], "")
+            page = page[1]
+        } else {
+            page = "1"
+        }
+
+        let res = await new Pixiv(e).public(key, page)
+
+        if (!res) return
+
+        Cfg.getCDsendMsg(e, res, false)
+    }
 }
 

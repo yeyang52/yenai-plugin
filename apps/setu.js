@@ -320,13 +320,14 @@ export class sese extends plugin {
   //请求api
   async setuapi(r18, num = 1, tag = "") {
     let size = "original"
+    let proxy = await redis.get(`yenai:proxy`)
     if (num <= 6 && num > 1) {
       size = "regular"
     } else if (num > 6) {
       size = "small"
     }
-    let url = `${api}?r18=${r18}&num=${num}${tag}&proxy=${await redis.get(`yenai:proxy`)}&size=${size}`;
-    console.log(url);
+    let url = `${api}?r18=${r18}&num=${num}${tag}&proxy=${proxy}&size=${size}`;
+
     let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
     if (!result) return false;
     return result.data

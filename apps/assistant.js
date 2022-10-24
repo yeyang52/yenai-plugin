@@ -516,7 +516,7 @@ export class example extends plugin {
       for (let i of e.img) {
         msg.push([segment.image(i), "直链:", i])
       }
-      Config.getforwardMsg(msg, e)
+      Config.getforwardMsg(e, msg)
     } else {
       await e.reply([segment.image(e.img[0]), "直链:", e.img[0]])
     }
@@ -560,7 +560,7 @@ export class example extends plugin {
     })
 
     if (res.length >= 2) {
-      Config.getforwardMsg(res, e)
+      Config.getforwardMsg(e, res)
     } else {
       await e.reply(res[0])
     }
@@ -733,7 +733,7 @@ export class example extends plugin {
       message.push("可使用 #删好友123456789 来删除某人")
     }
 
-    Config.getforwardMsg(message, e)
+    Config.getforwardMsg(e, message)
 
     return true
 

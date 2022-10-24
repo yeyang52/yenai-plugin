@@ -52,6 +52,10 @@ export class example extends plugin {
         {
           reg: heisiwreg,
           fnc: 'heisiwu'
+        },
+        {
+          reg: '^来份(屌|弔|吊)图$',
+          fnc: 'jandan'
         }
       ]
     })
@@ -243,5 +247,21 @@ export class example extends plugin {
     }
 
     Cfg.getCDsendMsg(e, imglist, false)
+  }
+
+  async jandan(e) {
+    let api = "http://jandan.net/pic"
+    let res = await fetch(api).then(res => res.text()).catch(err => console.error(err))
+    if (!res) return e.reply("接口失效辣！！！")
+    let reg = /<img src(.*?)jpg/g
+    let img = res.match(reg)
+    let imgreg = /src="(.*)/
+    let imglist = [];
+    for (let i of img) {
+      imglist.push(
+        imgreg.exec(i)[1]
+      )
+    }
+    e.reply(segment.image("http:" + lodash.sample(imglist)))
   }
 }

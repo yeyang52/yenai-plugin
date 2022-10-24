@@ -86,14 +86,14 @@ class Config {
 
     /**
      * @description: //发送转发消息
-     * @param {Array} message 发送的消息
      * @param {*} e oicq
+     * @param {Array} message 发送的消息
      * @param {Number} time  撤回时间
      * @param {Boolean} isBot 转发信息是否以bot信息发送
      * @param {Boolean} isfk 是否发送默认风控消息
      * @return {Boolean}
      */
-    async getforwardMsg(message, e, time = 0, isBot = true, isfk = true) {
+    async getforwardMsg(e, message, time = 0, isBot = true, isfk = true) {
         let forwardMsg = []
         for (let i of message) {
             forwardMsg.push(
@@ -149,7 +149,7 @@ class Config {
         if (cfgs[e.group_id]) {
             time = cfgs[e.group_id].recall
         }
-        let res = await this.getforwardMsg(msg, e, time, isBot, isfk)
+        let res = await this.getforwardMsg(e, msg, time, isBot, isfk)
         if (!res) return false;
 
         return true;

@@ -3,7 +3,6 @@ import { segment } from "oicq";
 import Pixiv from '../model/Pixiv.js'
 import Cfg from '../model/Config.js';
 import moment from 'moment';
-import fetch from "node-fetch";
 import { Config } from '../components/index.js'
 
 let type = {
@@ -56,9 +55,9 @@ export class example extends plugin {
         }
         let regRet = pidreg.exec(e.msg)
 
-        let res = await Pixiv.Worker(regRet[1])
+        let res = await new Pixiv(e).Worker(regRet[1])
 
-        if (!res) return e.reply("口字很拉跨，多半是寄寄寄>_<")
+        if (!res) return;
 
         let { title, pid, uresname, uresid, tags, url } = res
         let msg = [
@@ -96,7 +95,7 @@ export class example extends plugin {
 
         let page = regRet[3] ? regRet[3] : "1"
 
-        let res = await Pixiv.Rank(page, date, mode, e)
+        let res = await new Pixiv(e).Rank(page, date, mode)
 
         if (!res) return
 
@@ -125,7 +124,7 @@ export class example extends plugin {
             page = "1"
         }
 
-        let res = await Pixiv.searchTags(tag, page, e)
+        let res = await new Pixiv(e).searchTags(tag, page)
 
         if (!res) return
 
@@ -140,7 +139,7 @@ export class example extends plugin {
             if (!Config.Notice.sese) return
         }
 
-        let res = await Pixiv.gettrend_tags(e)
+        let res = await new Pixiv(e).gettrend_tags()
 
         if (!res) return
 

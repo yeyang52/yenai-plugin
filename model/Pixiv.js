@@ -2,7 +2,10 @@ import fetch from "node-fetch";
 import lodash from "lodash";
 import { segment } from "oicq";
 
-class Pixiv {
+export default class Pixiv {
+    constructor(e = {}) {
+        this.e = e
+    }
     /**
      * @description: 获取插画信息
      * @param {String} ids 插画ID
@@ -12,8 +15,14 @@ class Pixiv {
         let api = `https://api.imki.moe/api/pixiv/illust?id=${ids}`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
 
-        if (!res) return false;
-        if (res.error) return false;
+        if (!res) {
+            this.e.reply("接口失效辣！！！")
+            return false
+        };
+        if (res.error) {
+            this.e.reply("口字很拉跨，请稍后重试>_<")
+            return false;
+        }
         res = res.illust
         let tags = lodash.truncate(lodash.flattenDeep(res?.tags.map(item => Object.values(item)))) || ""
         let caption = res.caption.replace(/<.*>/g, "").trim()
@@ -41,7 +50,7 @@ class Pixiv {
      * @param {String} mode 榜单类型
      * @return {Array} 
      */
-    async Rank(page, date, mode = "day", e) {
+    async Rank(page, date, mode = "day") {
         let type = {
             "day": "日榜",
             "week": "周榜",
@@ -56,11 +65,11 @@ class Pixiv {
         let api = `https://api.bbmang.me/ranks?page=${page}&date=${date}&mode=${mode}&pageSize=30`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
         if (!res) {
-            e.reply("接口失效辣！！！")
+            this.e.reply("接口失效辣！！！")
             return false
         };
         if (!res.data) {
-            e.reply("可能没有榜单哦~")
+            this.e.reply("可能没有榜单哦~")
             return false
         };
         let list = [
@@ -93,22 +102,22 @@ class Pixiv {
      * @param {String} page 页数
      * @return {Array}
      */
-    async searchTags(tag, page = "1", e) {
+    async searchTags(tag, page = "1") {
         let api = `https://www.vilipix.com/api/v1/picture/public?limit=30&tags=${tag}&sort=new&offset=${(page - 1) * 30}`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
         if (!res) {
-            e.reply("接口失效辣！！！")
+            this.e.reply("接口失效辣！！！")
             return false
         };
         if (res.data.count == 0) {
-            e.reply("呜呜呜，人家没有找到相关的插画>_<")
+            this.e.reply("呜呜呜，人家没有找到相关的插画>_<")
             return false;
         }
 
         let pageall = Math.ceil(res.data.count / 30)
 
         if (page > pageall) {
-            e.reply(["你他喵的觉得这河里吗！！！", segment.face(215)])
+            this.e.reply(["你他喵的觉得这河里吗！！！", segment.face(215)])
             return false
         }
 
@@ -132,20 +141,19 @@ class Pixiv {
 
     /**
      * @description: 获取热门tag
-     * @param {*} e oicq
      * @return {Array}
      */
-    async gettrend_tags(e) {
+    async gettrend_tags() {
         let api = "https://api.imki.moe/api/pixiv/tags"
 
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
 
         if (!res) {
-            e.reply("口子太拉，多半是寄了>_<")
+            this.e.reply("口子太拉，多半是寄了>_<")
             return false
         }
         if (!res.trend_tags) {
-            e.reply("呜呜呜，没有获取到数据>_<")
+            this.e.reply("呜呜呜，没有获取到数据>_<")
             return false
         }
         let list = []
@@ -165,6 +173,3 @@ class Pixiv {
 
     }
 }
-
-
-export default new Pixiv();

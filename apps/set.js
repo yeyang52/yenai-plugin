@@ -4,7 +4,7 @@ import lodash from "lodash";
 import Common from "../components/Common.js";
 import { Config } from '../components/index.js'
 
-
+let rediskey = `yenai:proxy`
 export class NewConfig extends plugin {
     constructor() {
         super({
@@ -32,8 +32,19 @@ export class NewConfig extends plugin {
                     reg: '^#?椰奶(启用|禁用)全部通知$',
                     fnc: 'SetAll'
                 },
+                {
+                    reg: '^#椰奶更换代理(1|2)$',
+                    fnc: 'proxy'
+                }
             ]
         })
+    }
+
+    //初始化
+    async init() {
+        if (!await redis.get(rediskey)) {
+            await redis.set(rediskey, "i.pixiv.re")
+        }
     }
 
     // 更改配置
@@ -72,7 +83,7 @@ export class NewConfig extends plugin {
 
         return true;
     }
-
+    //修改设置
     async SetAll(e) {
         if (!e.isMaster) return
         let yes = false;
@@ -95,6 +106,7 @@ export class NewConfig extends plugin {
         this.yenaiset(e)
         return true;
     }
+    //渲染发送图片
     async yenaiset(e) {
         if (!e.isMaster) return
 
@@ -144,7 +156,26 @@ export class NewConfig extends plugin {
             scale: 2.0
         });
     }
+
+    //更换代理
+    async proxy(e) {
+        if (/1/.test(e.msg)) {
+            await redis.set(rediskey, "i.pixiv.re")
+                .then(() => e.reply("已经切换代理为1"))
+                .catch(err => console.log(err))
+        } else if (/2/.test(e.msg)) {
+            await redis.set(rediskey, "proxy.pixivel.moe")
+                .then(() => e.reply("已经切换代理为2"))
+                .catch(err => console.log(err))
+        } else {
+            await redis.set(rediskey, "i.pixiv.cat")
+                .then(() => e.reply("已经切换代理为3"))
+                .catch(err => console.log(err))
+        }
+    }
 }
+
+//随机底图
 const rodom = async function () {
     var image = fs.readdirSync(`./plugins/yenai-plugin/resources/admin/imgs/bg`);
     var list_img = [];

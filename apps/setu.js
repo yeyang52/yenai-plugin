@@ -325,7 +325,8 @@ export class sese extends plugin {
     } else if (num > 6) {
       size = "small"
     }
-    let url = `${api}?r18=${r18}&num=${num}${tag}&proxy=proxy.pixivel.moe&size=${size}`;
+    let url = `${api}?r18=${r18}&num=${num}${tag}&proxy=${await redis.get(`yenai:proxy`)}&size=${size}`;
+    console.log(url);
     let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
     if (!result) return false;
     return result.data
@@ -340,8 +341,6 @@ export class sese extends plugin {
     if (fs.existsSync(this.path)) {
       cfgs = await Cfg.getread(this.path)
     }
-    //默认撤回间隔
-    let time = def.recall
     //默认CD
     let cd = def.cd
     //获取当前时间

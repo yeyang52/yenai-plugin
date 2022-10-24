@@ -28,10 +28,11 @@ export default class Pixiv {
         let caption = res.caption.replace(/<.*>/g, "").trim()
         let { id: pid, title, meta_single_page, meta_pages, user, } = res
         let url = []
+        let proxy = await redis.get(`yenai:proxy`)
         if (!lodash.isEmpty(meta_single_page)) {
-            url.push(meta_single_page.original_image_url.replace("i.pximg.net", "proxy.pixivel.moe"))
+            url.push(meta_single_page.original_image_url.replace("i.pximg.net", proxy))
         } else {
-            url = meta_pages.map(item => item.image_urls.original.replace("i.pximg.net", "proxy.pixivel.moe"));
+            url = meta_pages.map(item => item.image_urls.original.replace("i.pximg.net", proxy));
         }
         return {
             pid,
@@ -83,8 +84,8 @@ export default class Pixiv {
             if (title == "wx" && uresname == "wx") continue
 
             let tags = i.tags ? lodash.truncate(i.tags.map((item) => item.name)) : ""
-
-            let url = i.imageUrls[0].large.replace("i.pximg.net", "proxy.pixivel.moe")
+            let proxy = await redis.get(`yenai:proxy`)
+            let url = i.imageUrls[0].large.replace("i.pximg.net", proxy)
             list.push([
                 `标题：${title}\n`,
                 `插画ID：${pid}\n`,
@@ -157,9 +158,10 @@ export default class Pixiv {
             return false
         }
         let list = []
+        let proxy = await redis.get(`yenai:proxy`)
         for (let i of res.trend_tags) {
             let { tag, translated_name } = i
-            let url = i.illust.image_urls.large.replace("i.pximg.net", "proxy.pixivel.moe")
+            let url = i.illust.image_urls.large.replace("i.pximg.net", proxy)
             list.push(
                 [
                     `Tag：${tag}\n`,

@@ -1,6 +1,7 @@
 import YAML from 'yaml'
 import chokidar from 'chokidar'
 import fs from 'node:fs'
+import YamlReader from '../model/YamlReader.js'
 
 const Path = process.cwd();
 const Plugin_Name = 'yenai-plugin'
@@ -108,16 +109,8 @@ class Config {
    */
   modify(name, key, value) {
     let path = `${Plugin_Path}/config/config/${name}.yaml`
-    let config = this.Notice
-    config[key] = value
-    try {
-      fs.writeFileSync(path, YAML.stringify(config), 'utf8')
-      delete this.config[`config.${name}`]
-      return true;
-    } catch (e) {
-      console.log(e);
-      return false;
-    }
+    new YamlReader(path).set(key, value)
+    delete this.config[`config.${name}`]
   }
 
 }

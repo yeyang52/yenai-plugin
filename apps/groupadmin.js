@@ -1,6 +1,5 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import fetch from 'node-fetch'
-import fs from 'fs'
 import Cfg from '../model/Config.js';
 import { Config } from '../components/index.js'
 
@@ -12,15 +11,15 @@ export class Basics extends plugin {
             priority: 5000,
             rule: [
                 {
-                    reg: '^#?禁言.*$',
+                    reg: '^#禁言.*$',
                     fnc: 'Taboo'
                 },
                 {
-                    reg: '^#?解禁.*$',
+                    reg: '^#解禁.*$',
                     fnc: 'Relieve'
                 },
                 {
-                    reg: '^#?全体(禁言|解禁)$',
+                    reg: '^#全体(禁言|解禁)$',
                     fnc: 'TabooAll'
                 },
                 {
@@ -28,31 +27,31 @@ export class Basics extends plugin {
                     fnc: 'Kick'
                 },
                 {
-                    reg: '^#?群管帮助$',
+                    reg: '^#群管帮助$',
                     fnc: 'help'
                 },
                 {
-                    reg: '^#?我要自闭.*$',
+                    reg: '^#我要自闭.*$',
                     fnc: 'Autistic'
                 },
                 {
-                    reg: '^#?(设置|取消)管理.*$',
+                    reg: '^#(设置|取消)管理.*$',
                     fnc: 'SetAdmin'
                 },
                 {
-                    reg: '^#?(允许|禁止|开启|关闭)匿名$',
+                    reg: '^#(允许|禁止|开启|关闭)匿名$',
                     fnc: 'AllowAnony'
                 },
                 {
-                    reg: '^#?发群公告.*$',
+                    reg: '^#发群公告.*$',
                     fnc: 'Announce'
                 },
                 {
-                    reg: '^#?查群公告$',
+                    reg: '^#查群公告$',
                     fnc: 'DelAnnounce'
                 },
                 {
-                    reg: '^#?删群公告.*$',
+                    reg: '^#删群公告.*$',
                     fnc: 'DelAnnounce'
                 },
             ]
@@ -60,6 +59,7 @@ export class Basics extends plugin {
         this.path = "./plugins/xiaoxue-plugin"
     }
     async help(e) {
+        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return
         let msg = [
             "#禁言 <@群员> <时间> \n",
             "#解禁 <@群员> \n",
@@ -82,9 +82,6 @@ export class Basics extends plugin {
     async Taboo(e) {
         if (!e.isGroup) return;
 
-        if (forbidden) {
-            if (fs.existsSync(this.path)) return
-        }
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply("❎ 该命令仅限管理员可用", true);
 
         let qq;
@@ -157,7 +154,9 @@ export class Basics extends plugin {
     /**解禁 */
     async Relieve(e) {
         if (!e.isGroup) return;
+
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply("❎ 该命令仅限管理员可用", true);
+
         let qq = e.message[0].text.replace(/#|解禁/g, "").trim();
 
         if (e.message[1]) {

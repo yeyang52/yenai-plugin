@@ -11,6 +11,10 @@ export class Basics extends plugin {
             priority: 500,
             rule: [
                 {
+                    reg: '^#群管帮助$',
+                    fnc: 'help'
+                },
+                {
                     reg: '^#禁言.*$',
                     fnc: 'Taboo'
                 },
@@ -27,11 +31,7 @@ export class Basics extends plugin {
                     fnc: 'Kick'
                 },
                 {
-                    reg: '^#群管帮助$',
-                    fnc: 'help'
-                },
-                {
-                    reg: '^#我要自闭.*$',
+                    reg: '^#?我要自闭.*$',
                     fnc: 'Autistic'
                 },
                 {

@@ -8,7 +8,7 @@ export class Basics extends plugin {
         super({
             name: '基础群管',
             event: 'message',
-            priority: 5000,
+            priority: 500,
             rule: [
                 {
                     reg: '^#禁言.*$',
@@ -82,6 +82,11 @@ export class Basics extends plugin {
     async Taboo(e) {
         if (!e.isGroup) return;
 
+        //判断是否有管理
+        if (!Bot.pickGroup(e.group_id).is_admin && !Bot.pickGroup(e.group_id).is_owner) {
+            return e.reply("做不到，怎么想我都做不到吧！！！");
+        }
+
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply("❎ 该命令仅限管理员可用", true);
 
         let qq;
@@ -142,18 +147,19 @@ export class Basics extends plugin {
             Company = 60;
         }
 
-        //判断是否有管理
-        if (Bot.pickGroup(e.group_id).is_admin || Bot.pickGroup(e.group_id).is_owner) {
-            await e.group.muteMember(qq, TabooTime * Company);
-            e.reply(`已把${e.group.pickMember(qq).card}扔进了小黑屋~`);
-            return true;
-        } else {
-            return e.reply("❎ 没有管理员人家做不到啦~>_<");
-        }
+        await e.group.muteMember(qq, TabooTime * Company);
+        e.reply(`已把${e.group.pickMember(qq).card}扔进了小黑屋~`);
+        return true;
+
     }
     /**解禁 */
     async Relieve(e) {
         if (!e.isGroup) return;
+
+        //判断是否有管理
+        if (!Bot.pickGroup(e.group_id).is_admin && !Bot.pickGroup(e.group_id).is_owner) {
+            return e.reply("做不到，怎么想我都做不到吧！！！");
+        }
 
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply("❎ 该命令仅限管理员可用", true);
 
@@ -170,38 +176,41 @@ export class Basics extends plugin {
         let memberMap = await e.group.getMemberMap();
         memberMap = Array.from(memberMap.keys());
         if (!memberMap.includes(Number(qq))) return e.reply("❎ 这个群没有这个人哦~");
-        //判断是否有管理
-        if (Bot.pickGroup(e.group_id).is_admin || Bot.pickGroup(e.group_id).is_owner) {
-            await e.group.muteMember(qq, 0)
-            e.reply(`轻轻的把${e.group.pickMember(qq).card}从小黑屋揪了出来~`);
-            return true;
-        } else {
-            return e.reply("❎ 没有管理员人家做不到啦~>_<");
-        }
+
+
+        await e.group.muteMember(qq, 0)
+        e.reply(`轻轻的把${e.group.pickMember(qq).card}从小黑屋揪了出来~`);
+        return true;
+
     }
     /**全体禁言 */
     async TabooAll(e) {
         if (!e.isGroup) return;
+        //判断是否有管理
+        if (!Bot.pickGroup(e.group_id).is_admin && !Bot.pickGroup(e.group_id).is_owner) {
+            return e.reply("做不到，怎么想我都做不到吧！！！");
+        }
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply("❎ 该命令仅限管理员可用", true);
 
         let res = false;
         if (/全体禁言/.test(e.msg)) res = true;
-        //判断是否有管理
-        if (Bot.pickGroup(e.group_id).is_admin || Bot.pickGroup(e.group_id).is_owner) {
-            await e.group.muteAll(res)
-            if (res) {
-                e.reply("全都不准说话了哦~")
-            } else {
-                e.reply("好耶！！可以说话啦~")
-            }
-            return true
+
+
+        await e.group.muteAll(res)
+        if (res) {
+            e.reply("全都不准说话了哦~")
         } else {
-            return e.reply("❎ 没有管理员人家做不到啦~>_<");
+            e.reply("好耶！！可以说话啦~")
         }
+        return true
     }
     //踢群员 防止误触发必须加#号
     async Kick(e) {
         if (!e.isGroup) return
+        //判断是否有管理
+        if (!Bot.pickGroup(e.group_id).is_admin && !Bot.pickGroup(e.group_id).is_owner) {
+            return e.reply("做不到，怎么想我都做不到吧！！！");
+        }
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply("❎ 该命令仅限管理员可用", true);
         let qq = e.message[0].text.replace(/#|踢/g, "").trim()
 
@@ -215,21 +224,22 @@ export class Basics extends plugin {
         let memberMap = await e.group.getMemberMap()
         memberMap = Array.from(memberMap.keys())
         if (!memberMap.includes(Number(qq))) return e.reply("❎ 这个群没有这个人哦~")
-        //判断是否有管理
-        if (Bot.pickGroup(e.group_id).is_admin || Bot.pickGroup(e.group_id).is_owner) {
-            await e.group.kickMember(qq)
-            e.reply("已把这个坏淫踢掉惹！！！")
-            return true
-        } else {
-            return e.reply("❎ 没有管理员人家做不到啦~>_<");
-        }
+
+
+        await e.group.kickMember(qq)
+        e.reply("已把这个坏淫踢掉惹！！！")
+        return true
+
     }
+
     //我要自闭
     async Autistic(e) {
         if (!e.isGroup) return
+        //判断是否有管理
+        if (!Bot.pickGroup(e.group_id).is_admin && !Bot.pickGroup(e.group_id).is_owner) return
+
         if (e.member.is_admin || e.member.is_owner || e.isMaster)
             return e.reply("别自闭啦~~", true)
-
 
         let msg = e.msg.replace(/#|我要自闭/g, "").trim()
         let TabooTime = msg.match(/[1-9]\d*/g);
@@ -245,20 +255,20 @@ export class Basics extends plugin {
             Company = 60;
         }
 
-        //判断是否有管理
-        if (Bot.pickGroup(e.group_id).is_admin || Bot.pickGroup(e.group_id).is_owner) {
-            await e.group.muteMember(e.user_id, TabooTime * Company);
-            e.reply(`那我就不手下留情了~`);
-            return true;
-        } else {
-            return e.reply("那你快自闭吧~", true);
-        }
+        await e.group.muteMember(e.user_id, TabooTime * Company);
+        e.reply(`那我就不手下留情了~`);
+        return true;
+
     }
 
     //设置管理
     async SetAdmin(e) {
         if (!Bot.pickGroup(e.group_id).is_owner) return e.reply("呜呜呜，人家做不到>_<")
+
         if (!e.isMaster) return e.reply("❎ 该命令仅限主人可用", true);
+
+        if (!Bot.pickGroup(e.group_id).is_owner) return e.reply("做不到，怎么想我都做不到吧！！！");
+
         let qq
         let yes = false
         qq = e.msg.replace(/#|(设置|取消)管理/g, "").trim();
@@ -292,17 +302,16 @@ export class Basics extends plugin {
             yes = true
         }
         //判断是否有管理
-        if (Bot.pickGroup(e.group_id).is_admin || Bot.pickGroup(e.group_id).is_owner) {
-            await e.group.allowAnony(yes)
-            if (yes) {
-                e.reply("已把匿名开启了哦，可以藏起来了~")
-            } else {
-                e.reply("已关闭匿名，小贼们不准藏了~")
-            }
-            return true;
-        } else {
-            return e.reply("呜呜呜，人家做不到>_<~");
+        if (!Bot.pickGroup(e.group_id).is_admin && !Bot.pickGroup(e.group_id).is_owner) {
+            return e.reply("做不到，怎么想我都做不到吧！！！");
         }
+        await e.group.allowAnony(yes)
+        if (yes) {
+            e.reply("已把匿名开启了哦，可以藏起来了~")
+        } else {
+            e.reply("已关闭匿名，小贼们不准藏了~")
+        }
+        return true;
     }
 
     //发群公告
@@ -312,22 +321,23 @@ export class Basics extends plugin {
 
         if (!msg) return e.reply("❎ 公告不能为空");
 
-        if (Bot.pickGroup(e.group_id).is_admin || Bot.pickGroup(e.group_id).is_owner) {
-            let ck = Cfg.getck()
-            let url = `http://xiaobai.klizi.cn/API/qqgn/gg_send.php?data=&skey=${ck.skey}&pskey=${ck.p_skey}&uin=${Bot.uin}&group=${e.group_id}&text=${msg}`
-            console.log(url);
-            let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
-            if (!result) return e.reply("❎ 接口出错")
-
-            if (result.ec == 0) {
-                e.reply("✅ 已发送群公告，群员们要好好看哦~")
-            } else {
-                e.reply("❎ 发送失败")
-            }
-            return true;
-        } else {
-            return e.reply("呜呜呜，人家做不到>_<~");
+        //判断是否有管理
+        if (!Bot.pickGroup(e.group_id).is_admin && !Bot.pickGroup(e.group_id).is_owner) {
+            return e.reply("做不到，怎么想我都做不到吧！！！");
         }
+        let ck = Cfg.getck()
+        let url = `http://xiaobai.klizi.cn/API/qqgn/gg_send.php?data=&skey=${ck.skey}&pskey=${ck.p_skey}&uin=${Bot.uin}&group=${e.group_id}&text=${msg}`
+        console.log(url);
+        let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
+        if (!result) return e.reply("❎ 接口出错")
+
+        if (result.ec == 0) {
+            e.reply("✅ 已发送群公告，群员们要好好看哦~")
+        } else {
+            e.reply("❎ 发送失败")
+        }
+        return true;
+
     }
 
     //查群公告+删群公告
@@ -339,33 +349,33 @@ export class Basics extends plugin {
             if (res) await e.reply(res)
             return;
         }
-        if (Bot.pickGroup(e.group_id).is_admin || Bot.pickGroup(e.group_id).is_owner) {
-            let msg = e.msg.replace(/#|删群公告/, "").trim()
-
-            if (!msg) return e.reply(`❎ 序号不可为空`)
-
-            msg = msg.match(/\d/)
-
-            if (!msg) return e.reply(`❎ 请检查序号是否正确`)
-
-            let ck = Cfg.getck()
-
-            let list = await this.getAnnouncelist(e.group_id, msg)
-
-            let url = `http://xiaobai.klizi.cn/API/qqgn/gg_delete.php?data=&skey=${ck.skey}&pskey=${ck.p_skey}&uin=${Bot.uin}&group=${e.group_id}&fid=${list.fid}`
-
-            let result = await fetch(url).then(res => res.json())
-                .catch(err => console.log(err))
-
-            if (!result) return e.reply("❎ 接口出错")
-            if (result.ec == 0) {
-                e.reply("✅ 已删除这个公告哦~")
-            } else {
-                e.reply("❎ 删除失败")
-            }
-        } else {
-            return e.reply("呜呜呜，人家做不到>_<~");
+        if (!Bot.pickGroup(e.group_id).is_admin && !Bot.pickGroup(e.group_id).is_owner) {
+            return e.reply("做不到，怎么想我都做不到吧！！！");
         }
+        let msg = e.msg.replace(/#|删群公告/, "").trim()
+
+        if (!msg) return e.reply(`❎ 序号不可为空`)
+
+        msg = msg.match(/\d/)
+
+        if (!msg) return e.reply(`❎ 请检查序号是否正确`)
+
+        let ck = Cfg.getck()
+
+        let list = await this.getAnnouncelist(e.group_id, msg)
+
+        let url = `http://xiaobai.klizi.cn/API/qqgn/gg_delete.php?data=&skey=${ck.skey}&pskey=${ck.p_skey}&uin=${Bot.uin}&group=${e.group_id}&fid=${list.fid}`
+
+        let result = await fetch(url).then(res => res.json())
+            .catch(err => console.log(err))
+
+        if (!result) return e.reply("❎ 接口出错")
+        if (result.ec == 0) {
+            e.reply("✅ 已删除这个公告哦~")
+        } else {
+            e.reply("❎ 删除失败")
+        }
+
     }
     //获取群公告
     async getAnnouncelist(group, item = "") {

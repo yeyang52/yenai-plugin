@@ -1,16 +1,14 @@
 import plugin from '../../../lib/plugins/plugin.js';
 import { segment } from "oicq";
 import fetch from 'node-fetch';
-import cfg from '../../../lib/config/config.js';
 import Config from '../model/Config.js';
 import common from '../../../lib/common/common.js'
-let Qzonedetermine;
-let groupPhotoid;
+import lodash from 'lodash'
 
 export class example extends plugin {
   constructor() {
     super({
-      name: '助手',
+      name: '小助手',
       event: 'message',
       priority: 2000,
       rule: [
@@ -100,10 +98,12 @@ export class example extends plugin {
         },
       ]
     })
+    this.Qzonedetermine = false;
+    this.groupPhotoid = '';
   }
   /**改头像*/
   async Photo(e) {
-    if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
+    if (!e.isMaster) return;
 
     if (!e.img) {
       this.setContext('Photos')
@@ -143,7 +143,7 @@ export class example extends plugin {
 
   /** 改昵称*/
   async Myname(e) {
-    if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
+    if (!e.isMaster) return;
 
     let name = e.msg.replace(/#|改昵称/g, "").trim()
 
@@ -157,7 +157,7 @@ export class example extends plugin {
 
   /** 改群名片 */
   async MyGroupname(e) {
-    if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
+    if (!e.isMaster) return;
 
 
     let group = '';
@@ -181,7 +181,7 @@ export class example extends plugin {
 
     if (!card) return e.reply("❎ 名片不能为空");
 
-    Bot.pickGroup(group).setCard(cfg.qq, card)
+    Bot.pickGroup(group).setCard(Bot.uin, card)
       .then(() => e.reply("✅ 群名片修改成功"))
       .catch(err => {
         e.reply("✅ 群名片修改失败")
@@ -192,33 +192,33 @@ export class example extends plugin {
   /**改群头像 */
   async GroupPhoto(e) {
     if (e.isPrivate) {
-      if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
+      if (!e.isMaster) return;
 
-      groupPhotoid = e.msg.replace(/#|改群头像/g, "").trim()
+      this.groupPhotoid = e.msg.replace(/#|改群头像/g, "").trim()
 
-      if (!groupPhotoid) return e.reply("❎ 群号不能为空");
+      if (!this.groupPhotoid) return e.reply("❎ 群号不能为空");
 
-      if (!(/^\d+$/.test(groupPhotoid))) return e.reply("❎ 您的群号不合法");
+      if (!(/^\d+$/.test(this.groupPhotoid))) return e.reply("❎ 您的群号不合法");
 
-      if (!Bot.gl.get(Number(groupPhotoid))) return e.reply("❎ 群聊列表查无此群");
+      if (!Bot.gl.get(Number(this.groupPhotoid))) return e.reply("❎ 群聊列表查无此群");
     } else {
       //判断身份
       if (e.member.is_admin || e.member.is_owner || e.isMaster) {
-        groupPhotoid = e.group_id
+        this.groupPhotoid = e.group_id
       } else {
         return e.reply(["哼~你不是管理员人家不听你的", segment.face(231)])
       }
     }
-    groupPhotoid = Number(groupPhotoid);
+    this.groupPhotoid = Number(this.groupPhotoid);
 
-    if (Bot.pickGroup(groupPhotoid).is_admin || Bot.pickGroup(groupPhotoid).is_owner) {
+    if (Bot.pickGroup(this.groupPhotoid).is_admin || Bot.pickGroup(this.groupPhotoid).is_owner) {
       if (!e.img) {
         this.setContext('picture')
         e.reply("✅ 请发送图片");
         return;
       }
 
-      Bot.pickGroup(groupPhotoid).setAvatar(e.img[0])
+      Bot.pickGroup(this.groupPhotoid).setAvatar(e.img[0])
         .then(() => e.reply("✅ 群头像修改成功"))
         .catch((err) => {
           e.reply("✅ 群头像修改失败")
@@ -241,7 +241,7 @@ export class example extends plugin {
       this.e.reply('❎ 请发送图片或取消')
       return;
     }
-    Bot.pickGroup(groupPhotoid).setAvatar(this.e.img[0])
+    Bot.pickGroup(this.groupPhotoid).setAvatar(this.e.img[0])
       .then(() => this.e.reply("✅ 群头像修改成功"))
       .catch((err) => {
         this.e.reply("✅ 群头像修改失败")
@@ -257,7 +257,7 @@ export class example extends plugin {
     let card = '';
 
     if (e.isPrivate) {
-      if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
+      if (!e.isMaster) return;
 
       let msg = e.msg.split(" ")
 
@@ -296,7 +296,7 @@ export class example extends plugin {
 
   /** 改签名*/
   async Sign(e) {
-    if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
+    if (!e.isMaster) return;
 
     let signs = e.msg.replace(/#|改签名/g, "").trim()
     await Bot.setSignature(signs)
@@ -309,7 +309,7 @@ export class example extends plugin {
 
   /** 改状态*/
   async State(e) {
-    if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
+    if (!e.isMaster) return;
 
     let signs = e.msg.replace(/#|改状态/g, "").trim()
 
@@ -324,15 +324,11 @@ export class example extends plugin {
       "我在线上": 11,
     }
 
-    let status = {
-      31: "离开",
-      50: "忙碌",
-      70: "请勿打扰",
-      41: "隐身",
-      11: "我在线上",
-      60: "Q我吧",
-    };
-
+    let status = {};
+    for (let k in res) {
+      status[res[k]] = k;
+    }
+    
     if (!(signs in res)) return e.reply("❎ 可选值：我在线上，离开，隐身，忙碌，Q我吧，请勿打扰")
 
     await Bot.setOnlineStatus(res[signs])
@@ -347,7 +343,7 @@ export class example extends plugin {
 
   /** 发好友*/
   async Friends(e) {
-    if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
+    if (!e.isMaster) return;
 
     let msgs = e.message[0].text.split(" ")
     if (msgs.length == 1 && !(/\d/.test(msgs[0]))) return e.reply("❎ QQ号不能为空");
@@ -376,7 +372,7 @@ export class example extends plugin {
 
   /** 发群聊*/
   async Groupmsg(e) {
-    if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
+    if (!e.isMaster) return;
 
     let msgs = e.message[0].text.split(" ")
 
@@ -438,7 +434,7 @@ export class example extends plugin {
 
   /**退群 */
   async Quit(e) {
-    if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
+    if (!e.isMaster) return;
 
     let quits = e.msg.replace(/#|退群/g, "").trim()
 
@@ -458,7 +454,7 @@ export class example extends plugin {
 
   /**删好友 */
   async Deletes(e) {
-    if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true)
+    if (!e.isMaster) return
 
     let quits = e.msg.replace(/#|删好友/g, "").trim()
 
@@ -481,7 +477,7 @@ export class example extends plugin {
 
   /**改性别 */
   async Sex(e) {
-    if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
+    if (!e.isMaster) return;
 
     let sex = e.msg.replace(/#|改性别/g, "").trim();
 
@@ -568,13 +564,13 @@ export class example extends plugin {
   }
   /**QQ空间 说说列表*/
   async Qzonelist(e) {
-    if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
+    if (!e.isMaster) return;
 
     let res = e.message[0].text.replace(/#|取说说列表/g, "").trim()
     if (!res) res = 1
     if (!parseInt(res)) return e.reply(`❎ 请检查页数是否正确`)
 
-    let list = await getlist()
+    let list = await this.getlist()
     list = list.msglist
     if (!list) return e.reply(`❎ 说说列表为空`)
     let msg = [
@@ -583,7 +579,7 @@ export class example extends plugin {
     let page = 5 * (res - 1)
     for (let i = 0 + page; i < 5 + page; i++) {
       if (!list[i]) break
-      let arr = `${i + 1}.${getLimit(list[i].content)}\n- [${list[i].secret ? "私密" : "公开"}] | ${formatDate(list[i].created_time)} | ${list[i].commentlist ? list[i].commentlist.length : 0}条评论\n`
+      let arr = `${i + 1}.${lodash.truncate(list[i].content, { "length": 15 })}\n- [${list[i].secret ? "私密" : "公开"}] | ${formatDate(list[i].created_time)} | ${list[i].commentlist ? list[i].commentlist.length : 0}条评论\n`
       msg.push(arr)
     }
     if (res > Math.ceil(list.length / 5)) return e.reply(`❎ 页数超过最大值`)
@@ -593,7 +589,7 @@ export class example extends plugin {
 
   /** 删除说说 */
   async Qzonedel(e) {
-    if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
+    if (!e.isMaster) return;
 
     let res = e.message[0].text.replace(/#|删说说/g, "").trim()
 
@@ -603,19 +599,19 @@ export class example extends plugin {
 
     if (!res) return e.reply(`❎ 请检查序号是否正确`)
 
-    let list = await getlist()
+    let list = await this.getlist()
 
     if (!list.msglist) return e.reply(`❎ 说说列表为空`)
-    let ck = getck('qzone.qq.com')
+    let ck = Config.getck('qzone.qq.com')
     if ((res - 1) >= list.msglist.length) return e.reply(`❎ 序号超过最大值`)
     let something = list.msglist[res - 1]
 
-    let url = `https://xiaobai.klizi.cn/API/qqgn/ss_delete.php?data=&uin=${cfg.qq}&skey=${ck.skey}&pskey=${ck.p_skey}&tid=${something.tid}`
+    let url = `https://xiaobai.klizi.cn/API/qqgn/ss_delete.php?data=&uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&tid=${something.tid}`
     let result = await fetch(url).then(res => res.text()).catch(err => console.log(err))
     if (!result) return e.reply(`❎ 接口请求失败`)
 
     if (/删除说说成功/.test(result)) {
-      e.reply(`✅ 删除说说成功：\n ${res}.${getLimit(something.content)} \n - [${something.secret ? "私密" : "公开"}] | ${formatDate(something.created_time)} | ${something.commentlist ? something.commentlist.length : 0} 条评论`)
+      e.reply(`✅ 删除说说成功：\n ${res}.${lodash.truncate(something.content, { "length": 15 })} \n - [${something.secret ? "私密" : "公开"}] | ${formatDate(something.created_time)} | ${something.commentlist ? something.commentlist.length : 0} 条评论`)
     } else if (/删除失败/.test(result)) {
       e.reply(`❎ 删除失败`)
     }
@@ -623,16 +619,16 @@ export class example extends plugin {
 
   /** 发说说 */
   async Qzonesay(e) {
-    if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
+    if (!e.isMaster) return;
 
     let res = e.message[0].text.replace(/#|发说说| /g, "").trim()
-    let ck = getck('qzone.qq.com')
+    let ck = Config.getck('qzone.qq.com')
 
     let url;
     if (e.img) {
-      url = `https://xiaobai.klizi.cn/API/qqgn/ss_sendimg.php?uin=${cfg.qq}&skey=${ck.skey}&pskey=${ck.p_skey}&url=${e.img[0]}&msg=${res}`
+      url = `https://xiaobai.klizi.cn/API/qqgn/ss_sendimg.php?uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&url=${e.img[0]}&msg=${res}`
     } else {
-      url = `http://xiaobai.klizi.cn/API/qqgn/ss_send.php?data=json&uin=${cfg.qq}&skey=${ck.skey}&pskey=${ck.p_skey}&msg=${res}`
+      url = `http://xiaobai.klizi.cn/API/qqgn/ss_send.php?data=json&uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&msg=${res}`
     }
 
     let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
@@ -641,7 +637,7 @@ export class example extends plugin {
 
     if (result.code != 0) return e.reply(`❎ 说说发表失败\n错误信息:${result.message}`)
 
-    let msg = [`✅ 说说发表成功，内容：\n`, getLimit(result.content)]
+    let msg = [`✅ 说说发表成功，内容：\n`, lodash.truncate(result.content, { "length": 15 })]
     if (result.pic) {
       msg.push(segment.image(result.pic[0].url1))
     }
@@ -649,19 +645,32 @@ export class example extends plugin {
     e.reply(msg)
   }
 
+  /**取说说列表*/
+  async getlist() {
+    let ck = Config.getck('qzone.qq.com')
+    let url = `https://xiaobai.klizi.cn/API/qqgn/ss_list.php?data=json&uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&qq=${Bot.uin}`
+    let list = await fetch(url).then(res => res.json()).catch(err => console.log(err))
+
+    if (!list) {
+      return e.reply("❎ 取说说列表失败")
+    } else {
+      return list
+    }
+
+  }
+
   /** 清空说说和留言*/
   async QzoneEmpty(e) {
-    if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
+    if (!e.isMaster) return;
 
     if (/清空说说/.test(e.msg)) {
       this.setContext('QzonedelAll')
       e.reply("✳️ 即将删除全部说说请发送：\n" + "------确认清空或取消------");
-      Qzonedetermine = true;
+      this.Qzonedetermine = true;
       return true;
     } else if (/清空留言/.test(e.msg)) {
       this.setContext('QzonedelAll')
       e.reply("✳️ 即将删除全部留言请发送：\n" + "------确认清空或取消------");
-      Qzonedetermine = false
       return true;
     }
   }
@@ -669,13 +678,13 @@ export class example extends plugin {
     let msg = this.e.msg
     if (msg == "确认清空") {
       this.finish('QzonedelAll')
-      let ck = getck('qzone.qq.com')
+      let ck = Config.getck('qzone.qq.com')
 
       let url
-      if (Qzonedetermine) {
-        url = `https://xiaobai.klizi.cn/API/qqgn/ss_empty.php?data=&uin=${cfg.qq}&skey=${ck.skey}&pskey=${ck.p_skey}`
+      if (this.Qzonedetermine) {
+        url = `https://xiaobai.klizi.cn/API/qqgn/ss_empty.php?data=&uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}`
       } else {
-        url = `https://xiaobai.klizi.cn/API/qqgn/qzone_emptymsgb.php?data=&uin=${cfg.qq}&skey=${ck.skey}&pskey=${ck.p_skey}`
+        url = `https://xiaobai.klizi.cn/API/qqgn/qzone_emptymsgb.php?data=&uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}`
       }
 
       let result = await fetch(url).then(res => res.text()).catch(err => console.log(err))
@@ -695,7 +704,7 @@ export class example extends plugin {
 
   //获取群|好友列表
   async Grouplist(e) {
-    if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
+    if (!e.isMaster) return;
 
     let listMap;
     let message = [];
@@ -742,9 +751,9 @@ export class example extends plugin {
   async Group_xj(e) {
     if (e.isPrivate) return e.reply("请在群聊使用哦~")
 
-    if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply("❎ 该命令仅限管理员可用", true);
+    if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return;
 
-    let ck = getck("qqweb.qq.com")
+    let ck = Config.getck("qqweb.qq.com")
 
     let url = `http://xiaobai.klizi.cn/API/qqgn/qun_xj.php?data=&uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&group=${e.group_id}`
 
@@ -763,11 +772,11 @@ export class example extends plugin {
 
   /**戳一戳 */
   async cyc(e) {
-    if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
+    if (!e.isMaster) return;
 
     let yes = 1;
     if (/开启/.test(e.msg)) yes = 0;
-    let ck = getck("vip.qq.com")
+    let ck = Config.getck("vip.qq.com")
     let url = `http://xiaobai.klizi.cn/API/qqgn/qun_cyc.php?uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&switch=${yes}`
 
     let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
@@ -778,21 +787,8 @@ export class example extends plugin {
 
   }
 
-
 }
 
-
-
-
-
-
-
-/**字数限制 */
-function getLimit(str) {
-  console.log(str);
-  let s = str.slice(0, 10)
-  return str.length > 10 ? s + "..." : str
-}
 
 /**时间格式化 */
 function formatDate(time) {
@@ -814,26 +810,4 @@ function formatDate(time) {
     minute = "0" + minute;
   }
   return month + "/" + date + " " + hour + ":" + minute
-}
-
-/**取说说列表*/
-async function getlist() {
-  let ck = getck('qzone.qq.com')
-  let url = `https://xiaobai.klizi.cn/API/qqgn/ss_list.php?data=json&uin=${cfg.qq}&skey=${ck.skey}&pskey=${ck.p_skey}&qq=${cfg.qq}`
-  let list = await fetch(url).then(res => res.json()).catch(err => console.log(err))
-
-  if (!list) {
-    return e.reply("❎ 取说说列表失败")
-  } else {
-    return list
-  }
-
-}
-/**取cookies */
-function getck(data) {
-  let cookie = Bot.cookies[data]
-  let ck = cookie.replace(/=/g, `":"`).replace(/;/g, `","`).replace(/ /g, "").trim()
-  ck = ck.substring(0, ck.length - 2)
-  ck = `{"`.concat(ck).concat("}")
-  return JSON.parse(ck)
 }

@@ -154,6 +154,18 @@ class Config {
 
         return true;
     }
+    /**
+     * @description: 取cookie
+     * @param {String} data 如：qun.qq.com
+     * @return {Object} 
+     */    
+    getck(data) {
+        let cookie = Bot.cookies[data]
+        let ck = cookie.replace(/=/g, `":"`).replace(/;/g, `","`).replace(/ /g, "").trim()
+        ck = ck.substring(0, ck.length - 2)
+        ck = `{"`.concat(ck).concat("}")
+        return JSON.parse(ck)
+    }
 }
 
 

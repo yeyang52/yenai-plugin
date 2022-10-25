@@ -55,7 +55,10 @@ Tip：具体可使用 **#椰奶设置** 查看
 
 </details>
 
-2、助手(修改Bot的各种信息包括但不限于以下功能)
+
+
+<details>
+  <summary>小助手</summary>
 
 - 发送群聊消息
 
@@ -71,7 +74,12 @@ Tip：具体可使用 **#椰奶设置** 查看
 
   ……
 
-3、事件处理
+</details>
+
+
+
+<details>
+  <summary>事件处理</summary>
 
 - 同意|拒绝 好友申请
 
@@ -79,7 +87,12 @@ Tip：具体可使用 **#椰奶设置** 查看
 
 - 回复好友消息
 
-4、娱乐功能
+</details>
+
+
+
+<details>
+  <summary>娱乐功能</summary>
 
 - 随机唱鸭
   
@@ -91,7 +104,12 @@ Tip：具体可使用 **#椰奶设置** 查看
   
 - waifu
 
-5、Pixiv功能
+</details>
+
+
+
+<details>
+  <summary>Pixiv功能</summary>
 
 - Pixiv排行榜
   
@@ -109,7 +127,12 @@ Tip：具体可使用 **#椰奶设置** 查看
   
 - 查看热门Tag
 
-6、群管功能
+</details>
+
+
+
+<details>
+  <summary>群管功能</summary>
 
 - (全体)?禁言|解禁
 
@@ -122,6 +145,14 @@ Tip：具体可使用 **#椰奶设置** 查看
 - 增 删 查 公告
 
 - 我要自闭
+
+- 申请头衔
+
+- 修改头衔
+
+</details>
+
+
 
 #### 免责声明
 

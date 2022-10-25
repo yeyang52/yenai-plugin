@@ -37,8 +37,10 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 > 具体您可使用 **#椰奶帮助**  查看详细
 
 <details>
-  <summary>Bot事件通知</summary>
-- 闪照
+  <summary>事件通知</summary>
+
+
+- 闪照监听
 
 - 撤回监听
 
@@ -50,8 +52,9 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 
 - 好友|群 消息
 
-Tip：具体可使用 **#椰奶设置** 查看
+- Bot被禁言
 
+Tip：具体可使用 **#椰奶设置** 查看
 </details>
 
 <br>
@@ -59,19 +62,13 @@ Tip：具体可使用 **#椰奶设置** 查看
 <details>
   <summary>小助手</summary>
 
-- 发送群聊消息
-
-- 发送好友消息
-
-- 改头像 | 改昵称 
-
-- 删好友
-
-- 退群
-
+- 发送 群聊|好友 消息
+- 改头像 | 改昵称 | 改状态 | 改昵称 | 改签名 | 改性别
+- 删好友 | 退群
 - 获取 好友|群 列表
+- 增 删 查 说说
+- 状态
 
-  ……
 
 </details>
 

@@ -31,7 +31,7 @@ export class Basics extends plugin {
                     fnc: 'Kick'
                 },
                 {
-                    reg: '^#?我要自闭.*$',
+                    reg: '^#?我要(自闭|禅定).*$',
                     fnc: 'Autistic'
                 },
                 {
@@ -54,9 +54,16 @@ export class Basics extends plugin {
                     reg: '^#删群公告.*$',
                     fnc: 'DelAnnounce'
                 },
+                {
+                    reg: '#修改头衔.*',
+                    fnc: 'adminsetTitle'
+                },
+                {
+                    reg: '#申请头衔.*',
+                    fnc: 'SetGroupSpecialTitle'
+                }
             ]
         })
-        this.path = "./plugins/xiaoxue-plugin"
     }
     async help(e) {
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return
@@ -84,7 +91,7 @@ export class Basics extends plugin {
 
         //判断是否有管理
         if (!e.group.is_admin && !e.group_id.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧！！！");
+            return e.reply("做不到，怎么想我都做不到吧！！！", true);
         }
 
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
@@ -160,7 +167,7 @@ export class Basics extends plugin {
 
         //判断是否有管理
         if (!e.group.is_admin && !e.group_id.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧！！！");
+            return e.reply("做不到，怎么想我都做不到吧！！！", true);
         }
 
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
@@ -192,7 +199,7 @@ export class Basics extends plugin {
         if (!e.isGroup) return;
         //判断是否有管理
         if (!e.group.is_admin && !e.group_id.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧！！！");
+            return e.reply("做不到，怎么想我都做不到吧！！！", true);
         }
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
             return e.reply("❎ 该命令仅限管理员可用", true);
@@ -215,7 +222,7 @@ export class Basics extends plugin {
         if (!e.isGroup) return
         //判断是否有管理
         if (!e.group.is_admin && !e.group_id.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧！！！");
+            return e.reply("做不到，怎么想我都做不到吧！！！", true);
         }
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
             return e.reply("❎ 该命令仅限管理员可用", true);
@@ -244,12 +251,12 @@ export class Basics extends plugin {
     async Autistic(e) {
         if (!e.isGroup) return
         //判断是否有管理
-        if (!Bot.pickGroup(e.group_id).is_admin && !Bot.pickGroup(e.group_id).is_owner) return
+        if (!e.group.is_admin && !e.group.is_owner) return
 
         if (e.member.is_admin || e.member.is_owner || e.isMaster)
             return e.reply("别自闭啦~~", true)
 
-        let msg = e.msg.replace(/#|我要自闭/g, "").trim()
+        let msg = e.msg.replace(/#|我要自闭|禅定/g, "").trim()
 
         let TabooTime = msg.match(/[1-9]\d*/g);
 
@@ -266,7 +273,7 @@ export class Basics extends plugin {
         }
 
         await e.group.muteMember(e.user_id, TabooTime * Company);
-        e.reply(`那我就不手下留情了~`);
+        e.reply(`那我就不手下留情了~`, true);
         return true;
 
     }
@@ -275,7 +282,7 @@ export class Basics extends plugin {
     async SetAdmin(e) {
         if (!e.isGroup) return;
 
-        if (!e.group.is_owner) return e.reply("呜呜呜，人家做不到>_<")
+        if (!e.group.is_owner) return e.reply("呜呜呜，人家做不到>_<", true)
 
         if (!e.isMaster) return e.reply("❎ 该命令仅限主人可用", true);
 
@@ -313,13 +320,13 @@ export class Basics extends plugin {
         }
         //判断是否有管理
         if (!e.group.is_admin && !e.group_id.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧！！！");
+            return e.reply("做不到，怎么想我都做不到吧！！！", true);
         }
         let yes = false
         if (/(允许|开启)匿名/.test(e.msg)) {
             yes = true
         }
-        
+
         await e.group.allowAnony(yes)
         if (yes) {
             e.reply("已把匿名开启了哦，可以藏起来了~")
@@ -338,7 +345,7 @@ export class Basics extends plugin {
         }
         //判断是否有管理
         if (!e.group.is_admin && !e.group_id.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧！！！");
+            return e.reply("做不到，怎么想我都做不到吧！！！", true);
         }
         let msg = e.msg.replace(/#|发群公告/g, "").trim()
 
@@ -363,9 +370,9 @@ export class Basics extends plugin {
     //查群公告+删群公告
     async DelAnnounce(e) {
         if (!e.isGroup) return;
-        
+
         if (!e.group.is_admin && !e.group_id.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧！！！");
+            return e.reply("做不到，怎么想我都做不到吧！！！", true);
         }
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
             return e.reply("❎ 该命令仅限管理员可用", true);
@@ -376,7 +383,7 @@ export class Basics extends plugin {
             if (res) await e.reply(res)
             return;
         }
-        
+
         let msg = e.msg.replace(/#|删群公告/, "").trim()
 
         if (!msg) return e.reply(`❎ 序号不可为空`)
@@ -419,5 +426,35 @@ export class Basics extends plugin {
             return result
         }
 
+    }
+
+
+    //设置头衔
+    async adminsetTitle(e) {
+        if (!e.isGroup) return;
+
+        if (e.message[1].type != 'at') return
+
+        if (!e.group.is_owner) return e.reply("做不到，怎么想我都做不到吧！！！", true)
+
+        if (!e.isMaster) {
+            return e.reply("❎ 该命令仅限主人可用", true);
+        }
+
+        await e.group.setTitle(e.message[1].qq, e.message[2].text)
+
+        e.reply(`已经把这个小可爱的头衔设置为${e.message[2].text}辣`)
+    }
+    //申请头衔
+    async SetGroupSpecialTitle(e) {
+        if (!e.isGroup) return;
+
+        if (!e.group.is_owner) return e.reply("做不到，怎么想我都做不到吧！！！", true)
+
+        let Title = e.msg.replace(/#|申请头衔/g, "")
+
+        await e.group.setTitle(e.user_id, Title)
+
+        e.reply(`嗯！不戳的头衔哦~`, true)
     }
 }

@@ -321,10 +321,8 @@ export class sese extends plugin {
   async setuapi(r18, num = 1, tag = "") {
     let size = "original"
     let proxy = await redis.get(`yenai:proxy`)
-    if (num <= 6 && num > 1) {
+    if (num > 6) {
       size = "regular"
-    } else if (num > 6) {
-      size = "small"
     }
     let url = `${api}?r18=${r18}&num=${num}${tag}&proxy=${proxy}&size=${size}`;
 

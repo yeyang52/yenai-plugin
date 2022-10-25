@@ -38,6 +38,7 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 
 <details>
   <summary>Bot事件通知</summary>
+
 - 闪照
 
 - 撤回监听

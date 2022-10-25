@@ -68,20 +68,22 @@ export class Basics extends plugin {
     async help(e) {
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return
         let msg = [
-            "#禁言 <@群员> <时间> \n",
-            "#解禁 <@群员> \n",
+            "#禁言 <@QQ> <时间> \n",
+            "#解禁 <@QQ> \n",
             "#全体禁言 \n",
             "#全体解禁 \n",
             "#允许匿名 \n",
             "#禁止匿名 \n",
-            "#踢 <@群员> \n",
+            "#踢 <@QQ> \n",
             "#我要自闭 <时间> \n",
-            "#设置管理 <@群员> \n",
-            "#取消管理 <@群员> \n",
+            "#设置管理 <@QQ> \n",
+            "#取消管理 <@QQ> \n",
             "#发群公告 <内容> \n",
             "#查群公告 \n",
             "#删群公告 <序号> \n",
-            "Tip:@群员可以用QQ号代替\n踢群员防止误触发必须加#"
+            "#申请头衔 <头衔>\n",
+            "#修改头衔 <@QQ> <头衔>\n",
+            "Tip:@群员可以用QQ号代替"
         ]
         e.reply(msg)
     }
@@ -90,7 +92,7 @@ export class Basics extends plugin {
         if (!e.isGroup) return;
 
         //判断是否有管理
-        if (!e.group.is_admin && !e.group_id.is_owner) {
+        if (!e.group.is_admin && !e.group.is_owner) {
             return e.reply("做不到，怎么想我都做不到吧！！！", true);
         }
 
@@ -166,7 +168,7 @@ export class Basics extends plugin {
         if (!e.isGroup) return;
 
         //判断是否有管理
-        if (!e.group.is_admin && !e.group_id.is_owner) {
+        if (!e.group.is_admin && !e.group.is_owner) {
             return e.reply("做不到，怎么想我都做不到吧！！！", true);
         }
 
@@ -198,7 +200,7 @@ export class Basics extends plugin {
     async TabooAll(e) {
         if (!e.isGroup) return;
         //判断是否有管理
-        if (!e.group.is_admin && !e.group_id.is_owner) {
+        if (!e.group.is_admin && !e.group.is_owner) {
             return e.reply("做不到，怎么想我都做不到吧！！！", true);
         }
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
@@ -221,7 +223,7 @@ export class Basics extends plugin {
     async Kick(e) {
         if (!e.isGroup) return
         //判断是否有管理
-        if (!e.group.is_admin && !e.group_id.is_owner) {
+        if (!e.group.is_admin && !e.group.is_owner) {
             return e.reply("做不到，怎么想我都做不到吧！！！", true);
         }
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
@@ -319,7 +321,7 @@ export class Basics extends plugin {
             return e.reply("❎ 该命令仅限管理员可用", true);
         }
         //判断是否有管理
-        if (!e.group.is_admin && !e.group_id.is_owner) {
+        if (!e.group.is_admin && !e.group.is_owner) {
             return e.reply("做不到，怎么想我都做不到吧！！！", true);
         }
         let yes = false
@@ -344,7 +346,7 @@ export class Basics extends plugin {
             return e.reply("❎ 该命令仅限管理员可用", true);
         }
         //判断是否有管理
-        if (!e.group.is_admin && !e.group_id.is_owner) {
+        if (!e.group.is_admin && !e.group.is_owner) {
             return e.reply("做不到，怎么想我都做不到吧！！！", true);
         }
         let msg = e.msg.replace(/#|发群公告/g, "").trim()
@@ -371,7 +373,7 @@ export class Basics extends plugin {
     async DelAnnounce(e) {
         if (!e.isGroup) return;
 
-        if (!e.group.is_admin && !e.group_id.is_owner) {
+        if (!e.group.is_admin && !e.group.is_owner) {
             return e.reply("做不到，怎么想我都做不到吧！！！", true);
         }
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {

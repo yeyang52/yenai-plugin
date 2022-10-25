@@ -28,15 +28,15 @@ body {
   /* box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.15); */
   position: relative;
   font-size: 20px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.3);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   /* 毛玻璃 */
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.18);
-  color: #dd2d8e;
+  color: #0059ff;
 }
 
 .help-group {
@@ -95,7 +95,7 @@ body {
 
 .help-title {
   display: block;
-  color: #dd2d8e;
+  color: #0059ff;
   font-size: 16px;
   line-height: 24px;
 }

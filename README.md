@@ -37,16 +37,9 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 > 具体您可使用 **#椰奶帮助**  查看详细
 
 <details>
-<<<<<<< HEAD
   <summary>事件通知</summary>
 
-
 - 闪照监听
-=======
-  <summary>Bot事件通知</summary>
-
-- 闪照
->>>>>>> 082fdad19db950cb83ee6b27ef4bba14be1d4b88
 
 - 撤回监听
 
@@ -62,24 +55,22 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 
 Tip：具体可使用 **#椰奶设置** 查看
 </details>
-
-<br>
-
 <details>
   <summary>小助手</summary>
 
 - 发送 群聊|好友 消息
+  
 - 改头像 | 改昵称 | 改状态 | 改昵称 | 改签名 | 改性别
+  
 - 删好友 | 退群
+  
 - 获取 好友|群 列表
+  
 - 增 删 查 说说
+  
 - 状态
-
-
+  
 </details>
-
-<br>
-
 <details>
   <summary>事件处理</summary>
 
@@ -90,9 +81,6 @@ Tip：具体可使用 **#椰奶设置** 查看
 - 回复好友消息
 
 </details>
-
-<br>
-
 <details>
   <summary>娱乐功能</summary>
 
@@ -107,9 +95,6 @@ Tip：具体可使用 **#椰奶设置** 查看
 - waifu
 
 </details>
-
-<br>
-
 <details>
   <summary>Pixiv功能</summary>
 
@@ -130,9 +115,6 @@ Tip：具体可使用 **#椰奶设置** 查看
 - 查看热门Tag
 
 </details>
-
-<br>
-
 <details>
   <summary>群管功能</summary>
 

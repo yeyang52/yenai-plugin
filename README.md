@@ -37,10 +37,16 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 > 具体您可使用 **#椰奶帮助**  查看详细
 
 <details>
+<<<<<<< HEAD
   <summary>事件通知</summary>
 
 
 - 闪照监听
+=======
+  <summary>Bot事件通知</summary>
+
+- 闪照
+>>>>>>> 082fdad19db950cb83ee6b27ef4bba14be1d4b88
 
 - 撤回监听
 

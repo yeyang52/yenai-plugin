@@ -55,6 +55,7 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 
 Tip：具体可使用 **#椰奶设置** 查看
 </details>
+
 <details>
   <summary>小助手</summary>
 
@@ -71,6 +72,7 @@ Tip：具体可使用 **#椰奶设置** 查看
 - 状态
   
 </details>
+
 <details>
   <summary>事件处理</summary>
 
@@ -81,6 +83,7 @@ Tip：具体可使用 **#椰奶设置** 查看
 - 回复好友消息
 
 </details>
+
 <details>
   <summary>娱乐功能</summary>
 
@@ -95,6 +98,7 @@ Tip：具体可使用 **#椰奶设置** 查看
 - waifu
 
 </details>
+
 <details>
   <summary>Pixiv功能</summary>
 
@@ -115,6 +119,7 @@ Tip：具体可使用 **#椰奶设置** 查看
 - 查看热门Tag
 
 </details>
+
 <details>
   <summary>群管功能</summary>
 

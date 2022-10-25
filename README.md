@@ -16,7 +16,7 @@ Yenai-Plugin是一个Yunzai-Bot的扩展插件，提供对Bot的一些便捷操�
 </div>
 
 
-#### 安装教程
+## 安装教程
 **Tip：Yenai-Plugin仅适配Yunzai-BotV3!!!**
 
 请将Yenai-Plugin放置在Yunzai-Bot的plugins目录下，重启Yunzai-Bot后即可使用。
@@ -31,14 +31,13 @@ git clone https://gitee.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 ```
 
-#### 功能介绍
+## 功能介绍
 
-Yenai-Plugin为您提供以下功能(可使用 **#椰奶帮助**  查看)
+> Yenai-Plugin为您提供以下功能
+> 具体您可使用 **#椰奶帮助**  查看详细
 
 <details>
   <summary>Bot事件通知</summary>
-
-
 - 闪照
 
 - 撤回监听
@@ -55,7 +54,7 @@ Tip：具体可使用 **#椰奶设置** 查看
 
 </details>
 
-
+<br>
 
 <details>
   <summary>小助手</summary>
@@ -76,7 +75,7 @@ Tip：具体可使用 **#椰奶设置** 查看
 
 </details>
 
-
+<br>
 
 <details>
   <summary>事件处理</summary>
@@ -89,7 +88,7 @@ Tip：具体可使用 **#椰奶设置** 查看
 
 </details>
 
-
+<br>
 
 <details>
   <summary>娱乐功能</summary>
@@ -106,7 +105,7 @@ Tip：具体可使用 **#椰奶设置** 查看
 
 </details>
 
-
+<br>
 
 <details>
   <summary>Pixiv功能</summary>
@@ -129,7 +128,7 @@ Tip：具体可使用 **#椰奶设置** 查看
 
 </details>
 
-
+<br>
 
 <details>
   <summary>群管功能</summary>
@@ -152,9 +151,7 @@ Tip：具体可使用 **#椰奶设置** 查看
 
 </details>
 
-
-
-#### 免责声明
+## 免责声明
 
 1. 功能仅限内部交流与小范围使用，请勿将Yunzai-Bot及Yenai-Plugin用于任何以盈利为目的的场景.
 2. 图片与其他素材均来自于网络，仅供交流学习使用，如有侵权请联系，会立即删除.

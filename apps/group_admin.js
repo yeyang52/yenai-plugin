@@ -429,7 +429,7 @@ export class Basics extends plugin {
     }
 
 
-    //设置头衔
+    //修改头衔
     async adminsetTitle(e) {
         if (!e.isGroup) return;
 

@@ -35,7 +35,9 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 
 Yenai-Plugin为您提供以下功能(可使用 **#椰奶帮助**  查看)
 
-1、Bot事件通知(具体可使用 **#椰奶设置** 查看)
+<details>
+  <summary>Bot事件通知</summary>
+
 
 - 闪照
 
@@ -49,7 +51,9 @@ Yenai-Plugin为您提供以下功能(可使用 **#椰奶帮助**  查看)
 
 - 好友|群 消息
 
-  ……
+Tip：具体可使用 **#椰奶设置** 查看
+
+</details>
 
 2、助手(修改Bot的各种信息包括但不限于以下功能)
 
@@ -94,7 +98,7 @@ Yenai-Plugin为您提供以下功能(可使用 **#椰奶帮助**  查看)
   - 看看(日|周|月)榜
   
   - 看看漫画(日|周|月|新秀周)榜 
-   
+  
   - 看看(男|女)性向榜
   
 - Tag搜图

@@ -97,6 +97,9 @@ export class Basics extends plugin {
             "#删群公告 <序号> \n",
             "#申请头衔 <头衔>\n",
             "#修改头衔 <@QQ> <头衔>\n",
+            "#幸运字符列表\n",
+            "#抽幸运字符\n",
+            "#替换幸运字符+(id)\n",
             "Tip:@群员可以用QQ号代替"
         ]
         e.reply(msg)

@@ -64,15 +64,15 @@ export class Basics extends plugin {
                     fnc: 'SetGroupSpecialTitle'
                 },
                 {
-                    reg: '^#(查)?幸运字符(列表)?$',
+                    reg: '^#(查)?(幸运)?字符(列表)?$',
                     fnc: 'qun_luckylist'
                 },
                 {
-                    reg: '^#抽幸运字符$',
+                    reg: '^#抽(幸运)?字符$',
                     fnc: 'qun_lucky'
                 },
                 {
-                    reg: '^#替换幸运字符(\\d+)$',
+                    reg: '^#替换(幸运)?字符(\\d+)$',
                     fnc: 'qun_luckyuse'
                 },
 
@@ -454,7 +454,7 @@ export class Basics extends plugin {
         if (!e.group.is_admin && !e.group.is_owner) {
             return e.reply("做不到，怎么想我都做不到吧！！！", true);
         }
-        let id = e.msg.replace(/#|替换幸运字符/g, "");
+        let id = e.msg.replace(/#|替换(幸运)?字符/g, "");
         e.reply(await admin.getqun_luckyuse(e, id))
     }
 }

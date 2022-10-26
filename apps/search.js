@@ -74,7 +74,7 @@ export class example extends plugin {
           fnc: 'search'
         },
         {
-          reg: '#?搜索菜单',
+          reg: '^#?搜索菜单$',
           fnc: 'help'
         }
       ]

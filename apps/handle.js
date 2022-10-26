@@ -19,6 +19,10 @@ export class anotice extends plugin {
                 {
                     reg: '^#?回复.*$',
                     fnc: 'Replys'
+                },
+                {
+                    reg: '^#(同意|拒绝)全部好友申请$',
+                    fnc: 'agreesAll'
                 }
             ]
         })

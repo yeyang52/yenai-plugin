@@ -2,7 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import fetch from 'node-fetch'
 import Cfg from '../model/Config.js';
 import { Config } from '../components/index.js'
-import admin from '../model/group_admin.js';
+import admin from '../model/Group_admin.js';
 
 export class Basics extends plugin {
     constructor() {

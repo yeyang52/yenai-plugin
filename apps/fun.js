@@ -4,6 +4,7 @@ import { segment } from "oicq";
 import lodash from 'lodash'
 import Cfg from '../model/Config.js';
 import { Config } from '../components/index.js'
+import uploadRecord from '../model/uploadRecord.js'
 let heisitype = {
   "白丝": "baisi",
   "黑丝": "heisi",
@@ -56,6 +57,10 @@ export class example extends plugin {
         {
           reg: '^来份(屌|弔|吊)图$',
           fnc: 'jandan'
+        },
+        {
+          reg: '^#?铃声搜索.*$',
+          fnc: 'lingsheng'
         }
       ]
     })
@@ -76,7 +81,7 @@ export class example extends plugin {
       return false;
     }
     let data = res.data
-    await e.reply(segment.record(data.audioSrc))
+    await e.reply(await uploadRecord(data.audioSrc))
     //处理歌词
     let lyric = data.lyrics.map(function (item) {
       return `${item}\n`
@@ -249,6 +254,7 @@ export class example extends plugin {
     Cfg.getCDsendMsg(e, imglist, false)
   }
 
+  //来份吊图
   async jandan(e) {
     let api = "http://jandan.net/pic"
     let res = await fetch(api).then(res => res.text()).catch(err => console.error(err))
@@ -263,5 +269,20 @@ export class example extends plugin {
       )
     }
     e.reply(segment.image("http:" + lodash.sample(imglist)))
+  }
+
+  //铃声多多
+  async lingsheng(e) {
+    let msg = e.msg.replace(/#|铃声搜索/g, "")
+    let api = `https://xiaobai.klizi.cn/API/music/lingsheng.php?msg=${msg}&n=1`
+    let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
+    if (!res) return e.reply("接口失效")
+    if (res.title == null && res.author == null) return e.reply("没有找到哦~")
+
+    await e.reply([
+      `标题：${res.title}\n`,
+      `作者：${res.author}`
+    ])
+    await e.reply(await uploadRecord(res.aac))
   }
 }

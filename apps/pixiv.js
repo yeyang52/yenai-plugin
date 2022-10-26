@@ -80,7 +80,7 @@ export class example extends plugin {
             img.push(segment.image(i))
         }
 
-        Cfg.getCDsendMsg(e, img, false)
+        Cfg.recallsendMsg(e, img)
 
         return true;
     }

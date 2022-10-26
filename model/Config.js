@@ -20,7 +20,7 @@ class Config {
             })
     }
 
-    /** 写入文件 */
+    /** 写入json文件 */
     async getwrite(path, cot = {}) {
         return await fs.promises
             .writeFile(path, JSON.stringify(cot, '', '\t'))
@@ -112,22 +112,38 @@ class Config {
         }
 
         //发送消息
-        let res = await e.reply(forwardMsg)
+        let res = await e.reply(forwardMsg, false, { recallMsg: time })
         if (!res) {
             if (isfk) {
                 await e.reply("消息发送失败，可能被风控")
             }
             return false
         }
-        if (time > 0 && res && res.message_id && e.isGroup) {
-            setTimeout(() => {
-                e.group.recallMsg(res.message_id);
-                logger.mark("[椰奶]执行撤回")
-            }, time * 1000);
-        }
         return true;
     }
 
+
+    /**
+     * @description: 发送消息并根据指定时间撤回群消息
+     * @param {*} e oicq
+     * @param {*} msg 消息
+     * @param {Number} time 撤回时间
+     * @param {Boolean} isfk 是否发送默认风控消息
+     * @return {*}
+     */
+    async recallsendMsg(e, msg, time = 0, isfk = true) {
+        time = time || await this.recalltime(e)
+        
+        //发送消息
+        let res = await e.reply(msg, false, { recallMsg: time })
+        if (!res) {
+            if (isfk) {
+                await e.reply("消息发送失败，可能被风控")
+            }
+            return false
+        }
+        return true;
+    }
 
     /**
      * @description: 获取配置的cd发送消息
@@ -138,10 +154,26 @@ class Config {
      * @return {Boolean}
      */
     async getCDsendMsg(e, msg, isBot = true, isfk = true) {
+        let time = await this.recalltime(e)
+
+        let res = await this.getforwardMsg(e, msg, time, isBot, isfk)
+
+        if (!res) return false;
+
+        return true;
+    }
+
+    /**
+     * @description: 获取群的撤回时间
+     * @param {*} e oicq
+     * @return {Number} 
+     */
+    async recalltime(e) {
+        if (!e.isGroup) return 0;
         let path = "./plugins/yenai-plugin/config/setu/setu.json"
-        //获取CD
-        let cfgs = {}
-        let time = 120
+        //获取撤回时间
+        let cfgs = {};
+        let time = 120;
         if (fs.existsSync(path)) {
             cfgs = await this.getread(path)
         }
@@ -149,16 +181,14 @@ class Config {
         if (cfgs[e.group_id]) {
             time = cfgs[e.group_id].recall
         }
-        let res = await this.getforwardMsg(e, msg, time, isBot, isfk)
-        if (!res) return false;
-
-        return true;
+        return time
     }
+
     /**
      * @description: 取cookie
      * @param {String} data 如：qun.qq.com
      * @return {Object} 
-     */    
+     */
     getck(data) {
         let cookie = Bot.cookies[data]
         let ck = cookie.replace(/=/g, `":"`).replace(/;/g, `","`).replace(/ /g, "").trim()

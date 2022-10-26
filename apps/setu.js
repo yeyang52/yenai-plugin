@@ -205,7 +205,7 @@ export class sese extends plugin {
 
     let res = {};
 
-    if (!fs.existsSync(this.path)) {
+    if (fs.existsSync(this.path)) {
       res = await Cfg.getread(this.path)
     }
 

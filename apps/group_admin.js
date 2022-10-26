@@ -75,6 +75,14 @@ export class Basics extends plugin {
                     reg: '^#替换(幸运)?字符(\\d+)$',
                     fnc: 'qun_luckyuse'
                 },
+                {
+                    reg: '^#(开启|关闭)(幸运)?字符$',
+                    fnc: 'qun_luckyset'
+                },
+                {
+                    reg: '^#今日打卡$',
+                    fnc: 'DaySigned'
+                },
 
             ]
         })
@@ -100,6 +108,7 @@ export class Basics extends plugin {
             "#幸运字符列表\n",
             "#抽幸运字符\n",
             "#替换幸运字符+(id)\n",
+            "#开启|关闭幸运字符\n",
             "Tip:@群员可以用QQ号代替"
         ]]
         Cfg.getforwardMsg(e, msg)
@@ -460,4 +469,21 @@ export class Basics extends plugin {
         let id = e.msg.replace(/#|替换(幸运)?字符/g, "");
         e.reply(await admin.getqun_luckyuse(e, id))
     }
+    //开启或关闭群字符
+    async qun_luckyset(e) {
+        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
+            return e.reply("❎ 该命令仅限管理员可用", true);
+        }
+        let type = 1;
+        if (/关闭/.test(e.msg)) {
+            type = 2;
+        }
+        e.reply(await admin.setluckyuse(e, type), true)
+    }
+
+    //今日打卡
+    async DaySigned(e) {
+        e.reply(await admin.getSigned(e))
+    }
+
 }

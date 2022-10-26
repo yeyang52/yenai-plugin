@@ -2,12 +2,13 @@ import plugin from '../../../lib/plugins/plugin.js'
 import fetch from 'node-fetch'
 import Cfg from '../model/Config.js';
 import { Config } from '../components/index.js'
+import admin from '../model/group_admin.js';
 
 export class Basics extends plugin {
     constructor() {
         super({
             name: '基础群管',
-            event: 'message',
+            event: 'message.group',
             priority: 500,
             rule: [
                 {
@@ -61,7 +62,20 @@ export class Basics extends plugin {
                 {
                     reg: '^#申请头衔.*$',
                     fnc: 'SetGroupSpecialTitle'
-                }
+                },
+                {
+                    reg: '^#(查)?幸运字符(列表)?$',
+                    fnc: 'qun_luckylist'
+                },
+                {
+                    reg: '^#抽幸运字符$',
+                    fnc: 'qun_lucky'
+                },
+                {
+                    reg: '^#替换幸运字符(\\d+)$',
+                    fnc: 'qun_luckyuse'
+                },
+
             ]
         })
     }
@@ -89,7 +103,6 @@ export class Basics extends plugin {
     }
     /**禁言 */
     async Taboo(e) {
-        if (!e.isGroup) return;
 
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
@@ -165,8 +178,6 @@ export class Basics extends plugin {
     }
     /**解禁 */
     async Relieve(e) {
-        if (!e.isGroup) return;
-
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
             return e.reply("做不到，怎么想我都做不到吧！！！", true);
@@ -198,7 +209,6 @@ export class Basics extends plugin {
     }
     /**全体禁言 */
     async TabooAll(e) {
-        if (!e.isGroup) return;
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
             return e.reply("做不到，怎么想我都做不到吧！！！", true);
@@ -221,7 +231,6 @@ export class Basics extends plugin {
     }
     //踢群员 防止误触发必须加#号
     async Kick(e) {
-        if (!e.isGroup) return
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
             return e.reply("做不到，怎么想我都做不到吧！！！", true);
@@ -251,7 +260,6 @@ export class Basics extends plugin {
 
     //我要自闭
     async Autistic(e) {
-        if (!e.isGroup) return
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) return
 
@@ -282,7 +290,6 @@ export class Basics extends plugin {
 
     //设置管理
     async SetAdmin(e) {
-        if (!e.isGroup) return;
 
         if (!e.group.is_owner) return e.reply("呜呜呜，人家做不到>_<", true)
 
@@ -315,7 +322,6 @@ export class Basics extends plugin {
 
     //匿名
     async AllowAnony(e) {
-        if (!e.isGroup) return;
 
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
             return e.reply("❎ 该命令仅限管理员可用", true);
@@ -340,7 +346,6 @@ export class Basics extends plugin {
 
     //发群公告
     async Announce(e) {
-        if (!e.isGroup) return;
 
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
             return e.reply("❎ 该命令仅限管理员可用", true);
@@ -353,10 +358,10 @@ export class Basics extends plugin {
 
         if (!msg) return e.reply("❎ 公告不能为空");
 
-        let ck = Cfg.getck()
+        let ck = Cfg.getck("qun.qq.com")
 
         let url = `http://xiaobai.klizi.cn/API/qqgn/gg_send.php?data=&skey=${ck.skey}&pskey=${ck.p_skey}&uin=${Bot.uin}&group=${e.group_id}&text=${msg}`
-        console.log(url);
+
         let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
         if (!result) return e.reply("❎ 接口出错")
 
@@ -371,18 +376,14 @@ export class Basics extends plugin {
 
     //查群公告+删群公告
     async DelAnnounce(e) {
-        if (!e.isGroup) return;
-
-        if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧！！！", true);
-        }
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
             return e.reply("❎ 该命令仅限管理员可用", true);
         }
 
         if (/查群公告/.test(e.msg)) {
-            let res = await this.getAnnouncelist(e.group_id)
-            if (res) await e.reply(res)
+            let res = await admin.getAnnouncelist(e)
+            if (!res) return;
+            await e.reply(res)
             return;
         }
 
@@ -394,16 +395,18 @@ export class Basics extends plugin {
 
         if (!msg) return e.reply(`❎ 请检查序号是否正确`)
 
-        let ck = Cfg.getck()
+        let ck = Cfg.getck("qun.qq.com")
 
-        let list = await this.getAnnouncelist(e.group_id, msg)
+        let list = await admin.getAnnouncelist(e, msg)
+
+        if (!list) return;
 
         let url = `http://xiaobai.klizi.cn/API/qqgn/gg_delete.php?data=&skey=${ck.skey}&pskey=${ck.p_skey}&uin=${Bot.uin}&group=${e.group_id}&fid=${list.fid}`
 
         let result = await fetch(url).then(res => res.json())
             .catch(err => console.log(err))
 
-        if (!result) return e.reply("❎ 接口出错")
+        if (!result) return e.reply("接口失效辣！！！")
         if (result.ec == 0) {
             e.reply("✅ 已删除这个公告哦~")
         } else {
@@ -411,30 +414,9 @@ export class Basics extends plugin {
         }
 
     }
-    //获取群公告
-    async getAnnouncelist(group, item = "") {
-
-        let ck = Cfg.getck()
-
-        let url = `http://xiaobai.klizi.cn/API/qqgn/qun_gg.php?data=&skey=${ck.skey}&pskey=${ck.p_skey}&uin=${Bot.uin}&group=${group}&n=${item}`
-
-        let result = await fetch(url).then(res => res.text()).catch(err => console.log(err))
-
-        if (!result) return false
-
-        if (item) {
-            return JSON.parse(result)
-        } else {
-            return result
-        }
-
-    }
-
 
     //修改头衔
     async adminsetTitle(e) {
-        if (!e.isGroup) return;
-
         if (e.message[1].type != 'at') return
 
         if (!e.group.is_owner) return e.reply("做不到，怎么想我都做不到吧！！！", true)
@@ -449,8 +431,6 @@ export class Basics extends plugin {
     }
     //申请头衔
     async SetGroupSpecialTitle(e) {
-        if (!e.isGroup) return;
-
         if (!e.group.is_owner) return e.reply("做不到，怎么想我都做不到吧！！！", true)
 
         let Title = e.msg.replace(/#|申请头衔/g, "")
@@ -458,5 +438,23 @@ export class Basics extends plugin {
         await e.group.setTitle(e.user_id, Title)
 
         e.reply(`嗯！不戳的头衔哦~`, true)
+    }
+
+    //字符列表
+    async qun_luckylist(e) {
+        e.reply(await admin.getqun_luckylist(e, 2))
+    }
+    //抽幸运字符
+    async qun_lucky(e) {
+        e.reply(await admin.getqun_lucky(e, 1))
+    }
+    //替换幸运字符
+    async qun_luckyuse(e) {
+        //判断是否有管理
+        if (!e.group.is_admin && !e.group.is_owner) {
+            return e.reply("做不到，怎么想我都做不到吧！！！", true);
+        }
+        let id = e.msg.replace(/#|替换幸运字符/g, "");
+        e.reply(await admin.getqun_luckyuse(e, id))
     }
 }

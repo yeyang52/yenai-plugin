@@ -81,7 +81,7 @@ export class Basics extends plugin {
     }
     async help(e) {
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return
-        let msg = [
+        let msg = [[
             "#禁言 <@QQ> <时间> \n",
             "#解禁 <@QQ> \n",
             "#全体禁言 \n",
@@ -101,8 +101,8 @@ export class Basics extends plugin {
             "#抽幸运字符\n",
             "#替换幸运字符+(id)\n",
             "Tip:@群员可以用QQ号代替"
-        ]
-        e.reply(msg)
+        ]]
+        Cfg.getforwardMsg(e, msg)
     }
     /**禁言 */
     async Taboo(e) {

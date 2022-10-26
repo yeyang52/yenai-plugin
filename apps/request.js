@@ -63,6 +63,15 @@ Bot.on('request.friend', async (e) => {
         msg.push(
             `-------------\n可回复：同意申请${e.user_id} \n或引用该消息回复"同意"或"拒绝"`
         )
+        let key = "yenai:friendapply"
+        let apply = await redis.get(key)
+        if (!apply) {
+            apply = [];
+        } else {
+            apply = JSON.parse(apply)
+        }
+        apply.push(e.user_id)
+        await redis.set(key, JSON.stringify(apply))
     }
     await xcfg.getSend(msg)
 })

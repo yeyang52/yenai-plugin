@@ -1,5 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
-
+import lodash from 'lodash'
+import common from '../../../lib/common/common.js'
 
 export class anotice extends plugin {
     constructor() {
@@ -48,6 +49,31 @@ export class anotice extends plugin {
             .setFriendReq()
             .then(() => e.reply(`✅ 已同意${qq}的好友申请`))
             .catch((err) => console.log(err))
+    }
+
+    /**同意拒绝全部好友申请 */
+    async agreesAll(e) {
+        if (!e.isMaster) return
+
+        let yes = false;
+        if (/同意/.test(e.msg)) yes = true;
+
+        let key = "yenai:friendapply"
+        let res = await redis.get(key)
+        if (!res) return e.reply("暂无好友申请")
+        res = JSON.parse(res)
+
+        if (lodash.isEmpty(res)) return e.reply("暂无好友申请")
+
+        for (let i of res) {
+            logger.mark(`[椰奶]${yes ? '同意' : '拒绝'}${i}的好友申请`)
+            await Bot.pickFriend(i)
+                .setFriendReq('', yes)
+                .then(() => e.reply(`✅ 已${yes ? '同意' : '拒绝'}${i}的好友申请`))
+                .catch((err) => console.log(err))
+            await common.sleep(200)
+        }
+        await redis.del(key)
     }
 
     /** 引用同意好友申请和群邀请 */

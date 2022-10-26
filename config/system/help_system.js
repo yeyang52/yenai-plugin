@@ -119,6 +119,10 @@ export const helpList = [{
     "title": "#开启|关闭戳一戳",
     "desc": "QQ的戳一戳开关",
     "icon": 5
+  }, {
+    "title": "#同意|拒绝全部好友申请",
+    "desc": "顾名思义",
+    "icon": 7
   }]
 },
 {

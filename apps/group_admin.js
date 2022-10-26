@@ -55,11 +55,11 @@ export class Basics extends plugin {
                     fnc: 'DelAnnounce'
                 },
                 {
-                    reg: '#修改头衔.*',
+                    reg: '^#修改头衔.*$',
                     fnc: 'adminsetTitle'
                 },
                 {
-                    reg: '#申请头衔.*',
+                    reg: '^#申请头衔.*$',
                     fnc: 'SetGroupSpecialTitle'
                 }
             ]

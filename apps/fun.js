@@ -81,7 +81,7 @@ export class example extends plugin {
       return false;
     }
     let data = res.data
-    await e.reply(await uploadRecord(data.audioSrc))
+    await e.reply(await uploadRecord(data.audioSrc, 0, false))
     //处理歌词
     let lyric = data.lyrics.map(function (item) {
       return `${item}\n`
@@ -277,12 +277,12 @@ export class example extends plugin {
     let api = `https://xiaobai.klizi.cn/API/music/lingsheng.php?msg=${msg}&n=1`
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
     if (!res) return e.reply("接口失效")
-    if (res.title == null && res.author == null) return e.reply("没有找到哦~")
+    if (res.title == null && res.author == null) return e.reply("没有找到相关的歌曲哦~", true)
 
     await e.reply([
       `标题：${res.title}\n`,
       `作者：${res.author}`
     ])
-    await e.reply(await uploadRecord(res.aac))
+    await e.reply(await uploadRecord(res.aac, 0, false))
   }
 }

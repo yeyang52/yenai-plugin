@@ -442,11 +442,11 @@ export class Basics extends plugin {
 
     //字符列表
     async qun_luckylist(e) {
-        e.reply(await admin.getqun_luckylist(e, 2))
+        e.reply(await admin.getqun_lucky(e))
     }
     //抽幸运字符
     async qun_lucky(e) {
-        e.reply(await admin.getqun_lucky(e, 1))
+        e.reply(await admin.getqun_lucky(e, true))
     }
     //替换幸运字符
     async qun_luckyuse(e) {

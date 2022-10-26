@@ -29,18 +29,16 @@ class Group_admin {
     /**
      * @description: 幸运字符抽取和列表
      * @param {*} e oicq
-     * @param {Number} n 1为抽取2为列表
+     * @param {boolean} n true为抽取false为列表
      * @return {String} 
      */
-    async getqun_luckylist(e, n) {
+    async getqun_lucky(e, n = false) {
         let ck = this.ck
-        let api = '';
-        if (n == 1) {
+        //列表
+        let api = `http://xiaobai.klizi.cn/API/qqgn/qun_luckylist.php?data=&skey=${ck.skey}&pskey=${ck.p_skey}&uin=${Bot.uin}&group=${e.group_id}`
+        if (n) {
             //抽取
             api = `http://xiaobai.klizi.cn/API/qqgn/qun_lucky.php?data=&skey=${ck.skey}&pskey=${ck.p_skey}&uin=${Bot.uin}&group=${e.group_id}`
-        } else if (n == 2) {
-            //列表
-            api = `http://xiaobai.klizi.cn/API/qqgn/qun_luckylist.php?data=&skey=${ck.skey}&pskey=${ck.p_skey}&uin=${Bot.uin}&group=${e.group_id}`
         }
         let res = await fetch(api).then(res => res.text()).catch(err => console.log(err))
         if (!res) return "接口失效辣！！！"

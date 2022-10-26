@@ -4,6 +4,7 @@ import { Version, Common, Config } from '../components/index.js'
 import CPU from '../model/CPU.js';
 import Cfg from '../model/Config.js';
 import fs from 'fs'
+import fetch from 'node-fetch';
 export class example extends plugin {
   constructor() {
     super({
@@ -64,6 +65,7 @@ export class example extends plugin {
       "4": "MacOS",
       "5": "iPad"
     }
+    //在线状态
     let status = {
       "31": "离开",
       "50": "忙碌",
@@ -72,6 +74,9 @@ export class example extends plugin {
       "11": "我在线上",
       "60": "Q我吧",
     };
+    //日历
+    let calendar = await fetch(`https://ovooa.com/API/rl/api.php`)
+      .then(res => res.json()).catch(err => console.log(err))
     let data = {
       //路径
       tplFile: `./plugins/yenai-plugin/resources/state/state.html`,
@@ -81,6 +86,8 @@ export class example extends plugin {
       runTime: Formatting(present_time - Bot.stat.start_time, true),
       //版本
       version: Version.ver,
+      //日历
+      calendar: calendar.data,
       //地址
       dz: process.cwd(),
       //昵称

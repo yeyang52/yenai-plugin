@@ -43,11 +43,11 @@ export class example extends plugin {
           fnc: 'GH'
         },
         {
-          reg: '#?coser$',
+          reg: '^#?coser$',
           fnc: 'cos'
         },
         {
-          reg: '#?waifu$',
+          reg: '^#?waifu$',
           fnc: 'AiWife'
         },
         {
@@ -55,7 +55,7 @@ export class example extends plugin {
           fnc: 'heisiwu'
         },
         {
-          reg: '^来份(屌|弔|吊)图$',
+          reg: '^#?来份(屌|弔|吊)图$',
           fnc: 'jandan'
         },
         {

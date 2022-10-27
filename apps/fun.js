@@ -278,8 +278,11 @@ export class example extends plugin {
     let msg = [];
     for (let i of res.data) {
       msg.push(i.title || " ");
-      msg.push(i.image.map(item => segment.image(item)))
+      if (!lodash.isEmpty(i.image)) {
+        msg.push(i.image.map(item => segment.image(item)))
+      }
     }
+    console.log(msg);
     Cfg.getforwardMsg(e, msg)
   }
 }

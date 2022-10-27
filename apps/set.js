@@ -21,10 +21,6 @@ export class NewConfig extends plugin {
                     fnc: 'Config_deltime'
                 },
                 {
-                    reg: '^#?通知设置$',
-                    fnc: 'SeeConfig'
-                },
-                {
                     reg: '^#?椰奶设置$',
                     fnc: 'yenaiset'
                 },

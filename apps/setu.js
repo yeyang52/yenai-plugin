@@ -6,7 +6,7 @@ import Cfg from '../model/Config.js';
 import lodash from "lodash";
 import { Config } from '../components/index.js'
 //默认配置
-let def = {
+const def = {
   r18: 0,
   recall: 30,
   cd: 300,
@@ -14,15 +14,16 @@ let def = {
 //存cd的变量
 let temp = {};
 
-let api = "https://api.lolicon.app/setu/v2";
+const api = "https://api.lolicon.app/setu/v2";
 
-let startMsg = [
+const startMsg = [
   "正在给你找setu了，你先等等再冲~",
   "你先别急，正在找了~",
-  "马上去给你找涩图，你先憋一会~"
+  "马上去给你找涩图，你先憋一会~",
+  "奴家马上去给你找瑟瑟的图片~"
 ]
 
-let CDMsg = [
+const CDMsg = [
   "你这么喜欢色图，还不快点冲！",
   "你的色图不出来了！",
   "注意身体，色图看多了对身体不太好",
@@ -33,7 +34,8 @@ let CDMsg = [
   "你急啥呢？",
   "你是被下半身控制了大脑吗？"
 ]
-let sendMsg = [
+
+const sendMsg = [
   "给大佬递图",
   "这是你的🐍图",
   "你是大色批",
@@ -63,12 +65,15 @@ let sendMsg = [
   "这么喜欢看色图哦？变态？",
   "eee，死肥宅不要啦！恶心心！",
 ]
+
+let setcdreg = new RegExp("^#?设置cd\\s?(\\d+)\\s(\\d+)(s|秒)?$", "i");
+
 export class sese extends plugin {
   constructor() {
     super({
       name: 'setu',
       event: 'message',
-      priority: 5000,
+      priority: 500,
       rule: [
         {
           reg: '^#椰奶tag(.*)$',
@@ -79,11 +84,11 @@ export class sese extends plugin {
           fnc: 'setu'
         },
         {
-          reg: '^#撤回间隔[0-9]+$',
+          reg: '^#撤回间隔(\\d+)$',
           fnc: 'setrecall'
         },
         {
-          reg: '^#群cd[0-9]+$',
+          reg: '^#群cd(\\d+)$',
           fnc: 'groupcd'
         },
         {
@@ -91,12 +96,15 @@ export class sese extends plugin {
           fnc: 'setsese'
         },
         {
-          reg: '^.*cd[0-9]+$',
+          reg: 'cd(\\d+)(s|秒)?$',
           fnc: 'atcd'
+        },
+        {
+          reg: setcdreg,
+          fnc: 'instsetcd'
         }
       ]
     })
-    // this.fk = "./plugins/yenai-plugin/resources/img/风控.png"
     this.path_folder = "./plugins/yenai-plugin/config/setu"
     this.path = "./plugins/yenai-plugin/config/setu/setu.json"
     this.path_s = "./plugins/yenai-plugin/config/setu/setu_s.json"
@@ -288,11 +296,9 @@ export class sese extends plugin {
 
   }
 
-  //单独设置私聊cd
+  //艾特设置cd
   async atcd(e) {
     if (e.message[0].type != "at") return;
-
-    if (!e.isGroup) return e.reply("❎ 请在群聊使用此指令");
 
     if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
 
@@ -302,19 +308,31 @@ export class sese extends plugin {
 
     let qq = e.message[0].qq
 
+    this.setcd(qq, cd)
+  }
+
+  //指令设置
+  async instsetcd(e) {
+    if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
+    let cdreg = setcdreg.exec(e.msg);
+    let qq = cdreg[1]
+    let cd = cdreg[2]
+    this.setcd(qq, cd)
+  }
+
+  //设置cd
+  async setcd(qq, cd) {
     let res = {};
     if (fs.existsSync(this.path_s)) {
       res = await Cfg.getread(this.path_s)
     }
-
     res[qq] = Number(cd)
     if (await Cfg.getwrite(this.path_s, res)) {
-      e.reply(`✅ 设置用户${qq}的cd成功，cd时间为${cd}秒`)
+      this.e.reply(`✅ 设置用户${qq}的cd成功，cd时间为${cd}秒`)
       delete temp[qq]
     } else {
-      e.reply(`❎ 设置失败`)
+      this.e.reply(`❎ 设置失败`)
     }
-
   }
 
   //请求api

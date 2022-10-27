@@ -10,7 +10,7 @@ export class NewConfig extends plugin {
         super({
             name: '配置',
             event: 'message',
-            priority: 2000,
+            priority: 100,
             rule: [
                 {
                     reg: '^#?椰奶设置(.*)(开启|关闭)$',
@@ -33,7 +33,7 @@ export class NewConfig extends plugin {
                     fnc: 'SetAll'
                 },
                 {
-                    reg: '^#椰奶更换代理(1|2)$',
+                    reg: '^#椰奶更换代理(1|2|3)$',
                     fnc: 'proxy'
                 }
             ]
@@ -161,15 +161,15 @@ export class NewConfig extends plugin {
     async proxy(e) {
         if (/1/.test(e.msg)) {
             await redis.set(rediskey, "i.pixiv.re")
-                .then(() => e.reply("已经切换代理为1"))
+                .then(() => e.reply("✅ 已经切换代理为1"))
                 .catch(err => console.log(err))
         } else if (/2/.test(e.msg)) {
             await redis.set(rediskey, "proxy.pixivel.moe")
-                .then(() => e.reply("已经切换代理为2"))
+                .then(() => e.reply("✅ 已经切换代理为2"))
                 .catch(err => console.log(err))
         } else {
             await redis.set(rediskey, "i.pixiv.cat")
-                .then(() => e.reply("已经切换代理为3"))
+                .then(() => e.reply("✅ 已经切换代理为3"))
                 .catch(err => console.log(err))
         }
     }

@@ -412,6 +412,8 @@ export class Basics extends plugin {
 
     //修改头衔
     async adminsetTitle(e) {
+        if (e.message.length < 2) return
+
         if (e.message[1].type != 'at') return
 
         if (!e.group.is_owner) return e.reply("做不到，怎么想我都做不到吧！！！", true)
@@ -424,6 +426,7 @@ export class Basics extends plugin {
 
         e.reply(`已经把这个小可爱的头衔设置为${e.message[2].text}辣`)
     }
+    
     //申请头衔
     async SetGroupSpecialTitle(e) {
         if (!e.group.is_owner) return e.reply("做不到，怎么想我都做不到吧！！！", true)

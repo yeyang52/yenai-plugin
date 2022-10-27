@@ -43,6 +43,17 @@ class Config {
   get Notice() {
     return this.getNotice()
   }
+  //进群验证配置
+  get verifycfg() {
+    return this.getverifycfg();
+  }
+
+  
+  getverifycfg() {
+    let config = this.getConfig("groupverify")
+    let def = this.getdefSet("groupverify")
+    return { ...def, ...config }
+  }
 
   /** 通知配置 */
   getNotice() {

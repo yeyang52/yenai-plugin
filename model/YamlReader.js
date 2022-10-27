@@ -61,7 +61,11 @@ export default class YamlReader {
     this.document.deleteIn(keyPath.split('.'))
     this.save()
   }
-
+  //数组添加数据
+  addIn(keyPath, value) {
+    this.document.addIn(keyPath.split('.'), value)
+    this.save()
+  }
   /**
    * 设置 document 的数据（递归式）
    * @param data 要写入的数据

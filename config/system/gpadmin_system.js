@@ -102,6 +102,33 @@ export const helpList = [{
     },
   ]
 }, {
+  "group": "进群验证(更多设置请在groupverify.yaml进行设置)",
+  "list": [
+    {
+      "title": "#开启验证",
+      "desc": "开启本群验证",
+      "icon": 4
+    },
+    {
+      "title": "#关闭验证",
+      "desc": "关闭本群验证",
+      "icon": 15
+    },
+    {
+      "title": "#重新验证 <@群员>",
+      "desc": "重新发起验证",
+      "icon": 1
+    }, {
+      "title": "#绕过验证 <@群员>",
+      "desc": "绕过本次验证",
+      "icon": 3
+    },
+    {
+      "title": "#切换验证模式",
+      "desc": "更换答案匹配模式",
+      "icon": 2
+    },]
+}, {
   "group": "Bot为群主可用",
   "auth": "master",
   "list": [

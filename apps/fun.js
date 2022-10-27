@@ -274,6 +274,7 @@ export class example extends plugin {
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
     if (!res) return e.reply("接口失效")
     if (res.code != 200) return e.reply(`请求错误！,错误码：${res.code}`)
+    if (lodash.isEmpty(res.data)) return e.reply(`请求错误！无数据，请稍后再试`)
     let msg = [];
     for (let i of res.data) {
       msg.push(i.title);

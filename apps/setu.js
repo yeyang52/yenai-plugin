@@ -382,7 +382,6 @@ export class sese extends plugin {
     if (e.isGroup) {
       //获取CD
       if (cfgs[e.group_id]) {
-        time = cfgs[e.group_id].recall
         cd = cfgs[e.group_id].cd
       }
 

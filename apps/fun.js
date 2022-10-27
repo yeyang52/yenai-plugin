@@ -277,7 +277,7 @@ export class example extends plugin {
     if (lodash.isEmpty(res.data)) return e.reply(`请求错误！无数据，请稍后再试`)
     let msg = [];
     for (let i of res.data) {
-      msg.push(i.title);
+      msg.push(i.title || " ");
       msg.push(i.image.map(item => segment.image(item)))
     }
     Cfg.getforwardMsg(e, msg)

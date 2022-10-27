@@ -273,6 +273,7 @@ export class example extends plugin {
     let api = 'https://xiaobai.klizi.cn/API/other/bcy_topic.php'
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
     if (!res) return e.reply("接口失效")
+    if (res.code != 200) return e.reply(`请求错误！,错误码：${res.code}`)
     let msg = [];
     for (let i of res.data) {
       msg.push(i.title);

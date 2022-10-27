@@ -101,7 +101,7 @@ export class Basics extends plugin {
 
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧！！！", true);
+            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
         }
 
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
@@ -167,7 +167,7 @@ export class Basics extends plugin {
         }
 
         await e.group.muteMember(qq, TabooTime * Company);
-        e.reply(`已把${e.group.pickMember(qq).card}扔进了小黑屋~`);
+        e.reply(`已把${e.group.pickMember(qq).card}扔进了小黑屋( ･_･)ﾉ⌒●~*`, true);
         return true;
 
     }
@@ -175,7 +175,7 @@ export class Basics extends plugin {
     async Relieve(e) {
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧！！！", true);
+            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
         }
 
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
@@ -198,7 +198,7 @@ export class Basics extends plugin {
 
 
         await e.group.muteMember(qq, 0)
-        e.reply(`轻轻的把${e.group.pickMember(qq).card}从小黑屋揪了出来~`);
+        e.reply(`已把${e.group.pickMember(qq).card}从小黑屋揪了出来(｡>∀<｡)`, true);
         return true;
 
     }
@@ -206,7 +206,7 @@ export class Basics extends plugin {
     async TabooAll(e) {
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧！！！", true);
+            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
         }
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
             return e.reply("❎ 该命令仅限管理员可用", true);
@@ -228,7 +228,7 @@ export class Basics extends plugin {
     async Kick(e) {
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧！！！", true);
+            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
         }
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
             return e.reply("❎ 该命令仅限管理员可用", true);
@@ -248,7 +248,7 @@ export class Basics extends plugin {
 
 
         await e.group.kickMember(qq)
-        e.reply("已把这个坏淫踢掉惹！！！")
+        e.reply("已把这个坏淫踢掉惹！！！", true)
         return true
 
     }
@@ -323,7 +323,7 @@ export class Basics extends plugin {
         }
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧！！！", true);
+            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
         }
         let yes = false
         if (/(允许|开启)匿名/.test(e.msg)) {
@@ -347,7 +347,7 @@ export class Basics extends plugin {
         }
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧！！！", true);
+            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
         }
         let msg = e.msg.replace(/#|发群公告/g, "").trim()
 
@@ -416,7 +416,7 @@ export class Basics extends plugin {
 
         if (e.message[1].type != 'at') return
 
-        if (!e.group.is_owner) return e.reply("做不到，怎么想我都做不到吧！！！", true)
+        if (!e.group.is_owner) return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true)
 
         if (!e.isMaster) {
             return e.reply("❎ 该命令仅限主人可用", true);
@@ -426,10 +426,10 @@ export class Basics extends plugin {
 
         e.reply(`已经把这个小可爱的头衔设置为${e.message[2].text}辣`)
     }
-    
+
     //申请头衔
     async SetGroupSpecialTitle(e) {
-        if (!e.group.is_owner) return e.reply("做不到，怎么想我都做不到吧！！！", true)
+        if (!e.group.is_owner) return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true)
 
         let Title = e.msg.replace(/#|申请头衔/g, "")
 
@@ -450,7 +450,7 @@ export class Basics extends plugin {
     async qun_luckyuse(e) {
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧！！！", true);
+            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
         }
         let id = e.msg.replace(/#|替换(幸运)?字符/g, "");
         e.reply(await Gpadmin.getqun_luckyuse(e, id))
@@ -497,7 +497,7 @@ export class Basics extends plugin {
     async relieveAllMute(e) {
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧！！！", true);
+            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
         }
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
             return e.reply("❎ 该命令仅限管理员可用", true);

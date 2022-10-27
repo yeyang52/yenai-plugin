@@ -11,7 +11,7 @@ export class yenai_help extends plugin {
       priority: 2000,
       rule: [
         {
-          reg: '^#?椰奶(插件)?(帮助|菜单|功能)$',
+          reg: '^#?椰奶(插件)?(群管)?(帮助|菜单|功能)$',
           fnc: 'message'
         }
       ]
@@ -27,8 +27,12 @@ export class yenai_help extends plugin {
 async function help(e) {
   let custom = {}
   let help = {}
-
   let { diyCfg, sysCfg } = await Data.importCfg('help')
+
+  if (/群管/.test(e.msg)) {
+    diyCfg = await (await Data.importCfg('groupadmin')).diyCfg
+    sysCfg = await (await Data.importCfg('groupadmin')).sysCfg
+  }
 
   custom = help
 

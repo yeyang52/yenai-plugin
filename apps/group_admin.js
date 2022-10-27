@@ -12,10 +12,6 @@ export class Basics extends plugin {
             priority: 500,
             rule: [
                 {
-                    reg: '^#群管帮助$',
-                    fnc: 'help'
-                },
-                {
                     reg: '^#禁言.*$',
                     fnc: 'Taboo'
                 },
@@ -86,32 +82,6 @@ export class Basics extends plugin {
 
             ]
         })
-    }
-    async help(e) {
-        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return
-        let msg = [[
-            "#禁言 <@QQ> <时间> \n",
-            "#解禁 <@QQ> \n",
-            "#全体禁言 \n",
-            "#全体解禁 \n",
-            "#允许匿名 \n",
-            "#禁止匿名 \n",
-            "#踢 <@QQ> \n",
-            "#我要自闭 <时间> \n",
-            "#设置管理 <@QQ> \n",
-            "#取消管理 <@QQ> \n",
-            "#发群公告 <内容> \n",
-            "#查群公告 \n",
-            "#删群公告 <序号> \n",
-            "#申请头衔 <头衔>\n",
-            "#修改头衔 <@QQ> <头衔>\n",
-            "#幸运字符列表\n",
-            "#抽幸运字符\n",
-            "#替换幸运字符+(id)\n",
-            "#开启|关闭幸运字符\n",
-            "Tip:@群员可以用QQ号代替"
-        ]]
-        Cfg.getforwardMsg(e, msg)
     }
     /**禁言 */
     async Taboo(e) {

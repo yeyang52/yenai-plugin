@@ -25,6 +25,7 @@ export const helpCfg = {
 
 export const helpList = [{
   "group": "Bot相关",
+  "auth": "master",
   "list": [{
     "icon": 1,
     "title": "#发好友 <QQ> <消息>", "desc": "给好友发送一条涩涩的消息"
@@ -127,6 +128,7 @@ export const helpList = [{
 },
 {
   "group": "通知相关",
+  "auth": "master",
   "list": [{
     "icon": 5,
     "title": "#椰奶设置 xx 开启/关闭",
@@ -146,46 +148,55 @@ export const helpList = [{
 },
 {
   "group": "娱乐功能",
-  "list": [{
-    "icon": 20,
-    "title": "#唱歌",
-    "desc": "随机唱鸭"
-  },
-  {
-    "icon": 13,
-    "title": "#赞我",
-    "desc": "给你点一个大大的赞"
-  },
-  {
-    "icon": 7,
-    "title": "#椰羊收益曲线",
-    "desc": "查看角色收益曲线"
-  },
-  {
-    "icon": 9,
-    "title": "#收益曲线帮助",
-    "desc": "=-="
-  }, {
-    "icon": 15,
-    "title": "#支付宝到账<数字>",
-    "desc": "听到账爽一下"
-  }, {
-    "icon": 17,
-    "title": "#翻译",
-    "desc": "有道翻译"
-  }, {
-    "icon": 9,
-    "title": "#搜索菜单",
-    "desc": "各大引擎搜索"
-  }, {
-    "icon": 15,
-    "title": "#coser",
-    "desc": "养眼=-="
-  }, {
-    "icon": 1,
-    "title": "#waifu",
-    "desc": "=-="
-  }]
+  "list": [
+    {
+      "icon": 7,
+      "title": "#椰羊收益曲线",
+      "desc": "查看角色收益曲线"
+    },
+    {
+      "icon": 9,
+      "title": "#收益曲线帮助",
+      "desc": "=-="
+    }, {
+      "icon": 20,
+      "title": "#唱歌",
+      "desc": "随机唱鸭"
+    },
+    {
+      "icon": 13,
+      "title": "#赞我",
+      "desc": "给你点一个大大的赞"
+    },
+    {
+      "icon": 15,
+      "title": "#支付宝到账<数字>",
+      "desc": "听到账爽一下"
+    }, {
+      "icon": 17,
+      "title": "#翻译",
+      "desc": "有道翻译"
+    }, {
+      "icon": 9,
+      "title": "#搜索菜单",
+      "desc": "各大引擎搜索"
+    }, {
+      "icon": 15,
+      "title": "#coser",
+      "desc": "养眼=-="
+    }, {
+      "icon": 1,
+      "title": "#waifu",
+      "desc": "=-="
+    }, {
+      "icon": 1,
+      "title": "#半次元话题",
+      "desc": "=-="
+    }, {
+      "icon": 7,
+      "title": "#铃声搜索",
+      "desc": "铃声多多"
+    }]
 },
 {
   "group": "其他功能",
@@ -204,7 +215,7 @@ export const helpList = [{
   }]
 },
 {
-  "group": "管理命令，仅管理员可用",
+  "group": "设置，版本相关",
   "auth": "master",
   "list": [{
     "icon": 8,

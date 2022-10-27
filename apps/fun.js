@@ -55,12 +55,12 @@ export class example extends plugin {
           fnc: 'heisiwu'
         },
         {
-          reg: '^#?来份(屌|弔|吊)图$',
-          fnc: 'jandan'
-        },
-        {
           reg: '^#?铃声搜索.*$',
           fnc: 'lingsheng'
+        },
+        {
+          reg: '^#?半次元话题$',
+          fnc: 'bcy_topic'
         }
       ]
     })
@@ -254,23 +254,6 @@ export class example extends plugin {
     Cfg.getCDsendMsg(e, imglist, false)
   }
 
-  //来份吊图
-  async jandan(e) {
-    let api = "http://jandan.net/pic"
-    let res = await fetch(api).then(res => res.text()).catch(err => console.error(err))
-    if (!res) return e.reply("接口失效辣！！！")
-    let reg = /<img src(.*?)jpg/g
-    let img = res.match(reg)
-    let imgreg = /src="(.*)/
-    let imglist = [];
-    for (let i of img) {
-      imglist.push(
-        imgreg.exec(i)[1]
-      )
-    }
-    e.reply(segment.image("http:" + lodash.sample(imglist)))
-  }
-
   //铃声多多
   async lingsheng(e) {
     let msg = e.msg.replace(/#|铃声搜索/g, "")
@@ -284,5 +267,17 @@ export class example extends plugin {
       `作者：${res.author}`
     ])
     await e.reply(await uploadRecord(res.aac, 0, false))
+  }
+  /**半次元话题 */
+  async bcy_topic(e) {
+    let api = 'https://xiaobai.klizi.cn/API/other/bcy_topic.php'
+    let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
+    if (!res) return e.reply("接口失效")
+    let msg = [];
+    for (let i of res.data) {
+      msg.push(i.title);
+      msg.push(i.image.map(item => segment.image(item)))
+    }
+    Cfg.getforwardMsg(e, msg)
   }
 }

@@ -101,6 +101,8 @@ export class NEWCMD extends plugin {
 
   //开启验证
   async openverify(e) {
+    let verifycfg = Config.verifycfg
+    if (verifycfg.openGroup.indexOf(e.group_id) != -1) return e.reply("❎ 本群验证已处于开启状态")
     new YamlReader(this.verifypath).addIn('openGroup', e.group_id)
     e.reply("✅ 已开启本群验证")
   }

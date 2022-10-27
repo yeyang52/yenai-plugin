@@ -7,7 +7,6 @@ import YamlReader from '../model/YamlReader.js'
 //全局
 let temp = {};
 const ops = ["+", "-"];
-const Path = process.cwd();
 export class NEWCMD extends plugin {
   constructor() {
     super({
@@ -101,6 +100,8 @@ export class NEWCMD extends plugin {
 
   //开启验证
   async openverify(e) {
+    if (!e.isMaster) return e.reply("❎ 该命令仅限主人可用", true);
+    if (!e.group.is_admin && !e.group.is_owner) return e.reply("做不到，怎么想我都做不到吧！！！", true);
     let verifycfg = Config.verifycfg
     if (verifycfg.openGroup.indexOf(e.group_id) != -1) return e.reply("❎ 本群验证已处于开启状态")
     new YamlReader(this.verifypath).addIn('openGroup', e.group_id)
@@ -109,6 +110,7 @@ export class NEWCMD extends plugin {
 
   //关闭验证
   async closeverify(e) {
+    if (!e.isMaster) return e.reply("❎ 该命令仅限主人可用", true);
     let verifycfg = Config.verifycfg
     let key = verifycfg.openGroup.indexOf(e.group_id)
     if (key == -1) return e.reply("❎ 本群暂未开启验证")
@@ -117,6 +119,7 @@ export class NEWCMD extends plugin {
   }
   //切换验证模式
   async setmode(e) {
+    if (!e.isMaster) return e.reply("❎ 该命令仅限主人可用", true);
     let verifycfg = Config.verifycfg
     let value = verifycfg.mode == "模糊" ? "精确" : "模糊"
     new YamlReader(this.verifypath).set(`mode`, value)
@@ -128,7 +131,7 @@ export class NEWCMD extends plugin {
 
 
 
-//监听事件
+//进群监听
 Bot.on("notice.group.increase", async (e) => {
   let verifycfg = Config.verifycfg
 
@@ -145,7 +148,7 @@ Bot.on("notice.group.increase", async (e) => {
   return true;
 })
 
-
+//答案监听
 Bot.on('message.group', async (e) => {
   let verifycfg = Config.verifycfg
 
@@ -189,9 +192,8 @@ Bot.on('message.group', async (e) => {
   }
 })
 
-
+//主动退群
 Bot.on('notice.group.decrease', async (e) => {
-  let verifycfg = Config.verifycfg
   if (!e.group.is_admin && !e.group.is_owner) return;
 
   if (!temp[e.user_id + e.group_id]) return;
@@ -206,11 +208,12 @@ Bot.on('notice.group.decrease', async (e) => {
 })
 
 
-
+//发送验证信息
 async function verify(user_id, group_id, e) {
+  if (!e.group.is_admin && !e.group.is_owner) return;
+
   let verifycfg = Config.verifycfg
   let { range } = verifycfg
-  if (!e.group.is_admin && !e.group.is_owner) return;
   const remainTimes = verifycfg.times;
 
   const operator = ops[getRndInteger(0, 1)]

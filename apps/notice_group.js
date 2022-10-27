@@ -165,7 +165,7 @@ export class newgroups extends plugin {
             }
             // 禁言 (这里仅处理机器人被禁言)
             case 'ban': {
-                let Forbiddentime = getsecond(e.duration)
+                let Forbiddentime = xcfg.getsecondformat(e.duration)
 
                 if (!Config.getGroup(e.group_id).botBeenBanned) return
 
@@ -314,26 +314,4 @@ function formatDate(time) {
     if (hour >= 1 && hour <= 9) hour = '0' + hour
     if (minute >= 0 && minute <= 9) minute = '0' + minute
     return `${month}-${date} ${hour}:${minute} `
-}
-
-// 秒转换
-function getsecond(value) {
-    let time = xcfg.getsecond(value)
-
-    let { second, minute, hour, day } = time
-    // 处理返回消息
-    let result = ''
-    if (second != 0) {
-        result = parseInt(second) + '秒'
-    }
-    if (minute > 0) {
-        result = parseInt(minute) + '分' + result
-    }
-    if (hour > 0) {
-        result = parseInt(hour) + '小时' + result
-    }
-    if (day > 0) {
-        result = parseInt(day) + '天' + result
-    }
-    return result
 }

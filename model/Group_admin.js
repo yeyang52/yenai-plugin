@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 import Cfg from './Config.js';
-
+import lodash from 'lodash';
 class Group_admin {
     constructor() {
         this.ck = Cfg.getck("qun.qq.com");
@@ -92,6 +92,23 @@ class Group_admin {
         if (!res) return "接口失效辣！！！"
         return res
     }
+
+
+    /**
+     * @description: 获取禁言人数组
+     * @param {*} e oicq
+     * @return {Array}
+     */
+    async getMuteList(e) {
+        let list = Array.from((await e.group.getMemberMap()).keys());
+        let mutelist = list.filter(item => {
+            let Member = e.group.pickMember(item)
+            return Member.mute_left != 0
+        })
+        if (lodash.isEmpty(mutelist)) return false
+        return mutelist
+    }
+
 }
 
 export default new Group_admin();

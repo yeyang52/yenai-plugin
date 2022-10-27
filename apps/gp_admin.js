@@ -1,9 +1,14 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import fetch from 'node-fetch'
 import Cfg from '../model/Config.js';
-import { Config } from '../components/index.js'
-import admin from '../model/Group_admin.js';
+import Gpadmin from '../model/Group_admin.js';
+import { segment } from 'oicq'
 
+const ROLE_MAP = {
+    admin: '群管理',
+    owner: '群主',
+    member: '群员'
+}
 export class Basics extends plugin {
     constructor() {
         super({
@@ -78,6 +83,14 @@ export class Basics extends plugin {
                 {
                     reg: '^#今日打卡$',
                     fnc: 'DaySigned'
+                },
+                {
+                    reg: '^#(获取|查看)?禁言列表$',
+                    fnc: 'Mutelist'
+                },
+                {
+                    reg: '^#解除全部禁言$',
+                    fnc: 'relieveAllMute'
                 },
 
             ]
@@ -363,7 +376,7 @@ export class Basics extends plugin {
         }
 
         if (/查群公告/.test(e.msg)) {
-            let res = await admin.getAnnouncelist(e)
+            let res = await Gpadmin.getAnnouncelist(e)
             if (!res) return;
             await e.reply(res)
             return;
@@ -379,7 +392,7 @@ export class Basics extends plugin {
 
         let ck = Cfg.getck("qun.qq.com")
 
-        let list = await admin.getAnnouncelist(e, msg)
+        let list = await Gpadmin.getAnnouncelist(e, msg)
 
         if (!list) return;
 
@@ -424,11 +437,11 @@ export class Basics extends plugin {
 
     //字符列表
     async qun_luckylist(e) {
-        e.reply(await admin.getqun_lucky(e))
+        e.reply(await Gpadmin.getqun_lucky(e))
     }
     //抽幸运字符
     async qun_lucky(e) {
-        e.reply(await admin.getqun_lucky(e, true))
+        e.reply(await Gpadmin.getqun_lucky(e, true))
     }
     //替换幸运字符
     async qun_luckyuse(e) {
@@ -437,7 +450,7 @@ export class Basics extends plugin {
             return e.reply("做不到，怎么想我都做不到吧！！！", true);
         }
         let id = e.msg.replace(/#|替换(幸运)?字符/g, "");
-        e.reply(await admin.getqun_luckyuse(e, id))
+        e.reply(await Gpadmin.getqun_luckyuse(e, id))
     }
     //开启或关闭群字符
     async qun_luckyset(e) {
@@ -448,12 +461,51 @@ export class Basics extends plugin {
         if (/关闭/.test(e.msg)) {
             type = 2;
         }
-        e.reply(await admin.setluckyuse(e, type), true)
+        e.reply(await Gpadmin.setluckyuse(e, type), true)
     }
 
     //今日打卡
     async DaySigned(e) {
-        e.reply(await admin.getSigned(e))
+        e.reply(await Gpadmin.getSigned(e))
+    }
+    //获取禁言列表
+    async Mutelist(e) {
+        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
+            return e.reply("❎ 该命令仅限管理员可用", true);
+        }
+        let mutelist = await Gpadmin.getMuteList(e)
+        if (!mutelist) return e.reply("还没有人被禁言欸(O∆O)")
+        let msg = [];
+        for (let i of mutelist) {
+            let Member = e.group.pickMember(i)
+            let { info } = Member
+            msg.push([
+                segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${info.user_id}`),
+                `\n昵称：${info.card || info.nickname}\n`,
+                `QQ：${info.user_id}\n`,
+                `群身份：${ROLE_MAP[info.role]}\n`,
+                `禁言剩余时间：${Cfg.getsecondformat(Member.mute_left)}`
+            ])
+        }
+        Cfg.getforwardMsg(e, msg)
     }
 
+    //解禁全部禁言
+    async relieveAllMute(e) {
+        //判断是否有管理
+        if (!e.group.is_admin && !e.group.is_owner) {
+            return e.reply("做不到，怎么想我都做不到吧！！！", true);
+        }
+        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
+            return e.reply("❎ 该命令仅限管理员可用", true);
+        }
+        let mutelist = await Gpadmin.getMuteList(e)
+        if (!mutelist) return e.reply("都没有人被禁言我怎么解的辣＼(`Δ’)／")
+        for (let i of mutelist) {
+            await e.group.muteMember(i, 0)
+            await Cfg.sleep(200)
+        }
+        e.reply("已经把全部的禁言解除辣╮( •́ω•̀ )╭")
+    }
 }
+

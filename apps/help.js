@@ -30,8 +30,8 @@ async function help(e) {
   let { diyCfg, sysCfg } = await Data.importCfg('help')
 
   if (/群管/.test(e.msg)) {
-    diyCfg = await (await Data.importCfg('groupadmin')).diyCfg
-    sysCfg = await (await Data.importCfg('groupadmin')).sysCfg
+    diyCfg = await (await Data.importCfg('gpadmin')).diyCfg
+    sysCfg = await (await Data.importCfg('gpadmin')).sysCfg
   }
 
   custom = help

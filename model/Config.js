@@ -6,6 +6,10 @@ import fs from 'fs'
 
 class Config {
 
+    //延时函数
+    sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms))
+    }
     /** 读取文件 */
     async getread(path) {
         return await fs.promises
@@ -133,7 +137,7 @@ class Config {
      */
     async recallsendMsg(e, msg, time = 0, isfk = true) {
         time = time || await this.recalltime(e)
-        
+
         //发送消息
         let res = await e.reply(msg, false, { recallMsg: time })
         if (!res) {
@@ -196,6 +200,28 @@ class Config {
         ck = `{"`.concat(ck).concat("}")
         return JSON.parse(ck)
     }
+
+    // 秒转换
+    getsecondformat(value) {
+    let time = this.getsecond(value)
+
+    let { second, minute, hour, day } = time
+    // 处理返回消息
+    let result = ''
+    if (second != 0) {
+        result = parseInt(second) + '秒'
+    }
+    if (minute > 0) {
+        result = parseInt(minute) + '分' + result
+    }
+    if (hour > 0) {
+        result = parseInt(hour) + '小时' + result
+    }
+    if (day > 0) {
+        result = parseInt(day) + '天' + result
+    }
+    return result
+}
 }
 
 

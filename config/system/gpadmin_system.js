@@ -63,6 +63,19 @@ export const helpList = [{
     "title": "#我要自闭 <时间>",
     "desc": "自闭一会",
     "icon": 20
+  }, {
+    "title": "#今日打卡",
+    "desc": "查看今日打卡",
+    "icon": 5
+  }, {
+    "title": "#获取禁言列表",
+    "desc": "查看本群被禁言的人",
+    "icon": 8
+  },
+  {
+    "title": "#解除全部禁言",
+    "desc": "解除本群全部被禁言的人",
+    "icon": 6
   }]
 }, {
   "group": "字符",

@@ -136,7 +136,6 @@ export class example extends plugin {
     let imgs = [
       "https://xiaobai.klizi.cn/API/ce/zan.php?qq=",
       "https://xiaobai.klizi.cn/API/ce/xin.php?qq=",
-      "https://ovooa.com/API/zan/api.php?QQ=",
     ]
     /** 一个随机数 */
     let random = Math.floor(Math.random() * (imgs.length - 0))
@@ -190,24 +189,25 @@ export class example extends plugin {
     }
     await e.reply("少女祈祷中......")
 
-    const api = "https://ovooa.com/API/cosplay/api.php"
+    const api = "http://api.starrobotwl.com/api/sjcos.php"
 
-    let res = await fetch(api).then((res) => res.json()).catch((err) => console.error(err))
+    // let res = await fetch(api).then((res) => res.json()).catch((err) => console.error(err))
 
-    if (!res) return e.reply("接口失效辣！！！")
+    // if (!res) return e.reply("接口失效辣！！！")
 
-    res = res.data
-    let item = 1;
-    let msg = [res.Title]
-    for (let i of res.data) {
-      msg.push(segment.image(i))
-      if (item >= 20) {
-        break
-      } else {
-        item++
-      }
-    }
-    Cfg.getCDsendMsg(e, msg, false)
+    // res = res.data
+    // let item = 1;
+    // let msg = [res.Title]
+    // for (let i of res.data) {
+    //   msg.push(segment.image(i))
+    //   if (item >= 20) {
+    //     break
+    //   } else {
+    //     item++
+    //   }
+    // }
+    // Cfg.getCDsendMsg(e, msg, false)
+    Cfg.recallsendMsg(e, segment.image(api))
     return true
   }
 

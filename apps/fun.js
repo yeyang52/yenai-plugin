@@ -61,6 +61,10 @@ export class example extends plugin {
         {
           reg: '^#?半次元话题$',
           fnc: 'bcy_topic'
+        },
+        {
+          reg: '^#?(hkd|mn|hso)$',
+          fnc: 'yangyan'
         }
       ]
     })
@@ -284,5 +288,27 @@ export class example extends plugin {
     }
     console.log(msg);
     Cfg.getforwardMsg(e, msg)
+  }
+  async yangyan(e) {
+    let api = [
+      "https://api.caonm.net/api/yangyan/api.php",
+      "https://api.caonm.net/api/siwa/api.php",
+      "https://api.caonm.net/api/cos/api.php",
+      "https://www.dmoe.cc/random.php",
+      "https://api.dujin.org/pic/yuanshen/",
+      "https://api.btstu.cn/sjbz/api.php",
+      "https://api.ixiaowai.cn/api/api.php",
+      "https://api.wuque.cc/random/images",
+      "http://api.starrobotwl.com/api/heisi.php",
+      "http://api.starrobotwl.com/api/baisi.php",
+      "http://api.starrobotwl.com/api/jk.php",
+      "http://api.starrobotwl.com/api/ecy.php",
+      "http://api.starrobotwl.com/api/yscos.php",
+      "http://api.starrobotwl.com/api/wzcos.php",
+      "http://api.starrobotwl.com/api/sjcos.php",
+      "http://api.starrobotwl.com/api/sjvs.php",
+      "http://api.starrobotwl.com/api/dmct.php",
+    ]
+    e.reply(segment.image(lodash.sample(api)))
   }
 }

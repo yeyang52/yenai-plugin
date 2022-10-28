@@ -144,8 +144,6 @@ Bot.on("notice.group.increase", async (e) => {
   if (cfg.masterQQ.includes(e.user_id)) return
 
   await verify(e.user_id, e.group_id, e)
-
-  return true;
 })
 
 //答案监听

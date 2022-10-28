@@ -65,7 +65,12 @@ export class example extends plugin {
         {
           reg: '^#?(xjj|hso|bs|hs|jk|ecy|cos|sy|yf)$',
           fnc: 'tu'
+        },
+        {
+          reg: "^#*(谁|哪个吊毛|哪个屌毛|哪个叼毛)是龙王$",
+          fnc: 'dragonKing'
         }
+
       ]
     })
   }
@@ -73,17 +78,10 @@ export class example extends plugin {
   /**随机唱鸭 */
   async Sing(e) {
     let url = "https://xiaobai.klizi.cn/API/music/changya.php"
-    let res = await fetch(url).catch(err => console.log(err))
-    if (!res) {
-      e.reply("❎ 接口请求失败")
-      return false;
-    }
-    res = await res.json()
+    let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))
+    if (!res) return e.reply("接口失效辣(๑ŐдŐ)b")
+    if (res.code != 200) return e.reply("❎ 接口请求错误")
 
-    if (res.code != 200) {
-      e.reply("❎ 接口请求错误")
-      return false;
-    }
     let data = res.data
     await e.reply(await uploadRecord(data.audioSrc, 0, false))
     //处理歌词
@@ -124,7 +122,7 @@ export class example extends plugin {
     msg = msg.replace(/#|翻译/g, "").trim()
     if (!msg) return;
     let results = await fetch(`https://xiaobai.klizi.cn/API/other/trans.php?data=&msg=${msg}`).then(res => res.text()).catch(err => console.log(err))
-    if (!results) return e.reply("接口失效辣！！！")
+    if (!results) return e.reply("接口失效辣(๑ŐдŐ)b")
     e.reply(results)
 
     return true;
@@ -197,7 +195,7 @@ export class example extends plugin {
 
     let res = await fetch(api).then((res) => res.json()).catch((err) => console.error(err))
 
-    if (!res) return e.reply("接口失效辣！！！")
+    if (!res) return e.reply("接口失效辣(๑ŐдŐ)b")
 
     res = res.data
     let item = 1;
@@ -228,14 +226,14 @@ export class example extends plugin {
     let types = heisiwreg.exec(e.msg)
     let api = `http://hs.heisiwu.com/${heisitype[types[1]]}#/page/${lodash.random(1, 20)}`
     let res = await fetch(api).then(res => res.text()).catch(err => console.error(err))
-    if (!res) return e.reply("接口失效辣！！！")
+    if (!res) return e.reply("接口失效辣(๑ŐдŐ)b")
 
     let reg = /<a target(.*?)html/g
     let regs = /href="(.*)/
     let list = res.match(reg);
     list = regs.exec(lodash.sample(list))
     let heis = await fetch(list[1]).then(res => res.text()).catch(err => console.error(err))
-    if (!heis) return e.reply("接口失效辣！！！")
+    if (!heis) return e.reply("接口失效辣(๑ŐдŐ)b")
 
     let hsreg = /<img loading(.*?)jpg/g
     let img = heis.match(hsreg);
@@ -262,7 +260,7 @@ export class example extends plugin {
     let msg = e.msg.replace(/#|铃声搜索/g, "")
     let api = `https://xiaobai.klizi.cn/API/music/lingsheng.php?msg=${msg}&n=1`
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
-    if (!res) return e.reply("接口失效")
+    if (!res) return e.reply("接口失效辣(๑ŐдŐ)b")
     if (res.title == null && res.author == null) return e.reply("没有找到相关的歌曲哦~", true)
 
     await e.reply([
@@ -275,7 +273,7 @@ export class example extends plugin {
   async bcy_topic(e) {
     let api = 'https://xiaobai.klizi.cn/API/other/bcy_topic.php'
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
-    if (!res) return e.reply("接口失效")
+    if (!res) return e.reply("接口失效辣(๑ŐдŐ)b")
     if (res.code != 200) return e.reply(`请求错误！,错误码：${res.code}`)
     if (lodash.isEmpty(res.data)) return e.reply(`请求错误！无数据，请稍后再试`)
     let msg = [];
@@ -288,6 +286,20 @@ export class example extends plugin {
     console.log(msg);
     Cfg.getforwardMsg(e, msg)
   }
+  //谁是龙王
+  async dragonKing(e) {
+    let ck = Cfg.getck("qun.qq.com");
+    let url = `http://xiaobai.klizi.cn/API/qqgn/dragon.php?data=json&uin=${(Bot.uin)}&skey=${(ck.skey)}&pskey=${(ck.p_skey)}&group=${(e.group_id)}`;
+    console.log(url);
+    let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))
+    if (!res) return e.reply("接口失效辣(๑ŐдŐ)b")
+    e.reply([
+      `本群龙王：${res.name}`,
+      segment.image(res.avatar),
+      `蝉联天数：${res.desc}`,
+    ]);
+  }
+  //api大集合
   async tu(e) {
     let api;
     switch (e.msg) {

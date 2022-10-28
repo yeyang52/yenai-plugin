@@ -63,7 +63,7 @@ export class example extends plugin {
           fnc: 'bcy_topic'
         },
         {
-          reg: '^#?(mn|hso|bs|hs|jk|ecy|cos|xjj|xjjsp)$',
+          reg: '^#?(xjj|hso|bs|hs|jk|ecy|cos)$',
           fnc: 'meitu'
         }
       ]
@@ -324,7 +324,7 @@ export class example extends plugin {
           "http://api.starrobotwl.com/api/sjvs.php",
           "https://api.ixiaowai.cn/api/api.php",]
         break;
-      case "mn":
+      case "xjj":
         api = [
           "http://api.starrobotwl.com/api/mvzp.php",
           "http://api.starrobotwl.com/api/mnbz.php",

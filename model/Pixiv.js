@@ -17,7 +17,7 @@ export default class Pixiv {
 
         if (!res) return false
         if (res.error) {
-            this.e.reply("口字很拉跨，请稍后重试>_<")
+            this.e.reply("口字很拉跨，请稍后重试(。-ω-)zzz")
             this.e.reply(`先用直链解决一下：https://pixiv.re/${ids}.jpg`)
             return false;
         }
@@ -65,7 +65,7 @@ export default class Pixiv {
         let res = await this.getfetch(api)
         if (!res) return false
         if (!res.data) {
-            this.e.reply("可能没有榜单哦~")
+            this.e.reply("暂无数据，请稍后重试哦(。-ω-)zzz")
             return false
         };
         let list = [
@@ -103,14 +103,14 @@ export default class Pixiv {
         let res = await this.getfetch(api)
         if (!res) return false
         if (res.data.count == 0) {
-            this.e.reply("呜呜呜，人家没有找到相关的插画>_<")
+            this.e.reply("呜呜呜，人家没有找到相关的插画(ó﹏ò｡)")
             return false;
         }
 
         let pageall = Math.ceil(res.data.count / 30)
 
         if (page > pageall) {
-            this.e.reply("啊啊啊，淫家给不了你那么多辣~~")
+            this.e.reply("啊啊啊，淫家给不了你那么多辣d(ŐдŐ๑)")
             return false
         }
 
@@ -119,9 +119,10 @@ export default class Pixiv {
             `当前为第${page}页，共${pageall}页`
         ];
         for (let i of res.data.rows) {
-            let { picture_id, title, regular_url, tags } = i
+            let { picture_id, title, regular_url, tags, like_total } = i
             list.push([
                 `标题：${title}\n`,
+                `点赞: ${like_total}\n`,
                 `插画ID：${picture_id}\n`,
                 `Tag：${lodash.truncate(tags)}\n`,
                 segment.image(regular_url)
@@ -143,7 +144,7 @@ export default class Pixiv {
 
         if (!res) return false
         if (!res.trend_tags) {
-            this.e.reply("呜呜呜，没有获取到数据>_<")
+            this.e.reply("呜呜呜，没有获取到数据(๑ १д१)")
             return false
         }
         let list = []
@@ -176,7 +177,7 @@ export default class Pixiv {
         let user = await this.getfetch(userapi)
         if (!user) return false
         if (user.data.count == 0) {
-            this.e.reply("呜呜呜，人家没有找到这个淫>_<")
+            this.e.reply("呜呜呜，人家没有找到这个淫d(ŐдŐ๑)")
             return false;
         }
         let { user_id: uid, nick_name, avatar, desc } = user.data.rows[0]
@@ -189,7 +190,7 @@ export default class Pixiv {
         }
         let pageall = Math.ceil(res.data.count / 30)
         if (page > pageall) {
-            this.e.reply("这个淫已经没有涩图给你辣~~")
+            this.e.reply("这个淫已经没有涩图给你辣(oＡo川)")
             return false
         }
         let list = [
@@ -203,9 +204,35 @@ export default class Pixiv {
             `当前为第${page}页，共${pageall}页`
         ]
         for (let i of res.data.rows) {
-            let { picture_id, title, regular_url, tags } = i
+            let { picture_id, title, regular_url, tags, like_total } = i
             list.push([
                 `标题：${title}\n`,
+                `点赞: ${like_total}\n`,
+                `插画ID：${picture_id}\n`,
+                `Tag：${lodash.truncate(tags)}\n`,
+                segment.image(regular_url)
+            ])
+        }
+        return list
+    }
+    /**
+     * @description: 随机图片
+     * @return {Array} 
+     */
+    async getrandomimg() {
+        let api = `https://www.vilipix.com/api/v1/picture/public?limit=18&offset=${lodash.random(1000)}&sort=hot&type=0`
+        let res = await this.getfetch(api)
+        if (!res) return false
+        if (!res.data || !res.data.rows) {
+            this.e.reply("呜呜呜，没拿到瑟瑟的图片(˃ ⌑ ˂ഃ )")
+            return false;
+        }
+        let list = []
+        for (let i of res.data.rows) {
+            let { picture_id, title, regular_url, tags, like_total } = i
+            list.push([
+                `标题：${title}\n`,
+                `点赞: ${like_total}\n`,
                 `插画ID：${picture_id}\n`,
                 `Tag：${lodash.truncate(tags)}\n`,
                 segment.image(regular_url)
@@ -221,7 +248,7 @@ export default class Pixiv {
      */
     async getfetch(url) {
         return await fetch(url).then(res => res.json()).catch(err => {
-            this.e.reply("接口失效辣！！！")
+            this.e.reply("接口失效辣(๑ŐдŐ)b")
             console.log(err)
             return false;
         })

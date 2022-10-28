@@ -49,6 +49,10 @@ export class example extends plugin {
                     reg: uidreg,
                     fnc: 'saucenaoUid'
                 },
+                {
+                    reg: '^#?来点(好康(哒|的)|hkd)$',
+                    fnc: 'randomimg'
+                }
             ]
         })
     }
@@ -58,6 +62,9 @@ export class example extends plugin {
         if (!e.isMaster) {
             if (!Config.Notice.sese) return
         }
+
+        await e.reply("你先别急，正在给你搜了(。-ω-)zzz")
+
         let regRet = pidreg.exec(e.msg)
 
         let res = await new Pixiv(e).Worker(regRet[1])
@@ -90,6 +97,8 @@ export class example extends plugin {
         if (!e.isMaster) {
             if (!Config.Notice.sese) return
         }
+        await e.reply("你先别急，正在给你搜了(。-ω-)zzz")
+
         let regRet = listreg.exec(e.msg)
 
         let mode = `${type[regRet[1]]}`;
@@ -114,6 +123,9 @@ export class example extends plugin {
         if (!e.isMaster) {
             if (!Config.Notice.sese) return
         }
+
+        await e.reply("你先别急，正在给你搜了(。-ω-)zzz")
+
         let regRet = tagreg.exec(e.msg)
 
         let tag = regRet[1]
@@ -143,6 +155,7 @@ export class example extends plugin {
         if (!e.isMaster) {
             if (!Config.Notice.sese) return
         }
+        await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
 
         let res = await new Pixiv(e).gettrend_tags()
 
@@ -156,6 +169,8 @@ export class example extends plugin {
         if (!e.isMaster) {
             if (!Config.Notice.sese) return
         }
+        await e.reply("你先别急，正在给你搜了(。-ω-)zzz")
+
         let regRet = uidreg.exec(e.msg)
 
         let key = regRet[1]
@@ -177,5 +192,18 @@ export class example extends plugin {
 
         Cfg.getCDsendMsg(e, res, false)
     }
-}
 
+    //随机原创插画
+    async randomimg(e) {
+        if (!e.isMaster) {
+            if (!Config.Notice.sese) return
+        }
+        await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
+
+        let res = await new Pixiv(e).getrandomimg();
+
+        if (!res) return
+
+        Cfg.getCDsendMsg(e, res, false)
+    }
+}

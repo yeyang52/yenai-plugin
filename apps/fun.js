@@ -301,7 +301,10 @@ export class example extends plugin {
         ]
         break;
       case "jk":
-        api = ["http://api.starrobotwl.com/api/jk.php"]
+        api = [
+          "http://api.starrobotwl.com/api/jk.php",
+          "http://www.ggapi.cn/Api/jkzf"
+        ]
         break;
       case "ecy":
         api = [

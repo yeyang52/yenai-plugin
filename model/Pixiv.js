@@ -219,8 +219,8 @@ export default class Pixiv {
      * @description: 随机图片
      * @return {Array} 
      */
-    async getrandomimg() {
-        let api = `https://www.vilipix.com/api/v1/picture/public?limit=18&offset=${lodash.random(1000)}&sort=hot&type=0`
+    async getrandomimg(num) {
+        let api = `https://www.vilipix.com/api/v1/picture/public?limit=${num}&offset=${lodash.random(1500)}&sort=hot&type=0`
         let res = await this.getfetch(api)
         if (!res) return false
         if (!res.data || !res.data.rows) {

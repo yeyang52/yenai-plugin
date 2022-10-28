@@ -63,7 +63,7 @@ export class example extends plugin {
           fnc: 'bcy_topic'
         },
         {
-          reg: '^#?(xjj|hso|bs|hs|jk|ecy|cos|sy|yf)$',
+          reg: '^#?(xjj|hso|bs|hs|jk|ecy|cos|sy|bm)$',
           fnc: 'tu'
         },
         {
@@ -347,7 +347,7 @@ export class example extends plugin {
           "https://api.wuque.cc/random/images",
         ]
         break;
-      case "yf":
+      case "bm":
         api = ["http://iw233.cn/api.php?sort=yin"]
         break;
       case "sy":

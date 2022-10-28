@@ -88,7 +88,7 @@ export class sese extends plugin {
           fnc: 'setrecall'
         },
         {
-          reg: '^#群cd(\\d+)$',
+          reg: '^#群(c|C)(d|D)(\\d+)$',
           fnc: 'groupcd'
         },
         {
@@ -96,7 +96,7 @@ export class sese extends plugin {
           fnc: 'setsese'
         },
         {
-          reg: 'cd(\\d+)(s|秒)?$',
+          reg: '(c|C)(d|D)(\\d+)(s|秒)?$',
           fnc: 'atcd'
         },
         {
@@ -233,7 +233,7 @@ export class sese extends plugin {
   async groupcd(e) {
     if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
 
-    let cd = e.msg.replace(/#|群cd/g, "").trim()
+    let cd = e.msg.replace(/#|群cd/gi, "").trim()
 
     let res = {};
 

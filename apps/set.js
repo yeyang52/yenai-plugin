@@ -8,24 +8,24 @@ let rediskey = `yenai:proxy`
 export class NewConfig extends plugin {
     constructor() {
         super({
-            name: '配置',
+            name: '椰奶配置',
             event: 'message',
             priority: 100,
             rule: [
                 {
-                    reg: '^#?椰奶设置(.*)(开启|关闭)$',
+                    reg: '^#椰奶设置(.*)(开启|关闭)$',
                     fnc: 'Config_manage'
                 },
                 {
-                    reg: '^#?椰奶设置删除缓存时间(.*)$',
+                    reg: '^#椰奶设置删除缓存时间(.*)$',
                     fnc: 'Config_deltime'
                 },
                 {
-                    reg: '^#?椰奶设置$',
+                    reg: '^#椰奶设置$',
                     fnc: 'yenaiset'
                 },
                 {
-                    reg: '^#?椰奶(启用|禁用)全部通知$',
+                    reg: '^#椰奶(启用|禁用)全部通知$',
                     fnc: 'SetAll'
                 },
                 {

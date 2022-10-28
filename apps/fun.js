@@ -63,8 +63,8 @@ export class example extends plugin {
           fnc: 'bcy_topic'
         },
         {
-          reg: '^#?(hkd|mn|hso)$',
-          fnc: 'yangyan'
+          reg: '^#?(mn|hso|bs|hs|jk|ecy|cos|xjj|xjjsp)$',
+          fnc: 'meitu'
         }
       ]
     })
@@ -289,26 +289,51 @@ export class example extends plugin {
     console.log(msg);
     Cfg.getforwardMsg(e, msg)
   }
-  async yangyan(e) {
-    let api = [
-      "https://api.caonm.net/api/yangyan/api.php",
-      "https://api.caonm.net/api/siwa/api.php",
-      "https://api.caonm.net/api/cos/api.php",
-      "https://www.dmoe.cc/random.php",
-      "https://api.dujin.org/pic/yuanshen/",
-      "https://api.btstu.cn/sjbz/api.php",
-      "https://api.ixiaowai.cn/api/api.php",
-      "https://api.wuque.cc/random/images",
-      "http://api.starrobotwl.com/api/heisi.php",
-      "http://api.starrobotwl.com/api/baisi.php",
-      "http://api.starrobotwl.com/api/jk.php",
-      "http://api.starrobotwl.com/api/ecy.php",
-      "http://api.starrobotwl.com/api/yscos.php",
-      "http://api.starrobotwl.com/api/wzcos.php",
-      "http://api.starrobotwl.com/api/sjcos.php",
-      "http://api.starrobotwl.com/api/sjvs.php",
-      "http://api.starrobotwl.com/api/dmct.php",
-    ]
+  async meitu(e) {
+    let api;
+    switch (e.msg) {
+      case "bs":
+        api = ["http://api.starrobotwl.com/api/baisi.php"]
+        break;
+      case "hs":
+        api = [
+          "http://api.starrobotwl.com/api/heisi.php",
+          "https://api.caonm.net/api/siwa/api.php",
+        ]
+        break;
+      case "jk":
+        api = ["http://api.starrobotwl.com/api/jk.php"]
+        break;
+      case "ecy":
+        api = [
+          "http://api.starrobotwl.com/api/ecy.php",
+          "http://api.starrobotwl.com/api/dmct.php",
+
+        ]
+        break;
+      case "cos":
+        api = [
+          "http://api.starrobotwl.com/api/yscos.php",
+          "http://api.starrobotwl.com/api/wzcos.php",
+          "http://api.starrobotwl.com/api/sjcos.php",
+          "https://api.caonm.net/api/cos/api.php"
+        ]
+        break;
+      case "hso":
+        api = [
+          "http://api.starrobotwl.com/api/sjvs.php",
+          "https://api.ixiaowai.cn/api/api.php",]
+        break;
+      case "mn":
+        api = [
+          "http://api.starrobotwl.com/api/mvzp.php",
+          "http://api.starrobotwl.com/api/mnbz.php",
+          "https://api.caonm.net/api/yangyan/api.php",
+          "https://api.btstu.cn/sjbz/api.php",
+          "https://api.wuque.cc/random/images",
+        ]
+        break;
+    }
     e.reply(segment.image(lodash.sample(api)))
   }
 }

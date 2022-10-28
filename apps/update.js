@@ -136,7 +136,7 @@ export class update extends plugin {
 
     let end = "";
     end =
-      "更多详细信息，请前往gitee查看\nhttps://gitee.com/yeyang52/yenai-plugin";
+      "更多详细信息，请前往gitee查看\nhttps://gitee.com/yeyang52/yenai-plugin/blob/master/CHANGELOG.md";
 
     log = await this.makeForwardMsg(`椰奶插件更新日志，共${line}条`, log, end);
 

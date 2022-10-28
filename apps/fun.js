@@ -63,8 +63,8 @@ export class example extends plugin {
           fnc: 'bcy_topic'
         },
         {
-          reg: '^#?(xjj|hso|bs|hs|jk|ecy|cos)$',
-          fnc: 'meitu'
+          reg: '^#?(xjj|hso|bs|hs|jk|ecy|cos|sy|yf)$',
+          fnc: 'tu'
         }
       ]
     })
@@ -288,7 +288,7 @@ export class example extends plugin {
     console.log(msg);
     Cfg.getforwardMsg(e, msg)
   }
-  async meitu(e) {
+  async tu(e) {
     let api;
     switch (e.msg) {
       case "bs":
@@ -310,7 +310,7 @@ export class example extends plugin {
         api = [
           "http://api.starrobotwl.com/api/ecy.php",
           "http://api.starrobotwl.com/api/dmct.php",
-
+          "http://api.iw233.cn/api.php?sort=random"
         ]
         break;
       case "cos":
@@ -335,6 +335,11 @@ export class example extends plugin {
           "https://api.wuque.cc/random/images",
         ]
         break;
+      case "yf":
+        api = ["http://iw233.cn/api.php?sort=yin"]
+        break;
+      case "sy":
+        api = ["https://iw233.cn/api.php?sort=cat"]
     }
     e.reply(segment.image(lodash.sample(api)))
   }

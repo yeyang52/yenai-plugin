@@ -56,7 +56,7 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
   注：具体可使用 **#椰奶设置** 查看
 </details>
 <details>
-  <summary>小助手</summary>
+  <summary>助手功能</summary>
 
 - 发送 群聊|好友 消息
   

@@ -44,7 +44,7 @@ export class example extends plugin {
         },
         {
           reg: '^#?coser$',
-          fnc: 'cos'
+          fnc: 'coser'
         },
         {
           reg: '^#?waifu$',
@@ -187,31 +187,30 @@ export class example extends plugin {
     return true;
   }
   //coser
-  async cos(e) {
+  async coser(e) {
     if (!e.isMaster) {
       if (!Config.Notice.sese) return
     }
     await e.reply("少女祈祷中......")
 
-    const api = "http://api.starrobotwl.com/api/sjcos.php"
+    const api = "http://ovooa.com/API/cosplay/api.php"
 
-    // let res = await fetch(api).then((res) => res.json()).catch((err) => console.error(err))
+    let res = await fetch(api).then((res) => res.json()).catch((err) => console.error(err))
 
-    // if (!res) return e.reply("接口失效辣！！！")
+    if (!res) return e.reply("接口失效辣！！！")
 
-    // res = res.data
-    // let item = 1;
-    // let msg = [res.Title]
-    // for (let i of res.data) {
-    //   msg.push(segment.image(i))
-    //   if (item >= 20) {
-    //     break
-    //   } else {
-    //     item++
-    //   }
-    // }
-    // Cfg.getCDsendMsg(e, msg, false)
-    Cfg.recallsendMsg(e, segment.image(api))
+    res = res.data
+    let item = 1;
+    let msg = [res.Title]
+    for (let i of res.data) {
+      msg.push(segment.image(i))
+      if (item >= 20) {
+        break
+      } else {
+        item++
+      }
+    }
+    Cfg.getCDsendMsg(e, msg, false)
     return true
   }
 

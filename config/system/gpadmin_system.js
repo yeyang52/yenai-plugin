@@ -102,7 +102,7 @@ export const helpList = [{
     },
   ]
 }, {
-  "group": "进群验证(更多设置请在groupverify.yaml进行设置)",
+  "group": "进群验证(更多设置请在config/groupverify.yaml进行设置)",
   "list": [
     {
       "title": "#开启验证",
@@ -127,7 +127,12 @@ export const helpList = [{
       "title": "#切换验证模式",
       "desc": "更换答案匹配模式",
       "icon": 2
-    },]
+    },
+    {
+      "title": "#设置验证超时时间+(s)",
+      "desc": "多少秒后踢出",
+      "icon": 17
+    }]
 }, {
   "group": "Bot为群主可用",
   "auth": "master",

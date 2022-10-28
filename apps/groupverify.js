@@ -34,6 +34,10 @@ export class NEWCMD extends plugin {
         {
           reg: '^#切换验证模式$',
           fnc: 'setmode'
+        },
+        {
+          reg: '^#设置验证超时时间(\\d+)(s|秒)$',
+          fnc: 'setovertime'
         }
       ]
     })
@@ -124,6 +128,16 @@ export class NEWCMD extends plugin {
     let value = verifycfg.mode == "模糊" ? "精确" : "模糊"
     new YamlReader(this.verifypath).set(`mode`, value)
     e.reply(`✅ 已切换验证模式为${value}验证`)
+  }
+  //设置验证超时时间
+  async setovertime(e) {
+    if (!e.isMaster) return e.reply("❎ 该命令仅限主人可用", true);
+    let overtime = e.msg.match(/\d+/g)
+    new YamlReader(this.verifypath).set("time", Number(overtime))
+    e.reply(`✅ 已将验证超时时间设置为${overtime}秒`)
+    if (overtime < 60) {
+      e.reply(`建议至少一分钟(60秒)哦ε(*´･ω･)з`)
+    }
   }
 }
 

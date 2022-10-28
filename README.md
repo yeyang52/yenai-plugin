@@ -53,7 +53,7 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 
 - Bot被禁言
 
-Tip：具体可使用 **#椰奶设置** 查看
+  注：具体可使用 **#椰奶设置** 查看
 </details>
 <details>
   <summary>小助手</summary>
@@ -134,6 +134,7 @@ Tip：具体可使用 **#椰奶设置** 查看
 
 - 修改头衔
 
+  注：具体可使用 **#椰奶群管帮助** 查看
 </details>
 
 ## 免责声明

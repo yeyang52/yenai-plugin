@@ -532,8 +532,7 @@ export class Basics extends plugin {
             let list = await Gpadmin.noactivelist(e, Reg[2], Reg[3])
             if (!list) return
             e.reply(`检测到本此共需清理${list.length}人，防止误触发\n请发送：#确认清理${Reg[2]}${Reg[3]}没发言的人`)
-        }
-        if (Reg[1] == "确认清理") {
+        } else if (Reg[1] == "确认清理") {
             if (!e.group.is_admin && !e.group.is_owner) {
                 return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
             }

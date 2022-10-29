@@ -12,6 +12,7 @@ const ROLE_MAP = {
 }
 
 let noactivereg = new RegExp('^#(查看|清理)(\\d+)(月|周|天)没发言的人(第(\\d+)页)?$')
+
 export class Basics extends plugin {
     constructor() {
         super({
@@ -520,8 +521,8 @@ export class Basics extends plugin {
 
     //查看和清理多久没发言的人
     async noactive(e) {
-        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
-            return e.reply("❎ 该命令仅限管理员可用", true);
+        if (!e.isMaster && !e.member.is_owner) {
+            return e.reply("❎ 该命令仅限群主和主人可用", true);
         }
         let Reg = noactivereg.exec(e.msg)
         if (Reg[1] == "清理") {
@@ -530,7 +531,7 @@ export class Basics extends plugin {
             }
             await Gpadmin.getclearnoactive(e, Reg[2], Reg[3])
         }
-         
+
         let page = Reg[5] || 1
         let msg = await Gpadmin.getnoactive(e, Reg[2], Reg[3], page)
         if (!msg) return

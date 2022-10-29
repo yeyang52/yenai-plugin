@@ -4,11 +4,14 @@ import Cfg from '../model/Config.js';
 import Gpadmin from '../model/Group_admin.js';
 import { segment } from 'oicq'
 
+
 const ROLE_MAP = {
     admin: '群管理',
     owner: '群主',
     member: '群员'
 }
+
+let noactivereg = new RegExp('^#(查看|清理)(\\d+)(月|周|天)没发言的人(第(\\d+)页)?$')
 export class Basics extends plugin {
     constructor() {
         super({
@@ -92,6 +95,10 @@ export class Basics extends plugin {
                     reg: '^#解除全部禁言$',
                     fnc: 'relieveAllMute'
                 },
+                {
+                    reg: noactivereg,
+                    fnc: 'noactive'
+                }
 
             ]
         })
@@ -510,5 +517,23 @@ export class Basics extends plugin {
         }
         e.reply("已经把全部的禁言解除辣╮( •́ω•̀ )╭")
     }
-}
 
+    //查看和清理多久没发言的人
+    async noactive(e) {
+        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
+            return e.reply("❎ 该命令仅限管理员可用", true);
+        }
+        let Reg = noactivereg.exec(e.msg)
+        if (Reg[1] == "清理") {
+            if (!e.group.is_admin && !e.group.is_owner) {
+                return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
+            }
+            await Gpadmin.getclearnoactive(e, Reg[2], Reg[3])
+        }
+         
+        let page = Reg[5] || 1
+        let msg = await Gpadmin.getnoactive(e, Reg[2], Reg[3], page)
+        if (!msg) return
+        Cfg.getforwardMsg(e, msg)
+    }
+}

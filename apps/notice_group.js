@@ -3,7 +3,7 @@ import { segment } from 'oicq'
 import cfg from '../../../lib/config/config.js'
 import xcfg from '../model/Config.js'
 import { Config } from '../components/index.js'
-
+import moment from 'moment'
 
 
 /** 群通知 */
@@ -280,7 +280,7 @@ export class newgroups extends plugin {
                     isManage,
                     `${isManage ? '被撤回人' : '撤回人员'}：${e.group.pickMember(e.user_id).card
                     }(${e.user_id})\n`,
-                    `撤回时间：${formatDate(e.time)}`,
+                    `撤回时间：${moment(e.time * 1000).format("MM-DD HH:mm:ss")}`,
                     special ? `\n特殊消息：${special}` : ''
                 ]
                 break
@@ -296,22 +296,3 @@ export class newgroups extends plugin {
 }
 
 
-/** 时间转换 */
-function formatDate(time) {
-    let now = new Date(parseFloat(time) * 1000)
-    // 月
-    let month = now.getMonth() + 1
-    // 日
-    let date = now.getDate()
-    // 补0
-    if (month >= 1 && month <= 9) month = '0' + month
-    if (date >= 0 && date <= 9) date = '0' + date
-    // 时
-    let hour = now.getHours()
-    // 分
-    let minute = now.getMinutes()
-    // 补0
-    if (hour >= 1 && hour <= 9) hour = '0' + hour
-    if (minute >= 0 && minute <= 9) minute = '0' + minute
-    return `${month}-${date} ${hour}:${minute} `
-}

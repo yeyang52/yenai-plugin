@@ -203,25 +203,59 @@ class Config {
 
     // 秒转换
     getsecondformat(value) {
-    let time = this.getsecond(value)
+        let time = this.getsecond(value)
 
-    let { second, minute, hour, day } = time
-    // 处理返回消息
-    let result = ''
-    if (second != 0) {
-        result = parseInt(second) + '秒'
+        let { second, minute, hour, day } = time
+        // 处理返回消息
+        let result = ''
+        if (second != 0) {
+            result = parseInt(second) + '秒'
+        }
+        if (minute > 0) {
+            result = parseInt(minute) + '分' + result
+        }
+        if (hour > 0) {
+            result = parseInt(hour) + '小时' + result
+        }
+        if (day > 0) {
+            result = parseInt(day) + '天' + result
+        }
+        return result
     }
-    if (minute > 0) {
-        result = parseInt(minute) + '分' + result
+
+    /** 将数组进行分页，返回新的分页数组
+      * @param {Object} pageSize 每页大小
+      * @param {Object} arr 数组
+    */
+    returnAllPageFunc(pageSize, arr) {
+        let pageNum = 1
+        let pageObj = {
+            pageNum: 1,
+            list: []
+        }
+        let pageResult = []
+
+        let newArr = JSON.parse(JSON.stringify(arr))
+        let totalPage = newArr.length ? Math.ceil(arr.length / pageSize) : 0 // 计算总页数
+
+        for (let i = 1; i <= totalPage; i++) {
+            if (totalPage == 1) {
+                pageNum += 1
+                pageObj.list = newArr.splice(0, arr.length)
+            } else if (i <= totalPage) {
+                pageNum += 1
+                pageObj.list = newArr.splice(0, pageSize)
+            } else {
+                pageObj.list = newArr.splice(0, arr.length % pageSize)
+            }
+            pageResult.push(pageObj)
+            pageObj = {
+                pageNum: pageNum,
+                list: []
+            }
+        }
+        return pageResult
     }
-    if (hour > 0) {
-        result = parseInt(hour) + '小时' + result
-    }
-    if (day > 0) {
-        result = parseInt(day) + '天' + result
-    }
-    return result
-}
 }
 
 

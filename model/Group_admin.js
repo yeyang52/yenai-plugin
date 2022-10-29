@@ -1,6 +1,9 @@
 import fetch from "node-fetch";
 import Cfg from './Config.js';
 import lodash from 'lodash';
+import moment from 'moment'
+import { segment } from 'oicq'
+
 class Group_admin {
     constructor() {
         this.ck = Cfg.getck("qun.qq.com");
@@ -107,6 +110,81 @@ class Group_admin {
         })
         if (lodash.isEmpty(mutelist)) return false
         return mutelist
+    }
+
+    /**
+     * @description: 返回多少时间没发言的人信息
+     * @param {*} e oicq
+     * @param {Number} times 时间数
+     * @param {String} unit 单位 (天)
+     * @param {Number} num 页数
+     * @return {Array}
+     */
+    async getnoactive(e, times, unit, num = 1) {
+        let list = await this.noactivelist(e, times, unit)
+        if (!list) return false
+        let msg = list.map(item => {
+            return [segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
+            `\nQQ：${item.user_id}\n`,
+            `昵称：${item.card || item.nickname}\n`,
+            `最后发言时间：${moment(item.last_sent_time * 1000).format("YYYY-MM-DD HH:mm:ss")}`
+            ]
+        })
+        let Page = Cfg.returnAllPageFunc(30, msg)
+        if (num > Page.length) {
+            e.reply("哪有那么多人辣o(´^｀)o")
+            return false
+        }
+        let msgs = Page[num - 1]
+        let res = msgs.list
+        res.unshift(`当前为第${msgs.pageNum}页，共${Page.length}页，本页共${res.length}人，共${msg.length}人`)
+        res.unshift(`以下为${times}${unit}没发言过的坏淫`)
+        return res
+    }
+
+    /**
+     * @description: 清理多久没发言的人
+     * @param {*} e oicq
+     * @param {*} times 时间数
+     * @param {*} unit 单位 (天)
+     * @return {*}
+     */
+    async getclearnoactive(e, times, unit) {
+        let list = await this.noactivelist(e, times, unit)
+        if (!list) return false
+        list = list.map(item => item.user_id)
+        for (let i of list) {
+            await e.group.kickMember(i).then(() => e.reply(`已将${i}移出群聊辣( ･_･)ﾉ⌒●~*`))
+            await Cfg.sleep(200)
+        }
+        return e.reply(`已经将${times}${unit}没发言的淫全部移出群聊辣`)
+    }
+
+    /**
+     * @description: 返回多少时间没发言的人信息
+     * @param {*} e oicq
+     * @param {Number} times 时间数
+     * @param {String} unit 单位 (天)
+     * @return {Array}
+     */
+    async noactivelist(e, times, unit) {
+        let nowtime = parseInt(new Date().getTime() / 1000)
+        let timeunit = 86400
+        if (unit == "周") {
+            timeunit = 604800
+        } else if (unit == "月") {
+            timeunit = 2592000
+        }
+        let time = nowtime - times * timeunit
+        let list = Array.from((await e.group.getMemberMap()).values());
+
+        list = list.filter(item => item.last_sent_time < time)
+
+        if (lodash.isEmpty(list)) {
+            e.reply(`暂时没有${times}${unit}没发言的淫哦╮( •́ω•̀ )╭`)
+            return false
+        }
+        return list
     }
 
 }

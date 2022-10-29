@@ -11,7 +11,7 @@ const ROLE_MAP = {
     member: '群员'
 }
 
-let noactivereg = new RegExp('^#(查看|清理)(\\d+)(月|周|天)没发言的人(第(\\d+)页)?$')
+let noactivereg = new RegExp('^#(查看|清理|确认清理)(\\d+)(月|周|天)没发言的人(第(\\d+)页)?$')
 
 export class Basics extends plugin {
     constructor() {
@@ -529,12 +529,20 @@ export class Basics extends plugin {
             if (!e.group.is_admin && !e.group.is_owner) {
                 return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
             }
-            await Gpadmin.getclearnoactive(e, Reg[2], Reg[3])
+            let list = await Gpadmin.noactivelist(e, Reg[2], Reg[3])
+            if (!list) return
+            e.reply(`检测到本此共需清理${list.length}人，防止误触发\n请发送：#确认清理${Reg[2]}${Reg[3]}没发言的人`)
         }
-
-        let page = Reg[5] || 1
-        let msg = await Gpadmin.getnoactive(e, Reg[2], Reg[3], page)
-        if (!msg) return
-        Cfg.getforwardMsg(e, msg)
+        if (Reg[1] == "确认清理") {
+            if (!e.group.is_admin && !e.group.is_owner) {
+                return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
+            }
+            await Gpadmin.getclearnoactive(e, Reg[2], Reg[3])
+        } else {
+            let page = Reg[5] || 1
+            let msg = await Gpadmin.getnoactive(e, Reg[2], Reg[3], page)
+            if (!msg) return
+            Cfg.getforwardMsg(e, msg)
+        }
     }
 }

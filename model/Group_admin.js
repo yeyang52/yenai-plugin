@@ -177,8 +177,8 @@ class Group_admin {
         }
         let time = nowtime - times * timeunit
         let list = Array.from((await e.group.getMemberMap()).values());
-
-        list = list.filter(item => item.last_sent_time < time)
+        
+        list = list.filter(item => item.last_sent_time < time && item.role == "member")
 
         if (lodash.isEmpty(list)) {
             e.reply(`暂时没有${times}${unit}没发言的淫哦╮( •́ω•̀ )╭`)

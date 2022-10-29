@@ -45,6 +45,9 @@ export class NEWCMD extends plugin {
   }
   //重新验证
   async cmdReverify(e) {
+
+    if (e?.group?.mute_left > 0) return
+
     let verifycfg = Config.verifycfg
 
     if (!e.group.is_admin && !e.group.is_owner) return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
@@ -157,6 +160,8 @@ Bot.on("notice.group.increase", async (e) => {
 
   if (cfg.masterQQ.includes(e.user_id)) return
 
+  if (e?.group?.mute_left > 0) return
+
   await verify(e.user_id, e.group_id, e)
 })
 
@@ -191,7 +196,7 @@ Bot.on('message.group', async (e) => {
     const { remainTimes } = temp[e.user_id + e.group_id];
 
     if (remainTimes > 0) {
-      await e.group.recallMsg(e.message_id)
+      await e.recall();
 
       const msg = `❎ 验证失败，你还有「${remainTimes}」次机会，请发送「${nums[0]} ${operator} ${nums[1]}」的运算结果`;
       return await e.reply([segment.at(e.user_id), msg]);

@@ -53,11 +53,10 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 
 - Bot被禁言
 
-Tip：具体可使用 **#椰奶设置** 查看
+  注：具体可使用 **#椰奶设置** 查看
 </details>
-<br>
 <details>
-  <summary>小助手</summary>
+  <summary>助手功能</summary>
 
 - 发送 群聊|好友 消息
   
@@ -72,7 +71,6 @@ Tip：具体可使用 **#椰奶设置** 查看
 - 状态
   
 </details>
-<br>
 <details>
   <summary>事件处理</summary>
 
@@ -83,7 +81,6 @@ Tip：具体可使用 **#椰奶设置** 查看
 - 回复好友消息
 
 </details>
-<br>
 <details>
   <summary>娱乐功能</summary>
 
@@ -98,7 +95,6 @@ Tip：具体可使用 **#椰奶设置** 查看
 - waifu
 
 </details>
-<br>
 <details>
   <summary>Pixiv功能</summary>
 
@@ -119,7 +115,6 @@ Tip：具体可使用 **#椰奶设置** 查看
 - 查看热门Tag
 
 </details>
-<br>
 <details>
   <summary>群管功能</summary>
 
@@ -139,6 +134,7 @@ Tip：具体可使用 **#椰奶设置** 查看
 
 - 修改头衔
 
+  注：具体可使用 **#椰奶群管帮助** 查看
 </details>
 
 ## 免责声明

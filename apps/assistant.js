@@ -5,6 +5,8 @@ import Config from '../model/Config.js';
 import common from '../../../lib/common/common.js'
 import lodash from 'lodash'
 
+let Qzonedetermine = false;
+let groupPhotoid = '';
 export class example extends plugin {
   constructor() {
     super({
@@ -98,8 +100,7 @@ export class example extends plugin {
         },
       ]
     })
-    this.Qzonedetermine = false;
-    this.groupPhotoid = '';
+
   }
   /**改头像*/
   async Photo(e) {
@@ -194,31 +195,31 @@ export class example extends plugin {
     if (e.isPrivate) {
       if (!e.isMaster) return;
 
-      this.groupPhotoid = e.msg.replace(/#|改群头像/g, "").trim()
+      groupPhotoid = e.msg.replace(/#|改群头像/g, "").trim()
 
-      if (!this.groupPhotoid) return e.reply("❎ 群号不能为空");
+      if (!groupPhotoid) return e.reply("❎ 群号不能为空");
 
-      if (!(/^\d+$/.test(this.groupPhotoid))) return e.reply("❎ 您的群号不合法");
+      if (!(/^\d+$/.test(groupPhotoid))) return e.reply("❎ 您的群号不合法");
 
-      if (!Bot.gl.get(Number(this.groupPhotoid))) return e.reply("❎ 群聊列表查无此群");
+      if (!Bot.gl.get(Number(groupPhotoid))) return e.reply("❎ 群聊列表查无此群");
     } else {
       //判断身份
       if (e.member.is_admin || e.member.is_owner || e.isMaster) {
-        this.groupPhotoid = e.group_id
+        groupPhotoid = e.group_id
       } else {
         return e.reply(["哼~你不是管理员人家不听你的", segment.face(231)])
       }
     }
-    this.groupPhotoid = Number(this.groupPhotoid);
+    groupPhotoid = Number(groupPhotoid);
 
-    if (Bot.pickGroup(this.groupPhotoid).is_admin || Bot.pickGroup(this.groupPhotoid).is_owner) {
+    if (Bot.pickGroup(groupPhotoid).is_admin || Bot.pickGroup(groupPhotoid).is_owner) {
       if (!e.img) {
         this.setContext('picture')
         e.reply("✅ 请发送图片");
         return;
       }
 
-      Bot.pickGroup(this.groupPhotoid).setAvatar(e.img[0])
+      Bot.pickGroup(groupPhotoid).setAvatar(e.img[0])
         .then(() => e.reply("✅ 群头像修改成功"))
         .catch((err) => {
           e.reply("✅ 群头像修改失败")
@@ -241,7 +242,7 @@ export class example extends plugin {
       this.e.reply('❎ 请发送图片或取消')
       return;
     }
-    Bot.pickGroup(this.groupPhotoid).setAvatar(this.e.img[0])
+    Bot.pickGroup(groupPhotoid).setAvatar(this.e.img[0])
       .then(() => this.e.reply("✅ 群头像修改成功"))
       .catch((err) => {
         this.e.reply("✅ 群头像修改失败")
@@ -328,7 +329,7 @@ export class example extends plugin {
     for (let k in res) {
       status[res[k]] = k;
     }
-    
+
     if (!(signs in res)) return e.reply("❎ 可选值：我在线上，离开，隐身，忙碌，Q我吧，请勿打扰")
 
     await Bot.setOnlineStatus(res[signs])
@@ -666,12 +667,10 @@ export class example extends plugin {
     if (/清空说说/.test(e.msg)) {
       this.setContext('QzonedelAll')
       e.reply("✳️ 即将删除全部说说请发送：\n" + "------确认清空或取消------");
-      this.Qzonedetermine = true;
-      return true;
+      Qzonedetermine = true;
     } else if (/清空留言/.test(e.msg)) {
       this.setContext('QzonedelAll')
       e.reply("✳️ 即将删除全部留言请发送：\n" + "------确认清空或取消------");
-      return true;
     }
   }
   async QzonedelAll() {
@@ -679,9 +678,8 @@ export class example extends plugin {
     if (msg == "确认清空") {
       this.finish('QzonedelAll')
       let ck = Config.getck('qzone.qq.com')
-
       let url
-      if (this.Qzonedetermine) {
+      if (Qzonedetermine) {
         url = `https://xiaobai.klizi.cn/API/qqgn/ss_empty.php?data=&uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}`
       } else {
         url = `https://xiaobai.klizi.cn/API/qqgn/qzone_emptymsgb.php?data=&uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}`

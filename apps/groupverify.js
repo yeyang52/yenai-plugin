@@ -229,6 +229,8 @@ Bot.on('notice.group.decrease', async (e) => {
 async function verify(user_id, group_id, e) {
   if (!e.group.is_admin && !e.group.is_owner) return;
 
+  logger.mark(`[椰奶]进行${user_id}的验证`)
+
   let verifycfg = Config.verifycfg
   let { range } = verifycfg
   const remainTimes = verifycfg.times;

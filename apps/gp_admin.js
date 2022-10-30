@@ -11,7 +11,7 @@ const ROLE_MAP = {
     member: '群员'
 }
 
-let noactivereg = new RegExp('^#(查看|清理|确认清理)(\\d+)(月|周|天)没发言的人(第(\\d+)页)?$')
+let noactivereg = new RegExp('^#(查看|清理|确认清理)(\\d+)(年|月|周|天)没发言的人(第(\\d+)页)?$')
 
 export class Basics extends plugin {
     constructor() {

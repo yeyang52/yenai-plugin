@@ -137,6 +137,9 @@ class Group_admin {
         }
         let msgs = Page[num - 1]
         let res = msgs.list
+        if (num < Page.length) {
+            res.unshift(`可用 "#查看${times}${unit}没发言过的人第${msgs.pageNum + 1}页" 翻页`)
+        }
         res.unshift(`当前为第${msgs.pageNum}页，共${Page.length}页，本页共${res.length}人，共${msg.length}人`)
         res.unshift(`以下为${times}${unit}没发言过的坏淫`)
         return res
@@ -174,10 +177,12 @@ class Group_admin {
             timeunit = 604800
         } else if (unit == "月") {
             timeunit = 2592000
+        } else if (unit == "年") {
+            timeunit = 31536000
         }
         let time = nowtime - times * timeunit
         let list = Array.from((await e.group.getMemberMap()).values());
-        
+
         list = list.filter(item => item.last_sent_time < time && item.role == "member")
 
         if (lodash.isEmpty(list)) {

@@ -64,14 +64,21 @@ export default class Pixiv {
         let api = `https://api.bbmang.me/ranks?page=${page}&date=${date}&mode=${mode}&pageSize=30`
         let res = await this.getfetch(api)
         if (!res) return false
+        if (page > 17) {
+            this.e.reply("哪有那么多图片给你辣(•̀へ •́ ╮ )")
+            return false
+        }
         if (!res.data) {
             this.e.reply("暂无数据，请稍后重试哦(。-ω-)zzz")
             return false
         };
         let list = [
             `${date}的${type[mode]}`,
-            `当前为第${page}页`
+            `当前为第${page}页，共17页，本页共${res.data.length}张，共500张`,
         ];
+        if (page < 17) {
+            list.push(`可使用 "#看看${type[mode]}第${page - 0 + 1}页" 翻页`)
+        }
         for (let i of res.data) {
             let { title, id: pid } = i
             let { name: uresname, id: uresid } = i.artistPreView
@@ -115,9 +122,11 @@ export default class Pixiv {
         }
 
         let list = [
-            `共找到${res.data.count}张插画`,
-            `当前为第${page}页，共${pageall}页`
+            `当前为第${page}页，共${pageall}页，本页共${res.data.rows.length}张，共${res.data.count}张`
         ];
+        if (page < pageall) {
+            list.push(`可使用 "#tag搜图${tag}第${page - 0 + 1}页" 翻页`)
+        }
         for (let i of res.data.rows) {
             let { picture_id, title, regular_url, tags, like_total } = i
             list.push([
@@ -200,9 +209,11 @@ export default class Pixiv {
                 `画师：${nick_name}\n`,
                 `介绍：${lodash.truncate(desc)}`
             ],
-            `共找到${res.data.count}张插画`,
-            `当前为第${page}页，共${pageall}页`
+            `当前为第${page}页，共${pageall}页，本页共${res.data.rows.length}张，共${res.data.count}张`,
         ]
+        if (page < pageall) {
+            list.push(`可使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页`)
+        }
         for (let i of res.data.rows) {
             let { picture_id, title, regular_url, tags, like_total } = i
             list.push([

@@ -320,9 +320,8 @@ export class example extends plugin {
         break;
       case "ecy":
         api = [
-          "http://api.starrobotwl.com/api/ecy.php",
-          "http://api.starrobotwl.com/api/dmct.php",
-          "http://api.iw233.cn/api.php?sort=random"
+          "https://iw233.cn/api.php?sort=top",
+          "https://iw233.cn/api.php?sort=mp"
         ]
         break;
       case "cos":

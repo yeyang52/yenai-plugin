@@ -140,7 +140,7 @@ class Group_admin {
         if (num < Page.length) {
             res.unshift(`可用 "#查看${times}${unit}没发言过的人第${msgs.pageNum + 1}页" 翻页`)
         }
-        res.unshift(`当前为第${msgs.pageNum}页，共${Page.length}页，本页共${res.length}人，共${msg.length}人`)
+        res.unshift(`当前为第${msgs.pageNum}页，共${Page.length}页，本页共${res.length}人，总共${msg.length}人`)
         res.unshift(`以下为${times}${unit}没发言过的坏淫`)
         return res
     }
@@ -183,7 +183,7 @@ class Group_admin {
         let time = nowtime - times * timeunit
         let list = Array.from((await e.group.getMemberMap()).values());
 
-        list = list.filter(item => item.last_sent_time < time && item.role == "member")
+        list = list.filter(item => item.last_sent_time < time && item.role == "member" && item.user_id != Bot.uin)
 
         if (lodash.isEmpty(list)) {
             e.reply(`暂时没有${times}${unit}没发言的淫哦╮( •́ω•̀ )╭`)
@@ -192,6 +192,49 @@ class Group_admin {
         return list
     }
 
+    /**
+     * @description: 返回从未发言的人
+     * @param {*} e oicq
+     * @return {Array}
+     */
+    async getneverspeak(e) {
+        let list = Array.from((await e.group.getMemberMap()).values());
+        list = list.filter(item => item.join_time == item.last_sent_time && item.role == "member" && item.user_id != Bot.uin)
+        if (lodash.isEmpty(list)) {
+            e.reply(`咋群全是好淫哦~全都发过言辣٩(๑•̀ω•́๑)۶`)
+            return false
+        }
+        return list
+    }
+    /**
+     * @description: 返回从未发言的人信息
+     * @param {*} e oicq
+     * @return {Array}
+     */
+    async getneverspeakinfo(e, num) {
+        let list = await this.getneverspeak(e)
+        if (!list) return false
+        let msg = list.map(item => {
+            return [segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
+            `\nQQ：${item.user_id}\n`,
+            `昵称：${item.card || item.nickname}\n`,
+            `进群时间：${moment(item.join_time * 1000).format("YYYY-MM-DD HH:mm:ss")}`
+            ]
+        })
+        let Page = Cfg.returnAllPageFunc(30, msg)
+        if (num > Page.length) {
+            e.reply("哪有那么多人辣o(´^｀)o")
+            return false
+        }
+        let msgs = Page[num - 1]
+        let res = msgs.list
+        if (num < Page.length) {
+            res.unshift(`可用 "#查看从未发言过的人第${msgs.pageNum + 1}页" 翻页`)
+        }
+        res.unshift(`当前为第${msgs.pageNum}页，共${Page.length}页，本页共${res.length}人，总共${msg.length}人`)
+        res.unshift(`以下为进群后从未发言过的坏淫`)
+        return res
+    }
 }
 
 export default new Group_admin();

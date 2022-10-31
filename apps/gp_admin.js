@@ -4,7 +4,6 @@ import Cfg from '../model/Config.js';
 import Gpadmin from '../model/Group_admin.js';
 import { segment } from 'oicq'
 
-
 const ROLE_MAP = {
     admin: '群管理',
     owner: '群主',
@@ -99,6 +98,10 @@ export class Basics extends plugin {
                 {
                     reg: noactivereg,
                     fnc: 'noactive'
+                },
+                {
+                    reg: '^#(查看|(确认)?清理)从未发言的人(第(\\d+)页)?$',
+                    fnc: 'neverspeak'
                 }
 
             ]
@@ -525,6 +528,19 @@ export class Basics extends plugin {
             return e.reply("❎ 该命令仅限群主和主人可用", true);
         }
         let Reg = noactivereg.exec(e.msg)
+        //确认清理直接执行
+        if (Reg[1] == "确认清理") {
+            if (!e.group.is_admin && !e.group.is_owner) {
+                return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
+            }
+            return Gpadmin.getclearnoactive(e, Reg[2], Reg[3])
+        }
+        //查看和清理都会发送列表
+        let page = Reg[5] || 1
+        let msg = await Gpadmin.getnoactive(e, Reg[2], Reg[3], page)
+        if (!msg) return
+        await Cfg.getforwardMsg(e, msg)
+        //清理
         if (Reg[1] == "清理") {
             if (!e.group.is_admin && !e.group.is_owner) {
                 return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
@@ -532,16 +548,37 @@ export class Basics extends plugin {
             let list = await Gpadmin.noactivelist(e, Reg[2], Reg[3])
             if (!list) return
             e.reply(`检测到本此共需清理${list.length}人，防止误触发\n请发送：#确认清理${Reg[2]}${Reg[3]}没发言的人`)
-        } else if (Reg[1] == "确认清理") {
+        }
+    }
+    //查看和清理从未发言的人
+    async neverspeak(e) {
+        if (!e.isMaster && !e.member.is_owner) {
+            return e.reply("❎ 该命令仅限群主和主人可用", true);
+        }
+        let list = await Gpadmin.getneverspeak(e)
+        if (!list) return
+        //确认清理直接执行
+        if (/^#?确认清理/.test(e.msg)) {
             if (!e.group.is_admin && !e.group.is_owner) {
                 return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
             }
-            await Gpadmin.getclearnoactive(e, Reg[2], Reg[3])
-        } else {
-            let page = Reg[5] || 1
-            let msg = await Gpadmin.getnoactive(e, Reg[2], Reg[3], page)
-            if (!msg) return
-            Cfg.getforwardMsg(e, msg)
+            let removelist = list.map(item => item.user_id)
+            for (let i of removelist) {
+                await e.group.kickMember(i).then(() => e.reply(`已将${i}移出群聊辣( ･_･)ﾉ⌒●~*`))
+                await Cfg.sleep(200)
+            }
+            return e.reply("已将全部没发言过的人移除群聊辣ε(*´･ω･)з")
+        }
+        //发送列表
+        let num = e.msg.match(/\d+/) || 1
+        let listinfo = await Gpadmin.getneverspeakinfo(e, num)
+        await Cfg.getforwardMsg(e, listinfo)
+        //清理
+        if (/^#?清理/.test(e.msg)) {
+            if (!e.group.is_admin && !e.group.is_owner) {
+                return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
+            }
+            e.reply(`检测到本此共需清理${list.length}人，防止误触发\n请发送：#确认清理从未发言的人`)
         }
     }
 }

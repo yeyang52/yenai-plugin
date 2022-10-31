@@ -140,11 +140,11 @@ class Group_admin {
         }
         let msgs = Page[num - 1]
         let res = msgs.list
+        res.unshift(`当前为第${msgs.pageNum}页，共${Page.length}页，本页共${res.length}人，总共${msg.length}人`)
+        res.unshift(`以下为${times}${unit}没发言过的坏淫`)
         if (num < Page.length) {
             res.splice(2, 0, `可用 "#查看${times}${unit}没发言过的人第${msgs.pageNum + 1}页" 翻页`)
         }
-        res.unshift(`当前为第${msgs.pageNum}页，共${Page.length}页，本页共${res.length}人，总共${msg.length}人`)
-        res.unshift(`以下为${times}${unit}没发言过的坏淫`)
         return res
     }
 

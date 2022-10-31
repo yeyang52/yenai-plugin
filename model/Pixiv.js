@@ -74,7 +74,7 @@ export default class Pixiv {
         };
         let list = [
             `${date}的${type[mode]}`,
-            `当前为第${page}页，共17页，本页共${res.data.length}张，共500张`,
+            `当前为第${page}页，共17页，本页共${res.data.length}张，总共500张`,
         ];
         if (page < 17) {
             list.push(`可使用 "#看看${type[mode]}第${page - 0 + 1}页" 翻页`)
@@ -122,7 +122,7 @@ export default class Pixiv {
         }
 
         let list = [
-            `当前为第${page}页，共${pageall}页，本页共${res.data.rows.length}张，共${res.data.count}张`
+            `当前为第${page}页，共${pageall}页，本页共${res.data.rows.length}张，总共${res.data.count}张`
         ];
         if (page < pageall) {
             list.push(`可使用 "#tag搜图${tag}第${page - 0 + 1}页" 翻页`)
@@ -209,7 +209,7 @@ export default class Pixiv {
                 `画师：${nick_name}\n`,
                 `介绍：${lodash.truncate(desc)}`
             ],
-            `当前为第${page}页，共${pageall}页，本页共${res.data.rows.length}张，共${res.data.count}张`,
+            `当前为第${page}页，共${pageall}页，本页共${res.data.rows.length}张，总共${res.data.count}张`,
         ]
         if (page < pageall) {
             list.push(`可使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页`)

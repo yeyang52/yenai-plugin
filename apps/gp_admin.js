@@ -100,7 +100,7 @@ export class Basics extends plugin {
                     fnc: 'noactive'
                 },
                 {
-                    reg: '^#(查看|(确认)?清理)从未发言的人(第(\\d+)页)?$',
+                    reg: '^#(查看|(确认)?清理)从未发言过?的人(第(\\d+)页)?$',
                     fnc: 'neverspeak'
                 }
 

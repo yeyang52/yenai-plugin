@@ -359,6 +359,6 @@ export class example extends plugin {
         api = ["https://api.sdgou.cc/api/tao/"]
         break;
     }
-    e.reply(segment.image(lodash.sample(api)))
+    e.reply(segment.image(lodash.sample(api)), false, { recallMsg: 120 })
   }
 }

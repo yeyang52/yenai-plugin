@@ -29,7 +29,7 @@ export class NewConfig extends plugin {
                     fnc: 'SetAll'
                 },
                 {
-                    reg: '^#椰奶更换代理(1|2|3)$',
+                    reg: '^#椰奶更换代理(1|2|3|4)$',
                     fnc: 'proxy'
                 }
             ]
@@ -163,9 +163,13 @@ export class NewConfig extends plugin {
             await redis.set(rediskey, "proxy.pixivel.moe")
                 .then(() => e.reply("✅ 已经切换代理为2"))
                 .catch(err => console.log(err))
-        } else {
+        } else if (/3/.test(e.msg)) {
             await redis.set(rediskey, "i.pixiv.cat")
                 .then(() => e.reply("✅ 已经切换代理为3"))
+                .catch(err => console.log(err))
+        } else if (/4/.test(e.msg)) {
+            await redis.set(rediskey, "sex.nyan.xyz")
+                .then(() => e.reply("✅ 已经切换代理为4"))
                 .catch(err => console.log(err))
         }
     }

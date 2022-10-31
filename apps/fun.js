@@ -63,8 +63,8 @@ export class example extends plugin {
           fnc: 'bcy_topic'
         },
         {
-          reg: '^#?(xjj|hso|bs|hs|jk|ecy|cos|sy|bm)$',
-          fnc: 'tu'
+          reg: '^#?(xjj|hso|bs|hs|jk|ecy|cos|sy|bm|mt|mjx)$',
+          fnc: 'picture'
         },
         {
           reg: "^#*(谁|哪个吊毛|哪个屌毛|哪个叼毛)是龙王$",
@@ -300,7 +300,7 @@ export class example extends plugin {
     ]);
   }
   //api大集合
-  async tu(e) {
+  async picture(e) {
     let api;
     switch (e.msg) {
       case "bs":
@@ -351,6 +351,13 @@ export class example extends plugin {
         break;
       case "sy":
         api = ["https://iw233.cn/api.php?sort=cat"]
+        break;
+      case "mt":
+        api = ["https://api.sdgou.cc/api/meitui/"]
+        break;
+      case "mjx":
+        api = ["https://api.sdgou.cc/api/tao/"]
+        break;
     }
     e.reply(segment.image(lodash.sample(api)))
   }

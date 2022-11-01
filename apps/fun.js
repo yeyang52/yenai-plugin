@@ -304,12 +304,14 @@ export class example extends plugin {
     let api;
     switch (e.msg) {
       case "bs":
-        api = ["http://api.starrobotwl.com/api/baisi.php"]
+        api = [
+          "https://api.5yzs.cn/api/bhs/b.php"
+        ]
         break;
       case "hs":
         api = [
-          "http://api.starrobotwl.com/api/heisi.php",
           "https://api.caonm.net/api/siwa/api.php",
+          "http://api.5yzs.cn/api/bhs/h.php"
         ]
         break;
       case "jk":
@@ -326,37 +328,45 @@ export class example extends plugin {
         break;
       case "cos":
         api = [
-          "http://api.starrobotwl.com/api/yscos.php",
-          "http://api.starrobotwl.com/api/wzcos.php",
-          "http://api.starrobotwl.com/api/sjcos.php",
-          "https://api.caonm.net/api/cos/api.php"
+          "https://api.caonm.net/api/cos/api.php",
+          "http://xn--rssy53b.love/api/xjjtp/index.php"
         ]
         break;
       case "hso":
         api = [
-          "http://api.starrobotwl.com/api/sjvs.php",
-          "https://api.ixiaowai.cn/api/api.php",]
+          "http://www.ggapi.cn/Api/girls",
+          "http://xn--rssy53b.love/api/ecytp/index.php"
+        ]
         break;
       case "xjj":
         api = [
-          "http://api.starrobotwl.com/api/mvzp.php",
-          "http://api.starrobotwl.com/api/mnbz.php",
           "https://api.caonm.net/api/yangyan/api.php",
           "https://api.btstu.cn/sjbz/api.php",
           "https://api.wuque.cc/random/images",
+          "https://ovooa.com/API/meinv/api.php?type=image",
+          "http://api.5yzs.cn/api/mnt/index.php",
         ]
         break;
       case "bm":
-        api = ["http://iw233.cn/api.php?sort=yin"]
+        api = [
+          "http://iw233.cn/api.php?sort=yin"
+        ]
         break;
       case "sy":
-        api = ["https://iw233.cn/api.php?sort=cat"]
+        api = [
+          "https://iw233.cn/api.php?sort=cat"
+        ]
         break;
       case "mt":
-        api = ["https://api.sdgou.cc/api/meitui/"]
+        api = [
+          "https://api.sdgou.cc/api/meitui/",
+          "https://ovooa.com/API/meizi/api.php?type=image"
+        ]
         break;
       case "mjx":
-        api = ["https://api.sdgou.cc/api/tao/"]
+        api = [
+          "https://api.sdgou.cc/api/tao/"
+        ]
         break;
     }
     e.reply(segment.image(lodash.sample(api)), false, { recallMsg: 120 })

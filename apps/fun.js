@@ -63,11 +63,11 @@ export class example extends plugin {
           fnc: 'bcy_topic'
         },
         {
-          reg: '^#?(xjj|hso|bs|hs|jk|ecy|cos|sy|bm|mt|mjx)$',
+          reg: '^#?(xjj|hso|bs|hs|jk|ecy|cos|sy|bm|mt|mjx|jktj)(\\d)?$',
           fnc: 'picture'
         },
         {
-          reg: "^#*(谁|哪个吊毛|哪个屌毛|哪个叼毛)是龙王$",
+          reg: "^#?(谁|哪个吊毛|哪个屌毛|哪个叼毛)是龙王$",
           fnc: 'dragonKing'
         }
 
@@ -301,74 +301,72 @@ export class example extends plugin {
   }
   //api大集合
   async picture(e) {
-    let api;
-    switch (e.msg) {
-      case "bs":
-        api = [
-          "https://api.5yzs.cn/api/bhs/b.php"
-        ]
-        break;
-      case "hs":
-        api = [
-          "https://api.caonm.net/api/siwa/api.php",
-          "http://api.5yzs.cn/api/bhs/h.php"
-        ]
-        break;
-      case "jk":
-        api = [
-          "http://api.starrobotwl.com/api/jk.php",
-          "http://www.ggapi.cn/Api/jkzf"
-        ]
-        break;
-      case "ecy":
-        api = [
-          "https://iw233.cn/api.php?sort=top",
-          "https://iw233.cn/api.php?sort=mp"
-        ]
-        break;
-      case "cos":
-        api = [
-          "https://api.caonm.net/api/cos/api.php",
-          "http://xn--rssy53b.love/api/xjjtp/index.php"
-        ]
-        break;
-      case "hso":
-        api = [
-          "http://www.ggapi.cn/Api/girls",
-          "http://xn--rssy53b.love/api/ecytp/index.php"
-        ]
-        break;
-      case "xjj":
-        api = [
-          "https://api.caonm.net/api/yangyan/api.php",
-          "https://api.btstu.cn/sjbz/api.php",
-          "https://api.wuque.cc/random/images",
-          "https://ovooa.com/API/meinv/api.php?type=image",
-          "http://api.5yzs.cn/api/mnt/index.php",
-        ]
-        break;
-      case "bm":
-        api = [
-          "http://iw233.cn/api.php?sort=yin"
-        ]
-        break;
-      case "sy":
-        api = [
-          "https://iw233.cn/api.php?sort=cat"
-        ]
-        break;
-      case "mt":
-        api = [
-          "https://api.sdgou.cc/api/meitui/",
-          "https://ovooa.com/API/meizi/api.php?type=image"
-        ]
-        break;
-      case "mjx":
-        api = [
-          "https://api.sdgou.cc/api/tao/"
-        ]
-        break;
+    let des = e.msg.match(/\d+/g)
+    let msg = e.msg.replace(/\d|#/g, "").trim()
+    let api = {
+      "bs": [
+        "https://api.5yzs.cn/api/bhs/b.php"
+      ],
+      "hs": [
+        "https://api.caonm.net/api/siwa/api.php",
+        "http://api.5yzs.cn/api/bhs/h.php"
+      ],
+      "jk": [
+        "http://api.starrobotwl.com/api/jk.php",
+        "http://www.ggapi.cn/Api/jkzf"
+      ],
+      "ecy": [
+        "https://iw233.cn/api.php?sort=top",
+        "https://iw233.cn/api.php?sort=mp",
+        "http://api.wqwlkj.cn/wqwlapi/ks_2cy.php?type=image"
+      ],
+      "cos": [
+        "https://api.caonm.net/api/cos/api.php",
+        "http://xn--rssy53b.love/api/xjjtp/index.php"
+      ],
+      "hso": [
+        "http://www.ggapi.cn/Api/girls",
+        "http://xn--rssy53b.love/api/ecytp/index.php"
+      ],
+      "xjj": [
+        "https://api.caonm.net/api/yangyan/api.php",
+        "https://api.btstu.cn/sjbz/api.php",
+        "https://api.wuque.cc/random/images",
+        "https://ovooa.com/API/meinv/api.php?type=image",
+        "http://api.5yzs.cn/api/mnt/index.php",
+        "http://api.sakura.gold/ksxjjtp"
+      ],
+      "bm": [
+        "http://iw233.cn/api.php?sort=yin"
+      ],
+      "sy": [
+        "https://iw233.cn/api.php?sort=cat"
+      ],
+      "mt": [
+        "https://api.sdgou.cc/api/meitui/",
+        "https://ovooa.com/API/meizi/api.php?type=image"
+      ],
+      "mjx": [
+        "https://api.sdgou.cc/api/tao/"
+      ],
+      "ks": [
+        "http://api.wqwlkj.cn/wqwlapi/ks_xjj.php?type=image"
+      ]
     }
-    e.reply(segment.image(lodash.sample(api)), false, { recallMsg: 120 })
+    if (/jktj/.test(e.msg)) {
+      let msg = [
+        '现接口数量如下',
+      ]
+      for (let i in api) {
+        msg.push(
+          `\n${i}：\t${api[i].length}`
+        )
+      }
+      return e.reply(msg)
+    }
+
+    api = api[msg]
+    let img = des ? api[des - 1] : lodash.sample(api)
+    e.reply(segment.image(img || lodash.sample(api)), false, { recallMsg: 120 })
   }
 }

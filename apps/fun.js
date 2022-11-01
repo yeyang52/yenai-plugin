@@ -312,7 +312,6 @@ export class example extends plugin {
         "http://api.5yzs.cn/api/bhs/h.php"
       ],
       "jk": [
-        "http://api.starrobotwl.com/api/jk.php",
         "http://www.ggapi.cn/Api/jkzf"
       ],
       "ecy": [
@@ -344,7 +343,8 @@ export class example extends plugin {
       ],
       "mt": [
         "https://api.sdgou.cc/api/meitui/",
-        "https://ovooa.com/API/meizi/api.php?type=image"
+        "https://ovooa.com/API/meizi/api.php?type=image",
+        "http://www.25252.xyz/kt.php",
       ],
       "mjx": [
         "https://api.sdgou.cc/api/tao/"

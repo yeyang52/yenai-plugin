@@ -63,7 +63,7 @@ export class example extends plugin {
           fnc: 'bcy_topic'
         },
         {
-          reg: '^#?(xjj|hso|bs|hs|jk|ecy|cos|sy|bm|mt|mjx|jktj)(\\d)?$',
+          reg: '^#?(xjj|hso|bs|hs|jk|ecy|cos|sy|bm|mt|mjx|jktj|ks)(\\d)?$',
           fnc: 'picture'
         },
         {

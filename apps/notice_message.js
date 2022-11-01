@@ -15,7 +15,7 @@ export class anotice extends plugin {
 }
 
 Bot.on("message", async (e) => {
-    
+
     // 判断是否为机器人消息
     if (e.user_id == cfg.qq) return
     // 判断是否主人消息
@@ -141,6 +141,15 @@ Bot.on("message", async (e) => {
             '消息内容：',
             ...res
         ]
+        // 添加提示消息
+        let key = `tz:tempprivateMessage:${e.user_id}`
+        if (!(await redis.get(key))) {
+            await redis.set(key, '1', { EX: 600 })
+            msg.push(
+                '\n-------------\n',
+                '可回复 "加为好友" 添加好友',
+            )
+        }
     } else if (e.message_type === 'group') {
         if (!Config.getGroup(e.group_id).groupMessage) return
         // 特殊消息处理

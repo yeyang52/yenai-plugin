@@ -517,7 +517,7 @@ export class Basics extends plugin {
         if (!mutelist) return e.reply("都没有人被禁言我怎么解的辣＼(`Δ’)／")
         for (let i of mutelist) {
             await e.group.muteMember(i, 0)
-            await Cfg.sleep(200)
+            await Cfg.sleep(2000)
         }
         e.reply("已经把全部的禁言解除辣╮( •́ω•̀ )╭")
     }
@@ -539,17 +539,18 @@ export class Basics extends plugin {
         let page = Reg[5] || 1
         let msg = await Gpadmin.getnoactive(e, Reg[2], Reg[3], page)
         if (!msg) return
-        await Cfg.getforwardMsg(e, msg)
         //清理
         if (Reg[1] == "清理") {
             if (!e.group.is_admin && !e.group.is_owner) {
                 return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
             }
             let list = await Gpadmin.noactivelist(e, Reg[2], Reg[3])
-            if (!list) return
-            e.reply(`检测到本此共需清理${list.length}人，防止误触发\n请发送：#确认清理${Reg[2]}${Reg[3]}没发言的人`)
+
+            e.reply(`本此共需清理${list.length}人，防止误触发\n请发送：#确认清理${Reg[2]}${Reg[3]}没发言的人`)
         }
+        Cfg.getforwardMsg(e, msg)
     }
+
     //查看和清理从未发言的人
     async neverspeak(e) {
         if (!e.isMaster && !e.member.is_owner) {
@@ -563,28 +564,19 @@ export class Basics extends plugin {
                 return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
             }
             let removelist = list.map(item => item.user_id)
-            await e.reply("我要开始清理了哦，这可能需要一点时间٩(๑•ㅂ•)۶")
-            let index = 0;
-            for (let i of removelist) {
-                if (index % 10 == 0) {
-                    e.reply(`已经清理了${index}个人辣٩(๑•̀ω•́๑)۶`)
-                }
-                if (!await e.group.kickMember(i)) e.reply(`踢出${i}失败勒( •̥́ ˍ •̀ू )`)
-                await Cfg.sleep(5000)
-                index++
-            }
-            return e.reply("已将全部没发言过的人移出群聊辣ε(*´･ω･)з")
+            let msg = await Gpadmin.getkickMember(e, removelist)
+            return Cfg.getforwardMsg(e, msg)
         }
-        //发送列表
-        let num = e.msg.match(/\d+/) || 1
-        let listinfo = await Gpadmin.getneverspeakinfo(e, num)
-        await Cfg.getforwardMsg(e, listinfo)
         //清理
         if (/^#?清理/.test(e.msg)) {
             if (!e.group.is_admin && !e.group.is_owner) {
                 return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
             }
-            e.reply(`检测到本此共需清理${list.length}人，防止误触发\n请发送：#确认清理从未发言的人`)
+            e.reply(`本此共需清理${list.length}人，防止误触发\n请发送：#确认清理从未发言的人`)
         }
+        //发送列表
+        let num = e.msg.match(/\d+/) || 1
+        let listinfo = await Gpadmin.getneverspeakinfo(e, num)
+        Cfg.getforwardMsg(e, listinfo)
     }
 }

@@ -159,9 +159,15 @@ class Group_admin {
         let list = await this.noactivelist(e, times, unit)
         if (!list) return false
         list = list.map(item => item.user_id)
+        await e.reply("我要开始清理了哦，这可能需要一点时间٩(๑•ㅂ•)۶")
+        let index = 0;
         for (let i of list) {
-            await e.group.kickMember(i).then(() => e.reply(`已将${i}移出群聊辣( ･_･)ﾉ⌒●~*`))
-            await Cfg.sleep(200)
+            if (index % 10 == 0) {
+                e.reply(`已经清理了${index}个人辣٩(๑•̀ω•́๑)۶`)
+            }
+            await e.group.kickMember(i)
+            index++;
+            await Cfg.sleep(5000)
         }
         return e.reply(`已经将${times}${unit}没发言的淫全部移出群聊辣`)
     }

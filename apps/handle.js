@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import lodash from 'lodash'
 import common from '../../../lib/common/common.js'
-
+import Cfg from '../model/Config.js';
 export class anotice extends plugin {
     constructor() {
         super({
@@ -28,9 +28,14 @@ export class anotice extends plugin {
                 {
                     reg: '^#(加为|添加)好友$',
                     fnc: 'addFriend'
+                },
+                {
+                    reg: '^#查看好友申请$',
+                    fnc: 'agreesAll'
                 }
             ]
         })
+        this.key = "yenai:friendapply"
     }
 
     /** 同意好友申请 */
@@ -61,13 +66,22 @@ export class anotice extends plugin {
 
         let yes = /同意/.test(e.msg) ? true : false
 
-        let key = "yenai:friendapply"
-        let res = await redis.get(key)
-        if (!res) return e.reply("暂无好友申请")
+        let res = await redis.get(this.key)
+        if (!res) return e.reply("暂无好友申请(。-ω-)zzz")
         res = JSON.parse(res)
 
-        if (lodash.isEmpty(res)) return e.reply("暂无好友申请")
+        if (lodash.isEmpty(res)) return e.reply("暂无好友申请(。-ω-)zzz")
 
+        if (/查看好友申请/.test(e.msg)) {
+            res = res.map((item, index) => `${index + 1}、${item}\n`)
+            res[res.length - 1] = res[res.length - 1].replace("\n", "")
+            let msg = [
+                `现有未处理的好友申请如下，共${res.length}条`,
+                `可用"同意申请xxx"或"拒绝申请xxx"`,
+                res
+            ];
+            return Cfg.getforwardMsg(e, msg)
+        }
         for (let i of res) {
             logger.mark(`[椰奶]${yes ? '同意' : '拒绝'}${i}的好友申请`)
             await Bot.pickFriend(i)
@@ -76,9 +90,8 @@ export class anotice extends plugin {
                 .catch((err) => console.log(err))
             await common.sleep(200)
         }
-        await redis.del(key)
+        await redis.del(this.key)
     }
-
     /** 引用同意好友申请和群邀请 */
     async agrees(e) {
         if (!e.isMaster) return
@@ -105,15 +118,14 @@ export class anotice extends plugin {
                 .then(() => e.reply(`✅ 已${yes ? '同意' : '拒绝'}${qq}的好友申请`))
                 .catch(() => e.reply('❎ 请检查是否已同意该申请'))
             //同意或拒绝删除数组中的
-            let key = "yenai:friendapply"
-            let apply = await redis.get(key)
+            let apply = await redis.get(this.key)
             if (!apply) return
             apply = JSON.parse(apply)
             apply = lodash.without(apply, qq)
             if (lodash.isEmpty(apply)) {
-                await redis.del(key)
+                await redis.del(this.key)
             } else {
-                await redis.set(key, JSON.stringify(apply))
+                await redis.set(this.key, JSON.stringify(apply))
             }
         } else if (
             /目标群号/.test(res[1]) &&
@@ -187,7 +199,7 @@ export class anotice extends plugin {
             .then(() => { e.reply('✅ 已把消息发给它了哦~') })
             .catch((err) => e.reply(`❎ 发送失败\n错误信息为:${err.message}`))
     }
-    
+
     //加群员为好友
     async addFriend(e) {
         if (!e.isMaster) return

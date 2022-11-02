@@ -124,6 +124,10 @@ export const helpList = [{
     "title": "#同意|拒绝全部好友申请",
     "desc": "顾名思义",
     "icon": 7
+  }, {
+    "title": "#查看好友申请",
+    "desc": "查看现有好友申请",
+    "icon": 1
   }]
 },
 {

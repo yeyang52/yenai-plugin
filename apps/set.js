@@ -1,8 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import fs from "fs";
 import lodash from "lodash";
-import Common from "../components/Common.js";
-import { Config } from '../components/index.js'
+import { Config, render } from '../components/index.js'
 
 let rediskey = `yenai:proxy`
 export class NewConfig extends plugin {
@@ -145,7 +144,7 @@ export class NewConfig extends plugin {
             bg: await rodom(), //获取底图
         }
         //渲染图像
-        return await Common.render("admin/index", {
+        return await render("admin/index", {
             ...cfg,
         }, {
             e,

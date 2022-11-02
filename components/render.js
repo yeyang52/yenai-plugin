@@ -1,7 +1,6 @@
-import { Data, Version, Plugin_Name } from '../index.js'
-import Cfg from '../Cfg.js'
+import { Data, Version, Plugin_Name } from './index.js'
 import fs from 'fs'
-import puppeteer from '../../../../lib/puppeteer/puppeteer.js'
+import puppeteer from '../../../lib/puppeteer/puppeteer.js'
 
 const _path = process.cwd()
 
@@ -26,7 +25,7 @@ export default async function (path, params, cfg) {
       waitUntil: 'networkidle0'
     },
     sys: {
-      scale: Cfg.scale(cfg.scale || 1),
+      scale: `style=transform:scale(${cfg.scale || 1})`,
       copyright: `Created By Yunzai-Bot<span class="version">${Version.yunzai}</span> & yenai-Plugin<span class="version">${Version.ver}</span>`
     },
     quality: 100

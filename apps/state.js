@@ -1,10 +1,9 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import os from 'os';
-import { Version, Common, Config } from '../components/index.js'
+import { Version, render, Config } from '../components/index.js'
 import CPU from '../model/CPU.js';
 import Cfg from '../model/Config.js';
 import fs from 'fs'
-import fetch from 'node-fetch';
 import moment from 'moment';
 export class example extends plugin {
   constructor() {
@@ -136,7 +135,7 @@ export class example extends plugin {
       takejs: fs.readdirSync("./plugins/example")?.length || 0
     }
     //渲染图片
-    await Common.render('state/state', {
+    await render('state/state', {
       ...data,
     }, {
       e,

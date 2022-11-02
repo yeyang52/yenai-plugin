@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import fs from 'fs'
 import lodash from 'lodash'
-import { Common, Data } from '../components/index.js'
+import { render, Data } from '../components/index.js'
 
 export class yenai_help extends plugin {
   constructor() {
@@ -60,7 +60,7 @@ async function help(e) {
   })
   let bg = await rodom()
   let colCount = 3;
-  return await Common.render('help/index', {
+  return await render('help/index', {
     helpCfg: helpConfig,
     helpGroup,
     bg,

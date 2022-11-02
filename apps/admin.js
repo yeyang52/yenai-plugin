@@ -1,6 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { update } from '../../other/update.js'
-import { Version, Common, Plugin_Name } from '../components/index.js'
+import { Version, render, Plugin_Name } from '../components/index.js'
 
 export class admin extends plugin {
     constructor() {
@@ -40,7 +40,7 @@ export class admin extends plugin {
 
 
 async function versionInfo(e) {
-    return await Common.render('help/version-info', {
+    return await render('help/version-info', {
         currentVersion: Version.ver,
         changelogs: Version.logs,
         elem: 'cryo'

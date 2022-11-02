@@ -569,7 +569,7 @@ export class Basics extends plugin {
                 if (index % 10 == 0) {
                     e.reply(`已经清理了${index}个人辣٩(๑•̀ω•́๑)۶`)
                 }
-                await e.group.kickMember(i)
+                if (!await e.group.kickMember(i)) e.reply(`踢出${i}失败勒( •̥́ ˍ •̀ू )`)
                 await Cfg.sleep(5000)
                 index++
             }

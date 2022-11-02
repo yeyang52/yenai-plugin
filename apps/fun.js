@@ -305,11 +305,11 @@ export class example extends plugin {
     let msg = e.msg.replace(/\d|#/g, "").trim()
     let api = {
       "bs": [
-        "https://api.5yzs.cn/api/bhs/b.php"
+        "http://api.starrobotwl.com/api/baisi.php"
       ],
       "hs": [
         "https://api.caonm.net/api/siwa/api.php",
-        "http://api.5yzs.cn/api/bhs/h.php"
+        "http://api.starrobotwl.com/api/heisi.php"
       ],
       "jk": [
         "http://www.ggapi.cn/Api/jkzf"
@@ -332,7 +332,6 @@ export class example extends plugin {
         "https://api.btstu.cn/sjbz/api.php",
         "https://api.wuque.cc/random/images",
         "https://ovooa.com/API/meinv/api.php?type=image",
-        "http://api.5yzs.cn/api/mnt/index.php",
         "http://api.sakura.gold/ksxjjtp"
       ],
       "bm": [
@@ -347,7 +346,9 @@ export class example extends plugin {
         "http://www.25252.xyz/kt.php",
       ],
       "mjx": [
-        "https://api.sdgou.cc/api/tao/"
+        "https://api.sdgou.cc/api/tao/",
+        "https://api.vvhan.com/api/tao",
+        "https://api.dzzui.com/api/imgtaobao"
       ],
       "ks": [
         "http://api.wqwlkj.cn/wqwlapi/ks_xjj.php?type=image"

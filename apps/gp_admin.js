@@ -563,9 +563,15 @@ export class Basics extends plugin {
                 return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
             }
             let removelist = list.map(item => item.user_id)
+            await e.reply("我要开始清理了哦，这可能需要一点时间")
+            let item = 0;
             for (let i of removelist) {
-                await e.group.kickMember(i).then(() => e.reply(`已将${i}移出群聊辣( ･_･)ﾉ⌒●~*`))
-                await Cfg.sleep(200)
+                if (item % 10 == 0) {
+                    e.reply(`已经清理了${item}个人辣`)
+                }
+                await e.group.kickMember(i)
+                await Cfg.sleep(5000)
+                item++
             }
             return e.reply("已将全部没发言过的人移除群聊辣ε(*´･ω･)з")
         }

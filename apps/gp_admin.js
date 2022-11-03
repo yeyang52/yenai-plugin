@@ -584,6 +584,7 @@ export class Basics extends plugin {
         Cfg.getforwardMsg(e, listinfo)
     }
 
+    //查看不活跃排行榜
     async RankingList(e) {
         let num = e.msg.match(/\d+/g, "") || 10
         let msg = await Gpadmin.InactiveRanking(e, num - 0)

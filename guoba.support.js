@@ -14,8 +14,8 @@ const Plugin_Path = `${Path}/plugins/${Plugin_Name}`;
 export function supportGuoba() {
   return {
     pluginInfo: {
-      name: 'Yenai-plugin',
-      title: 'Yenai-Plugin',
+      name: 'yenai-plugin',
+      title: 'yenai-Plugin',
       author: '@椰羊',
       authorLink: 'https://gitee.com/yeyang52',
       link: 'https://gitee.com/yeyang52/yenai-plugin',
@@ -167,7 +167,7 @@ export function supportGuoba() {
           new YamlReader(path).set(key, data[key])
         });
 
-        return Result.ok({}, '保存成功~')
+        return Result.ok({}, '保存成功辣ε(*´･ω･)з')
       },
     },
   }

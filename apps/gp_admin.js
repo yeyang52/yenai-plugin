@@ -102,6 +102,10 @@ export class Basics extends plugin {
                 {
                     reg: '^#(查看|(确认)?清理)从未发言过?的人(第(\\d+)页)?$',
                     fnc: 'neverspeak'
+                },
+                {
+                    reg: '^#查看不活跃排行榜(\\d+)?$',
+                    fnc: 'RankingList'
                 }
 
             ]
@@ -578,5 +582,11 @@ export class Basics extends plugin {
         let num = e.msg.match(/\d+/) || 1
         let listinfo = await Gpadmin.getneverspeakinfo(e, num)
         Cfg.getforwardMsg(e, listinfo)
+    }
+
+    async RankingList(e) {
+        let num = e.msg.match(/\d+/g, "") || 10
+        let msg = await Gpadmin.InactiveRanking(e, num - 0)
+        Cfg.getforwardMsg(e, msg)
     }
 }

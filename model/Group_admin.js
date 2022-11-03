@@ -273,6 +273,29 @@ class Group_admin {
         }
         return msg
     }
+    /**
+     * @description: 返回不活跃排行榜
+     * @param {*} e oicq
+     * @param {Number} num 榜单数量
+     * @return {Array}
+     */
+    async InactiveRanking(e, num) {
+        let list = Array.from((await e.group.getMemberMap()).values());
+        list.sort((a, b) => {
+            return a.last_sent_time - b.last_sent_time
+        })
+        let msg = list.slice(0, num)
+        msg = msg.map((item, index) => {
+            return [`第${index + 1}名：\n`,
+            segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
+            `\nQQ：${item.user_id}\n`,
+            `昵称：${item.card || item.nickname}\n`,
+            `最后发言时间：${moment(item.last_sent_time * 1000).format("YYYY-MM-DD HH:mm:ss")}`
+            ]
+        })
+        msg.unshift(`不活跃排行榜top1 - top${num}`)
+        return msg
+    }
 }
 
 export default new Group_admin();

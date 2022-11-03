@@ -96,6 +96,11 @@ export const helpList = [{
     "title": "#清理从未发言的人",
     "desc": "清理进群后从未发言的人",
     "icon": 5
+  },
+  {
+    "title": "#查看不活跃排行榜",
+    "desc": "后面可以加数字",
+    "icon": 16
   }]
 }, {
   "group": "字符",

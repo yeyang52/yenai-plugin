@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js';
 import { segment } from "oicq";
 import fetch from 'node-fetch';
-import Config from '../model/Config.js';
+import Cfg from '../model/Config.js';
 import common from '../../../lib/common/common.js'
 import lodash from 'lodash'
 
@@ -98,6 +98,10 @@ export class example extends plugin {
           reg: '^#(开启|关闭)戳一戳$',
           fnc: 'cyc'
         },
+        {
+          reg: '^#?撤回$',
+          fnc: 'recallMsgown'
+        }
       ]
     })
 
@@ -513,7 +517,7 @@ export class example extends plugin {
       for (let i of e.img) {
         msg.push([segment.image(i), "直链:", i])
       }
-      Config.getforwardMsg(e, msg)
+      Cfg.getforwardMsg(e, msg)
     } else {
       await e.reply([segment.image(e.img[0]), "直链:", e.img[0]])
     }
@@ -557,7 +561,7 @@ export class example extends plugin {
     })
 
     if (res.length >= 2) {
-      Config.getforwardMsg(e, res)
+      Cfg.getforwardMsg(e, res)
     } else {
       await e.reply(res[0])
     }
@@ -603,7 +607,7 @@ export class example extends plugin {
     let list = await this.getlist()
 
     if (!list.msglist) return e.reply(`❎ 说说列表为空`)
-    let ck = Config.getck('qzone.qq.com')
+    let ck = Cfg.getck('qzone.qq.com')
     if ((res - 1) >= list.msglist.length) return e.reply(`❎ 序号超过最大值`)
     let something = list.msglist[res - 1]
 
@@ -623,7 +627,7 @@ export class example extends plugin {
     if (!e.isMaster) return;
 
     let res = e.message[0].text.replace(/#|发说说| /g, "").trim()
-    let ck = Config.getck('qzone.qq.com')
+    let ck = Cfg.getck('qzone.qq.com')
 
     let url;
     if (e.img) {
@@ -648,7 +652,7 @@ export class example extends plugin {
 
   /**取说说列表*/
   async getlist() {
-    let ck = Config.getck('qzone.qq.com')
+    let ck = Cfg.getck('qzone.qq.com')
     let url = `https://xiaobai.klizi.cn/API/qqgn/ss_list.php?data=json&uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&qq=${Bot.uin}`
     let list = await fetch(url).then(res => res.json()).catch(err => console.log(err))
 
@@ -677,7 +681,7 @@ export class example extends plugin {
     let msg = this.e.msg
     if (msg == "确认清空") {
       this.finish('QzonedelAll')
-      let ck = Config.getck('qzone.qq.com')
+      let ck = Cfg.getck('qzone.qq.com')
       let url
       if (Qzonedetermine) {
         url = `https://xiaobai.klizi.cn/API/qqgn/ss_empty.php?data=&uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}`
@@ -740,7 +744,7 @@ export class example extends plugin {
       message.push("可使用 #删好友123456789 来删除某人")
     }
 
-    Config.getforwardMsg(e, message)
+    Cfg.getforwardMsg(e, message)
 
     return true
 
@@ -751,7 +755,7 @@ export class example extends plugin {
 
     if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return;
 
-    let ck = Config.getck("qqweb.qq.com")
+    let ck = Cfg.getck("qqweb.qq.com")
 
     let url = `http://xiaobai.klizi.cn/API/qqgn/qun_xj.php?data=&uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&group=${e.group_id}`
 
@@ -774,7 +778,7 @@ export class example extends plugin {
 
     let yes = 1;
     if (/开启/.test(e.msg)) yes = 0;
-    let ck = Config.getck("vip.qq.com")
+    let ck = Cfg.getck("vip.qq.com")
     let url = `http://xiaobai.klizi.cn/API/qqgn/qun_cyc.php?uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&switch=${yes}`
 
     let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
@@ -783,6 +787,42 @@ export class example extends plugin {
 
     e.reply(`✅ 已${yes ? '关闭' : '开启'}戳一戳功能`)
 
+  }
+  //引用撤回
+  async recallMsgown(e) {
+    if (!e.source) return
+    if (!e.isMaster && (e.sender.role == "owner" || e.sender.role == "admin")) {  //如果发起撤回的人是管理或者群主
+      return e.reply("您自己也能撤回群员消息哦~", false, { recallMsg: 5 });
+    }
+    let source;
+    if (e.isGroup) {
+      source = (await e.group.getChatHistory(e.source.seq, 1)).pop();
+    } else {
+      source = (await e.friend.getChatHistory(e.source.time, 1)).pop();
+    }
+    let target = e.isGroup ? e.group : e.friend
+    if (!target) return e.reply("消息太久远了找不到了˃ʍ˂", false, { recallMsg: 5 })
+
+    if (!e.isMaster || (e.isPrivate && source.sender.user_id != Bot.uin)) return
+
+    await target.recallMsg(source.message_id);//撤回目标消息
+
+    await Cfg.sleep(300);//测试中同时撤回两条消息有概率出现第二条消息在退出该页面之前仍然存在的情况，所以这里间隔300ms
+    let recallcheck = await Bot.getMsg(source.message_id)
+    if (recallcheck && recallcheck.message_id == source.message_id) {//如果获取到值，说明目标消息还存在
+      let msg;
+      if (e.isGroup) {
+        if (!e.group.is_admin && !e.group.is_owner) {
+          msg = "人家连管理员都木有，怎么撤回两分钟前的消息或别人的消息辣o(´^｀)o"
+        } else {
+          msg = "干不赢这个淫的辣（｀Δ´）ゞ"
+        }
+      } else {
+        msg = "过了两分钟，吃不掉辣(o｀ε´o)"
+      }
+      return e.reply(msg, false, { recallMsg: 5 });
+    }
+    if (e.isGroup) await e.recall();
   }
 
 }

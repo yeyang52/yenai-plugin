@@ -6,7 +6,10 @@ import fs from 'fs'
 
 class Config {
 
-    //延时函数
+    /**
+     * @description: 延时函数
+     * @param {*} ms 时间(毫秒)
+     */    
     sleep(ms) {
         return new Promise((resolve) => setTimeout(resolve, ms))
     }

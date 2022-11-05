@@ -3,7 +3,7 @@ import fetch from 'node-fetch'
 import Cfg from '../model/Config.js';
 import Gpadmin from '../model/Group_admin.js';
 import { segment } from 'oicq'
-
+import lodash from 'lodash'
 const ROLE_MAP = {
     admin: '群管理',
     owner: '群主',
@@ -444,13 +444,24 @@ export class Basics extends plugin {
 
     //申请头衔
     async SetGroupSpecialTitle(e) {
+        let msgs = [
+            "换上辣(´•ω•̥`)",
+            "嗯！不戳的头衔哦٩(๑•ㅂ•)۶",
+            "给你换上了哦（*＾ワ＾*）",
+            "又要换了吗，真是喜新厌旧呢( •̥́ ˍ •̀ू )",
+            "啾咪٩(๑•̀ω•́๑)۶",
+            "弃旧恋新了么笨蛋( 。ớ ₃ờ)ھ"
+        ]
         if (!e.group.is_owner) return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true)
 
         let Title = e.msg.replace(/#|申请头衔/g, "")
 
         await e.group.setTitle(e.user_id, Title)
-
-        e.reply(`嗯！不戳的头衔哦~`, true)
+        if (!Title) {
+            e.reply(`什么"(º Д º*)！没有头衔，哼把你的头衔吃掉！！！`, true)
+        } else {
+            e.reply(lodash.sample(msgs), true)
+        }
     }
 
     //字符列表

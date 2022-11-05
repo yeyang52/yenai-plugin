@@ -244,6 +244,10 @@ export const helpList = [{
     "icon": 8,
     "title": "#椰奶状态",
     "desc": "查看系统状态"
+  }, {
+    "icon": 3,
+    "title": "#椰奶群管帮助",
+    "desc": "群管帮助"
   }]
 }]
 

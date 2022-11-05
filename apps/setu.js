@@ -68,8 +68,10 @@ export class sese extends plugin {
 
     if (await setu.getcd(e)) return e.reply(` ${lodash.sample(CDMsg)}你的CD还有${cds}`, false, { at: true })
 
-    let num = e.msg.match(/\d?\d张/)?.replace("张", "").trim() || 1
+    let num = e.msg.match(/(\d?\d)张/)
 
+    num = num ? num[1] : 1
+    
     if (num > 20) {
       return e.reply("❎ 最大张数不能大于20张")
     } else if (num > 6) {
@@ -99,15 +101,14 @@ export class sese extends plugin {
 
     let msg = e.msg.replace(/#|椰奶tag/g, "").trim()
 
-    let num = e.msg.match(/\d?\d张/)
+    let num = e.msg.match(/(\d?\d)张/)
 
     if (!num) {
       num = 1
     } else {
       msg = msg.replace(num[0], "").trim()
-      num = num[0].replace("张", "").trim()
+      num = num[1]
     }
-
     if (num > 20) {
       return e.reply("❎ 最大张数不能大于20张")
     } else if (num > 6) {

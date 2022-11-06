@@ -74,7 +74,7 @@ export class anotice extends plugin {
         let FriendAdd = (await Bot.getSystemMsg())
             .filter(item => item.request_type == "friend" && item.sub_type == "add")
 
-        if (lodash.isEmpty(FriendAdd)) return e.reply("暂无好友申请(。-ω-)zzz")
+        if (lodash.isEmpty(FriendAdd)) return e.reply("暂无好友申请(。-ω-)zzz", true)
 
         if (/查看好友申请/.test(e.msg)) {
             FriendAdd = FriendAdd.map((item) => {
@@ -229,7 +229,7 @@ export class anotice extends plugin {
     async GroupAdd(e) {
         let SystemMsg = (await Bot.getSystemMsg())
             .filter(item => item.request_type == "group" && item.sub_type == "add" && item.group_id == e.group_id)
-        if (lodash.isEmpty(SystemMsg)) return e.reply("暂时还没有加群申请哦~", true)
+        if (lodash.isEmpty(SystemMsg)) return e.reply("暂无加群申请(。-ω-)zzz", true)
         //查看
         if (/查看/.test(e.msg)) {
             SystemMsg = SystemMsg.map(item => {
@@ -239,11 +239,11 @@ export class anotice extends plugin {
                     `申请昵称：${item.nickname}\n`,
                     item.tips ? `Tips：${item.tips}\n` : "",
                     `附加消息：${item.comment}`
-
                 ]
             })
             let msg = [
                 `现有未处理的加群申请如下，总共${SystemMsg.length}条`,
+                `可使用 "#(同意|拒绝)加群申请xxx" 或 "#(同意|拒绝)全部加群申请"`,
                 ...SystemMsg
             ]
             return Cfg.getforwardMsg(e, msg)

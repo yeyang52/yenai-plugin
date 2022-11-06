@@ -94,14 +94,24 @@ export class anotice extends plugin {
             ];
             return Cfg.getforwardMsg(e, msg)
         }
+        await e.reply("好哒，我开始处理辣٩(๑•ㅂ•)۶")
+        let success = [], fail = []
         for (let i of FriendAdd) {
             logger.mark(`[椰奶]${yes ? '同意' : '拒绝'}${i.user_id}的好友申请`)
-            await Bot.pickFriend(i.user_id)
-                .setFriendReq(i.seq, yes)
-                .then(() => e.reply(`✅ 已${yes ? '同意' : '拒绝'}${i.user_id}的好友申请`))
-                .catch((err) => console.log(err))
-            await common.sleep(200)
+            let res = await i.approve(yes)
+            if (res) {
+                success.push(`${success.length + 1}、${i.user_id}`)
+            } else {
+                fail.push(`${fail.length + 1}、${i.user_id}`)
+            }
+            await common.sleep(2000)
         }
+        let msg = [
+            `本次共${yes ? '同意' : '拒绝'}${FriendAdd.length}条申请\n成功：${success.length}\n失败：${fail.length}`
+        ]
+        if (!lodash.isEmpty(success)) msg.push([`以下为成功的名单：\n`, success.join("\n")])
+        if (!lodash.isEmpty(fail)) msg.push([`以下为失败的名单：\n`, fail.join("\n")])
+        Cfg.getforwardMsg(e, msg)
     }
     /** 引用同意好友申请和群邀请 */
     async agrees(e) {
@@ -251,42 +261,28 @@ export class anotice extends plugin {
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
             return e.reply("❎ 该命令仅限管理员可用", true);
         }
+        await e.reply("好哒，我开始处理辣٩(๑•ㅂ•)۶")
         let yes = /同意/.test(e.msg) ? true : false
         let success = [], fail = [], risk = []
         if (/全部/.test(e.msg)) {
             for (let i of SystemMsg) {
                 if (/风险/.test(i.tips)) {
-                    risk.push(i.user_id)
+                    risk.push(`${risk.length + 1}、${i.user_id}`)
                 } else {
                     if (await i.approve(yes)) {
-                        success.push(i.user_id)
+                        success.push(`${success.length + 1}、${i.user_id}`)
                     } else {
-                        fail.push(i.user_id)
+                        fail.push(`${fail.length + 1}、${i.user_id}`)
                     }
                 }
                 await Cfg.sleep(200)
             }
             let msg = [
-                `本次共处理${SystemMsg.length}条申请，成功${success.length}，失败${fail.length}，风险${risk.length}`
+                `本次共处理${SystemMsg.length}条群申请\n成功：${success.length}\n失败：${fail.length}\n风险：${risk.length}`
             ]
-            if (!lodash.isEmpty(success)) {
-                msg.push([
-                    `以下为成功的名单：\n`,
-                    success.join("\n")
-                ])
-            }
-            if (!lodash.isEmpty(fail)) {
-                msg.push([
-                    `以下为失败的名单：\n`,
-                    fail.join("\n")
-                ])
-            }
-            if (!lodash.isEmpty(risk)) {
-                msg.push([
-                    `以下为风险账号名单：\n`,
-                    risk.join("\n")
-                ])
-            }
+            if (!lodash.isEmpty(success)) msg.push([`以下为成功的名单：\n`, success.join("\n")])
+            if (!lodash.isEmpty(fail)) msg.push([`以下为失败的名单：\n`, fail.join("\n")])
+            if (!lodash.isEmpty(risk)) msg.push([`以下为风险账号名单：\n`, risk.join("\n")])
             Cfg.getforwardMsg(e, msg)
         } else {
             let qq = e.msg.replace(/#(同意|拒绝)加群申请/g, "").trim()
@@ -298,7 +294,7 @@ export class anotice extends plugin {
             if (await obj[0].approve(yes)) {
                 e.reply(`已${yes ? '同意' : '拒绝'}${obj.user_id}的加群申请辣٩(๑^o^๑)۶`)
             } else {
-                e.reply(`处理失败辣(இωஇ)`)
+                e.reply(`呜呜呜，处理失败辣(இωஇ)`)
             }
         }
     }

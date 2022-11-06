@@ -3,7 +3,6 @@ import { segment } from 'oicq'
 import cfg from '../../../lib/config/config.js'
 import xcfg from '../model/Config.js'
 import { Config } from '../components/index.js'
-import lodash from 'lodash'
 const ROLE_MAP = {
     admin: '群管理',
     owner: '群主',
@@ -63,16 +62,6 @@ Bot.on('request.friend', async (e) => {
         msg.push(
             `-------------\n可回复：同意申请${e.user_id} \n或引用该消息回复"同意"或"拒绝"`
         )
-        let key = "yenai:friendapply"
-        let apply = await redis.get(key)
-        if (!apply) {
-            apply = [];
-        } else {
-            apply = JSON.parse(apply)
-        }
-        apply.push(e.user_id)
-        apply = lodash.uniq(apply)
-        await redis.set(key, JSON.stringify(apply))
     }
     await xcfg.getSend(msg)
 })

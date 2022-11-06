@@ -286,13 +286,13 @@ export class anotice extends plugin {
             Cfg.getforwardMsg(e, msg)
         } else {
             let qq = e.msg.replace(/#(同意|拒绝)加群申请/g, "").trim()
-            let obj = SystemMsg.filter(item => item.user_id == qq)
-            if (lodash.isEmpty(obj)) return e.reply("呜呜呜，没找到这个淫的加群申请(つд⊂)")
+            let member = SystemMsg.filter(item => item.user_id == qq)
+            if (lodash.isEmpty(member)) return e.reply("呜呜呜，没找到这个淫的加群申请(つд⊂)")
 
-            if (/风险/.test(obj[0].tips)) return e.reply(`该账号为风险账号请手动处理哦ಠ~ಠ`)
+            if (/风险/.test(member[0].tips)) return e.reply(`该账号为风险账号请手动处理哦ಠ~ಠ`)
 
-            if (await obj[0].approve(yes)) {
-                e.reply(`已${yes ? '同意' : '拒绝'}${obj.user_id}的加群申请辣٩(๑^o^๑)۶`)
+            if (await member[0].approve(yes)) {
+                e.reply(`已${yes ? '同意' : '拒绝'}${member[0].user_id}的加群申请辣٩(๑^o^๑)۶`)
             } else {
                 e.reply(`呜呜呜，处理失败辣(இωஇ)`)
             }

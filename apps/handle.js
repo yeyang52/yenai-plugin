@@ -34,7 +34,11 @@ export class anotice extends plugin {
                 {
                     reg: '^#查看好友申请$',
                     fnc: 'agreesAll'
-                }
+                },
+                {
+                    reg: '^#(同意|拒绝|查看)(全部)?加群申请.*$',
+                    fnc: 'GroupAdd'
+                },
             ]
         })
     }
@@ -68,7 +72,7 @@ export class anotice extends plugin {
         let yes = /同意/.test(e.msg) ? true : false
 
         let FriendAdd = (await Bot.getSystemMsg())
-            .filter(item => item.request_type == "friend" && (item.sub_type == "add" || item.sub_type == "single"))
+            .filter(item => item.request_type == "friend" && item.sub_type == "add")
 
         if (lodash.isEmpty(FriendAdd)) return e.reply("暂无好友申请(。-ω-)zzz")
 
@@ -221,5 +225,81 @@ export class anotice extends plugin {
             .then(() => e.reply(`✅ 已向${qq}发送了好友请求`))
             .catch(() => e.reply("❎ 发送请求失败"))
     }
+    //入群请求
+    async GroupAdd(e) {
+        let SystemMsg = (await Bot.getSystemMsg())
+            .filter(item => item.request_type == "group" && item.sub_type == "add" && item.group_id == e.group_id)
+        if (lodash.isEmpty(SystemMsg)) return e.reply("暂时还没有加群申请哦~", true)
+        //查看
+        if (/查看/.test(e.msg)) {
+            SystemMsg = SystemMsg.map(item => {
+                return [
+                    segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
+                    `\n申请QQ：${item.user_id}\n`,
+                    `申请昵称：${item.nickname}\n`,
+                    item.tips ? `Tips：${item.tips}\n` : "",
+                    `附加消息：${item.comment}`
 
+                ]
+            })
+            let msg = [
+                `现有未处理的加群申请如下，总共${SystemMsg.length}条`,
+                ...SystemMsg
+            ]
+            return Cfg.getforwardMsg(e, msg)
+        }
+        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
+            return e.reply("❎ 该命令仅限管理员可用", true);
+        }
+        let yes = /同意/.test(e.msg) ? true : false
+        let success = [], fail = [], risk = []
+        if (/全部/.test(e.msg)) {
+            for (let i of SystemMsg) {
+                if (/风险/.test(i.tips)) {
+                    risk.push(i.user_id)
+                } else {
+                    if (await i.approve(yes)) {
+                        success.push(i.user_id)
+                    } else {
+                        fail.push(i.user_id)
+                    }
+                }
+                await Cfg.sleep(200)
+            }
+            let msg = [
+                `本次共处理${SystemMsg.length}条申请，成功${success.length}，失败${fail.length}，风险${risk.length}`
+            ]
+            if (!lodash.isEmpty(success)) {
+                msg.push([
+                    `以下为成功的名单：\n`,
+                    success.join("\n")
+                ])
+            }
+            if (!lodash.isEmpty(fail)) {
+                msg.push([
+                    `以下为失败的名单：\n`,
+                    fail.join("\n")
+                ])
+            }
+            if (!lodash.isEmpty(risk)) {
+                msg.push([
+                    `以下为风险账号名单：\n`,
+                    risk.join("\n")
+                ])
+            }
+            Cfg.getforwardMsg(e, msg)
+        } else {
+            let qq = e.msg.replace(/#(同意|拒绝)加群申请/g, "").trim()
+            let obj = SystemMsg.filter(item => item.user_id == qq)
+            if (lodash.isEmpty(obj)) return e.reply("呜呜呜，没找到这个淫的加群申请(つд⊂)")
+
+            if (/风险/.test(obj[0].tips)) return e.reply(`该账号为风险账号请手动处理哦ಠ~ಠ`)
+
+            if (await obj[0].approve(yes)) {
+                e.reply(`已${yes ? '同意' : '拒绝'}${obj.user_id}的加群申请辣٩(๑^o^๑)۶`)
+            } else {
+                e.reply(`处理失败辣(இωஇ)`)
+            }
+        }
+    }
 }

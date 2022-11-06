@@ -105,14 +105,13 @@ export class sese extends plugin {
 
     let num = e.msg.match(new RegExp(`(${Numreg})张`))
 
-    num = num ? common.translateChinaNum(num[1]) : 1
-
     if (!num) {
       num = 1
     } else {
       msg = msg.replace(num[0], "").trim()
-      num = num[1]
+      num = common.translateChinaNum(num[1])
     }
+
     if (num > 20) {
       return e.reply("❎ 最大张数不能大于20张")
     } else if (num > 6) {
@@ -128,7 +127,7 @@ export class sese extends plugin {
     if (msg.length > 3) return e.reply("tag最多只能指定三个哦~", false, { at: true })
 
     msg = msg.map((item) => `&tag=${item}`).join("")
-
+    
     let r18 = await setu.getr18(e)
     //接口
     let res = await setu.setuapi(r18, num, msg)

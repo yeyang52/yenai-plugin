@@ -26,7 +26,7 @@ export class anotice extends plugin {
                     fnc: 'agreesAll'
                 },
                 {
-                    reg: '^#(加为|添加)好友$',
+                    reg: '^#?(加为|添加)好友$',
                     fnc: 'addFriend'
                 },
                 {
@@ -153,7 +153,8 @@ export class anotice extends plugin {
     async Replys(e) {
         if (!e.isMaster) return
         if (!e.isPrivate) return
-        let qq;
+        let qq = '';
+        let group = '';
         let msgs = e.message[0].text.split(' ')
         if (e.source) {
             let source = (await e.friend.getChatHistory(e.source.time, 1)).pop();
@@ -166,7 +167,8 @@ export class anotice extends plugin {
             if (/好友消息/.test(res[0]) && /好友QQ/.test(res[1])) {
                 qq = res[1].match(/[1-9]\d*/g)
             } else if (/群临时消息/.test(res[0])) {
-                return e.reply('❎ 群临时消息无法回复，请添加好友')
+                qq = res[2].match(/[1-9]\d*/g)
+                group = res[1].match(/[1-9]\d*/g)
             } else {
                 return e.reply('❎ 请检查是否引用正确')
             }
@@ -183,14 +185,19 @@ export class anotice extends plugin {
                 e.message[0].text = msgs.slice(2).join(' ')
             }
         }
+        if (!e.message[0].text) e.message.shift()
+
+        if (e.message.length === 0) return e.reply('❎ 消息不能为空')
+        if (group) {
+            logger.mark(`[椰奶]回复临时消息`)
+            return Bot.sendTempMsg(group, qq, e.message)
+                .then(() => { e.reply('✅ 已把消息发给它了哦~') })
+                .catch((err) => e.reply(`❎ 发送失败\n错误信息为:${err.message}`))
+        }
 
         if (!/^\d+$/.test(qq)) return e.reply('❎ QQ号不正确，人家做不到的啦>_<~')
 
         if (!Bot.fl.get(Number(qq))) return e.reply('❎ 好友列表查无此人')
-
-        if (!e.message[0].text) e.message.shift()
-
-        if (e.message.length === 0) return e.reply('❎ 消息不能为空')
 
         logger.mark(`[椰奶]回复好友消息`)
 
@@ -211,7 +218,7 @@ export class anotice extends plugin {
         let group = msg[1].match(/\d+/g)
         let qq = msg[2].match(/\d+/g)
         if (Bot.fl.get(Number(qq))) return e.reply('❎ 已经有这个人的好友了哦~')
-        if (!Bot.fl.get(Number(group))) { return e.reply('❎ 群聊列表查无此群') }
+        if (!Bot.gl.get(Number(group))) { return e.reply('❎ 群聊列表查无此群') }
         logger.mark(`[椰奶]主动添加好友`)
         Bot.addFriend(group, qq)
             .then(() => e.reply(`✅ 已向${qq}发送了好友请求`))

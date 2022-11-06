@@ -147,7 +147,7 @@ Bot.on("message", async (e) => {
             await redis.set(key, '1', { EX: 600 })
             msg.push(
                 '\n-------------\n',
-                '可回复 "加为好友" 添加好友',
+                '可回复 "加为好友" 添加好友\n或 "回复 <消息>"',
             )
         }
     } else if (e.message_type === 'group') {

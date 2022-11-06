@@ -245,7 +245,7 @@ async function verify(user_id, group_id, e) {
   [m, n] = [m >= n ? m : n, m >= n ? n : m];
 
   const verifyCode = String(operator === "-" ? m - n : m + n);
-  logger.info(`[验证]答案：${verifyCode}`)
+  logger.mark(`[验证]答案：${verifyCode}`)
   const kickTimer = setTimeout(async () => {
     e.reply([segment.at(user_id), " 验证超时，移出群聊，请重新申请"]);
 

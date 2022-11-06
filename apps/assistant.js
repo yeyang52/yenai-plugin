@@ -792,7 +792,7 @@ export class example extends plugin {
   async recallMsgown(e) {
     if (!e.source) return
     if (!e.isMaster && (e.sender.role == "owner" || e.sender.role == "admin")) {  //如果发起撤回的人是管理或者群主
-      return e.reply("您自己也能撤回群员消息哦~", false, { recallMsg: 5 });
+      return e.reply("您自己也能撤回群员消息喵~", true, { recallMsg: 5 });
     }
     let source;
     if (e.isGroup) {
@@ -801,15 +801,14 @@ export class example extends plugin {
       source = (await e.friend.getChatHistory(e.source.time, 1)).pop();
     }
     let target = e.isGroup ? e.group : e.friend
-    if (!target) return e.reply("消息太久远了找不到了˃ʍ˂", false, { recallMsg: 5 })
 
     if (!e.isMaster || (e.isPrivate && source.sender.user_id != Bot.uin)) return
 
-    await target.recallMsg(source.message_id);//撤回目标消息
+    await target.recallMsg(source.message_id);
 
-    await Cfg.sleep(300);//测试中同时撤回两条消息有概率出现第二条消息在退出该页面之前仍然存在的情况，所以这里间隔300ms
+    await Cfg.sleep(300);
     let recallcheck = await Bot.getMsg(source.message_id)
-    if (recallcheck && recallcheck.message_id == source.message_id) {//如果获取到值，说明目标消息还存在
+    if (recallcheck && recallcheck.message_id == source.message_id) {
       let msg;
       if (e.isGroup) {
         if (!e.group.is_admin && !e.group.is_owner) {
@@ -820,7 +819,7 @@ export class example extends plugin {
       } else {
         msg = "过了两分钟，吃不掉辣(o｀ε´o)"
       }
-      return e.reply(msg, false, { recallMsg: 5 });
+      return e.reply(msg, true, { recallMsg: 5 });
     }
     if (e.isGroup) await e.recall();
   }

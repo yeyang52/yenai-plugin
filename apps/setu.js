@@ -2,8 +2,8 @@ import plugin from '../../../lib/plugins/plugin.js'
 import lodash from "lodash";
 import { Config } from '../components/index.js'
 import setu from '../model/setu.js';
+import common from '../model/common.js'
 
-let setcdreg = new RegExp("^#?设置cd\\s?(\\d+)\\s(\\d+)(s|秒)?$", "i");
 
 const startMsg = [
   "正在给你找setu了，你先等等再冲~",
@@ -23,7 +23,9 @@ const CDMsg = [
   "你急啥呢？",
   "你是被下半身控制了大脑吗？"
 ]
-
+let Numreg = "[一壹二两三四五六七八九十百千万亿\\d]+"
+let seturdrag = new RegExp(`^#(setu|无内鬼)\\s?((${Numreg})张)?$`)
+let setcdreg = new RegExp(`^#?设置cd\\s?(\\d+)\\s(${Numreg})(s|秒)?$`, "i");
 export class sese extends plugin {
   constructor() {
     super({
@@ -36,15 +38,15 @@ export class sese extends plugin {
           fnc: 'setutag'
         },
         {
-          reg: '^#(setu|无内鬼)(\\s?\\d+?张)?$',
+          reg: seturdrag,
           fnc: 'seturd'
         },
         {
-          reg: '^#撤回间隔(\\d+)$',
+          reg: `^#撤回间隔(${Numreg})$`,
           fnc: 'setrecall'
         },
         {
-          reg: '^#群(c|C)(d|D)(\\d+)$',
+          reg: `^#群(c|C)(d|D)(${Numreg})$`,
           fnc: 'groupcd'
         },
         {
@@ -52,7 +54,7 @@ export class sese extends plugin {
           fnc: 'setsese'
         },
         {
-          reg: '(c|C)(d|D)(\\d+)(s|秒)?$',
+          reg: `(c|C)(d|D)(${Numreg})(s|秒)?$`,
           fnc: 'atcd'
         },
         {
@@ -68,10 +70,10 @@ export class sese extends plugin {
 
     if (await setu.getcd(e)) return e.reply(` ${lodash.sample(CDMsg)}你的CD还有${cds}`, false, { at: true })
 
-    let num = e.msg.match(/(\d?\d)张/)
+    let num = seturdrag.exec(e.msg)
 
-    num = num ? num[1] : 1
-    
+    num = num[3] ? common.translateChinaNum(num[3]) : 1
+
     if (num > 20) {
       return e.reply("❎ 最大张数不能大于20张")
     } else if (num > 6) {
@@ -101,7 +103,9 @@ export class sese extends plugin {
 
     let msg = e.msg.replace(/#|椰奶tag/g, "").trim()
 
-    let num = e.msg.match(/(\d?\d)张/)
+    let num = e.msg.match(new RegExp(`(${Numreg})张`))
+
+    num = num ? common.translateChinaNum(num[1]) : 1
 
     if (!num) {
       num = 1
@@ -144,6 +148,8 @@ export class sese extends plugin {
 
     let recall = e.msg.replace(/#|撤回间隔/g, "").trim()
 
+    recall = common.translateChinaNum(recall)
+
     let res = await setu.getsetgroup(e, recall)
 
     if (res) {
@@ -156,9 +162,12 @@ export class sese extends plugin {
 
   //群CD
   async groupcd(e) {
+    if (!e.isGroup) return e.reply("❎ 请在群聊使用此指令");
     if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
 
     let cd = e.msg.replace(/#|群cd/gi, "").trim()
+
+    cd = common.translateChinaNum(cd)
 
     let res = await setu.getsetgroup(e, cd, false)
 
@@ -188,9 +197,11 @@ export class sese extends plugin {
 
     if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
 
-    let cd = e.msg.match(/[0-9]\d*/g)
+    let cd = e.msg.match(new RegExp(Numreg))
 
     if (!cd) return e.reply("❎ CD为空，请检查", true);
+
+    cd = common.translateChinaNum(cd[0])
 
     let qq = e.message[0].qq
 
@@ -202,7 +213,7 @@ export class sese extends plugin {
     if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
     let cdreg = setcdreg.exec(e.msg);
     let qq = cdreg[1]
-    let cd = cdreg[2]
+    let cd = common.translateChinaNum(cdreg[2])
     setu.setcd(e, qq, cd)
   }
 

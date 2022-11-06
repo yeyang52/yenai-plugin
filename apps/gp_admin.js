@@ -4,13 +4,14 @@ import Cfg from '../model/Config.js';
 import Gpadmin from '../model/Group_admin.js';
 import { segment } from 'oicq'
 import lodash from 'lodash'
+import common from '../model/common.js'
 const ROLE_MAP = {
     admin: '群管理',
     owner: '群主',
     member: '群员'
 }
-
-let noactivereg = new RegExp('^#(查看|清理|确认清理)(\\d+)(年|月|周|天)没发言的人(第(\\d+)页)?$')
+let Numreg = "[一壹二两三四五六七八九十百千万亿\\d]+"
+let noactivereg = new RegExp(`^#(查看|清理|确认清理)(${Numreg})(年|月|周|天)没发言的人(第(${Numreg})页)?$`)
 
 export class Basics extends plugin {
     constructor() {
@@ -100,11 +101,11 @@ export class Basics extends plugin {
                     fnc: 'noactive'
                 },
                 {
-                    reg: '^#(查看|(确认)?清理)从未发言过?的人(第(\\d+)页)?$',
+                    reg: `^#(查看|(确认)?清理)从未发言过?的人(第(${Numreg})页)?$`,
                     fnc: 'neverspeak'
                 },
                 {
-                    reg: '^#查看不活跃排行榜(\\d+)?$',
+                    reg: `^#查看不活跃排行榜(${Numreg})?$`,
                     fnc: 'RankingList'
                 }
 
@@ -551,7 +552,8 @@ export class Basics extends plugin {
             return Gpadmin.getclearnoactive(e, Reg[2], Reg[3])
         }
         //查看和清理都会发送列表
-        let page = Reg[5] || 1
+        let page = common.translateChinaNum(Reg[5] || 1)
+        Reg[2] = common.translateChinaNum(Reg[2] || 1)
         let msg = await Gpadmin.getnoactive(e, Reg[2], Reg[3], page)
         if (!msg) return
         //清理
@@ -590,15 +592,17 @@ export class Basics extends plugin {
             e.reply(`本此共需清理${list.length}人，防止误触发\n请发送：#确认清理从未发言的人`)
         }
         //发送列表
-        let num = e.msg.match(/\d+/) || 1
+        let num = e.msg.match(new RegExp(Numreg))
+        num = num ? common.translateChinaNum(num[0]) : 1
         let listinfo = await Gpadmin.getneverspeakinfo(e, num)
         Cfg.getforwardMsg(e, listinfo)
     }
 
     //查看不活跃排行榜
     async RankingList(e) {
-        let num = e.msg.match(/\d+/g, "") || 10
-        let msg = await Gpadmin.InactiveRanking(e, num - 0)
+        let num = e.msg.match(new RegExp(Numreg))
+        num = num ? common.translateChinaNum(num[0]) : 10
+        let msg = await Gpadmin.InactiveRanking(e, num)
         Cfg.getforwardMsg(e, msg)
     }
 }

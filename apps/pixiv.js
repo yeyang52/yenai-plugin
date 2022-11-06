@@ -4,6 +4,7 @@ import Pixiv from '../model/Pixiv.js'
 import Cfg from '../model/Config.js';
 import moment from 'moment';
 import { Config } from '../components/index.js'
+import common from '../model/common.js'
 //类型
 let type = {
     "日": "day",
@@ -16,12 +17,13 @@ let type = {
     "漫画月": "month_manga",
     "漫画新秀周": "week_rookie_manga",
 }
+let Numreg = "[一壹二两三四五六七八九十百千万亿\\d]+"
 //正则
-let listreg = new RegExp(`^#?看看(${Object.keys(type).join("|")})榜\\s?(第(\\d+)页)?$`)
+let listreg = new RegExp(`^#?看看(${Object.keys(type).join("|")})榜\\s?(第(${Numreg})页)?$`)
 let tagreg = new RegExp('^#?tag搜图(.*)$', "i")
 let pidreg = new RegExp('^#?pid搜图\\s?(\\d+)$', "i")
 let uidreg = new RegExp('^#?uid搜图(.*)$', "i")
-let randomimg = new RegExp('^#?来(\\d+)?张(好(康|看)(的|哒)|hkd)$')
+let randomimgreg = new RegExp(`^#?来(${Numreg})?张(好(康|看)(的|哒)|hkd)$`)
 
 export class example extends plugin {
     constructor() {
@@ -51,7 +53,7 @@ export class example extends plugin {
                     fnc: 'saucenaoUid'
                 },
                 {
-                    reg: randomimg,
+                    reg: randomimgreg,
                     fnc: 'randomimg'
                 }
             ]
@@ -108,7 +110,7 @@ export class example extends plugin {
 
         let date = moment().subtract(day, "days").format("YYYY-MM-DD")
 
-        let page = regRet[3] || "1"
+        let page = common.translateChinaNum(regRet[3] || "1")
 
         let res = await new Pixiv(e).Rank(page, date, mode)
 
@@ -131,7 +133,7 @@ export class example extends plugin {
 
         let tag = regRet[1]
 
-        let pagereg = new RegExp("第(\\d+)页")
+        let pagereg = new RegExp(`第(${Numreg})页`)
 
         let page = pagereg.exec(e.msg)
 
@@ -141,6 +143,7 @@ export class example extends plugin {
         } else {
             page = "1"
         }
+        page = common.translateChinaNum(page)
 
         let res = await new Pixiv(e).searchTags(tag, page)
 
@@ -176,7 +179,7 @@ export class example extends plugin {
 
         let key = regRet[1]
 
-        let pagereg = new RegExp("第(\\d+)页")
+        let pagereg = new RegExp(`第(${Numreg})页`)
 
         let page = pagereg.exec(e.msg)
 
@@ -186,6 +189,7 @@ export class example extends plugin {
         } else {
             page = "1"
         }
+        page = common.translateChinaNum(page)
 
         let res = await new Pixiv(e).public(key, page)
 
@@ -201,13 +205,14 @@ export class example extends plugin {
         }
         await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
 
-        let regRet = randomimg.exec(e.msg)
+        let regRet = randomimgreg.exec(e.msg)
 
         let num = regRet[1] || 1
         if (num > 50) {
             e.reply("你要的太多辣，奴家只给你一张辣(•́へ•́ ╬)")
             num = 1
         }
+        num = common.translateChinaNum(num)
         let res = await new Pixiv(e).getrandomimg(num);
 
         if (!res) return

@@ -15,6 +15,7 @@ let heisitype = {
 }
 
 let heisiwreg = new RegExp(`#?来点(${Object.keys(heisitype).join("|")})$`)
+
 export class example extends plugin {
   constructor() {
     super({
@@ -63,7 +64,7 @@ export class example extends plugin {
           fnc: 'bcy_topic'
         },
         {
-          reg: '^#?(xjj|hso|bs|hs|jk|ecy|cos|sy|bm|mt|mjx|jktj|ks)(\\d)?$',
+          reg: apirag,
           fnc: 'picture'
         },
         {
@@ -301,73 +302,80 @@ export class example extends plugin {
   }
   //api大集合
   async picture(e) {
-    let des = e.msg.match(/\d+/g)
-    let msg = e.msg.replace(/\d|#/g, "").trim()
-    let api = {
-      "bs": [
-        "http://api.starrobotwl.com/api/baisi.php"
-      ],
-      "hs": [
-        "https://api.caonm.net/api/siwa/api.php",
-        "http://api.starrobotwl.com/api/heisi.php"
-      ],
-      "jk": [
-        "http://www.ggapi.cn/Api/jkzf"
-      ],
-      "ecy": [
-        "https://iw233.cn/api.php?sort=top",
-        "https://iw233.cn/api.php?sort=mp",
-        "http://api.wqwlkj.cn/wqwlapi/ks_2cy.php?type=image"
-      ],
-      "cos": [
-        "https://api.caonm.net/api/cos/api.php",
-        "http://xn--rssy53b.love/api/xjjtp/index.php"
-      ],
-      "hso": [
-        "http://www.ggapi.cn/Api/girls",
-        "http://xn--rssy53b.love/api/ecytp/index.php"
-      ],
-      "xjj": [
-        "https://api.caonm.net/api/yangyan/api.php",
-        "https://api.btstu.cn/sjbz/api.php",
-        "https://api.wuque.cc/random/images",
-        "https://ovooa.com/API/meinv/api.php?type=image",
-        "http://api.sakura.gold/ksxjjtp"
-      ],
-      "bm": [
-        "http://iw233.cn/api.php?sort=yin"
-      ],
-      "sy": [
-        "https://iw233.cn/api.php?sort=cat"
-      ],
-      "mt": [
-        "https://api.sdgou.cc/api/meitui/",
-        "https://ovooa.com/API/meizi/api.php?type=image",
-        "http://www.25252.xyz/kt.php",
-      ],
-      "mjx": [
-        "https://api.sdgou.cc/api/tao/",
-        "https://api.vvhan.com/api/tao",
-        "https://api.dzzui.com/api/imgtaobao"
-      ],
-      "ks": [
-        "http://api.wqwlkj.cn/wqwlapi/ks_xjj.php?type=image"
-      ]
-    }
+    let key = `yenai:apiaggregate:CD`
+    if (await redis.get(key)) return
     if (/jktj/.test(e.msg)) {
       let msg = [
         '现接口数量如下',
       ]
-      for (let i in api) {
+      for (let i in apis) {
         msg.push(
-          `\n${i}：\t${api[i].length}`
+          `\n${i}：\t${apis[i].length}`
         )
       }
       return e.reply(msg)
     }
 
-    api = api[msg]
-    let img = des ? api[des - 1] : lodash.sample(api)
-    e.reply(segment.image(img || lodash.sample(api)), false, { recallMsg: 120 })
+    let des = apirag.exec(e.msg)
+    let imgs = apis[des[1]]
+    let img = des[2] ? imgs[des - 1] : lodash.sample(imgs)
+    e.reply(segment.image(img || lodash.sample(imgs)), false, { recallMsg: 120 })
+    redis.set(key, "cd", { EX: 2 })
   }
 }
+let apis = {
+  "bs": [
+    "http://api.starrobotwl.com/api/baisi.php"
+  ],
+  "hs": [
+    "https://api.caonm.net/api/siwa/api.php",
+    "http://api.starrobotwl.com/api/heisi.php"
+  ],
+  "jk": [
+    "http://www.ggapi.cn/Api/jkzf"
+  ],
+  "bm": [
+    "http://iw233.cn/api.php?sort=yin"
+  ],
+  "sy": [
+    "https://iw233.cn/api.php?sort=cat"
+  ],
+  "mt": [
+    "https://api.sdgou.cc/api/meitui/",
+    "https://ovooa.com/API/meizi/api.php?type=image",
+    "http://www.25252.xyz/kt.php",
+  ],
+  "ks": [
+    "http://api.wqwlkj.cn/wqwlapi/ks_xjj.php?type=image"
+  ],
+  "fj": [
+    "http://api.starrobotwl.com/api/fuji.php"
+  ],
+  "ecy": [
+    "https://iw233.cn/api.php?sort=top",
+    "https://iw233.cn/api.php?sort=mp",
+    "http://api.wqwlkj.cn/wqwlapi/ks_2cy.php?type=image"
+  ],
+  "cos": [
+    "https://api.caonm.net/api/cos/api.php",
+    "http://xn--rssy53b.love/api/xjjtp/index.php"
+  ],
+  "hso": [
+    "http://www.ggapi.cn/Api/girls",
+    "http://xn--rssy53b.love/api/ecytp/index.php"
+  ],
+  "xjj": [
+    "https://api.caonm.net/api/yangyan/api.php",
+    "https://api.btstu.cn/sjbz/api.php",
+    "https://api.wuque.cc/random/images",
+    "https://ovooa.com/API/meinv/api.php?type=image",
+    "http://api.sakura.gold/ksxjjtp"
+  ],
+  "mjx": [
+    "https://api.sdgou.cc/api/tao/",
+    "https://api.vvhan.com/api/tao",
+    "https://api.dzzui.com/api/imgtaobao"
+  ],
+
+}
+let apirag = new RegExp(`^#?(${Object.keys(apis).join("|")}|jktj)(\\d+)?$`)

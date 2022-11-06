@@ -139,11 +139,11 @@ export class example extends plugin {
 
         if (page) {
             tag = tag.replace(page[0], "")
-            page = page[1]
+            page = common.translateChinaNum(page[1]) 
         } else {
             page = "1"
         }
-        page = common.translateChinaNum(page)
+
 
         let res = await new Pixiv(e).searchTags(tag, page)
 

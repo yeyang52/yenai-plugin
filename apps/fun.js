@@ -302,6 +302,9 @@ export class example extends plugin {
   }
   //api大集合
   async picture(e) {
+    if (!e.isMaster) {
+      if (!Config.Notice.sese) return
+    }
     let key = `yenai:apiaggregate:CD`
     if (await redis.get(key)) return
     if (/jktj/.test(e.msg)) {

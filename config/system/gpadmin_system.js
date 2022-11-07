@@ -103,6 +103,11 @@ export const helpList = [{
     "icon": 16
   },
   {
+    "title": "#查看最近入群情况",
+    "desc": "后面可以加数字",
+    "icon": 4
+  },
+  {
     "title": "#哪个叼毛是龙王",
     "desc": "查看谁是龙王",
     "icon": 6

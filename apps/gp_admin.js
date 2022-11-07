@@ -105,7 +105,11 @@ export class Basics extends plugin {
                     fnc: 'neverspeak'
                 },
                 {
-                    reg: `^#查看不活跃排行榜(${Numreg})?$`,
+                    reg: `^#(查看|获取)?不活跃排行榜(${Numreg})?$`,
+                    fnc: 'RankingList'
+                },
+                {
+                    reg: `^#(查看|获取)?最近的?入群情况(${Numreg})?$`,
                     fnc: 'RankingList'
                 }
 
@@ -598,11 +602,17 @@ export class Basics extends plugin {
         Cfg.getforwardMsg(e, listinfo)
     }
 
-    //查看不活跃排行榜
+    //查看不活跃排行榜和入群记录
     async RankingList(e) {
         let num = e.msg.match(new RegExp(Numreg))
         num = num ? common.translateChinaNum(num[0]) : 10
-        let msg = await Gpadmin.InactiveRanking(e, num)
+        let msg = '';
+        if (/不活跃/.test(e.msg)) {
+            msg = await Gpadmin.InactiveRanking(e, num)
+        } else {
+            msg = await Gpadmin.getRecentlyJoined(e, num)
+        }
         Cfg.getforwardMsg(e, msg)
     }
+
 }

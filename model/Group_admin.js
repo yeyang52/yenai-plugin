@@ -296,6 +296,30 @@ class Group_admin {
         msg.unshift(`不活跃排行榜top1 - top${num}`)
         return msg
     }
+    /**
+     * @description: 获取最近加群情况
+     * @param {*} e oicq
+     * @param {Number} num 获取的数量
+     * @return {Array} 
+     */
+    async getRecentlyJoined(e, num) {
+        let list = Array.from((await e.group.getMemberMap()).values());
+        list.sort((a, b) => {
+            return b.join_time - a.join_time
+        })
+        let msg = list.slice(0, num)
+        msg = msg.map((item) => {
+            return [
+                segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
+                `\nQQ：${item.user_id}\n`,
+                `昵称：${item.card || item.nickname}\n`,
+                `入群时间：${moment(item.join_time * 1000).format("YYYY-MM-DD HH:mm:ss")}\n`,
+                `最后发言时间：${moment(item.last_sent_time * 1000).format("YYYY-MM-DD HH:mm:ss")}`
+            ]
+        })
+        msg.unshift(`最近的${num}条入群记录`)
+        return msg
+    }
 }
 
 export default new Group_admin();

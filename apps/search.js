@@ -60,14 +60,14 @@ const SEARCH_MAP = {
   "油猴": "https://greasyfork.org/zh-CN/scripts?q=",
 };
 
-const searchReg = new RegExp(`^#?(${lodash.keys(SEARCH_MAP).join('|')})搜索.*`)
+const searchReg = new RegExp(`^#?(${lodash.keys(SEARCH_MAP).join('|')})搜索(.*)`)
 
 export class example extends plugin {
   constructor() {
     super({
       name: '搜索',
       event: 'message',
-      priority: 2000,
+      priority: 500,
       rule: [
         {
           reg: searchReg,
@@ -90,9 +90,7 @@ export class example extends plugin {
   }
   async search(e) {
     let regRet = searchReg.exec(e.msg)
-    let reg = new RegExp(`#?${regRet[1]}搜索`)
-    let content = e.msg.replace(reg, "")
-    let url = SEARCH_MAP[regRet[1]] + encodeURIComponent(content)
+    let url = SEARCH_MAP[regRet[1]] + encodeURIComponent(regRet[2])
     let res = await Browser.Webpage(url)
     logger.mark("开始搜索")
     if (res) {

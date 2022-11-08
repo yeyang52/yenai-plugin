@@ -13,7 +13,7 @@ const ROLE_MAP = {
     member: '群员'
 }
 let Numreg = "[一壹二两三四五六七八九十百千万亿\\d]+"
-let noactivereg = new RegExp(`^#(查看|清理|确认清理)(${Numreg})个?(年|月|周|天)没发言的人(第(${Numreg})页)?$`)
+let noactivereg = new RegExp(`^#(查看|清理|确认清理|获取)(${Numreg})个?(年|月|周|天)没发言的人(第(${Numreg})页)?$`)
 
 export class Basics extends plugin {
     constructor() {
@@ -632,7 +632,7 @@ export class Basics extends plugin {
         let num = e.msg.match(new RegExp(Numreg))
         num = num ? common.translateChinaNum(num[0]) : 10
         let msg = '';
-        if (/不活跃/.test(e.msg)) {
+        if (/(不活跃|潜水)/.test(e.msg)) {
             msg = await Gpadmin.InactiveRanking(e, num)
         } else {
             msg = await Gpadmin.getRecentlyJoined(e, num)

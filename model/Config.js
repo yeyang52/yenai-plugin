@@ -9,7 +9,7 @@ class Config {
     /**
      * @description: 延时函数
      * @param {*} ms 时间(毫秒)
-     */    
+     */
     sleep(ms) {
         return new Promise((resolve) => setTimeout(resolve, ms))
     }
@@ -106,7 +106,7 @@ class Config {
             forwardMsg.push(
                 {
                     message: i,
-                    nickname: isBot ? Bot.nickname : e.sender.nickname,
+                    nickname: isBot ? Bot.nickname : e.sender.card || e.sender.nickname,
                     user_id: isBot ? Bot.uin : e.sender.user_id
                 }
             )

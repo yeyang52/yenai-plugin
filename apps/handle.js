@@ -253,7 +253,7 @@ export class anotice extends plugin {
             })
             let msg = [
                 `现有未处理的加群申请如下，总共${SystemMsg.length}条`,
-                `可使用 "#(同意|拒绝)加群申请xxx" 或 "#(同意|拒绝)全部加群申请"`,
+                `可使用 "#(同意|拒绝)加群申请xxx"\n或 "#(同意|拒绝)全部加群申请"`,
                 ...SystemMsg
             ]
             return Cfg.getforwardMsg(e, msg)

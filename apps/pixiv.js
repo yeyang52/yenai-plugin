@@ -75,6 +75,10 @@ export class example extends plugin {
         if (!res) return;
 
         let { title, pid, uresname, uresid, tags, url } = res
+
+        if (/r18/.test(url)) {
+            return e.reply(`好色哦，这是R18哒(*/ω＼*)\n给你：https://pixiv.re/${pid}.jpg`, true)
+        }
         let msg = [
             `标题：${title}\n`,
             `插画ID：${pid}\n`,
@@ -139,7 +143,7 @@ export class example extends plugin {
 
         if (page) {
             tag = tag.replace(page[0], "")
-            page = common.translateChinaNum(page[1]) 
+            page = common.translateChinaNum(page[1])
         } else {
             page = "1"
         }

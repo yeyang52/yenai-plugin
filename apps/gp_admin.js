@@ -5,6 +5,8 @@ import Gpadmin from '../model/Group_admin.js';
 import { segment } from 'oicq'
 import lodash from 'lodash'
 import common from '../model/common.js'
+import config from '../../../lib/config/config.js'
+
 const ROLE_MAP = {
     admin: '群管理',
     owner: '群主',
@@ -171,10 +173,12 @@ export class Basics extends plugin {
         }
 
         if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
+        //判断是否为主人
+        if (config.masterQQ?.includes(Number(qq))) {
+            return e.reply("居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ");
+        }
         //判断是否有这个人
-        let memberMap = await e.group.getMemberMap();
-        memberMap = Array.from(memberMap.keys());
-        if (!memberMap.includes(Number(qq))) return e.reply("❎ 这个群没有这个人哦~");
+        if (!e.group.pickMember(qq).info) return e.reply("❎ 这个群没有这个人哦~");
         //如无时间默认禁言五分钟
         if (!TabooTime) TabooTime = 5;
         //默认单位为分
@@ -187,7 +191,7 @@ export class Basics extends plugin {
         }
 
         await e.group.muteMember(qq, TabooTime * Company);
-        e.reply(`已把${e.group.pickMember(qq).card}扔进了小黑屋( ･_･)ﾉ⌒●~*`, true);
+        e.reply(`已把${e.group.pickMember(qq).card || e.group.pickMember(qq).nickname}扔进了小黑屋( ･_･)ﾉ⌒●~*`, true);
         return true;
 
     }
@@ -212,13 +216,11 @@ export class Basics extends plugin {
 
         if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
         //判断是否有这个人
-        let memberMap = await e.group.getMemberMap();
-        memberMap = Array.from(memberMap.keys());
-        if (!memberMap.includes(Number(qq))) return e.reply("❎ 这个群没有这个人哦~");
+        if (!e.group.pickMember(qq).info) return e.reply("❎ 这个群没有这个人哦~");
 
 
         await e.group.muteMember(qq, 0)
-        e.reply(`已把${e.group.pickMember(qq).card}从小黑屋揪了出来(｡>∀<｡)`, true);
+        e.reply(`已把${e.group.pickMember(qq).card || e.group.pickMember(qq).nickname}从小黑屋揪了出来(｡>∀<｡)`, true);
         return true;
 
     }
@@ -261,10 +263,12 @@ export class Basics extends plugin {
             qq = qq.match(/[1-9]\d*/g)
         }
         if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
+        //判断是否为主人
+        if (config.masterQQ?.includes(Number(qq))) {
+            return e.reply("居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ");
+        }
         //判断是否有这个人
-        let memberMap = await e.group.getMemberMap()
-        memberMap = Array.from(memberMap.keys())
-        if (!memberMap.includes(Number(qq))) return e.reply("❎ 这个群没有这个人哦~")
+        if (!e.group.pickMember(qq).info) return e.reply("❎ 这个群没有这个人哦~")
 
 
         await e.group.kickMember(qq)
@@ -323,15 +327,13 @@ export class Basics extends plugin {
 
         if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
         //判断是否有这个人
-        let memberMap = await e.group.getMemberMap();
-        memberMap = Array.from(memberMap.keys());
-        if (!memberMap.includes(Number(qq))) return e.reply("❎ 这个群没有这个人哦~");
+        if (!e.group.pickMember(qq).info) return e.reply("❎ 这个群没有这个人哦~");
 
         await e.group.setAdmin(qq, yes)
         if (yes) {
-            e.reply(`已经把${e.group.pickMember(qq).card}设置为管理啦！！`)
+            e.reply(`已经把${e.group.pickMember(qq).card || e.group.pickMember(qq).nickname}设置为管理啦！！`)
         } else {
-            e.reply(`${e.group.pickMember(qq).card}的管理已经被我吃掉啦~`)
+            e.reply(`${e.group.pickMember(qq).card || e.group.pickMember(qq).nickname}的管理已经被我吃掉啦~`)
         }
     }
 

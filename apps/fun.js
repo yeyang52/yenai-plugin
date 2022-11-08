@@ -5,6 +5,7 @@ import lodash from 'lodash'
 import Cfg from '../model/Config.js';
 import { Config } from '../components/index.js'
 import uploadRecord from '../model/uploadRecord.js'
+
 let heisitype = {
   "白丝": "baisi",
   "黑丝": "heisi",

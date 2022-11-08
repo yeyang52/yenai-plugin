@@ -13,7 +13,7 @@ const ROLE_MAP = {
     member: '群员'
 }
 let Numreg = "[一壹二两三四五六七八九十百千万亿\\d]+"
-let noactivereg = new RegExp(`^#(查看|清理|确认清理)(${Numreg})(年|月|周|天)没发言的人(第(${Numreg})页)?$`)
+let noactivereg = new RegExp(`^#(查看|清理|确认清理)(${Numreg})个?(年|月|周|天)没发言的人(第(${Numreg})页)?$`)
 
 export class Basics extends plugin {
     constructor() {
@@ -107,11 +107,11 @@ export class Basics extends plugin {
                     fnc: 'neverspeak'
                 },
                 {
-                    reg: `^#(查看|获取)?不活跃排行榜(${Numreg})?$`,
+                    reg: `^#(查看|获取)?(不活跃|潜水)排行榜(${Numreg})?$`,
                     fnc: 'RankingList'
                 },
                 {
-                    reg: `^#(查看|获取)?最近的?入群情况(${Numreg})?$`,
+                    reg: `^#(查看|获取)?最近的?入群(情况|记录)(${Numreg})?$`,
                     fnc: 'RankingList'
                 }
 

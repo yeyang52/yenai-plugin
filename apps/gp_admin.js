@@ -234,19 +234,23 @@ export class Basics extends plugin {
             return e.reply("❎ 该命令仅限管理员可用", true);
         }
 
-        let res = false;
-        if (/全体禁言/.test(e.msg)) res = true;
+        let type = false;
+        if (/全体禁言/.test(e.msg)) type = true;
 
 
-        await e.group.muteAll(res)
+        let res = await e.group.muteAll(type)
         if (res) {
-            e.reply("全都不准说话了哦~")
+            if (type) {
+                e.reply("全都不准说话了哦~")
+            } else {
+                e.reply("好耶！！可以说话啦~")
+            }
         } else {
-            e.reply("好耶！！可以说话啦~")
+            e.reply("❎ 未知错误", true)
         }
         return true
     }
-    //踢群员 防止误触发必须加#号
+    //踢群员
     async Kick(e) {
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
@@ -271,8 +275,12 @@ export class Basics extends plugin {
         if (!e.group.pickMember(qq).info) return e.reply("❎ 这个群没有这个人哦~")
 
 
-        await e.group.kickMember(qq)
-        e.reply("已把这个坏淫踢掉惹！！！", true)
+        let res = await e.group.kickMember(qq)
+        if (res) {
+            e.reply("已把这个坏淫踢掉惹！！！", true)
+        } else {
+            e.reply("额...踢出失败哩，可能这个淫比较腻害>_<", true)
+        }
         return true
 
     }
@@ -329,11 +337,15 @@ export class Basics extends plugin {
         //判断是否有这个人
         if (!e.group.pickMember(qq).info) return e.reply("❎ 这个群没有这个人哦~");
 
-        await e.group.setAdmin(qq, yes)
-        if (yes) {
-            e.reply(`已经把${e.group.pickMember(qq).card || e.group.pickMember(qq).nickname}设置为管理啦！！`)
+        let res = await e.group.setAdmin(qq, yes)
+        if (res) {
+            if (yes) {
+                e.reply(`已经把${e.group.pickMember(qq).card || e.group.pickMember(qq).nickname}设置为管理啦！！`)
+            } else {
+                e.reply(`${e.group.pickMember(qq).card || e.group.pickMember(qq).nickname}的管理已经被我吃掉啦~`)
+            }
         } else {
-            e.reply(`${e.group.pickMember(qq).card || e.group.pickMember(qq).nickname}的管理已经被我吃掉啦~`)
+            e.reply(`❎ 未知错误`)
         }
     }
 
@@ -352,11 +364,15 @@ export class Basics extends plugin {
             yes = true
         }
 
-        await e.group.allowAnony(yes)
-        if (yes) {
-            e.reply("已把匿名开启了哦，可以藏起来了~")
+        let res = await e.group.allowAnony(yes)
+        if (res) {
+            if (yes) {
+                e.reply("已把匿名开启了哦，可以藏起来了~")
+            } else {
+                e.reply("已关闭匿名，小贼们不准藏了~")
+            }
         } else {
-            e.reply("已关闭匿名，小贼们不准藏了~")
+            e.reply("❎ 未知错误", true)
         }
         return true;
     }
@@ -444,9 +460,12 @@ export class Basics extends plugin {
             return e.reply("❎ 该命令仅限主人可用", true);
         }
 
-        await e.group.setTitle(e.message[1].qq, e.message[2].text)
-
-        e.reply(`已经把这个小可爱的头衔设置为${e.message[2].text}辣`)
+        let res = await e.group.setTitle(e.message[1].qq, e.message[2].text)
+        if (res) {
+            e.reply(`已经把这个小可爱的头衔设置为${e.message[2].text}辣`)
+        } else {
+            e.reply(`额...没给上不知道发生了神魔`)
+        }
     }
 
     //申请头衔
@@ -463,11 +482,15 @@ export class Basics extends plugin {
 
         let Title = e.msg.replace(/#|申请头衔/g, "")
 
-        await e.group.setTitle(e.user_id, Title)
-        if (!Title) {
-            e.reply(`什么"(º Д º*)！没有头衔，哼把你的头衔吃掉！！！`, true)
+        let res = await e.group.setTitle(e.user_id, Title)
+        if (res) {
+            if (!Title) {
+                e.reply(`什么"(º Д º*)！没有头衔，哼把你的头衔吃掉！！！`, true)
+            } else {
+                e.reply(lodash.sample(msgs), true)
+            }
         } else {
-            e.reply(lodash.sample(msgs), true)
+            e.reply('❎ 未知错误', true)
         }
     }
 

@@ -177,8 +177,9 @@ export class Basics extends plugin {
         if (config.masterQQ?.includes(Number(qq))) {
             return e.reply("居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ");
         }
+        let Member = e.group.pickMember(Number(qq))
         //判断是否有这个人
-        if (!e.group.pickMember(Number(qq)).info) return e.reply("❎ 这个群没有这个人哦~");
+        if (!Member.info) return e.reply("❎ 这个群没有这个人哦~");
         //如无时间默认禁言五分钟
         if (!TabooTime) TabooTime = 5;
         //默认单位为分
@@ -191,7 +192,7 @@ export class Basics extends plugin {
         }
 
         await e.group.muteMember(qq, TabooTime * Company);
-        e.reply(`已把${e.group.pickMember(qq).card || e.group.pickMember(qq).nickname}扔进了小黑屋( ･_･)ﾉ⌒●~*`, true);
+        e.reply(`已把${Member.card || Member.nickname}扔进了小黑屋( ･_･)ﾉ⌒●~*`, true);
         return true;
 
     }
@@ -215,12 +216,13 @@ export class Basics extends plugin {
         }
 
         if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
+        let Member = e.group.pickMember(Number(qq))
         //判断是否有这个人
-        if (!e.group.pickMember(Number(qq)).info) return e.reply("❎ 这个群没有这个人哦~");
+        if (!Member.info) return e.reply("❎ 这个群没有这个人哦~");
 
 
         await e.group.muteMember(qq, 0)
-        e.reply(`已把${e.group.pickMember(Number(qq)).card || e.group.pickMember(Number(qq)).nickname}从小黑屋揪了出来(｡>∀<｡)`, true);
+        e.reply(`已把${Member.card || Member.nickname}从小黑屋揪了出来(｡>∀<｡)`, true);
         return true;
 
     }
@@ -332,15 +334,17 @@ export class Basics extends plugin {
         }
 
         if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
+        let Member = e.group.pickMember(Number(qq))
         //判断是否有这个人
-        if (!e.group.pickMember(Number(qq)).info) return e.reply("❎ 这个群没有这个人哦~");
+        if (!Member.info) return e.reply("❎ 这个群没有这个人哦~");
 
         let res = await e.group.setAdmin(qq, yes)
+        let name = Member.card || Member.nickname
         if (res) {
             if (yes) {
-                e.reply(`已经把${e.group.pickMember(Number(qq)).card || e.group.pickMember(Number(qq)).nickname}设置为管理啦！！`)
+                e.reply(`已经把${name}设置为管理啦！！`)
             } else {
-                e.reply(`${e.group.pickMember(Number(qq)).card || e.group.pickMember(Number(qq)).nickname}的管理已经被我吃掉啦~`)
+                e.reply(`${name}的管理已经被我吃掉啦~`)
             }
         } else {
             e.reply(`❎ 未知错误`)

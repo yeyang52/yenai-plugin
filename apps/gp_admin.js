@@ -220,7 +220,7 @@ export class Basics extends plugin {
 
 
         await e.group.muteMember(qq, 0)
-        e.reply(`已把${e.group.pickMember(qq).card || e.group.pickMember(qq).nickname}从小黑屋揪了出来(｡>∀<｡)`, true);
+        e.reply(`已把${e.group.pickMember(Number(qq)).card || e.group.pickMember(Number(qq)).nickname}从小黑屋揪了出来(｡>∀<｡)`, true);
         return true;
 
     }
@@ -338,9 +338,9 @@ export class Basics extends plugin {
         let res = await e.group.setAdmin(qq, yes)
         if (res) {
             if (yes) {
-                e.reply(`已经把${e.group.pickMember(qq).card || e.group.pickMember(qq).nickname}设置为管理啦！！`)
+                e.reply(`已经把${e.group.pickMember(Number(qq)).card || e.group.pickMember(Number(qq)).nickname}设置为管理啦！！`)
             } else {
-                e.reply(`${e.group.pickMember(qq).card || e.group.pickMember(qq).nickname}的管理已经被我吃掉啦~`)
+                e.reply(`${e.group.pickMember(Number(qq)).card || e.group.pickMember(Number(qq)).nickname}的管理已经被我吃掉啦~`)
             }
         } else {
             e.reply(`❎ 未知错误`)

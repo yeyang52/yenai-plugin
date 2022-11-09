@@ -286,7 +286,11 @@ export class anotice extends plugin {
             Cfg.getforwardMsg(e, msg)
         } else {
             let qq = e.msg.replace(/#(同意|拒绝)加群申请/g, "").trim()
+            
+            if (!qq) return e.reply("QQ号呢，QQ号呢d(ŐдŐ๑)", true)
+
             let member = SystemMsg.filter(item => item.user_id == qq)
+
             if (lodash.isEmpty(member)) return e.reply("呜呜呜，没找到这个淫的加群申请(つд⊂)")
 
             if (/风险/.test(member[0].tips)) return e.reply(`该账号为风险账号请手动处理哦ಠ~ಠ`)

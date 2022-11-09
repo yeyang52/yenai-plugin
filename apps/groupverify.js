@@ -42,7 +42,6 @@ export class NEWCMD extends plugin {
       ]
     })
     this.verifypath = `./plugins/yenai-plugin/config/config/groupverify.yaml`;
-    this.Masterinviter = [];
   }
   //重新验证
   async cmdReverify(e) {
@@ -151,8 +150,6 @@ export class NEWCMD extends plugin {
 
 //进群监听
 Bot.on("notice.group.increase", async (e) => {
-  if (this.Masterinviter.includes(e.user_id)) return;
-
   let verifycfg = Config.verifycfg
 
   if (!verifycfg.openGroup.includes(e.group_id)) return;
@@ -225,14 +222,6 @@ Bot.on('notice.group.decrease', async (e) => {
   delete temp[e.user_id + e.group_id];
 
   return e.reply(`「${e.user_id}」主动退群，验证流程结束`);
-})
-
-//主人邀请不进行验证
-Bot.on('request.group.add', async (e) => {
-  if (!e.inviter_id) return false;
-  if (cfg.masterQQ.includes(inviter_id)) {
-    this.Masterinviter.push(e.user_id);
-  }
 })
 
 //发送验证信息

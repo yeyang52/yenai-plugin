@@ -178,7 +178,7 @@ export class Basics extends plugin {
             return e.reply("居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ");
         }
         //判断是否有这个人
-        if (!e.group.pickMember(qq).info) return e.reply("❎ 这个群没有这个人哦~");
+        if (!e.group.pickMember(Number(qq)).info) return e.reply("❎ 这个群没有这个人哦~");
         //如无时间默认禁言五分钟
         if (!TabooTime) TabooTime = 5;
         //默认单位为分
@@ -216,7 +216,7 @@ export class Basics extends plugin {
 
         if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
         //判断是否有这个人
-        if (!e.group.pickMember(qq).info) return e.reply("❎ 这个群没有这个人哦~");
+        if (!e.group.pickMember(Number(qq)).info) return e.reply("❎ 这个群没有这个人哦~");
 
 
         await e.group.muteMember(qq, 0)
@@ -270,10 +270,10 @@ export class Basics extends plugin {
             return e.reply("居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ");
         }
         //判断是否有这个人
-        if (!e.group.pickMember(qq).info) return e.reply("❎ 这个群没有这个人哦~")
+        if (!e.group.pickMember(Number(qq)).info) return e.reply("❎ 这个群没有这个人哦~")
 
 
-        let res = await e.group.kickMember(qq)
+        let res = await e.group.kickMember(Number(qq))
         if (res) {
             e.reply("已把这个坏淫踢掉惹！！！", true)
         } else {
@@ -333,7 +333,7 @@ export class Basics extends plugin {
 
         if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
         //判断是否有这个人
-        if (!e.group.pickMember(qq).info) return e.reply("❎ 这个群没有这个人哦~");
+        if (!e.group.pickMember(Number(qq)).info) return e.reply("❎ 这个群没有这个人哦~");
 
         let res = await e.group.setAdmin(qq, yes)
         if (res) {

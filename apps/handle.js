@@ -4,6 +4,11 @@ import common from '../../../lib/common/common.js'
 import { segment } from 'oicq'
 import Cfg from '../model/Config.js';
 import moment from 'moment';
+const ROLE_MAP = {
+    "admin": '群管理',
+    "owner": '群主',
+    "member": '群员'
+}
 export class anotice extends plugin {
     constructor() {
         super({
@@ -36,9 +41,17 @@ export class anotice extends plugin {
                     fnc: 'agreesAll'
                 },
                 {
-                    reg: '^#(同意|拒绝|查看)(全部)?加群申请.*$',
+                    reg: '^#(同意|拒绝|查看)(全部)?(加|入)群申请.*$',
                     fnc: 'GroupAdd'
                 },
+                {
+                    reg: '^#(同意|拒绝|查看)(全部)?群邀请.*$',
+                    fnc: 'GroupInvite'
+                },
+                {
+                    reg: '^#查看全部请求$',
+                    fnc: 'SystemMsgAll'
+                }
             ]
         })
     }
@@ -80,7 +93,7 @@ export class anotice extends plugin {
             FriendAdd = FriendAdd.map((item) => {
                 return [
                     segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
-                    `申请人QQ：${item.user_id}\n`,
+                    `\n申请人QQ：${item.user_id}\n`,
                     `申请人昵称：${item.nickname}\n`,
                     `申请来源：${item.source || '未知'}\n`,
                     `申请时间：${moment(item.time * 1000).format(`YYYY-MM-DD HH:mm:ss`)}\n`,
@@ -235,8 +248,11 @@ export class anotice extends plugin {
             .then(() => e.reply(`✅ 已向${qq}发送了好友请求`))
             .catch(() => e.reply("❎ 发送请求失败"))
     }
+
     //入群请求
     async GroupAdd(e) {
+        if (!e.isGroup) return e.reply("请在群聊使用此命令哦~")
+
         let SystemMsg = (await Bot.getSystemMsg())
             .filter(item => item.request_type == "group" && item.sub_type == "add" && item.group_id == e.group_id)
         if (lodash.isEmpty(SystemMsg)) return e.reply("暂无加群申请(。-ω-)zzz", true)
@@ -275,7 +291,7 @@ export class anotice extends plugin {
                         fail.push(`${fail.length + 1}、${i.user_id}`)
                     }
                 }
-                await Cfg.sleep(200)
+                await Cfg.sleep(1000)
             }
             let msg = [
                 `本次共处理${SystemMsg.length}条群申请\n成功：${success.length}\n失败：${fail.length}\n风险：${risk.length}`
@@ -285,7 +301,7 @@ export class anotice extends plugin {
             if (!lodash.isEmpty(risk)) msg.push([`以下为风险账号名单：\n`, risk.join("\n")])
             Cfg.getforwardMsg(e, msg)
         } else {
-            let qq = e.msg.replace(/#(同意|拒绝)加群申请/g, "").trim()
+            let qq = e.msg.replace(/#(同意|拒绝)(加|入)群申请/g, "").trim()
 
             if (!qq) return e.reply("QQ号呢，QQ号呢d(ŐдŐ๑)", true)
 
@@ -301,5 +317,94 @@ export class anotice extends plugin {
                 e.reply(`呜呜呜，处理失败辣(இωஇ)`)
             }
         }
+    }
+    //群邀请列表
+    async GroupInvite(e) {
+        if (!e.isMaster) return e.reply("❎ 该命令仅限主人可用", true);
+        let SystemMsg = (await Bot.getSystemMsg()).filter(item => item.request_type == "group" && item.sub_type == "invite")
+        if (lodash.isEmpty(SystemMsg)) return e.reply("暂无群邀请哦(。-ω-)zzz", true)
+        //查看
+        if (/查看/.test(e.msg)) {
+            SystemMsg = SystemMsg.map(item => {
+                return [
+                    segment.image(`https://p.qlogo.cn/gh/${item.group_id}/${item.group_id}/100`),
+                    `\n邀请群号：${item.group_id}\n`,
+                    `邀请群名：${item.group_name}\n`,
+                    `邀请人QQ：${item.user_id}\n`,
+                    `邀请人昵称：${item.nickname}\n`,
+                    `邀请人身份：${ROLE_MAP[item.role]}`
+                ]
+            })
+            let msg = [
+                `现有未处理的群邀请如下，总共${SystemMsg.length}条`,
+                `可使用 "#(同意|拒绝)群邀请xxx"\n或 "#(同意|拒绝)全部群邀请"`,
+                ...SystemMsg
+            ]
+            return Cfg.getforwardMsg(e, msg)
+        }
+
+        await e.reply("好哒，我开始处理辣٩(๑•ㅂ•)۶")
+        let yes = /同意/.test(e.msg) ? true : false
+        let success = [], fail = []
+        if (/全部/.test(e.msg)) {
+            for (let i of SystemMsg) {
+                if (await i.approve(yes)) {
+                    success.push(`${success.length + 1}、${i.user_id}`)
+                } else {
+                    fail.push(`${fail.length + 1}、${i.user_id}`)
+                }
+                await Cfg.sleep(1000)
+            }
+            let msg = [`本次共处理${SystemMsg.length}条群邀请\n成功：${success.length}\n失败：${fail.length}`]
+            if (!lodash.isEmpty(success)) msg.push([`以下为成功的名单：\n`, success.join("\n")])
+            if (!lodash.isEmpty(fail)) msg.push([`以下为失败的名单：\n`, fail.join("\n")])
+            Cfg.getforwardMsg(e, msg)
+        } else {
+            let groupid = e.msg.replace(/#(同意|拒绝)群邀请/g, "").trim()
+
+            if (!groupid) return e.reply("群号呢，群号呢d(ŐдŐ๑)", true)
+
+            let Invite = SystemMsg.filter(item => item.group_id == groupid)
+
+            if (lodash.isEmpty(Invite)) return e.reply("欸，你似不似傻哪有这个群邀请(O∆O)")
+
+            if (await Invite[0].approve(yes)) {
+                e.reply(`已${yes ? '同意' : '拒绝'}${Invite[0].group_id}这个群邀请辣٩(๑^o^๑)۶`)
+            } else {
+                e.reply(`呜呜呜，处理失败辣(இωஇ)`)
+            }
+        }
+    }
+    //全部请求
+    async SystemMsgAll(e) {
+        if (!e.isMaster) return e.reply("❎ 该命令仅限主人可用", true);
+        let SystemMsg = await Bot.getSystemMsg()
+        let FriendAdd = [], onewayFriend = [], GroupAdd = [], GroupInvite = []
+        for (let i of SystemMsg) {
+            if (request_type == "friend") {
+                if (sub_type == 'add') {
+                    FriendAdd.push(i)
+                } else {
+                    onewayFriend.push(i)
+                }
+            } else {
+                if (sub_type == "add") {
+                    GroupAdd.push(i)
+                } else {
+                    GroupInvite.push(i)
+                }
+            }
+        }
+        let msg = []
+        if (!lodash.isEmpty(FriendAdd)) msg.push(`好友申请：${FriendAdd.length}条\n可使用"#查看好友申请" 查看详情`)
+        if (!lodash.isEmpty(GroupInvite)) msg.push(`群邀请：${FriendAdd.length}条\n可使用"#查看群邀请" 查看详情`)
+        if (!lodash.isEmpty(onewayFriend)) msg.push(`单向好友：${onewayFriend.length}条`)
+        if (e.isGroup) {
+            GroupAdd = GroupAdd.filter(item => item.group_id == e.group.id)
+            if (!lodash.isEmpty(GroupAdd)) msg.push(`当前群申请：${GroupAdd.length}`)
+        }
+        if (lodash.isEmpty(msg)) return e.reply("好耶！！一条请求都没有哦o( ❛ᴗ❛ )o")
+        msg.unshift("以下为暂未处理的请求")
+        Cfg.getforwardMsg(e, msg)
     }
 }

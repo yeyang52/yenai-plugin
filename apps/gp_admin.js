@@ -209,13 +209,13 @@ export class Basics extends plugin {
 
         let qq = e.message[0].text.replace(/#|解禁/g, "").trim();
 
-        if (e.message[1]) {
-            qq = e.message[1].qq;
+        if (e.message.length != 1) {
+            qq = e.message.find(item => item.type == "at")?.qq
         } else {
             qq = qq.match(/[1-9]\d*/g);
         }
 
-        if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
+        if (!qq || !(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
         let Member = e.group.pickMember(Number(qq))
         //判断是否有这个人
         if (!Member.info) return e.reply("❎ 这个群没有这个人哦~");
@@ -265,6 +265,8 @@ export class Basics extends plugin {
 
         if (e.message.length != 1) {
             qq = e.message.find(item => item.type == "at")?.qq
+        } else {
+            qq = qq.match(/[1-9]\d*/g);
         }
         if (!qq || !(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
         //判断是否为主人
@@ -327,13 +329,13 @@ export class Basics extends plugin {
         qq = e.msg.replace(/#|(设置|取消)管理/g, "").trim();
         if (/设置管理/.test(e.msg)) yes = true
 
-        if (e.message[1]) {
-            qq = e.message[1].qq;
+        if (e.message.length != 1) {
+            qq = e.message.find(item => item.type == "at")?.qq
         } else {
             qq = qq.match(/[1-9]\d*/g);
         }
 
-        if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
+        if (!qq || !(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
         let Member = e.group.pickMember(Number(qq))
         //判断是否有这个人
         if (!Member.info) return e.reply("❎ 这个群没有这个人哦~");

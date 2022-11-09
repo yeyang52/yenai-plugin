@@ -259,14 +259,12 @@ export class Basics extends plugin {
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
             return e.reply("❎ 该命令仅限管理员可用", true);
         }
-        let qq = e.message[0].text.replace(/#|踢/g, "").trim()
+        let qq = e.msg.replace(/#|踢/g, "").trim()
 
-        if (e.message[1]) {
-            qq = e.message[1].qq
-        } else {
-            qq = qq.match(/[1-9]\d*/g)
+        if (e.message.length != 1) {
+            qq = e.message.find(item => item.type == "at")?.qq
         }
-        if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
+        if (!qq || !(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
         //判断是否为主人
         if (config.masterQQ?.includes(Number(qq))) {
             return e.reply("居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ");

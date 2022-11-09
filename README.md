@@ -1,8 +1,9 @@
 
 
 <div align="center">
-  <img src="resources/img/yeyang.jpg" alt="甘雨" width = "600">
+  <img src="resources/img/tb.png" alt="甘雨" width = "400">
   </a><br>
+
 
 
 <h1>Yenai-Plugin</h1>
@@ -70,6 +71,7 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
   
 - 状态
   
+
 </details>
 <details>
   <summary>事件处理</summary>

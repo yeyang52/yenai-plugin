@@ -7,7 +7,6 @@ import YamlReader from '../model/YamlReader.js'
 //全局
 let temp = {};
 const ops = ["+", "-"];
-let Masterinviter = [];
 export class NEWCMD extends plugin {
   constructor() {
     super({
@@ -43,6 +42,7 @@ export class NEWCMD extends plugin {
       ]
     })
     this.verifypath = `./plugins/yenai-plugin/config/config/groupverify.yaml`;
+    this.Masterinviter = [];
   }
   //重新验证
   async cmdReverify(e) {
@@ -151,7 +151,7 @@ export class NEWCMD extends plugin {
 
 //进群监听
 Bot.on("notice.group.increase", async (e) => {
-  if (Masterinviter.includes(e.user_id)) return;
+  if (this.Masterinviter.includes(e.user_id)) return;
 
   let verifycfg = Config.verifycfg
 
@@ -230,8 +230,8 @@ Bot.on('notice.group.decrease', async (e) => {
 //主人邀请不进行验证
 Bot.on('request.group.add', async (e) => {
   if (!e.inviter_id) return false;
-  if (cfg.masterQQ.includes(e.inviter_id)) {
-    Masterinviter.push(e.user_id);
+  if (cfg.masterQQ.includes(inviter_id)) {
+    this.Masterinviter.push(e.user_id);
   }
 })
 

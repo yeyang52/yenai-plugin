@@ -245,10 +245,10 @@ export class anotice extends plugin {
             SystemMsg = SystemMsg.map(item => {
                 return [
                     segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
-                    `\n申请QQ：${item.user_id}\n`,
-                    `申请昵称：${item.nickname}\n`,
+                    `\nQQ：${item.user_id}\n`,
+                    `昵称：${item.nickname}\n`,
                     item.tips ? `Tips：${item.tips}\n` : "",
-                    `附加消息：${item.comment}`
+                    `${item.comment}`
                 ]
             })
             let msg = [
@@ -286,7 +286,7 @@ export class anotice extends plugin {
             Cfg.getforwardMsg(e, msg)
         } else {
             let qq = e.msg.replace(/#(同意|拒绝)加群申请/g, "").trim()
-            
+
             if (!qq) return e.reply("QQ号呢，QQ号呢d(ŐдŐ๑)", true)
 
             let member = SystemMsg.filter(item => item.user_id == qq)

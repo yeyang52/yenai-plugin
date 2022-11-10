@@ -93,8 +93,11 @@ export class example extends plugin {
         for (let i of url) {
             img.push(segment.image(i))
         }
-
-        Cfg.recallsendMsg(e, img)
+        if (img.length == 1) {
+            Cfg.recallsendMsg(e, img)
+        } else {
+            Cfg.getCDsendMsg(e, img, false)
+        }
 
         return true;
     }

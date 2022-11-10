@@ -120,7 +120,7 @@ export class anotice extends plugin {
             await common.sleep(2000)
         }
         let msg = [
-            `本次共${yes ? '同意' : '拒绝'}${FriendAdd.length}条申请\n成功：${success.length}\n失败：${fail.length}`
+            `本次共${yes ? '同意' : '拒绝'}${FriendAdd.length}条好友申请\n成功：${success.length}\n失败：${fail.length}`
         ]
         if (!lodash.isEmpty(success)) msg.push([`以下为成功的名单：\n`, success.join("\n")])
         if (!lodash.isEmpty(fail)) msg.push([`以下为失败的名单：\n`, fail.join("\n")])
@@ -401,7 +401,7 @@ export class anotice extends plugin {
         if (!lodash.isEmpty(onewayFriend)) msg.push(`单向好友：${onewayFriend.length}条`)
         if (e.isGroup) {
             GroupAdd = GroupAdd.filter(item => item.group_id == e.group.id)
-            if (!lodash.isEmpty(GroupAdd)) msg.push(`当前群申请：${GroupAdd.length}`)
+            if (!lodash.isEmpty(GroupAdd)) msg.push(`当前群申请：${GroupAdd.length}条`)
         }
         if (lodash.isEmpty(msg)) return e.reply("好耶！！一条请求都没有哦o( ❛ᴗ❛ )o", true)
         msg.unshift("以下为暂未处理的请求")

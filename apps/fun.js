@@ -49,10 +49,6 @@ export class example extends plugin {
           fnc: 'coser'
         },
         {
-          reg: '^#?waifu$',
-          fnc: 'AiWife'
-        },
-        {
           reg: heisiwreg,
           fnc: 'heisiwu'
         },
@@ -212,11 +208,6 @@ export class example extends plugin {
     }
     Cfg.getCDsendMsg(e, msg, false)
     return true
-  }
-
-  //AiWife
-  async AiWife(e) {
-    e.reply(segment.image(`https://www.thiswaifudoesnotexist.net/example-${lodash.random(100000)}.jpg`))
   }
 
   //黑丝

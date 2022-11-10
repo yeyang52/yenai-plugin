@@ -381,14 +381,14 @@ export class anotice extends plugin {
         let SystemMsg = await Bot.getSystemMsg()
         let FriendAdd = [], onewayFriend = [], GroupAdd = [], GroupInvite = []
         for (let i of SystemMsg) {
-            if (request_type == "friend") {
-                if (sub_type == 'add') {
+            if (i.request_type == "friend") {
+                if (i.sub_type == 'add') {
                     FriendAdd.push(i)
                 } else {
                     onewayFriend.push(i)
                 }
             } else {
-                if (sub_type == "add") {
+                if (i.sub_type == "add") {
                     GroupAdd.push(i)
                 } else {
                     GroupInvite.push(i)
@@ -403,7 +403,7 @@ export class anotice extends plugin {
             GroupAdd = GroupAdd.filter(item => item.group_id == e.group.id)
             if (!lodash.isEmpty(GroupAdd)) msg.push(`当前群申请：${GroupAdd.length}`)
         }
-        if (lodash.isEmpty(msg)) return e.reply("好耶！！一条请求都没有哦o( ❛ᴗ❛ )o")
+        if (lodash.isEmpty(msg)) return e.reply("好耶！！一条请求都没有哦o( ❛ᴗ❛ )o", true)
         msg.unshift("以下为暂未处理的请求")
         Cfg.getforwardMsg(e, msg)
     }

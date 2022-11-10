@@ -89,16 +89,8 @@ export class example extends plugin {
         ]
         await e.reply(msg)
 
-        let img = [];
-        for (let i of url) {
-            img.push(segment.image(i))
-        }
-        if (img.length == 1) {
-            Cfg.recallsendMsg(e, img)
-        } else {
-            Cfg.getCDsendMsg(e, img, false)
-        }
-
+        let img = url.map(item => segment.image(item))
+        img == 1 ? Cfg.recallsendMsg(e, img) : Cfg.getCDsendMsg(e, img, false)
         return true;
     }
 

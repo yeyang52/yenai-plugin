@@ -794,13 +794,25 @@ export class example extends plugin {
     let source;
     if (e.isGroup) {
       source = (await e.group.getChatHistory(e.source.seq, 1)).pop();
+
     } else {
       source = (await e.friend.getChatHistory(e.source.time, 1)).pop();
     }
     let target = e.isGroup ? e.group : e.friend
 
-    if (!e.isMaster && !e.member.is_owner && !e.member.is_admin && source.sender.user_id != Bot.uin) return
-
+    if (source.sender.user_id != Bot.uin) {
+      if (e.isGroup) {
+        //群聊判断权限
+        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
+          return logger.mark("[椰奶撤回]群聊权限不足")
+        }
+      } else {
+        //私聊判断是否为Bot消息
+        return logger.mark("[椰奶撤回]引用不是Bot消息")
+      }
+    }
+    logger.info("[椰奶撤回]执行撤回")
+    //撤回消息
     await target.recallMsg(source.message_id);
 
     await Cfg.sleep(300);

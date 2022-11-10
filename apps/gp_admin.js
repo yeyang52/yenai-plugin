@@ -577,6 +577,7 @@ export class Basics extends plugin {
             return e.reply("❎ 该命令仅限群主和主人可用", true);
         }
         let Reg = noactivereg.exec(e.msg)
+        Reg[2] = common.translateChinaNum(Reg[2] || 1)
         //确认清理直接执行
         if (Reg[1] == "确认清理") {
             if (!e.group.is_admin && !e.group.is_owner) {
@@ -586,7 +587,6 @@ export class Basics extends plugin {
         }
         //查看和清理都会发送列表
         let page = common.translateChinaNum(Reg[5] || 1)
-        Reg[2] = common.translateChinaNum(Reg[2] || 1)
         let msg = await Gpadmin.getnoactive(e, Reg[2], Reg[3], page)
         if (!msg) return
         //清理

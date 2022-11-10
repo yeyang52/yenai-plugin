@@ -74,6 +74,7 @@ export class example extends plugin {
       "11": "我在线上",
       "60": "Q我吧",
     };
+    //win硬盘内存
     let HardDisk = '';
     if (os.platform() == "win32") {
       for (let i of CPU.getHardDisk()) {

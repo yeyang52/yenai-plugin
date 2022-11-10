@@ -212,10 +212,6 @@ export const helpList = [{
       "desc": "养眼=-="
     }, {
       "icon": 1,
-      "title": "#waifu",
-      "desc": "=-="
-    }, {
-      "icon": 1,
       "title": "#半次元话题",
       "desc": "=-="
     }, {

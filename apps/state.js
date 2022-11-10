@@ -74,6 +74,13 @@ export class example extends plugin {
       "11": "我在线上",
       "60": "Q我吧",
     };
+    let HardDisk = '';
+    if (os.platform() == "win32") {
+      for (let i of CPU.getHardDisk()) {
+        logger.info(i)
+        HardDisk += "<li><div class='word'>" + i.mounted + "</div><div class='progress'>" + "<div class='word'>" + CPU.getfilesize(i.used) + " / " + CPU.getfilesize(i.blocks) + "</div><div class='current' style=width:" + i.capacity + "></div></div><div>" + i.capacity + "</div></li>"
+      }
+    }
     let data = {
       //路径
       tplFile: `./plugins/yenai-plugin/resources/state/state.html`,
@@ -132,7 +139,9 @@ export class example extends plugin {
       // 取插件包
       takeplugin: textFile() || 0,
       //取插件
-      takejs: fs.readdirSync("./plugins/example")?.length || 0
+      takejs: fs.readdirSync("./plugins/example")?.length || 0,
+      //内存
+      HardDisk,
     }
     //渲染图片
     await render('state/state', {

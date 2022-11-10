@@ -791,9 +791,6 @@ export class example extends plugin {
   //引用撤回
   async recallMsgown(e) {
     if (!e.source) return
-    if (!e.isMaster && (e.sender.role == "owner" || e.sender.role == "admin")) {  //如果发起撤回的人是管理或者群主
-      return e.reply("您自己也能撤回群员消息喵~", true, { recallMsg: 5 });
-    }
     let source;
     if (e.isGroup) {
       source = (await e.group.getChatHistory(e.source.seq, 1)).pop();
@@ -802,7 +799,7 @@ export class example extends plugin {
     }
     let target = e.isGroup ? e.group : e.friend
 
-    if (!e.isMaster || (e.isPrivate && source.sender.user_id != Bot.uin)) return
+    if (!e.isMaster && !e.member.is_owner && !e.member.is_admin && source.sender.user_id != Bot.uin) return
 
     await target.recallMsg(source.message_id);
 

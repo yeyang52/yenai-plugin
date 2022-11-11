@@ -43,6 +43,7 @@ export default new class setu {
         this.path = "./plugins/yenai-plugin/config/setu/setu.json"
         //私聊配置
         this.path_s = "./plugins/yenai-plugin/config/setu/setu_s.json"
+        this.apicfg = "./plugins/yenai-plugin/config/setu/api.json"
         //默认配置
         this.def = {
             r18: 0,
@@ -68,14 +69,18 @@ export default new class setu {
      * @return {Object}
      */
     async setuapi(r18, num = 1, tag = "") {
-        const api = "https://api.lolicon.app/setu/v2";
+        let api = "https://api.lolicon.app/setu/v2";
+        if (fs.existsSync(this.apicfg)) {
+            let apicfg = await Cfg.getread(this.apicfg)
+            if (apicfg.api) api = apicfg.api
+        }
         let size = "original"
         let proxy = await redis.get(`yenai:proxy`)
         if (num > 6) {
             size = "regular"
         }
         let url = `${api}?r18=${r18}&num=${num}${tag}&proxy=${proxy}&size=${size}`;
-
+        console.log(url);
         let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
         if (!result) return false;
         return result.data
@@ -248,7 +253,7 @@ export default new class setu {
      * @param {*} e oicq
      * @param {String} qq 设置的qq
      * @param {String} cd 设置的cd
-     */    
+     */
     async setcd(e, qq, cd) {
         let res = {};
         if (fs.existsSync(this.path_s)) {
@@ -269,7 +274,7 @@ export default new class setu {
      * @param {*} e oicq
      * @param {Boolean} yes 开启或关闭
      * @param {Boolean} group 设置群聊还是私聊
-     */    
+     */
     async setr18(e, yes, group) {
         let res = {};
         if (group) {

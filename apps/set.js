@@ -163,7 +163,7 @@ export class NewConfig extends plugin {
                 .then(() => e.reply("✅ 已经切换代理为2"))
                 .catch(err => console.log(err))
         } else if (/3/.test(e.msg)) {
-            await redis.set(rediskey, "i.pixiv.cat")
+            await redis.set(rediskey, "px2.rainchan.win")
                 .then(() => e.reply("✅ 已经切换代理为3"))
                 .catch(err => console.log(err))
         } else if (/4/.test(e.msg)) {

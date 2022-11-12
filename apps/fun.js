@@ -67,6 +67,10 @@ export class example extends plugin {
         {
           reg: "^#?(谁|哪个吊毛|哪个屌毛|哪个叼毛)是龙王$",
           fnc: 'dragonKing'
+        },
+        {
+          reg: '^#?(P|p)ximg(pro)?$',
+          fnc: 'Pximg'
         }
 
       ]
@@ -292,6 +296,30 @@ export class example extends plugin {
       `蝉联天数：${res.desc}`,
     ]);
   }
+  //p站单图
+  async Pximg(e) {
+    if (!e.isMaster) {
+      if (!Config.Notice.sese) return
+    }
+    let url = "https://ovooa.com/API/Pximg/"
+    if (/pro/.test(e.msg)) {
+      url = "https://xiaobapi.top/api/xb/api/setu.php"
+    }
+    let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))
+    if (!res) return e.reply("接口寄辣")
+    let { pid, uid, title, author, tags, urls, r18 } = res.data[0] || res.data
+    let msg = [
+      `Pid: ${pid}\n`,
+      `Uid: ${uid}\n`,
+      r18 ? `R18: ${r18}\n` : "",
+      `标题：${title}\n`,
+      `画师：${author}\n`,
+      `Tag：${tags.join(",")}\n`,
+      segment.image(urls.original)
+    ]
+    await Cfg.recallsendMsg(e, msg)
+  }
+
   //api大集合
   async picture(e) {
     if (!e.isMaster) {

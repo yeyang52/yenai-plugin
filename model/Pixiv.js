@@ -1,10 +1,11 @@
 import fetch from "node-fetch";
 import lodash from "lodash";
 import { segment } from "oicq";
-
+import Cfg from "./Config.js"
 export default class Pixiv {
     constructor(e = {}) {
         this.e = e
+        this.proxy = `yenai:proxy`
     }
     /**
      * @description: 获取插画信息
@@ -12,35 +13,41 @@ export default class Pixiv {
      * @return {Object}
      */
     async Worker(ids) {
-        let api = `https://api.imki.moe/api/pixiv/illust?id=${ids}`
+        let api = `https://api.moedog.org/pixiv/v2/?id=${ids}`
         let res = await this.getfetch(api)
 
-        if (!res) return false
+        if (!res) {
+            this.e.reply("尝试使用备用接口")
+            api = `https://api.imki.moe/api/pixiv/illust?id=${ids}`
+            res = await this.getfetch(api)
+            if (!res) return false;
+        }
         if (res.error) {
-            this.e.reply("口字很拉跨，请稍后重试(。-ω-)zzz")
-            this.e.reply(`先用直链解决一下：https://pixiv.re/${ids}.jpg`)
+            this.e.reply(res.error.user_message || "无法获取数据")
             return false;
         }
-        res = res.illust
-        let tags = lodash.truncate(lodash.flattenDeep(res?.tags.map(item => Object.values(item)))) || ""
-        let caption = res.caption.replace(/<.*>/g, "").trim()
-        let { id: pid, title, meta_single_page, meta_pages, user, } = res
+        let { id, title, meta_single_page, meta_pages, user, tags, total_bookmarks, total_view } = res.illust
+        tags = lodash.flattenDeep(tags?.map(item => Object.values(item))) || ""
+
         let url = []
-        let proxy = await redis.get(`yenai:proxy`)
+        let proxy = await redis.get(this.proxy)
         if (!lodash.isEmpty(meta_single_page)) {
             url.push(meta_single_page.original_image_url.replace("i.pximg.net", proxy))
         } else {
             url = meta_pages.map(item => item.image_urls.original.replace("i.pximg.net", proxy));
         }
-        return {
-            pid,
-            title,
-            url,
-            uresid: user.id,
-            uresname: user.name,
-            tags,
-            caption
-        }
+        let msg = [
+            `标题：${title}\n`,
+            `PID：${id}\n`,
+            `画师：${user.name}\n`,
+            `UID：${user.id}\n`,
+            `点赞：${total_bookmarks}\n`,
+            `访问：${total_view}\n`,
+            `Tag：${tags}\n`,
+            `直链：https://pixiv.re/${id}.jpg`,
+        ]
+        let img = url.map(item => segment.image(item))
+        return { msg, img }
     }
     /**
      * @description: 获取Pixiv榜单
@@ -147,11 +154,16 @@ export default class Pixiv {
      * @return {Array}
      */
     async gettrend_tags() {
-        let api = "https://api.imki.moe/api/pixiv/tags"
+        let api = "https://api.moedog.org/pixiv/v2/?type=tags"
 
         let res = await this.getfetch(api)
 
-        if (!res) return false
+        if (!res) {
+            this.e.reply("尝试使用备用接口")
+            api = `https://api.imki.moe/api/pixiv/tags`
+            res = await this.getfetch(api)
+            if (!res) return false;
+        }
         if (!res.trend_tags) {
             this.e.reply("呜呜呜，没有获取到数据(๑ १д१)")
             return false
@@ -189,41 +201,79 @@ export default class Pixiv {
             this.e.reply("呜呜呜，人家没有找到这个淫d(ŐдŐ๑)")
             return false;
         }
-        let { user_id: uid, nick_name, avatar, desc } = user.data.rows[0]
-        let api = `https://www.vilipix.com/api/v1/picture/public?sort=new&type=0&author_user_id=${uid}&limit=30&offset=${(page - 1) * 30}`
+        let { user_id, nick_name, avatar, desc } = user.data.rows[0]
+        let list = [[
+            segment.image(avatar),
+            `\nuid：${user_id}\n`,
+            `画师：${nick_name}\n`,
+            `介绍：${lodash.truncate(desc)}`
+        ]]
+        let api = `https://api.moedog.org/pixiv/v2/?type=member_illust&id=${user_id}`
         let res = await this.getfetch(api)
-        if (!res) return false
-        if (res.data.count == 0) {
+        if (!res) return false;
+        if (lodash.isEmpty(res.illusts)) {
             this.e.reply("Σ(っ °Д °;)っ这个淫居然没有插画")
             return false;
         }
-        let pageall = Math.ceil(res.data.count / 30)
-        if (page > pageall) {
+        let proxy = await redis.get(this.proxy)
+
+        let illusts = res.illusts.map(item => {
+            let url
+            let { id, title, tags, total_bookmarks, total_view, meta_single_page, meta_pages } = item;
+            tags = lodash.truncate(lodash.flattenDeep(tags?.map(item => Object.values(item))) || "")
+            if (!lodash.isEmpty(meta_single_page)) {
+                url = meta_single_page.original_image_url.replace("i.pximg.net", proxy)
+            } else {
+                url = meta_pages[0].image_urls.original.replace("i.pximg.net", proxy);
+            }
+            return [
+                `标题：${title}\n`,
+                `PID：${id}\n`,
+                `点赞：${total_bookmarks}\n`,
+                `访问：${total_view}\n`,
+                `Tag：${tags}\n`,
+                segment.image(url),
+            ]
+        })
+        //分页
+        let branch = Cfg.returnAllPageFunc(30, illusts)
+        if (page > branch.length) {
             this.e.reply("这个淫已经没有涩图给你辣(oＡo川)")
             return false
         }
-        let list = [
-            [
-                segment.image(avatar),
-                `\nuid：${uid}\n`,
-                `画师：${nick_name}\n`,
-                `介绍：${lodash.truncate(desc)}`
-            ],
-            `当前为第${page}页，共${pageall}页，本页共${res.data.rows.length}张，总共${res.data.count}张`,
-        ]
-        if (page < pageall) {
+        if (page < branch.length) {
             list.push(`可使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页`)
         }
-        for (let i of res.data.rows) {
-            let { picture_id, title, regular_url, tags, like_total } = i
-            list.push([
-                `标题：${title}\n`,
-                `点赞: ${like_total}\n`,
-                `插画ID：${picture_id}\n`,
-                `Tag：${lodash.truncate(tags)}\n`,
-                segment.image(regular_url)
-            ])
-        }
+        let entbranch = branch[page - 1].list
+        list.push(`当前为第${page}页，共${branch.length}页，本页共${entbranch.length}张，总共${illusts.length}张`)
+        list.push(...entbranch)
+
+        // let api = `https://www.vilipix.com/api/v1/picture/public?sort=new&type=0&author_user_id=${user_id}&limit=30&offset=${(page - 1) * 30}`
+        // let res = await this.getfetch(api)
+        // if (!res) return false
+        // if (res.data.count == 0) {
+        //     this.e.reply("Σ(っ °Д °;)っ这个淫居然没有插画")
+        //     return false;
+        // }
+        // let pageall = Math.ceil(res.data.count / 30)
+        // if (page > pageall) {
+        //     this.e.reply("这个淫已经没有涩图给你辣(oＡo川)")
+        //     return false
+        // }
+        // list.push(`当前为第${page}页，共${pageall}页，本页共${res.data.rows.length}张，总共${res.data.count}张`)
+        // if (page < pageall) {
+        //     list.push(`可使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页`)
+        // }
+        // for (let i of res.data.rows) {
+        //     let { picture_id, title, regular_url, tags, like_total } = i
+        //     list.push([
+        //         `标题：${title}\n`,
+        //         `点赞: ${like_total}\n`,
+        //         `插画ID：${picture_id}\n`,
+        //         `Tag：${lodash.truncate(tags)}\n`,
+        //         segment.image(regular_url)
+        //     ])
+        // }
         return list
     }
     /**

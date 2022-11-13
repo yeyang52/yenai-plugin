@@ -20,9 +20,9 @@ let type = {
 let Numreg = "[一壹二两三四五六七八九十百千万亿\\d]+"
 //正则
 let listreg = new RegExp(`^#?看看(${Object.keys(type).join("|")})榜\\s?(第(${Numreg})页)?$`)
-let tagreg = new RegExp('^#?tag搜图(.*)$', "i")
-let pidreg = new RegExp('^#?pid搜图\\s?(\\d+)$', "i")
-let uidreg = new RegExp('^#?uid搜图(.*)$', "i")
+let tagreg = new RegExp('^#?tag搜图|索(.*)$', "i")
+let pidreg = new RegExp('^#?pid搜图|索\\s?(\\d+)$', "i")
+let uidreg = new RegExp('^#?uid搜图|索(.*)$', "i")
 let randomimgreg = new RegExp(`^#?来(${Numreg})?张(好(康|看)(的|哒)|hkd)$`)
 
 export class example extends plugin {
@@ -74,23 +74,12 @@ export class example extends plugin {
 
         if (!res) return;
 
-        let { title, pid, uresname, uresid, tags, url } = res
+        let { msg, img } = res
 
-        if (/r18/.test(url)) {
-            return e.reply(`好色哦，这是R18哒(*/ω＼*)\n给你：https://pixiv.re/${pid}.jpg`, true)
-        }
-        let msg = [
-            `标题：${title}\n`,
-            `插画ID：${pid}\n`,
-            `画师：${uresname}\n`,
-            `画师ID：${uresid}\n`,
-            `Tag：${tags}\n`,
-            `直链：https://pixiv.re/${pid}.jpg`,
-        ]
         await e.reply(msg)
 
-        let img = url.map(item => segment.image(item))
-        img.length == 1 ? Cfg.recallsendMsg(e, img) : Cfg.getCDsendMsg(e, img, false)
+        img.length == 1 || /R-18/.test(msg[4]) ? Cfg.recallsendMsg(e, img) : Cfg.getCDsendMsg(e, img, false)
+
         return true;
     }
 

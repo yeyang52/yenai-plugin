@@ -20,9 +20,9 @@ let type = {
 let Numreg = "[一壹二两三四五六七八九十百千万亿\\d]+"
 //正则
 let listreg = new RegExp(`^#?看看(${Object.keys(type).join("|")})榜\\s?(第(${Numreg})页)?$`)
-let tagreg = new RegExp('^#?tag搜图|索(.*)$', "i")
-let pidreg = new RegExp('^#?pid搜图|索\\s?(\\d+)$', "i")
-let uidreg = new RegExp('^#?uid搜图|索(.*)$', "i")
+let tagreg = new RegExp('^#?tag搜图(.*)$', "i")
+let pidreg = new RegExp('^#?pid搜图\\s?(\\d+)$', "i")
+let uidreg = new RegExp('^#?uid搜图(.*)$', "i")
 let randomimgreg = new RegExp(`^#?来(${Numreg})?张(好(康|看)(的|哒)|hkd)$`)
 
 export class example extends plugin {

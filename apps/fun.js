@@ -314,11 +314,11 @@ export class example extends plugin {
       r18 ? `R18: ${r18}\n` : "",
       `标题：${title}\n`,
       `画师：${author}\n`,
-      `Tag：${tags.join(",")}\n`,
+      `Tag：${tags.join("，")}\n`,
       segment.image(urls.original)
     ]
     if (/pro/.test(e.msg)) {
-      Cfg.getforwardMsg(e, [msg])
+      Cfg.getCDsendMsg(e, [msg], false)
     } else {
       Cfg.recallsendMsg(e, msg)
     }

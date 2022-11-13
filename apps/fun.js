@@ -318,7 +318,7 @@ export class example extends plugin {
       segment.image(urls.original)
     ]
     if (/pro/.test(e.msg)) {
-      Cfg.getforwardMsg(e, msg)
+      Cfg.getforwardMsg(e, [msg])
     } else {
       Cfg.recallsendMsg(e, msg)
     }

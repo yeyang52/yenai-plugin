@@ -56,12 +56,12 @@ export class NEWCMD extends plugin {
 
     if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply("❎ 该命令仅限管理员可用", true);
 
-    let qq = e.message[0].text.replace(/#|重新验证/g, "").trim();
+    let qq = e.msg.replace(/#|重新验证/g, "").trim();
 
-    if (e.message[1]) {
-      qq = e.message[1].qq;
+    if (e.message.length != 1) {
+      qq = e.message.find(item => item.type == "at")?.qq
     } else {
-      qq = qq.match(/[1-9]\d*/g);
+      qq = Number(qq.match(/[1-9]\d*/g));
     }
     if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
 
@@ -70,7 +70,8 @@ export class NEWCMD extends plugin {
     if (cfg.masterQQ.includes(qq)) return e.reply("❎ 该命令对机器人管理员无效");
 
     if (temp[qq + e.group_id]) return e.reply("❎ 目标群成员处于验证状态");
-
+    console.log(qq);
+    console.log(qq + e.group_id);
     await verify(qq, e.group_id, e)
   }
   //绕过验证
@@ -88,12 +89,13 @@ export class NEWCMD extends plugin {
     if (e.message.length != 1) {
       qq = e.message.find(item => item.type == "at")?.qq
     } else {
-      qq = qq.match(/[1-9]\d*/g);
+      qq = Number(qq.match(/[1-9]\d*/g));
     }
     if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
 
     if (qq == Bot.uin) return
-
+    console.log(qq);
+    console.log(qq + e.group_id);
     if (!temp[qq + e.group_id]) return e.reply("❎ 目标群成员当前无需验证");
 
     clearTimeout(temp[qq + e.group_id].kickTimer);

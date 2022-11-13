@@ -70,8 +70,7 @@ export class NEWCMD extends plugin {
     if (cfg.masterQQ.includes(qq)) return e.reply("❎ 该命令对机器人管理员无效");
 
     if (temp[qq + e.group_id]) return e.reply("❎ 目标群成员处于验证状态");
-    console.log(qq);
-    console.log(qq + e.group_id);
+
     await verify(qq, e.group_id, e)
   }
   //绕过验证
@@ -94,8 +93,7 @@ export class NEWCMD extends plugin {
     if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
 
     if (qq == Bot.uin) return
-    console.log(qq);
-    console.log(qq + e.group_id);
+   
     if (!temp[qq + e.group_id]) return e.reply("❎ 目标群成员当前无需验证");
 
     clearTimeout(temp[qq + e.group_id].kickTimer);

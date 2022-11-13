@@ -194,29 +194,54 @@ export default class Pixiv {
      * @return {Array}
      */
     async public(keyword, page = "1") {
-        let userapi = `https://www.vilipix.com/api/v1/search/user?type=author&keyword=${keyword}&limit=30&offset=0`
-        let user = await this.getfetch(userapi)
-        if (!user) return false
-        if (user.data.count == 0) {
-            this.e.reply("呜呜呜，人家没有找到这个淫d(ŐдŐ๑)")
-            return false;
-        }
-        let { user_id, nick_name, avatar, desc } = user.data.rows[0]
-        let list = [[
-            segment.image(avatar),
-            `\nuid：${user_id}\n`,
-            `画师：${nick_name}\n`,
-            `介绍：${lodash.truncate(desc)}`
-        ]]
-        let api = `https://api.moedog.org/pixiv/v2/?type=member_illust&id=${user_id}`
-        let res = await this.getfetch(api)
-        if (!res) return false;
-        if (lodash.isEmpty(res.illusts)) {
-            this.e.reply("Σ(っ °Д °;)っ这个淫居然没有插画")
-            return false;
+        //关键词搜索
+        if (!/^\d+$/.test(keyword)) {
+            let wordapi = `https://api.moedog.org/pixiv/v2/?type=search_user&word=${keyword}`
+            let wordlist = await this.getfetch(wordapi)
+            if (!wordlist) return false
+            if (lodash.isEmpty(wordlist.user_previews)) {
+                this.e.reply("呜呜呜，人家没有找到这个淫d(ŐдŐ๑)")
+                return false;
+            }
+            keyword = wordlist.user_previews[0].user.id
         }
         let proxy = await redis.get(this.proxy)
+        // let userapi = `https://www.vilipix.com/api/v1/search/user?type=author&keyword=${keyword}&limit=30&offset=0`
+        let userapi = `https://api.moedog.org/pixiv/v2/?type=member&id=${keyword}`
+        let user = await this.getfetch(userapi)
+        if (!user) return false
 
+        if (user.error) {
+            this.e.reply(user.error.user_message)
+            return false;
+        }
+
+        let { id, name, comment, profile_image_urls } = user.user
+        let { total_follow_users, total_illust_bookmarks_public, total_illusts } = user.profile
+        let list = [[
+            segment.image(profile_image_urls.medium.replace("i.pximg.net", proxy)),
+            `\nuid：${id}\n`,
+            `画师：${name}\n`,
+            `作品：${total_illusts}\n`,
+            `关注：${total_follow_users}\n`,
+            `收藏：${total_illust_bookmarks_public}\n`,
+            `介绍：${lodash.truncate(comment)}`
+        ]]
+        //作品
+        let api = `https://api.moedog.org/pixiv/v2/?type=member_illust&id=${id}&page=${page}`
+        let res = await this.getfetch(api)
+        if (!res) return false;
+        //没有作品直接返回信息
+        if (lodash.isEmpty(res.illusts)) {
+            list.push("Σ(っ °Д °;)っ这个淫居然没有作品")
+            return list
+        }
+        let illustsall = Math.ceil(total_illusts / 30)
+
+        if (page > illustsall) {
+            this.e.reply("这个淫已经没有涩图给你辣(oＡo川)")
+            return false
+        }
         let illusts = res.illusts.map(item => {
             let url
             let { id, title, tags, total_bookmarks, total_view, meta_single_page, meta_pages } = item;
@@ -235,18 +260,12 @@ export default class Pixiv {
                 segment.image(url),
             ]
         })
-        //分页
-        let branch = Cfg.returnAllPageFunc(30, illusts)
-        if (page > branch.length) {
-            this.e.reply("这个淫已经没有涩图给你辣(oＡo川)")
-            return false
-        }
-        if (page < branch.length) {
+
+        list.push(`当前为第${page}页，共${illustsall}页，本页共${illusts.length}张，总共${total_illusts}张`)
+        if (page < illustsall) {
             list.push(`可使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页`)
         }
-        let entbranch = branch[page - 1].list
-        list.push(`当前为第${page}页，共${branch.length}页，本页共${entbranch.length}张，总共${illusts.length}张`)
-        list.push(...entbranch)
+        list.push(...illusts)
 
         // let api = `https://www.vilipix.com/api/v1/picture/public?sort=new&type=0&author_user_id=${user_id}&limit=30&offset=${(page - 1) * 30}`
         // let res = await this.getfetch(api)

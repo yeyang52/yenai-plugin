@@ -7,6 +7,8 @@ import lodash from 'lodash'
 
 let Qzonedetermine = false;
 let groupPhotoid = '';
+let FriendsReg = new RegExp("#发好友\\s?(\\d+)\\s?(.*)")
+let GroupmsgReg = new RegExp("#发群聊\\s?(\\d{5,}|(\\d(,\\d){0,2}))\\s?(.*)")
 export class example extends plugin {
   constructor() {
     super({
@@ -31,11 +33,11 @@ export class example extends plugin {
           fnc: 'State'
         },
         {
-          reg: '^#发好友.*$',
+          reg: FriendsReg,
           fnc: 'Friends'
         },
         {
-          reg: '^#发群聊.*$',
+          reg: GroupmsgReg,
           fnc: 'Groupmsg'
         },
         {
@@ -349,18 +351,9 @@ export class example extends plugin {
   /** 发好友*/
   async Friends(e) {
     if (!e.isMaster) return;
-
-    let msgs = e.message[0].text.split(" ")
-    if (msgs.length == 1 && !(/\d/.test(msgs[0]))) return e.reply("❎ QQ号不能为空");
-    let qq
-    if (/\d/.test(msgs[0])) {
-      qq = msgs[0].match(/[1-9]\d*/g)
-      e.message[0].text = msgs.slice(1).join(" ");
-    } else {
-      qq = msgs[1]
-      e.message[0].text = msgs.slice(2).join(" ");
-    }
-
+    let regRet = FriendsReg.exec(e.msg)
+    let qq = regRet[1]
+    e.message[0].text = regRet[2]
     if (!/^\d+$/.test(qq)) return e.reply("❎ QQ号不正确，人家做不到的啦>_<~");
 
     if (!Bot.fl.get(Number(qq))) return e.reply("❎ 好友列表查无此人");
@@ -379,18 +372,15 @@ export class example extends plugin {
   async Groupmsg(e) {
     if (!e.isMaster) return;
 
-    let msgs = e.message[0].text.split(" ")
+    let regRet = GroupmsgReg.exec(e.msg)
 
-    e.message[0].text = msgs.slice(2).join(" ");
+    let gpid = regRet[1]
 
-    if (msgs.length < 2) return e.reply("❎ 您输入的指令不合法");
+    e.message[0].text = regRet[4]
 
     if (!e.message[0].text) e.message.shift()
 
-    if (e.message.length === 0) return e.reply("❎ 消息不能为空");
-
-    //根据列表发送消息
-    if (/\d,\d/.test(msgs[1]) || /^\d$/.test(msgs[1])) {
+    if (regRet[2]) {
       let groupidList = [];
       let sendList = [];
 
@@ -401,9 +391,7 @@ export class example extends plugin {
         groupidList.push(item.group_id);
       })
 
-      let groupids = msgs[1].split(",");
-      //判断是否大于群数量
-      if (groupids.every((item) => item > listMap.length)) return e.reply("❎ 超过群聊最大数")
+      let groupids = gpid.split(",");
 
       groupids.forEach((item) => {
         sendList.push(groupidList[Number(item) - 1]);
@@ -427,11 +415,13 @@ export class example extends plugin {
       return false;
     }
 
-    if (!/^\d+$/.test(msgs[1])) return e.reply("❎ 您输入的群号不合法");
+    if (e.message.length === 0) return e.reply("❎ 消息不能为空");
 
-    if (!Bot.gl.get(Number(msgs[1]))) return e.reply("❎ 群聊列表查无此群");
+    if (!/^\d+$/.test(gpid)) return e.reply("❎ 您输入的群号不合法");
 
-    await Bot.pickGroup(msgs[1]).sendMsg(e.message)
+    if (!Bot.gl.get(Number(gpid))) return e.reply("❎ 群聊列表查无此群");
+
+    await Bot.pickGroup(gpid).sendMsg(e.message)
       .then(() => e.reply("✅ 群聊消息已送达"))
       .catch((err) => e.reply(`❎ 发送失败\n错误信息为:${err.message}`))
   }

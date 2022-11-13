@@ -217,7 +217,7 @@ export class example extends plugin {
   //黑丝
   async heisiwu(e) {
     if (!e.isMaster) {
-      if (!Config.Notice.sese) return
+      if (!Config.Notice.sesepro) return
     }
     await e.reply("少女祈祷中......")
     let types = heisiwreg.exec(e.msg)
@@ -303,6 +303,9 @@ export class example extends plugin {
     }
     let url = "https://ovooa.com/API/Pximg/"
     if (/pro/.test(e.msg)) {
+      if (!e.isMaster) {
+        if (!Config.Notice.sesepro) return
+      }
       url = "https://xiaobapi.top/api/xb/api/setu.php"
     }
     let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))

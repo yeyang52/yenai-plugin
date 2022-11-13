@@ -3,7 +3,34 @@ import fs from "fs";
 import lodash from "lodash";
 import { Config, render } from '../components/index.js'
 
+const configs = {
+    "好友消息": "privateMessage",
+    "群消息": "groupMessage",
+    "群临时消息": "grouptemporaryMessage",
+    "群撤回": "groupRecall",
+    "好友撤回": "PrivateRecall",
+    // 申请通知
+    "好友申请": "friendRequest",
+    "群邀请": "groupInviteRequest",
+    // 信息变动
+    "群管理变动": "groupAdminChange",
+    // 列表变动
+    "好友列表变动": "friendNumberChange",
+    "群聊列表变动": "groupNumberChange",
+    "群成员变动": "groupMemberNumberChange",
+    // 其他通知
+    "闪照": "flashPhoto",
+    "禁言": "botBeenBanned",
+    "全部通知": "notificationsAll",
+    "删除缓存": "deltime",
+    "涩涩": "sese",
+    "状态": "state",
+    "涩涩pro": "sesepro"
+}
+
 let rediskey = `yenai:proxy`
+let deltimereg = new RegExp('^#椰奶设置删除缓存时间(\\d+)秒?$')
+let managereg = new RegExp(`^#椰奶设置(${Object.keys(configs).join("|")})(开启|关闭)$`)
 export class NewConfig extends plugin {
     constructor() {
         super({
@@ -12,11 +39,11 @@ export class NewConfig extends plugin {
             priority: 100,
             rule: [
                 {
-                    reg: '^#椰奶设置(.*)(开启|关闭)$',
+                    reg: managereg,
                     fnc: 'Config_manage'
                 },
                 {
-                    reg: '^#椰奶设置删除缓存时间(.*)$',
+                    reg: deltimereg,
                     fnc: 'Config_deltime'
                 },
                 {
@@ -47,7 +74,9 @@ export class NewConfig extends plugin {
         if (!e.isMaster) return
         // 解析消息
         let index = e.msg.replace(/#|椰奶设置|开启|关闭/g, "")
+        if (index == "涩涩pro") {
 
+        }
         if (!configs.hasOwnProperty(index)) return
         // 开启还是关闭
         if (/开启/.test(e.msg)) {
@@ -64,11 +93,7 @@ export class NewConfig extends plugin {
     async Config_deltime(e) {
         if (!e.isMaster) return
 
-        let time = e.msg.replace(/#|椰奶设置删除缓存时间/g, '').trim()
-
-        time = time.match(/\d+/g)
-
-        if (!time) return e.reply('❎ 请输入正确的时间(单位s)')
+        let time = deltimereg.exec(e.msg)[1]
 
         if (time < 120) return e.reply('❎ 时间不能小于两分钟')
 
@@ -194,26 +219,3 @@ const getStatus = function (rote) {
 
 }
 
-const configs = {
-    好友消息: "privateMessage",
-    群消息: "groupMessage",
-    群临时消息: "grouptemporaryMessage",
-    群撤回: "groupRecall",
-    好友撤回: "PrivateRecall",
-    // 申请通知
-    好友申请: "friendRequest",
-    群邀请: "groupInviteRequest",
-    // 信息变动
-    群管理变动: "groupAdminChange",
-    // 列表变动
-    好友列表变动: "friendNumberChange",
-    群聊列表变动: "groupNumberChange",
-    群成员变动: "groupMemberNumberChange",
-    // 其他通知
-    闪照: "flashPhoto",
-    禁言: "botBeenBanned",
-    全部通知: "notificationsAll",
-    删除缓存: "deltime",
-    涩涩: "sese",
-    状态: "state"
-}

@@ -23,7 +23,7 @@ let listreg = new RegExp(`^#?看看(${Object.keys(type).join("|")})榜\\s?(第($
 let tagreg = new RegExp('^#?tag搜图(.*)$', "i")
 let pidreg = new RegExp('^#?pid搜图\\s?(\\d+)$', "i")
 let uidreg = new RegExp('^#?uid搜图(.*)$', "i")
-let randomimgreg = new RegExp(`^#?来(${Numreg})?张(好(康|看)(的|哒)|hkd)$`)
+let randomimgreg = new RegExp(`^#?来(${Numreg})?张(好(康|看)(的|哒)|hkd|涩图)$`)
 
 export class example extends plugin {
     constructor() {

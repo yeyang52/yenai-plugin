@@ -83,10 +83,10 @@ export class NEWCMD extends plugin {
 
     if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply("❎ 该命令仅限管理员可用", true);
 
-    let qq = e.message[0].text.replace(/#|绕过验证/g, "").trim();
+    let qq = e.msg.replace(/#|绕过验证/g, "").trim();
 
-    if (e.message[1]) {
-      qq = e.message[1].qq;
+    if (e.message.length != 1) {
+      qq = e.message.find(item => item.type == "at")?.qq
     } else {
       qq = qq.match(/[1-9]\d*/g);
     }

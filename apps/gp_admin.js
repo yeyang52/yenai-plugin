@@ -207,7 +207,7 @@ export class Basics extends plugin {
             return e.reply("❎ 该命令仅限管理员可用", true);
         }
 
-        let qq = e.message[0].text.replace(/#|解禁/g, "").trim();
+        let qq = e.msg.replace(/#|解禁/g, "").trim();
 
         if (e.message.length != 1) {
             qq = e.message.find(item => item.type == "at")?.qq

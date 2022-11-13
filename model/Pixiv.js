@@ -38,8 +38,8 @@ export default class Pixiv {
         }
         let msg = [
             `标题：${title}\n`,
-            `PID：${id}\n`,
             `画师：${user.name}\n`,
+            `PID：${id}\n`,
             `UID：${user.id}\n`,
             `点赞：${total_bookmarks}\n`,
             `访问：${total_view}\n`,

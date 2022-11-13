@@ -118,10 +118,11 @@ class Config {
             forwardMsg = await e.friend.makeForwardMsg(forwardMsg)
         }
         //处理转发卡片
-        forwardMsg.data = forwardMsg.data.replace(/\n/g, '')
-        let replace = forwardMsg.data.match(new RegExp(`<title color="#777777" size="26">(.+?)<\/title>`))
-        forwardMsg.data = forwardMsg.data.replace(replace[1], "涩批(//// ^ ////)")
-
+        forwardMsg.data = forwardMsg.data
+            .replace('<?xml version="1.0" encoding="utf-8"?>', '<?xml version="1.0" encoding="utf-8" ?>')
+            .replace(/\n/g, '')
+            .replace(/<title color="#777777" size="26">(.+?)<\/title>/g, '___')
+            .replace(/___+/, '<title color="#777777" size="26">涩批(//// ^ ////)</title>');
         //发送消息
         let res = await e.reply(forwardMsg, false, { recallMsg: time })
         if (!res) {

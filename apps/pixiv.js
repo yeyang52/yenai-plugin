@@ -45,7 +45,7 @@ export class example extends plugin {
                     fnc: 'Tags'
                 },
                 {
-                    reg: '^#?查看热门(t|T)(a|A)(g|G)$',
+                    reg: '^#?(查看|获取)?热门(t|T)(a|A)(g|G)$',
                     fnc: 'trend_tags'
                 },
                 {

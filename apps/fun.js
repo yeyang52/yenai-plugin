@@ -317,7 +317,12 @@ export class example extends plugin {
       `Tag：${tags.join(",")}\n`,
       segment.image(urls.original)
     ]
-    await Cfg.recallsendMsg(e, msg)
+    if (/pro/.test(e.msg)) {
+      Cfg.getforwardMsg(e, msg)
+    } else {
+      Cfg.recallsendMsg(e, msg)
+    }
+
   }
 
   //api大集合

@@ -8,7 +8,8 @@ import lodash from 'lodash'
 let Qzonedetermine = false;
 let groupPhotoid = '';
 let FriendsReg = new RegExp("#发好友\\s?(\\d+)\\s?(.*)")
-let GroupmsgReg = new RegExp("#发群聊\\s?(\\d{5,}|(\\d(,\\d){0,2}))\\s?(.*)")
+let GroupmsgReg = new RegExp("#发群聊\\s?(\\d+)\\s?(.*)")
+let GrouplistmsgReg = new RegExp("#发群列表\\s?(\\d+(,\\d+){0,})\\s?(.*)")
 export class example extends plugin {
   constructor() {
     super({
@@ -40,6 +41,11 @@ export class example extends plugin {
           reg: GroupmsgReg,
           fnc: 'Groupmsg'
         },
+        {
+          reg: GrouplistmsgReg,
+          fnc: 'Grouplistmsg'
+        },
+
         {
           reg: '^#退群.*$',
           fnc: 'Quit'
@@ -376,44 +382,9 @@ export class example extends plugin {
 
     let gpid = regRet[1]
 
-    e.message[0].text = regRet[4]
+    e.message[0].text = regRet[2]
 
     if (!e.message[0].text) e.message.shift()
-
-    if (regRet[2]) {
-      let groupidList = [];
-      let sendList = [];
-
-      //获取群列表
-      let listMap = Array.from(Bot.gl.values());
-
-      listMap.forEach((item) => {
-        groupidList.push(item.group_id);
-      })
-
-      let groupids = gpid.split(",");
-
-      groupids.forEach((item) => {
-        sendList.push(groupidList[Number(item) - 1]);
-      })
-
-      if (sendList.length > 3) return e.reply("❎ 不能同时发太多群聊，号寄概率增加！！！")
-
-      if (sendList.length === 1) {
-        await Bot.pickGroup(sendList[0]).sendMsg(e.message)
-          .then(() => e.reply("✅ " + sendList[0] + " 群聊消息已送达"))
-          .catch((err) => e.reply(`❎ ${sendList[0]} 发送失败\n错误信息为:${err.message}`))
-      } else {
-        e.reply("发送多个群聊，将每5秒发送一条消息！")
-        for (let i of sendList) {
-          await Bot.pickGroup(i).sendMsg(e.message)
-            .then(() => e.reply("✅ " + i + " 群聊消息已送达"))
-            .catch((err) => e.reply(`❎ ${i} 发送失败\n错误信息为:${err.message}`))
-          await common.sleep(5000)
-        }
-      }
-      return false;
-    }
 
     if (e.message.length === 0) return e.reply("❎ 消息不能为空");
 
@@ -424,6 +395,56 @@ export class example extends plugin {
     await Bot.pickGroup(gpid).sendMsg(e.message)
       .then(() => e.reply("✅ 群聊消息已送达"))
       .catch((err) => e.reply(`❎ 发送失败\n错误信息为:${err.message}`))
+  }
+
+  //发送群列表
+  async Grouplistmsg(e) {
+    if (!e.isMaster) return;
+    //获取参数
+    let regRet = GrouplistmsgReg.exec(e.msg)
+    let gpid = regRet[1]
+    e.message[0].text = regRet[3]
+
+    if (!e.message[0].text) e.message.shift()
+
+    if (e.message.length === 0) return e.reply("❎ 消息不能为空");
+
+    let groupidList = [];
+    let sendList = [];
+
+    //获取群列表
+    let listMap = Array.from(Bot.gl.values());
+
+    listMap.forEach((item) => {
+      groupidList.push(item.group_id);
+    })
+
+    let groupids = gpid.split(",");
+    console.log(groupidList.length);
+    if (!groupids.every(item => item <= groupidList.length)) return e.reply("❎ 序号超过合法值！！！")
+
+    groupids.forEach((item) => {
+      sendList.push(groupidList[Number(item) - 1]);
+    })
+
+
+    if (sendList.length > 3) return e.reply("❎ 不能同时发太多群聊，号寄概率增加！！！")
+
+    if (sendList.length === 1) {
+      await Bot.pickGroup(sendList[0]).sendMsg(e.message)
+        .then(() => e.reply("✅ " + sendList[0] + " 群聊消息已送达"))
+        .catch((err) => e.reply(`❎ ${sendList[0]} 发送失败\n错误信息为:${err.message}`))
+    } else {
+      e.reply("发送多个群聊，将每5秒发送一条消息！")
+      for (let i of sendList) {
+        await Bot.pickGroup(i).sendMsg(e.message)
+          .then(() => e.reply("✅ " + i + " 群聊消息已送达"))
+          .catch((err) => e.reply(`❎ ${i} 发送失败\n错误信息为:${err.message}`))
+        await common.sleep(5000)
+      }
+    }
+    return false;
+
   }
 
 
@@ -728,7 +749,7 @@ export class example extends plugin {
     message.push(list)
     if (yes) {
       message.push("可使用 #退群123456789 来退出某群")
-      message.push("可使用 #发群聊 <序号> <消息> 来快速发送消息")
+      message.push("可使用 #发群列表 <序号> <消息> 来快速发送消息")
       message.push(`多个群聊请用 "," 分隔 不能大于3 容易寄`)
     } else {
       message.push("可使用 #删好友123456789 来删除某人")

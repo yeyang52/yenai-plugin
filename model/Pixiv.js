@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 import lodash from "lodash";
 import { segment } from "oicq";
-import Cfg from "./Config.js"
+import { Config } from '../components/index.js'
 export default class Pixiv {
     constructor(e = {}) {
         this.e = e
@@ -47,6 +47,12 @@ export default class Pixiv {
             `直链：https://pixiv.re/${id}.jpg\n`,
             `传送门：https://www.pixiv.net/artworks/${id}`
         ]
+        if (/R-18|18+/i.test(msg[6])) {
+            if (!this.e.isMaster) {
+                this.e.reply(`该作品为R-18类型请自行使用链接查看：\nhttps://pixiv.re/${id}.jpg`)
+                if (!Config.Notice.sesepro) return false;
+            }
+        }
         let img = url.map(item => segment.image(item))
         return { msg, img }
     }
@@ -261,10 +267,18 @@ export default class Pixiv {
                 segment.image(url),
             ]
         })
-
         list.push(`当前为第${page}页，共${illustsall}页，本页共${illusts.length}张，总共${total_illusts}张`)
         if (page < illustsall) {
             list.push(`可使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页`)
+        }
+        if (!this.e.isMaster) {
+            if (!Config.Notice.sesepro) {
+                let illustsfilter = illusts.filter(item => !/R-18|18\+/i.test(item[4]))
+                if (illustsfilter.length != illusts.length) {
+                    list.push("已自动过滤本页R-18内容")
+                    illusts = illustsfilter
+                }
+            }
         }
         list.push(...illusts)
 

@@ -1,5 +1,4 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import { segment } from "oicq";
 import Pixiv from '../model/Pixiv.js'
 import Cfg from '../model/Config.js';
 import moment from 'moment';
@@ -94,7 +93,7 @@ export class example extends plugin {
 
         let mode = `${type[regRet[1]]}`;
 
-        let day = /漫画/.test(e.msg) ? 3 : 2
+        let day = moment().hour() >= 12 ? 1 : 2
 
         let date = moment().subtract(day, "days").format("YYYY-MM-DD")
 

@@ -73,18 +73,19 @@ export class NewConfig extends plugin {
     async Config_manage(e) {
         if (!e.isMaster) return
         // 解析消息
-        let index = e.msg.replace(/#|椰奶设置|开启|关闭/g, "")
-        if (index == "涩涩pro") {
+        let regRet = managereg.exec(e.msg)
+        let index = regRet[1]
+        let yes = regRet[2] == "开启" ? true : false
 
-        }
         if (!configs.hasOwnProperty(index)) return
-        // 开启还是关闭
-        if (/开启/.test(e.msg)) {
-            Config.modify("whole", configs[index], true)
-        } else {
-            Config.modify("whole", configs[index], false)
+        // 处理
+        Config.modify("whole", configs[index], yes)
+        //单独处理
+        if (index == "涩涩pro" && yes) {
+            Config.modify("whole", "sese", yes)
+        } else if (index == "涩涩" && !yes) {
+            Config.modify("whole", "sesepro", yes)
         }
-        // await 
         this.yenaiset(e)
         return true;
     }

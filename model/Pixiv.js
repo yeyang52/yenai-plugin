@@ -44,7 +44,8 @@ export default class Pixiv {
             `点赞：${total_bookmarks}\n`,
             `访问：${total_view}\n`,
             `Tag：${tags}\n`,
-            `直链：https://pixiv.re/${id}.jpg`,
+            `直链：https://pixiv.re/${id}.jpg\n`,
+            `传送门：https://www.pixiv.net/artworks/${id}`
         ]
         let img = url.map(item => segment.image(item))
         return { msg, img }

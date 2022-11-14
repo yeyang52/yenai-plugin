@@ -76,14 +76,13 @@ export class NewConfig extends plugin {
         let regRet = managereg.exec(e.msg)
         let index = regRet[1]
         let yes = regRet[2] == "开启" ? true : false
-
-        if (!configs.hasOwnProperty(index)) return
         // 处理
         Config.modify("whole", configs[index], yes)
         //单独处理
         if (index == "涩涩pro" && yes) {
             Config.modify("whole", "sese", yes)
-        } else if (index == "涩涩" && !yes) {
+        }
+        if (index == "涩涩" && !yes) {
             Config.modify("whole", "sesepro", yes)
         }
         this.yenaiset(e)
@@ -111,7 +110,7 @@ export class NewConfig extends plugin {
         if (/启用/.test(e.msg)) {
             yes = true;
         }
-        let no = ["sese", "deltime", "notificationsAll", "state"]
+        let no = ["sese", "deltime", "notificationsAll", "state", "sesepro"]
 
         if (yes) {
             for (let i in configs) {

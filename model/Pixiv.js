@@ -118,7 +118,7 @@ export default class Pixiv {
      * @param {String} mode 榜单类型
      * @return {Array} 
      */
-    async Rank(page, date, mode = "周", r18 = false) {
+    async Rank(page, date, mode = "周", r18 = false, Specifydate = false) {
         // let api = `https://api.bbmang.me/ranks?page=${page}&date=${date}&mode=${this.ranktype[mode]}&pageSize=30`
         //转为大写
         mode = lodash.toUpper(mode)
@@ -155,7 +155,7 @@ export default class Pixiv {
         if (!res) return false
 
         if (lodash.isEmpty(res.illusts)) {
-            this.e.reply("暂无数据，请稍后重试哦(。-ω-)zzz")
+            this.e.reply("暂无数据，请等待榜单更新哦(。-ω-)zzz")
             return false
         };
         let proxy = await redis.get(this.proxy)
@@ -178,7 +178,7 @@ export default class Pixiv {
             `当前为第${page}页，共${pageAll}页，本页共${illusts.length}张，总共${pageSize}张`,
         ];
         if (page < pageAll) {
-            list.push(`可使用 "#看看${mode}${r18 ? "R18" : ""}榜第${page - 0 + 1}页" 翻页`)
+            list.push(`可使用 "#看看${Specifydate ? `${date}的` : ""}${mode}${r18 ? "R18" : ""}榜第${page - 0 + 1}页" 翻页`)
         }
 
         list.push(...illusts)

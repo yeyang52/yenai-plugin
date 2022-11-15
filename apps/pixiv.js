@@ -8,7 +8,7 @@ import common from '../model/common.js'
 let ranktype = new Pixiv().RankReg
 let Numreg = "[一壹二两三四五六七八九十百千万亿\\d]+"
 //正则
-let listreg = new RegExp(`^#?看看(${Object.keys(ranktype).join("|")})(r18)?榜\\s?(第(${Numreg})页)?$`,"i")
+let listreg = new RegExp(`^#?看看((\\d{4}-\\d{1,2}-\\d{1,2})的)?(${Object.keys(ranktype).join("|")})(r18)?榜\\s?(第(${Numreg})页)?$`, "i")
 let tagreg = new RegExp('^#?tag搜图(.*)$', "i")
 let pidreg = new RegExp('^#?pid搜图\\s?(\\d+)$', "i")
 let uidreg = new RegExp('^#?uid搜图(.*)$', "i")
@@ -80,14 +80,16 @@ export class example extends plugin {
         await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
 
         let regRet = listreg.exec(e.msg)
-        
+
         let day = moment().hour() >= 12 ? 1 : 2
 
         let date = moment().subtract(day, "days").format("YYYY-MM-DD")
 
-        let page = common.translateChinaNum(regRet[4] || "1")
-        
-        let res = await new Pixiv(e).Rank(page, date, regRet[1], !!regRet[2])
+        if (regRet[2]) date = regRet[2]
+
+        let page = common.translateChinaNum(regRet[6] || "1")
+
+        let res = await new Pixiv(e).Rank(page, date, regRet[3], !!regRet[5], !!regRet[2])
 
         if (!res) return
 

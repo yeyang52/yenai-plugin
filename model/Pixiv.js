@@ -217,8 +217,7 @@ export default class Pixiv {
             let { picture_id, title, regular_url, tags, like_total } = i
             list.push([
                 `标题：${title}\n`,
-                `点赞: ${like_total}\n`,
-                `插画ID：${picture_id}\n`,
+                `PID：${picture_id}\n`,
                 `Tag：${lodash.truncate(tags)}\n`,
                 segment.image(regular_url)
             ])

@@ -212,7 +212,7 @@ export default class Pixiv {
         if (page < pageall) {
             list.push(`可使用 "#tag搜图${tag}第${page - 0 + 1}页" 翻页`)
         }
-        res.data.rows.sort((a, b) => a.like_total - b.like_total)
+        res.data.rows.sort((a, b) => b.like_total - a.like_total)
         for (let i of res.data.rows) {
             let { picture_id, title, regular_url, tags, like_total } = i
             list.push([

@@ -242,9 +242,13 @@ export default class Pixiv {
             return false;
         }
         let proxy = await redis.get(this.proxy)
+        let r18 = await setu.getr18(this.e)
         let illusts = res.illusts.map(item => {
             let list = this.format(item, proxy)
             let { id, title, user, tags, total_bookmarks, image_urls } = list
+            if (!r18) {
+                if (!tags.every(item => !/R-18|18\+/i.test(item[5]))) return false
+            }
             return [
                 `标题：${title}\n`,
                 `画师：${user.name}\n`,
@@ -256,12 +260,10 @@ export default class Pixiv {
             ]
         })
         let filter = false
-        if (!await setu.getr18(this.e)) {
-            let filterillusts = illusts.filter(item => !/R-18|18\+/i.test(item[5]))
-            if (!lodash.isEqual(illusts, filterillusts)) {
-                filter = true
-                illusts = filterillusts
-            }
+        let filterillusts = lodash.compact(illusts)
+        if (!lodash.isEqual(illusts, filterillusts)) {
+            filter = true
+            illusts = filterillusts
         }
 
         let list = [
@@ -370,9 +372,13 @@ export default class Pixiv {
             this.e.reply("这个淫已经没有涩图给你辣(oＡo川)")
             return false
         }
+        let r18 = await setu.getr18(this.e)
         let illusts = res.illusts.map(item => {
             let res = this.format(item, proxy)
             let { id, title, tags, total_bookmarks, total_view, url } = res;
+            if (!r18) {
+                if (!tags.every(item => !/R-18|18\+/i.test(item[5]))) return false
+            }
             return [
                 `标题：${title}\n`,
                 `PID：${id}\n`,
@@ -386,13 +392,12 @@ export default class Pixiv {
         if (page < illustsall) {
             list.push(`可使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页`)
         }
-        if (!await setu.getr18(this.e)) {
-            let illustsfilter = illusts.filter(item => !/R-18|18\+/i.test(item[4]))
-            if (!lodash.isEqual(illusts, filterillusts)) {
-                list.push("已自动过滤本页R-18内容")
-                illusts = illustsfilter
-            }
+        let filterillusts = lodash.compact(illusts)
+        if (!lodash.isEqual(illusts, filterillusts)) {
+            list.push("已自动过滤本页R-18内容")
+            illusts = filterillusts
         }
+
 
         list.push(...illusts)
 

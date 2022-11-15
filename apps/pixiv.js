@@ -122,7 +122,7 @@ export class example extends plugin {
         }
         let res = null;
         if (regRet[1]) {
-            if (!e.isMaster) if (!Config.Notice.sesepro) return
+            if (!e.isMaster) if (!Config.Notice.sesepro) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
             res = await new Pixiv(e).searchTagspro(tag, page)
         } else {
             res = await new Pixiv(e).searchTags(tag, page)

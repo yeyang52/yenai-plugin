@@ -247,7 +247,7 @@ export default class Pixiv {
             let list = this.format(item, proxy)
             let { id, title, user, tags, total_bookmarks, image_urls } = list
             if (!r18) {
-                if (!tags.every(item => !/R-18|18\+/i.test(item[5]))) return false
+                if (!tags.every(item => !/18/ig.test(item))) return false
             }
             return [
                 `标题：${title}\n`,
@@ -261,6 +261,10 @@ export default class Pixiv {
         })
         let filter = false
         let filterillusts = lodash.compact(illusts)
+        if (lodash.isEmpty(filterillusts)) {
+            this.e.reply("该页全为涩涩内容已全部过滤(#／。＼#)")
+            return false
+        }
         if (!lodash.isEqual(illusts, filterillusts)) {
             filter = true
             illusts = filterillusts
@@ -377,7 +381,7 @@ export default class Pixiv {
             let res = this.format(item, proxy)
             let { id, title, tags, total_bookmarks, total_view, url } = res;
             if (!r18) {
-                if (!tags.every(item => !/R-18|18\+/i.test(item[5]))) return false
+                if (!tags.every(item => !/18/ig.test(item))) return false
             }
             return [
                 `标题：${title}\n`,
@@ -393,6 +397,10 @@ export default class Pixiv {
             list.push(`可使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页`)
         }
         let filterillusts = lodash.compact(illusts)
+        if (lodash.isEmpty(filterillusts)) {
+            this.e.reply("该页全为涩涩内容已全部过滤(#／。＼#)")
+            return false
+        }
         if (!lodash.isEqual(illusts, filterillusts)) {
             list.push("已自动过滤本页R-18内容")
             illusts = filterillusts

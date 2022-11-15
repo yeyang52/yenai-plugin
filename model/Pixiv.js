@@ -413,7 +413,7 @@ export default class Pixiv {
             return false;
         })
     }
-    
+
     /**
      * @description: 格式化
      * @param {*} illusts
@@ -422,7 +422,7 @@ export default class Pixiv {
     format(illusts, proxy) {
         let url = []
         let { id, title, tags, total_bookmarks, total_view, meta_single_page, meta_pages, user, image_urls } = illusts;
-        tags = lodash.flattenDeep(tags?.map(item => Object.values(item))) || ""
+        tags = lodash.compact(lodash.flattenDeep(tags?.map(item => Object.values(item))))
         if (!lodash.isEmpty(meta_single_page)) {
             url.push(meta_single_page.original_image_url.replace("i.pximg.net", proxy))
         } else {

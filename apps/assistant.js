@@ -4,12 +4,14 @@ import fetch from 'node-fetch';
 import Cfg from '../model/Config.js';
 import common from '../../../lib/common/common.js'
 import lodash from 'lodash'
+import moment from 'moment'
 
 let Qzonedetermine = false;
 let groupPhotoid = '';
 let FriendsReg = new RegExp("#发好友\\s?(\\d+)\\s?(.*)")
 let GroupmsgReg = new RegExp("#发群聊\\s?(\\d+)\\s?(.*)")
 let GrouplistmsgReg = new RegExp("#发群列表\\s?(\\d+(,\\d+){0,})\\s?(.*)")
+let friend_typeReg = new RegExp('^#更改好友申请方式([0123])((.*)\\s(.*))?$')
 export class example extends plugin {
   constructor() {
     super({
@@ -67,7 +69,7 @@ export class example extends plugin {
           fnc: 'Face'
         },
         {
-          reg: '^#取说说列表.*$',
+          reg: '^#获?取说说列表.*$',
           fnc: 'Qzonelist'
         },
         {
@@ -109,7 +111,15 @@ export class example extends plugin {
         {
           reg: '^#?撤回$',
           fnc: 'recallMsgown'
-        }
+        },
+        {
+          reg: '^#(开启|关闭)好友添加$',
+          fnc: 'friend_switch'
+        },
+        {
+          reg: friend_typeReg,
+          fnc: 'friend_type'
+        },
       ]
     })
 
@@ -595,7 +605,7 @@ export class example extends plugin {
     let page = 5 * (res - 1)
     for (let i = 0 + page; i < 5 + page; i++) {
       if (!list[i]) break
-      let arr = `${i + 1}.${lodash.truncate(list[i].content, { "length": 15 })}\n- [${list[i].secret ? "私密" : "公开"}] | ${formatDate(list[i].created_time)} | ${list[i].commentlist ? list[i].commentlist.length : 0}条评论\n`
+      let arr = `${i + 1}.${lodash.truncate(list[i].content, { "length": 15 })}\n- [${list[i].secret ? "私密" : "公开"}] | ${moment(list[i].created_time * 1000).format("MM/DD HH:mm")} | ${list[i].commentlist ? list[i].commentlist.length : 0}条评论\n`
       msg.push(arr)
     }
     if (res > Math.ceil(list.length / 5)) return e.reply(`❎ 页数超过最大值`)
@@ -627,7 +637,7 @@ export class example extends plugin {
     if (!result) return e.reply(`❎ 接口请求失败`)
 
     if (/删除说说成功/.test(result)) {
-      e.reply(`✅ 删除说说成功：\n ${res}.${lodash.truncate(something.content, { "length": 15 })} \n - [${something.secret ? "私密" : "公开"}] | ${formatDate(something.created_time)} | ${something.commentlist ? something.commentlist.length : 0} 条评论`)
+      e.reply(`✅ 删除说说成功：\n ${res}.${lodash.truncate(something.content, { "length": 15 })} \n - [${something.secret ? "私密" : "公开"}] | ${moment(something.created_time * 1000).format("MM/DD HH:mm")} | ${something.commentlist ? something.commentlist.length : 0} 条评论`)
     } else if (/删除失败/.test(result)) {
       e.reply(`❎ 删除失败`)
     }
@@ -657,7 +667,7 @@ export class example extends plugin {
     if (result.pic) {
       msg.push(segment.image(result.pic[0].url1))
     }
-    msg.push(`\n- [${result.secret ? "私密" : "公开"}] | ${formatDate(result.t1_ntime)}`)
+    msg.push(`\n- [${result.secret ? "私密" : "公开"}] | ${moment(result.t1_ntime * 1000).format("MM/DD HH:mm")}`)
     e.reply(msg)
   }
 
@@ -843,28 +853,31 @@ export class example extends plugin {
     }
     if (e.isGroup) await e.recall();
   }
+  //开关好友添加
+  async friend_switch(e) {
+    if (!e.isMaster) return
+    let ck = Cfg.getck("ti.qq.com")
+    let api = `http://xiaobai.klizi.cn/API/qqgn/friend_switch.php?uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&type=${/开启/.test(e.msg) ? 1 : 2}`
+    let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
+    if (!res) return e.reply("接口失效辣(๑ŐдŐ)b")
+    e.reply(res.ActionStatus)
+  }
+  //好友申请方式
+  async friend_type(e) {
+    if (!e.isMaster) return
+    let regRet = friend_typeReg.exec(e.msg)
+    let ck = Cfg.getck("ti.qq.com")
+    if (regRet[1] == 0) return e.reply("1为允许所有人，2为需要验证，3为问答正确问答(需填参数question,answer)")
+    //单独处理
+    let isproblem = '';
+    if (regRet[1] == 3) {
+      if (!regRet[3] && !regRet[4]) return e.reply("❎ 请正确输入问题和答案！")
+      isproblem = `&question=${regRet[3]}&answer=${regRet[4]}`
+    }
+    let api = `http://xiaobai.klizi.cn/API/qqgn/friend_type.php?uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&type=${regRet[1]}${isproblem}`
+    let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
+    if (!res) return e.reply("接口失效辣(๑ŐдŐ)b")
+    e.reply(res.msg)
+  }
 
-}
-
-
-/**时间格式化 */
-function formatDate(time) {
-  var now = new Date(parseFloat(time) * 1000);
-  var month = now.getMonth() + 1;
-  var date = now.getDate();
-  if (month >= 1 && month <= 9) {
-    month = "0" + month;
-  }
-  if (date >= 0 && date <= 9) {
-    date = "0" + date;
-  }
-  var hour = now.getHours();
-  var minute = now.getMinutes();
-  if (hour >= 1 && hour <= 9) {
-    hour = "0" + hour;
-  }
-  if (minute >= 0 && minute <= 9) {
-    minute = "0" + minute;
-  }
-  return month + "/" + date + " " + hour + ":" + minute
 }

@@ -55,7 +55,7 @@ export class NewConfig extends plugin {
                     fnc: 'SetAll'
                 },
                 {
-                    reg: '^#椰奶更换代理(1|2|3|4)$',
+                    reg: '^#椰奶更换代理[1234]$',
                     fnc: 'proxy'
                 }
             ]

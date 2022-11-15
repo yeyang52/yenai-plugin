@@ -6,6 +6,64 @@ export default class Pixiv {
     constructor(e = {}) {
         this.e = e
         this.proxy = `yenai:proxy`
+        this.ranktype = {
+            "日": {
+                type: "day",
+                quantity: 500,
+                r18: 100,
+            },
+            "周": {
+                type: "week",
+                quantity: 500,
+                r18: 100,
+            },
+            "月": {
+                type: "month",
+                quantity: 500
+            },
+            "AI": {
+                type: "day_ai",
+                quantity: 50,
+                r18: 50,
+            },
+            "男性向": {
+                type: "day_male",
+                quantity: 500,
+                r18: 300,
+            },
+            "女性向": {
+                type: "day_female",
+                quantity: 500,
+                r18: 300,
+            },
+            "漫画日": {
+                type: "day_manga",
+                quantity: 500,
+                r18: 100,
+            },
+            "漫画周": {
+                type: "week_manga",
+                quantity: 500,
+                r18: 100,
+            },
+            "漫画月": {
+                type: "month_manga",
+                quantity: 500
+            },
+            "漫画新秀周": {
+                type: "week_rookie_manga",
+                quantity: 500
+            },
+            "新人": {
+                type: "week_rookie",
+                quantity: 500
+            },
+            "原创": {
+                type: "week_original",
+                quantity: 500
+            },
+
+        }
     }
     /**
      * @description: 获取插画信息
@@ -26,16 +84,9 @@ export default class Pixiv {
             this.e.reply(res.error.user_message || "无法获取数据")
             return false;
         }
-        let { id, title, meta_single_page, meta_pages, user, tags, total_bookmarks, total_view } = res.illust
-        tags = lodash.flattenDeep(tags?.map(item => Object.values(item))) || ""
-
-        let url = []
         let proxy = await redis.get(this.proxy)
-        if (!lodash.isEmpty(meta_single_page)) {
-            url.push(meta_single_page.original_image_url.replace("i.pximg.net", proxy))
-        } else {
-            url = meta_pages.map(item => item.image_urls.original.replace("i.pximg.net", proxy));
-        }
+        let illust = this.format(res.illust, proxy)
+        let { id, title, user, tags, total_bookmarks, total_view, url } = illust
         let msg = [
             `标题：${title}\n`,
             `画师：${user.name}\n`,
@@ -43,7 +94,7 @@ export default class Pixiv {
             `UID：${user.id}\n`,
             `点赞：${total_bookmarks}\n`,
             `访问：${total_view}\n`,
-            `Tag：${tags}\n`,
+            `Tag：${tags.join("，")}\n`,
             `直链：https://pixiv.re/${id}.jpg\n`,
             `传送门：https://www.pixiv.net/artworks/${id}`
         ]
@@ -56,6 +107,10 @@ export default class Pixiv {
         let img = url.map(item => segment.image(item))
         return { msg, img }
     }
+
+    get RankReg() {
+        return this.ranktype
+    }
     /**
      * @description: 获取Pixiv榜单
      * @param {String} page 页数
@@ -63,54 +118,70 @@ export default class Pixiv {
      * @param {String} mode 榜单类型
      * @return {Array} 
      */
-    async Rank(page, date, mode = "day") {
-        let type = {
-            "day": "日榜",
-            "week": "周榜",
-            "month": "月榜",
-            'male': "男性向榜",
-            'female': "女性向榜",
-            "day_manga": "漫画日榜",
-            "week_manga": "漫画周榜",
-            "month_manga": "漫画月榜",
-            "week_rookie_manga": "漫画新秀周榜",
+    async Rank(page, date, mode = "周", r18 = false) {
+        // let api = `https://api.bbmang.me/ranks?page=${page}&date=${date}&mode=${this.ranktype[mode]}&pageSize=30`
+        //转为大写
+        mode = lodash.toUpper(mode)
+        //排行榜类型
+        let type = this.ranktype[mode].type
+        //总张数
+        let pageSize = this.ranktype[mode].quantity
+        //r18处理
+        if (r18) {
+            if (!this.e.isMaster) {
+                if (!Config.Notice.sesepro) {
+                    this.e.reply(`达咩，不可以瑟瑟(〃ﾉωﾉ)`)
+                    return false
+                };
+            }
+            if (!this.ranktype[mode].r18) {
+                this.e.reply("该排行没有r18的分类哦~")
+                return false
+            }
+            type = type.split("_")
+            type.splice(1, 0, "r18")
+            type = type.join("_")
+            pageSize = this.ranktype[mode].r18
         }
-        let api = `https://api.bbmang.me/ranks?page=${page}&date=${date}&mode=${mode}&pageSize=30`
-        let res = await this.getfetch(api)
-        if (!res) return false
-        if (page > 17) {
+        //总页数
+        let pageAll = Math.ceil(pageSize / 30)
+        if (page > pageAll) {
             this.e.reply("哪有那么多图片给你辣(•̀へ •́ ╮ )")
             return false
         }
-        if (!res.data) {
+        //请求api
+        let api = `https://api.moedog.org/pixiv/v2/?type=rank&mode=${type}&page=${page}&date=${date}`
+        let res = await this.getfetch(api)
+        if (!res) return false
+
+        if (lodash.isEmpty(res.illusts)) {
             this.e.reply("暂无数据，请稍后重试哦(。-ω-)zzz")
             return false
         };
-        let list = [
-            `${date}的${type[mode]}`,
-            `当前为第${page}页，共17页，本页共${res.data.length}张，总共500张`,
-        ];
-        if (page < 17) {
-            list.push(`可使用 "#看看${type[mode]}第${page - 0 + 1}页" 翻页`)
-        }
-        for (let i of res.data) {
-            let { title, id: pid } = i
-            let { name: uresname, id: uresid } = i.artistPreView
+        let proxy = await redis.get(this.proxy)
 
-            if (title == "wx" && uresname == "wx") continue
-
-            let tags = i.tags ? lodash.truncate(i.tags.map((item) => item.name)) : ""
-            let proxy = await redis.get(`yenai:proxy`)
-            let url = i.imageUrls[0].large.replace("i.pximg.net", proxy)
-            list.push([
+        let illusts = res.illusts.map(item => {
+            let list = this.format(item, proxy)
+            let { id, title, user, tags, total_bookmarks, image_urls } = list
+            return [
                 `标题：${title}\n`,
-                `插画ID：${pid}\n`,
-                `画师：${uresname}\n`,
-                `画师ID：${uresid}\n`,
-                `Tag：${tags}\n`,
-                segment.image(url)
-            ])
+                `画师：${user.name}\n`,
+                `PID：${id}\n`,
+                `UID：${user.id}\n`,
+                `点赞：${total_bookmarks}\n`,
+                `Tag：${lodash.truncate(tags)}\n`,
+                segment.image(image_urls.large)
+            ]
+        })
+        let list = [
+            `${date}的${mode}${r18 ? "R18" : ""}榜`,
+            `当前为第${page}页，共${pageAll}页，本页共${illusts.length}张，总共${pageSize}张`,
+        ];
+        if (page < pageAll) {
+            list.push(`可使用 "#看看${mode}${r18 ? "R18" : ""}榜第${page - 0 + 1}页" 翻页`)
         }
+
+        list.push(...illusts)
         return list
     }
     /**
@@ -250,21 +321,15 @@ export default class Pixiv {
             return false
         }
         let illusts = res.illusts.map(item => {
-            let url
-            let { id, title, tags, total_bookmarks, total_view, meta_single_page, meta_pages } = item;
-            tags = lodash.truncate(lodash.flattenDeep(tags?.map(item => Object.values(item))) || "")
-            if (!lodash.isEmpty(meta_single_page)) {
-                url = meta_single_page.original_image_url.replace("i.pximg.net", proxy)
-            } else {
-                url = meta_pages[0].image_urls.original.replace("i.pximg.net", proxy);
-            }
+            let res = this.format(item, proxy)
+            let { id, title, tags, total_bookmarks, total_view, url } = res;
             return [
                 `标题：${title}\n`,
                 `PID：${id}\n`,
                 `点赞：${total_bookmarks}\n`,
                 `访问：${total_view}\n`,
-                `Tag：${tags}\n`,
-                segment.image(url),
+                `Tag：${lodash.truncate(tags)}\n`,
+                segment.image(url[0]),
             ]
         })
         list.push(`当前为第${page}页，共${illustsall}页，本页共${illusts.length}张，总共${total_illusts}张`)
@@ -347,5 +412,32 @@ export default class Pixiv {
             console.log(err)
             return false;
         })
+    }
+    
+    /**
+     * @description: 格式化
+     * @param {*} illusts
+     * @return {*}
+     */
+    format(illusts, proxy) {
+        let url = []
+        let { id, title, tags, total_bookmarks, total_view, meta_single_page, meta_pages, user, image_urls } = illusts;
+        tags = lodash.flattenDeep(tags?.map(item => Object.values(item))) || ""
+        if (!lodash.isEmpty(meta_single_page)) {
+            url.push(meta_single_page.original_image_url.replace("i.pximg.net", proxy))
+        } else {
+            url = meta_pages.map(item => item.image_urls.original.replace("i.pximg.net", proxy));
+        }
+        image_urls = lodash.mapValues(image_urls, (item) => item.replace("i.pximg.net", proxy))
+        return {
+            title,
+            id,
+            total_bookmarks,
+            total_view,
+            tags,
+            url,
+            user,
+            image_urls
+        }
     }
 }

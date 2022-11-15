@@ -9,7 +9,7 @@ let ranktype = new Pixiv().RankReg
 let Numreg = "[一壹二两三四五六七八九十百千万亿\\d]+"
 //正则
 let listreg = new RegExp(`^#?看看((\\d{4}-\\d{1,2}-\\d{1,2})的)?(${Object.keys(ranktype).join("|")})(r18)?榜\\s?(第(${Numreg})页)?$`, "i")
-let tagreg = new RegExp('^#?tag搜图(.*)$', "i")
+let tagreg = new RegExp('^#?tag(pro)?搜图(.*)$', "i")
 let pidreg = new RegExp('^#?pid搜图\\s?(\\d+)$', "i")
 let uidreg = new RegExp('^#?uid搜图(.*)$', "i")
 let randomimgreg = new RegExp(`^#?来(${Numreg})?张(好(康|看)(的|哒)|hkd|涩图)$`)
@@ -108,7 +108,7 @@ export class example extends plugin {
 
         let regRet = tagreg.exec(e.msg)
 
-        let tag = regRet[1]
+        let tag = regRet[2]
 
         let pagereg = new RegExp(`第(${Numreg})页`)
 
@@ -120,17 +120,18 @@ export class example extends plugin {
         } else {
             page = "1"
         }
-
-
-        let res = await new Pixiv(e).searchTags(tag, page)
-
+        let res = null;
+        if (regRet[1]) {
+            if (!e.isMaster) if (!Config.Notice.sesepro) return
+            res = await new Pixiv(e).searchTagspro(tag, page)
+        } else {
+            res = await new Pixiv(e).searchTags(tag, page)
+        }
         if (!res) return
-
         Cfg.getCDsendMsg(e, res, false)
 
         return true;
     }
-
     /**获取热门tag */
     async trend_tags(e) {
         if (!e.isMaster) {

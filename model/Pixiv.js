@@ -2,6 +2,7 @@ import fetch from "node-fetch";
 import lodash from "lodash";
 import { segment } from "oicq";
 import { Config } from '../components/index.js'
+import setu from "./setu.js"
 export default class Pixiv {
     constructor(e = {}) {
         this.e = e
@@ -101,7 +102,7 @@ export default class Pixiv {
         if (/R-18|18+/i.test(msg[6])) {
             if (!this.e.isMaster) {
                 this.e.reply(`该作品为R-18类型请自行使用链接查看：\nhttps://pixiv.re/${id}.jpg`)
-                if (!Config.Notice.sesepro) return false;
+                if (!await setu.getr18(this.e)) return false;
             }
         }
         let img = url.map(item => segment.image(item))
@@ -214,7 +215,7 @@ export default class Pixiv {
         }
         res.data.rows.sort((a, b) => b.like_total - a.like_total)
         for (let i of res.data.rows) {
-            let { picture_id, title, regular_url, tags, like_total } = i
+            let { picture_id, title, regular_url, tags } = i
             list.push([
                 `标题：${title}\n`,
                 `PID：${picture_id}\n`,
@@ -226,6 +227,55 @@ export default class Pixiv {
 
         return list
     }
+    /**
+     * @description: tag搜图pro
+     * @param {String} tag 关键词
+     * @param {String} page 页数
+     * @return {*}
+     */
+    async searchTagspro(tag, page = "1") {
+        let api = `https://api.moedog.org/pixiv/v2/?type=search&word=${tag}&page=${page}`
+        let res = await this.getfetch(api)
+        if (!res) return false
+        if (lodash.isEmpty(res.illusts)) {
+            this.e.reply("宝~没有数据了哦(๑＞︶＜)و")
+            return false;
+        }
+        let proxy = await redis.get(this.proxy)
+        let illusts = res.illusts.map(item => {
+            let list = this.format(item, proxy)
+            let { id, title, user, tags, total_bookmarks, image_urls } = list
+            return [
+                `标题：${title}\n`,
+                `画师：${user.name}\n`,
+                `PID：${id}\n`,
+                `UID：${user.id}\n`,
+                `点赞：${total_bookmarks}\n`,
+                `Tag：${lodash.truncate(tags)}\n`,
+                segment.image(image_urls.large)
+            ]
+        })
+        let filter = false
+        if (!await setu.getr18(this.e)) {
+            let filterillusts = illusts.filter(item => !/R-18|18\+/i.test(item[5]))
+            if (!lodash.isEqual(illusts, filterillusts)) {
+                filter = true
+                illusts = filterillusts
+            }
+        }
+
+        let list = [
+            `本页共${illusts.length}张\n可尝试使用 "#tagpro搜图${tag}第${page - 0 + 1}页" 翻页\n无数据则代表无下一页`
+        ];
+        if (filter) list.push("已自动过滤R18内容")
+        list.push(...illusts)
+        return list
+    }
+
+
+
+
+
 
     /**
      * @description: 获取热门tag
@@ -336,15 +386,14 @@ export default class Pixiv {
         if (page < illustsall) {
             list.push(`可使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页`)
         }
-        if (!this.e.isMaster) {
-            if (!Config.Notice.sesepro) {
-                let illustsfilter = illusts.filter(item => !/R-18|18\+/i.test(item[4]))
-                if (illustsfilter.length != illusts.length) {
-                    list.push("已自动过滤本页R-18内容")
-                    illusts = illustsfilter
-                }
+        if (!await setu.getr18(this.e)) {
+            let illustsfilter = illusts.filter(item => !/R-18|18\+/i.test(item[4]))
+            if (!lodash.isEqual(illusts, filterillusts)) {
+                list.push("已自动过滤本页R-18内容")
+                illusts = illustsfilter
             }
         }
+
         list.push(...illusts)
 
         // let api = `https://www.vilipix.com/api/v1/picture/public?sort=new&type=0&author_user_id=${user_id}&limit=30&offset=${(page - 1) * 30}`

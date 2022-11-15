@@ -59,15 +59,8 @@ export const helpList = [{
     "title": "#踢 <@QQ>",
     "desc": "顾名思义",
     "icon": 7
-  }, {
-    "title": "#我要自闭 <时间>",
-    "desc": "自闭一会",
-    "icon": 20
-  }, {
-    "title": "#今日打卡",
-    "desc": "查看今日打卡",
-    "icon": 5
-  }, {
+  },
+  {
     "title": "#获取禁言列表",
     "desc": "查看本群被禁言的人",
     "icon": 8
@@ -126,7 +119,12 @@ export const helpList = [{
     "title": "#同意|拒绝全部加群申请",
     "desc": "处理本群的全部加群申请",
     "icon": 3
-  }]
+  },
+  {
+    "title": "#我要自闭 <时间>",
+    "desc": "自闭一会",
+    "icon": 20
+  },]
 }, {
   "group": "字符",
   "list": [
@@ -185,7 +183,6 @@ export const helpList = [{
     }]
 }, {
   "group": "Bot为群主可用",
-  "auth": "master",
   "list": [
     {
       "title": "#设置管理 <@QQ>",

@@ -218,7 +218,11 @@ export const helpList = [{
       "icon": 7,
       "title": "#铃声搜索",
       "desc": "铃声多多"
-    }]
+    }, {
+      "title": "#今日打卡",
+      "desc": "查看今日打卡",
+      "icon": 5
+    },]
 },
 {
   "group": "其他功能",
@@ -234,7 +238,7 @@ export const helpList = [{
     "icon": 1,
     "title": "#群星级",
     "desc": "查看群星级"
-  }]
+  },]
 },
 {
   "group": "设置，版本相关",

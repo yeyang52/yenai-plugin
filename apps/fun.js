@@ -1,11 +1,9 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import fetch from 'node-fetch'
-import { segment } from "oicq";
+import { segment } from "oicq"
 import lodash from 'lodash'
-import Cfg from '../model/Config.js';
 import { Config } from '../components/index.js'
-import uploadRecord from '../model/uploadRecord.js'
-
+import { Cfg, uploadRecord, common } from '../model/index.js'
 let heisitype = {
   "白丝": "baisi",
   "黑丝": "heisi",
@@ -132,10 +130,6 @@ export class example extends plugin {
 
   /**点赞 */
   async zan(e) {
-    /**判断是否为好友 */
-    let isFriend = await Bot.fl.get(e.user_id)
-    if (!isFriend) return e.reply("不加好友不点🙄", true)
-
     /** 点赞成功回复的图片*/
     let imgs = [
       "https://xiaobai.klizi.cn/API/ce/zan.php?qq=",
@@ -150,17 +144,27 @@ export class example extends plugin {
 
     /** 执行点赞*/
     let n = 0;
+    let failsmsg = ''
     while (true) {
-      let res = await Bot.sendLike(e.user_id, 10)
-      if (!res) {
+      // let res = await Bot.sendLike(e.user_id, 10)
+      let res = await common.thumbUp(e.user_id, 10)
+      if (res.code != 0) {
+        if (res.code == 1) {
+          failsmsg = "点赞失败，请检查是否开启陌生人点赞或添加好友"
+        } else {
+          failsmsg = res.msg
+        }
         break;
       } else {
         n += 10;
       }
     }
+    /**判断是否为好友 */
+    let isFriend = await Bot.fl.get(e.user_id)
+    // if (!isFriend) return e.reply("不加好友不点🙄", true)
     /**回复的消息 */
-    let success_result = ["\n", `给你点了${n}下哦，记得回我~`, success_img]
-    let failds_result = ["\n", "今天点过了，害搁这讨赞呐", failds_img]
+    let success_result = ["\n", `给你点了${n}下哦，记得回我~${isFriend ? "" : "(如点赞失败请添加好友)"}`, success_img]
+    let failds_result = ["\n", failsmsg, failds_img]
 
     /**判断点赞是否成功*/
     let msg = n > 0 ? success_result : failds_result

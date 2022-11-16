@@ -104,7 +104,7 @@ export default class Pixiv {
         ]
         if (x_restrict) {
             if (!this.e.isMaster) {
-                this.e.reply(`该作品为R-18类型请自行使用链接查看：\nhttps://pixiv.re/${id}.jpg`)
+                this.e.reply(`该作品不适合所有年龄段，请自行使用链接查看：\nhttps://pixiv.re/${id}.jpg`)
                 if (!await setu.getr18(this.e)) return false;
             }
         }
@@ -139,7 +139,7 @@ export default class Pixiv {
                 };
             }
             if (!this.ranktype[mode].r18) {
-                this.e.reply("该排行没有r18的分类哦~")
+                this.e.reply("该排行没有不适合所有年龄段的分类哦~")
                 return false
             }
             type = type.split("_")

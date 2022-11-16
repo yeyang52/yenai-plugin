@@ -88,7 +88,11 @@ export default class Pixiv {
         }
         let proxy = await redis.get(this.proxy)
         let illust = this.format(res.illust, proxy)
-        let { id, title, user, tags, total_bookmarks, total_view, url, create_date, x_restrict, illust_ai_type } = illust
+        let { id, title, user, tags, total_bookmarks, total_view, url, create_date, x_restrict, illust_ai_type, visible } = illust
+        if (!visible) {
+            this.e.reply("该作品为非公开或被屏蔽作品！", true, { at: true })
+            return false;
+        }
         let msg = [
             `标题：${title}\n`,
             `画师：${user.name}\n`,
@@ -479,12 +483,13 @@ export default class Pixiv {
 
     /**
      * @description: 格式化
-     * @param {*} illusts
-     * @return {*}
+     * @param {Object} illusts 处理对象
+     * @param {Object} proxy 代理
+     * @return {Object}
      */
     format(illusts, proxy) {
         let url = []
-        let { id, title, tags, total_bookmarks, total_view, meta_single_page, meta_pages, user, image_urls, x_restrict, create_date, illust_ai_type } = illusts;
+        let { id, title, tags, total_bookmarks, total_view, meta_single_page, meta_pages, user, image_urls, x_restrict, create_date, illust_ai_type, visible } = illusts;
         tags = lodash.uniq(lodash.compact(lodash.flattenDeep(tags?.map(item => Object.values(item)))))
         if (!lodash.isEmpty(meta_single_page)) {
             url.push(meta_single_page.original_image_url.replace("i.pximg.net", proxy))
@@ -492,18 +497,20 @@ export default class Pixiv {
             url = meta_pages.map(item => item.image_urls.original.replace("i.pximg.net", proxy));
         }
         image_urls = lodash.mapValues(image_urls, (item) => item.replace("i.pximg.net", proxy))
+
         return {
-            title,
-            id,
-            total_bookmarks,
-            total_view,
-            tags,
-            url,
-            user,
-            image_urls,
-            x_restrict,
-            create_date,
-            illust_ai_type
+            title,              //标题
+            id,                 //pid
+            total_bookmarks,    //点赞
+            total_view,         //访问量
+            tags,               //标签
+            url,                //图片链接
+            user,               //作者信息
+            image_urls,         //单张图片
+            x_restrict,         //是否为全年龄
+            create_date,        //发布时间
+            illust_ai_type,     //是否为AI作品
+            visible             //是否为可见作品
         }
     }
 }

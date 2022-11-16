@@ -88,7 +88,7 @@ export default class Pixiv {
         }
         let proxy = await redis.get(this.proxy)
         let illust = this.format(res.illust, proxy)
-        let { id, title, user, tags, total_bookmarks, total_view, url } = illust
+        let { id, title, user, tags, total_bookmarks, total_view, url, create_date, x_restrict, illust_ai_type } = illust
         let msg = [
             `标题：${title}\n`,
             `画师：${user.name}\n`,
@@ -96,11 +96,13 @@ export default class Pixiv {
             `UID：${user.id}\n`,
             `点赞：${total_bookmarks}\n`,
             `访问：${total_view}\n`,
+            `isAI：${illust_ai_type == 2 ? true : false}\n`,
+            `发布：${moment(create_date).format("YYYY-MM-DD HH:mm:ss")}\n`,
             `Tag：${tags.join("，")}\n`,
             `直链：https://pixiv.re/${id}.jpg\n`,
             `传送门：https://www.pixiv.net/artworks/${id}`
         ]
-        if (/R-18|18+/i.test(msg[6])) {
+        if (x_restrict) {
             if (!this.e.isMaster) {
                 this.e.reply(`该作品为R-18类型请自行使用链接查看：\nhttps://pixiv.re/${id}.jpg`)
                 if (!await setu.getr18(this.e)) return false;
@@ -255,8 +257,8 @@ export default class Pixiv {
         let filter = 0
         let NowNum = res.illusts.length
         for (let i of res.illusts) {
-            let { id, title, user, tags, total_bookmarks, image_urls } = this.format(i, proxy)
-            if (!r18) if (!tags.every(item => !/18/ig.test(item))) {
+            let { id, title, user, tags, total_bookmarks, image_urls, x_restrict } = this.format(i, proxy)
+            if (!r18) if (x_restrict) {
                 filter++
                 continue
             }
@@ -384,8 +386,8 @@ export default class Pixiv {
         let filter = 0
         let NowNum = res.illusts.length
         for (let i of res.illusts) {
-            let { id, title, tags, total_bookmarks, total_view, url } = this.format(i, proxy)
-            if (!r18) if (!tags.every(item => !/18/ig.test(item))) {
+            let { id, title, tags, total_bookmarks, total_view, url, x_restrict } = this.format(i, proxy)
+            if (!r18) if (x_restrict) {
                 filter++
                 continue
             }
@@ -482,7 +484,7 @@ export default class Pixiv {
      */
     format(illusts, proxy) {
         let url = []
-        let { id, title, tags, total_bookmarks, total_view, meta_single_page, meta_pages, user, image_urls } = illusts;
+        let { id, title, tags, total_bookmarks, total_view, meta_single_page, meta_pages, user, image_urls, x_restrict, create_date, illust_ai_type } = illusts;
         tags = lodash.uniq(lodash.compact(lodash.flattenDeep(tags?.map(item => Object.values(item)))))
         if (!lodash.isEmpty(meta_single_page)) {
             url.push(meta_single_page.original_image_url.replace("i.pximg.net", proxy))
@@ -498,7 +500,10 @@ export default class Pixiv {
             tags,
             url,
             user,
-            image_urls
+            image_urls,
+            x_restrict,
+            create_date,
+            illust_ai_type
         }
     }
 }

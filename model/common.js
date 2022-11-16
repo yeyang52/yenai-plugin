@@ -1,4 +1,4 @@
-
+import { core } from "oicq";
 
 export default new class common {
     /**
@@ -64,6 +64,38 @@ export default new class common {
         })
         // 借助parseInt自动去零
         return parseInt(arr.join(''))
+    }
+
+    /**
+     * @description: 陌生人点赞
+     * @param {Number} uid QQ号
+     * @param {Number} times 数量
+     * @return {Object}
+     */
+    async thumbUp(uid, times = 1) {
+        if (times > 20)
+            times = 20;
+        let ReqFavorite;
+        if (Bot.fl.get(uid)) {
+            ReqFavorite = core.jce.encodeStruct([
+                core.jce.encodeNested([
+                    Bot.uin, 1, Bot.sig.seq + 1, 1, 0, Buffer.from("0C180001060131160131", "hex")
+                ]),
+                uid, 0, 1, Number(times)
+            ]);
+        }
+        else {
+            ReqFavorite = core.jce.encodeStruct([
+                core.jce.encodeNested([
+                    Bot.uin, 1, Bot.sig.seq + 1, 1, 0, Buffer.from("0C180001060131160135", "hex")
+                ]),
+                uid, 0, 5, Number(times)
+            ]);
+        }
+        const body = core.jce.encodeWrapper({ ReqFavorite }, "VisitorSvc", "ReqFavorite", Bot.sig.seq + 1);
+        const payload = await Bot.sendUni("VisitorSvc.ReqFavorite", body);
+        let result = core.jce.decodeWrapper(payload)[0];
+        return { code: result[3], msg: result[4] };
     }
 
 

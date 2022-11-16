@@ -3,6 +3,7 @@ import lodash from "lodash";
 import { segment } from "oicq";
 import { Config } from '../components/index.js'
 import setu from "./setu.js"
+import moment from "moment";
 export default class Pixiv {
     constructor(e = {}) {
         this.e = e
@@ -119,7 +120,7 @@ export default class Pixiv {
      * @param {String} mode 榜单类型
      * @return {Array} 
      */
-    async Rank(page, date, mode = "周", r18 = false, Specifydate = false) {
+    async Rank(page, date, mode = "周", r18 = false, Specifydate) {
         // let api = `https://api.bbmang.me/ranks?page=${page}&date=${date}&mode=${this.ranktype[mode]}&pageSize=30`
         //转为大写
         mode = lodash.toUpper(mode)
@@ -161,7 +162,7 @@ export default class Pixiv {
         };
         let proxy = await redis.get(this.proxy)
 
-        let illusts = res.illusts.map(item => {
+        let illusts = res.illusts.map((item, index) => {
             let list = this.format(item, proxy)
             let { id, title, user, tags, total_bookmarks, image_urls } = list
             return [
@@ -170,16 +171,23 @@ export default class Pixiv {
                 `PID：${id}\n`,
                 `UID：${user.id}\n`,
                 `点赞：${total_bookmarks}\n`,
+                `排名：${(page - 1) * 30 + (index + 1)}\n`,
                 `Tag：${lodash.truncate(tags)}\n`,
                 segment.image(image_urls.large)
             ]
         })
+        date = moment(date, "YYYY-MM-DD").format("YYYY年MM月DD日")
+        if (/周/.test(mode)) {
+            date = `${moment(date, "YYYY年MM月DD日").subtract(6, "days").format("YYYY年MM月DD日")} ~ ${date}`
+        } else if (/月/.test(mode)) {
+            date = `${moment(date, "YYYY年MM月DD日").subtract(29, "days").format("YYYY年MM月DD日")} ~ ${date}`
+        }
         let list = [
             `${date}的${mode}${r18 ? "R18" : ""}榜`,
             `当前为第${page}页，共${pageAll}页，本页共${illusts.length}张，总共${pageSize}张`,
         ];
         if (page < pageAll) {
-            list.push(`可使用 "#看看${Specifydate ? `${date}的` : ""}${mode}${r18 ? "R18" : ""}榜第${page - 0 + 1}页" 翻页`)
+            list.push(`可使用 "#看看${Specifydate ? `${Specifydate}的` : ""}${mode}${r18 ? "R18" : ""}榜第${page - 0 + 1}页" 翻页`)
         }
 
         list.push(...illusts)
@@ -243,13 +251,16 @@ export default class Pixiv {
         }
         let proxy = await redis.get(this.proxy)
         let r18 = await setu.getr18(this.e)
-        let illusts = res.illusts.map(item => {
-            let list = this.format(item, proxy)
-            let { id, title, user, tags, total_bookmarks, image_urls } = list
-            if (!r18) {
-                if (!tags.every(item => !/18/ig.test(item))) return false
+        let illusts = [];
+        let filter = 0
+        let NowNum = res.illusts.length
+        for (let i of res.illusts) {
+            let { id, title, user, tags, total_bookmarks, image_urls } = this.format(i, proxy)
+            if (!r18) if (!tags.every(item => !/18/ig.test(item))) {
+                filter++
+                continue
             }
-            return [
+            illusts.push([
                 `标题：${title}\n`,
                 `画师：${user.name}\n`,
                 `PID：${id}\n`,
@@ -257,23 +268,15 @@ export default class Pixiv {
                 `点赞：${total_bookmarks}\n`,
                 `Tag：${lodash.truncate(tags)}\n`,
                 segment.image(image_urls.large)
-            ]
-        })
-        let filter = false
-        let filterillusts = lodash.compact(illusts)
-        if (lodash.isEmpty(filterillusts)) {
+            ])
+        }
+        if (lodash.isEmpty(illusts)) {
             this.e.reply("该页全为涩涩内容已全部过滤(#／。＼#)")
             return false
         }
-        if (!lodash.isEqual(illusts, filterillusts)) {
-            filter = true
-            illusts = filterillusts
-        }
-
         let list = [
-            `本页共${illusts.length}张\n可尝试使用 "#tagpro搜图${tag}第${page - 0 + 1}页" 翻页\n无数据则代表无下一页`
+            `本页共${NowNum}张${filter ? `，过滤${filter}张` : ""}\n可尝试使用 "#tagpro搜图${tag}第${page - 0 + 1}页" 翻页\n无数据则代表无下一页`
         ];
-        if (filter) list.push("已自动过滤R18内容")
         list.push(...illusts)
         return list
     }
@@ -377,36 +380,32 @@ export default class Pixiv {
             return false
         }
         let r18 = await setu.getr18(this.e)
-        let illusts = res.illusts.map(item => {
-            let res = this.format(item, proxy)
-            let { id, title, tags, total_bookmarks, total_view, url } = res;
-            if (!r18) {
-                if (!tags.every(item => !/18/ig.test(item))) return false
+        let illusts = [];
+        let filter = 0
+        let NowNum = res.illusts.length
+        for (let i of res.illusts) {
+            let { id, title, tags, total_bookmarks, total_view, url } = this.format(i, proxy)
+            if (!r18) if (!tags.every(item => !/18/ig.test(item))) {
+                filter++
+                continue
             }
-            return [
+            illusts.push([
                 `标题：${title}\n`,
                 `PID：${id}\n`,
                 `点赞：${total_bookmarks}\n`,
                 `访问：${total_view}\n`,
                 `Tag：${lodash.truncate(tags)}\n`,
                 segment.image(url[0]),
-            ]
-        })
-        list.push(`当前为第${page}页，共${illustsall}页，本页共${illusts.length}张，总共${total_illusts}张`)
-        if (page < illustsall) {
-            list.push(`可使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页`)
+            ])
         }
-        let filterillusts = lodash.compact(illusts)
-        if (lodash.isEmpty(filterillusts)) {
+        if (lodash.isEmpty(illusts)) {
             this.e.reply("该页全为涩涩内容已全部过滤(#／。＼#)")
             return false
         }
-        if (!lodash.isEqual(illusts, filterillusts)) {
-            list.push("已自动过滤本页R-18内容")
-            illusts = filterillusts
+        list.push(`当前为第${page}页，共${illustsall}页\n本页共${NowNum}张，${filter ? `过滤${filter}张，` : ""}总共${total_illusts}张`)
+        if (page < illustsall) {
+            list.push(`可使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页`)
         }
-
-
         list.push(...illusts)
 
         // let api = `https://www.vilipix.com/api/v1/picture/public?sort=new&type=0&author_user_id=${user_id}&limit=30&offset=${(page - 1) * 30}`

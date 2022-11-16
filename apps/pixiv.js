@@ -89,7 +89,7 @@ export class example extends plugin {
 
         let page = common.translateChinaNum(regRet[6] || "1")
 
-        let res = await new Pixiv(e).Rank(page, date, regRet[3], !!regRet[5], !!regRet[2])
+        let res = await new Pixiv(e).Rank(page, date, regRet[3], !!regRet[4], regRet[2])
 
         if (!res) return
 

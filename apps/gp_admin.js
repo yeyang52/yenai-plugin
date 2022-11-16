@@ -1,12 +1,9 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import fetch from 'node-fetch'
-import Cfg from '../model/Config.js';
-import Gpadmin from '../model/Group_admin.js';
 import { segment } from 'oicq'
 import lodash from 'lodash'
-import common from '../model/common.js'
 import config from '../../../lib/config/config.js'
-
+import { Cfg, Gpadmin, common } from '../model/index.js'
 const ROLE_MAP = {
     admin: '群管理',
     owner: '群主',

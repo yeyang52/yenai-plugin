@@ -6,5 +6,6 @@ import Pixiv from "./Pixiv.js";
 import setu from "./setu.js";
 import uploadRecord from "./uploadRecord.js";
 import YamlReader from "./YamlReader.js";
+import Gpadmin from "./Group_admin.js";
 
-export { Browser, common, Cfg, CPU, Pixiv, setu, uploadRecord, YamlReader }
+export { Browser, common, Cfg, CPU, Pixiv, setu, uploadRecord, YamlReader, Gpadmin }

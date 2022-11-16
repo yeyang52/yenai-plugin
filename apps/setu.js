@@ -1,9 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import lodash from "lodash";
 import { Config } from '../components/index.js'
-import setu from '../model/setu.js';
-import common from '../model/common.js'
-
+import { setu, common } from '../model/index.js'
 
 const startMsg = [
   "正在给你找setu了，你先等等再冲~",
@@ -129,7 +127,7 @@ export class sese extends plugin {
     if (msg.length > 3) return e.reply("tag最多只能指定三个哦~", false, { at: true })
 
     msg = msg.map((item) => `&tag=${item}`).join("")
-    
+
     let r18 = await setu.getr18(e)
     //接口
     let res = await setu.setuapi(r18, num, msg)

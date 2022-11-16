@@ -1,9 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import Pixiv from '../model/Pixiv.js'
-import Cfg from '../model/Config.js';
 import moment from 'moment';
 import { Config } from '../components/index.js'
-import common from '../model/common.js'
+import { Cfg, Pixiv, common } from '../model/index.js'
 //类型
 let ranktype = new Pixiv().RankReg
 let Numreg = "[一壹二两三四五六七八九十百千万亿\\d]+"

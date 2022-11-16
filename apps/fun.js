@@ -189,7 +189,7 @@ export class example extends plugin {
   //coser
   async coser(e) {
     if (!e.isMaster) {
-      if (!Config.Notice.sese) return
+      if (!Config.Notice.sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
     }
     await e.reply("少女祈祷中......")
 
@@ -217,7 +217,7 @@ export class example extends plugin {
   //黑丝
   async heisiwu(e) {
     if (!e.isMaster) {
-      if (!Config.Notice.sesepro) return
+      if (!Config.Notice.sesepro) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
     }
     await e.reply("少女祈祷中......")
     let types = heisiwreg.exec(e.msg)
@@ -299,12 +299,12 @@ export class example extends plugin {
   //p站单图
   async Pximg(e) {
     if (!e.isMaster) {
-      if (!Config.Notice.sese) return
+      if (!Config.Notice.sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
     }
     let url = "https://ovooa.com/API/Pximg/"
     if (/pro/.test(e.msg)) {
       if (!e.isMaster) {
-        if (!Config.Notice.sesepro) return
+        if (!Config.Notice.sesepro) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
       }
       url = "https://xiaobapi.top/api/xb/api/setu.php"
     }
@@ -331,7 +331,7 @@ export class example extends plugin {
   //api大集合
   async picture(e) {
     if (!e.isMaster) {
-      if (!Config.Notice.sese) return
+      if (!Config.Notice.sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
     }
     let key = `yenai:apiaggregate:CD`
     if (await redis.get(key)) return

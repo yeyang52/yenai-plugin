@@ -67,7 +67,7 @@ export class sese extends plugin {
 
   async seturd(e) {
     if (!e.isMaster) {
-      if (!Config.Notice.sesepro) return
+      if (!Config.Notice.sesepro) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
     }
 
     if (await setu.getcd(e)) return e.reply(` ${lodash.sample(CDMsg)}你的CD还有${cds}`, false, { at: true })
@@ -96,7 +96,7 @@ export class sese extends plugin {
   //tag搜图
   async setutag(e) {
     if (!e.isMaster) {
-      if (!Config.Notice.sesepro) return
+      if (!Config.Notice.sesepro) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
     }
 
     let cds = await setu.getcd(e)

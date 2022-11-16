@@ -52,7 +52,7 @@ export class example extends plugin {
     //pid搜图
     async saucenaoPid(e) {
         if (!e.isMaster) {
-            if (!Config.Notice.sese) return
+            if (!Config.Notice.sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
         }
 
         await e.reply("你先别急，正在给你搜了(。-ω-)zzz")
@@ -75,7 +75,7 @@ export class example extends plugin {
     //p站排行榜
     async pixivList(e) {
         if (!e.isMaster) {
-            if (!Config.Notice.sese) return
+            if (!Config.Notice.sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
         }
         await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
 
@@ -101,7 +101,7 @@ export class example extends plugin {
     /**关键词搜图 */
     async Tags(e) {
         if (!e.isMaster) {
-            if (!Config.Notice.sese) return
+            if (!Config.Notice.sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
         }
 
         await e.reply("你先别急，正在给你搜了(。-ω-)zzz")
@@ -135,7 +135,7 @@ export class example extends plugin {
     /**获取热门tag */
     async trend_tags(e) {
         if (!e.isMaster) {
-            if (!Config.Notice.sese) return
+            if (!Config.Notice.sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
         }
         await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
 
@@ -149,7 +149,7 @@ export class example extends plugin {
     /**以uid搜图**/
     async saucenaoUid(e) {
         if (!e.isMaster) {
-            if (!Config.Notice.sese) return
+            if (!Config.Notice.sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
         }
         await e.reply("你先别急，正在给你搜了(。-ω-)zzz")
 
@@ -179,7 +179,7 @@ export class example extends plugin {
     //随机原创插画
     async randomimg(e) {
         if (!e.isMaster) {
-            if (!Config.Notice.sese) return
+            if (!Config.Notice.sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
         }
         await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
 

@@ -1,6 +1,5 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import lodash from 'lodash'
-import common from '../../../lib/common/common.js'
 import { segment } from 'oicq'
 import Cfg from '../model/Config.js';
 import moment from 'moment';
@@ -117,7 +116,7 @@ export class anotice extends plugin {
             } else {
                 fail.push(`${fail.length + 1}、${i.user_id}`)
             }
-            await common.sleep(2000)
+            await Cfg.sleep(2000)
         }
         let msg = [
             `本次共${yes ? '同意' : '拒绝'}${FriendAdd.length}条好友申请\n成功：${success.length}\n失败：${fail.length}`

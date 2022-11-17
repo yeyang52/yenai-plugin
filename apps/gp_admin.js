@@ -2,7 +2,6 @@ import plugin from '../../../lib/plugins/plugin.js'
 import fetch from 'node-fetch'
 import { segment } from 'oicq'
 import lodash from 'lodash'
-import config from '../../../lib/config/config.js'
 import { Cfg, Gpadmin, common } from '../model/index.js'
 const ROLE_MAP = {
     admin: '群管理',
@@ -171,7 +170,7 @@ export class Basics extends plugin {
 
         if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
         //判断是否为主人
-        if (config.masterQQ?.includes(Number(qq))) {
+        if (Cfg.masterQQ?.includes(Number(qq))) {
             return e.reply("居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ");
         }
         let Member = e.group.pickMember(Number(qq))
@@ -267,7 +266,7 @@ export class Basics extends plugin {
         }
         if (!qq || !(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
         //判断是否为主人
-        if (config.masterQQ?.includes(Number(qq))) {
+        if (Cfg.masterQQ?.includes(Number(qq))) {
             return e.reply("居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ");
         }
         //判断是否有这个人

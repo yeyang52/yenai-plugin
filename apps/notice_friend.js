@@ -1,7 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
-import cfg from '../../../lib/config/config.js'
-import xcfg from '../model/Config.js'
+import Cfg from '../model/Config.js'
 import { Config } from '../components/index.js'
 
 
@@ -44,9 +43,9 @@ export class Friends extends plugin {
             case 'recall': {
                 if (!Config.Notice.PrivateRecall) return
 
-                if (e.user_id == cfg.qq) return
+                if (e.user_id == Bot.uin) return
 
-                if (cfg.masterQQ.includes(e.user_id)) return
+                if (Cfg.masterQQ.includes(e.user_id)) return
                 logger.mark("[椰奶]好友撤回")
                 // 读取
                 let res = JSON.parse(
@@ -95,9 +94,9 @@ export class Friends extends plugin {
             default:
                 return
         }
-        await xcfg.getSend(msg)
+        await Cfg.getSend(msg)
         if (forwardMsg) {
-            await xcfg.getSend(forwardMsg)
+            await Cfg.getSend(forwardMsg)
         }
     }
 }

@@ -1,11 +1,13 @@
-import plugin from '../../../lib/plugins/plugin.js'
-import { segment } from 'oicq'
 import cfg from '../../../lib/config/config.js'
 import common from '../../../lib/common/common.js'
 import fs from 'fs'
 
 class Config {
 
+    /**主人QQ */
+    get masterQQ() {
+        return cfg.masterQQ
+    }
     /**
      * @description: 延时函数
      * @param {*} ms 时间(毫秒)

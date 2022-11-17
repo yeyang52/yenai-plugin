@@ -2,7 +2,6 @@ import plugin from '../../../lib/plugins/plugin.js';
 import { segment } from "oicq";
 import fetch from 'node-fetch';
 import Cfg from '../model/Config.js';
-import common from '../../../lib/common/common.js'
 import lodash from 'lodash'
 import moment from 'moment'
 
@@ -450,7 +449,7 @@ export class example extends plugin {
         await Bot.pickGroup(i).sendMsg(e.message)
           .then(() => e.reply("✅ " + i + " 群聊消息已送达"))
           .catch((err) => e.reply(`❎ ${i} 发送失败\n错误信息为:${err.message}`))
-        await common.sleep(5000)
+        await Cfg.sleep(5000)
       }
     }
     return false;

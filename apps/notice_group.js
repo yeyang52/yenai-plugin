@@ -1,7 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
-import cfg from '../../../lib/config/config.js'
-import xcfg from '../model/Config.js'
+import Cfg from '../model/Config.js'
 import { Config } from '../components/index.js'
 import moment from 'moment'
 
@@ -21,7 +20,7 @@ export class newgroups extends plugin {
         let forwardMsg
         switch (e.sub_type) {
             case 'increase': {
-                if (e.user_id === cfg.qq) {
+                if (e.user_id === Bot.uin) {
                     if (!Config.getGroup(e.group_id).groupNumberChange) return
 
                     logger.mark("[椰奶]新增群聊")
@@ -64,7 +63,7 @@ export class newgroups extends plugin {
                         `操作人QQ：${e.operator_id}\n`,
                         `解散群号：${e.group_id}`
                     ]
-                } else if (e.user_id === cfg.qq && e.operator_id !== cfg.qq) {
+                } else if (e.user_id === Bot.uin && e.operator_id !== Bot.uin) {
                     if (!Config.getGroup(e.group_id).groupNumberChange) return
 
                     logger.mark("[椰奶]机器人被踢")
@@ -77,7 +76,7 @@ export class newgroups extends plugin {
                         `操作人QQ：${e.operator_id}\n`,
                         `被踢群号：${e.group_id}`
                     ]
-                } else if (e.user_id === cfg.qq && e.operator_id === cfg.qq) {
+                } else if (e.user_id === Bot.uin && e.operator_id === Bot.uin) {
                     if (!Config.getGroup(e.group_id).groupNumberChange) return
 
                     logger.mark("[椰奶]机器人退群")
@@ -136,7 +135,7 @@ export class newgroups extends plugin {
                 if (!Config.getGroup(e.group_id).groupAdminChange) return
 
                 e.set ? logger.mark("[椰奶]机器人被设置管理") : logger.mark("[椰奶]机器人被取消管理")
-                if (e.user_id === cfg.qq) {
+                if (e.user_id === Bot.uin) {
 
                     msg = [
                         segment.image(
@@ -165,11 +164,11 @@ export class newgroups extends plugin {
             }
             // 禁言 (这里仅处理机器人被禁言)
             case 'ban': {
-                let Forbiddentime = xcfg.getsecondformat(e.duration)
+                let Forbiddentime = Cfg.getsecondformat(e.duration)
 
                 if (!Config.getGroup(e.group_id).botBeenBanned) return
 
-                if (e.user_id != cfg.qq) return
+                if (e.user_id != Bot.uin) return
 
                 if (e.duration == 0) {
                     logger.mark("[椰奶]机器人被解除禁言")
@@ -181,7 +180,7 @@ export class newgroups extends plugin {
                         `处理人QQ：${e.operator_id}\n`,
                         `处理群号：${e.group_id}`
                     ]
-                } else if (e.user_id === cfg.qq) {
+                } else if (e.user_id === Bot.uin) {
 
                     logger.mark("[椰奶]机器人被禁言")
 
@@ -219,9 +218,9 @@ export class newgroups extends plugin {
                 // 开启或关闭
                 if (!Config.getGroup(e.group_id).groupRecall) return
                 // 是否为机器人撤回
-                if (e.user_id == cfg.qq) return
+                if (e.user_id == Bot.uin) return
                 // 是否为主人撤回
-                if (cfg.masterQQ.includes(e.user_id)) return
+                if (Cfg.masterQQ.includes(e.user_id)) return
                 // 读取
                 let res = JSON.parse(
                     await redis.get(`notice:messageGroup:${e.message_id}`)
@@ -254,7 +253,7 @@ export class newgroups extends plugin {
                     special = '[合并消息]'
                 } else {
                     // 正常处理
-                    forwardMsg = await Bot.pickFriend(cfg.masterQQ[0]).makeForwardMsg([
+                    forwardMsg = await Bot.pickFriend(Cfg.masterQQ[0]).makeForwardMsg([
                         {
                             message: res,
                             nickname: e.group.pickMember(e.user_id).card,
@@ -288,9 +287,9 @@ export class newgroups extends plugin {
             default:
                 return
         }
-        await xcfg.getSend(msg)
+        await Cfg.getSend(msg)
         if (forwardMsg) {
-            await xcfg.getSend(forwardMsg)
+            await Cfg.getSend(forwardMsg)
         }
     }
 }

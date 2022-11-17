@@ -57,6 +57,10 @@ export class NewConfig extends plugin {
                 {
                     reg: '^#椰奶更换代理[1234]$',
                     fnc: 'proxy'
+                },
+                {
+                    reg: '^#(开启|关闭)陌生人点赞$',
+                    fnc: 'Stranger_zan'
                 }
             ]
         })
@@ -195,6 +199,19 @@ export class NewConfig extends plugin {
             await redis.set(rediskey, "sex.nyan.xyz")
                 .then(() => e.reply("✅ 已经切换代理为4"))
                 .catch(err => console.log(err))
+        }
+    }
+    // 陌生人点赞
+    async Stranger_zan(e) {
+        if (!e.isMaster) return e.reply("呀，我不认识你呢~怎么绘世呢(￣^￣)")
+        let yes = /开启/.test(e.msg) ? true : false
+        let key = "yenai:Stranger_zan"
+        if (yes) {
+            await redis.set(key, "1")
+            e.reply("✅ 已开启陌生人点赞")
+        } else {
+            await redis.del(key)
+            e.reply("✅ 已关闭陌生人点赞")
         }
     }
 }

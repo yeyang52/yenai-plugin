@@ -525,21 +525,38 @@ export class example extends plugin {
 
   /**取直链 */
   async Pictures(e) {
-    if (!e.img) {
+    let img = []
+    if (e.source) {
+      let source;
+      if (e.isGroup) {
+        source = (await e.group.getChatHistory(e.source.seq, 1)).pop();
+      } else {
+        source = (await e.friend.getChatHistory(e.source.time, 1)).pop();
+      }
+      for (let i of source.message) {
+        if (i.type == 'image') {
+          img.push(i.url)
+        }
+      }
+    } else {
+      img = e.img
+    }
+
+    if (lodash.isEmpty(img)) {
       this.setContext('imgs')
       await this.reply('✅ 请发送图片')
       return;
     }
-    await e.reply(`✅ 检测到${e.img.length}张图片`)
-    if (e.img.length >= 2) {
+    await e.reply(`✅ 检测到${img.length}张图片`)
+    if (img.length >= 2) {
       //大于两张图片以转发消息发送
       let msg = []
-      for (let i of e.img) {
+      for (let i of img) {
         msg.push([segment.image(i), "直链:", i])
       }
       Cfg.getforwardMsg(e, msg)
     } else {
-      await e.reply([segment.image(e.img[0]), "直链:", e.img[0]])
+      await e.reply([segment.image(img[0]), "直链:", img[0]])
     }
     return true;
   }
@@ -815,7 +832,6 @@ export class example extends plugin {
     let source;
     if (e.isGroup) {
       source = (await e.group.getChatHistory(e.source.seq, 1)).pop();
-
     } else {
       source = (await e.friend.getChatHistory(e.source.time, 1)).pop();
     }

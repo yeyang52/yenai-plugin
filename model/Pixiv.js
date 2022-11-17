@@ -88,11 +88,7 @@ export default class Pixiv {
         }
         let proxy = await redis.get(this.proxy)
         let illust = this.format(res.illust, proxy)
-        let { id, title, user, tags, total_bookmarks, total_view, url, create_date, x_restrict, illust_ai_type, visible } = illust
-        if (!visible) {
-            this.e.reply("该作品为非公开或被屏蔽作品！", true, { at: true })
-            return false;
-        }
+        let { id, title, user, tags, total_bookmarks, total_view, url, create_date, x_restrict, illust_ai_type } = illust
         let msg = [
             `标题：${title}\n`,
             `画师：${user.name}\n`,

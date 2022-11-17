@@ -411,9 +411,6 @@ let apis = {
     "https://api.vvhan.com/api/tao",
     "https://api.dzzui.com/api/imgtaobao"
   ],
-  "yh": [
-    "http://tfkapi.top/API/yht.php"
-  ],
   "ny": [
     "http://tfkapi.top/API/nypic.php"
   ],

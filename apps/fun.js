@@ -411,6 +411,15 @@ let apis = {
     "https://api.vvhan.com/api/tao",
     "https://api.dzzui.com/api/imgtaobao"
   ],
+  "yh": [
+    "http://tfkapi.top/API/yht.php"
+  ],
+  "ny": [
+    "http://tfkapi.top/API/nypic.php"
+  ],
+  "st": [
+    "http://tfkapi.top/API/setu_pic.php"
+  ]
 
 }
 let apirag = new RegExp(`^#?(${Object.keys(apis).join("|")}|jktj)(\\d+)?$`)

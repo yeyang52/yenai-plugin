@@ -686,6 +686,7 @@ export class example extends plugin {
     } else if (/清空留言/.test(e.msg)) {
       this.setContext('QzonedelAll')
       e.reply("✳️ 即将删除全部留言请发送：\n" + "------确认清空或取消------");
+      Qzonedetermine = false;
     }
   }
   async QzonedelAll() {

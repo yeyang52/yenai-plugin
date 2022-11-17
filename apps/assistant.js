@@ -701,7 +701,7 @@ export class example extends plugin {
   }
   async QzonedelAll() {
     let msg = this.e.msg
-    if (msg == "确认清空") {
+    if (/#?确认清空/.test(msg)) {
       this.finish('QzonedelAll')
       let ck = Cfg.getck('qzone.qq.com')
       let url
@@ -715,7 +715,7 @@ export class example extends plugin {
       this.e.reply(`✅ ${result}`)
       return true;
 
-    } else if (msg == "取消") {
+    } else if (/#?取消/.test(msg)) {
       this.finish('QzonedelAll')
       this.e.reply("✅ 已取消")
       return false;

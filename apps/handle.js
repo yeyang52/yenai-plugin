@@ -396,7 +396,7 @@ export class anotice extends plugin {
         }
         let msg = []
         if (!lodash.isEmpty(FriendAdd)) msg.push(`好友申请：${FriendAdd.length}条\n可使用"#查看好友申请" 查看详情`)
-        if (!lodash.isEmpty(GroupInvite)) msg.push(`群邀请：${FriendAdd.length}条\n可使用"#查看群邀请" 查看详情`)
+        if (!lodash.isEmpty(GroupInvite)) msg.push(`群邀请：${GroupInvite.length}条\n可使用"#查看群邀请" 查看详情`)
         if (!lodash.isEmpty(onewayFriend)) msg.push(`单向好友：${onewayFriend.length}条`)
         if (e.isGroup) {
             GroupAdd = GroupAdd.filter(item => item.group_id == e.group.id)

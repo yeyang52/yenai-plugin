@@ -2,6 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import fetch from 'node-fetch'
 import { segment } from 'oicq'
 import lodash from 'lodash'
+import { Config } from '../components/index.js'
 import { Cfg, Gpadmin, common } from '../model/index.js'
 const ROLE_MAP = {
     admin: '群管理',
@@ -481,7 +482,16 @@ export class Basics extends plugin {
         if (!e.group.is_owner) return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true)
 
         let Title = e.msg.replace(/#|申请头衔/g, "")
-
+        //屏蔽词处理
+        if (!e.isMaster) {
+            let data = Config.NoTitle
+            if (data.Match_pattern) {
+                let reg = new RegExp(lodash.compact(data.Shielding_words).join("|"))
+                if (reg.test(Title)) return e.reply("这里面有不好的词汇哦~", true)
+            } else {
+                if (data.Shielding_words.includes(Title)) return e.reply("这是有不好的词汇哦~", true)
+            }
+        }
         let res = await e.group.setTitle(e.user_id, Title)
         if (res) {
             if (!Title) {

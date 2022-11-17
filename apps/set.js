@@ -2,7 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import fs from "fs";
 import lodash from "lodash";
 import { Config, render } from '../components/index.js'
-
+import { YamlReader } from '../model/index.js';
 const configs = {
     "好友消息": "privateMessage",
     "群消息": "groupMessage",
@@ -61,9 +61,18 @@ export class NewConfig extends plugin {
                 {
                     reg: '^#(开启|关闭)陌生人点赞$',
                     fnc: 'Stranger_zan'
+                },
+                {
+                    reg: '^#(增加|减少|查看)头衔屏蔽词.*$',
+                    fnc: 'NoTitle'
+                },
+                {
+                    reg: '^#切换头衔屏蔽词匹配(模式)?$',
+                    fnc: 'NoTitlepattern'
                 }
             ]
         })
+        this.NoTitlepath = './plugins/yenai-plugin/config/config/Shielding_words.yaml'
     }
 
     //初始化
@@ -212,6 +221,60 @@ export class NewConfig extends plugin {
         } else {
             await redis.del(key)
             e.reply("✅ 已关闭陌生人点赞")
+        }
+    }
+    //增删查头衔屏蔽词
+    async NoTitle(e) {
+        let getdata = new YamlReader(this.NoTitlepath)
+        let data = getdata.jsonData.Shielding_words
+        if (/查看/.test(e.msg)) {
+            return e.reply(`现有的头衔屏蔽词如下：${data.join("\n")}`)
+        }
+        let msg = e.msg.replace(/#|(增加|减少)头衔屏蔽词/g, "").trim().split(",")
+        let type = /增加/.test(e.msg) ? true : false
+        let no = [], yes = []
+        for (let i of msg) {
+            if (data.includes(i)) {
+                no.push(i)
+            } else {
+                yes.push(i)
+            }
+        }
+        no = lodash.compact(lodash.uniq(no))
+        yes = lodash.compact(lodash.uniq(yes))
+        if (type) {
+            if (!lodash.isEmpty(yes)) {
+                for (let i of yes) {
+                    getdata.addIn("Shielding_words", i)
+                }
+                e.reply(`✅ 成功添加：${yes.join(",")}`)
+            }
+            if (!lodash.isEmpty(no)) {
+                e.reply(`❎ 以下词已存在：${no.join(",")}`)
+            }
+        } else {
+            if (!lodash.isEmpty(no)) {
+                for (let i of no) {
+                    let index = data.indexOf(i)
+                    getdata.delete("Shielding_words." + index)
+                }
+                e.reply(`✅ 成功删除：${no.join(",")}`)
+            }
+            if (!lodash.isEmpty(yes)) {
+                e.reply(`❎ 以下词未在屏蔽词中：${yes.join(",")}`)
+            }
+        }
+    }
+    //修改匹配模式
+    async NoTitlepattern(e) {
+        let getdata = new YamlReader(this.NoTitlepath)
+        let data = getdata.jsonData.Match_pattern
+        if (data) {
+            getdata.set("Match_pattern", 0)
+            e.reply("✅ 已修改匹配模式为精确匹配")
+        } else {
+            getdata.set("Match_pattern", 1)
+            e.reply("✅ 已修改匹配模式为模糊匹配")
         }
     }
 }

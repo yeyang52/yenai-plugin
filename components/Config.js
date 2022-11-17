@@ -47,8 +47,17 @@ class Config {
   get verifycfg() {
     return this.getverifycfg();
   }
-
-  
+  //头衔屏蔽词
+  get NoTitle() {
+    return this.getNoTitle();
+  }
+  //头衔屏蔽词
+  getNoTitle() { 
+    let config = this.getConfig("Shielding_words")
+    let def = this.getdefSet("Shielding_words")
+    return { ...def, ...config }
+  }
+  //进群验证
   getverifycfg() {
     let config = this.getConfig("groupverify")
     let def = this.getdefSet("groupverify")

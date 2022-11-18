@@ -191,7 +191,7 @@ export class sese extends plugin {
 
   //艾特设置cd
   async atcd(e) {
-    if (e.message[0].type != "at") return;
+    if (e.message[0].type != "at" || !e.isGroup) return false;
 
     if (!e.isMaster) return e.reply("❎ 该命令仅限管理员可用", true);
 

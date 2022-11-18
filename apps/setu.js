@@ -84,9 +84,9 @@ export class sese extends plugin {
 
     let r18 = await setu.getr18(e)
 
-    let res = await setu.setuapi(r18, num)
+    let res = await setu.setuapi(e, r18, num)
 
-    if (!res) return e.reply("接口失效")
+    if (!res) return false
 
     setu.sendMsg(e, res)
   }
@@ -101,14 +101,14 @@ export class sese extends plugin {
 
     if (cds) return e.reply(` ${lodash.sample(CDMsg)}你的CD还有${cds}`, false, { at: true })
 
-    let msg = e.msg.replace(/#|椰奶tag/g, "").trim()
+    let tag = e.msg.replace(/#|椰奶tag/g, "").trim()
 
     let num = e.msg.match(new RegExp(`(${Numreg})张`))
 
     if (!num) {
       num = 1
     } else {
-      msg = msg.replace(num[0], "").trim()
+      tag = tag.replace(num[0], "").trim()
       num = common.translateChinaNum(num[1])
     }
 
@@ -120,21 +120,20 @@ export class sese extends plugin {
       e.reply(lodash.sample(startMsg))
     }
 
-    if (!msg) return e.reply("tag为空！！！", false, { at: true })
+    if (!tag) return e.reply("tag为空！！！", false, { at: true })
 
-    msg = msg.split(" ")
+    tag = tag.split(" ")
 
-    if (msg.length > 3) return e.reply("tag最多只能指定三个哦~", false, { at: true })
+    if (tag.length > 3) return e.reply("tag最多只能指定三个哦~", false, { at: true })
 
-    msg = msg.map((item) => `&tag=${item}`).join("")
+    tag = tag.map((item) => `&tag=${item}`).join("")
 
     let r18 = await setu.getr18(e)
     //接口
-    let res = await setu.setuapi(r18, num, msg)
+    let res = await setu.setuapi(e, r18, num, tag)
 
-    if (!res) return e.reply("❎ 接口失效")
+    if (!res) return false;
 
-    if (res.length == 0) return e.reply("没有找到相关的tag", false, { at: true })
     //发送消息
     setu.sendMsg(e, res)
   }

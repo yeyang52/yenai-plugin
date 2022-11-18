@@ -68,7 +68,7 @@ export default new class setu {
      * @param {String} tag 关键词
      * @return {Object}
      */
-    async setuapi(r18, num = 1, tag = "") {
+    async setuapi(e, r18, num = 1, tag = "") {
         let api = "https://api.lolicon.app/setu/v2";
         if (fs.existsSync(this.apicfg)) {
             let apicfg = await Cfg.getread(this.apicfg)
@@ -81,8 +81,33 @@ export default new class setu {
         }
         let url = `${api}?r18=${r18}&num=${num}${tag}&proxy=${proxy}&size=${size}`;
         let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
-        if (!result) return false;
-        return result.data
+        if (!result) {
+            logger.mark("[椰奶setu]启用备用接口")
+            let apiReserve = `https://sex.nyan.xyz/api/v2/?r18=${r18}&num=${num}${tag}`;
+            result = await fetch(apiReserve).then(res => res.json()).catch(err => console.log(err))
+            if (!result) {
+                e.reply("❎ 接口失效")
+                return false;
+            }
+        }
+        if (lodash.isEmpty(result.data)) {
+            e.reply("没有找到相关的tag", false, { at: true })
+            return false;
+        }
+        //消息
+        let msg = result.data.map(item => {
+            let { pid, title, tags, author, r18, urls, url } = item
+            return [
+                `${lodash.sample(sendMsgs)}\n`,
+                `标题：${title}\n`,
+                `画师：${author}\n`,
+                `pid：${pid}\n`,
+                r18 ? `r18：${r18}\n` : "",
+                `tag：${lodash.truncate(tags.join(","))}\n`,
+                segment.image(url || urls?.original || urls?.regular || urls?.small),
+            ]
+        })
+        return msg
     }
 
 
@@ -92,30 +117,14 @@ export default new class setu {
      * @param {Array} img 消息数组
      * @return {Boolean}
      */
-    async sendMsg(e, img) {
-        //风控消息
-        let isfk = `呃....被风控了，感觉不太妙呢~给你个链接冲吧~\nhttps://pixiv.re/${img[0].pid}.jpg`
+    async sendMsg(e, msg) {
         //默认CD
         let cd = this.def.cd
         //获取当前时间
         let present = parseInt(new Date().getTime() / 1000)
-        //消息
-        let msg = [];
-        for (let i of img) {
-            let { pid, title, tags, author, r18, urls } = i
-            msg.push([
-                `${lodash.sample(sendMsgs)}\n`,
-                `标题：${title}\n`,
-                `画师：${author}\n`,
-                `pid：${pid}\n`,
-                `r18：${r18}\n`,
-                `tag：${lodash.truncate(tags.join(","))}\n`,
-                segment.image(urls.original || urls.regular || urls.small),
-            ])
-        }
-        //发送消息
-        let res = Cfg.getCDsendMsg(e, msg, false, false)
 
+        //发送消息
+        let res = await Cfg.getCDsendMsg(e, msg, false)
         if (e.isGroup) {
             let groupCD = {};
             //获取CD
@@ -123,38 +132,28 @@ export default new class setu {
                 groupCD = await Cfg.getread(this.path)
                 if (groupCD[e.group_id]) cd = groupCD[e.group_id].cd
             }
-
-            if (res) {
-                if (!e.isMaster) {
-                    if (cd != 0) {
-                        this.temp[e.user_id + e.group_id] = present + cd
-                        setTimeout(() => {
-                            delete this.temp[e.user_id + e.group_id];
-                        }, cd * 1000);
-                    }
+            if (!e.isMaster && res) {
+                if (cd != 0) {
+                    this.temp[e.user_id + e.group_id] = present + cd
+                    setTimeout(() => {
+                        delete this.temp[e.user_id + e.group_id];
+                    }, cd * 1000);
                 }
-            } else {
-                e.reply(isfk)
-                logger.error("[椰奶]Bot被风控，发送被风控消息")
             }
+
         } else {
             //私聊
             if (fs.existsSync(this.path_s)) {
                 let friendCD = await Cfg.getread(this.path_s)
                 if (friendCD[e.user_id]) cd = friendCD[e.user_id]
             }
-            if (res) {
-                if (!e.isMaster) {
-                    if (cd != 0) {
-                        this.temp[e.user_id] = present + cd
-                        setTimeout(() => {
-                            delete this.temp[e.user_id];
-                        }, cd * 1000);
-                    }
+            if (!e.isMaster && res) {
+                if (cd != 0) {
+                    this.temp[e.user_id] = present + cd
+                    setTimeout(() => {
+                        delete this.temp[e.user_id];
+                    }, cd * 1000);
                 }
-            } else {
-                e.reply(isfk)
-                logger.error("[椰奶]Bot被风控，发送被风控消息")
             }
         }
     }

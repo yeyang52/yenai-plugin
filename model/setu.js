@@ -102,7 +102,7 @@ export default new class setu {
                 `标题：${title}\n`,
                 `画师：${author}\n`,
                 `pid：${pid}\n`,
-                r18 ? `r18：${r18}\n` : "",
+                r18 !== undefined ? `r18：${r18}\n` : "",
                 `tag：${lodash.truncate(tags.join(","))}\n`,
                 segment.image(url || urls?.original || urls?.regular || urls?.small),
             ]

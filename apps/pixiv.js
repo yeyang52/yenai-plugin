@@ -98,13 +98,14 @@ export class example extends plugin {
 
     /**关键词搜图 */
     async Tags(e) {
-        if (!e.isMaster) {
-            if (!Config.Notice.sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
-        }
-
-        await e.reply("你先别急，正在给你搜了(。-ω-)zzz")
-
         let regRet = tagreg.exec(e.msg)
+
+        if (!e.isMaster) {
+            if (!Config.Notice.sese || !Config.Notice.sesepro && regRet[1]) {
+                return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
+            }
+        }
+        await e.reply("你先别急，正在给你搜了(。-ω-)zzz")
 
         let tag = regRet[2]
 
@@ -120,7 +121,6 @@ export class example extends plugin {
         }
         let res = null;
         if (regRet[1]) {
-            if (!e.isMaster) if (!Config.Notice.sesepro) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
             res = await new Pixiv(e).searchTagspro(tag, page)
         } else {
             res = await new Pixiv(e).searchTags(tag, page)

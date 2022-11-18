@@ -305,13 +305,12 @@ export class example extends plugin {
   //p站单图
   async Pximg(e) {
     if (!e.isMaster) {
-      if (!Config.Notice.sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
+      if (!Config.Notice.sese || !Config.Notice.sesepro && /pro/.test(e.msg)) {
+        return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
+      }
     }
     let url = "https://ovooa.com/API/Pximg/"
     if (/pro/.test(e.msg)) {
-      if (!e.isMaster) {
-        if (!Config.Notice.sesepro) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
-      }
       url = "https://xiaobapi.top/api/xb/api/setu.php"
     }
     let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))

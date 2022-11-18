@@ -50,7 +50,7 @@ export class example extends plugin {
     //pid搜图
     async saucenaoPid(e) {
         if (!e.isMaster) {
-            if (!Config.Notice.sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
+            if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
         }
 
         await e.reply("你先别急，正在给你搜了(。-ω-)zzz")
@@ -73,7 +73,7 @@ export class example extends plugin {
     //p站排行榜
     async pixivList(e) {
         if (!e.isMaster) {
-            if (!Config.Notice.sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
+            if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
         }
         await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
 
@@ -101,7 +101,7 @@ export class example extends plugin {
         let regRet = tagreg.exec(e.msg)
 
         if (!e.isMaster) {
-            if (!Config.Notice.sese || !Config.Notice.sesepro && regRet[1]) {
+            if (!Config.getGroup(e.group_id).sese || !Config.getGroup(e.group_id).sesepro && regRet[1]) {
                 return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
             }
         }
@@ -133,7 +133,7 @@ export class example extends plugin {
     /**获取热门tag */
     async trend_tags(e) {
         if (!e.isMaster) {
-            if (!Config.Notice.sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
+            if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
         }
         await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
 
@@ -147,7 +147,7 @@ export class example extends plugin {
     /**以uid搜图**/
     async saucenaoUid(e) {
         if (!e.isMaster) {
-            if (!Config.Notice.sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
+            if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
         }
         await e.reply("你先别急，正在给你搜了(。-ω-)zzz")
 
@@ -177,7 +177,7 @@ export class example extends plugin {
     //随机原创插画
     async randomimg(e) {
         if (!e.isMaster) {
-            if (!Config.Notice.sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
+            if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
         }
         await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
 

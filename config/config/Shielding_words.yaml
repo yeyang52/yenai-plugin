@@ -2,7 +2,4 @@
 Match_pattern: 0
 #屏蔽词
 Shielding_words:
-  - 
-  - 不要啊
-  - 你干嘛
-  - 椰羊
+  - 示例

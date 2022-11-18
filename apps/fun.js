@@ -195,7 +195,7 @@ export class example extends plugin {
   //coser
   async coser(e) {
     if (!e.isMaster) {
-      if (!Config.Notice.sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
+      if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
     }
     await e.reply("少女祈祷中......")
 
@@ -223,7 +223,7 @@ export class example extends plugin {
   //黑丝
   async heisiwu(e) {
     if (!e.isMaster) {
-      if (!Config.Notice.sesepro) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
+      if (!Config.getGroup(e.group_id).sesepro) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
     }
     await e.reply("少女祈祷中......")
     let types = heisiwreg.exec(e.msg)
@@ -305,7 +305,7 @@ export class example extends plugin {
   //p站单图
   async Pximg(e) {
     if (!e.isMaster) {
-      if (!Config.Notice.sese || !Config.Notice.sesepro && /pro/.test(e.msg)) {
+      if (!Config.getGroup(e.group_id).sese || !Config.getGroup(e.group_id).sesepro && /pro/.test(e.msg)) {
         return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
       }
     }
@@ -336,7 +336,7 @@ export class example extends plugin {
   //api大集合
   async picture(e) {
     if (!e.isMaster) {
-      if (!Config.Notice.sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
+      if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
     }
     let key = `yenai:apiaggregate:CD`
     if (await redis.get(key)) return

@@ -133,7 +133,7 @@ export default class Pixiv {
         //r18处理
         if (r18) {
             if (!this.e.isMaster) {
-                if (!Config.Notice.sesepro) {
+                if (!Config.getGroup(this.e.group_id).sesepro) {
                     this.e.reply(`达咩，不可以瑟瑟(〃ﾉωﾉ)`)
                     return false
                 };

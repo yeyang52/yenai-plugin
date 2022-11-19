@@ -9,9 +9,10 @@ const ROLE_MAP = {
     owner: '群主',
     member: '群员'
 }
+const Time_unit = common.Time_unit
 let Numreg = "[一壹二两三四五六七八九十百千万亿\\d]+"
 let noactivereg = new RegExp(`^#(查看|清理|确认清理|获取)(${Numreg})个?(年|月|周|天)没发言的人(第(${Numreg})页)?$`)
-
+let Autisticreg = new RegExp(`^#?我要(自闭|禅定)(${Numreg})?个?(${Object.keys(Time_unit).join("|")})?$`, "i")
 export class Basics extends plugin {
     constructor() {
         super({
@@ -36,7 +37,7 @@ export class Basics extends plugin {
                     fnc: 'Kick'
                 },
                 {
-                    reg: '^#?我要(自闭|禅定).*$',
+                    reg: Autisticreg,
                     fnc: 'Autistic'
                 },
                 {
@@ -291,22 +292,12 @@ export class Basics extends plugin {
 
         if (e.member.is_admin || e.member.is_owner || e.isMaster)
             return e.reply("别自闭啦~~", true)
+        //解析正则
+        let regRet = Autisticreg.exec(e.msg)
+        // 获取数字
+        let TabooTime = common.translateChinaNum(regRet[2] || 5)
 
-        let msg = e.msg.replace(/#|我要自闭|禅定/g, "").trim()
-
-        let TabooTime = msg.match(/[1-9]\d*/g);
-
-        let Company = msg.match(/(天|时|分)/g);
-        //如无时间默认禁言五分钟
-        if (!TabooTime) TabooTime = 5;
-        //默认单位为分
-        if (/天/.test(Company)) {
-            Company = 86400;
-        } else if (/时/.test(Company)) {
-            Company = 3600;
-        } else {
-            Company = 60;
-        }
+        let Company = Time_unit[lodash.toUpper(regRet[3]) || "分"]
 
         await e.group.muteMember(e.user_id, TabooTime * Company);
         e.reply(`那我就不手下留情了~`, true);

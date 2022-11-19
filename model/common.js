@@ -97,6 +97,35 @@ export default new class common {
         let result = core.jce.decodeWrapper(payload)[0];
         return { code: result[3], msg: result[4] };
     }
-
+    get Time_unit() {
+        return {
+            "毫秒": 0.001,
+            "秒": 1,
+            "S": 1,
+            "SECOND": 1,
+            "分": 60,
+            "分钟": 60,
+            "M": 60,
+            "MIN": 60,
+            "MINUTE": 60,
+            "时": 3600,
+            "小时": 3600,
+            "H": 3600,
+            "HOUR": 3600,
+            "天": 86400,
+            "日": 86400,
+            "D": 86400,
+            "DAY": 86400,
+            "周": 604800,
+            "W": 604800,
+            "WEEK": 604800,
+            "月": 2592000,
+            "M": 2592000,
+            "MONTH": 2592000,
+            "年": 31536000,
+            "Y": 31536000,
+            "YEAR": 31536000,
+        }
+    }
 
 }

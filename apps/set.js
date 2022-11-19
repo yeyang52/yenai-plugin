@@ -212,7 +212,7 @@ export class NewConfig extends plugin {
     }
     // 陌生人点赞
     async Stranger_zan(e) {
-        if (!e.isMaster) return e.reply("呀，我不认识你呢~怎么绘世呢(￣^￣)")
+        if (!e.isMaster) return e.reply("你是坏人，伦家不听你哒(￣^￣)", true)
         let yes = /开启/.test(e.msg) ? true : false
         let key = "yenai:Stranger_zan"
         if (yes) {

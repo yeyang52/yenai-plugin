@@ -276,11 +276,10 @@ export default class Pixiv {
             this.e.reply("该页全为涩涩内容已全部过滤(#／。＼#)")
             return false
         }
-        let list = [
-            `本页共${NowNum}张${filter ? `，过滤${filter}张` : ""}\n可尝试使用 "#tagpro搜图${tag}第${page - 0 + 1}页" 翻页\n无数据则代表无下一页`
+        return [
+            `本页共${NowNum}张${filter ? `，过滤${filter}张` : ""}\n可尝试使用 "#tagpro搜图${tag}第${page - 0 + 1}页" 翻页\n无数据则代表无下一页`,
+            ...illusts
         ];
-        list.push(...illusts)
-        return list
     }
 
 
@@ -463,6 +462,58 @@ export default class Pixiv {
         }
         return list
     }
+
+    /**
+     * @description: 相关作品
+     * @param {String} pid
+     * @return {*} 
+     */
+    async getrelated_works(pid) {
+        let api = `https://api.moedog.org/pixiv/v2/?type=related&id=${pid}`
+        let res = await this.getfetch(api)
+        if (!res) return false
+        if (res.error) {
+            this.e.reply(res.error.user_message)
+            return false;
+        }
+        if (lodash.isEmpty(res.illusts)) {
+            this.e.reply("呃...没有数据(•ิ_•ิ)")
+            return false;
+        }
+        let proxy = await redis.get(this.proxy)
+        let r18 = await setu.getr18(this.e)
+        let illusts = [];
+        let filter = 0
+        for (let i of res.illusts) {
+            let { id, title, user, tags, total_bookmarks, image_urls, x_restrict } = this.format(i, proxy)
+            if (!r18) if (x_restrict) {
+                filter++
+                continue
+            }
+            illusts.push([
+                `标题：${title}\n`,
+                `画师：${user.name}\n`,
+                `PID：${id}\n`,
+                `UID：${user.id}\n`,
+                `点赞：${total_bookmarks}\n`,
+                `Tag：${lodash.truncate(tags)}\n`,
+                segment.image(image_urls.large)
+            ])
+        }
+        if (lodash.isEmpty(illusts)) {
+            this.e.reply("啊啊啊！！！居然全是瑟瑟哒不给你看(＊／ω＼＊)")
+            return false
+        }
+        return [
+            `Pid:${pid}的相关作品，共${res.illusts.length}张${filter ? `，过滤${filter}张` : ""}`,
+            ...illusts
+        ]
+    }
+
+
+
+
+
 
     /**
      * @description: 请求api

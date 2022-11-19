@@ -11,7 +11,7 @@ let tagreg = new RegExp('^#?tag(pro)?搜图(.*)$', "i")
 let pidreg = new RegExp('^#?pid搜图\\s?(\\d+)$', "i")
 let uidreg = new RegExp('^#?uid搜图(.*)$', "i")
 let randomimgreg = new RegExp(`^#?来(${Numreg})?张(好(康|看)(的|哒)|hkd|涩图)|#有内鬼$`)
-
+let relatedreg = new RegExp(`^#?看?看?相关作品(\\d+)$`);
 export class example extends plugin {
     constructor() {
         super({
@@ -42,6 +42,10 @@ export class example extends plugin {
                 {
                     reg: randomimgreg,
                     fnc: 'randomimg'
+                },
+                {
+                    reg: relatedreg,
+                    fnc: 'related_works'
                 }
             ]
         })
@@ -194,5 +198,17 @@ export class example extends plugin {
         if (!res) return
 
         Cfg.getCDsendMsg(e, res, false)
+    }
+
+    //相关作品
+    async related_works(e) {
+        if (!e.isMaster) {
+            if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
+        }
+        await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
+        let regRet = relatedreg.exec(e.msg)
+        let msg = await new Pixiv(e).getrelated_works(regRet[1])
+        if (!msg) return
+        Cfg.getCDsendMsg(e, msg, false)
     }
 }

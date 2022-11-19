@@ -46,6 +46,11 @@ export const helpList = [{
     "desc": "顾名思义"
   },
   {
+    "icon": 16,
+    "title": "#发通知 <消息>",
+    "desc": "发送@全体的通知"
+  },
+  {
     "icon": 5,
     "title": "#允许匿名",
     "desc": "顾名思义"

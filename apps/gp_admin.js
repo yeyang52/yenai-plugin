@@ -111,6 +111,10 @@ export class Basics extends plugin {
                 {
                     reg: `^#(查看|获取)?最近的?入群(情况|记录)(${Numreg})?$`,
                     fnc: 'RankingList'
+                },
+                {
+                    reg: `^#发通知.*$`,
+                    fnc: 'Send_notice'
                 }
 
             ]
@@ -640,5 +644,18 @@ export class Basics extends plugin {
         }
         Cfg.getforwardMsg(e, msg)
     }
-
+    //发送通知
+    async Send_notice(e) {
+        if (!e.group.is_admin && !e.group.is_owner) {
+            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
+        }
+        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
+            return e.reply("❎ 该命令仅限管理员可用", true);
+        }
+        e.message[0].text = e.message[0].text.replace("#发通知", "").trim()
+        if (!e.message[0].text) e.message.shift()
+        if (lodash.isEmpty(e.message)) return e.reply("❎ 通知不能为空")
+        e.message.unshift(segment.at("all"))
+        e.reply(e.message)
+    }
 }

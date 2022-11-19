@@ -76,12 +76,11 @@ export class example extends plugin {
 
     //p站排行榜
     async pixivList(e) {
+        let regRet = listreg.exec(e.msg)
         if (!e.isMaster) {
             if (!Config.getGroup(e.group_id).sese || regRet[4] && !await setu.getr18(e)) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
         }
         await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
-
-        let regRet = listreg.exec(e.msg)
 
         let day = moment().hour() >= 12 ? 1 : 2
 

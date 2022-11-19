@@ -1,8 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import os from 'os';
 import { Version, render, Config } from '../components/index.js'
-import CPU from '../model/CPU.js';
-import Cfg from '../model/Config.js';
+import { CPU, Cfg } from '../model/index.js'
 import fs from 'fs'
 import moment from 'moment';
 export class example extends plugin {
@@ -77,9 +76,13 @@ export class example extends plugin {
     //win硬盘内存
     let HardDisk = '';
     if (os.platform() == "win32") {
-      for (let i of CPU.getHardDisk()) {
-        if (i.blocks == 0 && i.used == 0 && i.available == 0) continue;
-        HardDisk += "<li><div class='word'>" + i.mounted + "</div><div class='progress'>" + "<div class='word'>" + CPU.getfilesize(i.used) + " / " + CPU.getfilesize(i.blocks) + "</div><div class='current' style=width:" + i.capacity + "></div></div><div>" + i.capacity + "</div></li>"
+      try {
+        for (let i of CPU.getHardDisk()) {
+          if (i.blocks == 0 && i.used == 0 && i.available == 0) continue;
+          HardDisk += "<li><div class='word'>" + i.mounted + "</div><div class='progress'>" + "<div class='word'>" + CPU.getfilesize(i.used) + " / " + CPU.getfilesize(i.blocks) + "</div><div class='current' style=width:" + i.capacity + "></div></div><div>" + i.capacity + "</div></li>"
+        }
+      } catch {
+        console.error("无法获取硬盘");
       }
     }
     let data = {

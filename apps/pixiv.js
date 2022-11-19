@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import moment from 'moment';
 import { Config } from '../components/index.js'
-import { Cfg, Pixiv, common } from '../model/index.js'
+import { Cfg, Pixiv, common, setu } from '../model/index.js'
 //类型
 let ranktype = new Pixiv().RankReg
 let Numreg = "[一壹二两三四五六七八九十百千万亿\\d]+"
@@ -77,7 +77,7 @@ export class example extends plugin {
     //p站排行榜
     async pixivList(e) {
         if (!e.isMaster) {
-            if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
+            if (!Config.getGroup(e.group_id).sese || regRet[4] && !await setu.getr18(e)) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
         }
         await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
 

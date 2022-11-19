@@ -364,11 +364,11 @@ let apis = {
     "http://api.starrobotwl.com/api/baisi.php"
   ],
   "hs": [
-    "https://api.caonm.net/api/siwa/api.php",
+    "https://api.caonm.net/api/bhs/h.php?",
     "http://api.starrobotwl.com/api/heisi.php"
   ],
   "jk": [
-    "http://www.ggapi.cn/Api/jkzf"
+    "http://api.starrobotwl.com/api/jk.php"
   ],
   "bm": [
     "http://iw233.cn/api.php?sort=yin"
@@ -393,7 +393,6 @@ let apis = {
     "http://api.wqwlkj.cn/wqwlapi/ks_2cy.php?type=image"
   ],
   "cos": [
-    "https://api.caonm.net/api/cos/api.php",
     "http://xn--rssy53b.love/api/xjjtp/index.php"
   ],
   "hso": [

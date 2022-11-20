@@ -1,13 +1,13 @@
 body {
   transform: scale(1);
-  width: 830px;
+  width: 1000px;
   background: url("../common/theme/bg-01.jpg");
 }
 
 .container {
   background: url(./main.png) right center no-repeat;
   background-size: cover;
-  width: 830px;
+  width: 1000px;
 }
 
 .head-box {

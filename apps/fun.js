@@ -130,10 +130,9 @@ export class example extends plugin {
 
   /**点赞 */
   async zan(e) {
-    let key = "yenai:Stranger_zan"
     /**判断是否为好友 */
     let isFriend = await Bot.fl.get(e.user_id)
-    if (!isFriend && !await redis.get(key)) return e.reply("不加好友不点🙄", true)
+    if (!isFriend && !Config.NoTitle.Strangers_love) return e.reply("不加好友不点🙄", true)
     /** 点赞成功回复的图片*/
     let imgs = [
       "https://xiaobai.klizi.cn/API/ce/zan.php?qq=",

@@ -120,7 +120,7 @@ export class NewConfig extends plugin {
         if (/启用/.test(e.msg)) {
             yes = true;
         }
-        let no = ["sese", "deltime", "notificationsAll", "state", "sesepro"]
+        let no = ["sese", "deltime", "notificationsAll", "state", "sesepro","Strangers_love"]
 
         if (yes) {
             for (let i in configs) {
@@ -171,6 +171,8 @@ export class NewConfig extends plugin {
             botBeenBanned: getStatus(config.botBeenBanned),
             //全部通知
             notificationsAll: getStatus(config.notificationsAll),
+            //陌生人点赞
+            notificationsAll: getStatus(config.Strangers_love),
             //删除缓存时间
             deltime: Number(config.deltime),
             //默认状态

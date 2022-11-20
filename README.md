@@ -35,6 +35,7 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 ## 功能介绍
 
 > Yenai-Plugin为您提供以下功能
+>
 > Tip：以下只是简单描述功能具体指令请使用 **#椰奶帮助 #椰奶群管帮助 #椰奶设置**查看
 
 <details>

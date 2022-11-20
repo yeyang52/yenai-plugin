@@ -234,6 +234,10 @@ export const helpList = [{
       "title": "#今日打卡",
       "desc": "查看今日打卡",
       "icon": 5
+    }, {
+      "title": "#哪个叼毛是龙王",
+      "desc": "查看谁是龙王",
+      "icon": 6
     },]
 },
 {

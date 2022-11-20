@@ -106,11 +106,6 @@ export const helpList = [{
     "icon": 4
   },
   {
-    "title": "#哪个叼毛是龙王",
-    "desc": "查看谁是龙王",
-    "icon": 6
-  },
-  {
     "title": "#查看加群申请",
     "desc": "查看本群的加群申请",
     "icon": 2

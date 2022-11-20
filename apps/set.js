@@ -26,7 +26,7 @@ const configs = {
     "涩涩": "sese",
     "状态": "state",
     "涩涩pro": "sesepro",
-    "陌生人点赞":"Strangers_love"
+    "陌生人点赞": "Strangers_love"
 }
 
 let rediskey = `yenai:proxy`
@@ -120,7 +120,7 @@ export class NewConfig extends plugin {
         if (/启用/.test(e.msg)) {
             yes = true;
         }
-        let no = ["sese", "deltime", "notificationsAll", "state", "sesepro","Strangers_love"]
+        let no = ["sese", "deltime", "notificationsAll", "state", "sesepro", "Strangers_love"]
 
         if (yes) {
             for (let i in configs) {
@@ -141,7 +141,6 @@ export class NewConfig extends plugin {
         if (!e.isMaster) return
 
         let config = await Config.Notice
-
         let cfg = {
             //好友消息
             privateMessage: getStatus(config.privateMessage),
@@ -172,7 +171,7 @@ export class NewConfig extends plugin {
             //全部通知
             notificationsAll: getStatus(config.notificationsAll),
             //陌生人点赞
-            notificationsAll: getStatus(config.Strangers_love),
+            Strangers_love: getStatus(config.Strangers_love),
             //删除缓存时间
             deltime: Number(config.deltime),
             //默认状态

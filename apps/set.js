@@ -25,7 +25,8 @@ const configs = {
     "删除缓存": "deltime",
     "涩涩": "sese",
     "状态": "state",
-    "涩涩pro": "sesepro"
+    "涩涩pro": "sesepro",
+    "陌生人点赞":"Strangers_love"
 }
 
 let rediskey = `yenai:proxy`
@@ -57,10 +58,6 @@ export class NewConfig extends plugin {
                 {
                     reg: '^#椰奶更换代理[1234]$',
                     fnc: 'proxy'
-                },
-                {
-                    reg: '^#(开启|关闭)陌生人点赞$',
-                    fnc: 'Stranger_zan'
                 },
                 {
                     reg: '^#(增加|减少|查看)头衔屏蔽词.*$',
@@ -208,19 +205,6 @@ export class NewConfig extends plugin {
             await redis.set(rediskey, "sex.nyan.xyz")
                 .then(() => e.reply("✅ 已经切换代理为4"))
                 .catch(err => console.log(err))
-        }
-    }
-    // 陌生人点赞
-    async Stranger_zan(e) {
-        if (!e.isMaster) return e.reply("你是坏人，伦家不听你哒(￣^￣)", true)
-        let yes = /开启/.test(e.msg) ? true : false
-        let key = "yenai:Stranger_zan"
-        if (yes) {
-            await redis.set(key, "1")
-            e.reply("✅ 已开启陌生人点赞")
-        } else {
-            await redis.del(key)
-            e.reply("✅ 已关闭陌生人点赞")
         }
     }
     //增删查头衔屏蔽词

@@ -15,7 +15,9 @@ friendNumberChange: false #好友列表变动
 flashPhoto: false #闪照
 botBeenBanned: false #禁言
 notificationsAll: false #全部通知
+Strangers_love : false #陌生人点赞
 sese: false #涩涩
 state: false #状态
 deltime: 600 #删除缓存
 sesepro: false #涩涩增强
+

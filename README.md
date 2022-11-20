@@ -35,7 +35,7 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 ## 功能介绍
 
 > Yenai-Plugin为您提供以下功能
-> 具体您可使用 **#椰奶帮助**  查看详细
+> Tip：以下只是简单描述功能具体指令请使用 **#椰奶帮助 #椰奶群管帮助 #椰奶设置**查看
 
 <details>
   <summary>事件通知</summary>
@@ -54,7 +54,7 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 
 - Bot被禁言
 
-  注：具体可使用 **#椰奶设置** 查看
+  Tip：具体可使用 **#椰奶设置** 查看
 </details>
 <details>
   <summary>助手功能</summary>
@@ -69,6 +69,8 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
   
 - 增 删 查 说说
   
+- 开启/关闭戳一戳
+  
 - 状态
   
 
@@ -77,10 +79,11 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
   <summary>事件处理</summary>
 
 - 同意|拒绝 好友申请
-
 - 同意|拒绝 群邀请
-
 - 回复好友消息
+- 查看现有好友申请/群邀请
+- 同意/拒绝全部好友申请/群邀请
+- 查看全部请求
 
 </details>
 <details>
@@ -90,7 +93,7 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
   
 - 角色收益曲线
   
-- 赞我
+- 赞我（支持陌生人点赞）
   
 - coser
 
@@ -124,6 +127,8 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 
 - 相关作品
 
+  Tip：如您不会使用此功能请加入交流群询问
+
 </details>
 <details>
   <summary>群管功能</summary>
@@ -146,9 +151,11 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 
 - 头衔屏蔽词
 
-- 查看多久没发言的人
+- 查看/清理多久没发言的人
 
-- 查看从未发言的人
+- 查看/清理从未发言的人
+
+- 查看最近入群情况
 
 - 获取禁言列表
 

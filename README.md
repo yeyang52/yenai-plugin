@@ -93,8 +93,14 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 - 赞我
   
 - coser
-  
-- waifu
+
+- 铃声搜索
+
+- 支付宝到账语音
+
+- 半次元话题
+
+- 哪个叼毛是龙王
 
 </details>
 <details>
@@ -116,6 +122,8 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
   
 - 查看热门Tag
 
+- 相关作品
+
 </details>
 <details>
   <summary>群管功能</summary>
@@ -135,6 +143,18 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 - 申请头衔
 
 - 修改头衔
+
+- 头衔屏蔽词
+
+- 查看多久没发言的人
+
+- 查看从未发言的人
+
+- 获取禁言列表
+
+- 解除全部禁言
+
+- 加群申请处理
 
   注：具体可使用 **#椰奶群管帮助** 查看
 </details>

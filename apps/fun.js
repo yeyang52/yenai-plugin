@@ -132,7 +132,7 @@ export class example extends plugin {
   async zan(e) {
     /**判断是否为好友 */
     let isFriend = await Bot.fl.get(e.user_id)
-    if (!isFriend && !Config.NoTitle.Strangers_love) return e.reply("不加好友不点🙄", true)
+    if (!isFriend && !Config.Notice.Strangers_love) return e.reply("不加好友不点🙄", true)
     /** 点赞成功回复的图片*/
     let imgs = [
       "https://xiaobai.klizi.cn/API/ce/zan.php?qq=",

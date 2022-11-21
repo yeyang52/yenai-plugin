@@ -841,11 +841,11 @@ export class example extends plugin {
       if (e.isGroup) {
         //群聊判断权限
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
-          return logger.mark("[椰奶撤回]群聊权限不足")
+          return logger.warn("[椰奶撤回]群聊权限不足")
         }
       } else {
         //私聊判断是否为Bot消息
-        return logger.mark("[椰奶撤回]引用不是Bot消息")
+        return logger.warn("[椰奶撤回]引用不是Bot消息")
       }
     }
     logger.info("[椰奶撤回]执行撤回")

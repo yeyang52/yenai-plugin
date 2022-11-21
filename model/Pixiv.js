@@ -104,7 +104,16 @@ export default class Pixiv {
         ]
         if (x_restrict) {
             if (!this.e.isMaster) {
-                this.e.reply(`该作品不适合所有年龄段，请自行使用链接查看：\nhttps://pixiv.re/${id}.jpg`)
+                let msg = [
+                    `该作品不适合所有年龄段，请自行使用链接查看：`,
+
+                ]
+                if (url.length > 1) {
+                    msg.push(...url.map((item, index) => `\nhttps://pixiv.re/${id}-${index + 1}.jpg`))
+                } else {
+                    msg.push(`\nhttps://pixiv.re/${id}.jpg`)
+                }
+                this.e.reply(msg)
                 if (!await setu.getr18(this.e)) return false;
             }
         }

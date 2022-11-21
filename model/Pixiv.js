@@ -102,21 +102,21 @@ export default class Pixiv {
             `直链：https://pixiv.re/${id}.jpg\n`,
             `传送门：https://www.pixiv.net/artworks/${id}`
         ]
-        if (x_restrict) {
-            if (!this.e.isMaster) {
-                let msg = [
-                    `该作品不适合所有年龄段，请自行使用链接查看：`,
 
-                ]
-                if (url.length > 1) {
-                    msg.push(...url.map((item, index) => `\nhttps://pixiv.re/${id}-${index + 1}.jpg`))
-                } else {
-                    msg.push(`\nhttps://pixiv.re/${id}.jpg`)
-                }
-                this.e.reply(msg)
-                if (!await setu.getr18(this.e)) return false;
+        if (!this.e.isMaster && !await setu.getr18(this.e) && x_restrict) {
+            let linkmsg = [
+                `该作品不适合所有年龄段，请自行使用链接查看：`,
+
+            ]
+            if (url.length > 1) {
+                linkmsg.push(...url.map((item, index) => `\nhttps://pixiv.re/${id}-${index + 1}.jpg`))
+            } else {
+                linkmsg.push(`\nhttps://pixiv.re/${id}.jpg`)
             }
+            this.e.reply(linkmsg)
+            return false;
         }
+
         let img = url.map(item => segment.image(item))
         return { msg, img }
     }
@@ -267,7 +267,7 @@ export default class Pixiv {
         let NowNum = res.illusts.length
         for (let i of res.illusts) {
             let { id, title, user, tags, total_bookmarks, image_urls, x_restrict } = this.format(i, proxy)
-            if (!r18) if (x_restrict) {
+            if (!r18 && x_restrict) {
                 filter++
                 continue
             }
@@ -395,7 +395,7 @@ export default class Pixiv {
         let NowNum = res.illusts.length
         for (let i of res.illusts) {
             let { id, title, tags, total_bookmarks, total_view, url, x_restrict } = this.format(i, proxy)
-            if (!r18) if (x_restrict) {
+            if (!r18 && x_restrict) {
                 filter++
                 continue
             }

@@ -68,7 +68,9 @@ export class sese extends plugin {
       if (!Config.getGroup(e.group_id).sesepro) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
     }
 
-    if (await setu.getcd(e)) return e.reply(` ${lodash.sample(CDMsg)}你的CD还有${cds}`, false, { at: true })
+    let cds = await setu.getcd(e)
+
+    if (cds) return e.reply(` ${lodash.sample(CDMsg)}你的CD还有${cds}`, false, { at: true })
 
     let num = seturdrag.exec(e.msg)
 

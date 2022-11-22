@@ -196,7 +196,7 @@ export class example extends plugin {
     if (!e.isMaster) {
       if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
     }
-    await e.reply("少女祈祷中......")
+    await e.reply("椰奶产出中......")
 
     const api = "http://ovooa.com/API/cosplay/api.php"
 
@@ -224,7 +224,7 @@ export class example extends plugin {
     if (!e.isMaster) {
       if (!Config.getGroup(e.group_id).sesepro) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
     }
-    await e.reply("少女祈祷中......")
+    await e.reply("椰奶产出中......")
     let types = heisiwreg.exec(e.msg)
     let api = `http://hs.heisiwu.com/${heisitype[types[1]]}#/page/${lodash.random(1, 20)}`
     let res = await fetch(api).then(res => res.text()).catch(err => console.error(err))

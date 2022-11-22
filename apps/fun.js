@@ -392,7 +392,7 @@ let apis = {
     "http://api.wqwlkj.cn/wqwlapi/ks_2cy.php?type=image"
   ],
   "cos": [
-    "http://xn--rssy53b.love/api/xjjtp/index.php"
+    "http://api.starrobotwl.com/api/yscos.php"
   ],
   "hso": [
     "http://www.ggapi.cn/Api/girls",

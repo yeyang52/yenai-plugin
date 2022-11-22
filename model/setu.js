@@ -126,10 +126,9 @@ export default new class setu {
         //发送消息
         let res = await Cfg.getCDsendMsg(e, msg, false)
         if (e.isGroup) {
-            let groupCD = {};
             //获取CD
             if (fs.existsSync(this.path)) {
-                groupCD = await Cfg.getread(this.path)
+                let groupCD = await Cfg.getread(this.path)
                 if (groupCD[e.group_id]) cd = groupCD[e.group_id].cd
             }
             if (!e.isMaster && res) {
@@ -308,6 +307,31 @@ export default new class setu {
             }
         }
 
+    }
+    /**
+     * @description: 获取现有设置
+     * @param {*} e oicq
+     * @return {*}
+     */
+    async getSet_up(e) {
+        let set = this.def
+        if (e.isGroup) {
+            //获取群聊单独cd
+            if (fs.existsSync(this.path)) {
+                let groupCD = await Cfg.getread(this.path)
+                if (groupCD[e.group_id]) set.cd = groupCD[e.group_id].cd
+            }
+            set.recall = await Cfg.recalltime(e)
+        } else {
+            //获取私聊单独cd
+            if (fs.existsSync(this.path_s)) {
+                let friendCD = await Cfg.getread(this.path_s)
+                if (friendCD[e.user_id]) set.cd = friendCD[e.user_id]
+            }
+            delete set.recall
+        }
+        set.r18 = await this.getr18(e)
+        return set
     }
 
 }

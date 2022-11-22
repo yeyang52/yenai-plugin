@@ -91,7 +91,7 @@ export class NEWCMD extends plugin {
     if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
 
     if (qq == Bot.uin) return
-   
+
     if (!temp[qq + e.group_id]) return e.reply("❎ 目标群成员当前无需验证");
 
     clearTimeout(temp[qq + e.group_id].kickTimer);
@@ -105,7 +105,7 @@ export class NEWCMD extends plugin {
 
   //开启验证
   async openverify(e) {
-    if (!e.isMaster) return e.reply("❎ 该命令仅限主人可用", true);
+    if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply("❎ 该命令仅限管理员可用", true);
     if (!e.group.is_admin && !e.group.is_owner) return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
     let verifycfg = Config.verifycfg
     if (verifycfg.openGroup.indexOf(e.group_id) != -1) return e.reply("❎ 本群验证已处于开启状态")
@@ -115,7 +115,7 @@ export class NEWCMD extends plugin {
 
   //关闭验证
   async closeverify(e) {
-    if (!e.isMaster) return e.reply("❎ 该命令仅限主人可用", true);
+    if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply("❎ 该命令仅限管理员可用", true);
     let verifycfg = Config.verifycfg
     let key = verifycfg.openGroup.indexOf(e.group_id)
     if (key == -1) return e.reply("❎ 本群暂未开启验证")

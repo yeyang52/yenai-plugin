@@ -117,11 +117,17 @@ Tip：具体可使用 **#椰奶设置** 查看
   <summary>Pixiv功能</summary>
 
 - [x] Pixiv排行榜
+
 - [x] Tag搜图
+
 - [x] Pid搜图
+
 - [x] Uid搜图
+
 - [x] 查看热门Tag
+
 - [x] 查看相关作品
+
 Tip：详情请参考[此教程](https://docs.qq.com/doc/DYWxIcEJicktpelRi)
 
 </details>

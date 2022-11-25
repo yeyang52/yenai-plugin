@@ -55,8 +55,9 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 
 - [x] Bot被禁言
 
-  Tip：具体可使用 **#椰奶设置** 查看
+Tip：具体可使用 **#椰奶设置** 查看
   </details>
+
 <details>
   <summary>助手功能</summary>
 
@@ -80,10 +81,15 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
   <summary>事件处理</summary>
 
 - [x] 同意|拒绝 好友申请
+
 - [x] 同意|拒绝 群邀请
+
 - [x] 回复好友消息
+
 - [x] 查看现有好友申请/群邀请
+
 - [x] 同意/拒绝全部好友申请/群邀请
+
 - [x] 查看全部请求
 
 </details>
@@ -111,18 +117,12 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
   <summary>Pixiv功能</summary>
 
 - [x] Pixiv排行榜
-
 - [x] Tag搜图
-
 - [x] Pid搜图
-
 - [x] Uid搜图
-
 - [x] 查看热门Tag
-
 - [x] 查看相关作品
-
-  Tip：详情请参考[此教程](https://docs.qq.com/doc/DYWxIcEJicktpelRi)
+Tip：详情请参考[此教程](https://docs.qq.com/doc/DYWxIcEJicktpelRi)
 
 </details>
 <details>
@@ -162,7 +162,7 @@ git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 
 - [ ] 添加白名单
 
-  注：具体可使用 **#椰奶群管帮助** 查看
+Tip：具体可使用 **#椰奶群管帮助** 查看
   </details>
 
 ## 免责声明

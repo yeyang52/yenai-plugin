@@ -40,7 +40,7 @@
             </div>
             <article>
                 <p>CPU</p>
-                <p>{{cpudata.manufacturer}} {{cpudata.cores + '核'}} {{cpuTempera}}</p>
+                <p>{{cpudata?.manufacturer}} {{cpudata.cores + '核'}} {{cpuTempera}}</p>
                 <p>{{maxspeed}}</p>
             </article>
         </li>
@@ -125,10 +125,6 @@
     <div class="speed">
         <p>系统</p>
         <p>{{osinfo.distro}}</p>
-    </div>
-    <div class="speed">
-        <p>CPU</p>
-        <p>{{cpudata.brand}}</p>
     </div>
     <div class="speed">
         <p>{{network.iface}}</p>

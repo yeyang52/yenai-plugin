@@ -162,6 +162,7 @@ export class example extends plugin {
       //网络
       network,
     }
+    logger.info(data.cpudata)
     //渲染图片
     await render('state/state', {
       ...data,

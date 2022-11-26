@@ -18,7 +18,7 @@ class OSUtils {
     let cpuUsageMS = options * 1000;
     cpuUsageMS = cpuUsageMS || that.cpuUsageMSDefault;
     const t1 = that._getCPUInfo(); // t1 时间点 CPU 信息
-    await si.networkStats()
+    
     await sleep(cpuUsageMS);
 
     const t2 = that._getCPUInfo(); // t2 时间点 CPU 信息

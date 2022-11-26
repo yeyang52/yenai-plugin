@@ -20,7 +20,9 @@ export class example extends plugin {
 
     })
   }
-
+  async init() {
+    si.networkStats()
+  }
 
   async state(e) {
     if (!/椰奶/.test(e.msg) && !Config.Notice.state) {

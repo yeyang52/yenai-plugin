@@ -36,8 +36,6 @@ export class example extends plugin {
     let MemUsage = (1 - os.freemem() / os.totalmem()).toFixed(2)
     //空闲内存
     let freemem = CPU.getfilesize(os.freemem())
-    //GPU使用率
-    let gpu_info = (await si.graphics()).controllers[0]
     //使用内存
     let Usingmemory = CPU.getfilesize((os.totalmem() - os.freemem()))
     //nodejs占用
@@ -124,7 +122,6 @@ export class example extends plugin {
       maxspeed,
       //系统
       osinfo: await si.osInfo(),
-      // hostname: os.type(),
       //内存使用率
       ram_leftCircle,
       ram_rightCircle,

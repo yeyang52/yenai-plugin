@@ -76,23 +76,21 @@ export class example extends plugin {
     };
     //win硬盘内存
     let HardDisk = '';
-    if (os.platform() == "win32") {
-      try {
-        for (let i of CPU.getHardDisk()) {
-          if (i.blocks == 0 && i.used == 0 && i.available == 0) continue;
-          HardDisk += "<li><div class='word'>" + i.mounted + "</div><div class='progress'>" + "<div class='word'>" + CPU.getfilesize(i.used) + " / " + CPU.getfilesize(i.blocks) + "</div><div class='current' style=width:" + i.capacity + "></div></div><div>" + i.capacity + "</div></li>"
-        }
-      } catch {
-        console.error("无法获取硬盘");
+    // if (os.platform() == "win32") {
+    try {
+      for (let i of await si.fsSize()) {
+        if (i.size == 0 && i.used == 0 && i.available == 0) continue;
+        HardDisk += "<li><div class='word'>" + i.fs + "</div><div class='progress'>" + "<div class='word'>" + CPU.getfilesize(i.used) + " / " + CPU.getfilesize(i.size) + "</div><div class='current' style=width:" + Math.round(i.use) + '%' + "></div></div><div>" + Math.round(i.use) + '%' + "</div></li>"
       }
+    } catch {
+      console.error("无法获取硬盘");
     }
+    // }
     //网络
     let network = (await si.networkStats())[0]
     network.rx_sec = CPU.getfilesize(network.rx_sec)
     network.tx_sec = CPU.getfilesize(network.tx_sec)
-    //cpu温度
-    let cpuTempera = await si.cpuTemperature().then(res => res.main)
-    cpuTempera ? cpuTempera + '℃' : ""
+
     //渲染数据
     let data = {
       //路径
@@ -119,8 +117,6 @@ export class example extends plugin {
       cpu_leftCircle,
       cpu_rightCircle,
       cpu_info: parseInt(cpu_info * 100) + "%",
-      //CPU温度
-      cpuTempera,
       //核心
       // hx: hx.length + "核",
       // hxmodel: hx[0]?.model.substr(0, 3) || "",
@@ -162,7 +158,6 @@ export class example extends plugin {
       //网络
       network,
     }
-    logger.info(data.cpudata)
     //渲染图片
     await render('state/state', {
       ...data,

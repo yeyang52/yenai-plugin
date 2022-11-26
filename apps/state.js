@@ -88,8 +88,8 @@ export class example extends plugin {
     }
     //网络
     let network = (await si.networkStats())[0]
-    network.rx_sec = CPU.getfilesize(rx_sec)
-    network.tx_sec = CPU.getfilesize(tx_sec)
+    network.rx_sec = CPU.getfilesize(network.rx_sec)
+    network.tx_sec = CPU.getfilesize(network.tx_sec)
 
     //渲染数据
     let data = {

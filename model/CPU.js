@@ -82,7 +82,7 @@ class OSUtils {
     if (!size) return "";
     var num = 1024.00; //byte
     if (size < num)
-      return size + "B";
+      return size.toFixed(2) + "B";
     if (size < Math.pow(num, 2))
       return (size / num).toFixed(2) + "Kb"; //kb
     if (size < Math.pow(num, 3))

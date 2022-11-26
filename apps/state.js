@@ -90,7 +90,9 @@ export class example extends plugin {
     let network = (await si.networkStats())[0]
     network.rx_sec = CPU.getfilesize(network.rx_sec)
     network.tx_sec = CPU.getfilesize(network.tx_sec)
-
+    //cpu温度
+    let cpuTempera = await si.cpuTemperature().then(res => res.main)
+    cpuTempera ? cpuTempera + '℃' : ""
     //渲染数据
     let data = {
       //路径
@@ -118,7 +120,7 @@ export class example extends plugin {
       cpu_rightCircle,
       cpu_info: parseInt(cpu_info * 100) + "%",
       //CPU温度
-      cpuTempera: (await si.cpuTemperature()).main + "℃",
+      cpuTempera,
       //核心
       // hx: hx.length + "核",
       // hxmodel: hx[0]?.model.substr(0, 3) || "",

@@ -76,16 +76,14 @@ export class example extends plugin {
     };
     //win硬盘内存
     let HardDisk = '';
-    // if (os.platform() == "win32") {
     try {
       for (let i of await si.fsSize()) {
         if (i.size == 0 && i.used == 0 && i.available == 0) continue;
-        HardDisk += "<li><div class='word'>" + i.fs + "</div><div class='progress'>" + "<div class='word'>" + CPU.getfilesize(i.used) + " / " + CPU.getfilesize(i.size) + "</div><div class='current' style=width:" + Math.round(i.use) + '%' + "></div></div><div>" + Math.round(i.use) + '%' + "</div></li>"
+        HardDisk += "<li><div class='word'>" + i.mount + "</div><div class='progress'>" + "<div class='word'>" + CPU.getfilesize(i.used) + " / " + CPU.getfilesize(i.size) + "</div><div class='current' style=width:" + Math.round(i.use) + '%' + "></div></div><div>" + Math.round(i.use) + '%' + "</div></li>"
       }
     } catch {
       console.error("无法获取硬盘");
     }
-    // }
     //网络
     let network = (await si.networkStats())[0]
     network.rx_sec = CPU.getfilesize(network.rx_sec)

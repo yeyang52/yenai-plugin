@@ -51,7 +51,7 @@ export class example extends plugin {
     //最大mhz
     let maxspeed = CPU.getmaxspeed()
     //核心
-    // let hx = os.cpus()
+    let hx = os.cpus()
     //群数
     let group_quantity = Array.from(Bot.gl.values()).length
     //好友数
@@ -115,9 +115,9 @@ export class example extends plugin {
       cpu_rightCircle,
       cpu_info: parseInt(cpu_info * 100) + "%",
       //核心
-      // hx: hx.length + "核",
-      // hxmodel: hx[0]?.model.substr(0, 3) || "",
-      cpudata: await si.cpu(),
+      hx: hx.length + "核",
+      hxmodel: hx[0]?.model.substr(0, 3) || "",
+      // cpudata: await si.cpu(),
       //最大MHZ
       maxspeed,
       //系统

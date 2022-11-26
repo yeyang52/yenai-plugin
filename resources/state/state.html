@@ -64,7 +64,7 @@
                 <p>空闲 {{freemem}}</p>
             </article>
         </li>
-        <!-- <li class="li">
+        <li class="li">
             <div class="cpu">
                 <div class="left">
                     <div class="left-circle" {{node_leftCircle}}>
@@ -84,31 +84,7 @@
                 <p>堆 {{nodeoccupy.heapTotal}}</p>
                 <p>栈 {{nodeoccupy.heapUsed}}</p>
             </article>
-        </li> -->
-        <li class="li">
-            <div class="cpu">
-                <div class="left">
-                    <div class="left-circle" {{gpu_leftCircle}}>
-                    </div>
-                </div>
-                <div class="right">
-                    <div class="right-circle" {{gpu_rightCircle}}>
-                    </div>
-                </div>
-                <div class="inner">
-                    {{gpu_info.utilizationGpu + '%'}}
-                </div>
-            </div>
-            <article>
-                <p>GPU</p>
-                <p>{{gpu_info.vendor}} {{gpu_info.temperatureGpu}}℃</p>
-                <p>总 {{gpu_info.memoryTotal/1000}}G</p>
-                <p>使用 {{gpu_info.memoryUsed/1000}}G</p>
-            </article>
         </li>
-
-
-
 
     </ul>
 </div>

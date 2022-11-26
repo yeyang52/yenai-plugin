@@ -23,7 +23,6 @@ export class example extends plugin {
 
 
   async state(e) {
-    si.graphics().then(data => console.log(data));
     if (!/椰奶/.test(e.msg) && !Config.Notice.state) {
       return false;
     }
@@ -51,9 +50,6 @@ export class example extends plugin {
     //ram
     let ram = Circle(MemUsage)
     let [ram_leftCircle, ram_rightCircle] = ram
-    //gpu
-    let gpu = Circle((gpu_info.utilizationGpu / 100))
-    let [gpu_leftCircle, gpu_rightCircle] = gpu
     //最大mhz
     let maxspeed = CPU.getmaxspeed()
     //核心
@@ -160,11 +156,6 @@ export class example extends plugin {
       HardDisk,
       //网络
       network,
-      //GPU
-      gpu_info,
-      gpu_leftCircle,
-      gpu_rightCircle,
-
     }
     //渲染图片
     await render('state/state', {

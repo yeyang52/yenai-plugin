@@ -23,6 +23,7 @@ export class example extends plugin {
 
 
   async state(e) {
+    si.graphics().then(data => console.log(data));
     if (!/椰奶/.test(e.msg) && !Config.Notice.state) {
       return false;
     }
@@ -36,7 +37,8 @@ export class example extends plugin {
     let MemUsage = (1 - os.freemem() / os.totalmem()).toFixed(2)
     //空闲内存
     let freemem = CPU.getfilesize(os.freemem())
-
+    //GPU使用率
+    let gpu_info = (await si.graphics()).controllers[0]
     //使用内存
     let Usingmemory = CPU.getfilesize((os.totalmem() - os.freemem()))
     //nodejs占用
@@ -49,6 +51,9 @@ export class example extends plugin {
     //ram
     let ram = Circle(MemUsage)
     let [ram_leftCircle, ram_rightCircle] = ram
+    //gpu
+    let gpu = Circle((gpu_info.utilizationGpu / 100))
+    let [gpu_leftCircle, gpu_rightCircle] = gpu
     //最大mhz
     let maxspeed = CPU.getmaxspeed()
     //核心
@@ -86,8 +91,8 @@ export class example extends plugin {
     }
     //网络
     let network = (await si.networkStats())[0]
-    network.rx_sec = CPU.getfilesize(network.rx_sec)
-    network.tx_sec = CPU.getfilesize(network.tx_sec)
+    network.rx_sec = CPU.getfilesize(network.rx_sec, false)
+    network.tx_sec = CPU.getfilesize(network.tx_sec, false)
 
     //渲染数据
     let data = {
@@ -155,6 +160,11 @@ export class example extends plugin {
       HardDisk,
       //网络
       network,
+      //GPU
+      gpu_info,
+      gpu_leftCircle,
+      gpu_rightCircle,
+
     }
     //渲染图片
     await render('state/state', {

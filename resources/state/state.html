@@ -64,7 +64,7 @@
                 <p>空闲 {{freemem}}</p>
             </article>
         </li>
-        <li class="li">
+        <!-- <li class="li">
             <div class="cpu">
                 <div class="left">
                     <div class="left-circle" {{node_leftCircle}}>
@@ -83,6 +83,27 @@
                 <p>总 {{nodeoccupy.rss}}</p>
                 <p>堆 {{nodeoccupy.heapTotal}}</p>
                 <p>栈 {{nodeoccupy.heapUsed}}</p>
+            </article>
+        </li> -->
+        <li class="li">
+            <div class="cpu">
+                <div class="left">
+                    <div class="left-circle" {{gpu_leftCircle}}>
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="right-circle" {{gpu_rightCircle}}>
+                    </div>
+                </div>
+                <div class="inner">
+                    {{gpu_info.utilizationGpu + '%'}}
+                </div>
+            </div>
+            <article>
+                <p>GPU</p>
+                <p>{{gpu_info.vendor}} {{gpu_info.temperatureGpu}}℃</p>
+                <p>总 {{gpu_info.memoryTotal/1000}}G</p>
+                <p>使用 {{gpu_info.memoryUsed/1000}}G</p>
             </article>
         </li>
 
@@ -113,23 +134,21 @@
 </div> -->
 <script type="text/javascript">
     let HardDisk = "{{@HardDisk}}"
-    if (HardDisk) {
-        document.write('<div class="box memory">')
-        document.write('<ul>')
-        document.write(HardDisk)
-        document.write('</ul>')
-        document.write('</div>')
-    }
+    if (HardDisk) document.write('<div class="box memory">' + '<ul>' + HardDisk + '</ul>' + '</div>') 
 </script>
 <div class="box">
     <div class="speed">
         <p>系统</p>
         <p>{{osinfo.distro}}</p>
     </div>
-    <div class="speed">
-        <p>{{network.iface}}</p>
-        <p>↑{{network.tx_sec}}/s ↓{{network.rx_sec}}/s</p>
-    </div>
+    <script type="text/javascript">
+        if ('{{network.tx_sec}}' && '{{network.rx_sec}}') {
+            document.write('<div class="speed">' +
+                '<p>{{ network.iface }}</p>' +
+                '<p>↑{{network.tx_sec}}/s ↓{{network.rx_sec}}/s</p>' +
+                '</div>')
+        }
+    </script>
     <div class="speed">
         <p>插件</p>
         <p>{{takeplugin}} plugin | {{takejs}} js</p>

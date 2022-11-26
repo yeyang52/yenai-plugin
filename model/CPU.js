@@ -1,6 +1,5 @@
 ///CPU利用率
 import os from 'os';
-import child_process from 'child_process'
 import si from 'systeminformation'
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -77,12 +76,15 @@ class OSUtils {
     }
 
   }
+
   /**字节转换 */
-  getfilesize(size) {//把字节转换成正常文件大小
+  getfilesize(size, isbtye = true) {//把字节转换成正常文件大小
     if (!size) return "";
     var num = 1024.00; //byte
-    if (size < num)
-      return size.toFixed(2) + "B";
+    if (isbtye) {
+      if (size < num)
+        return size.toFixed(2) + "B";
+    }
     if (size < Math.pow(num, 2))
       return (size / num).toFixed(2) + "Kb"; //kb
     if (size < Math.pow(num, 3))
@@ -100,72 +102,6 @@ class OSUtils {
     let heapUsed = this.getfilesize(memory.heapUsed);
     let occupy = (memory.rss / (os.totalmem() - os.freemem())).toFixed(2)
     return { rss, heapTotal, heapUsed, occupy }
-  }
-  //win获取硬盘
-  getHardDisk() {
-    let stdout = child_process.execSync('wmic logicaldisk get Caption,FreeSpace,Size,VolumeSerialNumber,Description  /format:list')
-    stdout = stdout.toString("utf8")
-    let aDrives = [];
-    var aLines = stdout.split('\r\r\n');
-    var bNew = false;
-    var sCaption = '', sDescription = '', sFreeSpace = '', sSize = '', sVolume = '';
-    for (var i = 0; i < aLines.length; i++) {
-      if (aLines[i] != '') {
-        var aTokens = aLines[i].split('=');
-        switch (aTokens[0]) {
-          case 'Caption':
-            sCaption = aTokens[1];
-            bNew = true;
-            break;
-          case 'Description':
-            sDescription = aTokens[1];
-            break;
-          case 'FreeSpace':
-            sFreeSpace = aTokens[1];
-            break;
-          case 'Size':
-            sSize = aTokens[1];
-            break;
-          case 'VolumeSerialNumber':
-            sVolume = aTokens[1];
-            break;
-        }
-
-      } else {
-        // Empty line 
-        // If we get an empty line and bNew is true then we have retrieved
-        // all information for one drive, add to array and reset variables
-        if (bNew) {
-          sSize = parseFloat(sSize);
-          if (isNaN(sSize)) {
-            sSize = 0;
-          }
-          sFreeSpace = parseFloat(sFreeSpace);
-          if (isNaN(sFreeSpace)) {
-            sFreeSpace = 0;
-          }
-
-          var sUsed = (sSize - sFreeSpace);
-          var sPercent = '0%';
-          if (sSize != '' && parseFloat(sSize) > 0) {
-            sPercent = Math.round((parseFloat(sUsed) / parseFloat(sSize)) * 100) + '%';
-          }
-          aDrives[aDrives.length] = {
-            filesystem: sDescription,
-            blocks: sSize,
-            used: sUsed,
-            available: sFreeSpace,
-            capacity: sPercent,
-            mounted: sCaption
-          };
-          bNew = false;
-          sCaption = ''; sDescription = ''; sFreeSpace = ''; sSize = ''; sVolume = '';
-        }
-
-      }
-    }
-    return aDrives;
-
   }
 }
 export default new OSUtils();

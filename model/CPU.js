@@ -1,6 +1,7 @@
 ///CPU利用率
 import os from 'os';
 import child_process from 'child_process'
+import si from 'systeminformation'
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 class OSUtils {
@@ -18,7 +19,7 @@ class OSUtils {
     let cpuUsageMS = options * 1000;
     cpuUsageMS = cpuUsageMS || that.cpuUsageMSDefault;
     const t1 = that._getCPUInfo(); // t1 时间点 CPU 信息
-
+    await si.networkStats()
     await sleep(cpuUsageMS);
 
     const t2 = that._getCPUInfo(); // t2 时间点 CPU 信息

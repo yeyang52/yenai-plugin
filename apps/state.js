@@ -4,6 +4,7 @@ import { Version, render, Config } from '../components/index.js'
 import { CPU, Cfg } from '../model/index.js'
 import fs from 'fs'
 import moment from 'moment';
+import si from 'systeminformation'
 export class example extends plugin {
   constructor() {
     super({
@@ -51,7 +52,7 @@ export class example extends plugin {
     //最大mhz
     let maxspeed = CPU.getmaxspeed()
     //核心
-    let hx = os.cpus()
+    // let hx = os.cpus()
     //群数
     let group_quantity = Array.from(Bot.gl.values()).length
     //好友数
@@ -85,6 +86,12 @@ export class example extends plugin {
         console.error("无法获取硬盘");
       }
     }
+    //网络
+    let network = await si.networkStats()
+    network.rx_sec = CPU.getfilesize(rx_sec)
+    network.tx_sec = CPU.getfilesize(tx_sec)
+
+    //渲染数据
     let data = {
       //路径
       tplFile: `./plugins/yenai-plugin/resources/state/state.html`,
@@ -110,13 +117,17 @@ export class example extends plugin {
       cpu_leftCircle,
       cpu_rightCircle,
       cpu_info: parseInt(cpu_info * 100) + "%",
+      //CPU温度
+      cpuTempera: (await si.cpuTemperature()).main + "℃",
       //核心
-      hx: hx.length + "核",
-      hxmodel: hx[0]?.model.substr(0, 3) || "",
+      // hx: hx.length + "核",
+      // hxmodel: hx[0]?.model.substr(0, 3) || "",
+      cpudata: await si.cpu(),
       //最大MHZ
       maxspeed,
-      //系统名
-      hostname: os.type(),
+      //系统
+      osinfo: await si.osInfo(),
+      // hostname: os.type(),
       //内存使用率
       ram_leftCircle,
       ram_rightCircle,
@@ -146,6 +157,8 @@ export class example extends plugin {
       takejs: fs.readdirSync("./plugins/example")?.length || 0,
       //内存
       HardDisk,
+      //网络
+      network,
     }
     //渲染图片
     await render('state/state', {

@@ -38,6 +38,8 @@ export class example extends plugin {
     let MemUsage = (1 - os.freemem() / os.totalmem()).toFixed(2)
     //空闲内存
     let freemem = CPU.getfilesize(os.freemem())
+    //总共内存
+    let totalmem = CPU.getfilesize(os.totalmem())
     //使用内存
     let Usingmemory = CPU.getfilesize((os.totalmem() - os.freemem()))
     //nodejs占用
@@ -133,6 +135,8 @@ export class example extends plugin {
       ram_leftCircle,
       ram_rightCircle,
       MemUsage: parseInt(MemUsage * 100) + "%",
+      //总共内存
+      totalmem,
       //空闲内存
       freemem,
       //已用内存

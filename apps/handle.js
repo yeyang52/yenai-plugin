@@ -281,11 +281,11 @@ export class anotice extends plugin {
         let success = [], fail = [], risk = []
         if (/全部/.test(e.msg)) {
             for (let i of SystemMsg) {
-                if (/风险/.test(i.tips)) {
-                    risk.push(`${risk.length + 1}、${i.user_id}`)
+                if (await i.approve(yes)) {
+                    success.push(`${success.length + 1}、${i.user_id}`)
                 } else {
-                    if (await i.approve(yes)) {
-                        success.push(`${success.length + 1}、${i.user_id}`)
+                    if (/风险/.test(i.tips)) {
+                        risk.push(`${risk.length + 1}、${i.user_id}`)
                     } else {
                         fail.push(`${fail.length + 1}、${i.user_id}`)
                     }

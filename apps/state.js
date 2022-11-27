@@ -82,7 +82,7 @@ export class example extends plugin {
     try {
       for (let i of await si.fsSize()) {
         if (i.size == 0 && i.used == 0 && i.available == 0) continue;
-        if (osinfo.arch.includes("arm") && i.mount != '/') continue;
+        if (osinfo.arch.includes("arm") && i.mount != '/' && !/darwin/i.test(osinfo.platform)) continue;
         HardDisk += "<li><div class='word'>" + i.mount + "</div><div class='progress'>" + "<div class='word'>" + CPU.getfilesize(i.used) + " / " + CPU.getfilesize(i.size) + "</div><div class='current' style=width:" + Math.round(i.use) + '%' + "></div></div><div>" + Math.round(i.use) + '%' + "</div></li>"
       }
     } catch {

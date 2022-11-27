@@ -34,7 +34,7 @@ export class NEWCMD extends plugin {
           fnc: 'setmode'
         },
         {
-          reg: '^#设置验证超时时间(\\d+)(s|秒)$',
+          reg: '^#设置验证超时时间(\\d+)(s|秒)?$',
           fnc: 'setovertime'
         }
       ]

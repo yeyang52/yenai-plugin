@@ -51,9 +51,9 @@ export class example extends plugin {
     let ram = Circle(MemUsage)
     let [ram_leftCircle, ram_rightCircle] = ram
     //最大mhz
-    let maxspeed = CPU.getmaxspeed()
+    // let maxspeed = CPU.getmaxspeed()
     //核心
-    let hx = os.cpus()
+    // let hx = os.cpus()
     //群数
     let group_quantity = Array.from(Bot.gl.values()).length
     //好友数
@@ -92,7 +92,7 @@ export class example extends plugin {
     let network = (await si.networkStats())[0]
     network.rx_sec = CPU.getfilesize(network.rx_sec, false)
     network.tx_sec = CPU.getfilesize(network.tx_sec, false)
-
+    
     //渲染数据
     let data = {
       //路径
@@ -120,11 +120,11 @@ export class example extends plugin {
       cpu_rightCircle,
       cpu_info: parseInt(cpu_info * 100) + "%",
       //核心
-      hx: hx.length + "核",
-      hxmodel: hx[0]?.model.substr(0, 3) || "",
-      // cpudata: await si.cpu(),
+      // hx: hx.length + "核",
+      // hxmodel: hx[0]?.model.slice(0, 3) || "",
+      cpudata: await si.cpu(),
       //最大MHZ
-      maxspeed,
+      // maxspeed,
       //系统
       osinfo,
       //内存使用率

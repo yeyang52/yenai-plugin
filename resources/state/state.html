@@ -40,9 +40,9 @@
             </div>
             <article>
                 <p>CPU</p>
-                <p>{{cpudata?.manufacturer}} {{cpudata?.cores + '核'}} {{osinfo.arch}}</p>
-                <p>平均{{cpudata?.speed}}GHz</p>
-                <p>最大{{cpudata?.speedMax}}GHz</p>
+                <p>{{cpumodel}} {{hx}} {{osinfo.arch}}</p>
+                <p>平均{{maxspeed.avg}}GHz</p>
+                <p>最大{{maxspeed.max}}GHz</p>
             </article>
         </li>
         <li class="li">

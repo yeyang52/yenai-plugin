@@ -75,11 +75,14 @@ export class example extends plugin {
       "11": "我在线上",
       "60": "Q我吧",
     };
+    //系统
+    let osinfo = await si.osInfo()
     //win硬盘内存
     let HardDisk = '';
     try {
       for (let i of await si.fsSize()) {
         if (i.size == 0 && i.used == 0 && i.available == 0) continue;
+        if (osinfo.arch.includes("arm") && i.mount != '/') continue;
         HardDisk += "<li><div class='word'>" + i.mount + "</div><div class='progress'>" + "<div class='word'>" + CPU.getfilesize(i.used) + " / " + CPU.getfilesize(i.size) + "</div><div class='current' style=width:" + Math.round(i.use) + '%' + "></div></div><div>" + Math.round(i.use) + '%' + "</div></li>"
       }
     } catch {
@@ -123,7 +126,7 @@ export class example extends plugin {
       //最大MHZ
       maxspeed,
       //系统
-      osinfo: await si.osInfo(),
+      osinfo,
       //内存使用率
       ram_leftCircle,
       ram_rightCircle,

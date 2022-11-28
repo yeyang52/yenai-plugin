@@ -58,10 +58,6 @@ export class sese extends plugin {
         {
           reg: setcdreg,
           fnc: 'instsetcd'
-        },
-        {
-          reg: '^#查看(sese|涩涩)设置$',
-          fnc: 'View_Settings'
         }
       ]
     })
@@ -220,18 +216,4 @@ export class sese extends plugin {
     let cd = common.translateChinaNum(cdreg[2])
     setu.setcd(e, qq, cd)
   }
-
-  async View_Settings(e) {
-    if (!e.isMaster) return false;
-    let set = await setu.getSet_up(e)
-    let data = Config.Notice
-    e.reply([
-      `sese：${!!data.sese}\n`,
-      `sesepro：${!!data.sesepro}\n`,
-      `R17.9 + 0.1：${!!set.r18}\n`,
-      `CD：${set.cd}s\n`,
-      set.recall ? `撤回：${set.recall}s` : ""
-    ])
-  }
-
 }

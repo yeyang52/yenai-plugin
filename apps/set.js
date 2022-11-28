@@ -2,7 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import fs from "fs";
 import lodash from "lodash";
 import { Config, render } from '../components/index.js'
-import { YamlReader } from '../model/index.js';
+import { YamlReader, setu } from '../model/index.js';
 const configs = {
     "好友消息": "privateMessage",
     "群消息": "groupMessage",
@@ -66,6 +66,10 @@ export class NewConfig extends plugin {
                 {
                     reg: '^#切换头衔屏蔽词匹配(模式)?$',
                     fnc: 'NoTitlepattern'
+                },
+                {
+                    reg: '^#查看(sese|涩涩)设置$',
+                    fnc: 'View_Settings'
                 }
             ]
         })
@@ -89,12 +93,11 @@ export class NewConfig extends plugin {
         // 处理
         Config.modify("whole", configs[index], yes)
         //单独处理
-        if (index == "涩涩pro" && yes) {
-            Config.modify("whole", "sese", yes)
-        }
-        if (index == "涩涩" && !yes) {
-            Config.modify("whole", "sesepro", yes)
-        }
+        if (index == "涩涩pro" && yes) Config.modify("whole", "sese", yes)
+
+        if (index == "涩涩" && !yes) Config.modify("whole", "sesepro", yes)
+
+        if (index == "涩涩" || index == "涩涩pro") return this.View_Settings(e)
         this.yenaiset(e)
         return true;
     }
@@ -113,7 +116,7 @@ export class NewConfig extends plugin {
 
         return true;
     }
-    //修改设置
+    //修改全部设置
     async SetAll(e) {
         if (!e.isMaster) return
         let yes = false;
@@ -208,6 +211,20 @@ export class NewConfig extends plugin {
                 .catch(err => console.log(err))
         }
     }
+    //查看涩涩设置
+    async View_Settings(e) {
+        if (!e.isMaster) return false;
+        let set = await setu.getSet_up(e)
+        let data = Config.Notice
+        e.reply([
+            `sese：${!!data.sese}\n`,
+            `sesepro：${!!data.sesepro}\n`,
+            `R17.9 + 0.1：${!!set.r18}\n`,
+            `CD：${set.cd}s\n`,
+            set.recall ? `撤回：${set.recall}s` : ""
+        ])
+    }
+
     //增删查头衔屏蔽词
     async NoTitle(e) {
         let getdata = new YamlReader(this.NoTitlepath)
@@ -250,7 +267,7 @@ export class NewConfig extends plugin {
             }
         }
     }
-    //修改匹配模式
+    //修改头衔匹配模式
     async NoTitlepattern(e) {
         let getdata = new YamlReader(this.NoTitlepath)
         let data = getdata.jsonData.Match_pattern

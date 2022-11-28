@@ -81,13 +81,13 @@
                 </div>
             </div>
             <article>
-                <p>Nodejs</p>
+                <p>Node</p>
                 <p>总 {{nodeoccupy.rss}}</p>
                 <p>堆 {{nodeoccupy.heapTotal}}</p>
                 <p>栈 {{nodeoccupy.heapUsed}}</p>
             </article>
         </li>
-
+        
     </ul>
 </div>
 <!-- <div class="box memory">
@@ -110,10 +110,7 @@
         </li>
     </ul>
 </div> -->
-<script type="text/javascript">
-    let HardDisk = "{{@HardDisk}}"
-    if (HardDisk) document.write('<div class="box memory">' + '<ul>' + HardDisk + '</ul>' + '</div>') 
-</script>
+{{@HardDisk}}
 <div class="box">
     <div class="speed">
         <p>系统</p>
@@ -122,7 +119,7 @@
     <script type="text/javascript">
         if ('{{network.tx_sec}}' && '{{network.rx_sec}}') {
             document.write('<div class="speed">' +
-                '<p>{{ network.iface }}</p>' +
+                '<p>{{network.iface}}</p>' +
                 '<p>↑{{network.tx_sec}}/s ↓{{network.rx_sec}}/s</p>' +
                 '</div>')
         }

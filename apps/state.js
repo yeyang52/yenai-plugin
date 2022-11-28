@@ -84,15 +84,12 @@ export class example extends plugin {
     let osinfo = await si.osInfo()
     //硬盘内存
     let HardDisk = '';
-    try {
-      for (let i of await si.fsSize()) {
-        if (!i.size || !i.used || !i.available) continue;
-        if (osinfo.arch.includes("arm") && i.mount != '/' && !/darwin/i.test(osinfo.platform)) continue;
-        HardDisk += "<li><div class='word'>" + i.mount + "</div><div class='progress'>" + "<div class='word'>" + CPU.getfilesize(i.used) + " / " + CPU.getfilesize(i.size) + "</div><div class='current' style=width:" + Math.round(i.use) + '%' + "></div></div><div>" + Math.round(i.use) + '%' + "</div></li>"
-      }
-    } catch {
-      console.error("无法获取硬盘");
+    for (let i of await si.fsSize()) {
+      if (!i.size || !i.used || !i.available) continue;
+      if (osinfo.arch.includes("arm") && i.mount != '/' && !/darwin/i.test(osinfo.platform)) continue;
+      HardDisk += "<li><div class='word'>" + i.mount + "</div><div class='progress'>" + "<div class='word'>" + CPU.getfilesize(i.used) + " / " + CPU.getfilesize(i.size) + "</div><div class='current' style=width:" + Math.round(i.use) + '%' + "></div></div><div>" + Math.round(i.use) + '%' + "</div></li>"
     }
+    if (HardDisk) HardDisk = '<div class="box memory">' + '<ul>' + HardDisk + '</ul>' + '</div>'
     //网络
     let network = (await si.networkStats())[0]
     network.rx_sec = CPU.getfilesize(network.rx_sec, false)

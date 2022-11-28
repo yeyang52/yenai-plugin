@@ -19,6 +19,7 @@ export class example extends plugin {
       ]
 
     })
+    this.interval_key = 'yenai:state:interval'
   }
   async init() {
     si.networkStats()
@@ -28,6 +29,9 @@ export class example extends plugin {
     if (!/椰奶/.test(e.msg) && !Config.Notice.state) {
       return false;
     }
+    //防止多次触发
+    if (await redis.get(this.interval_key)) return
+    redis.set(this.interval_key, "1", { EX: 60 })
     //现在的时间戳(秒)
     let present_time = new Date().getTime() / 1000
     //头像
@@ -169,6 +173,7 @@ export class example extends plugin {
       e,
       scale: 2.0
     })
+    redis.del(this.interval_key)
   }
 
 

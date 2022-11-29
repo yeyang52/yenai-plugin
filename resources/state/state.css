@@ -166,3 +166,9 @@ hr {
     line-height: 25px;
     justify-content: space-between;
 }
+
+.speed p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

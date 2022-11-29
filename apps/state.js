@@ -5,6 +5,23 @@ import { CPU, Cfg } from '../model/index.js'
 import fs from 'fs'
 import moment from 'moment';
 import si from 'systeminformation'
+import { createRequire } from "module"
+const require = createRequire(import.meta.url)
+const { exec, execSync } = require("child_process")
+
+let cmd
+let cmdArgv = "--stdout"
+
+try {
+  execSync("type fastfetch")
+  cmd = "fastfetch"
+  if (process.platform != "win32") {
+    cmdArgv = "--pipe"
+  }
+} catch {
+  cmd = "bash <(curl -L nf.hydev.org)"
+}
+
 export class example extends plugin {
   constructor() {
     super({
@@ -23,6 +40,14 @@ export class example extends plugin {
   }
   async init() {
     si.networkStats()
+  }
+
+  async execSync(cmd) {
+    return new Promise((resolve, reject) => {
+      exec(cmd, (error, stdout, stderr) => {
+        resolve({ error, stdout, stderr })
+      })
+    })
   }
 
   async state(e) {
@@ -98,6 +123,13 @@ export class example extends plugin {
     let network = (await si.networkStats())[0]
     network.rx_sec = CPU.getfilesize(network.rx_sec, false)
     network.tx_sec = CPU.getfilesize(network.tx_sec, false)
+    //FastFetch
+    let ret = await this.execSync(`${cmd} ${cmdArgv}|sed -n 's/: /: /p'`)
+    let FastFetch = ""
+    for (let i of ret.stdout.trim().split("\n")) {
+      FastFetch += `<div class="speed"><p>${i.replace(": ", "</p><p>")}</p></div>`
+    }
+    if (FastFetch) FastFetch =`<div class="box">${FastFetch}</div>`
     //渲染数据
     let data = {
       //路径
@@ -165,6 +197,8 @@ export class example extends plugin {
       HardDisk,
       //网络
       network,
+      //FastFetch
+      FastFetch,
     }
     //渲染图片
     await render('state/state', {

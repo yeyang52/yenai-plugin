@@ -87,7 +87,7 @@
                 <p>栈 {{nodeoccupy.heapUsed}}</p>
             </article>
         </li>
-        
+
     </ul>
 </div>
 <!-- <div class="box memory">
@@ -117,14 +117,7 @@
         <p>系统</p>
         <p>{{osinfo.distro}}</p>
     </div>
-    <script type="text/javascript">
-        if ('{{network.tx_sec}}' && '{{network.rx_sec}}') {
-            document.write('<div class="speed">' +
-                '<p>{{network.iface}}</p>' +
-                '<p>↑{{network.tx_sec}}/s ↓{{network.rx_sec}}/s</p>' +
-                '</div>')
-        }
-    </script>
+    {{@networkhtml}}
     <div class="speed">
         <p>插件</p>
         <p>{{takeplugin}} plugin | {{takejs}} js</p>

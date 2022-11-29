@@ -102,13 +102,24 @@ export class example extends plugin {
     for (let i of await si.fsSize()) {
       if (!i.size || !i.used || !i.available) continue;
       if (osinfo.arch.includes("arm") && i.mount != '/' && !/darwin/i.test(osinfo.platform)) continue;
-      HardDisk += "<li><div class='word'>" + i.mount + "</div><div class='progress'>" + "<div class='word'>" + CPU.getfilesize(i.used) + " / " + CPU.getfilesize(i.size) + "</div><div class='current' style=width:" + Math.round(i.use) + '%' + "></div></div><div>" + Math.round(i.use) + '%' + "</div></li>"
+      HardDisk += `<li class='HardDisk_li'>
+        <div class='word mount'>${i.mount}</div>
+        <div class='progress'>
+          <div class='word'>${CPU.getfilesize(i.used)} / ${CPU.getfilesize(i.size)}</div>
+          <div class='current' style=width:${Math.round(i.use)}%></div>
+        </div>
+        <div>${Math.round(i.use)}%</div>
+      </li>`
     }
-    if (HardDisk) HardDisk = '<div class="box memory">' + '<ul>' + HardDisk + '</ul>' + '</div>'
+    if (HardDisk) HardDisk = `<div class="box memory"><ul>${HardDisk}</ul></div>`
     //网络
     let network = (await si.networkStats())[0]
     network.rx_sec = CPU.getfilesize(network.rx_sec, false)
     network.tx_sec = CPU.getfilesize(network.tx_sec, false)
+    let networkhtml = '';
+    if (network.rx_sec && network.tx_sec) {
+      networkhtml = `<div class="speed"><p>${network.iface}</p><p>↑${network.tx_sec}/s ↓${network.rx_sec}/s</p></div>`
+    }
     //FastFetch
     let FastFetch = ""
     if (/pro/.test(e.msg)) {
@@ -183,7 +194,7 @@ export class example extends plugin {
       //内存
       HardDisk,
       //网络
-      network,
+      networkhtml,
       //FastFetch
       FastFetch,
     }

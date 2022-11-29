@@ -159,6 +159,11 @@ hr {
     transform: translate(-50%, 0);
 }
 
+.HardDisk_li .mount {
+    width: 1.5em;
+    overflow: hidden;
+}
+
 .speed {
     width: 100%;
     display: flex;

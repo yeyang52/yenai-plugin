@@ -126,10 +126,13 @@ export class example extends plugin {
     //FastFetch
     let ret = await this.execSync(`${cmd} ${cmdArgv}|sed -n 's/: /: /p'`)
     let FastFetch = ""
-    for (let i of ret.stdout.trim().split("\n")) {
-      FastFetch += `<div class="speed"><p>${i.replace(": ", "</p><p>")}</p></div>`
+    if (!ret.error) {
+      for (let i of ret.stdout.trim().split("\n")) {
+        if (!i) continue
+        FastFetch += `<div class="speed"><p>${i.replace(": ", "</p><p>")}</p></div>`
+      }
+      if (FastFetch) FastFetch = `<div class="box">${FastFetch}</div>`
     }
-    if (FastFetch) FastFetch =`<div class="box">${FastFetch}</div>`
     //渲染数据
     let data = {
       //路径

@@ -101,8 +101,10 @@ export class example extends plugin {
     let HardDisk = '';
     for (let i of await si.fsSize()) {
       if (!i.size || !i.used || !i.available) continue;
+      if (/docker/.test(i.mount)) continue;
       if (osinfo.arch.includes("arm") && i.mount != '/' && !/darwin/i.test(osinfo.platform)) continue;
-      HardDisk += `<li class='HardDisk_li'>
+      HardDisk += 
+      `<li class='HardDisk_li'>
         <div class='word mount'>${i.mount}</div>
         <div class='progress'>
           <div class='word'>${CPU.getfilesize(i.used)} / ${CPU.getfilesize(i.size)}</div>
@@ -118,7 +120,11 @@ export class example extends plugin {
     network.tx_sec = CPU.getfilesize(network.tx_sec, false)
     let networkhtml = '';
     if (network.rx_sec && network.tx_sec) {
-      networkhtml = `<div class="speed"><p>${network.iface}</p><p>↑${network.tx_sec}/s ↓${network.rx_sec}/s</p></div>`
+      networkhtml = 
+      `<div class="speed">
+        <p>${network.iface}</p>
+        <p>↑${network.tx_sec}/s ↓${network.rx_sec}/s</p>
+      </div>`
     }
     //FastFetch
     let FastFetch = ""

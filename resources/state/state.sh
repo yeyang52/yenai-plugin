@@ -1,15 +1,15 @@
+echo -n "<div class='box'>"
 if type fastfetch &>/dev/null;then
   if [ "$(uname)" = Linux ];then
-    CMD="fastfetch --pipe"
+    fastfetch --pipe
   else
-    CMD="fastfetch --stdout"
+    fastfetch --stdout
   fi
 else
-  [ "$(uname)" = Linux ]||exit 1
-  CMD="bash <(curl -L nf.hydev.org) --stdout"
-fi
-echo -n "<div class='box'>"
-eval "$CMD"|sed -n 's|: |</p><p>|p'|while read i;do
+  bash <(curl -L https://gitee.com/TimeRainStarSky/neofetch/raw/master/neofetch) --stdout
+fi|\
+sed -n 's|: |</p><p>|p'|\
+while read i;do
   echo -n "<div class='speed'><p>$i</p></div>"
 done
 echo "</div>"

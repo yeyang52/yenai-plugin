@@ -8,20 +8,6 @@ import si from 'systeminformation'
 import { createRequire } from "module"
 const require = createRequire(import.meta.url)
 const { exec, execSync } = require("child_process")
-
-let cmd
-let cmdArgv = "--stdout"
-
-try {
-  execSync("type fastfetch")
-  cmd = "fastfetch"
-  if (process.platform != "win32") {
-    cmdArgv = "--pipe"
-  }
-} catch {
-  cmd = "bash <(curl -L nf.hydev.org)"
-}
-
 export class example extends plugin {
   constructor() {
     super({
@@ -30,7 +16,7 @@ export class example extends plugin {
       priority: 50,
       rule: [
         {
-          reg: '^#?(椰奶)?状态$',
+          reg: '^#?(椰奶)?状态(pro)?$',
           fnc: 'state'
         }
       ]
@@ -124,14 +110,12 @@ export class example extends plugin {
     network.rx_sec = CPU.getfilesize(network.rx_sec, false)
     network.tx_sec = CPU.getfilesize(network.tx_sec, false)
     //FastFetch
-    let ret = await this.execSync(`${cmd} ${cmdArgv}|sed -n 's/: /: /p'`)
     let FastFetch = ""
-    if (!ret.error) {
-      for (let i of ret.stdout.trim().split("\n")) {
-        if (!i) continue
-        FastFetch += `<div class="speed"><p>${i.replace(": ", "</p><p>")}</p></div>`
+    if (/pro/.test(e.msg)) {
+      let ret = await this.execSync(`bash plugins/yenai-plugin/resources/state/state.sh`)
+      if (!ret.error) {
+        FastFetch = ret.stdout.trim()
       }
-      if (FastFetch) FastFetch = `<div class="box">${FastFetch}</div>`
     }
     //渲染数据
     let data = {

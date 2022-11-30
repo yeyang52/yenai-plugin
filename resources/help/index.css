@@ -98,7 +98,7 @@ body {
   /* color: #0059ff; */
   font-size: 19px;
   line-height: 24px;
-  background-image: linear-gradient(to right, #4776E6, #8E54E9);
+  background-image: linear-gradient(135deg, #4776E6, #8E54E9);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;

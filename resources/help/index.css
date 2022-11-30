@@ -36,7 +36,11 @@ body {
 
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.18);
-  color: #0059ff;
+  /* color: #4776E6; */
+  background-image: linear-gradient(to right, #4776E6, #8E54E9);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 .help-group {
@@ -94,10 +98,14 @@ body {
 }
 
 .help-title {
-  display: block;
-  color: #0059ff;
+  display: inline-block;
+  /* color: #0059ff; */
   font-size: 19px;
   line-height: 24px;
+  background-image: linear-gradient(to right, #4776E6, #8E54E9);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 .help-desc {

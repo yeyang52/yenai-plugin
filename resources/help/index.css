@@ -36,11 +36,7 @@ body {
 
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.18);
-  /* color: #4776E6; */
-  background-image: linear-gradient(to right, #4776E6, #8E54E9);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  color: #4776E6;
 }
 
 .help-group {

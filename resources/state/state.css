@@ -162,6 +162,7 @@ hr {
 .HardDisk_li .mount {
     width: 1.5em;
     overflow: hidden;
+    white-space: nowrap;
 }
 
 .speed {

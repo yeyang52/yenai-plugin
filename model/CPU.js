@@ -122,7 +122,6 @@ class OSUtils {
   /**获取GPU */
   async getGPU() {
     let graphics = (await si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)
-    console.log(graphics);
     let { vendor, temperatureGpu, utilizationGpu, memoryTotal, memoryUsed, powerDraw } = graphics
     let GPUstyle = this.Circle(utilizationGpu / 100)
     temperatureGpu = temperatureGpu ? temperatureGpu + '℃' : ''

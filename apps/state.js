@@ -21,11 +21,14 @@ export class example extends plugin {
 
     })
     this.interval_key = 'yenai:state:interval'
+    this.isGPU = false
   }
   async init() {
     si.networkStats()
+    if ((await si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)) {
+      this.isGPU = true
+    }
   }
-
   async execSync(cmd) {
     return new Promise((resolve, reject) => {
       child_process.exec(cmd, (error, stdout, stderr) => {
@@ -57,13 +60,13 @@ export class example extends plugin {
     let Usingmemory = CPU.getfilesize((os.totalmem() - os.freemem()))
     //nodejs占用
     let nodeoccupy = CPU.getmemory();
-    let node = Circle(nodeoccupy.occupy)
+    let node = CPU.Circle(nodeoccupy.occupy)
     let [node_leftCircle, node_rightCircle] = node
     //cpu
-    let cpu = Circle(cpu_info)
+    let cpu = CPU.Circle(cpu_info)
     let [cpu_leftCircle, cpu_rightCircle] = cpu
     //ram
-    let ram = Circle(MemUsage)
+    let ram = CPU.Circle(MemUsage)
     let [ram_leftCircle, ram_rightCircle] = ram
     //最大mhz
     // let maxspeed = CPU.getmaxspeed()
@@ -106,9 +109,9 @@ export class example extends plugin {
         <div class='word mount'>${i.mount}</div>
         <div class='progress'>
           <div class='word'>${CPU.getfilesize(i.used)} / ${CPU.getfilesize(i.size)}</div>
-          <div class='current' style=width:${Math.round(i.use)}%></div>
+          <div class='current' style=width:${Math.ceil(i.use)}%></div>
         </div>
-        <div>${Math.round(i.use)}%</div>
+        <div>${Math.ceil(i.use)}%</div>
       </li>`
     }
     if (HardDisk) HardDisk = `<div class="box memory"><ul>${HardDisk}</ul></div>`
@@ -123,6 +126,15 @@ export class example extends plugin {
         <p>${network.iface}</p>
         <p>↑${network.tx_sec}/s ↓${network.rx_sec}/s</p>
       </div>`
+    }
+    let GPU = ''
+    //GPU
+    try {
+      if (await redis.get('yenai:isGPU') == '1') {
+        GPU = await CPU.getGPU()
+      }
+    } catch (err) {
+      console.log(err);
     }
     //FastFetch
     let FastFetch = ""
@@ -201,6 +213,8 @@ export class example extends plugin {
       networkhtml,
       //FastFetch
       FastFetch,
+      //GPU
+      GPU
     }
     //渲染图片
     await render('state/state', {
@@ -234,22 +248,7 @@ function Formatting(time, repair) {
 
 }
 
-/**
- * @description: 圆形进度条渲染
- * @param {Number} res 百分比小数
- * @return {*} css样式
- */
-function Circle(res) {
-  let num = (res * 360).toFixed(0)
-  let leftCircle = `style=transform:rotate(-180deg)`;
-  let rightCircle;
-  if (num > 180) {
-    leftCircle = `style=transform:rotate(${num}deg)`
-  } else {
-    rightCircle = `style=transform:rotate(-${180 - num}deg)`;
-  }
-  return [leftCircle, rightCircle]
-}
+
 
 /**
  * @description: 取插件包

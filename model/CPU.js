@@ -7,7 +7,6 @@ class OSUtils {
   constructor() {
     this.cpuUsageMSDefault = 1000; // CPU 利用率默认时间段
   }
-
   /**
   * 获取某时间段 CPU 利用率
   * @param { Number } Options.ms [时间段，默认是 1000ms，即 1 秒钟]
@@ -103,5 +102,54 @@ class OSUtils {
     let occupy = (memory.rss / (os.totalmem() - os.freemem())).toFixed(2)
     return { rss, heapTotal, heapUsed, occupy }
   }
+  /**
+ * @description: 圆形进度条渲染
+ * @param {Number} res 百分比小数
+ * @return {*} css样式
+ */
+  Circle(res) {
+    let num = (res * 360).toFixed(0)
+    let leftCircle = `style=transform:rotate(-180deg)`;
+    let rightCircle;
+    if (num > 180) {
+      leftCircle = `style=transform:rotate(${num}deg)`
+    } else {
+      rightCircle = `style=transform:rotate(-${180 - num}deg)`;
+    }
+    return [leftCircle, rightCircle]
+  }
+
+  /**获取GPU */
+  async getGPU() {
+    let graphics = (await si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)
+    console.log(graphics);
+    let { vendor, temperatureGpu, utilizationGpu, memoryTotal, memoryUsed, powerDraw } = graphics
+    let GPUstyle = this.Circle(utilizationGpu / 100)
+    temperatureGpu = temperatureGpu ? temperatureGpu + '℃' : ''
+    powerDraw = powerDraw ? powerDraw + "W" : ""
+    return `<li class="li">
+            <div class="cpu">
+                <div class="left">
+                    <div class="left-circle" ${GPUstyle[0]}>
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="right-circle" ${GPUstyle[1]}>
+                    </div>
+                </div>
+                <div class="inner">
+                    ${utilizationGpu}%
+                </div>
+            </div>
+            <article>
+                <p>GPU</p>
+                <p>${vendor} ${temperatureGpu} ${powerDraw}</p>
+                <p>总共 ${(memoryTotal / 1024).toFixed(2)}G</p>
+                <p>已用 ${(memoryUsed / 1024).toFixed(2)}G</p>
+            </article>
+        </li>`
+  }
+
+
 }
 export default new OSUtils();

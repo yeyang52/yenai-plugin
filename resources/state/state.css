@@ -47,7 +47,7 @@ hr {
 
 .header h1 {
     display: inline-block;
-    background-image: linear-gradient(135deg, #cc95c0, #dbd4b4, #7aa1d2);
+    background-image: linear-gradient(135deg, #77a1d3, #79cbca, #e684ae);
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;

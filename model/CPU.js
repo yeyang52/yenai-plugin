@@ -109,12 +109,18 @@ class OSUtils {
  */
   Circle(res) {
     let num = (res * 360).toFixed(0)
-    let leftCircle = `style=transform:rotate(-180deg)`;
-    let rightCircle;
+    let color = '#90ee90'
+    if (res > 0.9) {
+      color = '#d73403'
+    } else if (res > 0.8) {
+      color = '#ffa500'
+    }
+    let leftCircle = `style=transform:rotate(-180deg);background:${color};`;
+    let rightCircle = `style=background:${color};`
     if (num > 180) {
-      leftCircle = `style=transform:rotate(${num}deg)`
+      leftCircle = `style=transform:rotate(${num}deg);background:${color};`
     } else {
-      rightCircle = `style=transform:rotate(-${180 - num}deg)`;
+      rightCircle = `style=transform:rotate(-${180 - num}deg);background:${color};`;
     }
     return [leftCircle, rightCircle]
   }

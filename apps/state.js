@@ -104,12 +104,18 @@ export class example extends plugin {
       if (!i.size || !i.used || !i.available) continue;
       if (/docker/.test(i.mount)) continue;
       if (osinfo.arch.includes("arm") && i.mount != '/' && !/darwin/i.test(osinfo.platform)) continue;
+      let color = '#90ee90'
+      if (i.use > 90) {
+        color = '#d73403'
+      } else if (i.use > 80) {
+        color = '#ffa500'
+      }
       HardDisk +=
         `<li class='HardDisk_li'>
         <div class='word mount'>${i.mount}</div>
         <div class='progress'>
           <div class='word'>${CPU.getfilesize(i.used)} / ${CPU.getfilesize(i.size)}</div>
-          <div class='current' style=width:${Math.ceil(i.use)}%></div>
+          <div class='current' style=width:${Math.ceil(i.use)}%;background:${color}></div>
         </div>
         <div class='percentage'>${Math.ceil(i.use)}%</div>
       </li>`

@@ -78,9 +78,16 @@ export class example extends plugin {
   /**随机唱鸭 */
   async Sing(e) {
     let url = "https://xiaobai.klizi.cn/API/music/changya.php"
+    let urls = "https://ovooa.com/API/changya/"
     let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))
-    if (!res) return e.reply("接口失效辣(๑ŐдŐ)b")
-    if (res.code != 200) return e.reply("❎ 接口请求错误")
+    //备用接口
+    if (!res) {
+      res = await fetch(urls).then(res => res.json()).catch(err => console.log(err))
+      if (!res) return e.reply("接口失效辣(๑ŐдŐ)b")
+      e.reply(res.data.song_lyric)
+      e.reply(await uploadRecord(res.data.song_url, 0, false))
+      return true;
+    }
 
     let data = res.data
     await e.reply(await uploadRecord(data.audioSrc, 0, false))

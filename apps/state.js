@@ -111,7 +111,7 @@ export class example extends plugin {
           <div class='word'>${CPU.getfilesize(i.used)} / ${CPU.getfilesize(i.size)}</div>
           <div class='current' style=width:${Math.ceil(i.use)}%></div>
         </div>
-        <div>${Math.ceil(i.use)}%</div>
+        <div class='percentage'>${Math.ceil(i.use)}%</div>
       </li>`
     }
     if (HardDisk) HardDisk = `<div class="box memory"><ul>${HardDisk}</ul></div>`

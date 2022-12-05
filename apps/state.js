@@ -6,6 +6,8 @@ import fs from 'fs'
 import moment from 'moment';
 import si from 'systeminformation'
 import child_process from 'child_process'
+import lodash from 'lodash'
+let interval = false;
 export class example extends plugin {
   constructor() {
     super({
@@ -20,7 +22,6 @@ export class example extends plugin {
       ]
 
     })
-    this.interval_key = 'yenai:state:interval'
     this.isGPU = false
   }
   async init() {
@@ -42,8 +43,7 @@ export class example extends plugin {
       return false;
     }
     //防止多次触发
-    if (await redis.get(this.interval_key)) return
-    redis.set(this.interval_key, "1", { EX: 60 })
+    if (interval) { return } else interval = true;
     //现在的时间戳(秒)
     let present_time = new Date().getTime() / 1000
     //头像
@@ -100,8 +100,9 @@ export class example extends plugin {
     let osinfo = await si.osInfo()
     //硬盘内存
     let HardDisk = '';
-    for (let i of await si.fsSize()) {
-      if (!i.size || !i.used || !i.available) continue;
+    let fsSize = lodash.uniqWith(await si.fsSize(), (a, b) => a.used === b.used && a.size === b.size && a.use === b.use && a.available === b.available)
+    for (let i of fsSize) {
+      if (!i.size || !i.used || !i.available || !i.use) continue;
       if (/docker/.test(i.mount)) continue;
       if (osinfo.arch.includes("arm") && i.mount != '/' && !/darwin/i.test(osinfo.platform)) continue;
       let color = '#90ee90'
@@ -229,7 +230,7 @@ export class example extends plugin {
       e,
       scale: 2.0
     })
-    redis.del(this.interval_key)
+    interval = false;
   }
 
 

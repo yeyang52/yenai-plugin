@@ -111,9 +111,9 @@ class OSUtils {
   Circle(res) {
     let num = (res * 360).toFixed(0)
     let color = '#90ee90'
-    if (res > 0.9) {
+    if (res >= 0.9) {
       color = '#d73403'
-    } else if (res > 0.8) {
+    } else if (res >= 0.8) {
       color = '#ffa500'
     }
     let leftCircle = `style=transform:rotate(-180deg);background:${color};`;
@@ -173,9 +173,9 @@ class OSUtils {
       if (/docker/.test(i.mount)) continue;
       if (osinfo.arch.includes("arm") && i.mount != '/' && !/darwin/i.test(osinfo.platform)) continue;
       let color = '#90ee90'
-      if (i.use > 90) {
+      if (i.use >= 90) {
         color = '#d73403'
-      } else if (i.use > 70) {
+      } else if (i.use >= 70) {
         color = '#ffa500'
       }
       HardDisk +=

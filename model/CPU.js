@@ -1,6 +1,6 @@
-///CPU利用率
 import os from 'os';
 import si from 'systeminformation'
+import lodash from 'lodash'
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 class OSUtils {
@@ -102,11 +102,12 @@ class OSUtils {
     let occupy = (memory.rss / (os.totalmem() - os.freemem())).toFixed(2)
     return { rss, heapTotal, heapUsed, occupy }
   }
+
   /**
- * @description: 圆形进度条渲染
- * @param {Number} res 百分比小数
- * @return {*} css样式
- */
+    * @description: 圆形进度条渲染
+    * @param {Number} res 百分比小数
+    * @return {*} css样式
+  */
   Circle(res) {
     let num = (res * 360).toFixed(0)
     let color = '#90ee90'
@@ -127,12 +128,13 @@ class OSUtils {
 
   /**获取GPU */
   async getGPU() {
-    let graphics = (await si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)
-    let { vendor, temperatureGpu, utilizationGpu, memoryTotal, memoryUsed, powerDraw } = graphics
-    let GPUstyle = this.Circle(utilizationGpu / 100)
-    temperatureGpu = temperatureGpu ? temperatureGpu + '℃' : ''
-    powerDraw = powerDraw ? powerDraw + "W" : ""
-    return `<li class="li">
+    try {
+      let graphics = (await si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)
+      let { vendor, temperatureGpu, utilizationGpu, memoryTotal, memoryUsed, powerDraw } = graphics
+      let GPUstyle = this.Circle(utilizationGpu / 100)
+      temperatureGpu = temperatureGpu ? temperatureGpu + '℃' : ''
+      powerDraw = powerDraw ? powerDraw + "W" : ""
+      return `<li class="li">
             <div class="cpu">
                 <div class="left">
                     <div class="left-circle" ${GPUstyle[0]}>
@@ -153,8 +155,60 @@ class OSUtils {
                 <p>已用 ${(memoryUsed / 1024).toFixed(2)}G</p>
             </article>
         </li>`
+    } catch (e) {
+      console.log(e);
+      return ''
+    }
   }
 
+  /**
+   * @description: 获取硬盘
+   * @return {*}
+   */
+  async getfsSize(osinfo) {
+    let HardDisk = ''
+    let fsSize = lodash.uniqWith(await si.fsSize(), (a, b) => a.used === b.used && a.size === b.size && a.use === b.use && a.available === b.available)
+    for (let i of fsSize) {
+      if (!i.size || !i.used || !i.available || !i.use) continue;
+      if (/docker/.test(i.mount)) continue;
+      if (osinfo.arch.includes("arm") && i.mount != '/' && !/darwin/i.test(osinfo.platform)) continue;
+      let color = '#90ee90'
+      if (i.use > 90) {
+        color = '#d73403'
+      } else if (i.use > 70) {
+        color = '#ffa500'
+      }
+      HardDisk +=
+        `<li class='HardDisk_li'>
+        <div class='word mount'>${i.mount}</div>
+        <div class='progress'>
+          <div class='word'>${this.getfilesize(i.used)} / ${this.getfilesize(i.size)}</div>
+          <div class='current' style=width:${Math.ceil(i.use)}%;background:${color}></div>
+        </div>
+        <div class='percentage'>${Math.ceil(i.use)}%</div>
+      </li>`
+    }
+    if (HardDisk) HardDisk = `<div class="box memory"><ul>${HardDisk}</ul></div>`
+    return HardDisk
+  }
 
+  /**
+   * @description: 获取网速
+   * @return {*}
+   */
+  async getnetwork() {
+    let network = (await si.networkStats())[0]
+    network.rx_sec = this.getfilesize(network.rx_sec, false)
+    network.tx_sec = this.getfilesize(network.tx_sec, false)
+    let networkhtml = '';
+    if (network.rx_sec && network.tx_sec) {
+      networkhtml =
+        `<div class="speed">
+        <p>${network.iface}</p>
+        <p>↑${network.tx_sec}/s ↓${network.rx_sec}/s</p>
+      </div>`
+    }
+    return networkhtml
+  }
 }
 export default new OSUtils();

@@ -6,7 +6,6 @@ import fs from 'fs'
 import moment from 'moment';
 import si from 'systeminformation'
 import child_process from 'child_process'
-import lodash from 'lodash'
 let interval = false;
 export class example extends plugin {
   constructor() {
@@ -99,57 +98,16 @@ export class example extends plugin {
     //系统
     let osinfo = await si.osInfo()
     //硬盘内存
-    let HardDisk = '';
-    let fsSize = lodash.uniqWith(await si.fsSize(), (a, b) => a.used === b.used && a.size === b.size && a.use === b.use && a.available === b.available)
-    for (let i of fsSize) {
-      if (!i.size || !i.used || !i.available || !i.use) continue;
-      if (/docker/.test(i.mount)) continue;
-      if (osinfo.arch.includes("arm") && i.mount != '/' && !/darwin/i.test(osinfo.platform)) continue;
-      let color = '#90ee90'
-      if (i.use > 90) {
-        color = '#d73403'
-      } else if (i.use > 80) {
-        color = '#ffa500'
-      }
-      HardDisk +=
-        `<li class='HardDisk_li'>
-        <div class='word mount'>${i.mount}</div>
-        <div class='progress'>
-          <div class='word'>${CPU.getfilesize(i.used)} / ${CPU.getfilesize(i.size)}</div>
-          <div class='current' style=width:${Math.ceil(i.use)}%;background:${color}></div>
-        </div>
-        <div class='percentage'>${Math.ceil(i.use)}%</div>
-      </li>`
-    }
-    if (HardDisk) HardDisk = `<div class="box memory"><ul>${HardDisk}</ul></div>`
+    let HardDisk = await CPU.getfsSize(osinfo);
     //网络
-    let network = (await si.networkStats())[0]
-    network.rx_sec = CPU.getfilesize(network.rx_sec, false)
-    network.tx_sec = CPU.getfilesize(network.tx_sec, false)
-    let networkhtml = '';
-    if (network.rx_sec && network.tx_sec) {
-      networkhtml =
-        `<div class="speed">
-        <p>${network.iface}</p>
-        <p>↑${network.tx_sec}/s ↓${network.rx_sec}/s</p>
-      </div>`
-    }
-    let GPU = ''
+    let networkhtml = await CPU.getnetwork();
     //GPU
-    try {
-      if (await redis.get('yenai:isGPU') == '1') {
-        GPU = await CPU.getGPU()
-      }
-    } catch (err) {
-      console.log(err);
-    }
+    let GPU = await redis.get('yenai:isGPU') == '1' ? await CPU.getGPU() : ""
     //FastFetch
     let FastFetch = ""
     if (/pro/.test(e.msg)) {
       let ret = await this.execSync(`bash plugins/yenai-plugin/resources/state/state.sh`)
-      if (!ret.error) {
-        FastFetch = ret.stdout.trim()
-      }
+      if (!ret.error) FastFetch = ret.stdout.trim()
     }
     //渲染数据
     let data = {
@@ -265,7 +223,7 @@ function textFile() {
   let str = "./plugins"
   let arr = fs.readdirSync(str);
   let plugin = [];
-  arr.forEach((val, idx) => {
+  arr.forEach((val) => {
     let ph = fs.statSync(str + '/' + val);
     if (ph.isDirectory()) {
       plugin.push(val)

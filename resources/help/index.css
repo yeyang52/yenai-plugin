@@ -43,6 +43,12 @@ body {
   font-size: 20px;
   font-weight: bold;
   padding: 15px 15px 10px 20px;
+  /* 渐变文字 */
+  display: inline-block;
+  background-image: linear-gradient(to top, #4776E6, #8E54E9);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 .help-table {

@@ -175,7 +175,7 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 <details>
   <summary>图片状态</summary>
 
- <img src="resources/img/状态.png" alt="状态" style="zoom:30%;" />
+ <img src="resources/img/状态.png" alt="状态" style="zoom:30%" />
 
 </details>
 

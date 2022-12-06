@@ -63,7 +63,19 @@ export const helpList = [{
   {
     "title": "#踢 <@QQ>",
     "desc": "顾名思义",
-    "icon": 7
+    "icon": 4
+  }, {
+    "title": "#发群公告 <文字>",
+    "desc": "发送简易公告",
+    "icon": 16
+  }, {
+    "title": "#查群公告$",
+    "desc": "查看现有公告",
+    "icon": 3
+  }, {
+    "title": "#删群公告 <序号>",
+    "desc": "用查看公告获取序号",
+    "icon": 4
   },
   {
     "title": "#获取禁言列表",

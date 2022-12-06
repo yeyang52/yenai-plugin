@@ -73,8 +73,6 @@ Tip：具体可使用 **#椰奶设置** 查看
 
 - [x] 开启/关闭戳一戳
 
-- [x] 状态
-
 
 </details>
 <details>
@@ -173,6 +171,13 @@ Tip：详情请参考[此教程](https://docs.qq.com/doc/DYVRJR0FpbFphVlZr)
 
 Tip：具体可使用 **#椰奶群管帮助** 查看
   </details>
+
+<details>
+  <summary>图片状态</summary>
+
+ ![状态](resources\img\状态.png)
+
+</details>
 
 ## 免责声明
 

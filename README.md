@@ -175,7 +175,7 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 <details>
   <summary>图片状态</summary>
 
- ![状态](resources\img\状态.png)
+ ![状态](resources/img/状态.png)
 
 </details>
 

@@ -115,6 +115,10 @@ export class Basics extends plugin {
                 {
                     reg: `^#发通知.*$`,
                     fnc: 'Send_notice'
+                },
+                {
+                    reg: `#(查看|获取)群?发言榜单((7|七)天)?`,
+                    fnc: 'SpeakRank'
                 }
 
             ]
@@ -657,5 +661,16 @@ export class Basics extends plugin {
         if (lodash.isEmpty(e.message)) return e.reply("❎ 通知不能为空")
         e.message.unshift(segment.at("all"))
         e.reply(e.message)
+    }
+    //群发言榜单
+    async SpeakRank(e) {
+        if (!e.group.is_admin && !e.group.is_owner) {
+            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
+        }
+        let ck = Cfg.getck("qun.qq.com")
+        let url = `http://xiaobai.klizi.cn/API/qqgn/SpeakRank.php?uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&group=${e.group_id}&type=${/(7|七)天/.test(e.msg) ? 1 : 0}`
+        let res = await fetch(url).then(res => res.text()).catch(err => console.log(err))
+        if (!result) return e.reply("接口失效辣！！！")
+        await e.reply(res)
     }
 }

@@ -117,7 +117,7 @@ export class Basics extends plugin {
                     fnc: 'Send_notice'
                 },
                 {
-                    reg: `#(查看|获取)群?发言榜单((7|七)天)?`,
+                    reg: `#(查看|获取)?群?发言榜单((7|七)天)?`,
                     fnc: 'SpeakRank'
                 }
 
@@ -670,7 +670,7 @@ export class Basics extends plugin {
         let ck = Cfg.getck("qun.qq.com")
         let url = `http://xiaobai.klizi.cn/API/qqgn/SpeakRank.php?uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&group=${e.group_id}&type=${/(7|七)天/.test(e.msg) ? 1 : 0}`
         let res = await fetch(url).then(res => res.text()).catch(err => console.log(err))
-        if (!result) return e.reply("接口失效辣！！！")
+        if (!res) return e.reply("接口失效辣！！！")
         await e.reply(res)
     }
 }

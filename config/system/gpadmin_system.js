@@ -133,6 +133,11 @@ export const helpList = [{
     "icon": 3
   },
   {
+    "title": "#群发言榜单(7天)?",
+    "desc": "不加7天查看昨天的数据",
+    "icon": 16
+  },
+  {
     "title": "#我要自闭 <时间>",
     "desc": "自闭一会",
     "icon": 20

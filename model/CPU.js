@@ -102,7 +102,7 @@ class OSUtils {
 
 
   /**字节转换 */
-  getfilesize(size, isbtye = true) {//把字节转换成正常文件大小
+  getfilesize(size, isbtye = true, issuffix = true) {//把字节转换成正常文件大小
     if (!size) return "";
     var num = 1024.00; //byte
     if (isbtye) {
@@ -110,9 +110,9 @@ class OSUtils {
         return size.toFixed(2) + "B";
     }
     if (size < Math.pow(num, 2))
-      return (size / num).toFixed(2) + "Kb"; //kb
+      return (size / num).toFixed(2) + `K${issuffix ? 'b' : ''}`; //kb
     if (size < Math.pow(num, 3))
-      return (size / Math.pow(num, 2)).toFixed(2) + "Mb"; //M
+      return (size / Math.pow(num, 2)).toFixed(2) + `M${issuffix ? 'b' : ''}`; //M
     if (size < Math.pow(num, 4))
       return (size / Math.pow(num, 3)).toFixed(2) + "G"; //G
     return (size / Math.pow(num, 4)).toFixed(2) + "T"; //T
@@ -218,8 +218,8 @@ class OSUtils {
       //读取速率
       if (this.fsStats && this.fsStats.rx_sec && this.fsStats.wx_sec) {
         HardDisk += `<div class="speed">
-        <p>transmission speed</p>
-        <p>读${this.getfilesize(this.fsStats.rx_sec, false)}/s 写${this.getfilesize(this.fsStats.wx_sec, false)}/s</p>
+        <p>传输速率</p>
+        <p>读 ${this.getfilesize(this.fsStats.rx_sec, false, false)}/s 写 ${this.getfilesize(this.fsStats.wx_sec, false, false)}/s</p>
         </div>`
       }
       HardDisk = `<div class="box memory"><ul>${HardDisk}</ul></div>`
@@ -233,8 +233,8 @@ class OSUtils {
    */
   async getnetwork() {
     try { var network = lodash.cloneDeep(this.now_network)[0] } catch { return '' }
-    network.rx_sec = this.getfilesize(network.rx_sec, false)
-    network.tx_sec = this.getfilesize(network.tx_sec, false)
+    network.rx_sec = this.getfilesize(network.rx_sec, false, false)
+    network.tx_sec = this.getfilesize(network.tx_sec, false, false)
     let networkhtml = '';
     if (network.rx_sec && network.tx_sec) {
       networkhtml =

@@ -198,25 +198,19 @@ export default new class setu {
             //获取配置
             if (fs.existsSync(this.path)) {
                 cfgs = await Cfg.getread(this.path)
-            } else return this.def.r18
-
-            if (cfgs[e.group_id]) {
-                return cfgs[e.group_id].r18
-            } else {
-                return this.def.r18
+                if (cfgs[e.group_id]) {
+                    return cfgs[e.group_id].r18
+                }
             }
         } else {
             if (fs.existsSync(this.path_s)) {
                 cfgs = await Cfg.getread(this.path_s)
-            } else return this.def.r18
-
-            if (cfgs.friendr18) {
-                return cfgs.friendr18
-            } else {
-                return this.def.r18
+                if (cfgs.friendr18 !== undefined) {
+                    return cfgs.friendr18
+                }
             }
-
         }
+        return this.def.r18
     }
     /**
      * @description: 设置撤回间隔

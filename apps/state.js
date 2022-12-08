@@ -48,7 +48,7 @@ export class example extends plugin {
     //头像
     let portrait = `https://q1.qlogo.cn/g?b=qq&s=0&nk=${Bot.uin}`
     //cpu使用率
-    let cpu_info = await CPU.getCPUUsage()
+    let cpu_info = (await si.currentLoad())?.currentLoad
     //内存使用率
     let MemUsage = (1 - os.freemem() / os.totalmem()).toFixed(2)
     //空闲内存
@@ -62,7 +62,7 @@ export class example extends plugin {
     let node = CPU.Circle(nodeoccupy.occupy)
     let [node_leftCircle, node_rightCircle] = node
     //cpu
-    let cpu = CPU.Circle(cpu_info)
+    let cpu = CPU.Circle(cpu_info / 10)
     let [cpu_leftCircle, cpu_rightCircle] = cpu
     //ram
     let ram = CPU.Circle(MemUsage)
@@ -134,7 +134,7 @@ export class example extends plugin {
       //cpu占比
       cpu_leftCircle,
       cpu_rightCircle,
-      cpu_info: parseInt(cpu_info * 100) + "%",
+      cpu_info: parseInt(cpu_info * 10) + "%",
       //核心
       hx: hx.length + "核",
       cpumodel,

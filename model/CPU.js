@@ -2,11 +2,25 @@ import os from 'os';
 import si from 'systeminformation'
 import lodash from 'lodash'
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-
+let now_network = null;
 class OSUtils {
   constructor() {
     this.cpuUsageMSDefault = 1000; // CPU 利用率默认时间段
+    this.init();
   }
+
+  init() {
+    setInterval(function () {
+      si.networkStats().then(data => {
+        now_network = data
+      })
+    }, 1000)
+  }
+
+
+
+
+  /**---------------------------旧版代码------------------------------------------- */
   /**
   * 获取某时间段 CPU 利用率
   * @param { Number } Options.ms [时间段，默认是 1000ms，即 1 秒钟]
@@ -58,6 +72,7 @@ class OSUtils {
       total,
     }
   }
+
   //获取最大Mhz
   getmaxspeed() {
 
@@ -75,6 +90,11 @@ class OSUtils {
     }
 
   }
+  /**---------------------------------------------------------------------------------------- */
+
+
+
+
 
   /**字节转换 */
   getfilesize(size, isbtye = true) {//把字节转换成正常文件大小
@@ -197,7 +217,7 @@ class OSUtils {
    * @return {*}
    */
   async getnetwork() {
-    let network = (await si.networkStats())[0]
+    let network = lodash.cloneDeep(now_network)[0]
     network.rx_sec = this.getfilesize(network.rx_sec, false)
     network.tx_sec = this.getfilesize(network.tx_sec, false)
     let networkhtml = '';

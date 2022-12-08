@@ -7,6 +7,7 @@ class OSUtils {
     this.cpuUsageMSDefault = 1000; // CPU 利用率默认时间段
     this.isGPU = false;
     this.now_network = null;
+    this.fsStats = null;
     this.init();
   }
 
@@ -14,6 +15,7 @@ class OSUtils {
     si.networkStats()
     setInterval(async () => {
       this.now_network = await si.networkStats()
+      this.fsStats = await si.fsStats();
     }, 5000)
     if ((await si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)) {
       this.isGPU = true
@@ -212,7 +214,16 @@ class OSUtils {
         <div class='percentage'>${Math.ceil(i.use)}%</div>
       </li>`
     }
-    if (HardDisk) HardDisk = `<div class="box memory"><ul>${HardDisk}</ul></div>`
+    if (HardDisk) {
+      //读取速率
+      if (this.fsStats && this.fsStats.rx_sec && this.fsStats.wx_sec) {
+        HardDisk += `<div class="speed">
+        <p>transmission speed</p>
+        <p>读${this.getfilesize(this.fsStats.rx_sec, false)}/s 写${this.getfilesize(this.fsStats.wx_sec, false)}/s</p>
+        </div>`
+      }
+      HardDisk = `<div class="box memory"><ul>${HardDisk}</ul></div>`
+    }
     return HardDisk
   }
 

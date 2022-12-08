@@ -128,7 +128,7 @@ hr {
 .info .li article p:not(:first-child) {
     font-size: 10px;
     color: #2f4f4f;
-
+    white-space: nowrap;
 }
 
 .memory li {

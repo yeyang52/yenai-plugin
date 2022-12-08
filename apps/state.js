@@ -21,14 +21,8 @@ export class example extends plugin {
       ]
 
     })
-    this.isGPU = false
   }
-  async init() {
-    si.networkStats()
-    if ((await si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)) {
-      this.isGPU = true
-    }
-  }
+
   async execSync(cmd) {
     return new Promise((resolve, reject) => {
       child_process.exec(cmd, (error, stdout, stderr) => {
@@ -62,7 +56,7 @@ export class example extends plugin {
     let node = CPU.Circle(nodeoccupy.occupy)
     let [node_leftCircle, node_rightCircle] = node
     //cpu
-    let cpu = CPU.Circle(cpu_info/100)
+    let cpu = CPU.Circle(cpu_info / 100)
     let [cpu_leftCircle, cpu_rightCircle] = cpu
     //ram
     let ram = CPU.Circle(MemUsage)
@@ -102,7 +96,7 @@ export class example extends plugin {
     //网络
     let networkhtml = await CPU.getnetwork();
     //GPU
-    let GPU = await redis.get('yenai:isGPU') == '1' ? await CPU.getGPU() : ""
+    let GPU = await CPU.getGPU()
     //FastFetch
     let FastFetch = ""
     if (/pro/.test(e.msg)) {
@@ -179,7 +173,7 @@ export class example extends plugin {
       //FastFetch
       FastFetch,
       //GPU
-      GPU
+      GPU,
     }
     //渲染图片
     await render('state/state', {

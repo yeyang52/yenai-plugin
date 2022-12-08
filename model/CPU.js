@@ -2,19 +2,22 @@ import os from 'os';
 import si from 'systeminformation'
 import lodash from 'lodash'
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-let now_network = null;
 class OSUtils {
   constructor() {
     this.cpuUsageMSDefault = 1000; // CPU 利用率默认时间段
+    this.isGPU = false;
+    this.now_network = null;
     this.init();
   }
 
-  init() {
-    setInterval(function () {
-      si.networkStats().then(data => {
-        now_network = data
-      })
-    }, 1000)
+  async init() {
+    si.networkStats()
+    setInterval(async () => {
+      this.now_network = await si.networkStats()
+    }, 5000)
+    if ((await si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)) {
+      this.isGPU = true
+    }
   }
 
 
@@ -148,6 +151,7 @@ class OSUtils {
 
   /**获取GPU */
   async getGPU() {
+    if (!this.isGPU) return ''
     try {
       let graphics = (await si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)
       let { vendor, temperatureGpu, utilizationGpu, memoryTotal, memoryUsed, powerDraw } = graphics
@@ -217,7 +221,7 @@ class OSUtils {
    * @return {*}
    */
   async getnetwork() {
-    let network = lodash.cloneDeep(now_network)[0]
+    try { var network = lodash.cloneDeep(this.now_network)[0] } catch { return '' }
     network.rx_sec = this.getfilesize(network.rx_sec, false)
     network.tx_sec = this.getfilesize(network.tx_sec, false)
     let networkhtml = '';

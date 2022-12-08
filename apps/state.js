@@ -62,7 +62,7 @@ export class example extends plugin {
     let node = CPU.Circle(nodeoccupy.occupy)
     let [node_leftCircle, node_rightCircle] = node
     //cpu
-    let cpu = CPU.Circle(cpu_info / 10)
+    let cpu = CPU.Circle(cpu_info/100)
     let [cpu_leftCircle, cpu_rightCircle] = cpu
     //ram
     let ram = CPU.Circle(MemUsage)
@@ -134,7 +134,7 @@ export class example extends plugin {
       //cpu占比
       cpu_leftCircle,
       cpu_rightCircle,
-      cpu_info: parseInt(cpu_info * 10) + "%",
+      cpu_info: parseInt(cpu_info) + "%",
       //核心
       hx: hx.length + "核",
       cpumodel,

@@ -231,7 +231,7 @@ export default new class setu {
             res = await Cfg.getread(this.path)
         }
 
-        if (!res[e.group_id]) res[e.group_id] = this.def
+        if (!res[e.group_id]) res[e.group_id] = lodash.cloneDeep(this.def)
 
         if (yes) {
             res[e.group_id].recall = Number(num)
@@ -279,7 +279,7 @@ export default new class setu {
                 res = await Cfg.getread(this.path)
             }
 
-            if (!res[e.group_id]) res[e.group_id] = this.def
+            if (!res[e.group_id]) res[e.group_id] = lodash.cloneDeep(this.def)
 
 
             res[e.group_id].r18 = yes ? 1 : 0
@@ -314,7 +314,7 @@ export default new class setu {
      * @return {*}
      */
     async getSet_up(e) {
-        let set = this.def
+        let set = lodash.cloneDeep(this.def)
         if (e.isGroup) {
             //获取群聊单独cd
             if (fs.existsSync(this.path)) {

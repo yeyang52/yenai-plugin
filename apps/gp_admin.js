@@ -198,12 +198,12 @@ export class Basics extends plugin {
         }
 
         await e.group.muteMember(qq, TabooTime * Company);
-        e.reply(`已把${Member.card || Member.nickname}扔进了小黑屋( ･_･)ﾉ⌒●~*`, true);
+        e.reply(`已把「${Member.card || Member.nickname}」扔进了小黑屋( ･_･)ﾉ⌒●~*`, true);
         return true;
 
     }
     /**解禁 */
-    async Relieve(e) {
+    async Relieve(e) {v
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
             return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
@@ -228,7 +228,7 @@ export class Basics extends plugin {
 
 
         await e.group.muteMember(qq, 0)
-        e.reply(`已把${Member.card || Member.nickname}从小黑屋揪了出来(｡>∀<｡)`, true);
+        e.reply(`已把「${Member.card || Member.nickname}」从小黑屋揪了出来(｡>∀<｡)`, true);
         return true;
 
     }
@@ -340,9 +340,9 @@ export class Basics extends plugin {
         let name = Member.card || Member.nickname
         if (res) {
             if (yes) {
-                e.reply(`已经把${name}设置为管理啦！！`)
+                e.reply(`已经把「${name}」设置为管理啦！！`)
             } else {
-                e.reply(`${name}的管理已经被我吃掉啦~`)
+                e.reply(`「${name}」的管理已经被我吃掉啦~`)
             }
         } else {
             e.reply(`❎ 未知错误`)
@@ -462,7 +462,7 @@ export class Basics extends plugin {
 
         let res = await e.group.setTitle(e.message[1].qq, e.message[2].text)
         if (res) {
-            e.reply(`已经把这个小可爱的头衔设置为${e.message[2].text}辣`)
+            e.reply(`已经把这个小可爱的头衔设置为「${e.message[2].text}」辣`)
         } else {
             e.reply(`额...没给上不知道发生了神魔`)
         }
@@ -601,7 +601,7 @@ export class Basics extends plugin {
             }
             let list = await Gpadmin.noactivelist(e, Reg[2], Reg[3])
 
-            e.reply(`本此共需清理${list.length}人，防止误触发\n请发送：#确认清理${Reg[2]}${Reg[3]}没发言的人`)
+            e.reply(`本此共需清理「${list.length}」人，防止误触发\n请发送：#确认清理${Reg[2]}${Reg[3]}没发言的人`)
         }
         Cfg.getforwardMsg(e, msg)
     }
@@ -627,7 +627,7 @@ export class Basics extends plugin {
             if (!e.group.is_admin && !e.group.is_owner) {
                 return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
             }
-            e.reply(`本此共需清理${list.length}人，防止误触发\n请发送：#确认清理从未发言的人`)
+            e.reply(`本此共需清理「${list.length}」人，防止误触发\n请发送：#确认清理从未发言的人`)
         }
         //发送列表
         let num = e.msg.match(new RegExp(Numreg))

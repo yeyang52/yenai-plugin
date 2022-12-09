@@ -220,8 +220,8 @@ export class NewConfig extends plugin {
             `sese：${data.sese ? "✅" : "❎"}\n`,
             `sesepro：${data.sesepro ? "✅" : "❎"}\n`,
             `R17.9 + 0.1：${set.r18 ? "✅" : "❎"}\n`,
-            `CD：${set.cd}s\n`,
-            set.recall ? `撤回：${set.recall}s` : ""
+            `CD：${set.cd}s`,
+            set.recall ? `\n撤回：${set.recall}s` : ""
         ])
     }
 

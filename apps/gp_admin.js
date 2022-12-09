@@ -1,6 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import fetch from 'node-fetch'
-import { Member, segment } from 'oicq'
+import { segment } from 'oicq'
 import lodash from 'lodash'
 import { Config } from '../components/index.js'
 import { Cfg, Gpadmin, common } from '../model/index.js'
@@ -203,7 +203,7 @@ export class Basics extends plugin {
         }
 
         await e.group.muteMember(qq, TabooTime * Company);
-        e.reply(`已把「${Member.card || Member.nickname}」扔进了小黑屋( ･_･)ﾉ⌒●~*`, true);
+        e.reply(`已把「${Memberinfo.card || Memberinfo.nickname}」扔进了小黑屋( ･_･)ﾉ⌒●~*`, true);
         return true;
 
     }

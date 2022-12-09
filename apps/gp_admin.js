@@ -1,6 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import fetch from 'node-fetch'
-import { segment } from 'oicq'
+import { Member, segment } from 'oicq'
 import lodash from 'lodash'
 import { Config } from '../components/index.js'
 import { Cfg, Gpadmin, common } from '../model/index.js'
@@ -183,9 +183,14 @@ export class Basics extends plugin {
         if (Cfg.masterQQ?.includes(Number(qq))) {
             return e.reply("居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ");
         }
-        let Member = e.group.pickMember(Number(qq))
+        let Memberinfo = e.group.pickMember(Number(qq)).info
         //判断是否有这个人
-        if (!Member.info) return e.reply("❎ 这个群没有这个人哦~");
+        if (!Memberinfo) return e.reply("❎ 这个群没有这个人哦~", true)
+        if (Memberinfo.role === 'owner') return e.reply("调戏群主拖出去枪毙5分钟(。>︿<)_θ", true)
+        if (Memberinfo.role === 'admin') {
+            if (!e.group.is_owner) return e.reply("人家又不是群主这种事做不到的辣！", true)
+            if (!e.isMaster && !e.member.is_owner) return e.reply("这个淫系管理员辣，只有主淫和群主才可以干ta", true)
+        }
         //如无时间默认禁言五分钟
         if (!TabooTime) TabooTime = 5;
         //默认单位为分
@@ -203,7 +208,7 @@ export class Basics extends plugin {
 
     }
     /**解禁 */
-    async Relieve(e) {v
+    async Relieve(e) {
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
             return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
@@ -260,7 +265,7 @@ export class Basics extends plugin {
     }
     //踢群员
     async Kick(e) {
-        //判断是否有管理
+        // 判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
             return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
         }
@@ -279,10 +284,14 @@ export class Basics extends plugin {
         if (Cfg.masterQQ?.includes(Number(qq))) {
             return e.reply("居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ");
         }
+        let Memberinfo = e.group.pickMember(Number(qq)).info
         //判断是否有这个人
-        if (!e.group.pickMember(Number(qq)).info) return e.reply("❎ 这个群没有这个人哦~")
-
-
+        if (!Memberinfo) return e.reply("❎ 这个群没有这个人哦~", true)
+        if (Memberinfo.role === 'owner') return e.reply("调戏群主拖出去枪毙5分钟(。>︿<)_θ", true)
+        if (Memberinfo.role === 'admin') {
+            if (!e.group.is_owner) return e.reply("人家又不是群主这种事做不到的辣！", true)
+            if (!e.isMaster && !e.member.is_owner) return e.reply("这个淫系管理员辣，只有主淫和群主才可以干ta", true)
+        }
         let res = await e.group.kickMember(Number(qq))
         if (res) {
             e.reply("已把这个坏淫踢掉惹！！！", true)

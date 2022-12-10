@@ -1,0 +1,22 @@
+{
+  "name": "yenai-plugin",
+  "version": "1.0.0",
+  "description": "Yunzai-Bot的扩展",
+  "main": "index.js",
+  "type": "module",
+  "dependencies": {
+    "systeminformation": "^5.16.5"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/yeyang52/yenai-plugin.git"
+  },
+  "keywords": [
+    "yenai"
+  ],
+  "author": "yeyang",
+  "license": "ISC"
+}

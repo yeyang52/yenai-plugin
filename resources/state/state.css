@@ -132,8 +132,12 @@ hr {
 }
 
 .memory li {
-    margin: 10px;
+    margin-bottom: 10px;
     display: flex;
+}
+
+.memory li:last-child {
+    margin-bottom: 0px;
 }
 
 .memory .progress {
@@ -163,12 +167,13 @@ hr {
     overflow: hidden;
     white-space: nowrap;
     line-height: 25px;
+    text-align: left;
 }
 
 .HardDisk_li .percentage {
     width: 45px;
     line-height: 25px;
-    text-align: center;
+    text-align: right;
 }
 
 .speed {

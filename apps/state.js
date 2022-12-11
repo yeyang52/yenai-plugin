@@ -101,7 +101,8 @@ export class example extends plugin {
     let FastFetch = ""
     if (/pro/.test(e.msg)) {
       let ret = await this.execSync(`bash plugins/yenai-plugin/resources/state/state.sh`)
-      if (!ret.error) FastFetch = ret.stdout.trim()
+      if (ret.error) return e.reply(`❎ 请检查是否使用git bash启动Yunzai-bot\n错误信息:${ret.stderr}`)
+      FastFetch = ret.stdout.trim()
     }
     //渲染数据
     let data = {

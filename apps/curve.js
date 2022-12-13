@@ -3,7 +3,6 @@ import gsCfg from '../../genshin/model/gsCfg.js'
 import { segment } from 'oicq'
 import fs from 'node:fs'
 import common from '../../../lib/common/common.js'
-let image;
 export class curve extends plugin {
   constructor() {
     super({
@@ -16,16 +15,24 @@ export class curve extends plugin {
           reg: '^#*(.*)收益曲线(帮助)?$',
           fnc: 'curve'
         },
+        {
+          reg: '^#*(.*)参考面板$',
+          fnc: 'ReferencPanel'
+        },
       ]
     })
-    this.path = './plugins/yenai-plugin/resources/curveimg'
+    this.curvepath = './plugins/yenai-plugin/resources/curveimg'
+    this.ReferencPanelpath = './plugins/yenai-plugin/resources/ReferencPanel'
     this.json = './plugins/yenai-plugin/config/curve.json'
 
   }
   //初始化
   async init() {
-    if (!fs.existsSync(this.path)) {
-      fs.mkdirSync(this.path)
+    if (!fs.existsSync(this.curvepath)) {
+      fs.mkdirSync(this.curvepath)
+    }
+    if (!fs.existsSync(this.ReferencPanelpath)) {
+      fs.mkdirSync(this.ReferencPanelpath)
     }
   }
 
@@ -47,7 +54,7 @@ export class curve extends plugin {
       }
     }
 
-    image = await fs.promises
+    let image = await fs.promises
       .readFile(this.json, 'utf8')
       .then((data) => {
         return JSON.parse(data)
@@ -60,27 +67,54 @@ export class curve extends plugin {
 
     if (!image[role.name]) return this.e.reply("暂时无该角色收益曲线~>_<")
 
-    this.imgPath = `${this.path}/${role.name}.png`
+    let imgPath = `${this.curvepath}/${role.name}.png`
 
-    if (!fs.existsSync(this.imgPath)) {
-      await this.getImg(role.name)
+    if (!fs.existsSync(imgPath)) {
+      await this.getImg(image[role.name], imgPath)
     }
 
-
-    if (fs.existsSync(this.imgPath)) {
-      await this.e.reply(segment.image(this.imgPath));
+    if (fs.existsSync(imgPath)) {
+      await this.e.reply(segment.image(imgPath));
       return true;
     }
 
 
+
+
+  }
+  async ReferencPanel(e) {
+    let role = gsCfg.getRole(this.e.msg, '参考面板')
+
+    if (!role) return logger.error("[参考面板]指令可能错误", role)
+
+    /** 主角特殊处理 */
+    if (['10000005', '10000007', '20000000'].includes(String(role.roleId))) {
+      if (!['风主', '岩主', '雷主', '草主'].includes(role.alias)) {
+        await this.e.reply('请选择：风主参考面板、岩主参考面板、雷主参考面板、草主参考面板')
+        return
+      } else {
+        role.name = role.alias
+      }
+    }
+
+    let imgPath = `${this.ReferencPanelpath}/${role.name}.png`
+    let url = `http://www.liaobiao.top/Referenc/${role.name}.png`
+    if (!fs.existsSync(imgPath)) {
+      await this.getImg(url, imgPath)
+    }
+
+    if (fs.existsSync(imgPath)) {
+      await this.e.reply(segment.image(imgPath));
+      return true;
+    }
   }
 
 
   //下载图片
-  async getImg(name) {
+  async getImg(name, Path) {
     logger.mark(`${this.e.logFnc} 下载${name}素材图`)
 
-    if (!await common.downFile(image[name], this.imgPath)) {
+    if (!await common.downFile(name, Path)) {
       return false
     }
 

@@ -142,7 +142,7 @@ class OSUtils {
       color = '#ffa500'
     }
     let leftCircle = `style=transform:rotate(-180deg);background:${color};`;
-    let rightCircle = `style=background:${color};`
+    let rightCircle = `style=transform:rotate(360deg);background:${color};`
     if (num > 180) {
       leftCircle = `style=transform:rotate(${num}deg);background:${color};`
     } else {

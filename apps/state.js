@@ -106,8 +106,6 @@ export class example extends plugin {
     }
     //渲染数据
     let data = {
-      //路径
-      tplFile: `./plugins/yenai-plugin/resources/state/state.html`,
       //头像
       portrait,
       //运行时间
@@ -116,8 +114,6 @@ export class example extends plugin {
       version: Version.ver,
       //日历
       calendar: moment().format("YYYY-MM-DD HH:mm:ss"),
-      //地址
-      dz: process.cwd(),
       //昵称
       nickname: Bot.nickname,
       //系统运行时间

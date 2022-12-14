@@ -88,14 +88,14 @@ hr {
 .left .left-circle {
     border-top-left-radius: 100px;
     border-bottom-left-radius: 100px;
-    /* transform: rotate(-180deg); */
+    transform: rotate(-180deg);
     transform-origin: right center;
 }
 
 .right .right-circle {
     border-top-right-radius: 100px;
     border-bottom-right-radius: 100px;
-    /* transform: rotate(360deg); */
+    transform: rotate(180deg);
     transform-origin: left center;
 }
 

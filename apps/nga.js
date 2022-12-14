@@ -13,13 +13,9 @@ export class NGA extends plugin {
       priority: 500,
       rule: [
         {
-          reg: '^#*(.*)收益曲线(帮助)?$',
+          reg: '^#*(.*)(收益曲线|参考面板)(帮助)?$',
           fnc: 'NGA'
-        },
-        {
-          reg: '^#*(.*)参考面板$',
-          fnc: 'NGA'
-        },
+        }
       ]
     })
     this.curvepath = './plugins/yenai-plugin/resources/curveimg'

@@ -220,7 +220,7 @@ class OSUtils {
         HardDisk += `<hr>
         <div class="speed">
         <p>fsSize</p>
-        <p>读 ${this.getfilesize(this.fsStats.rx_sec, false, false)}/s 写 ${this.getfilesize(this.fsStats.wx_sec, false, false)}/s</p>
+        <p>读 ${this.getfilesize(this.fsStats.rx_sec, false, false)}/s | 写 ${this.getfilesize(this.fsStats.wx_sec, false, false)}/s</p>
         </div>`
       }
       HardDisk = `<div class="box memory"><ul>${HardDisk}</ul></div>`

@@ -1,12 +1,12 @@
 {{extend defaultLayout}}
 
 {{block 'css'}}
-<link rel="stylesheet" href="{{_res_path}}/state/state.css">
+<link rel="stylesheet" href="{{_res_path}}state/state.css">
 {{/block}}
 {{block 'main'}}
 <div class="box">
     <div class="tb">
-        <img src="{{portrait}}" alt="头像" onerror="this.src= '{{_res_path}}/img/tb.png'; this.onerror = null;">
+        <img src="{{portrait}}" alt="头像" onerror="this.src= '{{_res_path}}img/tb.png'; this.onerror = null;">
         <div class="header">
             <h1>{{nickname}}</h1>
             <hr noshade>
@@ -86,26 +86,6 @@
 
     </ul>
 </div>
-<!-- <div class="box memory">
-    <ul>
-        <li class='HardDisk_li'>
-            <div class='mount'>C:\</div>
-            <div class='progress'>
-                <div class='word'>25G / 39.66G</div>
-                <div class='current'></div>
-            </div>
-            <div class="percentage">68%</div>
-        </li>
-        <li class='HardDisk_li'>
-            <div class='mount'>C:\</div>
-            <div class='progress'>
-                <div class='word'>25G / 39.66G</div>
-                <div class='current'></div>
-            </div>
-            <div class="percentage">1%</div>
-        </li>
-    </ul>
-</div> -->
 {{@HardDisk}}
 {{@FastFetch}}
 <div class="box">

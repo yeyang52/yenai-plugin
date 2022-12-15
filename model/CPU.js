@@ -24,7 +24,7 @@ class OSUtils {
     setTimeout(() => {
       if (!this.now_network) clearTimeout(worktimer)
       if (!this.fsStats) clearTimeout(fsStatstimer)
-    }, 20000)
+    }, 60000)
     //初始化GPU获取
     if ((await si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)) {
       this.isGPU = true

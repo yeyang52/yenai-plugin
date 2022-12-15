@@ -189,6 +189,11 @@ export const helpList = [{
       "desc": "查看角色收益曲线"
     },
     {
+      "icon": 13,
+      "title": "#椰羊参考面板",
+      "desc": "查看角色参考面板"
+    },
+    {
       "icon": 9,
       "title": "#收益曲线帮助",
       "desc": "=-="
@@ -276,7 +281,7 @@ export const helpList = [{
     "desc": "查看更新日志"
   }, {
     "icon": 8,
-    "title": "#椰奶状态",
+    "title": "#椰奶状态(pro)?",
     "desc": "查看系统状态"
   }, {
     "icon": 3,

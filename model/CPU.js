@@ -12,11 +12,20 @@ class OSUtils {
   }
 
   async init() {
-    si.networkStats()
-    setInterval(async () => {
+    //网速
+    let worktimer = setInterval(async () => {
       this.now_network = await si.networkStats()
+    }, 5000)
+    //磁盘写入速度
+    let fsStatstimer = setInterval(async () => {
       this.fsStats = await si.fsStats();
     }, 5000)
+    //一分钟后检测是否能获取不能则销毁定时器
+    setTimeout(() => {
+      if (!this.now_network) clearTimeout(worktimer)
+      if (!this.fsStats) clearTimeout(fsStatstimer)
+    }, 20000)
+    //初始化GPU获取
     if ((await si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)) {
       this.isGPU = true
     }

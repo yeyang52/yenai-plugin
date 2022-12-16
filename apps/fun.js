@@ -406,7 +406,6 @@ let apis = {
     "http://xn--rssy53b.love/api/ecytp/index.php"
   ],
   "xjj": [
-    "https://api.caonm.net/api/yangyan/api.php",
     "https://api.btstu.cn/sjbz/api.php",
     "https://api.wuque.cc/random/images",
     "https://ovooa.com/API/meinv/api.php?type=image",
@@ -417,12 +416,5 @@ let apis = {
     "https://api.vvhan.com/api/tao",
     "https://api.dzzui.com/api/imgtaobao"
   ],
-  "ny": [
-    "http://tfkapi.top/API/nypic.php"
-  ],
-  "st": [
-    "http://tfkapi.top/API/setu_pic.php"
-  ]
-
 }
 let apirag = new RegExp(`^#?(${Object.keys(apis).join("|")}|jktj)(\\d+)?$`)

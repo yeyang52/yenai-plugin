@@ -268,18 +268,20 @@ async function verify(user_id, group_id, e) {
 
   }, Math.abs(verifycfg.time * 1000 - 60000));
 
-  temp[user_id + group_id] = {
-    remainTimes,
-    nums: [m, n],
-    operator,
-    verifyCode,
-    kickTimer,
-    remindTimer
-  };
-
   const msg = ` 欢迎，请在「${verifycfg.time}」秒内发送「${m}${operator}${n}」的运算结果，否则将会被移出群聊`;
+
   await Cfg.sleep(600);
-  return await e.reply([segment.at(user_id), msg]);
+  //消息发送成功才写入
+  if (await e.reply([segment.at(user_id), msg])) {
+    temp[user_id + group_id] = {
+      remainTimes,
+      nums: [m, n],
+      operator,
+      verifyCode,
+      kickTimer,
+      remindTimer
+    };
+  }
 }
 //随机数
 function getRndInteger(min, max) {

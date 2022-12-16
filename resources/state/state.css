@@ -192,6 +192,7 @@ hr {
 }
 
 .speed p:nth-child(2) {
+    margin-left: 40px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

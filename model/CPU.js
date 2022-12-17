@@ -226,8 +226,7 @@ class OSUtils {
     if (HardDisk) {
       //读取速率
       if (this.fsStats && this.fsStats.rx_sec && this.fsStats.wx_sec) {
-        HardDisk += `<hr>
-        <div class="speed">
+        HardDisk += `<div class="speed">
         <p>fsSize</p>
         <p>读 ${this.getfilesize(this.fsStats.rx_sec, false, false)}/s | 写 ${this.getfilesize(this.fsStats.wx_sec, false, false)}/s</p>
         </div>`

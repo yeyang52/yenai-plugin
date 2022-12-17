@@ -6,9 +6,9 @@ const files = fs.readdirSync('./plugins/yenai-plugin/apps').filter(file => file.
 
 let ret = []
 
-logger.info(chalk.cyan('--------_(:зゝ∠)_--------'))
-logger.info(chalk.yellow(`椰奶插件${Ver.ver}初始化~`))
-logger.info(chalk.magenta('-------------------------'))
+logger.info(chalk.rgb(253, 235, 255)('----ヾ(￣▽￣)Bye~Bye~----'))
+logger.info(chalk.rgb(255, 207, 247)(`椰奶插件${Ver.ver}初始化~`))
+logger.info(chalk.rgb(253, 235, 255)('-------------------------'))
 
 
 files.forEach((file) => {

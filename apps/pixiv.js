@@ -10,7 +10,7 @@ let listreg = new RegExp(`^#?看看((\\d{4}-\\d{1,2}-\\d{1,2})的)?(${Object.key
 let tagreg = new RegExp('^#?tag(pro)?搜图(.*)$', "i")
 let pidreg = new RegExp('^#?pid搜图\\s?(\\d+)$', "i")
 let uidreg = new RegExp('^#?uid搜图(.*)$', "i")
-let randomimgreg = new RegExp(`^#?来(${Numreg})?张(好(康|看)(的|哒)|hkd|涩图)|#有内鬼$`)
+let randomimgreg = new RegExp(`^#?来(${Numreg})?张(好(康|看)(的|哒)|hkd|涩图)$|#有内鬼$`)
 let relatedreg = new RegExp(`^#?看?看?相关作品(\\d+)$`);
 export class example extends plugin {
     constructor() {

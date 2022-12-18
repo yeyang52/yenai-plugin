@@ -16,16 +16,16 @@ export class anotice extends plugin {
             priority: 500,
             rule: [
                 {
-                    reg: '^#?(同意|拒绝)申请.*$',
-                    fnc: 'agree'
-                },
-                {
                     reg: '^#?(同意|拒绝)$',
                     fnc: 'agrees'
                 },
                 {
                     reg: '^#?回复.*$',
                     fnc: 'Replys'
+                },
+                {
+                    reg: '^#?(同意|拒绝)好友申请.*$',
+                    fnc: 'agree'
                 },
                 {
                     reg: '^#(同意|拒绝)全部好友申请$',
@@ -59,7 +59,7 @@ export class anotice extends plugin {
     async agree(e) {
         if (!e.isMaster) return
         let yes = /同意/.test(e.msg) ? true : false
-        let qq = e.message[0].text.replace(/#|(同意|拒绝)申请/g, '').trim()
+        let qq = e.message[0].text.replace(/#|(同意|拒绝)好友申请/g, '').trim()
         if (e.message[1]) {
             qq = e.message[1].qq
         } else {
@@ -101,7 +101,7 @@ export class anotice extends plugin {
             })
             let msg = [
                 `现有未处理的好友申请如下，共${FriendAdd.length}条`,
-                `可用"同意申请xxx"或"拒绝申请xxx"`,
+                `可用"#同意好友申请<QQ>"或"#拒绝好友申请<QQ>"进行处理`,
                 ...FriendAdd
             ];
             return Cfg.getforwardMsg(e, msg)
@@ -168,7 +168,7 @@ export class anotice extends plugin {
                 .then(() => e.reply(`✅ 已${yes ? '同意' : '拒绝'}${qq}的群邀请`))
                 .catch(() => e.reply('❎ 请检查是否已同意该邀请'))
         } else {
-            e.reply('❎ 请检查是否引用正确')
+            return false;
         }
     }
 

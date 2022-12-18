@@ -60,7 +60,7 @@ Bot.on('request.friend', async (e) => {
         msg.push('已自动同意该好友申请')
     } else {
         msg.push(
-            `-------------\n可回复：同意申请${e.user_id} \n或引用该消息回复"同意"或"拒绝"`
+            `-------------\n可回复：#同意好友申请${e.user_id} \n或引用该消息回复"同意"或"拒绝"`
         )
     }
     await xcfg.getSend(msg)

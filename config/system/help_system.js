@@ -130,7 +130,7 @@ export const helpList = [{
     "icon": 1
   },
   {
-    "title": "同意|拒绝申请 <QQ>",
+    "title": "同意|拒绝好友申请 <QQ>",
     "desc": "同意或拒绝好友申请",
     "icon": 18
   },

@@ -82,7 +82,7 @@ export class example extends plugin {
     // let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))
     //备用接口
     // if (!res) {
-    res = await fetch(urls).then(res => res.json()).catch(err => console.log(err))
+    let res = await fetch(urls).then(res => res.json()).catch(err => console.log(err))
     if (!res) return e.reply("接口失效辣(๑ŐдŐ)b")
     e.reply(res.data.song_lyric)
     e.reply(await uploadRecord(res.data.song_url, 0, false))

@@ -122,7 +122,7 @@ export class Basics extends plugin {
                     fnc: 'SpeakRank'
                 },
                 {
-                    reg: `(^#定时禁言(.*)解禁(.*)$)|(^#定时禁言任务$)`,
+                    reg: `(^#定时禁言(.*)解禁(.*)$)|(^#定时禁言任务$)|(^#取消定时禁言$)`,
                     fnc: 'timeMute'
                 }
 
@@ -713,7 +713,7 @@ export class Basics extends plugin {
       if (!e.isMaster) return false
       if (/任务/.test(e.msg)) {
       let task = await redis.keys('Yunzai:yenai:Taboo:*')
-      if (!task) return e.reply('目前还没有定时禁言任务')
+      if (!task.length) return e.reply('目前还没有定时禁言任务')
       let msglist = [`目前定时禁言任务有${task.length}个`]
       for (let i = 0; i < task.length; i++) {
       let data = JSON.parse(await redis.get(task[i]))
@@ -722,6 +722,13 @@ export class Basics extends plugin {
        Cfg.getforwardMsg(e,msglist)
        return true
     }
+      if (/取消/.test(e.msg)) {
+        let data = JSON.parse(await redis.get(`Yunzai:yenai:Taboo:${e.group_id}`))
+        if (!data) return e.reply('这群目前没有定时禁言任务')
+        await redis.del(`Yunzai:yenai:Taboo:${e.group_id}`)
+        e.reply('此群定时禁言任务删除成功')
+        return true
+      }
     if (!e.group.is_admin && !e.group.is_owner) {
       return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
     }

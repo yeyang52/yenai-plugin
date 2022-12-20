@@ -133,22 +133,22 @@ export class Basics extends plugin {
             cron: '0 0/1 * * * ?',
             name: '定时禁言',
             fnc: () => this.timeTaboo(),
-          }
+        }
     }
-     /**定时群禁言 */
-    async timeTaboo () {
+    /**定时群禁言 */
+    async timeTaboo() {
         let time = moment(new Date()).format('HH:mm')
         let task = await redis.keys('Yunzai:yenai:Taboo:*')
-        if (!task) return
+        if (!task.length) return
         for (let i of task) {
-          let data = JSON.parse(await redis.get(i))
-          if (data.muteTime == time) {
-          await Bot.pickGroup(data.groupNumber).muteAll(true)
-          } else if (data.remTime == time) {
-          await Bot.pickGroup(data.groupNumber).muteAll(false)
-          }
-       }
-      }
+            let data = JSON.parse(await redis.get(i))
+            if (data.muteTime == time) {
+                await Bot.pickGroup(data.groupNumber).muteAll(true)
+            } else if (data.remTime == time) {
+                await Bot.pickGroup(data.groupNumber).muteAll(false)
+            }
+        }
+    }
     /**禁言 */
     async Taboo(e) {
 
@@ -702,53 +702,54 @@ export class Basics extends plugin {
             return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
         }
         let ck = Cfg.getck("qun.qq.com")
-        let url = `http://xiaobai.klizi.cn/API/qqgn/SpeakRank.php?uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&group=${e.group_id}&type=${/(7|七)天/.test(e.msg) ? 1 : 0}`
+        // let url = `http://xiaobai.klizi.cn/API/qqgn/SpeakRank.php?uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&group=${e.group_id}&type=${/(7|七)天/.test(e.msg) ? 1 : 0}`
+        let url = `http://ovooa.com/API/qunhy/api?QQ=${Bot.uin}&Skey=${ck.skey}&Pskey=${ck.p_skey}&Group=${e.group_id}&type=text`
         let res = await fetch(url).then(res => res.text()).catch(err => console.log(err))
         if (!res) return e.reply("接口失效辣！！！")
         await e.reply(res)
     }
-    
+
     //设置定时群禁言
     async timeMute(e) {
-      if (!e.isMaster) return false
-      if (/任务/.test(e.msg)) {
-      let task = await redis.keys('Yunzai:yenai:Taboo:*')
-      if (!task.length) return e.reply('目前还没有定时禁言任务')
-      let msglist = [`目前定时禁言任务有${task.length}个`]
-      for (let i = 0; i < task.length; i++) {
-      let data = JSON.parse(await redis.get(task[i]))
-      msglist.push(`${i+1}.\n群号:${data.groupNumber}\n禁言时间:${data.muteTime}\n解禁时间:${data.remTime}`)
-      }
-       Cfg.getforwardMsg(e,msglist)
-       return true
-    }
-      if (/取消/.test(e.msg)) {
-        let data = JSON.parse(await redis.get(`Yunzai:yenai:Taboo:${e.group_id}`))
-        if (!data) return e.reply('这群目前没有定时禁言任务')
-        await redis.del(`Yunzai:yenai:Taboo:${e.group_id}`)
-        e.reply('此群定时禁言任务删除成功')
-        return true
-      }
-    if (!e.group.is_admin && !e.group.is_owner) {
-      return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
-    }
-    try{
-     var muteTime = e.msg.match(/禁言(\d+):(\d+)/)[0].replace(/禁言/g, '')
-     var remTime = e.msg.match(/解禁(\d+):(\d+)/)[0].replace(/解禁/g, '')
-     if (muteTime.length != 5 || remTime.length != 5 ) return e.reply('格式不对\n示范：#定时禁言00:00，解禁08:00')
-    } catch(err) {
-    logger.error(err)  
-    e.reply('格式不对\n示范：#定时禁言00:00，解禁08:00')
-    return
-  }
-  
-  if (muteTime == remTime) return e.reply('没事就吃溜溜梅')
-  let data = {
-    groupNumber: e.group_id,
-    muteTime,
-    remTime
-  }
-  await redis.set(`Yunzai:yenai:Taboo:${e.group_id}`, JSON.stringify(data))
-  e.reply(`设置定时禁言成功，可发【#定时禁言任务】查看`)``
+        if (!e.isMaster) return false
+        if (/任务/.test(e.msg)) {
+            let task = await redis.keys('Yunzai:yenai:Taboo:*')
+            if (!task.length) return e.reply('目前还没有定时禁言任务')
+            let msglist = [`目前定时禁言任务有${task.length}个`]
+            for (let i = 0; i < task.length; i++) {
+                let data = JSON.parse(await redis.get(task[i]))
+                msglist.push(`${i + 1}.\n群号:${data.groupNumber}\n禁言时间:${data.muteTime}\n解禁时间:${data.remTime}`)
+            }
+            Cfg.getforwardMsg(e, msglist)
+            return true
+        }
+        if (/取消/.test(e.msg)) {
+            let data = JSON.parse(await redis.get(`Yunzai:yenai:Taboo:${e.group_id}`))
+            if (!data) return e.reply('这群目前没有定时禁言任务')
+            await redis.del(`Yunzai:yenai:Taboo:${e.group_id}`)
+            e.reply('此群定时禁言任务删除成功')
+            return true
+        }
+        if (!e.group.is_admin && !e.group.is_owner) {
+            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
+        }
+        try {
+            var muteTime = e.msg.match(/禁言(\d+):(\d+)/)[0].replace(/禁言/g, '')
+            var remTime = e.msg.match(/解禁(\d+):(\d+)/)[0].replace(/解禁/g, '')
+            if (muteTime.length != 5 || remTime.length != 5) return e.reply('格式不对\n示范：#定时禁言00:00，解禁08:00')
+        } catch (err) {
+            logger.error(err)
+            e.reply('格式不对\n示范：#定时禁言00:00，解禁08:00')
+            return
+        }
+
+        if (muteTime == remTime) return e.reply('没事就吃溜溜梅')
+        let data = {
+            groupNumber: e.group_id,
+            muteTime,
+            remTime
+        }
+        await redis.set(`Yunzai:yenai:Taboo:${e.group_id}`, JSON.stringify(data))
+        e.reply(`设置定时禁言成功，可发【#定时禁言任务】查看`)``
     }
 }

@@ -77,17 +77,17 @@ export class example extends plugin {
 
   /**随机唱鸭 */
   async Sing(e) {
-    // let url = "https://xiaobai.klizi.cn/API/music/changya.php"
-    let urls = "https://ovooa.com/API/changya/"
-    // let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))
+    let urls = "https://xiaobai.klizi.cn/API/music/changya.php"
+    let url = "https://ovooa.com/API/changya/"
+    let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))
     //备用接口
-    // if (!res) {
-    let res = await fetch(urls).then(res => res.json()).catch(err => console.log(err))
-    if (!res) return e.reply("接口失效辣(๑ŐдŐ)b")
-    e.reply(res.data.song_lyric)
-    e.reply(await uploadRecord(res.data.song_url, 0, false))
-    return true;
-    // }
+    if (!res) {
+      let res = await fetch(urls).then(res => res.json()).catch(err => console.log(err))
+      if (!res) return e.reply("接口失效辣(๑ŐдŐ)b")
+      e.reply(res.data.song_lyric)
+      e.reply(await uploadRecord(res.data.song_url, 0, false))
+      return true;
+    }
 
     let data = res.data
     await e.reply(await uploadRecord(data.audioSrc, 0, false))
@@ -143,9 +143,9 @@ export class example extends plugin {
     if (!isFriend && !Config.Notice.Strangers_love) return e.reply("不加好友不点🙄", true)
     /** 点赞成功回复的图片*/
     let imgs = [
-      // "https://xiaobai.klizi.cn/API/ce/zan.php?qq=",
+      "https://xiaobai.klizi.cn/API/ce/zan.php?qq=",
       "https://xiaobapi.top/api/xb/api/bixin.php?qq=",
-      // "https://xiaobai.klizi.cn/API/ce/xin.php?qq=",
+      "https://xiaobai.klizi.cn/API/ce/xin.php?qq=",
       "https://xiaobapi.top/api/xb/api/bixinxin.php?qq=",
       "https://xiaobapi.top/api/xb/api/zan_2.php?qq="
     ]
@@ -154,8 +154,8 @@ export class example extends plugin {
     let success_img = segment.image(imgs[random] + e.user_id)
 
     /** 点赞失败的图片 */
-    // let failds_img = segment.image(`https://xiaobai.klizi.cn/API/ce/paa.php?qq=${e.user_id}`)
-    let failds_img = segment.image(`https://xiaobapi.top/api/xb/api/pa.php?qq=${e.user_id}`)
+    let failds_img = segment.image(`https://xiaobai.klizi.cn/API/ce/paa.php?qq=${e.user_id}`)
+    // let failds_img = segment.image(`https://xiaobapi.top/api/xb/api/pa.php?qq=${e.user_id}`)
 
     /** 执行点赞*/
     let n = 0;

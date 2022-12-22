@@ -702,8 +702,8 @@ export class Basics extends plugin {
             return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
         }
         let ck = Cfg.getck("qun.qq.com")
-        // let url = `http://xiaobai.klizi.cn/API/qqgn/SpeakRank.php?uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&group=${e.group_id}&type=${/(7|七)天/.test(e.msg) ? 1 : 0}`
-        let url = `http://ovooa.com/API/qunhy/api?QQ=${Bot.uin}&Skey=${ck.skey}&Pskey=${ck.p_skey}&Group=${e.group_id}&type=text`
+        let url = `http://xiaobai.klizi.cn/API/qqgn/SpeakRank.php?uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&group=${e.group_id}&type=${/(7|七)天/.test(e.msg) ? 1 : 0}`
+        // let url = `http://ovooa.com/API/qunhy/api?QQ=${Bot.uin}&Skey=${ck.skey}&Pskey=${ck.p_skey}&Group=${e.group_id}&type=text`
         let res = await fetch(url).then(res => res.text()).catch(err => console.log(err))
         if (!res) return e.reply("接口失效辣！！！")
         await e.reply(res)

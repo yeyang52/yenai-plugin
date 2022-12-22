@@ -292,12 +292,11 @@ export class example extends plugin {
     if (lodash.isEmpty(res.data)) return e.reply(`请求错误！无数据，请稍后再试`)
     let msg = [];
     for (let i of res.data) {
-      msg.push(i.title || " ");
-      if (!lodash.isEmpty(i.image)) {
-        msg.push(i.image.map(item => segment.image(item)))
-      }
+      if (!i.title || lodash.isEmpty(i.image)) continue
+      msg.push(i.title);
+      msg.push(i.image.map(item => segment.image(item)))
     }
-    console.log(msg);
+    if (lodash.isEmpty(msg)) return this.bcy_topic(e)
     Cfg.getforwardMsg(e, msg)
   }
   //谁是龙王

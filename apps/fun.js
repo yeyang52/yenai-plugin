@@ -290,7 +290,7 @@ export class example extends plugin {
     }
     let url = `https://c8a9.com/post/${random}.html`
     let res = await fetch(url).then(res => res.text()).catch(err => console.error(err));
-    let resReg = new RegExp(`<img src="(https://md1\.lianhevipimg\.com/(.*?)jpg")`, 'g');
+    let resReg = new RegExp(`<img src="(https://md1\.lianhevipimg\.com/(.*?)/(\\d+).jpg")`, 'g');
     let list = res.match(resReg);
     if (!list) {
       if (!appoint) {

@@ -71,7 +71,7 @@ export class example extends plugin {
           fnc: 'Pximg'
         },
         {
-          reg: '^#?来点神秘图(\\d+)$',
+          reg: '^#?来点神秘图(\\d+)?$',
           fnc: 'mengtui'
         },
 
@@ -286,14 +286,19 @@ export class example extends plugin {
         random = lodash.random(1, 11687)
       }
     } else {
-      random = appoint
+      random = appoint[0]
     }
     let url = `https://c8a9.com/post/${random}.html`
     let res = await fetch(url).then(res => res.text()).catch(err => console.error(err));
     let resReg = new RegExp(`<img src="(https://md1\.lianhevipimg\.com/vip-mengduitupian1/(.*?)jpg")`, 'g');
     let list = res.match(resReg);
-    if (!list && !appoint) return this.mengtui(e)
-    if (!list) return e.reply(`可能超过今日限制请明天再来`, true)
+    if (!list) {
+      if (!appoint) {
+        return e.reply(`可能超过今日限制，或稍后再试`, true)
+      } else {
+        return e.reply(`请检查指定是否正确`, true)
+      }
+    }
     let msg = list.map(item => segment.image(item.match(/https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*/i)[0]))
     msg = lodash.take(msg, 30)
     Cfg.getCDsendMsg(e, msg, false)

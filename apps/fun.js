@@ -46,10 +46,10 @@ export class example extends plugin {
           reg: '^#?coser$',
           fnc: 'coser'
         },
-        {
-          reg: heisiwreg,
-          fnc: 'heisiwu'
-        },
+        // {
+        //   reg: heisiwreg,
+        //   fnc: 'heisiwu'
+        // },
         {
           reg: '^#?铃声搜索.*$',
           fnc: 'lingsheng'

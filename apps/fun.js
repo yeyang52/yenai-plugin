@@ -46,10 +46,10 @@ export class example extends plugin {
           reg: '^#?coser$',
           fnc: 'coser'
         },
-        // {
-        //   reg: heisiwreg,
-        //   fnc: 'heisiwu'
-        // },
+        {
+          reg: heisiwreg,
+          fnc: 'heisiwu'
+        },
         {
           reg: '^#?铃声搜索.*$',
           fnc: 'lingsheng'
@@ -260,9 +260,12 @@ export class example extends plugin {
     let imglist = [];
     let item = 1;
     for (let i of img) {
-      imglist.push(
-        segment.image(imgreg.exec(i)[1])
-      )
+      let pic = segment.image(imgreg.exec(i)[1])
+      pic.headers = {
+        'Referer': 'http://hs.heisiwu.com',
+        'User-Agent': 'Cloudflare Workers'
+      }
+      imglist.push(pic)
 
       if (item >= 20) {
         break

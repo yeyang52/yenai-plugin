@@ -69,7 +69,12 @@ export class example extends plugin {
         {
           reg: '^#?(P|p)ximg(pro)?$',
           fnc: 'Pximg'
-        }
+        },
+        {
+          reg: '^#?来点神秘图(\\d+)$',
+          fnc: 'mengtui'
+        },
+
 
       ]
     })
@@ -267,6 +272,31 @@ export class example extends plugin {
     }
 
     Cfg.getCDsendMsg(e, imglist, false)
+  }
+  //萌堆
+  async mengtui(e) {
+    if (!e.isMaster) {
+      if (!Config.getGroup(e.group_id).sesepro) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
+    }
+    let appoint = e.msg.match(/\d+/g)
+    let random;
+    if (!appoint) {
+      random = lodash.random(1, 11687)
+      while (lodash.inRange(random, 7886, 10136)) {
+        random = lodash.random(1, 11687)
+      }
+    } else {
+      random = appoint
+    }
+    let url = `https://c8a9.com/post/${random}.html`
+    let res = await fetch(url).then(res => res.text()).catch(err => console.error(err));
+    let resReg = new RegExp(`<img src="(https://md1\.lianhevipimg\.com/vip-mengduitupian1/(.*?)jpg")`, 'g');
+    let list = res.match(resReg);
+    if (!list && !appoint) return this.mengtui(e)
+    if (!list) return e.reply(`可能超过今日限制请明天再来`, true)
+    let msg = list.map(item => segment.image(item.match(/https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*/i)[0]))
+    msg = lodash.take(msg, 30)
+    Cfg.getCDsendMsg(e, msg, false)
   }
 
   //铃声多多

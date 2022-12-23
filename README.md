@@ -165,9 +165,8 @@ Tip：详情请参考[此教程](https://docs.qq.com/doc/DYVRJR0FpbFphVlZr)
 
 - [x] 加群申请处理
 
-- [ ] 添加黑名单
+- [ ] 黑名单/白名单
 
-- [ ] 添加白名单
 
 Tip：具体可使用 **#椰奶群管帮助** 查看
   </details>

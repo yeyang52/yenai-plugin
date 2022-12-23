@@ -77,8 +77,8 @@ export class example extends plugin {
 
   /**随机唱鸭 */
   async Sing(e) {
-    let urls = "https://xiaobai.klizi.cn/API/music/changya.php"
-    let url = "https://ovooa.com/API/changya/"
+    let url = "https://xiaobai.klizi.cn/API/music/changya.php"
+    let urls = "https://ovooa.com/API/changya/"
     let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))
     //备用接口
     if (!res) {

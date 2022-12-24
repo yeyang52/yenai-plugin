@@ -262,8 +262,7 @@ export class example extends plugin {
     for (let i of img) {
       let pic = segment.image(imgreg.exec(i)[1])
       pic.headers = {
-        'Referer': 'http://hs.heisiwu.com',
-        'User-Agent': 'Cloudflare Workers'
+        'Referer': 'http://hs.heisiwu.com'
       }
       imglist.push(pic)
 

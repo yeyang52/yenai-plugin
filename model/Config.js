@@ -1,6 +1,7 @@
 import cfg from '../../../lib/config/config.js'
 import common from '../../../lib/common/common.js'
 import fs from 'fs'
+import Config from '../components/Config.js'
 
 class Config {
 
@@ -45,10 +46,11 @@ class Config {
 
     /** 发消息 */
     async getSend(msg) {
-        if (await redis.del(`yenai:notice:notificationsAll`,)) {
+        if (Config.Notice.notificationsAll) {
             // 发送全部管理
             for (let index of cfg.masterQQ) {
                 await common.relpyPrivate(index, msg)
+                await this.sleep(5000)
             }
         } else {
             // 发给第一个管理

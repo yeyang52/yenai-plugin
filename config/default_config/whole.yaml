@@ -6,6 +6,7 @@ groupInviteRequest: false #群邀请
 groupAdminChange: false #群管理变动
 groupNumberChange: false #群聊列表变动
 groupMemberNumberChange: false #群成员变动
+addGroupApplication: false #加群申请
 #好友通知类
 privateMessage: false #好友消息
 PrivateRecall: false #好友撤回
@@ -15,7 +16,7 @@ friendNumberChange: false #好友列表变动
 flashPhoto: false #闪照
 botBeenBanned: false #禁言
 notificationsAll: false #全部通知
-Strangers_love : false #陌生人点赞
+Strangers_love: false #陌生人点赞
 sese: false #涩涩
 state: false #状态
 deltime: 600 #删除缓存

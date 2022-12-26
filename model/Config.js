@@ -3,7 +3,7 @@ import common from '../../../lib/common/common.js'
 import fs from 'fs'
 import Config from '../components/Config.js'
 
-class Config {
+class newConfig {
 
     /**主人QQ */
     get masterQQ() {
@@ -271,4 +271,4 @@ class Config {
 }
 
 
-export default new Config();
+export default new newConfig();

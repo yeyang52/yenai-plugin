@@ -75,6 +75,12 @@ export function supportGuoba() {
           component: 'Switch',
         },
         {
+          field: 'addGroupApplication',
+          label: '加群申请',
+          bottomHelpMessage: '是否开启加群申请通知',
+          component: 'Switch',
+        },
+        {
           field: 'groupInviteRequest',
           label: '群聊邀请',
           bottomHelpMessage: '是否开启群聊邀请通知',

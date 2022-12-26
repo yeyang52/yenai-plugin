@@ -12,6 +12,7 @@ const configs = {
     // 申请通知
     "好友申请": "friendRequest",
     "群邀请": "groupInviteRequest",
+    "加群申请": 'addGroupApplication',
     // 信息变动
     "群管理变动": "groupAdminChange",
     // 列表变动
@@ -159,6 +160,8 @@ export class NewConfig extends plugin {
             friendRequest: getStatus(config.friendRequest),
             //群邀请
             groupInviteRequest: getStatus(config.groupInviteRequest),
+            //加群申请
+            addGroupApplication: getStatus(config.addGroupApplication),
             //群管理变动
             groupAdminChange: getStatus(config.groupAdminChange),
             //好友列表变动

@@ -24,11 +24,7 @@ export class anotice extends plugin {
                     fnc: 'Replys'
                 },
                 {
-                    reg: '^#?(同意|拒绝)好友申请.*$',
-                    fnc: 'agree'
-                },
-                {
-                    reg: '^#(同意|拒绝)全部好友申请$',
+                    reg: '^#?(同意|拒绝|查看)(全部)?好友申请(\\d+)$',
                     fnc: 'agreesAll'
                 },
                 {
@@ -36,19 +32,15 @@ export class anotice extends plugin {
                     fnc: 'addFriend'
                 },
                 {
-                    reg: '^#查看好友申请$',
-                    fnc: 'agreesAll'
-                },
-                {
-                    reg: '^#(同意|拒绝|查看)(全部)?(加|入)群申请.*$',
+                    reg: '^#?(同意|拒绝|查看)(全部)?(加|入)?群申请(\\d+)$',
                     fnc: 'GroupAdd'
                 },
                 {
-                    reg: '^#(同意|拒绝|查看)(全部)?群邀请.*$',
+                    reg: '^#?(同意|拒绝|查看)(全部)?群邀请(\\d+)$',
                     fnc: 'GroupInvite'
                 },
                 {
-                    reg: '^#查看全部请求$',
+                    reg: '^#?查看全部请求$',
                     fnc: 'SystemMsgAll'
                 }
             ]
@@ -105,25 +97,43 @@ export class anotice extends plugin {
                 ...FriendAdd
             ];
             return Cfg.getforwardMsg(e, msg)
-        }
-        await e.reply("好哒，我开始处理辣٩(๑•ㅂ•)۶")
-        let success = [], fail = []
-        for (let i of FriendAdd) {
-            logger.mark(`[椰奶]${yes ? '同意' : '拒绝'}${i.user_id}的好友申请`)
-            let res = await i.approve(yes)
-            if (res) {
-                success.push(`${success.length + 1}、${i.user_id}`)
-            } else {
-                fail.push(`${fail.length + 1}、${i.user_id}`)
+        } else if (/全部/.test(e.msg)) {
+            //同意全部好友申请
+            await e.reply("好哒，我开始处理辣٩(๑•ㅂ•)۶")
+            let success = [], fail = []
+            for (let i of FriendAdd) {
+                logger.mark(`[椰奶]${yes ? '同意' : '拒绝'}${i.user_id}的好友申请`)
+                let res = await i.approve(yes)
+                if (res) {
+                    success.push(`${success.length + 1}、${i.user_id}`)
+                } else {
+                    fail.push(`${fail.length + 1}、${i.user_id}`)
+                }
+                await Cfg.sleep(2000)
             }
-            await Cfg.sleep(2000)
+            let msg = [
+                `本次共${yes ? '同意' : '拒绝'}${FriendAdd.length}条好友申请\n成功：${success.length}\n失败：${fail.length}`
+            ]
+            if (!lodash.isEmpty(success)) msg.push([`以下为成功的名单：\n`, success.join("\n")])
+            if (!lodash.isEmpty(fail)) msg.push([`以下为失败的名单：\n`, fail.join("\n")])
+
+            return Cfg.getforwardMsg(e, msg)
+        } else {
+            //处理单个好友申请
+            let qq = e.message[0].text.replace(/#|(同意|拒绝)好友申请/g, '').trim()
+            if (!qq) return e.reply('❎ 请输入正确的QQ')
+
+            let member = FriendAdd.find(item => item.user_id === qq)
+            if (lodash.isEmpty(member)) return e.reply('❎ 没有找到这个人的好友申请')
+
+            let result = member.approve(yes)
+            if (result) {
+                e.reply(`✅ 已${yes ? '同意' : '拒绝'}${member.nickname}(${qq})的好友申请`)
+            } else {
+                e.reply("❎ 未知错误")
+            }
+
         }
-        let msg = [
-            `本次共${yes ? '同意' : '拒绝'}${FriendAdd.length}条好友申请\n成功：${success.length}\n失败：${fail.length}`
-        ]
-        if (!lodash.isEmpty(success)) msg.push([`以下为成功的名单：\n`, success.join("\n")])
-        if (!lodash.isEmpty(fail)) msg.push([`以下为失败的名单：\n`, fail.join("\n")])
-        Cfg.getforwardMsg(e, msg)
     }
     /** 引用同意好友申请和群邀请 */
     async agrees(e) {
@@ -166,8 +176,10 @@ export class anotice extends plugin {
         } else if (/加群申请/.test(res[0])) {
             let group_id = res[1].match(/\d+/g)
             let qq = res[3].match(/\d+/g)
+
             let member = (await Bot.getSystemMsg()).find(item => item.sub_type == "add" && item.group_id == group_id && item.user_id == qq)
             if (lodash.isEmpty(member)) return e.reply("没有找到这个人的加群申请哦")
+
             let result = member.approve(yes)
             if (result) {
                 e.reply(`已${yes ? '同意' : '拒绝'}${member.nickname}(${qq})的加群申请`)
@@ -370,12 +382,12 @@ export class anotice extends plugin {
 
             if (!groupid) return e.reply("群号呢，群号呢d(ŐдŐ๑)", true)
 
-            let Invite = SystemMsg.filter(item => item.group_id == groupid)
+            let Invite = SystemMsg.find(item => item.group_id == groupid)
 
             if (lodash.isEmpty(Invite)) return e.reply("欸，你似不似傻哪有这个群邀请(O∆O)")
 
-            if (await Invite[0].approve(yes)) {
-                e.reply(`已${yes ? '同意' : '拒绝'}${Invite[0].group_id}这个群邀请辣٩(๑^o^๑)۶`)
+            if (await Invite.approve(yes)) {
+                e.reply(`已${yes ? '同意' : '拒绝'}${Invite.group_id}这个群邀请辣٩(๑^o^๑)۶`)
             } else {
                 e.reply(`呜呜呜，处理失败辣(இωஇ)`)
             }

@@ -49,10 +49,10 @@ export class invitation extends plugin {
                         msg = [
                             segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/0`),
                             '[通知 - 加群申请]\n',
-                            `申请群号：${e.group_id}\n`,
-                            `申请群名：${e.group_name}\n`,
-                            `申请人QQ：${e.user_id}\n`,
-                            `申请人昵称：${e.nickname}`,
+                            `群号：${e.group_id}\n`,
+                            `群名：${e.group_name}\n`,
+                            `QQ：${e.user_id}\n`,
+                            `昵称：${e.nickname}`,
                             e.tips ? `\nTip：${e.tips}` : "",
                             `\n${e.comment}`
                         ]

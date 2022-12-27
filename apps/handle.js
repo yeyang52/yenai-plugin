@@ -140,7 +140,7 @@ export class anotice extends plugin {
             e.reply('❎ 消息可能已过期')
             return false
         }
-        if (/申请人QQ/.test(res[1]) && /好友申请/.test(res[0])) {
+        if (/添加好友申请/.test(res[0])) {
             let qq = res[1].match(/[1-9]\d*/g)
             if (Bot.fl.get(Number(qq))) return e.reply('❎ 已经同意过该申请了哦~')
 
@@ -150,11 +150,7 @@ export class anotice extends plugin {
                 .setFriendReq('', yes)
                 .then(() => e.reply(`✅ 已${yes ? '同意' : '拒绝'}${qq}的好友申请`))
                 .catch(() => e.reply('❎ 请检查是否已同意该申请'))
-        } else if (
-            /目标群号/.test(res[1]) &&
-            /邀请人QQ/.test(res[3]) &&
-            /邀请码/.test(res[6])
-        ) {
+        } else if (/邀请机器人进群/.test(res[0])) {
             let groupid = res[1].match(/[1-9]\d*/g)
             if (Bot.fl.get(Number(groupid))) { return e.reply('❎ 已经同意过该申请了哦~') }
 
@@ -167,6 +163,17 @@ export class anotice extends plugin {
                 .setGroupInvite(groupid, seq, yes)
                 .then(() => e.reply(`✅ 已${yes ? '同意' : '拒绝'}${qq}的群邀请`))
                 .catch(() => e.reply('❎ 请检查是否已同意该邀请'))
+        } else if (/加群申请/.test(res[0])) {
+            let group_id = res[1].match(/\d+/g)
+            let qq = res[3].match(/\d+/g)
+            let member = (await Bot.getSystemMsg()).find(item => item.sub_type == "add" && item.group_id == group_id && item.user_id == qq)
+            if (lodash.isEmpty(member)) return e.reply("没有找到这个人的加群申请哦")
+            let result = member.approve(yes)
+            if (result) {
+                e.reply(`已${yes ? '同意' : '拒绝'}${member.nickname}(${qq})的加群申请`)
+            } else {
+                e.reply("失败了，可能为风险账号请手动处理")
+            }
         } else {
             return false;
         }

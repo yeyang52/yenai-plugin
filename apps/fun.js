@@ -72,7 +72,7 @@ export class example extends plugin {
         },
         {
           reg: '^#?来点神秘图(\\d+)?$',
-          fnc: 'mengtui'
+          fnc: 'mengdui'
         },
 
 
@@ -198,7 +198,7 @@ export class example extends plugin {
 
     let reg = /github.com\/[a-zA-Z0-9-]{1,39}\/[a-zA-Z0-9_-]{1,100}/
     const isMatched = e.msg.match(reg);
-    console.log(isMatched);
+
     const id = "Yenai";
     if (isMatched) {
       const res = isMatched[0].split("/");
@@ -213,7 +213,7 @@ export class example extends plugin {
     if (!e.isMaster) {
       if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
     }
-    await e.reply("椰奶产出中......")
+    e.reply("椰奶产出中......")
 
     const api = "http://ovooa.com/API/cosplay/api.php"
 
@@ -241,7 +241,7 @@ export class example extends plugin {
     if (!e.isMaster) {
       if (!Config.getGroup(e.group_id).sesepro) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
     }
-    await e.reply("椰奶产出中......")
+    e.reply("椰奶产出中......")
     let types = heisiwreg.exec(e.msg)
     let api = `http://hs.heisiwu.com/${heisitype[types[1]]}#/page/${lodash.random(1, 20)}`
     let res = await fetch(api).then(res => res.text()).catch(err => console.error(err))
@@ -277,10 +277,11 @@ export class example extends plugin {
     Cfg.getCDsendMsg(e, imglist, false)
   }
   //萌堆
-  async mengtui(e) {
+  async mengdui(e) {
     if (!e.isMaster) {
       if (!Config.getGroup(e.group_id).sesepro) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
     }
+    e.reply("椰奶产出中......")
     let appoint = e.msg.match(/\d+/g)
     let random;
     if (!appoint) {

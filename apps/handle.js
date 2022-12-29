@@ -24,7 +24,7 @@ export class anotice extends plugin {
                     fnc: 'Replys'
                 },
                 {
-                    reg: '^#?(同意|拒绝|查看)(全部)?好友申请(\\d+)$',
+                    reg: '^#?(同意|拒绝|查看)(全部)?好友申请(\\d+)?$',
                     fnc: 'agreesAll'
                 },
                 {
@@ -32,11 +32,11 @@ export class anotice extends plugin {
                     fnc: 'addFriend'
                 },
                 {
-                    reg: '^#?(同意|拒绝|查看)(全部)?(加|入)?群申请(\\d+)$',
+                    reg: '^#?(同意|拒绝|查看)(全部)?(加|入)?群申请(\\d+)?$',
                     fnc: 'GroupAdd'
                 },
                 {
-                    reg: '^#?(同意|拒绝|查看)(全部)?群邀请(\\d+)$',
+                    reg: '^#?(同意|拒绝|查看)(全部)?群邀请(\\d+)?$',
                     fnc: 'GroupInvite'
                 },
                 {

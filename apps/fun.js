@@ -170,10 +170,10 @@ export class example extends plugin {
       //好友点赞
       if (!likeByStrangers || isFriend) {
         let res = await Bot.sendLike(e.user_id, 10)
+        logger.debug("[椰奶好友点赞]", res)
         if (res) {
           n += 10;
         } else break;
-        logger.debug("[椰奶好友点赞]", res)
       } else {
         //陌生人点赞
         let res = await common.thumbUp(e.user_id, 10)

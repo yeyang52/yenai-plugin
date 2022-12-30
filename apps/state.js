@@ -1,6 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import os from 'os';
-import { Version, render, Config } from '../components/index.js'
+import { render, Config } from '../components/index.js'
 import { CPU, Cfg, common } from '../model/index.js'
 import fs from 'fs'
 import moment from 'moment';
@@ -68,8 +68,6 @@ export class example extends plugin {
       portrait: `https://q1.qlogo.cn/g?b=qq&s=0&nk=${Bot.uin}`,
       //运行时间
       runTime: Formatting(present_time - Bot.stat.start_time, true),
-      //版本
-      version: Version.ver,
       //日历
       calendar: moment().format("YYYY-MM-DD HH:mm:ss"),
       //昵称
@@ -90,10 +88,8 @@ export class example extends plugin {
       platform: common.platform[Bot.config.platform],
       //在线状态
       status: common.status[Bot.status],
-      // 取插件包
-      takeplugin: textFile() || 0,
-      //取插件
-      takejs: fs.readdirSync("./plugins/example")?.length || 0,
+      // 取插件
+      plugin: textFile(),
       //硬盘内存
       HardDisk: await CPU.getfsSize(),
       //硬盘速率
@@ -165,5 +161,8 @@ function textFile() {
     }
   }
 
-  return plugin?.length;
+  return {
+    plugins: plugin?.length || 0,
+    js: fs.readdirSync("./plugins/example")?.length || 0
+  }
 }

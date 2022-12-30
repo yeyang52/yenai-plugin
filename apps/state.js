@@ -2,7 +2,6 @@ import plugin from '../../../lib/plugins/plugin.js'
 import os from 'os';
 import { render, Config } from '../components/index.js'
 import { CPU, Cfg, common } from '../model/index.js'
-import fs from 'fs'
 import moment from 'moment';
 import si from 'systeminformation'
 import child_process from 'child_process'
@@ -89,7 +88,7 @@ export class example extends plugin {
       //在线状态
       status: common.status[Bot.status],
       // 取插件
-      plugin: textFile(),
+      plugin: CPU.numberOfPlugIns,
       //硬盘内存
       HardDisk: await CPU.getfsSize(),
       //硬盘速率
@@ -133,36 +132,4 @@ function Formatting(time, repair) {
     return hour + ":" + minute + ":" + second
   }
 
-}
-
-
-
-/**
- * @description: 取插件包
- * @return {*} 插件包数量
- */
-function textFile() {
-  let str = "./plugins"
-  let arr = fs.readdirSync(str);
-  let plugin = [];
-  arr.forEach((val) => {
-    let ph = fs.statSync(str + '/' + val);
-    if (ph.isDirectory()) {
-      plugin.push(val)
-    }
-  })
-  let del = ['example', 'genshin', 'other', 'system']
-
-  for (let i of del) {
-    try {
-      plugin.splice([plugin.indexOf(i)], 1)
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  return {
-    plugins: plugin?.length || 0,
-    js: fs.readdirSync("./plugins/example")?.length || 0
-  }
 }

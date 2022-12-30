@@ -1,6 +1,7 @@
 import os from 'os';
 import si from 'systeminformation'
 import lodash from 'lodash'
+import fs from 'fs'
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 class OSUtils {
   constructor() {
@@ -212,6 +213,29 @@ class OSUtils {
     network.rx_sec = this.getfilesize(network.rx_sec, false, false)
     network.tx_sec = this.getfilesize(network.tx_sec, false, false)
     return network
+  }
+
+  /**
+ * @description: 取插件包
+ * @return {*} 插件包数量
+ */
+  get numberOfPlugIns() {
+    let str = "./plugins"
+    let arr = fs.readdirSync(str);
+    let plugin = [];
+    arr.forEach((val) => {
+      let ph = fs.statSync(str + '/' + val);
+      if (ph.isDirectory()) {
+        plugin.push(val)
+      }
+    })
+    let del = ['example', 'genshin', 'other', 'system']
+    plugin = plugin.filter(item => !del.includes(item))
+
+    return {
+      plugins: plugin?.length || 0,
+      js: fs.readdirSync("./plugins/example")?.length || 0
+    }
   }
 }
 export default new OSUtils();

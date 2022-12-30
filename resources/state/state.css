@@ -125,12 +125,12 @@ hr {
 
 }
 
-.info .li article p:nth-child(1) {
+.info .li article summary {
     font-size: 20px;
     margin-top: 5px;
 }
 
-.info .li article p:not(:first-child) {
+.info .li article p {
     font-size: 10px;
     color: #2f4f4f;
     white-space: nowrap;

@@ -19,26 +19,26 @@
 </div>
 <div class="box">
     <ul class="info">
-        {{each visualData}}
+        {{each visualData group}}
         <li class="li">
             <div class="cpu">
                 <div class="left">
-                    <div class="left-circle" {{$value.leftCircle}}>
+                    <div class="left-circle" {{@group.leftCircle}}>
                     </div>
                 </div>
                 <div class="right">
-                    <div class="right-circle" {{$value.rightCircle}}>
+                    <div class="right-circle" {{@group.rightCircle}}>
                     </div>
                 </div>
                 <div class="inner">
-                    {{$value.inner}}
+                    {{group.inner}}
                 </div>
             </div>
             <article>
-                <p>{{$value.p1}}</p>
-                <p>{{$value.p2}}</p>
-                <p>{{$value.p3}}</p>
-                <p>{{$value.p4}}</p>
+                <summary>{{group.title}}</summary>
+                {{each group.info info}}
+                <p>{{info}}</p>
+                {{/each}}
             </article>
         </li>
         {{/each}}

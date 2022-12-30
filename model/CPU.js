@@ -61,12 +61,12 @@ class OSUtils {
     } else if (res >= 0.8) {
       color = '#ffa500'
     }
-    let leftCircle = `style=transform:rotate(-180deg);background:${color};`;
-    let rightCircle = `style=transform:rotate(360deg);background:${color};`
+    let leftCircle = `style="transform:rotate(-180deg);background:${color};"`;
+    let rightCircle = `style="transform:rotate(360deg);background:${color};"`;
     if (num > 180) {
-      leftCircle = `style=transform:rotate(${num}deg);background:${color};`
+      leftCircle = `style="transform:rotate(${num}deg);background:${color};"`;
     } else {
-      rightCircle = `style=transform:rotate(-${180 - num}deg);background:${color};`;
+      rightCircle = `style="transform:rotate(-${180 - num}deg);background:${color};"`;
     }
     return { leftCircle, rightCircle }
   }
@@ -85,10 +85,12 @@ class OSUtils {
     return {
       ...this.Circle(occupy),
       inner: parseInt(occupy * 100) + "%",
-      p1: 'Node',
-      p2: `总 ${rss}`,
-      p3: `堆 ${heapTotal}`,
-      p4: `栈 ${heapUsed}`
+      title: 'Node',
+      info: [
+        `总 ${rss}`,
+        `堆 ${heapTotal}`,
+        `栈 ${heapUsed}`
+      ]
     }
   }
 
@@ -106,10 +108,12 @@ class OSUtils {
     return {
       ...this.Circle(MemUsage),
       inner: parseInt(MemUsage * 100) + "%",
-      p1: 'RAM',
-      p2: `总共 ${totalmem}`,
-      p3: `已用 ${Usingmemory}`,
-      p4: `空闲 ${freemem}`
+      title: 'RAM',
+      info: [
+        `总共 ${totalmem}`,
+        `已用 ${Usingmemory}`,
+        `空闲 ${freemem}`,
+      ]
     }
   }
 
@@ -128,10 +132,13 @@ class OSUtils {
     return {
       ...this.Circle(cpu_info / 100),
       inner: parseInt(cpu_info) + "%",
-      p1: 'CPU',
-      p2: `${cpumodel} ${hx.length}核 ${osinfo.arch}`,
-      p3: `平均${maxspeed.avg}GHz`,
-      p4: `最大${maxspeed.max}GHz`
+      title: 'CPU',
+      info: [
+        `${cpumodel} ${hx.length}核 ${osinfo.arch}`,
+        `平均${maxspeed.avg}GHz`,
+        `最大${maxspeed.max}GHz`
+      ]
+
     }
   }
 
@@ -146,10 +153,12 @@ class OSUtils {
       return {
         ...this.Circle(utilizationGpu / 100),
         inner: parseInt(utilizationGpu) + "%",
-        p1: 'GPU',
-        p2: `${vendor} ${temperatureGpu} ${powerDraw}`,
-        p3: `总共 ${(memoryTotal / 1024).toFixed(2)}G`,
-        p4: `已用 ${(memoryUsed / 1024).toFixed(2)}G`
+        title: 'GPU',
+        info: [
+          `${vendor} ${temperatureGpu} ${powerDraw}`,
+          `总共 ${(memoryTotal / 1024).toFixed(2)}G`,
+          `已用 ${(memoryUsed / 1024).toFixed(2)}G`
+        ]
       }
     } catch (e) {
       console.log(e);

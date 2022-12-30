@@ -168,7 +168,7 @@ export class example extends plugin {
     while (true) {
       // let res = await Bot.sendLike(e.user_id, 10)
       let res = await common.thumbUp(e.user_id, 10)
-      logger.debug(res)
+      logger.debug("[椰奶点赞]", res)
       if (res.code != 0) {
         if (res.code == 1) {
           failsmsg = "点赞失败，请检查是否开启陌生人点赞或添加好友"

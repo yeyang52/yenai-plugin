@@ -97,6 +97,8 @@ export default new class common {
         let result = core.jce.decodeWrapper(payload)[0];
         return { code: result[3], msg: result[4] };
     }
+    
+    //时间单位
     get Time_unit() {
         return {
             "毫秒": 0.001,

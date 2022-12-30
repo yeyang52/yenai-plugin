@@ -383,7 +383,7 @@ export class example extends plugin {
       `标题：${title}\n`,
       `画师：${author}\n`,
       `Tag：${tags.join("，")}\n`,
-      segment.image(urls.original)
+      segment.image(urls.original.replace('i.der.ink', await redis.get(`yenai:proxy`)))
     ]
     if (/pro/.test(e.msg)) {
       Cfg.getCDsendMsg(e, [msg], false)

@@ -229,7 +229,7 @@ class OSUtils {
         plugin.push(val)
       }
     })
-    let del = ['example', 'genshin', 'other', 'system']
+    let del = ['example', 'genshin', 'other', 'system', 'bin']
     plugin = plugin.filter(item => !del.includes(item))
 
     return {

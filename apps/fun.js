@@ -174,6 +174,7 @@ export class example extends plugin {
         } else {
           failsmsg = res.msg
         }
+        logger.debug(res)
         break;
       } else {
         n += 10;

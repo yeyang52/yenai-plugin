@@ -145,7 +145,8 @@ export class example extends plugin {
   async zan(e) {
     /**判断是否为好友 */
     let isFriend = await Bot.fl.get(e.user_id)
-    if (!isFriend && !Config.Notice.Strangers_love) return e.reply("不加好友不点🙄", true)
+    let likeByStrangers = Config.Notice.Strangers_love
+    if (!isFriend && !likeByStrangers) return e.reply("不加好友不点🙄", true)
     /** 点赞成功回复的图片*/
     let imgs = [
       "https://xiaobai.klizi.cn/API/ce/zan.php?qq=",
@@ -164,20 +165,29 @@ export class example extends plugin {
 
     /** 执行点赞*/
     let n = 0;
-    let failsmsg = ''
+    let failsmsg = '今天已经点过了，还搁这讨赞呢！！！'
     while (true) {
-      // let res = await Bot.sendLike(e.user_id, 10)
-      let res = await common.thumbUp(e.user_id, 10)
-      logger.debug("[椰奶点赞]", res)
-      if (res.code != 0) {
-        if (res.code == 1) {
-          failsmsg = "点赞失败，请检查是否开启陌生人点赞或添加好友"
-        } else {
-          failsmsg = res.msg
-        }
-        break;
+      //好友点赞
+      if (!likeByStrangers || isFriend) {
+        let res = await Bot.sendLike(e.user_id, 10)
+        if (res) {
+          n += 10;
+        } else break;
+        logger.debug("[椰奶好友点赞]", res)
       } else {
-        n += 10;
+        //陌生人点赞
+        let res = await common.thumbUp(e.user_id, 10)
+        logger.debug("[椰奶陌生人点赞]", res)
+        if (res.code != 0) {
+          if (res.code == 1) {
+            failsmsg = "点赞失败，请检查是否开启陌生人点赞或添加好友"
+          } else {
+            failsmsg = res.msg
+          }
+          break;
+        } else {
+          n += 10;
+        }
       }
     }
 

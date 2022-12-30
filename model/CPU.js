@@ -31,85 +31,6 @@ class OSUtils {
     }
   }
 
-
-
-
-  /**---------------------------旧版代码------------------------------------------- */
-  /**
-  * 获取某时间段 CPU 利用率
-  * @param { Number } Options.ms [时间段，默认是 1000ms，即 1 秒钟]
-  * @returns { Promise }
-  */
-  async getCPUUsage(options) {
-    const that = this;
-    let cpuUsageMS = options * 1000;
-    cpuUsageMS = cpuUsageMS || that.cpuUsageMSDefault;
-    const t1 = that._getCPUInfo(); // t1 时间点 CPU 信息
-    si.networkStats()
-    await sleep(cpuUsageMS);
-
-    const t2 = that._getCPUInfo(); // t2 时间点 CPU 信息
-    const idle = t2.idle - t1.idle;
-    const total = t2.total - t1.total;
-    let usage = 1 - idle / total;
-
-    return usage.toFixed(2)
-  }
-
-  //    * 获取 CPU 瞬时时间信息
-  //    * @returns { Object } CPU 信息
-  //    * user <number> CPU 在用户模式下花费的毫秒数。
-  //    * nice <number> CPU 在良好模式下花费的毫秒数。
-  //    * sys <number> CPU 在系统模式下花费的毫秒数。
-  //    * idle <number> CPU 在空闲模式下花费的毫秒数。
-  //    * irq <number> CPU 在中断请求模式下花费的毫秒数。
-
-  _getCPUInfo() {
-    const cpus = os.cpus();
-    let user = 0, nice = 0, sys = 0, idle = 0, irq = 0, total = 0;
-
-    for (let cpu in cpus) {
-      const times = cpus[cpu].times;
-      user += times.user;
-      nice += times.nice;
-      sys += times.sys;
-      idle += times.idle;
-      irq += times.irq;
-    }
-
-    total += user + nice + sys + idle + irq;
-
-    return {
-      user,
-      sys,
-      idle,
-      total,
-    }
-  }
-
-  //获取最大Mhz
-  getmaxspeed() {
-
-    let res = os.cpus()
-    try {
-      let max = res[0].speed
-      for (let i of res) {
-        if (i.speed > max) {
-          i.speed > max
-        }
-      }
-      return `最大${max}MHz`
-    } catch {
-      return `无法获取MHz`
-    }
-
-  }
-  /**---------------------------------------------------------------------------------------- */
-
-
-
-
-
   /**字节转换 */
   getfilesize(size, isbtye = true, issuffix = true) {//把字节转换成正常文件大小
     if (!size) return "";
@@ -125,16 +46,6 @@ class OSUtils {
     if (size < Math.pow(num, 4))
       return (size / Math.pow(num, 3)).toFixed(2) + "G"; //G
     return (size / Math.pow(num, 4)).toFixed(2) + "T"; //T
-  }
-
-  /**获取nodejs内存情况 */
-  getmemory() {
-    let memory = process.memoryUsage()
-    let rss = this.getfilesize(memory.rss);
-    let heapTotal = this.getfilesize(memory.heapTotal);
-    let heapUsed = this.getfilesize(memory.heapUsed);
-    let occupy = (memory.rss / (os.totalmem() - os.freemem())).toFixed(2)
-    return { rss, heapTotal, heapUsed, occupy }
   }
 
   /**
@@ -157,42 +68,92 @@ class OSUtils {
     } else {
       rightCircle = `style=transform:rotate(-${180 - num}deg);background:${color};`;
     }
-    return [leftCircle, rightCircle]
+    return { leftCircle, rightCircle }
   }
 
-  /**获取GPU */
+  /**获取nodejs内存情况 */
+  getNodeInfo() {
+    let memory = process.memoryUsage()
+    //总共
+    let rss = this.getfilesize(memory.rss);
+    //堆
+    let heapTotal = this.getfilesize(memory.heapTotal);
+    //栈
+    let heapUsed = this.getfilesize(memory.heapUsed);
+    //占用率
+    let occupy = (memory.rss / (os.totalmem() - os.freemem())).toFixed(2)
+    return {
+      ...this.Circle(occupy),
+      inner: parseInt(occupy * 100) + "%",
+      p1: 'Node',
+      p2: `总 ${rss}`,
+      p3: `堆 ${heapTotal}`,
+      p4: `栈 ${heapUsed}`
+    }
+  }
+
+  /**获取当前内存占用 */
+  getMemUsage() {
+    //内存使用率
+    let MemUsage = (1 - os.freemem() / os.totalmem()).toFixed(2)
+    //空闲内存
+    let freemem = this.getfilesize(os.freemem())
+    //总共内存
+    let totalmem = this.getfilesize(os.totalmem())
+    //使用内存
+    let Usingmemory = this.getfilesize((os.totalmem() - os.freemem()))
+
+    return {
+      ...this.Circle(MemUsage),
+      inner: parseInt(MemUsage * 100) + "%",
+      p1: 'RAM',
+      p2: `总共 ${totalmem}`,
+      p3: `已用 ${Usingmemory}`,
+      p4: `空闲 ${freemem}`
+    }
+  }
+
+  /**获取CPU占用 */
+  async getCpuInfo(osinfo) {
+    //cpu使用率
+    let cpu_info = (await si.currentLoad())?.currentLoad
+    if (cpu_info == null || cpu_info == undefined) return false
+    //核心
+    let hx = os.cpus()
+    //cpu制造者
+    let cpumodel = hx[0]?.model.slice(0, hx[0]?.model.indexOf(" ")) || ""
+    //最大MHZ
+    let maxspeed = await si.cpuCurrentSpeed();
+
+    return {
+      ...this.Circle(cpu_info / 100),
+      inner: parseInt(cpu_info) + "%",
+      p1: 'CPU',
+      p2: `${cpumodel} ${hx.length}核 ${osinfo.arch}`,
+      p3: `平均${maxspeed.avg}GHz`,
+      p4: `最大${maxspeed.max}GHz`
+    }
+  }
+
+  /**获取GPU占用 */
   async getGPU() {
-    if (!this.isGPU) return ''
+    if (!this.isGPU) return false
     try {
       let graphics = (await si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)
       let { vendor, temperatureGpu, utilizationGpu, memoryTotal, memoryUsed, powerDraw } = graphics
-      let GPUstyle = this.Circle(utilizationGpu / 100)
       temperatureGpu = temperatureGpu ? temperatureGpu + '℃' : ''
       powerDraw = powerDraw ? powerDraw + "W" : ""
-      return `<li class="li">
-            <div class="cpu">
-                <div class="left">
-                    <div class="left-circle" ${GPUstyle[0]}>
-                    </div>
-                </div>
-                <div class="right">
-                    <div class="right-circle" ${GPUstyle[1]}>
-                    </div>
-                </div>
-                <div class="inner">
-                    ${utilizationGpu}%
-                </div>
-            </div>
-            <article>
-                <p>GPU</p>
-                <p>${vendor} ${temperatureGpu} ${powerDraw}</p>
-                <p>总共 ${(memoryTotal / 1024).toFixed(2)}G</p>
-                <p>已用 ${(memoryUsed / 1024).toFixed(2)}G</p>
-            </article>
-        </li>`
+      return {
+        ...this.Circle(utilizationGpu / 100),
+        inner: parseInt(utilizationGpu) + "%",
+        p1: 'GPU',
+        p2: `${vendor} ${temperatureGpu} ${powerDraw}`,
+        p3: `总共 ${(memoryTotal / 1024).toFixed(2)}G`,
+        p4: `已用 ${(memoryUsed / 1024).toFixed(2)}G`
+      }
     } catch (e) {
       console.log(e);
-      return ''
+      return false;
     }
   }
 
@@ -200,59 +161,48 @@ class OSUtils {
    * @description: 获取硬盘
    * @return {*}
    */
-  async getfsSize(osinfo) {
-    let HardDisk = ''
-    let fsSize = lodash.uniqWith(await si.fsSize(), (a, b) => a.used === b.used && a.size === b.size && a.use === b.use && a.available === b.available)
-    for (let i of fsSize) {
-      if (!i.size || !i.used || !i.available || !i.use) continue;
-      if (/docker/.test(i.mount)) continue;
-      if (osinfo.arch.includes("arm") && i.mount != '/' && !/darwin/i.test(osinfo.platform)) continue;
-      let color = '#90ee90'
-      if (i.use >= 90) {
-        color = '#d73403'
-      } else if (i.use >= 70) {
-        color = '#ffa500'
+  async getfsSize() {
+    //去重
+    let HardDisk = lodash.uniqWith(await si.fsSize(),
+      (a, b) => a.used === b.used && a.size === b.size && a.use === b.use && a.available === b.available)
+    //过滤
+    HardDisk = HardDisk.filter(item => item.size && item.used && item.available && item.use)
+    //为空返回false
+    if (lodash.isEmpty(HardDisk)) return false;
+    //数值转换
+    return HardDisk.map(item => {
+      item.used = this.getfilesize(item.used)
+      item.size = this.getfilesize(item.size)
+      item.use = Math.ceil(item.use)
+      item.color = '#90ee90'
+      if (item.use >= 90) {
+        item.color = '#d73403'
+      } else if (item.use >= 70) {
+        item.color = '#ffa500'
       }
-      HardDisk +=
-        `<li class='HardDisk_li'>
-        <div class='word mount'>${i.mount}</div>
-        <div class='progress'>
-          <div class='word'>${this.getfilesize(i.used)} / ${this.getfilesize(i.size)}</div>
-          <div class='current' style=width:${Math.ceil(i.use)}%;background:${color}></div>
-        </div>
-        <div class='percentage'>${Math.ceil(i.use)}%</div>
-      </li>`
+      return item
+    })
+  }
+
+  //获取读取速率
+  get DiskSpeed() {
+    if (!this.fsStats || this.fsStats.rx_sec == null || this.fsStats.wx_sec == null) return false;
+    return {
+      rx_sec: this.getfilesize(this.fsStats.rx_sec, false, false),
+      wx_sec: this.getfilesize(this.fsStats.wx_sec, false, false)
     }
-    if (HardDisk) {
-      //读取速率
-      if (this.fsStats && this.fsStats.rx_sec && this.fsStats.wx_sec) {
-        HardDisk += `<div class="speed">
-        <p>fsSize</p>
-        <p>读 ${this.getfilesize(this.fsStats.rx_sec, false, false)}/s | 写 ${this.getfilesize(this.fsStats.wx_sec, false, false)}/s</p>
-        </div>`
-      }
-      HardDisk = `<div class="box memory"><ul>${HardDisk}</ul></div>`
-    }
-    return HardDisk
   }
 
   /**
    * @description: 获取网速
    * @return {*}
    */
-  async getnetwork() {
-    try { var network = lodash.cloneDeep(this.now_network)[0] } catch { return '' }
+  get getnetwork() {
+    try { var network = lodash.cloneDeep(this.now_network)[0] } catch { return false }
+    if (network.rx_sec == null || network.tx_sec == null) return false
     network.rx_sec = this.getfilesize(network.rx_sec, false, false)
     network.tx_sec = this.getfilesize(network.tx_sec, false, false)
-    let networkhtml = '';
-    if (network.rx_sec && network.tx_sec) {
-      networkhtml =
-        `<div class="speed">
-        <p>${network.iface}</p>
-        <p>↑${network.tx_sec}/s ↓${network.rx_sec}/s</p>
-      </div>`
-    }
-    return networkhtml
+    return network
   }
 }
 export default new OSUtils();

@@ -1,11 +1,12 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import os from 'os';
 import { Version, render, Config } from '../components/index.js'
-import { CPU, Cfg } from '../model/index.js'
+import { CPU, Cfg, common } from '../model/index.js'
 import fs from 'fs'
 import moment from 'moment';
 import si from 'systeminformation'
 import child_process from 'child_process'
+import lodash from 'lodash'
 let interval = false;
 export class example extends plugin {
   constructor() {
@@ -39,64 +40,20 @@ export class example extends plugin {
     if (interval) { return } else interval = true;
     //现在的时间戳(秒)
     let present_time = new Date().getTime() / 1000
-    //头像
-    let portrait = `https://q1.qlogo.cn/g?b=qq&s=0&nk=${Bot.uin}`
-    //cpu使用率
-    let cpu_info = (await si.currentLoad())?.currentLoad
-    //内存使用率
-    let MemUsage = (1 - os.freemem() / os.totalmem()).toFixed(2)
-    //空闲内存
-    let freemem = CPU.getfilesize(os.freemem())
-    //总共内存
-    let totalmem = CPU.getfilesize(os.totalmem())
-    //使用内存
-    let Usingmemory = CPU.getfilesize((os.totalmem() - os.freemem()))
-    //nodejs占用
-    let nodeoccupy = CPU.getmemory();
-    let node = CPU.Circle(nodeoccupy.occupy)
-    let [node_leftCircle, node_rightCircle] = node
-    //cpu
-    let cpu = CPU.Circle(cpu_info / 100)
-    let [cpu_leftCircle, cpu_rightCircle] = cpu
-    //ram
-    let ram = CPU.Circle(MemUsage)
-    let [ram_leftCircle, ram_rightCircle] = ram
-    //最大mhz
-    // let maxspeed = CPU.getmaxspeed()
-    let maxspeed = await si.cpuCurrentSpeed()
-    //核心
-    let hx = os.cpus()
-    //cpu制造者
-    let cpumodel = hx[0]?.model.slice(0, hx[0]?.model.indexOf(" ")) || ""
-    //群数
-    let group_quantity = Array.from(Bot.gl.values()).length
-    //好友数
-    let friend_quantity = Array.from(Bot.fl.values()).length
-    //登录设备
-    let platform = {
-      "1": "安卓手机",
-      "2": "aPad",
-      "3": "安卓手表",
-      "4": "MacOS",
-      "5": "iPad"
-    }
-    //在线状态
-    let status = {
-      "31": "离开",
-      "50": "忙碌",
-      "70": "请勿打扰",
-      "41": "隐身",
-      "11": "我在线上",
-      "60": "Q我吧",
-    };
     //系统
-    let osinfo = await si.osInfo()
-    //硬盘内存
-    let HardDisk = await CPU.getfsSize(osinfo);
-    //网络
-    let networkhtml = await CPU.getnetwork();
-    //GPU
-    let GPU = await CPU.getGPU()
+    let osinfo = await si.osInfo();
+    //可视化数据
+    let visualData = [
+      //CPU板块
+      await CPU.getCpuInfo(osinfo),
+      //内存板块
+      await CPU.getMemUsage(),
+      //GPU板块
+      await CPU.getGPU(),
+      //Node板块
+      await CPU.getNodeInfo()
+    ]
+    visualData = lodash.compact(visualData)
     //FastFetch
     let FastFetch = ""
     if (/pro/.test(e.msg)) {
@@ -107,7 +64,7 @@ export class example extends plugin {
     //渲染数据
     let data = {
       //头像
-      portrait,
+      portrait: `https://q1.qlogo.cn/g?b=qq&s=0&nk=${Bot.uin}`,
       //运行时间
       runTime: Formatting(present_time - Bot.stat.start_time, true),
       //版本
@@ -122,55 +79,32 @@ export class example extends plugin {
       recv: Bot.statistics.recv_msg_cnt,
       //发
       sent: await redis.get(`Yz:count:sendMsg:total`) || 0,
-      //cpu占比
-      cpu_leftCircle,
-      cpu_rightCircle,
-      cpu_info: parseInt(cpu_info) + "%",
-      //核心
-      hx: hx.length + "核",
-      cpumodel,
-      // cpudata: await si.cpu(),
-      //最大MHZ
-      maxspeed,
-      //系统
-      osinfo,
-      //内存使用率
-      ram_leftCircle,
-      ram_rightCircle,
-      MemUsage: parseInt(MemUsage * 100) + "%",
-      //总共内存
-      totalmem,
-      //空闲内存
-      freemem,
-      //已用内存
-      Usingmemory,
       //nodejs版本
       nodeversion: process.version,
-      //nodejs占用
-      node_leftCircle,
-      node_rightCircle,
-      nodeoccupy,
-      node_info: parseInt(nodeoccupy.occupy * 100) + "%",
       //群数
-      group_quantity,
+      group_quantity: Array.from(Bot.gl.values()).length,
       //好友数
-      friend_quantity,
+      friend_quantity: Array.from(Bot.fl.values()).length,
       //登陆设备
-      platform: platform[Bot.config.platform],
+      platform: common.platform[Bot.config.platform],
       //在线状态
-      status: status[Bot.status],
+      status: common.status[Bot.status],
       // 取插件包
       takeplugin: textFile() || 0,
       //取插件
       takejs: fs.readdirSync("./plugins/example")?.length || 0,
-      //内存
-      HardDisk,
+      //硬盘内存
+      HardDisk: await CPU.getfsSize(),
+      //硬盘速率
+      fsStats: CPU.DiskSpeed,
       //网络
-      networkhtml,
+      network: CPU.getnetwork,
       //FastFetch
       FastFetch,
-      //GPU
-      GPU,
+      //可视化数据
+      visualData,
+      //系统信息
+      osinfo,
     }
     //渲染图片
     await render('state/state', {

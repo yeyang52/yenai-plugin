@@ -19,81 +19,68 @@
 </div>
 <div class="box">
     <ul class="info">
+        {{each visualData}}
         <li class="li">
             <div class="cpu">
                 <div class="left">
-                    <div class="left-circle" {{cpu_leftCircle}}>
+                    <div class="left-circle" {{$value.leftCircle}}>
                     </div>
                 </div>
                 <div class="right">
-                    <div class="right-circle" {{cpu_rightCircle}}>
+                    <div class="right-circle" {{$value.rightCircle}}>
                     </div>
                 </div>
                 <div class="inner">
-                    {{cpu_info}}
+                    {{$value.inner}}
                 </div>
             </div>
             <article>
-                <p>CPU</p>
-                <p>{{cpumodel}} {{hx}} {{osinfo.arch}}</p>
-                <p>平均{{maxspeed.avg}}GHz</p>
-                <p>最大{{maxspeed.max}}GHz</p>
+                <p>{{$value.p1}}</p>
+                <p>{{$value.p2}}</p>
+                <p>{{$value.p3}}</p>
+                <p>{{$value.p4}}</p>
             </article>
         </li>
-        <li class="li">
-            <div class="cpu">
-                <div class="left">
-                    <div class="left-circle" {{ram_leftCircle}}>
-                    </div>
-                </div>
-                <div class="right">
-                    <div class="right-circle" {{ram_rightCircle}}>
-                    </div>
-                </div>
-                <div class="inner">
-                    {{MemUsage}}
-                </div>
-            </div>
-            <article>
-                <p>RAM</p>
-                <p>总共 {{totalmem}}</p>
-                <p>已用 {{Usingmemory}}</p>
-                <p>空闲 {{freemem}}</p>
-            </article>
-        </li>
-        {{@GPU}}
-        <li class="li">
-            <div class="cpu">
-                <div class="left">
-                    <div class="left-circle" {{node_leftCircle}}>
-                    </div>
-                </div>
-                <div class="right">
-                    <div class="right-circle" {{node_rightCircle}}>
-                    </div>
-                </div>
-                <div class="inner">
-                    {{node_info}}
-                </div>
-            </div>
-            <article>
-                <p>Node</p>
-                <p>总 {{nodeoccupy.rss}}</p>
-                <p>堆 {{nodeoccupy.heapTotal}}</p>
-                <p>栈 {{nodeoccupy.heapUsed}}</p>
-            </article>
-        </li>
-
+        {{/each}}
     </ul>
 </div>
-{{@HardDisk}}
+
+{{if HardDisk}}
+<div class="box memory">
+    <ul>
+        {{each HardDisk}}
+        <li class="HardDisk_li">
+            <div class="word mount">{{$value.mount}}</div>
+            <div class="progress">
+                <div class="word">{{$value.used}} / {{$value.size}}</div>
+                <div class="current" style="width:{{$value.use}}%;background:{{$value.color}}"></div>
+            </div>
+            <div class="percentage">{{$value.use}}%</div>
+        </li>
+        {{/each}}
+    </ul>
+    {{if fsStats}}
+    <div class="speed">
+        <p>fsStats</p>
+        <p>读 {{fsStats.rx_sec}}/s | 写 {{fsStats.wx_sec}}/s</p>
+    </div>
+    {{/if}}
+</div>
+{{/if}}
+
 {{@FastFetch}}
+
 <div class="box">
     <div class="speed">
         <p>系统</p>
         <p>{{osinfo.distro}}</p>
     </div>
-    {{@networkhtml}}
+    {{if network}}
+    <div class="speed">
+        <p>{{network.iface}}</p>
+        <p>↑{{network.tx_sec}}/s | ↓{{network.rx_sec}}/s</p>
+    </div>
+    {{/if}}
     <div class="speed">
         <p>插件</p>
         <p>{{takeplugin}} plugin | {{takejs}} js</p>

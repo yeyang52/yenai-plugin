@@ -1,4 +1,5 @@
 import { core } from "oicq";
+import child_process from 'child_process'
 
 export default new class common {
     /**
@@ -97,7 +98,15 @@ export default new class common {
         let result = core.jce.decodeWrapper(payload)[0];
         return { code: result[3], msg: result[4] };
     }
-    
+
+    async execSync(cmd) {
+        return new Promise((resolve, reject) => {
+            child_process.exec(cmd, (error, stdout, stderr) => {
+                resolve({ error, stdout, stderr })
+            })
+        })
+    }
+
     //时间单位
     get Time_unit() {
         return {

@@ -4,13 +4,12 @@ import { render, Config } from '../components/index.js'
 import { CPU, Cfg, common } from '../model/index.js'
 import moment from 'moment';
 import si from 'systeminformation'
-import child_process from 'child_process'
 import lodash from 'lodash'
 let interval = false;
 export class example extends plugin {
   constructor() {
     super({
-      name: '状态',
+      name: '椰奶状态',
       event: 'message',
       priority: 50,
       rule: [
@@ -20,14 +19,6 @@ export class example extends plugin {
         }
       ]
 
-    })
-  }
-
-  async execSync(cmd) {
-    return new Promise((resolve, reject) => {
-      child_process.exec(cmd, (error, stdout, stderr) => {
-        resolve({ error, stdout, stderr })
-      })
     })
   }
 
@@ -42,24 +33,16 @@ export class example extends plugin {
     //系统
     let osinfo = await si.osInfo();
     //可视化数据
-    let visualData = [
+    let visualData = lodash.compact([
       //CPU板块
-      await CPU.getCpuInfo(osinfo),
+      await CPU.getCpuInfo(osinfo.arch),
       //内存板块
       await CPU.getMemUsage(),
       //GPU板块
       await CPU.getGPU(),
       //Node板块
       await CPU.getNodeInfo()
-    ]
-    visualData = lodash.compact(visualData)
-    //FastFetch
-    let FastFetch = ""
-    if (/pro/.test(e.msg)) {
-      let ret = await this.execSync(`bash plugins/yenai-plugin/resources/state/state.sh`)
-      if (ret.error) return e.reply(`❎ 请检查是否使用git bash启动Yunzai-bot\n错误信息：${ret.stderr}`)
-      FastFetch = ret.stdout.trim()
-    }
+    ])
     //渲染数据
     let data = {
       //头像
@@ -76,6 +59,8 @@ export class example extends plugin {
       recv: Bot.statistics.recv_msg_cnt,
       //发
       sent: await redis.get(`Yz:count:sendMsg:total`) || 0,
+      //图片
+      screenshot: await redis.get(`Yz:count:screenshot:total`) || 0,
       //nodejs版本
       nodeversion: process.version,
       //群数
@@ -86,16 +71,16 @@ export class example extends plugin {
       platform: common.platform[Bot.config.platform],
       //在线状态
       status: common.status[Bot.status],
-      // 取插件
-      plugin: CPU.numberOfPlugIns,
       //硬盘内存
       HardDisk: await CPU.getfsSize(),
+      //FastFetch
+      FastFetch: await CPU.getFastFetch(e),
+      // 取插件
+      plugin: CPU.numberOfPlugIns,
       //硬盘速率
       fsStats: CPU.DiskSpeed,
       //网络
       network: CPU.getnetwork,
-      //FastFetch
-      FastFetch,
       //可视化数据
       visualData,
       //系统信息

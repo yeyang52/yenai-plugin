@@ -2,7 +2,7 @@ import os from 'os';
 import si from 'systeminformation'
 import lodash from 'lodash'
 import fs from 'fs'
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+import { common } from './index.js'
 class OSUtils {
   constructor() {
     this.cpuUsageMSDefault = 1000; // CPU 利用率默认时间段
@@ -119,7 +119,7 @@ class OSUtils {
   }
 
   /**获取CPU占用 */
-  async getCpuInfo(osinfo) {
+  async getCpuInfo(arch) {
     //cpu使用率
     let cpu_info = (await si.currentLoad())?.currentLoad
     if (cpu_info == null || cpu_info == undefined) return false
@@ -135,7 +135,7 @@ class OSUtils {
       inner: parseInt(cpu_info) + "%",
       title: 'CPU',
       info: [
-        `${cpumodel} ${hx.length}核 ${osinfo.arch}`,
+        `${cpumodel} ${hx.length}核 ${arch}`,
         `平均${maxspeed.avg}GHz`,
         `最大${maxspeed.max}GHz`
       ]
@@ -192,6 +192,17 @@ class OSUtils {
       }
       return item
     })
+  }
+
+  /**获取FastFetch */
+  async getFastFetch(e) {
+    if (!/pro/.test(e.msg)) return ""
+    let ret = await common.execSync(`bash plugins/yenai-plugin/resources/state/state.sh`)
+    if (ret.error) {
+      e.reply(`❎ 请检查是否使用git bash启动Yunzai-bot\n错误信息：${ret.stderr}`)
+      return ""
+    }
+    return ret.stdout.trim()
   }
 
   //获取读取速率

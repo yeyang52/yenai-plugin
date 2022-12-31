@@ -150,10 +150,7 @@ export class example extends plugin {
     /** 点赞成功回复的图片*/
     let imgs = [
       "https://xiaobai.klizi.cn/API/ce/zan.php?qq=",
-      "https://xiaobapi.top/api/xb/api/bixin.php?qq=",
       "https://xiaobai.klizi.cn/API/ce/xin.php?qq=",
-      "https://xiaobapi.top/api/xb/api/bixinxin.php?qq=",
-      "https://xiaobapi.top/api/xb/api/zan_2.php?qq="
     ]
     /** 一个随机数 */
     let random = Math.floor(Math.random() * (imgs.length - 0))
@@ -161,7 +158,6 @@ export class example extends plugin {
 
     /** 点赞失败的图片 */
     let failds_img = segment.image(`https://xiaobai.klizi.cn/API/ce/paa.php?qq=${e.user_id}`)
-    // let failds_img = segment.image(`https://xiaobapi.top/api/xb/api/pa.php?qq=${e.user_id}`)
 
     /** 执行点赞*/
     let n = 0;
@@ -428,7 +424,8 @@ let apis = {
     "http://api.starrobotwl.com/api/heisi.php"
   ],
   "jk": [
-    "http://api.starrobotwl.com/api/jk.php"
+    "http://api.starrobotwl.com/api/jk.php",
+    "http://www.ggapi.cn/api/jkzf"
   ],
   "bm": [
     "http://iw233.cn/api.php?sort=yin"
@@ -439,7 +436,6 @@ let apis = {
   "mt": [
     "https://api.sdgou.cc/api/meitui/",
     "https://ovooa.com/API/meizi/api.php?type=image",
-    "http://www.25252.xyz/kt.php",
   ],
   "ks": [
     "http://api.wqwlkj.cn/wqwlapi/ks_xjj.php?type=image"
@@ -456,12 +452,10 @@ let apis = {
     "http://api.starrobotwl.com/api/yscos.php"
   ],
   "hso": [
-    "http://www.ggapi.cn/Api/girls",
-    "http://xn--rssy53b.love/api/ecytp/index.php"
+    "http://www.ggapi.cn/api/girls",
   ],
   "xjj": [
     "https://api.btstu.cn/sjbz/api.php",
-    "https://api.wuque.cc/random/images",
     "https://ovooa.com/API/meinv/api.php?type=image",
     "http://api.sakura.gold/ksxjjtp"
   ],

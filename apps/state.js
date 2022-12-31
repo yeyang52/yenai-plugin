@@ -52,7 +52,6 @@ export class example extends plugin {
       //Node板块
       await CPU.getNodeInfo()
     ]
-    logger.debug(visualData)
     visualData = lodash.compact(visualData)
     //FastFetch
     let FastFetch = ""

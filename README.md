@@ -129,7 +129,7 @@ Tip：具体可使用 **#椰奶设置** 查看
 
 - [x] 查看相关作品
 
-Tip：详情请参考[此教程](https://docs.qq.com/doc/DYVRJR0FpbFphVlZr)
+Tip：详情请参考[此教程](https://docs.qq.com/doc/p/108e5d788607d988ac62e1512552c8bd2d870321)
 
 </details>
 <details>

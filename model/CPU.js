@@ -207,7 +207,7 @@ class OSUtils {
 
   //获取读取速率
   get DiskSpeed() {
-    if (!this.fsStats || this.fsStats.rx_sec == null || this.fsStats.wx_sec == null) return false;
+    if (!this.fsStats || !this.fsStats.rx_sec || !this.fsStats.wx_sec) return false;
     return {
       rx_sec: this.getfilesize(this.fsStats.rx_sec, false, false),
       wx_sec: this.getfilesize(this.fsStats.wx_sec, false, false)

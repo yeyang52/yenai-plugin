@@ -60,7 +60,7 @@ class newConfig {
     }
 
     /**
-     * @description: 秒转换
+     * @description: 秒转换返回对象
      * @param {Number} time  秒数
      * @param {boolean} repair  是否需要补零
      * @return {object} 包含天，时，分，秒
@@ -213,7 +213,7 @@ class newConfig {
         return JSON.parse(ck)
     }
 
-    // 秒转换
+    /**默认秒转换格式 */
     getsecondformat(value) {
         let time = this.getsecond(value)
 

@@ -166,7 +166,26 @@ export const helpList = [{
       "icon": 5
     },
   ]
-}, {
+},
+{
+  "group": "定时禁言",
+  "list": [
+    {
+      "title": "#定时禁言00:00，解禁08:00",
+      "desc": "设置定时禁言",
+      "icon": 12
+    }, {
+      "title": "#定时禁言任务",
+      "desc": "查看禁言任务",
+      "icon": 10
+    }, {
+      "title": "#取消定时禁言",
+      "desc": "取消查看禁言任务",
+      "icon": 3
+    },
+  ]
+},
+{
   "group": "进群验证(更多设置请在config/groupverify.yaml进行设置)",
   "list": [
     {

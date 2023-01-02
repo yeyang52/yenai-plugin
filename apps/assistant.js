@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js';
 import { segment } from "oicq";
 import fetch from 'node-fetch';
-import Cfg from '../model/Config.js';
+import { Cfg, QQInterface } from '../model/index.js';
 import lodash from 'lodash'
 import moment from 'moment'
 
@@ -68,11 +68,11 @@ export class example extends plugin {
           fnc: 'Face'
         },
         {
-          reg: '^#获?取说说列表.*$',
+          reg: '^#获?取说说列表(\\d+)?$',
           fnc: 'Qzonelist'
         },
         {
-          reg: '^#删说说.*$',
+          reg: '^#删说说(\\d+)$',
           fnc: 'Qzonedel'
         },
         {
@@ -604,101 +604,41 @@ export class example extends plugin {
     }
     return true;
   }
+
   /**QQ空间 说说列表*/
   async Qzonelist(e) {
     if (!e.isMaster) return;
 
-    let res = e.message[0].text.replace(/#|取说说列表/g, "").trim()
-    if (!res) res = 1
-    if (!parseInt(res)) return e.reply(`❎ 请检查页数是否正确`)
-
-    let list = await this.getlist()
-    list = list.msglist
-    if (!list) return e.reply(`❎ 说说列表为空`)
-    let msg = [
-      "✅ 获取成功，说说列表如下:\n"
-    ]
-    let page = 5 * (res - 1)
-    for (let i = 0 + page; i < 5 + page; i++) {
-      if (!list[i]) break
-      let arr = `${i + 1}.${lodash.truncate(list[i].content, { "length": 15 })}\n- [${list[i].secret ? "私密" : "公开"}] | ${moment(list[i].created_time * 1000).format("MM/DD HH:mm")} | ${list[i].commentlist ? list[i].commentlist.length : 0}条评论\n`
-      msg.push(arr)
+    let page = e.msg.replace(/#|取说说列表/g, "").trim()
+    if (!page) {
+      page = 0
+    } else {
+      page = page - 1
     }
-    if (res > Math.ceil(list.length / 5)) return e.reply(`❎ 页数超过最大值`)
-    msg.push(`页数：[${res}/${Math.ceil(list.length / 5)}]`)
+
+    //获取说说列表
+    let list = await QQInterface.getQzone(e, page * 5, 5)
+    if (!list) return
+    let msg = [
+      "✅ 获取成功，说说列表如下:\n",
+      ...list.msglist.map((item, index) =>
+        `${page * 5 + index + 1}.${lodash.truncate(item.content, { "length": 15 })}\n- [${item.secret ? "私密" : "公开"}] | ${moment(item.created_time * 1000).format("MM/DD HH:mm")} | ${item.commentlist?.length || 0}条评论\n`
+      ),
+      `页数：[${page + 1}/${Math.ceil(list.total / 5)}]`
+    ]
     e.reply(msg)
   }
 
   /** 删除说说 */
   async Qzonedel(e) {
     if (!e.isMaster) return;
-
-    let res = e.message[0].text.replace(/#|删说说/g, "").trim()
-
-    if (!res) return e.reply(`❎ 序号不可为空`)
-
-    res = res.match(/\d/)
-
-    if (!res) return e.reply(`❎ 请检查序号是否正确`)
-
-    let list = await this.getlist()
-
-    if (!list.msglist) return e.reply(`❎ 说说列表为空`)
-    let ck = Cfg.getck('qzone.qq.com')
-    if ((res - 1) >= list.msglist.length) return e.reply(`❎ 序号超过最大值`)
-    let something = list.msglist[res - 1]
-
-    let url = `https://xiaobai.klizi.cn/API/qqgn/ss_delete.php?data=&uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&tid=${something.tid}`
-    let result = await fetch(url).then(res => res.text()).catch(err => console.log(err))
-    if (!result) return e.reply(`❎ 接口请求失败`)
-
-    if (/删除说说成功/.test(result)) {
-      e.reply(`✅ 删除说说成功：\n ${res}.${lodash.truncate(something.content, { "length": 15 })} \n - [${something.secret ? "私密" : "公开"}] | ${moment(something.created_time * 1000).format("MM/DD HH:mm")} | ${something.commentlist ? something.commentlist.length : 0} 条评论`)
-    } else if (/删除失败/.test(result)) {
-      e.reply(`❎ 删除失败`)
-    }
+    QQInterface.delQzone(e)
   }
 
   /** 发说说 */
   async Qzonesay(e) {
     if (!e.isMaster) return;
-
-    let res = e.message[0].text.replace(/#|发说说| /g, "").trim()
-    let ck = Cfg.getck('qzone.qq.com')
-
-    let url;
-    if (e.img) {
-      url = `https://xiaobai.klizi.cn/API/qqgn/ss_sendimg.php?uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&url=${e.img[0]}&msg=${res}`
-    } else {
-      url = `http://xiaobai.klizi.cn/API/qqgn/ss_send.php?data=json&uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&msg=${res}`
-    }
-
-    let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
-
-    if (!result) return e.reply("接口失效")
-
-    if (result.code != 0) return e.reply(`❎ 说说发表失败\n错误信息:${result.message}`)
-
-    let msg = [`✅ 说说发表成功，内容：\n`, lodash.truncate(result.content, { "length": 15 })]
-    if (result.pic) {
-      msg.push(segment.image(result.pic[0].url1))
-    }
-    msg.push(`\n- [${result.secret ? "私密" : "公开"}] | ${moment(result.t1_ntime * 1000).format("MM/DD HH:mm")}`)
-    e.reply(msg)
-  }
-
-  /**取说说列表*/
-  async getlist() {
-    let ck = Cfg.getck('qzone.qq.com')
-    let url = `https://xiaobai.klizi.cn/API/qqgn/ss_list.php?data=json&uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&qq=${Bot.uin}`
-    let list = await fetch(url).then(res => res.json()).catch(err => console.log(err))
-
-    if (!list) {
-      return e.reply("❎ 取说说列表失败")
-    } else {
-      return list
-    }
-
+    QQInterface.setQzone(e)
   }
 
   /** 清空说说和留言*/
@@ -793,21 +733,7 @@ export class example extends plugin {
 
     if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return;
 
-    let ck = Cfg.getck("qqweb.qq.com")
-
-    let url = `http://xiaobai.klizi.cn/API/qqgn/qun_xj.php?data=&uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&group=${e.group_id}`
-
-    let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
-
-    if (!result) return e.reply("❎ 接口失效")
-
-    let str = "⭐"
-    str = str.repeat(result.uiGroupLevel)
-    e.reply([
-      `群名：${result.group_name}\n`,
-      `群号：${result.group_uin}\n`,
-      `群星级：${str}`
-    ])
+    QQInterface.getGroup_xj(e)
   }
 
   /**戳一戳 */

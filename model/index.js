@@ -7,5 +7,6 @@ import setu from "./setu.js";
 import uploadRecord from "./uploadRecord.js";
 import YamlReader from "./YamlReader.js";
 import Gpadmin from "./Group_admin.js";
+import QQInterface from "./QQInterface.js";
 
-export { Browser, common, Cfg, CPU, Pixiv, setu, uploadRecord, YamlReader, Gpadmin }
+export { Browser, common, Cfg, CPU, Pixiv, setu, uploadRecord, YamlReader, Gpadmin, QQInterface }

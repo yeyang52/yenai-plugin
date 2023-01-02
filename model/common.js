@@ -138,7 +138,7 @@ export default new class common {
             "YEAR": 31536000,
         }
     }
-    //登录设备
+    /**登录设备 */
     get platform() {
         return {
             "1": "安卓手机",
@@ -148,7 +148,7 @@ export default new class common {
             "5": "iPad"
         }
     }
-    //在线状态
+    /**在线状态 */
     get status() {
         return {
             "31": "离开",

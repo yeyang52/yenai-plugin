@@ -41,7 +41,8 @@ export default new class common {
             let result = ''
             result = item.replace('零', '')
             // [ '一百三十二', '四千五百', '三千二百一十三' ] ==>
-            result = result.replace(/[一二三四五六七八九]/g, substring => {
+            let reg = new RegExp(`[${Array.from(map.keys()).join('')}]`, 'g')
+            result = result.replace(reg, substring => {
                 return map.get(substring)
             })
             // [ '1百3十2', '4千5百', '3千2百1十3' ] ==> ['0132', '4500', '3213']

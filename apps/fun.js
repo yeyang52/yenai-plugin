@@ -63,14 +63,6 @@ export class example extends plugin {
           fnc: 'picture'
         },
         {
-          reg: "^#?(谁|哪个吊毛|哪个屌毛|哪个叼毛)是龙王$",
-          fnc: 'dragonKing'
-        },
-        {
-          reg: '^#?(P|p)ximg(pro)?$',
-          fnc: 'Pximg'
-        },
-        {
           reg: '^#?来点神秘图(\\d+)?$',
           fnc: 'mengdui'
         },
@@ -267,39 +259,31 @@ export class example extends plugin {
       if (!Config.getGroup(e.group_id).sesepro) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
     }
     e.reply("椰奶产出中......")
+    //获取类型
     let types = heisiwreg.exec(e.msg)
-    let api = `http://hs.heisiwu.com/${heisitype[types[1]]}#/page/${lodash.random(1, 20)}`
-    let res = await fetch(api).then(res => res.text()).catch(err => console.error(err))
-    if (!res) return e.reply("接口失效辣(๑ŐдŐ)b")
-
-    let reg = /<a target(.*?)html/g
-    let regs = /href="(.*)/
-    let list = res.match(reg);
-    list = regs.exec(lodash.sample(list))
-    let heis = await fetch(list[1]).then(res => res.text()).catch(err => console.error(err))
-    if (!heis) return e.reply("接口失效辣(๑ŐдŐ)b")
-
-    let hsreg = /<img loading(.*?)jpg/g
-    let img = heis.match(hsreg);
-    let imgreg = /src="(.*)/
-    let imglist = [];
-    let item = 1;
-    for (let i of img) {
-      let pic = segment.image(imgreg.exec(i)[1])
-      pic.headers = {
+    //请求主页面
+    let url = `http://hs.heisiwu.com/${heisitype[types[1]]}#/page/${lodash.random(1, 20)}`
+    let homePage = await fetch(url).then(res => res.text()).catch(err => console.error(err))
+    if (!homePage) return e.reply("接口失效辣(๑ŐдŐ)b")
+    //解析html
+    let childPageUrlList = homePage.match(/<a target(.*?)html/g);
+    let childPageUrl = lodash.sample(childPageUrlList).match(/href="(.*)/)
+    //请求图片页面
+    let childPage = await fetch(childPageUrl[1]).then(res => res.text()).catch(err => console.error(err))
+    if (!childPage) return e.reply("接口失效辣(๑ŐдŐ)b")
+    //获取html列表
+    let imghtml = childPage.match(/<img loading(.*?)jpg/g);
+    //提取图片并转换
+    let imglist = imghtml.map(item => {
+      item = segment.image(item.match(/src="(.*)/)[1])
+      item.headers = {
         'Referer': 'http://hs.heisiwu.com',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.46'
       }
-      imglist.push(pic)
-
-      if (item >= 20) {
-        break
-      } else {
-        item++
-      }
-    }
-
-    Cfg.getRecallsendMsg(e, imglist, false)
+      return item
+    })
+    //发送消息
+    Cfg.getRecallsendMsg(e, lodash.take(imglist, 20), false)
   }
   //萌堆
   async mengdui(e) {
@@ -363,56 +347,13 @@ export class example extends plugin {
     if (lodash.isEmpty(msg)) return this.bcy_topic(e)
     Cfg.getforwardMsg(e, msg)
   }
-  //谁是龙王
-  async dragonKing(e) {
-    let ck = Cfg.getck("qun.qq.com");
-    let url = `http://xiaobai.klizi.cn/API/qqgn/dragon.php?data=json&uin=${(Bot.uin)}&skey=${(ck.skey)}&pskey=${(ck.p_skey)}&group=${(e.group_id)}`;
-    console.log(url);
-    let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))
-    if (!res) return e.reply("接口失效辣(๑ŐдŐ)b")
-    e.reply([
-      `本群龙王：${res.name}`,
-      segment.image(res.avatar),
-      `蝉联天数：${res.desc}`,
-    ]);
-  }
-  //p站单图
-  async Pximg(e) {
-    if (!e.isMaster) {
-      if (!Config.getGroup(e.group_id).sese || !Config.getGroup(e.group_id).sesepro && /pro/.test(e.msg)) {
-        return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
-      }
-    }
-    let url = "https://ovooa.com/API/Pximg/"
-    if (/pro/.test(e.msg)) {
-      url = "https://xiaobapi.top/api/xb/api/setu.php"
-    }
-    let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))
-    if (!res) return e.reply("接口寄辣")
-    let { pid, uid, title, author, tags, urls, r18 } = res.data[0] || res.data
-    let msg = [
-      `Pid: ${pid}\n`,
-      `Uid: ${uid}\n`,
-      r18 ? `R18: ${r18}\n` : "",
-      `标题：${title}\n`,
-      `画师：${author}\n`,
-      `Tag：${tags.join("，")}\n`,
-      segment.image(urls.original.replace('i.der.ink', await redis.get(`yenai:proxy`)))
-    ]
-    if (/pro/.test(e.msg)) {
-      Cfg.getRecallsendMsg(e, [msg], false)
-    } else {
-      Cfg.recallsendMsg(e, msg)
-    }
-
-  }
 
   //api大集合
   async picture(e) {
     if (!e.isMaster) {
       if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
     }
-    let key = `yenai:apiaggregate:CD`
+    let key = `yenai:apiAggregate:CD`
     if (await redis.get(key)) return
     if (/jktj/.test(e.msg)) {
       let msg = [

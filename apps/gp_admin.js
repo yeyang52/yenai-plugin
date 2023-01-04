@@ -3,7 +3,7 @@ import fetch from 'node-fetch'
 import { segment } from 'oicq'
 import lodash from 'lodash'
 import { Config } from '../components/index.js'
-import { Cfg, Gpadmin, common } from '../model/index.js'
+import { Cfg, Gpadmin, common, QQInterface } from '../model/index.js'
 import moment from 'moment'
 const ROLE_MAP = {
     admin: '群管理',
@@ -124,7 +124,11 @@ export class Basics extends plugin {
                 {
                     reg: `(^#定时禁言(.*)解禁(.*)$)|(^#定时禁言任务$)|(^#取消定时禁言$)`,
                     fnc: 'timeMute'
-                }
+                },
+                {
+                    reg: "^#?(谁|哪个吊毛|哪个屌毛|哪个叼毛)是龙王$",
+                    fnc: 'dragonKing'
+                },
 
             ]
         })
@@ -751,5 +755,17 @@ export class Basics extends plugin {
         }
         await redis.set(`Yunzai:yenai:Taboo:${e.group_id}`, JSON.stringify(data))
         e.reply(`设置定时禁言成功，可发【#定时禁言任务】查看`)``
+    }
+    //谁是龙王
+    async dragonKing(e) {
+        let ck = Cfg.getck("qun.qq.com");
+        let url = `http://xiaobai.klizi.cn/API/qqgn/dragon.php?data=json&uin=${(Bot.uin)}&skey=${(ck.skey)}&pskey=${(ck.p_skey)}&group=${(e.group_id)}`;
+        let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))
+        if (!res) res = await QQInterface.dragon(e.group_id)
+        e.reply([
+            `本群龙王：${res.name}`,
+            segment.image(res.avatar),
+            `蝉联天数：${res.desc}`,
+        ]);
     }
 }

@@ -84,7 +84,7 @@ export default new class assistant {
         if (!result) return e.reply("接口失效")
 
         if (result.code != 0) return e.reply(`❎ 说说发表失败\n错误信息:${result.message}`)
-        
+
         let msg = [`✅ 说说发表成功，内容：\n`, lodash.truncate(result.content, { "length": 15 })]
         if (result.pic) {
             msg.push(segment.image(result.pic[0].url1))
@@ -112,4 +112,17 @@ export default new class assistant {
         ])
     }
 
+    /**查看本群龙王 */
+    async dragon(group_id) {
+        let url = `https://qun.qq.com/interactive/honorlist?gc=${group_id}&type=1&_wv=3&_wwv=129`
+        let res = await fetch(url, { headers: { "Cookie": Bot.cookies["qun.qq.com"] } }).then(res => res.text())
+        let name = res.match(/<span class="text">(.*?)<\/span>/)[1]
+        let avatar = res.match(/<div class="avatar" style="background-image:url\((.*?)\);"><\/div>/)[1].replaceAll("amp;", "")
+        let desc = res.match(/<div class="tag" style="display:(none)?;"><span>(.*?)<\/span><\/div>/)[2]
+        return {
+            name,
+            avatar,
+            desc
+        }
+    }
 }

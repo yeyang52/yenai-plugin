@@ -239,6 +239,10 @@ export const helpList = [{
       "title": "#哪个叼毛是龙王",
       "desc": "查看谁是龙王",
       "icon": 6
+    }, {
+      "title": "#acg刻晴",
+      "desc": "acgcos",
+      "icon": 9
     },]
 },
 {

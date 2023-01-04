@@ -268,17 +268,18 @@ export class example extends plugin {
     }
     //搜索页面
     let search = await fetch(url).then(res => res.text()).catch(err => console.error(err));
-    let searchlist = search.match(/<a href="(.*?)"/g)
+    let searchlist = search.match(/<a href=".*?" target="_blank">/g)
       ?.map(item => item.match(/<a href="(.*?)"/)[1])
     //无则返回
     if (lodash.isEmpty(searchlist)) return e.reply("哎呦，木有找到", true)
+
     //图片页面
     let imgurl = domain + lodash.sample(searchlist)
     let imghtml = await fetch(imgurl).then(res => res.text()).catch(err => console.error(err));
     //处理图片
-    let imglist = imghtml.match(/<img src="(.*?)" style=""\/>/g)
-      .map(item => domain + item.match(/<img src="(.*?)".*/)[1])
-      .map(item => segment.image(item))
+    let imglist = imghtml.match(/<img src=".*?" (style|title)=".*?"\s?\/>/g)
+      ?.map(item => (!/www.pandadiu.com/.test(item) ? domain : "") + (item.match(/<img src="(.*?)".*/)[1]))
+      ?.map(item => segment.image(item)) || ["出错辣"]
     Cfg.getRecallsendMsg(e, imglist, false)
   }
   //黑丝

@@ -87,28 +87,10 @@ export class example extends plugin {
 
   /**随机唱鸭 */
   async Sing(e) {
-    let url = "https://xiaobai.klizi.cn/API/music/changya.php"
-    let urls = "https://ovooa.com/API/changya/"
-    let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))
-    //备用接口
-    if (!res) {
-      let res = await fetch(urls).then(res => res.json()).catch(err => console.log(err))
-      if (!res) return e.reply("接口失效辣(๑ŐдŐ)b")
-      e.reply(res.data.song_lyric)
-      e.reply(await uploadRecord(res.data.song_url, 0, false))
-      return true;
-    }
-
-    let data = res.data
-    await e.reply(await uploadRecord(data.audioSrc, 0, false))
-    //处理歌词
-    let lyric = data.lyrics.map(function (item) {
-      return `${item}\n`
-    })
-    lyric[lyric.length - 1] = data.lyrics[data.lyrics.length - 1]
-    await e.reply(lyric)
-
-    return true;
+    let data = await Interface.randomSinging();
+    if (data.error) return e.reply(data.error)
+    await e.reply(await uploadRecord(data.audioUrl, 0, false))
+    await e.reply(data.lyrics)
   }
   /**支付宝语音 */
   async ZFB(e) {
@@ -124,7 +106,7 @@ export class example extends plugin {
 
   /**有道翻译 */
   async youdao(e) {
-    
+
     let msg = "";
     if (e.source) {
       let source;

@@ -1,14 +1,13 @@
 import fetch from "node-fetch";
 import md5 from "md5";
 import lodash from "lodash";
-
+const API_ERROR = "出了点小问题，待会再试试吧";
 export default new class Interface {
     /**有道翻译 */
     async youdao(msg) {
         // 翻译结果为空的提示
         const RESULT_ERROR = "找不到翻译结果";
         // API 请求错误提示
-        const API_ERROR = "出了点小问题，待会再试试吧";
         const qs = (obj) => {
             let res = "";
             for (const [k, v] of Object.entries(obj))
@@ -56,5 +55,25 @@ export default new class Interface {
             console.log(e);
             return API_ERROR
         }
+    }
+    /**随机唱歌/唱鸭 */
+    async randomSinging() {
+        try {
+            const api = `https://m.api.singduck.cn/user-piece/SoQJ9cKu61FJ1Vwc7`
+            let res = await fetch(api).then(res => res.text());
+            let JSONdara = JSON.parse(res.match(/<script id="__NEXT_DATA__" type="application\/json" crossorigin="anonymous">(.*?)<\/script>/)[1])
+            if (!JSONdara) return { error: API_ERROR }
+            let piece = lodash.sample(JSONdara.props.pageProps.pieces)
+            let { songName, lyric, audioUrl } = piece
+            if (!audioUrl) return { error: "找不到歌曲文件" }
+            return {
+                lyrics: `《${songName}》\n${lyric}`,
+                audioUrl: decodeURIComponent(audioUrl)
+            }
+        } catch (error) {
+            console.log(error);
+            return { error: API_ERROR }
+        }
+
     }
 }

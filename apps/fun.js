@@ -277,7 +277,7 @@ export class example extends plugin {
     let imgurl = domain + lodash.sample(searchlist)
     let imghtml = await fetch(imgurl).then(res => res.text()).catch(err => console.error(err));
     //处理图片
-    let imglist = imghtml.match(/<img src=".*?" (style|title)=".*?".*?\/>/g)
+    let imglist = imghtml.match(/<img src=".*?" (style|title)=.*?\/>/g)
       ?.map(item => (!/www.pandadiu.com/.test(item) ? domain : "") + (item.match(/<img src="(.*?)".*/)[1]))
       ?.map(item => segment.image(item)) || ["出错辣"]
     Cfg.getRecallsendMsg(e, imglist, false)

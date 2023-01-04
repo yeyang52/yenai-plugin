@@ -217,32 +217,17 @@ export class example extends plugin {
 
     //p站单图
     async Pximg(e) {
+        let type = /pro/.test(e.msg)
         if (!e.isMaster) {
-            if (!Config.getGroup(e.group_id).sese || !Config.getGroup(e.group_id).sesepro && /pro/.test(e.msg)) {
+            if (!Config.getGroup(e.group_id).sese || !Config.getGroup(e.group_id).sesepro && type) {
                 return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
             }
         }
-        let url = "https://ovooa.com/API/Pximg/"
-        if (/pro/.test(e.msg)) {
-            url = "https://xiaobapi.top/api/xb/api/setu.php"
-        }
-        let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))
-        if (!res) return e.reply("接口寄辣")
-        let { pid, uid, title, author, tags, urls, r18 } = res.data[0] || res.data
-        let msg = [
-            `Pid: ${pid}\n`,
-            `Uid: ${uid}\n`,
-            r18 ? `R18: ${r18}\n` : "",
-            `标题：${title}\n`,
-            `画师：${author}\n`,
-            `Tag：${tags.join("，")}\n`,
-            segment.image(urls.original.replace('i.der.ink', await redis.get(`yenai:proxy`)))
-        ]
-        if (/pro/.test(e.msg)) {
+        let msg = await new Pixiv(e).getPximg(type)
+        if (type) {
             Cfg.getRecallsendMsg(e, [msg], false)
         } else {
             Cfg.recallsendMsg(e, msg)
         }
-
     }
 }

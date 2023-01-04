@@ -518,7 +518,26 @@ export default class Pixiv {
             ...illusts
         ]
     }
-
+    /**p站单图*/
+    async getPximg(type) {
+        let url = "https://ovooa.com/API/Pximg/"
+        if (type) {
+            url = "https://xiaobapi.top/api/xb/api/setu.php"
+        }
+        let res = await this.getfetch(url)
+        if (!res) return false;
+        let { pid, uid, title, author, tags, urls, r18 } = res.data[0] || res.data
+        let msg = [
+            `Pid: ${pid}\n`,
+            `Uid: ${uid}\n`,
+            r18 ? `R18: ${r18}\n` : "",
+            `标题：${title}\n`,
+            `画师：${author}\n`,
+            `Tag：${tags.join("，")}\n`,
+            segment.image(urls.original.replace('i.der.ink', await redis.get(`yenai:proxy`)))
+        ]
+        return msg
+    }
 
 
 

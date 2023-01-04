@@ -3,15 +3,15 @@ import moment from 'moment';
 import { Config } from '../components/index.js'
 import { Cfg, Pixiv, common, setu } from '../model/index.js'
 //类型
-let ranktype = new Pixiv().RankReg
-let Numreg = "[一壹二两三四五六七八九十百千万亿\\d]+"
+let rankType = new Pixiv().RankReg
+let numReg = "[一壹二两三四五六七八九十百千万亿\\d]+"
 //正则
-let listreg = new RegExp(`^#?看看((\\d{4}-\\d{1,2}-\\d{1,2})的)?(${Object.keys(ranktype).join("|")})(r18)?榜\\s?(第(${Numreg})页)?$`, "i")
-let tagreg = new RegExp('^#?tag(pro)?搜图(.*)$', "i")
-let pidreg = new RegExp('^#?pid搜图\\s?(\\d+)$', "i")
-let uidreg = new RegExp('^#?uid搜图(.*)$', "i")
-let randomimgreg = new RegExp(`^#?来(${Numreg})?张(好(康|看)(的|哒)|hkd|涩图)$|#有内鬼$`)
-let relatedreg = new RegExp(`^#?看?看?相关作品(\\d+)$`);
+let rankingrReg = new RegExp(`^#?看看((\\d{4}-\\d{1,2}-\\d{1,2})的)?(${Object.keys(rankType).join("|")})(r18)?榜\\s?(第(${numReg})页)?$`, "i")
+let tagReg = new RegExp('^#?tag(pro)?搜图(.*)$', "i")
+let pidReg = new RegExp('^#?pid搜图\\s?(\\d+)$', "i")
+let uidReg = new RegExp('^#?uid搜图(.*)$', "i")
+let randomImgReg = new RegExp(`^#?来(${numReg})?张(好(康|看)(的|哒)|hkd|涩图)$|#有内鬼$`)
+let relatedReg = new RegExp(`^#?看?看?相关作品(\\d+)$`);
 export class example extends plugin {
     constructor() {
         super({
@@ -20,15 +20,15 @@ export class example extends plugin {
             priority: 500,
             rule: [
                 {
-                    reg: pidreg,
+                    reg: pidReg,
                     fnc: 'saucenaoPid'
                 },
                 {
-                    reg: listreg,
-                    fnc: 'pixivList'
+                    reg: rankingrReg,
+                    fnc: 'PixivRanking'
                 },
                 {
-                    reg: tagreg,
+                    reg: tagReg,
                     fnc: 'Tags'
                 },
                 {
@@ -36,15 +36,15 @@ export class example extends plugin {
                     fnc: 'trend_tags'
                 },
                 {
-                    reg: uidreg,
+                    reg: uidReg,
                     fnc: 'saucenaoUid'
                 },
                 {
-                    reg: randomimgreg,
+                    reg: randomImgReg,
                     fnc: 'randomimg'
                 },
                 {
-                    reg: relatedreg,
+                    reg: relatedReg,
                     fnc: 'related_works'
                 },
                 {
@@ -63,7 +63,7 @@ export class example extends plugin {
 
         await e.reply("你先别急，正在给你搜了(。-ω-)zzz")
 
-        let regRet = pidreg.exec(e.msg)
+        let regRet = pidReg.exec(e.msg)
 
         let res = await new Pixiv(e).Worker(regRet[1])
 
@@ -79,8 +79,8 @@ export class example extends plugin {
     }
 
     //p站排行榜
-    async pixivList(e) {
-        let regRet = listreg.exec(e.msg)
+    async PixivRanking(e) {
+        let regRet = rankingrReg.exec(e.msg)
         if (!e.isMaster) {
             if (!Config.getGroup(e.group_id).sese || regRet[4] && !await setu.getr18(e)) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
         }
@@ -105,7 +105,7 @@ export class example extends plugin {
 
     /**关键词搜图 */
     async Tags(e) {
-        let regRet = tagreg.exec(e.msg)
+        let regRet = tagReg.exec(e.msg)
 
         if (!e.isMaster) {
             if (!Config.getGroup(e.group_id).sese || !Config.getGroup(e.group_id).sesepro && regRet[1]) {
@@ -116,7 +116,7 @@ export class example extends plugin {
 
         let tag = regRet[2]
 
-        let pagereg = new RegExp(`第(${Numreg})页`)
+        let pagereg = new RegExp(`第(${numReg})页`)
 
         let page = pagereg.exec(e.msg)
 
@@ -158,11 +158,11 @@ export class example extends plugin {
         }
         await e.reply("你先别急，正在给你搜了(。-ω-)zzz")
 
-        let regRet = uidreg.exec(e.msg)
+        let regRet = uidReg.exec(e.msg)
 
         let key = regRet[1]
 
-        let pagereg = new RegExp(`第(${Numreg})页`)
+        let pagereg = new RegExp(`第(${numReg})页`)
 
         let page = pagereg.exec(e.msg)
 
@@ -188,7 +188,7 @@ export class example extends plugin {
         }
         await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
 
-        let regRet = randomimgreg.exec(e.msg)
+        let regRet = randomImgReg.exec(e.msg)
 
         let num = regRet[1] || 1
         if (num > 50) {
@@ -209,7 +209,7 @@ export class example extends plugin {
             if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
         }
         await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
-        let regRet = relatedreg.exec(e.msg)
+        let regRet = relatedReg.exec(e.msg)
         let msg = await new Pixiv(e).getrelated_works(regRet[1])
         if (!msg) return
         Cfg.getRecallsendMsg(e, msg, false)
@@ -217,17 +217,13 @@ export class example extends plugin {
 
     //p站单图
     async Pximg(e) {
-        let type = /pro/.test(e.msg)
+        let pro = /pro/.test(e.msg)
         if (!e.isMaster) {
-            if (!Config.getGroup(e.group_id).sese || !Config.getGroup(e.group_id).sesepro && type) {
+            if (!Config.getGroup(e.group_id).sese || !Config.getGroup(e.group_id).sesepro && pro) {
                 return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
             }
         }
-        let msg = await new Pixiv(e).getPximg(type)
-        if (type) {
-            Cfg.getRecallsendMsg(e, [msg], false)
-        } else {
-            Cfg.recallsendMsg(e, msg)
-        }
+        let msg = await new Pixiv(e).getPximg(pro)
+        pro ? Cfg.getRecallsendMsg(e, [msg], false) : Cfg.recallsendMsg(e, msg)
     }
 }

@@ -100,10 +100,6 @@ export class example extends plugin {
           fnc: 'Grouplist'
         },
         {
-          reg: '^#群星级$',
-          fnc: 'Group_xj'
-        },
-        {
           reg: '^#(开启|关闭)戳一戳$',
           fnc: 'cyc'
         },
@@ -686,72 +682,33 @@ export class example extends plugin {
   async Grouplist(e) {
     if (!e.isMaster) return;
 
-    let listMap;
-    let message = [];
-    let list = []
-    let yes = false
+    let msg = [];
     if (/群列表/.test(e.msg)) {
       //获取群列表并转换为数组
-      listMap = Array.from(Bot.gl.values())
+      let listMap = Array.from(Bot.gl.values())
       //添加有几个群
-      message.push(`群列表如下，共${listMap.length}个群`)
+      msg.push(`群列表如下，共${listMap.length}个群`)
       //遍历添加
-      listMap.forEach((item, index) => {
-        list.push(`${index + 1}、${item.group_name}(${item.group_id})\n`)
-      })
-      yes = true
+      msg.push(listMap.map((item, index) => `${index + 1}、${item.group_name}(${item.group_id})`).join("\n"))
+      //提示信息
+      msg.push("可使用 #退群123456789 来退出某群")
+      msg.push("可使用 #发群列表 <序号> <消息> 来快速发送消息")
+      msg.push(`多个群聊请用 "," 分隔 不能大于3 容易寄`)
     } else if (/好友列表/.test(e.msg)) {
       //获取好友列表并转换为数组
-      listMap = Array.from(Bot.fl.values())
+      let listMap = Array.from(Bot.fl.values())
       //添加有多少个好友
-      message.push(`好友列表如下，共${listMap.length}个好友`)
+      msg.push(`好友列表如下，共${listMap.length}个好友`)
       //遍历添加
-      listMap.forEach((item, index) => {
-        list.push(`${index + 1}、${item.nickname}(${item.user_id})\n`)
-      })
+      msg.push(listMap.map((item, index) => `${index + 1}、${item.nickname}(${item.user_id})`).join("\n"))
+      //提示信息
+      msg.push("可使用 #删好友123456789 来删除某人")
     }
 
-    //去除最后一个的换行符
-    list[list.length - 1] = list[list.length - 1].replace(/\n/, "")
-    message.push(list)
-    if (yes) {
-      message.push("可使用 #退群123456789 来退出某群")
-      message.push("可使用 #发群列表 <序号> <消息> 来快速发送消息")
-      message.push(`多个群聊请用 "," 分隔 不能大于3 容易寄`)
-    } else {
-      message.push("可使用 #删好友123456789 来删除某人")
-    }
-
-    Cfg.getforwardMsg(e, message)
-
-    return true
+    Cfg.getforwardMsg(e, msg)
 
   }
-  /**群星级 */
-  async Group_xj(e) {
-    if (e.isPrivate) return e.reply("请在群聊使用哦~")
 
-    if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return;
-
-    QQInterface.getGroup_xj(e)
-  }
-
-  /**戳一戳 */
-  async cyc(e) {
-    if (!e.isMaster) return;
-
-    let yes = 1;
-    if (/开启/.test(e.msg)) yes = 0;
-    let ck = Cfg.getck("vip.qq.com")
-    let url = `http://xiaobai.klizi.cn/API/qqgn/qun_cyc.php?uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&switch=${yes}`
-
-    let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
-
-    if (!result) return e.reply("❎ 接口失效")
-
-    e.reply(`✅ 已${yes ? '关闭' : '开启'}戳一戳功能`)
-
-  }
   //引用撤回
   async recallMsgown(e) {
     if (!e.source) return
@@ -795,31 +752,38 @@ export class example extends plugin {
     }
     if (e.isGroup) await e.recall();
   }
+
   //开关好友添加
   async friend_switch(e) {
     if (!e.isMaster) return
-    let ck = Cfg.getck("ti.qq.com")
-    let api = `http://xiaobai.klizi.cn/API/qqgn/friend_switch.php?uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&type=${/开启/.test(e.msg) ? 1 : 2}`
-    let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
+    let res = await QQInterface.addFriendSwitch(/开启/.test(e.msg) ? 1 : 2)
     if (!res) return e.reply("接口失效辣(๑ŐдŐ)b")
     e.reply(res.ActionStatus)
   }
+
   //好友申请方式
   async friend_type(e) {
     if (!e.isMaster) return
     let regRet = friend_typeReg.exec(e.msg)
-    let ck = Cfg.getck("ti.qq.com")
-    if (regRet[1] == 0) return e.reply("1为允许所有人，2为需要验证，3为问答正确问答(需填参数question,answer)")
+    if (regRet[1] == 0) return e.reply("1为允许所有人，2为需要验证，3为问答正确问答(需填问题和答案，格式为：#更改好友申请方式3 问题 答案)")
     //单独处理
-    let isproblem = '';
-    if (regRet[1] == 3) {
-      if (!regRet[3] && !regRet[4]) return e.reply("❎ 请正确输入问题和答案！")
-      isproblem = `&question=${regRet[3]}&answer=${regRet[4]}`
-    }
-    let api = `http://xiaobai.klizi.cn/API/qqgn/friend_type.php?uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&type=${regRet[1]}${isproblem}`
-    let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
+    if ((!regRet[3] || !regRet[4]) && regRet[1] == 3) return e.reply("❎ 请正确输入问题和答案！")
+
+    let res = await QQInterface.setFriendType(regRet[1], regRet[3], regRet[4])
     if (!res) return e.reply("接口失效辣(๑ŐдŐ)b")
+    if (res.ec != 0) return e.reply("❎ 修改失败\n" + JSON.stringify(res))
     e.reply(res.msg)
+  }
+
+  /**开关戳一戳 */
+  async cyc(e) {
+    if (!e.isMaster) return;
+
+    let result = await QQInterface.setcyc(/开启/.test(e.msg) ? 0 : 1)
+    if (!result) return e.reply("❎ 接口失效")
+
+    if (result.ret != 0) return e.reply("❎ 未知错误\n" + JSON.stringify(result))
+    e.reply(`✅ 已${/开启/.test(e.msg) ? '开启' : '关闭'}戳一戳功能`)
   }
 
 }

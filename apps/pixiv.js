@@ -25,15 +25,15 @@ export class example extends plugin {
                 },
                 {
                     reg: rankingrReg,
-                    fnc: 'PixivRanking'
+                    fnc: 'pixivRanking'
                 },
                 {
                     reg: tagReg,
-                    fnc: 'Tags'
+                    fnc: 'saucenaoTags'
                 },
                 {
                     reg: '^#?(查看|获取)?热门(t|T)(a|A)(g|G)$',
-                    fnc: 'trend_tags'
+                    fnc: 'trendTags'
                 },
                 {
                     reg: uidReg,
@@ -41,15 +41,15 @@ export class example extends plugin {
                 },
                 {
                     reg: randomImgReg,
-                    fnc: 'randomimg'
+                    fnc: 'randomImg'
                 },
                 {
                     reg: relatedReg,
-                    fnc: 'related_works'
+                    fnc: 'relatedWorks'
                 },
                 {
                     reg: '^#?(P|p)ximg(pro)?$',
-                    fnc: 'Pximg'
+                    fnc: 'pximg'
                 },
             ]
         })
@@ -79,7 +79,7 @@ export class example extends plugin {
     }
 
     //p站排行榜
-    async PixivRanking(e) {
+    async pixivRanking(e) {
         let regRet = rankingrReg.exec(e.msg)
         if (!e.isMaster) {
             if (!Config.getGroup(e.group_id).sese || regRet[4] && !await setu.getr18(e)) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
@@ -104,7 +104,7 @@ export class example extends plugin {
     }
 
     /**关键词搜图 */
-    async Tags(e) {
+    async saucenaoTags(e) {
         let regRet = tagReg.exec(e.msg)
 
         if (!e.isMaster) {
@@ -138,7 +138,7 @@ export class example extends plugin {
         return true;
     }
     /**获取热门tag */
-    async trend_tags(e) {
+    async trendTags(e) {
         if (!e.isMaster) {
             if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
         }
@@ -182,7 +182,7 @@ export class example extends plugin {
     }
 
     //随机原创插画
-    async randomimg(e) {
+    async randomImg(e) {
         if (!e.isMaster) {
             if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
         }
@@ -204,7 +204,7 @@ export class example extends plugin {
     }
 
     //相关作品
-    async related_works(e) {
+    async relatedWorks(e) {
         if (!e.isMaster) {
             if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
         }
@@ -216,7 +216,7 @@ export class example extends plugin {
     }
 
     //p站单图
-    async Pximg(e) {
+    async pximg(e) {
         let pro = /pro/.test(e.msg)
         if (!e.isMaster) {
             if (!Config.getGroup(e.group_id).sese || !Config.getGroup(e.group_id).sesepro && pro) {

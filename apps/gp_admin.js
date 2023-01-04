@@ -51,15 +51,15 @@ export class Basics extends plugin {
                 },
                 {
                     reg: '^#发群公告.*$',
-                    fnc: 'Announce'
+                    fnc: 'AddAnnounce'
+                },
+                {
+                    reg: '^#删群公告(\\d+)$',
+                    fnc: 'DelAnnounce'
                 },
                 {
                     reg: '^#查群公告$',
-                    fnc: 'DelAnnounce'
-                },
-                {
-                    reg: '^#删群公告.*$',
-                    fnc: 'DelAnnounce'
+                    fnc: 'GetAnnounce'
                 },
                 {
                     reg: '^#修改头衔.*$',
@@ -128,6 +128,10 @@ export class Basics extends plugin {
                 {
                     reg: "^#?(谁|哪个吊毛|哪个屌毛|哪个叼毛)是龙王$",
                     fnc: 'dragonKing'
+                },
+                {
+                    reg: '^#群星级$',
+                    fnc: 'Group_xj'
                 },
 
             ]
@@ -416,72 +420,51 @@ export class Basics extends plugin {
     }
 
     //发群公告
-    async Announce(e) {
-
-        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
-            return e.reply("❎ 该命令仅限管理员可用", true);
-        }
+    async AddAnnounce(e) {
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
             return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
         }
+        //判断权限
+        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
+            return e.reply("❎ 该命令仅限管理员可用", true);
+        }
+        //获取发送的内容
         let msg = e.msg.replace(/#|发群公告/g, "").trim()
-
         if (!msg) return e.reply("❎ 公告不能为空");
 
-        let ck = Cfg.getck("qun.qq.com")
+        let result = await QQInterface.setAnnounce(e.group_id, msg)
 
-        let url = `http://xiaobai.klizi.cn/API/qqgn/gg_send.php?data=&skey=${ck.skey}&pskey=${ck.p_skey}&uin=${Bot.uin}&group=${e.group_id}&text=${msg}`
-
-        let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
-        if (!result) return e.reply("❎ 接口出错")
-
-        if (result.ec == 0) {
-            e.reply("✅ 已发送群公告，群员们要好好看哦~")
-        } else {
-            e.reply("❎ 发送失败")
+        if (!result) return e.reply("❎ 出错辣，请稍后重试");
+        if (result.ec != 0) {
+            e.reply("❎ 发送失败\n" + JSON.stringify(result, null, '\t'))
         }
-        return true;
-
     }
-
-    //查群公告+删群公告
+    //查群公告
+    async GetAnnounce(e) {
+        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
+            return e.reply("❎ 该命令仅限管理员可用", true);
+        }
+        let res = await QQInterface.getAnnouncelist(e.group_id)
+        if (!res) return e.reply("❎ 出错辣，请稍后重试");
+        return e.reply(res)
+    }
+    //删群公告
     async DelAnnounce(e) {
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
             return e.reply("❎ 该命令仅限管理员可用", true);
         }
 
-        if (/查群公告/.test(e.msg)) {
-            let res = await Gpadmin.getAnnouncelist(e)
-            if (!res) return;
-            await e.reply(res)
-            return;
-        }
-
         let msg = e.msg.replace(/#|删群公告/, "").trim()
-
         if (!msg) return e.reply(`❎ 序号不可为空`)
 
-        msg = msg.match(/\d/)
+        let result = await QQInterface.delAnnounce(e.group_id, msg)
+        if (!result) return e.reply("❎ 出错辣，请稍后重试");
 
-        if (!msg) return e.reply(`❎ 请检查序号是否正确`)
-
-        let ck = Cfg.getck("qun.qq.com")
-
-        let list = await Gpadmin.getAnnouncelist(e, msg)
-
-        if (!list) return;
-
-        let url = `http://xiaobai.klizi.cn/API/qqgn/gg_delete.php?data=&skey=${ck.skey}&pskey=${ck.p_skey}&uin=${Bot.uin}&group=${e.group_id}&fid=${list.fid}`
-
-        let result = await fetch(url).then(res => res.json())
-            .catch(err => console.log(err))
-
-        if (!result) return e.reply("接口失效辣！！！")
         if (result.ec == 0) {
-            e.reply("✅ 已删除这个公告哦~")
+            e.reply(`✅ 已删除「${result.text}」`)
         } else {
-            e.reply("❎ 删除失败")
+            e.reply("❎ 删除失败\n" + JSON.stringify(result, null, '\t'))
         }
 
     }
@@ -767,5 +750,19 @@ export class Basics extends plugin {
             segment.image(res.avatar),
             `蝉联天数：${res.desc}`,
         ]);
+    }
+    /**群星级 */
+    async Group_xj(e) {
+        let result = await QQInterface.getCreditLevelInfo(e.group_id)
+        if (!result) return e.reply("❎ 接口失效")
+        if (result.ec != 0) return e.reply("❎ 查询错误\n" + JSON.stringify(result))
+        let { uiGroupLevel, group_name, group_uin } = result.info
+        let str = "⭐"
+        str = str.repeat(uiGroupLevel)
+        e.reply([
+            `群名：${group_name}\n`,
+            `群号：${group_uin}\n`,
+            `群星级：${str}`
+        ])
     }
 }

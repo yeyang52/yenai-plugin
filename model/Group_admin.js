@@ -8,27 +8,7 @@ class Group_admin {
     constructor() {
         this.ck = Cfg.getck("qun.qq.com");
     }
-    /**
-     * @description: 获取群公告
-     * @param {String} group 群号
-     * @param {String} item 序号
-     * @return {Object}
-     */
-    async getAnnouncelist(e, item = "") {
-        let ck = this.ck
-        let url = `http://xiaobai.klizi.cn/API/qqgn/qun_gg.php?data=&skey=${ck.skey}&pskey=${ck.p_skey}&uin=${Bot.uin}&group=${e.group_id}&n=${item}`
 
-        let result = await fetch(url).then(res => res.text()).catch(err => console.log(err))
-
-        if (!result) return false
-
-        if (item) {
-            return JSON.parse(result)
-        } else {
-            return result
-        }
-
-    }
     /**
      * @description: 幸运字符抽取和列表
      * @param {*} e oicq

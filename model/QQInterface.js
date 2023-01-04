@@ -94,22 +94,15 @@ export default new class assistant {
     }
 
     /**群星级 */
-    async getGroup_xj(e) {
-        let ck = Cfg.getck("qqweb.qq.com")
-
-        let url = `http://xiaobai.klizi.cn/API/qqgn/qun_xj.php?data=&uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&group=${e.group_id}`
-
-        let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
-
-        if (!result) return e.reply("❎ 接口失效")
-
-        let str = "⭐"
-        str = str.repeat(result.uiGroupLevel)
-        e.reply([
-            `群名：${result.group_name}\n`,
-            `群号：${result.group_uin}\n`,
-            `群星级：${str}`
-        ])
+    async getCreditLevelInfo(group_id) {
+        let url = `https://qqweb.qq.com/c/activedata/get_credit_level_info?bkn=${Bot.bkn}&uin=${Bot.uin}&gc=${group_id}`
+        return await fetch(url, {
+            headers: {
+                "Cookie": Bot.cookies["qqweb.qq.com"],
+                "Referer": `https://qqweb.qq.com/m/business/qunlevel/index.html?gc=${group_id}&from=0&_wv=1027`,
+                "User-agent": "Mozilla/5.0 (Linux; Android 12; M2012K11AC Build/SKQ1.220303.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/89.0.4389.72 MQQBrowser/6.2 TBS/046141 Mobile Safari/537.36 V1_AND_SQ_8.3.9_350_TIM_D QQ/3.5.0.3148 NetType/WIFI WebP/0.3.0 Pixel/1080 StatusBarHeight/81 SimpleUISwitch/0 QQTheme/1015712"
+            }
+        }).then(res => res.json()).catch(err => console.error(err))
     }
 
     /**查看本群龙王 */
@@ -124,5 +117,141 @@ export default new class assistant {
             avatar,
             desc
         }
+    }
+
+    /**
+     * @description: 获取群公告
+     * @param {String} group 群号
+     * @param {String} item 序号
+     * @return {Object}
+     */
+    async getAnnouncelist(group_id, s = 0) {
+        let n = s ? 1 : 20;
+        let url = `https://web.qun.qq.com/cgi-bin/announce/get_t_list?bkn=${Bot.bkn}&qid=${group_id}&ft=23&s=${s - 1}&n=${n}`
+        let res = await fetch(url, { headers: { "Cookie": Bot.cookies["qun.qq.com"], } }).then(res => res.json()).catch(err => console.error(err))
+        if (!res) return false;
+        if (s) {
+            return {
+                text: res.feeds[0].msg.text,
+                fid: res.feeds[0].fid
+            }
+        } else {
+            return res.feeds.map((item, index) => `${index + 1}、${lodash.truncate(item.msg.text)}`).join('\n')
+        }
+
+    }
+    /**
+     * @description: 发送群公告
+     * @param {Number} group_id 发送群号
+     * @param {String} msg 发送内容
+     */
+    async setAnnounce(group_id, msg) {
+        let url = `https://web.qun.qq.com/cgi-bin/announce/add_qun_notice?bkn=${Bot.bkn}`
+        return await fetch(url, {
+            method: 'POST',
+            body: `qid=${group_id}&bkn=${Bot.bkn}&text=${msg}&pinned=0&type=1&settings={"is_show_edit_card":1,"tip_window_type":1,"confirm_required":1}`,
+            headers: {
+                "Cookie": Bot.cookies["qun.qq.com"],
+            }
+        }).then(res => res.json()).catch(err => console.error(err))
+    }
+    /**
+     * @description: 删群公告
+     * @param {Number} group_id 群号
+     * @param {Number} num 序号
+     */
+    async delAnnounce(group_id, num) {
+        let fid = await this.getAnnouncelist(group_id, num)
+        if (!fid) return false;
+
+        let url = `https://web.qun.qq.com/cgi-bin/announce/del_feed?bkn=${Bot.bkn}`
+        let res = await fetch(url, {
+            method: 'POST',
+            body: `bkn=${Bot.bkn}&fid=${fid.fid}&qid=${group_id}`,
+            headers: {
+                "Cookie": Bot.cookies["qun.qq.com"],
+            }
+        }).then(res => res.json()).catch(err => console.error(err))
+        return {
+            ...res,
+            text: lodash.truncate(fid.text)
+        }
+    }
+    /**
+     * @description: 开关好友添加
+     * @param {Number} type 1关闭2开启
+     */
+    async addFriendSwitch(type) {
+        let url = `https://ti.qq.com/proxy/domain/oidb.tim.qq.com/v3/oidbinterface/oidb_0x587_75?sdkappid=39998&actype=2&bkn=${Bot.bkn}`
+        return await fetch(url, {
+            method: "POST",
+            body: JSON.stringify({
+                "uint32_allow": type
+            }),
+            headers: {
+                "Cookie": Bot.cookies["ti.qq.com"],
+                "Content-type": "application/json",
+            }
+        }).then(res => res.json()).catch(err => console.error(err))
+    }
+    /**
+     * @description: 更改好友申请方式
+     * @param {*} at 类型1
+     * @param {*} q
+     * @param {*} a
+     * @return {*}
+     */
+    async setFriendType(at, q = "", a = "") {
+        const type = {
+            '1': '0',
+            '2': '1',
+            '3': '3'
+        }
+        let url = `https://ti.qq.com/cgi-node/friend-auth/set`
+        return await fetch(url, {
+            method: "POST",
+            body: JSON.stringify({
+                "req": `{"at": ${type[at]},"q": "${q}","a": "${a}","l": [],"viaphone": 0}`
+            }),
+            headers: {
+                "Cookie": Bot.cookies["ti.qq.com"],
+                "Content-type": "application/json",
+            }
+        }).then(res => res.json()).catch(err => console.error(err))
+    }
+    /**
+     * @description: 设置戳一戳开关
+     * @param {Number} is 0为开启1为关闭
+     */
+    async setcyc(is) {
+        let url = `https://zb.vip.qq.com/srf/QC_UniBusinessLogicServer_UniBusinessLogicObj/uniSet?g_tk=${Bot.bkn}`
+        return await fetch(url, {
+            method: "POST",
+            body: JSON.stringify({
+                "stLogin": {
+                    "iKeyType": 1,
+                    "iOpplat": 2,
+                    "lUin": Bot.uin,
+                    "sClientIp": "",
+                    "sClientVer": "8.9.10",
+                    "sSKey": "MGOy0oTuvl"
+                },
+                "stUniBusinessItem": {
+                    "appid": 46,
+                    "itemid": 1
+                },
+                "stNudge": {
+                    "ischangeswitch": 1,
+                    "isclose": is,
+                    "ischangecustomtext": 1,
+                    "customtext": ""
+                }
+            }
+            ),
+            headers: {
+                "Cookie": Bot.cookies["vip.qq.com"],
+                "Content-type": "application/json",
+            }
+        }).then(res => res.json()).catch(err => console.error(err))
     }
 }

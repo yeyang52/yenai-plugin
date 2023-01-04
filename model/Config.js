@@ -140,7 +140,7 @@ class newConfig {
 
 
     /**
-     * @description: 发送消息并根据指定时间撤回群消息
+     * @description: 发送普通消息并根据指定时间撤回群消息
      * @param {*} e oicq
      * @param {*} msg 消息
      * @param {Number} time 撤回时间
@@ -162,14 +162,14 @@ class newConfig {
     }
 
     /**
-     * @description: 获取配置的cd发送消息
+     * @description: 获取配置的撤回时间发送转发消息
      * @param {*} e oicq
      * @param {Array} msg 发送的消息
      * @param {Boolean} isBot 转发信息是否以bot信息发送
      * @param {Boolean} isfk  是否发送默认风控消息
      * @return {Boolean}
      */
-    async getCDsendMsg(e, msg, isBot = true, isfk = true) {
+    async getRecallsendMsg(e, msg, isBot = true, isfk = true) {
         let time = await this.recalltime(e)
 
         let res = await this.getforwardMsg(e, msg, time, isBot, isfk)

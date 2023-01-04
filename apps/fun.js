@@ -74,6 +74,11 @@ export class example extends plugin {
           reg: '^#?来点神秘图(\\d+)?$',
           fnc: 'mengdui'
         },
+        {
+          reg: '^#?acg.*$',
+          fnc: 'acg'
+        },
+
 
 
       ]
@@ -242,10 +247,40 @@ export class example extends plugin {
         item++
       }
     }
-    Cfg.getCDsendMsg(e, msg, false)
+    Cfg.getRecallsendMsg(e, msg, false)
     return true
   }
+  //cos/acg搜索
+  async acg(e) {
+    if (!e.isMaster) {
+      if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
+    }
+    e.reply("椰奶产出中......")
 
+
+    let keywords = e.msg.replace(/#|acg/g, "").trim()
+    let domain = "https://www.pandadiu.com"
+    let url = ''
+    if (keywords) {
+      url = `${domain}/index.php?m=search&c=index&a=init&typeid=1&siteid=1&q=${keywords}`
+    } else {
+      url = `${domain}/list-31-${lodash.random(1, 177)}.html`
+    }
+    //搜索页面
+    let search = await fetch(url).then(res => res.text()).catch(err => console.error(err));
+    let searchlist = search.match(/<a href="(.*?)"/g)
+      ?.map(item => item.match(/<a href="(.*?)"/)[1])
+    //无则返回
+    if (lodash.isEmpty(searchlist)) return e.reply("哎呦，木有找到", true)
+    //图片页面
+    let imgurl = domain + lodash.sample(searchlist)
+    let imghtml = await fetch(imgurl).then(res => res.text()).catch(err => console.error(err));
+    //处理图片
+    let imglist = imghtml.match(/<img src="(.*?)" style=""\/>/g)
+      .map(item => domain + item.match(/<img src="(.*?)".*/)[1])
+      .map(item => segment.image(item))
+    Cfg.getRecallsendMsg(e, imglist, false)
+  }
   //黑丝
   async heisiwu(e) {
     if (!e.isMaster) {
@@ -284,7 +319,7 @@ export class example extends plugin {
       }
     }
 
-    Cfg.getCDsendMsg(e, imglist, false)
+    Cfg.getRecallsendMsg(e, imglist, false)
   }
   //萌堆
   async mengdui(e) {
@@ -315,7 +350,7 @@ export class example extends plugin {
     }
     let msg = list.map(item => segment.image(item.match(/https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*/i)[0]))
     msg = lodash.take(msg, 30)
-    Cfg.getCDsendMsg(e, msg, false)
+    Cfg.getRecallsendMsg(e, msg, false)
   }
 
   //铃声多多
@@ -385,7 +420,7 @@ export class example extends plugin {
       segment.image(urls.original.replace('i.der.ink', await redis.get(`yenai:proxy`)))
     ]
     if (/pro/.test(e.msg)) {
-      Cfg.getCDsendMsg(e, [msg], false)
+      Cfg.getRecallsendMsg(e, [msg], false)
     } else {
       Cfg.recallsendMsg(e, msg)
     }

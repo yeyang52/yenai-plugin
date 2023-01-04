@@ -124,7 +124,7 @@ export default new class setu {
         let present = parseInt(new Date().getTime() / 1000)
 
         //发送消息
-        let res = await Cfg.getCDsendMsg(e, msg, false)
+        let res = await Cfg.getRecallsendMsg(e, msg, false)
         if (e.isGroup) {
             //获取CD
             if (fs.existsSync(this.path)) {

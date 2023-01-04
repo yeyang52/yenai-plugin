@@ -3,7 +3,7 @@ import fetch from 'node-fetch'
 import { segment } from "oicq"
 import lodash from 'lodash'
 import { Config } from '../components/index.js'
-import { Cfg, uploadRecord, common } from '../model/index.js'
+import { Cfg, uploadRecord, common, Interface } from '../model/index.js'
 let heisitype = {
   "白丝": "baisi",
   "黑丝": "heisi",
@@ -124,6 +124,7 @@ export class example extends plugin {
 
   /**有道翻译 */
   async youdao(e) {
+    
     let msg = "";
     if (e.source) {
       let source;
@@ -138,12 +139,8 @@ export class example extends plugin {
     }
     msg = msg.replace(/#|翻译/g, "").trim()
     if (!msg) return;
-    // let results = await fetch(`https://xiaobai.klizi.cn/API/other/trans.php?data=&msg=${msg}`).then(res => res.text()).catch(err => console.log(err))
-    let results = await fetch(`https://xiaobapi.top/api/xb/api/trans.php?msg=${msg}`).then(res => res.text()).catch(err => console.log(err))
-    if (!results) return e.reply("接口失效辣(๑ŐдŐ)b")
-    e.reply(results)
-
-    return true;
+    let results = await Interface.youdao(msg);
+    return e.reply(results, true)
   }
 
   /**点赞 */

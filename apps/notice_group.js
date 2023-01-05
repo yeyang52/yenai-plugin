@@ -9,7 +9,7 @@ import moment from 'moment'
 export class newgroups extends plugin {
     constructor() {
         super({
-            name: '群通知',
+            name: '椰奶群通知',
             event: 'notice.group',
             priority: 2000,
         })

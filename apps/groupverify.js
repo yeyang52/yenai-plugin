@@ -8,7 +8,7 @@ const ops = ["+", "-"];
 export class NEWCMD extends plugin {
   constructor() {
     super({
-      name: '入群验证',
+      name: '椰奶入群验证',
       dsc: '重新验证和绕过验证',
       event: 'message.group',
       priority: 5,

@@ -13,7 +13,7 @@ const ROLE_MAP = {
 export class invitation extends plugin {
     constructor() {
         super({
-            name: '请求通知',
+            name: '椰奶请求通知',
             event: 'request',
             priority: 2000,
         })

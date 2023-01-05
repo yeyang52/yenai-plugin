@@ -6,7 +6,7 @@ import { Config } from '../components/index.js'
 export class anotice extends plugin {
     constructor() {
         super({
-            name: '消息',
+            name: '椰奶消息通知',
             event: 'message',
             priority: 2000,
         })

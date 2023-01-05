@@ -14,7 +14,7 @@ let friend_typeReg = new RegExp('^#更改好友申请方式([0123])((.*)\\s(.*))
 export class example extends plugin {
   constructor() {
     super({
-      name: '小助手',
+      name: '椰奶小助手',
       event: 'message',
       priority: 2000,
       rule: [

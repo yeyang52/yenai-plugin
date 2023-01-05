@@ -27,7 +27,7 @@ let setcdreg = new RegExp(`^#?设置cd\\s?(\\d+)\\s(${Numreg})(s|秒)?$`, "i");
 export class sese extends plugin {
   constructor() {
     super({
-      name: 'setu',
+      name: '椰奶setu',
       event: 'message',
       priority: 500,
       rule: [

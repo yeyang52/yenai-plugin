@@ -8,7 +8,7 @@ import { Config } from '../components/index.js'
 export class Friends extends plugin {
     constructor() {
         super({
-            name: '好友通知',
+            name: '椰奶好友通知',
             event: 'notice.friend',
             priority: 5000
         })

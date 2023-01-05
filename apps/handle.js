@@ -11,7 +11,7 @@ const ROLE_MAP = {
 export class anotice extends plugin {
     constructor() {
         super({
-            name: '申请处理',
+            name: '椰奶申请处理',
             event: 'message',
             priority: 500,
             rule: [

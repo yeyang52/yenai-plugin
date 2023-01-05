@@ -15,7 +15,7 @@ let relatedReg = new RegExp(`^#?看?看?相关作品(\\d+)$`);
 export class example extends plugin {
     constructor() {
         super({
-            name: 'pixiv',
+            name: '椰奶pixiv',
             event: 'message',
             priority: 500,
             rule: [

@@ -7,7 +7,7 @@ import common from '../../../lib/common/common.js'
 export class NGA extends plugin {
   constructor() {
     super({
-      name: 'NGA',
+      name: '椰奶NGA',
       dsc: '收益曲线',
       event: 'message',
       priority: 500,

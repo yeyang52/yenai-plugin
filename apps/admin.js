@@ -5,7 +5,7 @@ import { Version, render, Plugin_Name } from '../components/index.js'
 export class admin extends plugin {
     constructor() {
         super({
-            name: "版本信息",
+            name: "椰奶版本信息",
             event: "message",
             priority: 400,
             rule: [

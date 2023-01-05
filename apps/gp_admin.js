@@ -17,7 +17,7 @@ let Autisticreg = new RegExp(`^#?我要(自闭|禅定)(${Numreg})?个?(${Object.
 export class Basics extends plugin {
     constructor() {
         super({
-            name: '基础群管',
+            name: '椰奶基础群管',
             event: 'message.group',
             priority: 500,
             rule: [

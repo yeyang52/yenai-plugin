@@ -18,7 +18,7 @@ let heisiwreg = new RegExp(`#?来点(${Object.keys(heisitype).join("|")})$`)
 export class example extends plugin {
   constructor() {
     super({
-      name: '娱乐',
+      name: '椰奶娱乐',
       event: 'message',
       priority: 500,
       rule: [

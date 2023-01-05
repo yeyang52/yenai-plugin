@@ -790,9 +790,9 @@ export class Basics extends plugin {
         let res = await QQInterface.SpeakRank(e.group_id, /(7|七)天/.test(e.msg) ? 1 : 0)
         if (!res) return e.reply("接口失效辣！！！")
         if (res.retcode != 0) return e.reply("❎ 未知错误\n" + JSON.stringify(res))
-        let msg = res.data.speakRank.map((item, index) =>
+        let msg = lodash.take(res.data.speakRank.map((item, index) =>
             `${index + 1}:${item.nickname}-${item.uin}\n连续活跃${item.active}天:发言${item.msgCount}次`
-        ).join("\n");
+        ), 10).join("\n");
         e.reply([
             ...msg,
             segment.image(await Browser.Webpage(url, { "Cookie": Bot.cookies['qun.qq.com'] }))

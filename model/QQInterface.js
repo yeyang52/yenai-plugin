@@ -183,15 +183,11 @@ export default new class assistant {
     /**查看本群龙王 */
     async dragon(group_id) {
         let url = `https://qun.qq.com/interactive/honorlist?gc=${group_id}&type=1&_wv=3&_wwv=129`
-        let res = await fetch(url, { headers: { "Cookie": Bot.cookies["qun.qq.com"] } }).then(res => res.text())
-        let name = res.match(/<span class="text">(.*?)<\/span>/)[1]
-        let avatar = res.match(/<div class="avatar" style="background-image:url\((.*?)\);"><\/div>/)[1].replaceAll("amp;", "")
-        let desc = res.match(/<div class="tag" style="display:(none)?;"><span>(.*?)<\/span><\/div>/)[2]
-        return {
-            name,
-            avatar,
-            desc
-        }
+        let res = await fetch(url, { headers: { "Cookie": Bot.cookies['qun.qq.com'] } })
+            .then(res => res.text()).catch(err => console.error(err));
+        let data = res.match(/<script>window.__INITIAL_STATE__=(.*?)<\/script>/)
+        if (!data) return false;
+        return data[1]
     }
 
 

@@ -6,17 +6,17 @@ class Browser {
      * @param {String} url 网页链接
      * @return {image} 图片
      */
-    async Webpage(url) {
+    async Webpage(url, headers = {}) {
         const browser = await puppeteer.launch({
             args: ["--no-sandbox", "--disable-setuid-sandbox"]
         });
         const page = await browser.newPage();
+        await page.setExtraHTTPHeaders(headers)
         await page.goto(url, { 'timeout': 1000 * 30, 'waitUntil': 'networkidle0' });
         await page.setViewport({
             width: 1920,
             height: 1080
         });
-        // await page.autoScroll(page);
         try {
             let res = await page.screenshot({
                 path: './paper.jpeg',
@@ -44,7 +44,7 @@ class Browser {
      * @param {Number} height 页面的高度
      * @return {image} 图片
      */
-    async webPreview(url, width = 1920, height = 1080) {
+    async webPreview(url, width = 1920, height = 1080, headers = {}) {
 
         const browser = await puppeteer.launch({
             headless: true,
@@ -59,6 +59,7 @@ class Browser {
             ]
         });
         const page = await browser.newPage();
+        await page.setExtraHTTPHeaders(headers)
         await page.goto(url);
         await page.setViewport({
             width: width,

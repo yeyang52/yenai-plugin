@@ -3,8 +3,22 @@ import { Cfg } from './index.js';
 import lodash from 'lodash'
 import moment from 'moment'
 import { segment } from "oicq";
+/**获取gtk */
+const gtk = function (t) {
+    for (var e = t || "", n = 5381, r = 0, o = e.length; r < o; ++r)
+        n += (n << 5) + e.charAt(r).charCodeAt(0);
+    return 2147483647 & n
+}
 /**QQ接口 */
 export default new class assistant {
+    constructor() {
+        this.headers = {
+            "Content-type": "application/json;charset=UTF-8",
+            "Cookie": Bot.cookies['qun.qq.com'],
+            "qname-service": "976321:131072",
+            "qname-space": "Production",
+        }
+    }
     /**
      * @description: 取说说列表
      * @param {*} e oicq
@@ -93,38 +107,13 @@ export default new class assistant {
         e.reply(msg)
     }
 
-    /**群星级 */
-    async getCreditLevelInfo(group_id) {
-        let url = `https://qqweb.qq.com/c/activedata/get_credit_level_info?bkn=${Bot.bkn}&uin=${Bot.uin}&gc=${group_id}`
-        return await fetch(url, {
-            headers: {
-                "Cookie": Bot.cookies["qqweb.qq.com"],
-                "Referer": `https://qqweb.qq.com/m/business/qunlevel/index.html?gc=${group_id}&from=0&_wv=1027`,
-                "User-agent": "Mozilla/5.0 (Linux; Android 12; M2012K11AC Build/SKQ1.220303.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/89.0.4389.72 MQQBrowser/6.2 TBS/046141 Mobile Safari/537.36 V1_AND_SQ_8.3.9_350_TIM_D QQ/3.5.0.3148 NetType/WIFI WebP/0.3.0 Pixel/1080 StatusBarHeight/81 SimpleUISwitch/0 QQTheme/1015712"
-            }
-        }).then(res => res.json()).catch(err => console.error(err))
-    }
-
-    /**查看本群龙王 */
-    async dragon(group_id) {
-        let url = `https://qun.qq.com/interactive/honorlist?gc=${group_id}&type=1&_wv=3&_wwv=129`
-        let res = await fetch(url, { headers: { "Cookie": Bot.cookies["qun.qq.com"] } }).then(res => res.text())
-        let name = res.match(/<span class="text">(.*?)<\/span>/)[1]
-        let avatar = res.match(/<div class="avatar" style="background-image:url\((.*?)\);"><\/div>/)[1].replaceAll("amp;", "")
-        let desc = res.match(/<div class="tag" style="display:(none)?;"><span>(.*?)<\/span><\/div>/)[2]
-        return {
-            name,
-            avatar,
-            desc
-        }
-    }
-
+    // ----------------------------------------------------公告---------------------------------------------
     /**
-     * @description: 获取群公告
-     * @param {String} group 群号
-     * @param {String} item 序号
-     * @return {Object}
-     */
+    * @description: 获取群公告
+    * @param {String} group 群号
+    * @param {String} item 序号
+    * @return {Object}
+    */
     async getAnnouncelist(group_id, s = 0) {
         let n = s ? 1 : 20;
         let url = `https://web.qun.qq.com/cgi-bin/announce/get_t_list?bkn=${Bot.bkn}&qid=${group_id}&ft=23&s=${s - 1}&n=${n}`
@@ -177,6 +166,35 @@ export default new class assistant {
             text: lodash.truncate(fid.text)
         }
     }
+
+
+    /**群星级 */
+    async getCreditLevelInfo(group_id) {
+        let url = `https://qqweb.qq.com/c/activedata/get_credit_level_info?bkn=${Bot.bkn}&uin=${Bot.uin}&gc=${group_id}`
+        return await fetch(url, {
+            headers: {
+                "Cookie": Bot.cookies["qqweb.qq.com"],
+                "Referer": `https://qqweb.qq.com/m/business/qunlevel/index.html?gc=${group_id}&from=0&_wv=1027`,
+                "User-agent": "Mozilla/5.0 (Linux; Android 12; M2012K11AC Build/SKQ1.220303.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/89.0.4389.72 MQQBrowser/6.2 TBS/046141 Mobile Safari/537.36 V1_AND_SQ_8.3.9_350_TIM_D QQ/3.5.0.3148 NetType/WIFI WebP/0.3.0 Pixel/1080 StatusBarHeight/81 SimpleUISwitch/0 QQTheme/1015712"
+            }
+        }).then(res => res.json()).catch(err => console.error(err))
+    }
+
+    /**查看本群龙王 */
+    async dragon(group_id) {
+        let url = `https://qun.qq.com/interactive/honorlist?gc=${group_id}&type=1&_wv=3&_wwv=129`
+        let res = await fetch(url, { headers: { "Cookie": Bot.cookies["qun.qq.com"] } }).then(res => res.text())
+        let name = res.match(/<span class="text">(.*?)<\/span>/)[1]
+        let avatar = res.match(/<div class="avatar" style="background-image:url\((.*?)\);"><\/div>/)[1].replaceAll("amp;", "")
+        let desc = res.match(/<div class="tag" style="display:(none)?;"><span>(.*?)<\/span><\/div>/)[2]
+        return {
+            name,
+            avatar,
+            desc
+        }
+    }
+
+
     /**
      * @description: 开关好友添加
      * @param {Number} type 1关闭2开启
@@ -253,5 +271,106 @@ export default new class assistant {
                 "Content-type": "application/json",
             }
         }).then(res => res.json()).catch(err => console.error(err))
+    }
+
+    /**今日打卡 */
+    async signInToday(groupId) {
+        let ck = Cfg.getck('qun.qq.com')
+        let body = JSON.stringify({
+            "dayYmd": moment().format("YYYYMMDD"),
+            "offset": 0,
+            "limit": 10,
+            "uid": String(Bot.uin),
+            "groupId": String(groupId)
+        })
+        let url = `https://qun.qq.com/v2/signin/trpc/GetDaySignedList?g_tk=${gtk(ck.p_skey)}`
+        return await fetch(url, {
+            method: "POST",
+            headers: this.headers,
+            body,
+        }).then(res => res.json()).catch(err => console.error(err));
+    }
+
+    /**
+     * @description: 群发言榜单
+     * @param {Number} groupId 群号
+     * @param {Strng} time 0为7天1为昨天
+     */
+    async SpeakRank(groupId, time) {
+        let url = `https://qun.qq.com/m/qun/activedata/proxy/domain/qun.qq.com/cgi-bin/manager/report/list?bkn=${Bot.bkn}&gc=${groupId}&type=0&start=0&time=${time}`
+        return await fetch(url, {
+            "headers": this.headers,
+        }).then(res => res.json()).catch(err => console.error(err));
+    }
+    // ---------------------------------字符---------------------------------------------
+
+    /**
+     * @description: 字符列表
+     * @return {*}
+     */
+    async luckylist(groupId, start = 0, limit = 10) {
+        let body = JSON.stringify({
+            "group_code": groupId,
+            "start": start,
+            "limit": limit,
+            "need_equip_info": true
+        })
+        let url = `https://qun.qq.com/v2/luckyword/proxy/domain/qun.qq.com/cgi-bin/group_lucky_word/word_list?bkn=${Bot.bkn}`
+        return await fetch(url, {
+            method: "POST",
+            headers: this.headers,
+            body
+        }).then(res => res.json()).catch(err => console.error(err));
+    }
+    /**
+     * @description: 更换字符
+     * @param {String} group_id 群号
+     * @param {String} id 字符id
+     */
+    async equipLucky(group_id, id) {
+        let body = JSON.stringify({
+            "group_code": group_id,
+            "word_id": id
+        })
+        let url = `https://qun.qq.com/v2/luckyword/proxy/domain/qun.qq.com/cgi-bin/group_lucky_word/equip?bkn=${Bot.bkn}`
+        return await fetch(url, {
+            method: "POST",
+            headers: this.headers,
+            body,
+        }).then(res => res.json()).catch(err => console.error(err));
+    }
+    /**
+     * @description: 抽取幸运字符
+     * @param {String} group_id 群号
+     * @return {*}
+     */
+    async drawLucky(group_id) {
+        let body = JSON.stringify({
+            "group_code": group_id
+        })
+        let url = `https://qun.qq.com/v2/luckyword/proxy/domain/qun.qq.com/cgi-bin/group_lucky_word/draw_lottery?bkn=${Bot.bkn}`
+        return await fetch(url, {
+            method: "POST",
+            headers: this.headers,
+            body,
+        }).then(res => res.json()).catch(err => console.error(err));
+    }
+
+    /**
+     * @description: 开关幸运字符
+     * @param {Number} groupId 群号
+     * @param {Boolean} type
+     */
+    async swichLucky(groupId, type) {
+        let body = JSON.stringify({
+            "group_code": groupId,
+            "cmd": type ? 1 : 2
+        })
+        let url = `https://qun.qq.com/v2/luckyword/proxy/domain/qun.qq.com/cgi-bin/group_lucky_word/setting?bkn=${Bot.bkn}`
+        return await fetch(url, {
+            method: "POST",
+            headers: this.headers,
+            body,
+        }).then(res => res.json()).catch(err => console.error(err));
     }
 }

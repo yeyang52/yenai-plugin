@@ -3,7 +3,7 @@ import fetch from 'node-fetch'
 import { segment } from 'oicq'
 import lodash from 'lodash'
 import { Config } from '../components/index.js'
-import { Cfg, Gpadmin, common, QQInterface } from '../model/index.js'
+import { Cfg, Gpadmin, common, QQInterface, Browser } from '../model/index.js'
 import moment from 'moment'
 const ROLE_MAP = {
     admin: '群管理',
@@ -118,7 +118,7 @@ export class Basics extends plugin {
                     fnc: 'Send_notice'
                 },
                 {
-                    reg: `#(查看|获取)?群?发言榜单((7|七)天)?`,
+                    reg: `^#(查看|获取)?群?发言榜单((7|七)天)?`,
                     fnc: 'SpeakRank'
                 },
                 {
@@ -526,11 +526,30 @@ export class Basics extends plugin {
 
     //字符列表
     async qun_luckylist(e) {
-        e.reply(await Gpadmin.getqun_lucky(e))
+        let data = await QQInterface.luckylist(e.group_id)
+        if (!data) return e.reply('❎ 接口出现错误')
+        if (data.retcode != 0) return e.reply('❎ 获取数据失败\n' + JSON.stringify(data))
+
+        let msg = data.data.word_list.map((item, index) => {
+            let { wording, word_id, word_desc } = item.word_info
+            return `${index + 1}:${wording}-${word_id}\n寓意:${word_desc}`
+        }).join("\n");
+        e.reply(msg)
     }
     //抽幸运字符
     async qun_lucky(e) {
-        e.reply(await Gpadmin.getqun_lucky(e, true))
+        let res = await QQInterface.drawLucky(e.group_id);
+
+        if (!res) return e.reply('❎ 接口出现错误')
+        if (res.retcode == 11004) return e.reply("今天已经抽过辣，明天再来抽取吧");
+        if (res.retcode != 0) return e.reply('❎ 错误\n' + JSON.stringify(data))
+
+        if (res.data.word_info) {
+            let { wording, word_desc } = res.data.word_info.word_info
+            e.reply(`恭喜您抽中了${wording}\n寓意为:${word_desc}`)
+        } else {
+            e.reply("恭喜您抽了中了个寂寞")
+        }
     }
     //替换幸运字符
     async qun_luckyuse(e) {
@@ -539,24 +558,26 @@ export class Basics extends plugin {
             return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
         }
         let id = e.msg.replace(/#|替换(幸运)?字符/g, "");
-        e.reply(await Gpadmin.getqun_luckyuse(e, id))
+        let res = await QQInterface.equipLucky(e.group_id, id)
+        
+        if (!res) return e.reply('❎ 接口出现错误')
+        if (res.retcode != 0) return e.reply('❎替换失败\n' + JSON.stringify(res));
+        e.reply('✅ OK')
     }
+
     //开启或关闭群字符
     async qun_luckyset(e) {
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
             return e.reply("❎ 该命令仅限管理员可用", true);
         }
-        let type = 1;
-        if (/关闭/.test(e.msg)) {
-            type = 2;
-        }
-        e.reply(await Gpadmin.setluckyuse(e, type), true)
+        let res = await QQInterface.swichLucky(e.group_id, /开启/.test(e.msg))
+        if (!res) return e.reply('❎ 接口出现错误')
+
+        if (res.retcode == 11111) return e.reply("❎ 重复开启或关闭")
+        if (res.retcode != 0) return e.reply('❎ 错误\n' + JSON.stringify(res));
+        e.reply('✅ OK')
     }
 
-    //今日打卡
-    async DaySigned(e) {
-        e.reply(await Gpadmin.getSigned(e))
-    }
     //获取禁言列表
     async Mutelist(e) {
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
@@ -683,18 +704,7 @@ export class Basics extends plugin {
         e.message.unshift(segment.at("all"))
         e.reply(e.message)
     }
-    //群发言榜单
-    async SpeakRank(e) {
-        if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
-        }
-        let ck = Cfg.getck("qun.qq.com")
-        let url = `http://xiaobai.klizi.cn/API/qqgn/SpeakRank.php?uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&group=${e.group_id}&type=${/(7|七)天/.test(e.msg) ? 1 : 0}`
-        // let url = `http://ovooa.com/API/qunhy/api?QQ=${Bot.uin}&Skey=${ck.skey}&Pskey=${ck.p_skey}&Group=${e.group_id}&type=text`
-        let res = await fetch(url).then(res => res.text()).catch(err => console.log(err))
-        if (!res) return e.reply("接口失效辣！！！")
-        await e.reply(res)
-    }
+
 
     //设置定时群禁言
     async timeMute(e) {
@@ -739,18 +749,21 @@ export class Basics extends plugin {
         await redis.set(`Yunzai:yenai:Taboo:${e.group_id}`, JSON.stringify(data))
         e.reply(`设置定时禁言成功，可发【#定时禁言任务】查看`)``
     }
+
     //谁是龙王
     async dragonKing(e) {
-        let ck = Cfg.getck("qun.qq.com");
-        let url = `http://xiaobai.klizi.cn/API/qqgn/dragon.php?data=json&uin=${(Bot.uin)}&skey=${(ck.skey)}&pskey=${(ck.p_skey)}&group=${(e.group_id)}`;
-        let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))
-        if (!res) res = await QQInterface.dragon(e.group_id)
+        //图片版
+        let url = `https://qun.qq.com/interactive/honorlist?gc=${e.group_id}&type=1&_wv=3&_wwv=129`
+        //数据版
+        let res = await QQInterface.dragon(e.group_id)
         e.reply([
             `本群龙王：${res.name}`,
             segment.image(res.avatar),
             `蝉联天数：${res.desc}`,
+            segment.image(await Browser.Webpage(url, { "Cookie": Bot.cookies['qun.qq.com'] }))
         ]);
     }
+
     /**群星级 */
     async Group_xj(e) {
         let result = await QQInterface.getCreditLevelInfo(e.group_id)
@@ -764,5 +777,39 @@ export class Basics extends plugin {
             `群号：${group_uin}\n`,
             `群星级：${str}`
         ])
+    }
+
+    //群发言榜单
+    async SpeakRank(e) {
+        if (!e.group.is_admin && !e.group.is_owner) {
+            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
+        }
+        //图片截图
+        let url = `https://qun.qq.com/m/qun/activedata/speaking.html?gc=${e.group_id}&time=${/(7|七)天/.test(e.msg) ? 1 : 0}&_wv=3&&_wwv=128`
+        //接口数据
+        let res = await QQInterface.SpeakRank(e.group_id, /(7|七)天/.test(e.msg) ? 1 : 0)
+        if (!res) return e.reply("接口失效辣！！！")
+        if (res.retcode != 0) return e.reply("❎ 未知错误\n" + JSON.stringify(res))
+        let msg = res.data.speakRank.map((item, index) =>
+            `${index + 1}:${item.nickname}-${item.uin}\n连续活跃${item.active}天:发言${item.msgCount}次`
+        ).join("\n");
+        e.reply([
+            ...msg,
+            segment.image(await Browser.Webpage(url, { "Cookie": Bot.cookies['qun.qq.com'] }))
+        ])
+    }
+
+    //今日打卡
+    async DaySigned(e) {
+        let res = await QQInterface.signInToday(e.group_id)
+
+        if (!res) return e.reply("❎ 出错辣，请稍后重试")
+        if (res.retCode != 0) return e.reply("❎ 未知错误\n" + JSON.stringify(res));
+
+        let list = res.response.page[0]
+        if (list.total == 0) return e.reply("今天还没有人打卡哦(￣▽￣)\"")
+        //发送消息
+        let msg = list.infos.map((item, index) => `${index + 1}:${item.uidGroupNick}-${item.uid}\n打卡时间:${moment(item.signedTimeStamp * 1000).format("YYYY-MM-DD HH:mm:ss")}`).join("\n");
+        e.reply(msg)
     }
 }

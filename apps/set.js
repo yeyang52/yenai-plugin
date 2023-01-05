@@ -22,15 +22,17 @@ const configs = {
     // 其他通知
     "闪照": "flashPhoto",
     "禁言": "botBeenBanned",
+
     "全部通知": "notificationsAll",
     "删除缓存": "deltime",
     "涩涩": "sese",
     "状态": "state",
     "涩涩pro": "sesepro",
-    "陌生人点赞": "Strangers_love"
+    "陌生人点赞": "Strangers_love",
+    //给有问题的用户关闭定时器
+    "状态任务": "statusTask"
 }
 
-let rediskey = `yenai:proxy`
 let deltimereg = new RegExp('^#椰奶设置删除缓存时间(\\d+)秒?$')
 let managereg = new RegExp(`^#椰奶设置(${Object.keys(configs).join("|")})(开启|关闭)$`)
 export class NewConfig extends plugin {
@@ -75,12 +77,13 @@ export class NewConfig extends plugin {
             ]
         })
         this.NoTitlepath = './plugins/yenai-plugin/config/config/Shielding_words.yaml'
+        this.rediskey = `yenai:proxy`
     }
 
     //初始化
     async init() {
-        if (!await redis.get(rediskey)) {
-            await redis.set(rediskey, "i.pixiv.re")
+        if (!await redis.get(this.rediskey)) {
+            await redis.set(this.rediskey, "i.pixiv.re")
         }
     }
 
@@ -120,23 +123,30 @@ export class NewConfig extends plugin {
     //修改全部设置
     async SetAll(e) {
         if (!e.isMaster) return
-        let yes = false;
-        if (/启用/.test(e.msg)) {
-            yes = true;
-        }
-        let no = ["sese", "deltime", "notificationsAll", "state", "sesepro", "Strangers_love"]
+        let yes = /启用/.test(e.msg);
+        //设置的任务
+        let type = [
+            "privateMessage",
+            "groupMessage",
+            "grouptemporaryMessage",
+            "groupRecall",
+            "PrivateRecall",
+            "friendRequest",
+            "groupInviteRequest",
+            'addGroupApplication',
+            "groupAdminChange",
+            "friendNumberChange",
+            "groupNumberChange",
+            "groupMemberNumberChange",
+            "flashPhoto",
+            "botBeenBanned",
+        ]
 
-        if (yes) {
-            for (let i in configs) {
-                if (no.includes(configs[i])) continue
-                Config.modify("whole", configs[i], yes)
-            }
-        } else {
-            for (let i in configs) {
-                if (no.includes(configs[i])) continue
-                Config.modify("whole", configs[i], yes)
-            }
+        for (let i in configs) {
+            if (!type.includes(configs[i])) continue
+            Config.modify("whole", configs[i], yes)
         }
+
         this.yenaiset(e)
         return true;
     }
@@ -145,7 +155,7 @@ export class NewConfig extends plugin {
         if (!e.isMaster) return
 
         let config = await Config.Notice
-        let cfg = {
+        let data = {
             //好友消息
             privateMessage: getStatus(config.privateMessage),
             //群消息
@@ -182,12 +192,14 @@ export class NewConfig extends plugin {
             deltime: Number(config.deltime),
             //默认状态
             state: getStatus(config.state),
+            //状态任务定时器
+            statusTask: getStatus(config.statusTask),
 
             bg: await rodom(), //获取底图
         }
         //渲染图像
         return await render("admin/index", {
-            ...cfg,
+            ...data,
         }, {
             e,
             scale: 2.0
@@ -196,23 +208,17 @@ export class NewConfig extends plugin {
 
     //更换代理
     async proxy(e) {
-        if (/1/.test(e.msg)) {
-            await redis.set(rediskey, "i.pixiv.re")
-                .then(() => e.reply("✅ 已经切换代理为1"))
-                .catch(err => console.log(err))
-        } else if (/2/.test(e.msg)) {
-            await redis.set(rediskey, "proxy.pixivel.moe")
-                .then(() => e.reply("✅ 已经切换代理为2"))
-                .catch(err => console.log(err))
-        } else if (/3/.test(e.msg)) {
-            await redis.set(rediskey, "px2.rainchan.win")
-                .then(() => e.reply("✅ 已经切换代理为3"))
-                .catch(err => console.log(err))
-        } else if (/4/.test(e.msg)) {
-            await redis.set(rediskey, "sex.nyan.xyz")
-                .then(() => e.reply("✅ 已经切换代理为4"))
-                .catch(err => console.log(err))
-        }
+        let type = e.msg.match(/\d/) - 1
+        let proxy = [
+            "i.pixiv.re",
+            "proxy.pixivel.moe",
+            "px2.rainchan.win",
+            "sex.nyan.xyz"
+        ]
+        logger.mark(`[椰奶proxy]切换为${proxy[type]}`)
+        await redis.set(this.rediskey, proxy[type])
+            .then(() => e.reply(`✅ 已经切换代理为「${proxy[type]}」`))
+            .catch(err => console.log(err))
     }
     //查看涩涩设置
     async View_Settings(e) {

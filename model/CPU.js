@@ -3,6 +3,7 @@ import si from 'systeminformation'
 import lodash from 'lodash'
 import fs from 'fs'
 import { common } from './index.js'
+import { Config } from '../components/index.js'
 class OSUtils {
   constructor() {
     this.cpuUsageMSDefault = 1000; // CPU 利用率默认时间段
@@ -13,6 +14,12 @@ class OSUtils {
   }
 
   async init() {
+    //初始化GPU获取
+    if ((await si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)) {
+      this.isGPU = true
+    }
+    //给有问题的用户关闭定时器
+    if (!Config.Notice.statusTask) return;
     //网速
     let worktimer = setInterval(async () => {
       this.now_network = await si.networkStats()
@@ -26,10 +33,6 @@ class OSUtils {
       if (!this.now_network) clearTimeout(worktimer)
       if (!this.fsStats) clearTimeout(fsStatstimer)
     }, 60000)
-    //初始化GPU获取
-    if ((await si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)) {
-      this.isGPU = true
-    }
   }
 
   /**字节转换 */

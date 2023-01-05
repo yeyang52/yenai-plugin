@@ -21,4 +21,4 @@ sese: false #涩涩
 state: false #状态
 deltime: 600 #删除缓存
 sesepro: false #涩涩增强
-
+statusTask: true #状态网速定时器

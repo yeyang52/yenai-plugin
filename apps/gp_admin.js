@@ -559,7 +559,7 @@ export class Basics extends plugin {
         }
         let id = e.msg.replace(/#|替换(幸运)?字符/g, "");
         let res = await QQInterface.equipLucky(e.group_id, id)
-        
+
         if (!res) return e.reply('❎ 接口出现错误')
         if (res.retcode != 0) return e.reply('❎替换失败\n' + JSON.stringify(res));
         e.reply('✅ OK')
@@ -755,11 +755,11 @@ export class Basics extends plugin {
         //图片版
         let url = `https://qun.qq.com/interactive/honorlist?gc=${e.group_id}&type=1&_wv=3&_wwv=129`
         //数据版
-        let res = await QQInterface.dragon(e.group_id)
+        // let res = await QQInterface.dragon(e.group_id)
         e.reply([
-            `本群龙王：${res.name}`,
-            segment.image(res.avatar),
-            `蝉联天数：${res.desc}`,
+            // `本群龙王：${res.name}`,
+            // segment.image(res.avatar),
+            // `蝉联天数：${res.desc}`,
             segment.image(await Browser.Webpage(url, { "Cookie": Bot.cookies['qun.qq.com'] }))
         ]);
     }

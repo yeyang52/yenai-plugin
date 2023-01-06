@@ -760,7 +760,11 @@ export class Basics extends plugin {
             // `本群龙王：${res.name}`,
             // segment.image(res.avatar),
             // `蝉联天数：${res.desc}`,
-            segment.image(await Browser.Webpage(url, { "Cookie": Bot.cookies['qun.qq.com'] }))
+            await Browser.Webpage(url, { "Cookie": Bot.cookies['qun.qq.com'] }, {
+                width: 700,
+                height: 700,
+                deviceScaleFactor: 3
+            })
         ]);
     }
 
@@ -776,7 +780,7 @@ export class Basics extends plugin {
             `群名：${group_name}\n`,
             `群号：${group_uin}\n`,
             `群星级：${str}`
-        ])
+        ], true)
     }
 
     //群发言榜单
@@ -795,7 +799,14 @@ export class Basics extends plugin {
         ), 10).join("\n");
         e.reply([
             ...msg,
-            segment.image(await Browser.Webpage(url, { "Cookie": Bot.cookies['qun.qq.com'] }))
+            await Browser.Webpage(url, {
+                "Cookie":
+                    Bot.cookies['qun.qq.com']
+            }, {
+                width: 700,
+                height: 700,
+                deviceScaleFactor: 3
+            }, true)
         ])
     }
 

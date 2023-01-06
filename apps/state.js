@@ -28,8 +28,6 @@ export class example extends plugin {
     }
     //防止多次触发
     if (interval) { return } else interval = true;
-    //现在的时间戳(秒)
-    let present_time = new Date().getTime() / 1000
     //系统
     let osinfo = await si.osInfo();
     //可视化数据
@@ -48,7 +46,7 @@ export class example extends plugin {
       //头像
       portrait: `https://q1.qlogo.cn/g?b=qq&s=0&nk=${Bot.uin}`,
       //运行时间
-      runTime: Formatting(present_time - Bot.stat.start_time, true),
+      runTime: Formatting(Date.now() / 1000 - Bot.stat.start_time, true),
       //日历
       calendar: moment().format("YYYY-MM-DD HH:mm:ss"),
       //昵称

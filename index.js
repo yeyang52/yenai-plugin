@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import Ver from './components/Version.js'
 import chalk from 'chalk'
+import si from 'systeminformation'
 
 const files = fs.readdirSync('./plugins/yenai-plugin/apps').filter(file => file.endsWith('.js'))
 

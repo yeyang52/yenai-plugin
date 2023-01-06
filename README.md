@@ -32,7 +32,7 @@ git clone https://gitee.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 ```
 
-安装依赖：**Yunzai-Bot根目录**下执行`pnpm add systeminformation -w`或使用cnpm、npm等包管理工具安装systeminformation库
+安装依赖：**Yunzai-Bot根目录**下执行`pnpm add systeminformation -w`或使用cnpm、npm等包管理工具安装
 
 ---
 

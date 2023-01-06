@@ -1,7 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js';
 import { segment } from "oicq";
-import fetch from 'node-fetch';
-import { Cfg, QQInterface } from '../model/index.js';
+import { Cfg, QQInterface, common } from '../model/index.js';
 import lodash from 'lodash'
 import moment from 'moment'
 
@@ -333,24 +332,10 @@ export class example extends plugin {
 
     if (!signs) return e.reply("❎ 状态不为空，可选值：我在线上，离开，隐身，忙碌，Q我吧，请勿打扰");
 
-    let res = {
-      "离开": 31,
-      "忙碌": 50,
-      "隐身": 41,
-      "Q我吧": 60,
-      "请勿打扰": 70,
-      "我在线上": 11,
-    }
+    let status = common.status, statusMirr = lodash.invert(status)
+    if (!(signs in statusMirr)) return e.reply("❎ 可选值：我在线上，离开，隐身，忙碌，Q我吧，请勿打扰")
 
-    let status = {};
-    for (let k in res) {
-      status[res[k]] = k;
-    }
-
-    if (!(signs in res)) return e.reply("❎ 可选值：我在线上，离开，隐身，忙碌，Q我吧，请勿打扰")
-
-    await Bot.setOnlineStatus(res[signs])
-      .then(() => e.reply("✅ 在线状态修改成功"))
+    await Bot.setOnlineStatus(statusMirr[signs])
       .then(() => e.reply(`✅ 现在的在线状态为【${status[Bot.status]}】`))
       .catch(err => {
         e.reply("❎ 在线状态修改失败");
@@ -425,7 +410,7 @@ export class example extends plugin {
     })
 
     let groupids = gpid.split(",");
-    console.log(groupidList.length);
+
     if (!groupids.every(item => item <= groupidList.length)) return e.reply("❎ 序号超过合法值！！！")
 
     groupids.forEach((item) => {
@@ -605,7 +590,7 @@ export class example extends plugin {
   async Qzonelist(e) {
     if (!e.isMaster) return;
 
-    let page = e.msg.replace(/#|取说说列表/g, "").trim()
+    let page = e.msg.replace(/#|获?取说说列表/g, "").trim()
     if (!page) {
       page = 0
     } else {
@@ -613,8 +598,11 @@ export class example extends plugin {
     }
 
     //获取说说列表
-    let list = await QQInterface.getQzone(e, page * 5, 5)
-    if (!list) return
+    let list = await QQInterface.getQzone(page * 5, 5)
+
+    if (!list) return e.reply("❎ 取说说列表失败")
+    if (list.total == 0) return e.reply(`✅ 说说列表为空`)
+
     let msg = [
       "✅ 获取成功，说说列表如下:\n",
       ...list.msglist.map((item, index) =>
@@ -628,13 +616,42 @@ export class example extends plugin {
   /** 删除说说 */
   async Qzonedel(e) {
     if (!e.isMaster) return;
-    QQInterface.delQzone(e)
+    let pos = e.msg.match(/\d+/)
+    //获取说说列表
+    let list = await QQInterface.getQzone(pos - 1, 1)
+
+    if (!list) return e.reply("❎ 取说说列表失败")
+    if (!list.msglist) return e.reply(`❎ 未获取到该说说`)
+
+    //要删除的说说
+    let domain = list.msglist[0]
+    //请求接口
+    let result = await QQInterface.delQzone(domain.tid, domain.t1_source)
+    if (!result) return e.reply(`❎ 接口请求失败`)
+    //debug
+    logger.debug(`[椰奶删除说说]`, result)
+
+    if (result.subcode != 0) e.reply(`❎ 未知错误` + JSON.parse(result))
+    //发送结果
+    e.reply(`✅ 删除说说成功：\n ${pos}.${lodash.truncate(domain.content, { "length": 15 })} \n - [${domain.secret ? "私密" : "公开"}] | ${moment(domain.created_time * 1000).format("MM/DD HH:mm")} | ${domain.commentlist?.length || 0} 条评论`)
+
   }
 
   /** 发说说 */
   async Qzonesay(e) {
     if (!e.isMaster) return;
-    QQInterface.setQzone(e)
+    let con = e.msg.replace(/#|发说说/g, "").trim()
+    let result = await QQInterface.setQzone(con, e.img)
+    if (!result) return e.reply("❎ 出错辣，请稍后重试")
+
+    if (result.code != 0) return e.reply(`❎ 说说发表失败\n${JSON.stringify(result)}`)
+
+    let msg = [`✅ 说说发表成功，内容：\n`, lodash.truncate(result.content, { "length": 15 })]
+    if (result.pic) {
+      msg.push(segment.image(result.pic[0].url1))
+    }
+    msg.push(`\n- [${result.secret ? "私密" : "公开"}] | ${moment(result.t1_ntime * 1000).format("MM/DD HH:mm")}`)
+    e.reply(msg)
   }
 
   /** 清空说说和留言*/
@@ -655,16 +672,14 @@ export class example extends plugin {
     let msg = this.e.msg
     if (/#?确认清空/.test(msg)) {
       this.finish('QzonedelAll')
-      let ck = Cfg.getck('qzone.qq.com')
-      let url
+      let result
       if (Qzonedetermine) {
-        url = `https://xiaobai.klizi.cn/API/qqgn/ss_empty.php?data=&uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}`
+        result = await QQInterface.delQzoneAll()
       } else {
-        url = `https://xiaobai.klizi.cn/API/qqgn/qzone_emptymsgb.php?data=&uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}`
+        result = await QQInterface.delQzoneMsgbAll()
       }
 
-      let result = await fetch(url).then(res => res.text()).catch(err => console.log(err))
-      this.e.reply(`✅ ${result}`)
+      this.e.reply(result)
       return true;
 
     } else if (/#?取消/.test(msg)) {
@@ -686,23 +701,20 @@ export class example extends plugin {
     if (/群列表/.test(e.msg)) {
       //获取群列表并转换为数组
       let listMap = Array.from(Bot.gl.values())
-      //添加有几个群
-      msg.push(`群列表如下，共${listMap.length}个群`)
-      //遍历添加
-      msg.push(listMap.map((item, index) => `${index + 1}、${item.group_name}(${item.group_id})`).join("\n"))
-      //提示信息
-      msg.push("可使用 #退群123456789 来退出某群")
-      msg.push("可使用 #发群列表 <序号> <消息> 来快速发送消息")
-      msg.push(`多个群聊请用 "," 分隔 不能大于3 容易寄`)
-    } else if (/好友列表/.test(e.msg)) {
+      msg = [
+        `群列表如下，共${listMap.length}个群`,
+        listMap.map((item, index) => `${index + 1}、${item.group_name}(${item.group_id})`).join("\n"),
+        "可使用 #退群123456789 来退出某群",
+        `可使用 #发群列表 <序号> <消息> 来快速发送消息，多个群聊请用 "," 分隔 不能大于3 容易寄`
+      ]
+    } else {
       //获取好友列表并转换为数组
       let listMap = Array.from(Bot.fl.values())
-      //添加有多少个好友
-      msg.push(`好友列表如下，共${listMap.length}个好友`)
-      //遍历添加
-      msg.push(listMap.map((item, index) => `${index + 1}、${item.nickname}(${item.user_id})`).join("\n"))
-      //提示信息
-      msg.push("可使用 #删好友123456789 来删除某人")
+      msg = [
+        `好友列表如下，共${listMap.length}个好友`,
+        listMap.map((item, index) => `${index + 1}、${item.nickname}(${item.user_id})`).join("\n"),
+        "可使用 #删好友123456789 来删除某人"
+      ]
     }
 
     Cfg.getforwardMsg(e, msg)

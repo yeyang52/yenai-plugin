@@ -92,12 +92,6 @@ export class example extends plugin {
     let regRet = searchReg.exec(e.msg)
     if (/(lp|ip)|(i|p|l)(地址|查询)/ig.test(regRet[2])) return e.reply("(;｀O´)o警告！！触发屏蔽词！！！", true)
     let url = SEARCH_MAP[regRet[1]] + encodeURIComponent(regRet[2])
-    logger.mark("开始搜索")
-    if (res) {
-      e.reply([await Browser.Webpage(url), url]);
-    } else {
-      e.reply("截图失败");
-    }
-
+    e.reply([await Browser.Webpage(url) || '', url]);
   }
 }

@@ -764,7 +764,7 @@ export class Basics extends plugin {
                 width: 700,
                 height: 700,
                 deviceScaleFactor: 3
-            })
+            }, true)
         ]);
     }
 
@@ -780,7 +780,7 @@ export class Basics extends plugin {
             `群名：${group_name}\n`,
             `群号：${group_uin}\n`,
             `群星级：${str}`
-        ], true)
+        ])
     }
 
     //群发言榜单

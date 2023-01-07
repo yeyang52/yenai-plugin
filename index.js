@@ -16,9 +16,9 @@ try {
 } catch (error) {
     if (error.stack.includes('Cannot find package')) {
         logger.warn('--------椰奶依赖缺失--------')
-        logger.warn("yenai-plugin 没有检测到systeminformation依赖将无法使用椰奶状态")
+        logger.warn(`yenai-plugin 缺少依赖将无法使用 ${logger.yellow('椰奶状态')}`)
         logger.warn(`如需使用请运行：${logger.red('pnpm add systeminformation -w')}`)
-        logger.warn('---------------------')
+        logger.warn('---------------------------')
     } else {
         logger.error(`椰奶载入依赖错误：${logger.red('systeminformation')}`)
         logger.error(decodeURI(error.stack))

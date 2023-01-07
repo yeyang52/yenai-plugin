@@ -3,7 +3,8 @@ import os from 'os';
 import { render, Config } from '../components/index.js'
 import { CPU, Cfg, common } from '../model/index.js'
 import moment from 'moment';
-import si from 'systeminformation'
+// import si from 'systeminformation'
+let si = await redis.get('yenai:node_modules') ? await import("systeminformation") : false
 import lodash from 'lodash'
 let interval = false;
 export class example extends plugin {
@@ -26,6 +27,7 @@ export class example extends plugin {
     if (!/椰奶/.test(e.msg) && !Config.Notice.state) {
       return false;
     }
+    if (!si) return e.reply("❎ 没有检测到systeminformation依赖，请运行：'pnpm add systeminformation -w'进行安装")
     //防止多次触发
     if (interval) { return } else interval = true;
     //系统

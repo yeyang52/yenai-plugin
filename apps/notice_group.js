@@ -21,7 +21,7 @@ export class newgroups extends plugin {
         switch (e.sub_type) {
             case 'increase': {
                 if (e.user_id === Bot.uin) {
-                    if (!Config.getGroup(e.group_id).groupNumberChange) return
+                    if (!Config.getGroup(e.group_id).groupNumberChange) return false;
 
                     logger.mark("[椰奶]新增群聊")
 
@@ -33,7 +33,7 @@ export class newgroups extends plugin {
                         `新增群号：${e.group_id}`
                     ]
                 } else {
-                    if (!Config.getGroup(e.group_id).groupMemberNumberChange) return
+                    if (!Config.getGroup(e.group_id).groupMemberNumberChange) return false;
 
                     logger.mark("[椰奶]新增群员")
 
@@ -51,7 +51,7 @@ export class newgroups extends plugin {
             }
             case 'decrease': {
                 if (e.dismiss) {
-                    if (!Config.getGroup(e.group_id).groupNumberChange) return
+                    if (!Config.getGroup(e.group_id).groupNumberChange) return false;
 
                     logger.mark("[椰奶]群聊被解散")
 
@@ -64,7 +64,7 @@ export class newgroups extends plugin {
                         `解散群号：${e.group_id}`
                     ]
                 } else if (e.user_id === Bot.uin && e.operator_id !== Bot.uin) {
-                    if (!Config.getGroup(e.group_id).groupNumberChange) return
+                    if (!Config.getGroup(e.group_id).groupNumberChange) return false;
 
                     logger.mark("[椰奶]机器人被踢")
 
@@ -77,7 +77,7 @@ export class newgroups extends plugin {
                         `被踢群号：${e.group_id}`
                     ]
                 } else if (e.user_id === Bot.uin && e.operator_id === Bot.uin) {
-                    if (!Config.getGroup(e.group_id).groupNumberChange) return
+                    if (!Config.getGroup(e.group_id).groupNumberChange) return false;
 
                     logger.mark("[椰奶]机器人退群")
 
@@ -89,7 +89,7 @@ export class newgroups extends plugin {
                         `退出群号：${e.group_id}`
                     ]
                 } else if (e.operator_id === e.user_id) {
-                    if (!Config.getGroup(e.group_id).groupMemberNumberChange) return
+                    if (!Config.getGroup(e.group_id).groupMemberNumberChange) return false;
 
                     logger.mark("[椰奶]群员退群")
 
@@ -108,7 +108,7 @@ export class newgroups extends plugin {
                         `退出群号：${e.group_id}`
                     ]
                 } else if (e.operator_id !== e.user_id) {
-                    if (!Config.getGroup(e.group_id).groupMemberNumberChange) return
+                    if (!Config.getGroup(e.group_id).groupMemberNumberChange) return false;
 
                     logger.mark("[椰奶]群员被踢")
 
@@ -132,7 +132,7 @@ export class newgroups extends plugin {
             }
             // 群管理变动
             case 'admin': {
-                if (!Config.getGroup(e.group_id).groupAdminChange) return
+                if (!Config.getGroup(e.group_id).groupAdminChange) return false;
 
                 e.set ? logger.mark("[椰奶]机器人被设置管理") : logger.mark("[椰奶]机器人被取消管理")
                 if (e.user_id === Bot.uin) {
@@ -166,9 +166,9 @@ export class newgroups extends plugin {
             case 'ban': {
                 let Forbiddentime = Cfg.getsecondformat(e.duration)
 
-                if (!Config.getGroup(e.group_id).botBeenBanned) return
+                if (!Config.getGroup(e.group_id).botBeenBanned) return false;
 
-                if (e.user_id != Bot.uin) return
+                if (e.user_id != Bot.uin) return false;
 
                 if (e.duration == 0) {
                     logger.mark("[椰奶]机器人被解除禁言")
@@ -198,7 +198,7 @@ export class newgroups extends plugin {
             }
             // 群转让
             case 'transfer': {
-                if (!Config.getGroup(e.group_id).groupNumberChange) return
+                if (!Config.getGroup(e.group_id).groupNumberChange) return false;
 
                 logger.mark("[椰奶]群聊转让")
 
@@ -216,17 +216,17 @@ export class newgroups extends plugin {
             // 群撤回
             case 'recall': {
                 // 开启或关闭
-                if (!Config.getGroup(e.group_id).groupRecall) return
+                if (!Config.getGroup(e.group_id).groupRecall) return false;
                 // 是否为机器人撤回
-                if (e.user_id == Bot.uin) return
+                if (e.user_id == Bot.uin) return false;
                 // 是否为主人撤回
-                if (Cfg.masterQQ.includes(e.user_id)) return
+                if (Cfg.masterQQ.includes(e.user_id)) return false;
                 // 读取
                 let res = JSON.parse(
                     await redis.get(`notice:messageGroup:${e.message_id}`)
                 )
                 // 无数据 return出去
-                if (!res) return
+                if (!res) return false;
                 // 不同消息处理
                 let special = ''
                 if (res[0].type === 'flash') {
@@ -285,7 +285,7 @@ export class newgroups extends plugin {
                 break
             }
             default:
-                return
+                return false;
         }
         await Cfg.getSend(msg)
         if (forwardMsg) {

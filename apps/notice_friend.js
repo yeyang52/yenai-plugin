@@ -19,7 +19,7 @@ export class Friends extends plugin {
         let forwardMsg
         switch (e.sub_type) {
             case 'increase': {
-                if (!Config.Notice.friendNumberChange) return
+                if (!Config.Notice.friendNumberChange) return false;
                 logger.mark("[椰奶]新增好友")
                 msg = [
                     segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
@@ -30,7 +30,7 @@ export class Friends extends plugin {
                 break
             }
             case 'decrease': {
-                if (!Config.Notice.friendNumberChange) return
+                if (!Config.Notice.friendNumberChange) return false;
                 logger.mark("[椰奶]好友减少")
                 msg = [
                     segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
@@ -41,18 +41,18 @@ export class Friends extends plugin {
                 break
             }
             case 'recall': {
-                if (!Config.Notice.PrivateRecall) return
+                if (!Config.Notice.PrivateRecall) return false;
 
-                if (e.user_id == Bot.uin) return
+                if (e.user_id == Bot.uin) return false;
 
-                if (Cfg.masterQQ.includes(e.user_id)) return
+                if (Cfg.masterQQ.includes(e.user_id)) return false
                 logger.mark("[椰奶]好友撤回")
                 // 读取
                 let res = JSON.parse(
                     await redis.get(`notice:messagePrivate:${e.message_id}`)
                 )
                 // 无数据 return
-                if (!res) return
+                if (!res) return false
                 // 撤回为闪照处理
                 if (res[0].type === 'flash') {
                     let url = res[0].url
@@ -82,7 +82,7 @@ export class Friends extends plugin {
                 break
             }
             case 'poke': {
-                if (!Config.Notice.privateMessage) return
+                if (!Config.Notice.privateMessage) return false
                 logger.mark("[椰奶]好友戳一戳")
                 msg = [
                     segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
@@ -92,7 +92,7 @@ export class Friends extends plugin {
                 break
             }
             default:
-                return
+                return false;
         }
         await Cfg.getSend(msg)
         if (forwardMsg) {

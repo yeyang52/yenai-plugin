@@ -60,7 +60,7 @@ export class invitation extends plugin {
                 }
                 break;
             case 'friend':
-                if (!Config.Notice.friendRequest) return
+                if (!Config.Notice.friendRequest) return false;
                 logger.mark("[椰奶]好友申请")
                 msg = [
                     segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),

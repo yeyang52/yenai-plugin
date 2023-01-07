@@ -119,6 +119,7 @@ export class example extends plugin {
 
   /**点赞 */
   async zan(e) {
+    if (Bot.config.platform == 3) return e.reply("❎ 手表协议暂不支持点赞请更换协议后重试")
     /**判断是否为好友 */
     let isFriend = await Bot.fl.get(e.user_id)
     let likeByStrangers = Config.Notice.Strangers_love

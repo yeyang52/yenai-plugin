@@ -16,9 +16,9 @@ export class anotice extends plugin {
 Bot.on("message", async (e) => {
 
     // 判断是否为机器人消息
-    if (e.user_id == Bot.uin) return
+    if (e.user_id == Bot.uin) return false;
     // 判断是否主人消息
-    if (Cfg.masterQQ.includes(e.user_id)) return
+    if (Cfg.masterQQ.includes(e.user_id)) return false;
     //删除缓存时间
     let deltime = Config.Notice.deltime
     // 判断群聊还是私聊
@@ -53,7 +53,7 @@ Bot.on("message", async (e) => {
         e.message[0].type == 'flash' &&
         e.message_type === 'group'
     ) {
-        if (!Config.getGroup(e.group_id).flashPhoto) return
+        if (!Config.getGroup(e.group_id).flashPhoto) return false;
         logger.mark("[椰奶]群聊闪照")
         msg = [
             segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`),
@@ -93,7 +93,7 @@ Bot.on("message", async (e) => {
             `闪照链接:${e.message[0].url}`
         ]
     } else if (e.message_type === 'private' && e.sub_type === 'friend') {
-        if (!Config.Notice.privateMessage) return
+        if (!Config.Notice.privateMessage) return false;
 
         let res = e.message
         // 特殊消息处理
@@ -122,7 +122,7 @@ Bot.on("message", async (e) => {
             )
         }
     } else if (e.message_type === 'private' && e.sub_type === 'group') {
-        if (!Config.getGroup(e.group_id).grouptemporaryMessage) return
+        if (!Config.getGroup(e.group_id).grouptemporaryMessage) return false;
         // 特殊消息处理
         let res = e.message
         let arr = getSpecial(e.message)
@@ -150,7 +150,7 @@ Bot.on("message", async (e) => {
             )
         }
     } else if (e.message_type === 'group') {
-        if (!Config.getGroup(e.group_id).groupMessage) return
+        if (!Config.getGroup(e.group_id).groupMessage) return false;
         // 特殊消息处理
         let res = e.message
         let arr = getSpecial(e.message)
@@ -170,7 +170,7 @@ Bot.on("message", async (e) => {
             ...res
         ]
     } else if (e.message_type === 'discuss') {
-        if (!Config.getGroup(e.group_id).groupMessage) return
+        if (!Config.getGroup(e.group_id).groupMessage) return false;
         logger.mark("[椰奶]讨论组消息")
         msg = [
             segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),

@@ -9,7 +9,7 @@ const yunzai_ver = `v${cfg.package.version}`;
 let logs = {}
 let changelogs = []
 let currentVersion
-let versionCount = 6
+let versionCount = 3
 
 const getLine = function (line) {
   line = line.replace(/(^\s*\*|\r)/g, '')
@@ -24,7 +24,7 @@ const getLine = function (line) {
 try {
   if (fs.existsSync(CHANGELOG_path)) {
     logs = fs.readFileSync(CHANGELOG_path, 'utf8') || ''
-	logs = logs.replace(/\t/g,'   ').split('\n')
+    logs = logs.replace(/\t/g, '   ').split('\n')
     let temp = {};
     let lastLine = {}
     lodash.forEach(logs, (line) => {
@@ -40,7 +40,7 @@ try {
           changelogs.push(temp)
           if (/0\s*$/.test(v) && versionCount > 0) {
             //versionCount = 0
-			versionCount--
+            versionCount--
           } else {
             versionCount--
           }
@@ -53,18 +53,18 @@ try {
         if (!line.trim()) {
           return
         }
-		if (/^\*/.test(line)) {
-			lastLine = {
-				title: getLine(line),
-				logs: []
-		}
-		if(!temp.logs){
-			temp = {
-				version: line,
-				logs: []
-			}
-		}
-		temp.logs.push(lastLine)
+        if (/^\*/.test(line)) {
+          lastLine = {
+            title: getLine(line),
+            logs: []
+          }
+          if (!temp.logs) {
+            temp = {
+              version: line,
+              logs: []
+            }
+          }
+          temp.logs.push(lastLine)
         } else if (/^\s{2,}\*/.test(line)) {
           lastLine.logs.push(getLine(line))
         }
@@ -72,29 +72,29 @@ try {
     })
   }
 } catch (e) {
-	logger.error(e);
+  logger.error(e);
   // do nth
 }
 
-try{
-	if(fs.existsSync(README_path)){
-		let README = fs.readFileSync(README_path, 'utf8') || ''
-		let reg = /版本：(.*)/.exec(README)
-		if(reg){
-			currentVersion = reg[1]
-		}
-	}
-}catch(err){}
+try {
+  if (fs.existsSync(README_path)) {
+    let README = fs.readFileSync(README_path, 'utf8') || ''
+    let reg = /版本：(.*)/.exec(README)
+    if (reg) {
+      currentVersion = reg[1]
+    }
+  }
+} catch (err) { }
 
 let Version = {
-  get ver () {
+  get ver() {
     return currentVersion;
   },
-  get yunzai(){
-	  return yunzai_ver;
+  get yunzai() {
+    return yunzai_ver;
   },
-  get logs(){
-	  return changelogs;
+  get logs() {
+    return changelogs;
   }
 }
 export default Version

@@ -22,7 +22,7 @@ Yenai-Plugin是一个Yunzai-Bot的扩展插件，提供对Bot的一些便捷操�
 
 请将Yenai-Plugin放置在Yunzai-Bot的plugins目录下，重启Yunzai-Bot后即可使用。
 
-推荐使用git进行安装，以方便后续升级。在Yunzai目录打开终端，运行
+1. 推荐使用git进行安装，以方便后续升级。在Yunzai目录打开终端，运行
 
 ```
 // 使用gitee
@@ -32,7 +32,12 @@ git clone https://gitee.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 ```
 
-安装依赖：**Yunzai-Bot根目录**下执行`pnpm add systeminformation -w`或使用cnpm、npm等包管理工具安装
+2. 安装依赖：
+
+```
+pnpm add systeminformation -w
+```
+
 
 ---
 

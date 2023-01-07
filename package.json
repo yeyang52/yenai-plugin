@@ -1,0 +1,23 @@
+{
+  "name": "yenai-plguin",
+  "version": "1.0.0",
+  "description": "Yunzai-Bot插件扩展",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/yeyang52/yenai-plugin.git"
+  },
+  "keywords": [
+    "Yunzai-Bot",
+    "yenai-plguin"
+  ],
+  "author": "yeyang",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "systeminformation": "^5.17.1"
+  }
+}

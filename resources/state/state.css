@@ -46,6 +46,11 @@ hr {
     border-radius: 10px;
 }
 
+.header {
+    max-width: 100%;
+    overflow: hidden;
+}
+
 .header hr {
     margin: 5px 0px;
 }
@@ -53,6 +58,12 @@ hr {
 .header p {
     font-size: 12px;
     color: #2f4f4f;
+}
+
+.header h1 {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .info {
@@ -166,9 +177,11 @@ hr {
     line-height: 25px;
     left: 50%;
     transform: translate(-50%, 0);
+    white-space: nowrap;
 }
 
 .HardDisk_li .mount {
+    min-width: 15px;
     max-width: 3em;
     text-overflow: ellipsis;
     overflow: hidden;

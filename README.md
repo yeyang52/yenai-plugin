@@ -32,7 +32,7 @@ git clone https://gitee.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 ```
 
-2. 安装依赖：
+2. 如需使用椰奶状态则需安装以下依赖：
 
 ```
 pnpm add systeminformation -w

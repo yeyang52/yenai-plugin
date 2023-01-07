@@ -38,10 +38,6 @@ export class Basics extends plugin {
                     fnc: 'Kick'
                 },
                 {
-                    reg: Autisticreg,
-                    fnc: 'Autistic'
-                },
-                {
                     reg: '^#(设置|取消)管理.*$',
                     fnc: 'SetAdmin'
                 },
@@ -98,10 +94,6 @@ export class Basics extends plugin {
                     fnc: 'relieveAllMute'
                 },
                 {
-                    reg: noactivereg,
-                    fnc: 'noactive'
-                },
-                {
                     reg: `^#(查看|(确认)?清理)从未发言过?的人(第(${Numreg})页)?$`,
                     fnc: 'neverspeak'
                 },
@@ -133,7 +125,14 @@ export class Basics extends plugin {
                     reg: '^#群星级$',
                     fnc: 'Group_xj'
                 },
-
+                {
+                    reg: Autisticreg,//我要自闭
+                    fnc: 'Autistic'
+                },
+                {
+                    reg: noactivereg,//清理多久没发言的人
+                    fnc: 'noactive'
+                },
             ]
         })
 
@@ -805,7 +804,7 @@ export class Basics extends plugin {
             }, {
                 width: 700,
                 height: 700,
-                deviceScaleFactor: 3
+                deviceScaleFactor: 2
             }, true)
         ])
     }

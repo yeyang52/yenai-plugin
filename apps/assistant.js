@@ -34,15 +34,15 @@ export class example extends plugin {
           fnc: 'State'
         },
         {
-          reg: FriendsReg,
+          reg: FriendsReg,//发好友
           fnc: 'Friends'
         },
         {
-          reg: GroupmsgReg,
+          reg: GroupmsgReg,//发群聊
           fnc: 'Groupmsg'
         },
         {
-          reg: GrouplistmsgReg,
+          reg: GrouplistmsgReg,//发群列表
           fnc: 'Grouplistmsg'
         },
 
@@ -111,7 +111,7 @@ export class example extends plugin {
           fnc: 'friend_switch'
         },
         {
-          reg: friend_typeReg,
+          reg: friend_typeReg,//更改好友申请方式
           fnc: 'friend_type'
         },
       ]

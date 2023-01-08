@@ -48,7 +48,7 @@ export default new class Interface {
                 headers
             }).then(res => res.json()).catch(err => console.error(err));
             if (errorCode != 0) return API_ERROR;
-            translateResult = lodash.flattenDeep(translateResult)[0].tgt
+            translateResult = lodash.flattenDeep(translateResult)?.map(item => item.tgt).join("\n");
             if (!translateResult) return RESULT_ERROR
             return translateResult
         } catch (e) {
@@ -56,6 +56,7 @@ export default new class Interface {
             return API_ERROR
         }
     }
+
     /**随机唱歌/唱鸭 */
     async randomSinging() {
         try {

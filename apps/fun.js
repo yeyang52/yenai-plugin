@@ -104,8 +104,7 @@ export class example extends plugin {
 
   /**有道翻译 */
   async youdao(e) {
-
-    let msg = "";
+    let msg = e.msg
     if (e.source) {
       let source;
       if (e.isGroup) {
@@ -113,10 +112,9 @@ export class example extends plugin {
       } else {
         source = (await e.friend.getChatHistory(e.source.time, 1)).pop();
       }
-      msg = source.raw_message;
-    } else {
-      msg = e.msg
+      msg = source.message.filter(item => item.type == 'text').map(item => item.text).join("");
     }
+
     msg = msg.replace(/#|翻译/g, "").trim()
     if (!msg) return;
     let results = await Interface.youdao(msg);
@@ -305,7 +303,7 @@ export class example extends plugin {
     if (/#?来点神秘图s/.test(e.msg)) {
       let keywords = e.msg.match(/#?来点神秘图s(.*)/)
       let mengduipage = JSON.parse(await redis.get('yenai:mengduipage')) || {}
-      
+
       let searcjurl = `https://b8s6.com/search.php?mdact=community&q=${keywords[1]}&page=${lodash.random(1, mengduipage[keywords[1]] || 1)}`
       let search = await fetch(searcjurl).then(res => res.text());
       let searchList = search.match(/https:\/\/b8s6.com\/post\/\d+.html/g)

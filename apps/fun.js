@@ -201,9 +201,9 @@ export class example extends plugin {
   }
   //coser
   async coser(e) {
-    if (!e.isMaster) {
-      if (!Config.getGroup(e.group_id).sese) return e.reply(SWITCH_ERROR)
-    }
+    let { sese, sesepro } = Config.getGroup(e.group_id)
+    if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
+
     e.reply(START_Execution)
 
     const api = "http://ovooa.com/API/cosplay/api.php"
@@ -228,9 +228,8 @@ export class example extends plugin {
   }
   //cos/acg搜索
   async acg(e) {
-    if (!e.isMaster) {
-      if (!Config.getGroup(e.group_id).sese) return e.reply(SWITCH_ERROR)
-    }
+    let { sese, sesepro } = Config.getGroup(e.group_id)
+    if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
     e.reply(START_Execution)
 
 
@@ -262,9 +261,8 @@ export class example extends plugin {
 
   //黑丝
   async heisiwu(e) {
-    if (!e.isMaster) {
-      if (!Config.getGroup(e.group_id).sesepro) return e.reply(SWITCH_ERROR)
-    }
+    if (!Config.getGroup(e.group_id).sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
+
     e.reply(START_Execution)
     //获取类型
     let types = e.msg.match(/#?来点(.*)/)
@@ -294,9 +292,8 @@ export class example extends plugin {
   }
   //萌堆
   async mengdui(e) {
-    if (!e.isMaster) {
-      if (!Config.getGroup(e.group_id).sesepro) return e.reply(SWITCH_ERROR)
-    }
+    if (!Config.getGroup(e.group_id).sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
+
     //开始执行
     e.reply(START_Execution)
     let url = ''
@@ -380,9 +377,8 @@ export class example extends plugin {
 
   //api大集合
   async picture(e) {
-    if (!e.isMaster) {
-      if (!Config.getGroup(e.group_id).sese) return e.reply(SWITCH_ERROR)
-    }
+    let { sese, sesepro } = Config.getGroup(e.group_id)
+    if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
     let key = `yenai:apiAggregate:CD`
     if (await redis.get(key)) return
     if (/jktj/.test(e.msg)) {

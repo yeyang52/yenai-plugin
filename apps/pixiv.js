@@ -2,6 +2,9 @@ import plugin from '../../../lib/plugins/plugin.js'
 import moment from 'moment';
 import { Config } from '../components/index.js'
 import { Cfg, Pixiv, common, setu } from '../model/index.js'
+
+//文案
+const SWITCH_ERROR = "主人没有开放这个功能哦(＊／ω＼＊)"
 //类型
 let rankType = new Pixiv().RankReg
 let numReg = "[一壹二两三四五六七八九十百千万亿\\d]+"
@@ -57,9 +60,8 @@ export class example extends plugin {
 
     //pid搜图
     async saucenaoPid(e) {
-        if (!e.isMaster) {
-            if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
-        }
+        let { sese, sesepro } = Config.getGroup(e.group_id)
+        if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
 
         await e.reply("你先别急，正在给你搜了(。-ω-)zzz")
 
@@ -81,9 +83,10 @@ export class example extends plugin {
     //p站排行榜
     async pixivRanking(e) {
         let regRet = rankingrReg.exec(e.msg)
-        if (!e.isMaster) {
-            if (!Config.getGroup(e.group_id).sese || regRet[4] && !await setu.getr18(e)) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
-        }
+        let { sese, sesepro } = Config.getGroup(e.group_id)
+        if ((!sese && !sesepro || regRet[4] && !setu.getR18(e)) && !e.isMaster) return e.reply(SWITCH_ERROR)
+
+
         await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
 
         let day = moment().hour() >= 12 ? 1 : 2
@@ -107,11 +110,11 @@ export class example extends plugin {
     async saucenaoTags(e) {
         let regRet = tagReg.exec(e.msg)
 
-        if (!e.isMaster) {
-            if (!Config.getGroup(e.group_id).sese || !Config.getGroup(e.group_id).sesepro && regRet[1]) {
-                return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
-            }
+        let { sese, sesepro } = Config.getGroup(e.group_id)
+        if ((!sese && !sesepro || sesepro && regRet[1]) && !e.isMaster) {
+            return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
         }
+
         await e.reply("你先别急，正在给你搜了(。-ω-)zzz")
 
         let tag = regRet[2]
@@ -139,9 +142,8 @@ export class example extends plugin {
     }
     /**获取热门tag */
     async trendTags(e) {
-        if (!e.isMaster) {
-            if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
-        }
+        let { sese, sesepro } = Config.getGroup(e.group_id)
+        if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
         await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
 
         let res = await new Pixiv(e).gettrend_tags()
@@ -153,9 +155,8 @@ export class example extends plugin {
 
     /**以uid搜图**/
     async saucenaoUid(e) {
-        if (!e.isMaster) {
-            if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
-        }
+        let { sese, sesepro } = Config.getGroup(e.group_id)
+        if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
         await e.reply("你先别急，正在给你搜了(。-ω-)zzz")
 
         let regRet = uidReg.exec(e.msg)
@@ -183,9 +184,8 @@ export class example extends plugin {
 
     //随机原创插画
     async randomImg(e) {
-        if (!e.isMaster) {
-            if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
-        }
+        let { sese, sesepro } = Config.getGroup(e.group_id)
+        if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
         await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
 
         let regRet = randomImgReg.exec(e.msg)
@@ -205,9 +205,8 @@ export class example extends plugin {
 
     //相关作品
     async relatedWorks(e) {
-        if (!e.isMaster) {
-            if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
-        }
+        let { sese, sesepro } = Config.getGroup(e.group_id)
+        if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
         await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
         let regRet = relatedReg.exec(e.msg)
         let msg = await new Pixiv(e).getrelated_works(regRet[1])
@@ -217,13 +216,12 @@ export class example extends plugin {
 
     //p站单图
     async pximg(e) {
-        let pro = /pro/.test(e.msg)
-        if (!e.isMaster) {
-            if (!Config.getGroup(e.group_id).sese || !Config.getGroup(e.group_id).sesepro && pro) {
-                return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
-            }
-        }
-        let msg = await new Pixiv(e).getPximg(pro)
-        pro ? Cfg.getRecallsendMsg(e, [msg], false) : Cfg.recallsendMsg(e, msg)
+        let ispro = /pro/.test(e.msg)
+
+        let { sese, sesepro } = Config.getGroup(e.group_id)
+        if ((!sese && !sesepro || !sesepro && ispro) && !e.isMaster) return e.reply(SWITCH_ERROR)
+
+        let msg = await new Pixiv(e).getPximg(ispro)
+        ispro ? Cfg.getRecallsendMsg(e, [msg], false) : Cfg.recallsendMsg(e, msg)
     }
 }

@@ -103,7 +103,7 @@ export default class Pixiv {
             `传送门：https://www.pixiv.net/artworks/${id}`
         ]
 
-        if (!this.e.isMaster && !await setu.getr18(this.e) && x_restrict) {
+        if (!this.e.isMaster && !setu.getR18(this.e) && x_restrict) {
             let linkmsg = [
                 `该作品不适合所有年龄段，请自行使用链接查看：`,
 
@@ -261,7 +261,7 @@ export default class Pixiv {
             return false;
         }
         let proxy = await redis.get(this.proxy)
-        let r18 = await setu.getr18(this.e)
+        let r18 = setu.getR18(this.e)
         let illusts = [];
         let filter = 0
         let NowNum = res.illusts.length
@@ -389,7 +389,7 @@ export default class Pixiv {
             this.e.reply("这个淫已经没有涩图给你辣(oＡo川)")
             return false
         }
-        let r18 = await setu.getr18(this.e)
+        let r18 = setu.getR18(this.e)
         let illusts = [];
         let filter = 0
         let NowNum = res.illusts.length
@@ -490,7 +490,7 @@ export default class Pixiv {
             return false;
         }
         let proxy = await redis.get(this.proxy)
-        let r18 = await setu.getr18(this.e)
+        let r18 = setu.getR18(this.e)
         let illusts = [];
         let filter = 0
         for (let i of res.illusts) {

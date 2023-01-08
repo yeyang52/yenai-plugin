@@ -24,14 +24,8 @@ export class sese extends plugin {
           fnc: 'seturd'
         },
         {
-          reg: `^#撤回间隔(${NumReg})$`,
-          fnc: 'setrecall',
-          event: 'message.group',
-          permission: 'master'
-        },
-        {
-          reg: `^#群(c|C)(d|D)(${NumReg})$`,
-          fnc: 'groupcd',
+          reg: `^#(撤回间隔|群(c|C)(d|D))(${NumReg})$`,
+          fnc: 'setGroupRecallAndCD',
           event: 'message.group',
           permission: 'master'
         },
@@ -53,18 +47,14 @@ export class sese extends plugin {
         }
       ]
     })
-    this.startMsg = setu.startMsg
-    this.CDMsg = setu.CDMsg
   }
 
   async seturd(e) {
-    if (!e.isMaster) {
-      if (!Config.getGroup(e.group_id).sesepro) return e.reply(SWITCH_ERROR)
-    }
+    if (!Config.getGroup(e.group_id).sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
 
-    let cds = await setu.getcd(e)
+    let iscd = setu.getcd(e)
 
-    if (cds) return e.reply(` ${lodash.sample(this.CDMsg)}你的CD还有${cds}`, false, { at: true })
+    if (iscd) return e.reply(` ${setu.CDMsg}你的CD还有${iscd}`, false, { at: true })
 
     let num = seturdReg.exec(e.msg)
 
@@ -75,12 +65,10 @@ export class sese extends plugin {
     } else if (num > 6) {
       e.reply("你先等等，你冲的有点多~")
     } else {
-      e.reply(lodash.sample(this.startMsg))
+      e.reply(setu.startMsg)
     }
 
-    let r18 = await setu.getr18(e)
-
-    let res = await setu.setuapi(e, r18, num)
+    let res = await setu.setuapi(e, setu.getR18(e), num)
 
     if (!res) return false
 
@@ -89,13 +77,11 @@ export class sese extends plugin {
 
   //tag搜图
   async setutag(e) {
-    if (!e.isMaster) {
-      if (!Config.getGroup(e.group_id).sesepro) return e.reply(SWITCH_ERROR)
-    }
+    if (!Config.getGroup(e.group_id).sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
 
-    let cds = await setu.getcd(e)
+    let iscd = setu.getcd(e)
 
-    if (cds) return e.reply(` ${lodash.sample(this.CDMsg)}你的CD还有${cds}`, false, { at: true })
+    if (iscd) return e.reply(` ${setu.CDMsg}你的CD还有${iscd}`, false, { at: true })
 
     let tag = e.msg.replace(/#|椰奶tag/g, "").trim()
 
@@ -113,7 +99,7 @@ export class sese extends plugin {
     } else if (num > 6) {
       e.reply("你先等等，你冲的有点多~")
     } else {
-      e.reply(lodash.sample(this.startMsg))
+      e.reply(setu.startMsg)
     }
 
     if (!tag) return e.reply("tag为空！！！", false, { at: true })
@@ -124,9 +110,8 @@ export class sese extends plugin {
 
     tag = tag.map((item) => `&tag=${item}`).join("")
 
-    let r18 = await setu.getr18(e)
     //接口
-    let res = await setu.setuapi(e, r18, num, tag)
+    let res = await setu.setuapi(e, setu.getR18(e), num, tag)
 
     if (!res) return false;
 
@@ -134,35 +119,20 @@ export class sese extends plugin {
     setu.sendMsg(e, res)
   }
 
-  //设置群撤回间隔
-  async setrecall(e) {
-    let recall = e.msg.replace(/#|撤回间隔/g, "").trim()
+  //设置群撤回间隔和cd
+  async setGroupRecallAndCD(e) {
+    let num = e.msg.replace(/#|撤回间隔|群cd/gi, "").trim()
 
-    recall = common.translateChinaNum(recall)
-
-    let res = await setu.getsetgroup(e, recall)
+    num = common.translateChinaNum(num)
+    let type = /撤回间隔/.test(e.msg)
+    let res = setu.setGroupRecallTimeAndCd(e, num, type)
 
     if (res) {
-      e.reply(`✅ 设置群${e.group_id}撤回间隔${recall}s成功`)
+      e.reply(`✅ 设置群「${e.group_id}」${type ? "撤回间隔" : "CD"}「${num}s」成功`)
     } else {
       e.reply(`❎ 设置失败`)
     }
 
-  }
-
-  //群CD
-  async groupcd(e) {
-    let cd = e.msg.replace(/#|群cd/gi, "").trim()
-
-    cd = common.translateChinaNum(cd)
-
-    let res = await setu.getsetgroup(e, cd, false)
-
-    if (res) {
-      e.reply(`✅ 设置群${e.group_id}CD成功，CD为${cd}s`)
-    } else {
-      e.reply(`❎ 设置失败`)
-    }
   }
 
   //开启r18
@@ -170,9 +140,9 @@ export class sese extends plugin {
     let yes = /开启/.test(e.msg) ? true : false
 
     if (/私聊/.test(e.msg) || !e.isGroup) {
-      setu.setr18(e, yes, false)
+      setu.setR18(e, yes, false)
     } else {
-      setu.setr18(e, yes, true)
+      setu.setR18(e, yes, true)
     }
   }
 
@@ -188,7 +158,7 @@ export class sese extends plugin {
 
     let qq = e.message[0].qq
 
-    setu.setcd(e, qq, cd)
+    setu.setUserCd(e, qq, cd)
   }
 
   //指令设置
@@ -196,6 +166,6 @@ export class sese extends plugin {
     let cdreg = setcdReg.exec(e.msg);
     let qq = cdreg[1]
     let cd = common.translateChinaNum(cdreg[2])
-    setu.setcd(e, qq, cd)
+    setu.setUserCd(e, qq, cd)
   }
 }

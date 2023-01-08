@@ -16,32 +16,29 @@ class newConfig {
     sleep(ms) {
         return new Promise((resolve) => setTimeout(resolve, ms))
     }
+
     /** 读取文件 */
-    async getread(path) {
-        return await fs.promises
-            .readFile(path, 'utf8')
-            .then((data) => {
-                return JSON.parse(data)
-            })
-            .catch((err) => {
-                logger.error('读取失败')
-                console.error(err)
-                return false
-            })
+    getJson(path) {
+        try {
+            return JSON.parse(fs.readFileSync(path, 'utf8'))
+        } catch (err) {
+            logger.error('读取失败')
+            logger.error(err)
+            return false
+        }
     }
 
     /** 写入json文件 */
-    async getwrite(path, cot = {}) {
-        return await fs.promises
-            .writeFile(path, JSON.stringify(cot, '', '\t'))
-            .then(() => {
-                return true
-            })
-            .catch((err) => {
-                logger.error('写入失败')
-                console.error(err)
-                return false
-            })
+    setJson(path, cot = {}) {
+        try {
+            fs.writeFileSync(path, JSON.stringify(cot, '', '\t'))
+            return true
+        } catch (error) {
+            logger.error('写入失败')
+            logger.error(err)
+            return false
+        }
+
     }
 
     /** 发消息 */
@@ -148,7 +145,7 @@ class newConfig {
      * @return {*}
      */
     async recallsendMsg(e, msg, time = 0, isfk = true) {
-        time = time || await this.recalltime(e)
+        time = time || this.getRecallTime(e)
 
         //发送消息
         let res = await e.reply(msg, false, { recallMsg: time })
@@ -170,7 +167,7 @@ class newConfig {
      * @return {Boolean}
      */
     async getRecallsendMsg(e, msg, isBot = true, isfk = true) {
-        let time = await this.recalltime(e)
+        let time = this.getRecallTime(e)
 
         let res = await this.getforwardMsg(e, msg, time, isBot, isfk)
 
@@ -184,14 +181,14 @@ class newConfig {
      * @param {*} e oicq
      * @return {Number} 
      */
-    async recalltime(e) {
+    getRecallTime(e) {
         if (!e.isGroup) return 0;
         let path = "./plugins/yenai-plugin/config/setu/setu.json"
         //获取撤回时间
         let cfgs = {};
         let time = 120;
         if (fs.existsSync(path)) {
-            cfgs = await this.getread(path)
+            cfgs = this.getJson(path)
         }
 
         if (cfgs[e.group_id]) {

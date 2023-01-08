@@ -40,7 +40,7 @@ export default new class setu {
     async setuapi(e, r18, num = 1, tag = "") {
         let api = "https://api.lolicon.app/setu/v2";
         if (fs.existsSync(this.apicfg)) {
-            let apicfg = await Cfg.getread(this.apicfg)
+            let apicfg = Cfg.getJson(this.apicfg)
             if (apicfg.api) api = apicfg.api
         }
         let size = "original"
@@ -67,7 +67,7 @@ export default new class setu {
         let msg = result.data.map(item => {
             let { pid, title, tags, author, r18, urls, url } = item
             return [
-                `${lodash.sample(this.sendMsgs)}\n`,
+                `${this.sendMsgs}\n`,
                 `标题：${title}\n`,
                 `画师：${author}\n`,
                 `pid：${pid}\n`,
@@ -97,7 +97,7 @@ export default new class setu {
         if (e.isGroup) {
             //获取CD
             if (fs.existsSync(this.path)) {
-                let groupCD = await Cfg.getread(this.path)
+                let groupCD = Cfg.getJson(this.path)
                 if (groupCD[e.group_id]) cd = groupCD[e.group_id].cd
             }
             if (!e.isMaster && res) {
@@ -112,7 +112,7 @@ export default new class setu {
         } else {
             //私聊
             if (fs.existsSync(this.path_s)) {
-                let friendCD = await Cfg.getread(this.path_s)
+                let friendCD = Cfg.getJson(this.path_s)
                 if (friendCD[e.user_id]) cd = friendCD[e.user_id]
             }
             if (!e.isMaster && res) {
@@ -127,7 +127,7 @@ export default new class setu {
     }
 
     //CD
-    async getcd(e) {
+    getcd(e) {
         //获取现在的时间并转换为秒
         let present = parseInt(new Date().getTime() / 1000)
 
@@ -161,19 +161,19 @@ export default new class setu {
      * @param {*} e oicq
      * @return {String}  0或1
      */
-    async getr18(e) {
+    getR18(e) {
         let cfgs
         if (e.isGroup) {
             //获取配置
             if (fs.existsSync(this.path)) {
-                cfgs = await Cfg.getread(this.path)
+                cfgs = Cfg.getJson(this.path)
                 if (cfgs[e.group_id]) {
                     return cfgs[e.group_id].r18
                 }
             }
         } else {
             if (fs.existsSync(this.path_s)) {
-                cfgs = await Cfg.getread(this.path_s)
+                cfgs = Cfg.getJson(this.path_s)
                 if (cfgs.friendr18 !== undefined) {
                     return cfgs.friendr18
                 }
@@ -182,31 +182,22 @@ export default new class setu {
         return this.def.r18
     }
     /**
-     * @description: 设置撤回间隔
-     * @param {*} e oicq
-     * @param {Number} recall 撤回时间
-     * @return {Boolean}
+     * @description: 设置群cd和撤回时间
+     * @param {*} e 
+     * @param {Number} num
+     * @param {Boolean} yes 为true设置撤回时间反之设置CD
+     * @return {*}
      */
-    async getsetgroup(e, num, yes = true) {
+    setGroupRecallTimeAndCd(e, num, yes = true) {
         let res = {};
 
-        if (fs.existsSync(this.path)) {
-            res = await Cfg.getread(this.path)
-        }
+        if (fs.existsSync(this.path)) res = Cfg.getJson(this.path)
 
         if (!res[e.group_id]) res[e.group_id] = lodash.cloneDeep(this.def)
 
-        if (yes) {
-            res[e.group_id].recall = Number(num)
-        } else {
-            res[e.group_id].cd = Number(num)
-        }
+        yes ? res[e.group_id].recall = Number(num) : res[e.group_id].cd = Number(num)
 
-        if (await Cfg.getwrite(this.path, res)) {
-            return true
-        } else {
-            return false
-        }
+        return Cfg.setJson(this.path, res) ? true : false
     }
     /**
      * @description: 设置CD
@@ -214,13 +205,13 @@ export default new class setu {
      * @param {String} qq 设置的qq
      * @param {String} cd 设置的cd
      */
-    async setcd(e, qq, cd) {
+    setUserCd(e, qq, cd) {
         let res = {};
         if (fs.existsSync(this.path_s)) {
-            res = await Cfg.getread(this.path_s)
+            res = Cfg.getJson(this.path_s)
         }
         res[qq] = Number(cd)
-        if (await Cfg.getwrite(this.path_s, res)) {
+        if (Cfg.setJson(this.path_s, res)) {
             e.reply(`✅ 设置用户${qq}的cd成功，cd时间为${cd}秒`)
             delete this.temp[qq]
             return true
@@ -235,11 +226,11 @@ export default new class setu {
      * @param {Boolean} yes 开启或关闭
      * @param {Boolean} group 设置群聊还是私聊
      */
-    async setr18(e, yes, group) {
+    setR18(e, yes, group) {
         let res = {};
         if (group) {
             if (fs.existsSync(this.path)) {
-                res = await Cfg.getread(this.path)
+                res = Cfg.getJson(this.path)
             }
 
             if (!res[e.group_id]) res[e.group_id] = lodash.cloneDeep(this.def)
@@ -247,7 +238,7 @@ export default new class setu {
 
             res[e.group_id].r18 = yes ? 1 : 0
 
-            if (await Cfg.getwrite(this.path, res)) {
+            if (Cfg.setJson(this.path, res)) {
                 e.reply(`✅ 已${yes ? "开启" : "关闭"}${e.group_id}的涩涩模式~`)
                 return true
             } else {
@@ -256,12 +247,12 @@ export default new class setu {
             }
         } else {
             if (fs.existsSync(this.path_s)) {
-                res = await Cfg.getread(this.path_s)
+                res = Cfg.getJson(this.path_s)
             }
 
             res.friendr18 = yes ? 1 : 0
 
-            if (await Cfg.getwrite(this.path_s, res)) {
+            if (Cfg.setJson(this.path_s, res)) {
                 e.reply(`✅ 已${yes ? "开启" : "关闭"}私聊涩涩功能~`)
                 return true
             } else {
@@ -276,24 +267,24 @@ export default new class setu {
      * @param {*} e oicq
      * @return {*}
      */
-    async getSet_up(e) {
+    getConfig(e) {
         let set = lodash.cloneDeep(this.def)
         if (e.isGroup) {
             //获取群聊单独cd
             if (fs.existsSync(this.path)) {
-                let groupCD = await Cfg.getread(this.path)
+                let groupCD = Cfg.getJson(this.path)
                 if (groupCD[e.group_id]) set.cd = groupCD[e.group_id].cd
             }
-            set.recall = await Cfg.recalltime(e)
+            set.recall = Cfg.getRecallTime(e)
         } else {
             //获取私聊单独cd
             if (fs.existsSync(this.path_s)) {
-                let friendCD = await Cfg.getread(this.path_s)
+                let friendCD = Cfg.getJson(this.path_s)
                 if (friendCD[e.user_id]) set.cd = friendCD[e.user_id]
             }
             delete set.recall
         }
-        set.r18 = await this.getr18(e)
+        set.r18 = this.getR18(e)
         return set
     }
     /**
@@ -323,16 +314,16 @@ export default new class setu {
     }
 
     get startMsg() {
-        return [
+        return lodash.sample([
             "正在给你找setu了，你先等等再冲~",
             "你先别急，正在找了~",
             "马上去给你找涩图，你先憋一会~",
             "奴家马上去给你找瑟瑟的图片~"
-        ]
+        ])
     }
 
     get CDMsg() {
-        return [
+        return lodash.sample([
             "你这么喜欢色图，还不快点冲！",
             "你的色图不出来了！",
             "注意身体，色图看多了对身体不太好",
@@ -342,11 +333,11 @@ export default new class setu {
             "憋冲了！你已经冲不出来了！",
             "你急啥呢？",
             "你是被下半身控制了大脑吗？"
-        ]
+        ])
     }
 
     get sendMsgs() {
-        return [
+        return lodash.sample([
             "给大佬递图",
             "这是你的🐍图",
             "你是大色批",
@@ -375,7 +366,7 @@ export default new class setu {
             "hso！",
             "这么喜欢看色图哦？变态？",
             "eee，死肥宅不要啦！恶心心！",
-        ]
+        ])
     }
 
 }

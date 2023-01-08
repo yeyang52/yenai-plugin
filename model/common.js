@@ -160,5 +160,12 @@ export default new class common {
             "60": "Q我吧",
         };
     }
-
+    //权限
+    get ROLE_MAP() {
+        return {
+            admin: '群管理',
+            owner: '群主',
+            member: '群员'
+        }
+    }
 }

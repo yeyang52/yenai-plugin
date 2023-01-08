@@ -44,35 +44,43 @@ export class NewConfig extends plugin {
             rule: [
                 {
                     reg: managereg,
-                    fnc: 'Config_manage'
+                    fnc: 'Config_manage',
+                    permission: 'master'
                 },
                 {
                     reg: deltimereg,
-                    fnc: 'Config_deltime'
+                    fnc: 'Config_deltime',
+                    permission: 'master'
                 },
                 {
                     reg: '^#椰奶设置$',
-                    fnc: 'yenaiset'
+                    fnc: 'yenaiset',
+                    permission: 'master'
                 },
                 {
                     reg: '^#椰奶(启用|禁用)全部通知$',
-                    fnc: 'SetAll'
+                    fnc: 'SetAll',
+                    permission: 'master'
                 },
                 {
                     reg: '^#椰奶更换代理[1234]$',
-                    fnc: 'proxy'
+                    fnc: 'proxy',
+                    permission: 'master'
                 },
                 {
                     reg: '^#(增加|减少|查看)头衔屏蔽词.*$',
-                    fnc: 'NoTitle'
+                    fnc: 'NoTitle',
+                    permission: 'master'
                 },
                 {
                     reg: '^#切换头衔屏蔽词匹配(模式)?$',
-                    fnc: 'NoTitlepattern'
+                    fnc: 'NoTitlepattern',
+                    permission: 'master'
                 },
                 {
                     reg: '^#查看(sese|涩涩)设置$',
-                    fnc: 'View_Settings'
+                    fnc: 'View_Settings',
+                    permission: 'master'
                 }
             ]
         })
@@ -89,7 +97,6 @@ export class NewConfig extends plugin {
 
     // 更改配置
     async Config_manage(e) {
-        if (!e.isMaster) return
         // 解析消息
         let regRet = managereg.exec(e.msg)
         let index = regRet[1]
@@ -108,8 +115,6 @@ export class NewConfig extends plugin {
 
     // 设置删除缓存时间
     async Config_deltime(e) {
-        if (!e.isMaster) return
-
         let time = deltimereg.exec(e.msg)[1]
 
         if (time < 120) return e.reply('❎ 时间不能小于两分钟')
@@ -122,7 +127,6 @@ export class NewConfig extends plugin {
     }
     //修改全部设置
     async SetAll(e) {
-        if (!e.isMaster) return
         let yes = /启用/.test(e.msg);
         //设置的任务
         let type = [
@@ -152,7 +156,6 @@ export class NewConfig extends plugin {
     }
     //渲染发送图片
     async yenaiset(e) {
-        if (!e.isMaster) return
 
         let config = await Config.Notice
         let data = {
@@ -222,7 +225,6 @@ export class NewConfig extends plugin {
     }
     //查看涩涩设置
     async View_Settings(e) {
-        if (!e.isMaster) return false;
         let set = await setu.getSet_up(e)
         let data = Config.Notice
         e.reply([

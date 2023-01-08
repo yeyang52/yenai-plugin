@@ -4,12 +4,18 @@ import { Cfg, QQInterface, common } from '../model/index.js';
 import lodash from 'lodash'
 import moment from 'moment'
 
-let Qzonedetermine = false;
-let groupPhotoid = '';
+/**API请求错误文案 */
+const API_ERROR = "❎ 出错辣，请稍后重试"
+
+//命令正则
 let FriendsReg = new RegExp("#发好友\\s?(\\d+)\\s?(.*)")
 let GroupmsgReg = new RegExp("#发群聊\\s?(\\d+)\\s?(.*)")
 let GrouplistmsgReg = new RegExp("#发群列表\\s?(\\d+(,\\d+){0,})\\s?(.*)")
 let friend_typeReg = new RegExp('^#更改好友申请方式([0123])((.*)\\s(.*))?$')
+
+//全局变量
+let Qzonedetermine = false;
+let groupPhotoid = '';
 export class example extends plugin {
   constructor() {
     super({
@@ -581,9 +587,8 @@ export class example extends plugin {
     if (res.length >= 2) {
       Cfg.getforwardMsg(e, res)
     } else {
-      await e.reply(res[0])
+      e.reply(res[0])
     }
-    return true;
   }
 
   /**QQ空间 说说列表*/
@@ -600,7 +605,7 @@ export class example extends plugin {
     //获取说说列表
     let list = await QQInterface.getQzone(page * 5, 5)
 
-    if (!list) return e.reply("❎ 取说说列表失败")
+    if (!list) return e.reply(API_ERROR)
     if (list.total == 0) return e.reply(`✅ 说说列表为空`)
 
     let msg = [
@@ -620,14 +625,14 @@ export class example extends plugin {
     //获取说说列表
     let list = await QQInterface.getQzone(pos - 1, 1)
 
-    if (!list) return e.reply("❎ 取说说列表失败")
+    if (!list) return e.reply(API_ERROR)
     if (!list.msglist) return e.reply(`❎ 未获取到该说说`)
 
     //要删除的说说
     let domain = list.msglist[0]
     //请求接口
     let result = await QQInterface.delQzone(domain.tid, domain.t1_source)
-    if (!result) return e.reply(`❎ 接口请求失败`)
+    if (!result) return e.reply(API_ERROR)
     //debug
     logger.debug(`[椰奶删除说说]`, result)
 
@@ -642,7 +647,7 @@ export class example extends plugin {
     if (!e.isMaster) return;
     let con = e.msg.replace(/#|发说说/g, "").trim()
     let result = await QQInterface.setQzone(con, e.img)
-    if (!result) return e.reply("❎ 出错辣，请稍后重试")
+    if (!result) return e.reply(API_ERROR)
 
     if (result.code != 0) return e.reply(`❎ 说说发表失败\n${JSON.stringify(result)}`)
 
@@ -769,7 +774,7 @@ export class example extends plugin {
   async friend_switch(e) {
     if (!e.isMaster) return
     let res = await QQInterface.addFriendSwitch(/开启/.test(e.msg) ? 1 : 2)
-    if (!res) return e.reply("接口失效辣(๑ŐдŐ)b")
+    if (!res) return e.reply(API_ERROR)
     e.reply(res.ActionStatus)
   }
 
@@ -782,7 +787,7 @@ export class example extends plugin {
     if ((!regRet[3] || !regRet[4]) && regRet[1] == 3) return e.reply("❎ 请正确输入问题和答案！")
 
     let res = await QQInterface.setFriendType(regRet[1], regRet[3], regRet[4])
-    if (!res) return e.reply("接口失效辣(๑ŐдŐ)b")
+    if (!res) return e.reply(API_ERROR)
     if (res.ec != 0) return e.reply("❎ 修改失败\n" + JSON.stringify(res))
     e.reply(res.msg)
   }
@@ -792,7 +797,7 @@ export class example extends plugin {
     if (!e.isMaster) return;
 
     let result = await QQInterface.setcyc(/开启/.test(e.msg) ? 0 : 1)
-    if (!result) return e.reply("❎ 接口失效")
+    if (!result) return e.reply(API_ERROR)
 
     if (result.ret != 0) return e.reply("❎ 未知错误\n" + JSON.stringify(result))
     e.reply(`✅ 已${/开启/.test(e.msg) ? '开启' : '关闭'}戳一戳功能`)

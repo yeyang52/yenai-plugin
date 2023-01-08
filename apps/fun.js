@@ -4,7 +4,8 @@ import { segment } from "oicq"
 import lodash from 'lodash'
 import { Config } from '../components/index.js'
 import { Cfg, uploadRecord, common, Interface } from '../model/index.js'
-let heisitype = {
+
+const heisitype = {
   "白丝": "baisi",
   "黑丝": "heisi",
   "巨乳": "juru",
@@ -12,8 +13,13 @@ let heisitype = {
   "网红": "mcn",
   "美足": "meizu"
 }
+/**API请求错误文案 */
+const API_ERROR = "❎ 出错辣，请稍后重试"
+/**未启用文案 */
+const SWITCH_ERROR = "主人没有开放这个功能哦(＊／ω＼＊)"
+/**开始执行文案 */
+const START_Execution = "椰奶产出中......"
 
-let heisiwreg = new RegExp(`#?来点(${Object.keys(heisitype).join("|")})$`)
 
 export class example extends plugin {
   constructor() {
@@ -47,7 +53,7 @@ export class example extends plugin {
           fnc: 'coser'
         },
         {
-          reg: heisiwreg,
+          reg: `#?来点(${Object.keys(heisitype).join("|")})$`,
           fnc: 'heisiwu'
         },
         {
@@ -198,15 +204,15 @@ export class example extends plugin {
   //coser
   async coser(e) {
     if (!e.isMaster) {
-      if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
+      if (!Config.getGroup(e.group_id).sese) return e.reply(SWITCH_ERROR)
     }
-    e.reply("椰奶产出中......")
+    e.reply(START_Execution)
 
     const api = "http://ovooa.com/API/cosplay/api.php"
 
     let res = await fetch(api).then((res) => res.json()).catch((err) => console.error(err))
 
-    if (!res) return e.reply("接口失效辣(๑ŐдŐ)b")
+    if (!res) return e.reply(API_ERROR)
 
     res = res.data
     let item = 1;
@@ -225,9 +231,9 @@ export class example extends plugin {
   //cos/acg搜索
   async acg(e) {
     if (!e.isMaster) {
-      if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
+      if (!Config.getGroup(e.group_id).sese) return e.reply(SWITCH_ERROR)
     }
-    e.reply("椰奶产出中......")
+    e.reply(START_Execution)
 
 
     let keywords = e.msg.replace(/#|acg/g, "").trim()
@@ -251,27 +257,29 @@ export class example extends plugin {
     //处理图片
     let imglist = imghtml.match(/<img src=".*?" (style|title)=.*?\/>/g)
       ?.map(item => (!/www.pandadiu.com/.test(item) ? domain : "") + (item.match(/<img src="(.*?)".*/)[1]))
-      ?.map(item => segment.image(item)) || ["出错辣"]
+      ?.map(item => segment.image(item)) || false
+    if (!imglist) return e.reply(API_ERROR)
     Cfg.getRecallsendMsg(e, imglist, false)
   }
+
   //黑丝
   async heisiwu(e) {
     if (!e.isMaster) {
-      if (!Config.getGroup(e.group_id).sesepro) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
+      if (!Config.getGroup(e.group_id).sesepro) return e.reply(SWITCH_ERROR)
     }
-    e.reply("椰奶产出中......")
+    e.reply(START_Execution)
     //获取类型
-    let types = heisiwreg.exec(e.msg)
+    let types = e.msg.match(/#?来点(.*)/)
     //请求主页面
     let url = `http://hs.heisiwu.com/${heisitype[types[1]]}#/page/${lodash.random(1, 20)}`
     let homePage = await fetch(url).then(res => res.text()).catch(err => console.error(err))
-    if (!homePage) return e.reply("接口失效辣(๑ŐдŐ)b")
+    if (!homePage) return e.reply(API_ERROR)
     //解析html
     let childPageUrlList = homePage.match(/<a target(.*?)html/g);
     let childPageUrl = lodash.sample(childPageUrlList).match(/href="(.*)/)
     //请求图片页面
     let childPage = await fetch(childPageUrl[1]).then(res => res.text()).catch(err => console.error(err))
-    if (!childPage) return e.reply("接口失效辣(๑ŐдŐ)b")
+    if (!childPage) return e.reply(API_ERROR)
     //获取html列表
     let imghtml = childPage.match(/<img loading(.*?)jpg/g);
     //提取图片并转换
@@ -289,9 +297,9 @@ export class example extends plugin {
   //萌堆
   async mengdui(e) {
     if (!e.isMaster) {
-      if (!Config.getGroup(e.group_id).sesepro) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
+      if (!Config.getGroup(e.group_id).sesepro) return e.reply(SWITCH_ERROR)
     }
-    e.reply("椰奶产出中......")
+    e.reply(START_Execution)
     let appoint = e.msg.match(/\d+/g)
     let random;
     if (!appoint) {
@@ -323,7 +331,7 @@ export class example extends plugin {
     let msg = e.msg.replace(/#|铃声搜索/g, "")
     let api = `https://xiaobai.klizi.cn/API/music/lingsheng.php?msg=${msg}&n=1`
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
-    if (!res) return e.reply("接口失效辣(๑ŐдŐ)b")
+    if (!res) return e.reply(API_ERROR)
     if (res.title == null && res.author == null) return e.reply("没有找到相关的歌曲哦~", true)
 
     await e.reply([
@@ -336,8 +344,8 @@ export class example extends plugin {
   async bcy_topic(e) {
     let api = 'https://xiaobai.klizi.cn/API/other/bcy_topic.php'
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
-    if (!res) return e.reply("接口失效辣(๑ŐдŐ)b")
-    if (res.code != 200) return e.reply(`请求错误！,错误码：${res.code}`)
+    if (!res) return e.reply(API_ERROR)
+    if (res.code != 200) return e.reply("❎ 出错辣" + JSON.stringify(res))
     if (lodash.isEmpty(res.data)) return e.reply(`请求错误！无数据，请稍后再试`)
     let msg = [];
     for (let i of res.data) {
@@ -352,7 +360,7 @@ export class example extends plugin {
   //api大集合
   async picture(e) {
     if (!e.isMaster) {
-      if (!Config.getGroup(e.group_id).sese) return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
+      if (!Config.getGroup(e.group_id).sese) return e.reply(SWITCH_ERROR)
     }
     let key = `yenai:apiAggregate:CD`
     if (await redis.get(key)) return

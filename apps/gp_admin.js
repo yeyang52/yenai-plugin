@@ -1,19 +1,21 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import fetch from 'node-fetch'
 import { segment } from 'oicq'
 import lodash from 'lodash'
 import { Config } from '../components/index.js'
 import { Cfg, Gpadmin, common, QQInterface, Browser } from '../model/index.js'
 import moment from 'moment'
-const ROLE_MAP = {
-    admin: '群管理',
-    owner: '群主',
-    member: '群员'
-}
-const Time_unit = common.Time_unit
+
+
+/**API请求错误文案 */
+const API_ERROR = "❎ 出错辣，请稍后重试"
+//无管理文案
+const ROLE_ERROR = "做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ"
+
+//正则
 let Numreg = "[一壹二两三四五六七八九十百千万亿\\d]+"
 let noactivereg = new RegExp(`^#(查看|清理|确认清理|获取)(${Numreg})个?(年|月|周|天)没发言的人(第(${Numreg})页)?$`)
-let Autisticreg = new RegExp(`^#?我要(自闭|禅定)(${Numreg})?个?(${Object.keys(Time_unit).join("|")})?$`, "i")
+let Autisticreg = new RegExp(`^#?我要(自闭|禅定)(${Numreg})?个?(${Object.keys(common.Time_unit).join("|")})?$`, "i")
+
 export class Basics extends plugin {
     constructor() {
         super({
@@ -23,43 +25,53 @@ export class Basics extends plugin {
             rule: [
                 {
                     reg: '^#禁言.*$',
-                    fnc: 'Taboo'
+                    fnc: 'Taboo',
+                    permission: 'admin'
                 },
                 {
                     reg: '^#解禁.*$',
-                    fnc: 'Relieve'
+                    fnc: 'Relieve',
+                    permission: 'admin'
                 },
                 {
                     reg: '^#全体(禁言|解禁)$',
-                    fnc: 'TabooAll'
+                    fnc: 'TabooAll',
+                    permission: 'admin'
                 },
                 {
                     reg: '^#踢(.*)$',
-                    fnc: 'Kick'
+                    fnc: 'Kick',
+                    permission: 'admin'
                 },
                 {
                     reg: '^#(设置|取消)管理.*$',
-                    fnc: 'SetAdmin'
+                    fnc: 'SetAdmin',
+                    permission: 'master'
                 },
                 {
                     reg: '^#(允许|禁止|开启|关闭)匿名$',
-                    fnc: 'AllowAnony'
+                    fnc: 'AllowAnony',
+                    permission: 'admin'
                 },
                 {
                     reg: '^#发群公告.*$',
-                    fnc: 'AddAnnounce'
+                    fnc: 'AddAnnounce',
+                    permission: 'admin'
                 },
                 {
                     reg: '^#删群公告(\\d+)$',
-                    fnc: 'DelAnnounce'
+                    fnc: 'DelAnnounce',
+                    permission: 'admin'
                 },
                 {
                     reg: '^#查群公告$',
-                    fnc: 'GetAnnounce'
+                    fnc: 'GetAnnounce',
+                    permission: 'admin'
                 },
                 {
                     reg: '^#修改头衔.*$',
-                    fnc: 'adminsetTitle'
+                    fnc: 'adminsetTitle',
+                    permission: 'master'
                 },
                 {
                     reg: '^#申请头衔.*$',
@@ -75,27 +87,27 @@ export class Basics extends plugin {
                 },
                 {
                     reg: '^#替换(幸运)?字符(\\d+)$',
-                    fnc: 'qun_luckyuse'
+                    fnc: 'qun_luckyuse',
+                    permission: 'admin'
                 },
                 {
                     reg: '^#(开启|关闭)(幸运)?字符$',
-                    fnc: 'qun_luckyset'
-                },
-                {
-                    reg: '^#今日打卡$',
-                    fnc: 'DaySigned'
+                    fnc: 'qun_luckyset',
+                    permission: 'admin'
                 },
                 {
                     reg: '^#(获取|查看)?禁言列表$',
-                    fnc: 'Mutelist'
+                    fnc: 'Mutelist',
                 },
                 {
                     reg: '^#解除全部禁言$',
-                    fnc: 'relieveAllMute'
+                    fnc: 'relieveAllMute',
+                    permission: 'admin'
                 },
                 {
                     reg: `^#(查看|(确认)?清理)从未发言过?的人(第(${Numreg})页)?$`,
-                    fnc: 'neverspeak'
+                    fnc: 'neverspeak',
+                    permission: 'admin'
                 },
                 {
                     reg: `^#(查看|获取)?(不活跃|潜水)排行榜(${Numreg})?$`,
@@ -106,16 +118,23 @@ export class Basics extends plugin {
                     fnc: 'RankingList'
                 },
                 {
+                    reg: noactivereg,//清理多久没发言的人
+                    fnc: 'noactive',
+                    permission: 'admin'
+                },
+                {
                     reg: `^#发通知.*$`,
-                    fnc: 'Send_notice'
+                    fnc: 'Send_notice',
+                    permission: 'admin'
+                },
+                {
+                    reg: `(^#定时禁言(.*)解禁(.*)$)|(^#定时禁言任务$)|(^#取消定时禁言$)`,
+                    fnc: 'timeMute',
+                    permission: 'admin'
                 },
                 {
                     reg: `^#(查看|获取)?群?发言榜单((7|七)天)?`,
                     fnc: 'SpeakRank'
-                },
-                {
-                    reg: `(^#定时禁言(.*)解禁(.*)$)|(^#定时禁言任务$)|(^#取消定时禁言$)`,
-                    fnc: 'timeMute'
                 },
                 {
                     reg: "^#?(谁|哪个吊毛|哪个屌毛|哪个叼毛)是龙王$",
@@ -126,12 +145,12 @@ export class Basics extends plugin {
                     fnc: 'Group_xj'
                 },
                 {
-                    reg: Autisticreg,//我要自闭
-                    fnc: 'Autistic'
+                    reg: '^#今日打卡$',
+                    fnc: 'DaySigned'
                 },
                 {
-                    reg: noactivereg,//清理多久没发言的人
-                    fnc: 'noactive'
+                    reg: Autisticreg,//我要自闭
+                    fnc: 'Autistic'
                 },
             ]
         })
@@ -161,11 +180,7 @@ export class Basics extends plugin {
 
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
-        }
-
-        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
-            return e.reply("❎ 该命令仅限管理员可用", true);
+            return e.reply(ROLE_ERROR, true);
         }
 
         let qq;
@@ -243,11 +258,7 @@ export class Basics extends plugin {
     async Relieve(e) {
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
-        }
-
-        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
-            return e.reply("❎ 该命令仅限管理员可用", true);
+            return e.reply(ROLE_ERROR, true);
         }
 
         let qq = e.msg.replace(/#|解禁/g, "").trim();
@@ -273,10 +284,7 @@ export class Basics extends plugin {
     async TabooAll(e) {
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
-        }
-        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
-            return e.reply("❎ 该命令仅限管理员可用", true);
+            return e.reply(ROLE_ERROR, true);
         }
 
         let type = false;
@@ -299,11 +307,9 @@ export class Basics extends plugin {
     async Kick(e) {
         // 判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
+            return e.reply(ROLE_ERROR, true);
         }
-        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
-            return e.reply("❎ 该命令仅限管理员可用", true);
-        }
+
         let qq = e.msg.replace(/#|踢/g, "").trim()
 
         if (e.message.length != 1) {
@@ -339,14 +345,14 @@ export class Basics extends plugin {
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) return
 
-        if (e.member.is_admin || e.member.is_owner || e.isMaster)
-            return e.reply("别自闭啦~~", true)
+        if (e.isMaster) return e.reply("别自闭啦~~", true)
+        if (e.member.is_admin && !e.group.is_owner) return e.reply("别自闭啦~~", true)
         //解析正则
         let regRet = Autisticreg.exec(e.msg)
         // 获取数字
         let TabooTime = common.translateChinaNum(regRet[2] || 5)
 
-        let Company = Time_unit[lodash.toUpper(regRet[3]) || "分"]
+        let Company = common.Time_unit[lodash.toUpper(regRet[3]) || "分"]
 
         await e.group.muteMember(e.user_id, TabooTime * Company);
         e.reply(`那我就不手下留情了~`, true);
@@ -356,10 +362,7 @@ export class Basics extends plugin {
 
     //设置管理
     async SetAdmin(e) {
-
-        if (!e.group.is_owner) return e.reply("呜呜呜，人家做不到>_<", true)
-
-        if (!e.isMaster) return e.reply("❎ 该命令仅限主人可用", true);
+        if (!e.group.is_owner) return e.reply(ROLE_ERROR, true)
 
         let qq
         let yes = false
@@ -392,13 +395,9 @@ export class Basics extends plugin {
 
     //匿名
     async AllowAnony(e) {
-
-        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
-            return e.reply("❎ 该命令仅限管理员可用", true);
-        }
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
+            return e.reply(ROLE_ERROR, true);
         }
         let yes = false
         if (/(允许|开启)匿名/.test(e.msg)) {
@@ -422,11 +421,7 @@ export class Basics extends plugin {
     async AddAnnounce(e) {
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
-        }
-        //判断权限
-        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
-            return e.reply("❎ 该命令仅限管理员可用", true);
+            return e.reply(ROLE_ERROR, true);
         }
         //获取发送的内容
         let msg = e.msg.replace(/#|发群公告/g, "").trim()
@@ -434,31 +429,28 @@ export class Basics extends plugin {
 
         let result = await QQInterface.setAnnounce(e.group_id, msg)
 
-        if (!result) return e.reply("❎ 出错辣，请稍后重试");
+        if (!result) return e.reply(API_ERROR);
         if (result.ec != 0) {
             e.reply("❎ 发送失败\n" + JSON.stringify(result, null, '\t'))
         }
     }
     //查群公告
     async GetAnnounce(e) {
-        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
-            return e.reply("❎ 该命令仅限管理员可用", true);
-        }
         let res = await QQInterface.getAnnouncelist(e.group_id)
-        if (!res) return e.reply("❎ 出错辣，请稍后重试");
+        if (!res) return e.reply(API_ERROR);
         return e.reply(res)
     }
     //删群公告
     async DelAnnounce(e) {
-        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
-            return e.reply("❎ 该命令仅限管理员可用", true);
+        //判断是否有管理
+        if (!e.group.is_admin && !e.group.is_owner) {
+            return e.reply(ROLE_ERROR, true);
         }
-
         let msg = e.msg.replace(/#|删群公告/, "").trim()
         if (!msg) return e.reply(`❎ 序号不可为空`)
 
         let result = await QQInterface.delAnnounce(e.group_id, msg)
-        if (!result) return e.reply("❎ 出错辣，请稍后重试");
+        if (!result) return e.reply(API_ERROR);
 
         if (result.ec == 0) {
             e.reply(`✅ 已删除「${result.text}」`)
@@ -474,11 +466,7 @@ export class Basics extends plugin {
 
         if (e.message[1].type != 'at') return
 
-        if (!e.group.is_owner) return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true)
-
-        if (!e.isMaster) {
-            return e.reply("❎ 该命令仅限主人可用", true);
-        }
+        if (!e.group.is_owner) return e.reply(ROLE_ERROR, true)
 
         let res = await e.group.setTitle(e.message[1].qq, e.message[2].text)
         if (res) {
@@ -498,7 +486,7 @@ export class Basics extends plugin {
             "啾咪٩(๑•̀ω•́๑)۶",
             "弃旧恋新了么笨蛋( 。ớ ₃ờ)ھ"
         ]
-        if (!e.group.is_owner) return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true)
+        if (!e.group.is_owner) return false;
 
         let Title = e.msg.replace(/#|申请头衔/g, "")
         //屏蔽词处理
@@ -526,7 +514,7 @@ export class Basics extends plugin {
     //字符列表
     async qun_luckylist(e) {
         let data = await QQInterface.luckylist(e.group_id)
-        if (!data) return e.reply('❎ 接口出现错误')
+        if (!data) return e.reply(API_ERROR)
         if (data.retcode != 0) return e.reply('❎ 获取数据失败\n' + JSON.stringify(data))
 
         let msg = data.data.word_list.map((item, index) => {
@@ -539,7 +527,7 @@ export class Basics extends plugin {
     async qun_lucky(e) {
         let res = await QQInterface.drawLucky(e.group_id);
 
-        if (!res) return e.reply('❎ 接口出现错误')
+        if (!res) return e.reply(API_ERROR)
         if (res.retcode == 11004) return e.reply("今天已经抽过辣，明天再来抽取吧");
         if (res.retcode != 0) return e.reply('❎ 错误\n' + JSON.stringify(data))
 
@@ -554,23 +542,20 @@ export class Basics extends plugin {
     async qun_luckyuse(e) {
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
+            return e.reply(ROLE_ERROR, true);
         }
         let id = e.msg.replace(/#|替换(幸运)?字符/g, "");
         let res = await QQInterface.equipLucky(e.group_id, id)
 
-        if (!res) return e.reply('❎ 接口出现错误')
+        if (!res) return e.reply(API_ERROR)
         if (res.retcode != 0) return e.reply('❎替换失败\n' + JSON.stringify(res));
         e.reply('✅ OK')
     }
 
     //开启或关闭群字符
     async qun_luckyset(e) {
-        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
-            return e.reply("❎ 该命令仅限管理员可用", true);
-        }
         let res = await QQInterface.swichLucky(e.group_id, /开启/.test(e.msg))
-        if (!res) return e.reply('❎ 接口出现错误')
+        if (!res) return e.reply(API_ERROR)
 
         if (res.retcode == 11111) return e.reply("❎ 重复开启或关闭")
         if (res.retcode != 0) return e.reply('❎ 错误\n' + JSON.stringify(res));
@@ -579,9 +564,6 @@ export class Basics extends plugin {
 
     //获取禁言列表
     async Mutelist(e) {
-        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
-            return e.reply("❎ 该命令仅限管理员可用", true);
-        }
         let mutelist = await Gpadmin.getMuteList(e)
         if (!mutelist) return e.reply("还没有人被禁言欸(O∆O)")
         let msg = [];
@@ -592,7 +574,7 @@ export class Basics extends plugin {
                 segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${info.user_id}`),
                 `\n昵称：${info.card || info.nickname}\n`,
                 `QQ：${info.user_id}\n`,
-                `群身份：${ROLE_MAP[info.role]}\n`,
+                `群身份：${common.ROLE_MAP[info.role]}\n`,
                 `禁言剩余时间：${Cfg.getsecondformat(Member.mute_left)}`
             ])
         }
@@ -603,10 +585,7 @@ export class Basics extends plugin {
     async relieveAllMute(e) {
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
-        }
-        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
-            return e.reply("❎ 该命令仅限管理员可用", true);
+            return e.reply(ROLE_ERROR, true);
         }
         let mutelist = await Gpadmin.getMuteList(e)
         if (!mutelist) return e.reply("都没有人被禁言我怎么解的辣＼(`Δ’)／")
@@ -619,15 +598,12 @@ export class Basics extends plugin {
 
     //查看和清理多久没发言的人
     async noactive(e) {
-        if (!e.isMaster && !e.member.is_owner) {
-            return e.reply("❎ 该命令仅限群主和主人可用", true);
-        }
         let Reg = noactivereg.exec(e.msg)
         Reg[2] = common.translateChinaNum(Reg[2] || 1)
         //确认清理直接执行
         if (Reg[1] == "确认清理") {
             if (!e.group.is_admin && !e.group.is_owner) {
-                return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
+                return e.reply(ROLE_ERROR, true);
             }
             return Gpadmin.getclearnoactive(e, Reg[2], Reg[3])
         }
@@ -638,7 +614,7 @@ export class Basics extends plugin {
         //清理
         if (Reg[1] == "清理") {
             if (!e.group.is_admin && !e.group.is_owner) {
-                return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
+                return e.reply(ROLE_ERROR, true);
             }
             let list = await Gpadmin.noactivelist(e, Reg[2], Reg[3])
 
@@ -649,15 +625,12 @@ export class Basics extends plugin {
 
     //查看和清理从未发言的人
     async neverspeak(e) {
-        if (!e.isMaster && !e.member.is_owner) {
-            return e.reply("❎ 该命令仅限群主和主人可用", true);
-        }
         let list = await Gpadmin.getneverspeak(e)
         if (!list) return
         //确认清理直接执行
         if (/^#?确认清理/.test(e.msg)) {
             if (!e.group.is_admin && !e.group.is_owner) {
-                return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
+                return e.reply(ROLE_ERROR, true);
             }
             let removelist = list.map(item => item.user_id)
             let msg = await Gpadmin.getkickMember(e, removelist)
@@ -666,7 +639,7 @@ export class Basics extends plugin {
         //清理
         if (/^#?清理/.test(e.msg)) {
             if (!e.group.is_admin && !e.group.is_owner) {
-                return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
+                return e.reply(ROLE_ERROR, true);
             }
             e.reply(`本此共需清理「${list.length}」人，防止误触发\n请发送：#确认清理从未发言的人`)
         }
@@ -692,10 +665,7 @@ export class Basics extends plugin {
     //发送通知
     async Send_notice(e) {
         if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
-        }
-        if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
-            return e.reply("❎ 该命令仅限管理员可用", true);
+            return e.reply(ROLE_ERROR, true);
         }
         e.message[0].text = e.message[0].text.replace("#发通知", "").trim()
         if (!e.message[0].text) e.message.shift()
@@ -707,7 +677,6 @@ export class Basics extends plugin {
 
     //设置定时群禁言
     async timeMute(e) {
-        if (!e.isMaster) return false
         if (/任务/.test(e.msg)) {
             let task = await redis.keys('Yunzai:yenai:Taboo:*')
             if (!task.length) return e.reply('目前还没有定时禁言任务')
@@ -727,7 +696,7 @@ export class Basics extends plugin {
             return true
         }
         if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
+            return e.reply(ROLE_ERROR, true);
         }
         try {
             var muteTime = e.msg.match(/禁言(\d+):(\d+)/)[0].replace(/禁言/g, '')
@@ -785,7 +754,7 @@ export class Basics extends plugin {
     //群发言榜单
     async SpeakRank(e) {
         if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
+            return e.reply(ROLE_ERROR, true);
         }
         //图片截图
         let url = `https://qun.qq.com/m/qun/activedata/speaking.html?gc=${e.group_id}&time=${/(7|七)天/.test(e.msg) ? 1 : 0}&_wv=3&&_wwv=128`

@@ -17,31 +17,42 @@ export class anotice extends plugin {
             rule: [
                 {
                     reg: '^#?(同意|拒绝)$',
-                    fnc: 'agrees'
+                    fnc: 'agrees',
+                    permission: 'master',
+                    event: 'message.private',
                 },
                 {
                     reg: '^#?回复.*$',
-                    fnc: 'Replys'
+                    fnc: 'Replys',
+                    permission: 'master',
+                    event: 'message.private',
                 },
                 {
                     reg: '^#?(同意|拒绝|查看)(全部)?好友申请(\\d+)?$',
-                    fnc: 'agreesAll'
+                    fnc: 'agreesAll',
+                    permission: 'master',
                 },
                 {
                     reg: '^#?(加为|添加)好友$',
-                    fnc: 'addFriend'
+                    fnc: 'addFriend',
+                    permission: 'master',
+                    event: 'message.private',
                 },
                 {
                     reg: '^#?(同意|拒绝|查看)(全部)?(加|入)?群申请(\\d+)?$',
-                    fnc: 'GroupAdd'
+                    fnc: 'GroupAdd',
+                    permission: 'admin',
+                    event: 'message.group',
                 },
                 {
                     reg: '^#?(同意|拒绝|查看)(全部)?群邀请(\\d+)?$',
-                    fnc: 'GroupInvite'
+                    fnc: 'GroupInvite',
+                    permission: 'master',
                 },
                 {
                     reg: '^#?查看全部请求$',
-                    fnc: 'SystemMsgAll'
+                    fnc: 'SystemMsgAll',
+                    permission: 'master',
                 }
             ]
         })
@@ -49,7 +60,6 @@ export class anotice extends plugin {
 
     /** 同意好友申请 */
     async agree(e) {
-        if (!e.isMaster) return
         let yes = /同意/.test(e.msg) ? true : false
         let qq = e.message[0].text.replace(/#|(同意|拒绝)好友申请/g, '').trim()
         if (e.message[1]) {
@@ -71,7 +81,6 @@ export class anotice extends plugin {
 
     /**同意拒绝全部好友申请 */
     async agreesAll(e) {
-        if (!e.isMaster) return
 
         let yes = /同意/.test(e.msg) ? true : false
 
@@ -137,9 +146,7 @@ export class anotice extends plugin {
     }
     /** 引用同意好友申请和群邀请 */
     async agrees(e) {
-        if (!e.isMaster) return
         if (!e.source) return
-        if (!e.isPrivate) return
         let yes = /同意/.test(e.msg) ? true : false
         let source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
 
@@ -193,8 +200,6 @@ export class anotice extends plugin {
 
     // 回复好友消息
     async Replys(e) {
-        if (!e.isMaster) return
-        if (!e.isPrivate) return
         let qq = '';
         let group = '';
         let msgs = e.message[0].text.split(' ')
@@ -251,9 +256,7 @@ export class anotice extends plugin {
 
     //加群员为好友
     async addFriend(e) {
-        if (!e.isMaster) return
         if (!e.source) return
-        if (!e.isPrivate) return
         let source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
         let msg = source.raw_message.split('\n')
         if (!/临时消息/.test(msg[0]) || !/来源群号/.test(msg[1]) || !/发送人QQ/.test(msg[2])) return
@@ -269,8 +272,6 @@ export class anotice extends plugin {
 
     //入群请求
     async GroupAdd(e) {
-        if (!e.isGroup) return e.reply("请在群聊使用此命令哦~")
-
         let SystemMsg = (await Bot.getSystemMsg())
             .filter(item => item.request_type == "group" && item.sub_type == "add" && item.group_id == e.group_id)
         if (lodash.isEmpty(SystemMsg)) return e.reply("暂无加群申请(。-ω-)zzz", true)
@@ -338,7 +339,6 @@ export class anotice extends plugin {
     }
     //群邀请列表
     async GroupInvite(e) {
-        if (!e.isMaster) return e.reply("❎ 该命令仅限主人可用", true);
         let SystemMsg = (await Bot.getSystemMsg()).filter(item => item.request_type == "group" && item.sub_type == "invite")
         if (lodash.isEmpty(SystemMsg)) return e.reply("暂无群邀请哦(。-ω-)zzz", true)
         //查看
@@ -395,7 +395,6 @@ export class anotice extends plugin {
     }
     //全部请求
     async SystemMsgAll(e) {
-        if (!e.isMaster) return e.reply("❎ 该命令仅限主人可用", true);
         let SystemMsg = await Bot.getSystemMsg()
         let FriendAdd = [], onewayFriend = [], GroupAdd = [], GroupInvite = []
         for (let i of SystemMsg) {

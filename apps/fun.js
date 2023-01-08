@@ -69,7 +69,7 @@ export class example extends plugin {
           fnc: 'picture'
         },
         {
-          reg: '^#?来点神秘图(\\d+)?$',
+          reg: '^#?来点神秘图(\\d+|s.*)?$',
           fnc: 'mengdui'
         },
         {
@@ -299,18 +299,41 @@ export class example extends plugin {
     if (!e.isMaster) {
       if (!Config.getGroup(e.group_id).sesepro) return e.reply(SWITCH_ERROR)
     }
+    //开始执行
     e.reply(START_Execution)
-    let appoint = e.msg.match(/\d+/g)
-    let random;
-    if (!appoint) {
-      random = lodash.random(1, 11687)
-      while (lodash.inRange(random, 7886, 10136)) {
-        random = lodash.random(1, 11687)
+    let url = ''
+    if (/#?来点神秘图s/.test(e.msg)) {
+      let keywords = e.msg.match(/#?来点神秘图s(.*)/)
+      let mengduipage = JSON.parse(await redis.get('yenai:mengduipage')) || {}
+      
+      let searcjurl = `https://b8s6.com/search.php?mdact=community&q=${keywords[1]}&page=${lodash.random(1, mengduipage[keywords[1]] || 1)}`
+      let search = await fetch(searcjurl).then(res => res.text());
+      let searchList = search.match(/https:\/\/b8s6.com\/post\/\d+.html/g)
+
+      if (lodash.isEmpty(searchList)) {
+        let ERROR = search.match(/抱歉，未找到(.*)相关内容，建议简化一下搜索的关键词|搜索频率太快，请等一等再尝试！/)
+        return ERROR ? e.reply(ERROR[0]?.replace(/<.*?>/g, "") || "未找到相关内容") : e.reply("未找到相关内容")
       }
+      //保存该关键词的最大页数
+      let searchpage = Math.max(...search.match(/<a href=".*?" class="">(\d+)<\/a>/g).map(item => item.match(/<a href=".*?" class="">(\d+)<\/a>/)[1]))
+      mengduipage[keywords[1]] = searchpage
+      await redis.set('yenai:mengduipage', JSON.stringify(mengduipage))
+
+      url = lodash.sample(searchList)
     } else {
-      random = appoint[0]
+      let appoint = e.msg.match(/\d+/g)
+      let random;
+      if (!appoint) {
+        random = lodash.random(1, 11687)
+        while (lodash.inRange(random, 7886, 10136)) {
+          random = lodash.random(1, 11687)
+        }
+      } else {
+        random = appoint[0]
+      }
+      url = `https://c8a9.com/post/${random}.html`
     }
-    let url = `https://c8a9.com/post/${random}.html`
+
     let res = await fetch(url).then(res => res.text()).catch(err => console.error(err));
     let resReg = new RegExp(`<img src="(https://md1\.lianhevipimg\.com/(.*?)/(\\d+).jpg")`, 'g');
     let list = res.match(resReg);
@@ -332,7 +355,7 @@ export class example extends plugin {
     let api = `https://xiaobai.klizi.cn/API/music/lingsheng.php?msg=${msg}&n=1`
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
     if (!res) return e.reply(API_ERROR)
-    if (res.title == null && res.author == null) return e.reply("没有找到相关的歌曲哦~", true)
+    if (res.title == null && res.author == null) return e.reply("❎ 没有找到相关的歌曲哦~", true)
 
     await e.reply([
       `标题：${res.title}\n`,

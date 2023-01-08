@@ -25,44 +25,53 @@ export class example extends plugin {
       rule: [
         {
           reg: '^#改头像.*$',
-          fnc: 'Photo'
+          fnc: 'Photo',
+          permission: 'master'
         },
         {
           reg: '^#改昵称.*$',
-          fnc: 'Myname'
+          fnc: 'Myname',
+          permission: 'master'
         },
         {
           reg: '^#改签名.*$',
-          fnc: 'Sign'
+          fnc: 'Sign',
+          permission: 'master'
         },
         {
           reg: '^#改状态.*$',
-          fnc: 'State'
+          fnc: 'State',
+          permission: 'master'
         },
         {
           reg: FriendsReg,//发好友
-          fnc: 'Friends'
+          fnc: 'Friends',
+          permission: 'master'
         },
         {
           reg: GroupmsgReg,//发群聊
-          fnc: 'Groupmsg'
+          fnc: 'Groupmsg',
+          permission: 'master'
         },
         {
           reg: GrouplistmsgReg,//发群列表
-          fnc: 'Grouplistmsg'
+          fnc: 'Grouplistmsg',
+          permission: 'master'
         },
-
         {
           reg: '^#退群.*$',
-          fnc: 'Quit'
+          fnc: 'Quit',
+          permission: 'master'
         },
         {
           reg: '^#删好友.*$',
-          fnc: 'Deletes'
+          fnc: 'Deletes',
+          permission: 'master'
         },
         {
           reg: '^#改性别.*$',
-          fnc: 'Sex'
+          fnc: 'Sex',
+          permission: 'master'
         },
         {
           reg: '^#取直链.*$',
@@ -74,39 +83,48 @@ export class example extends plugin {
         },
         {
           reg: '^#获?取说说列表(\\d+)?$',
-          fnc: 'Qzonelist'
+          fnc: 'Qzonelist',
+          permission: 'master'
         },
         {
           reg: '^#删说说(\\d+)$',
-          fnc: 'Qzonedel'
+          fnc: 'Qzonedel',
+          permission: 'master'
         },
         {
           reg: '^#发说说.*$',
-          fnc: 'Qzonesay'
+          fnc: 'Qzonesay',
+          permission: 'master'
         },
         {
           reg: '^#(清空说说|清空留言)$',
-          fnc: 'QzoneEmpty'
+          fnc: 'QzoneEmpty',
+          permission: 'master'
         },
         {
           reg: '^#改群名片.*$',
-          fnc: 'MyGroupname'
+          fnc: 'MyGroupname',
+          permission: 'master'
         },
         {
           reg: '^#改群头像.*$',
-          fnc: 'GroupPhoto'
+          fnc: 'GroupPhoto',
+          permission: 'admin'
         },
         {
           reg: '^#改群昵称.*$',
-          fnc: 'Groupname'
+          fnc: 'Groupname',
+          permission: 'admin'
         },
         {
           reg: '^#获取(群|好友)列表$',
-          fnc: 'Grouplist'
+          fnc: 'Grouplist',
+          permission: 'master'
         },
         {
           reg: '^#(开启|关闭)戳一戳$',
-          fnc: 'cyc'
+          fnc: 'cyc',
+          permission: 'master'
         },
         {
           reg: '^#?撤回$',
@@ -114,11 +132,13 @@ export class example extends plugin {
         },
         {
           reg: '^#(开启|关闭)好友添加$',
-          fnc: 'friend_switch'
+          fnc: 'friend_switch',
+          permission: 'master'
         },
         {
           reg: friend_typeReg,//更改好友申请方式
-          fnc: 'friend_type'
+          fnc: 'friend_type',
+          permission: 'master'
         },
       ]
     })
@@ -126,8 +146,6 @@ export class example extends plugin {
   }
   /**改头像*/
   async Photo(e) {
-    if (!e.isMaster) return;
-
     if (!e.img) {
       this.setContext('Photos')
       e.reply("✅ 请发送图片");
@@ -144,7 +162,7 @@ export class example extends plugin {
   }
   async Photos() {
     let img = this.e.img
-    if (this.e.msg === "取消") {
+    if (/取消/.test(this.e.msg)) {
       this.finish('Photos')
       await this.reply('✅ 已取消')
       return;
@@ -166,8 +184,6 @@ export class example extends plugin {
 
   /** 改昵称*/
   async Myname(e) {
-    if (!e.isMaster) return;
-
     let name = e.msg.replace(/#|改昵称/g, "").trim()
 
     await Bot.setNickname(name)
@@ -180,9 +196,6 @@ export class example extends plugin {
 
   /** 改群名片 */
   async MyGroupname(e) {
-    if (!e.isMaster) return;
-
-
     let group = '';
     let card = '';
 
@@ -216,7 +229,6 @@ export class example extends plugin {
   async GroupPhoto(e) {
     if (e.isPrivate) {
       if (!e.isMaster) return;
-
       groupPhotoid = e.msg.replace(/#|改群头像/g, "").trim()
 
       if (!groupPhotoid) return e.reply("❎ 群号不能为空");
@@ -225,12 +237,7 @@ export class example extends plugin {
 
       if (!Bot.gl.get(Number(groupPhotoid))) return e.reply("❎ 群聊列表查无此群");
     } else {
-      //判断身份
-      if (e.member.is_admin || e.member.is_owner || e.isMaster) {
-        groupPhotoid = e.group_id
-      } else {
-        return e.reply(["哼~你不是管理员人家不听你的", segment.face(231)])
-      }
+      groupPhotoid = e.group_id
     }
     groupPhotoid = Number(groupPhotoid);
 
@@ -254,7 +261,7 @@ export class example extends plugin {
 
   picture() {
     let img = this.e.img
-    if (this.e.msg === "取消") {
+    if (/取消/.test(this.e.msg)) {
       this.finish('picture')
       this.e.reply('✅ 已取消')
       return;
@@ -283,22 +290,14 @@ export class example extends plugin {
       if (!e.isMaster) return;
 
       let msg = e.msg.split(" ")
-
       group = msg[1].match(/[1-9]\d*/g);
-
       card = msg.slice(2).join(" ");
 
       if (!group) return e.reply("❎ 群号不能为空");
-
       if (!Bot.gl.get(Number(msg[1]))) return e.reply("❎ 群聊列表查无此群");
-
     } else {
-      if (e.member.is_admin || e.member.is_owner || e.isMaster) {
-        group = e.group_id
-        card = e.msg.replace(/#|改群昵称/g, "").trim()
-      } else {
-        return e.reply(["哼~你不是管理员人家不听你的", segment.face(231)])
-      }
+      group = e.group_id
+      card = e.msg.replace(/#|改群昵称/g, "").trim()
     }
 
     if (!card) return e.reply("❎ 昵称不能为空");
@@ -319,7 +318,6 @@ export class example extends plugin {
 
   /** 改签名*/
   async Sign(e) {
-    if (!e.isMaster) return;
 
     let signs = e.msg.replace(/#|改签名/g, "").trim()
     await Bot.setSignature(signs)
@@ -332,8 +330,6 @@ export class example extends plugin {
 
   /** 改状态*/
   async State(e) {
-    if (!e.isMaster) return;
-
     let signs = e.msg.replace(/#|改状态/g, "").trim()
 
     if (!signs) return e.reply("❎ 状态不为空，可选值：我在线上，离开，隐身，忙碌，Q我吧，请勿打扰");
@@ -352,7 +348,6 @@ export class example extends plugin {
 
   /** 发好友*/
   async Friends(e) {
-    if (!e.isMaster) return;
     let regRet = FriendsReg.exec(e.msg)
     let qq = regRet[1]
     e.message[0].text = regRet[2]
@@ -372,8 +367,6 @@ export class example extends plugin {
 
   /** 发群聊*/
   async Groupmsg(e) {
-    if (!e.isMaster) return;
-
     let regRet = GroupmsgReg.exec(e.msg)
 
     let gpid = regRet[1]
@@ -395,7 +388,6 @@ export class example extends plugin {
 
   //发送群列表
   async Grouplistmsg(e) {
-    if (!e.isMaster) return;
     //获取参数
     let regRet = GrouplistmsgReg.exec(e.msg)
     let gpid = regRet[1]
@@ -446,8 +438,6 @@ export class example extends plugin {
 
   /**退群 */
   async Quit(e) {
-    if (!e.isMaster) return;
-
     let quits = e.msg.replace(/#|退群/g, "").trim()
 
     if (!quits) return e.reply("❎ 群号不能为空");
@@ -466,8 +456,6 @@ export class example extends plugin {
 
   /**删好友 */
   async Deletes(e) {
-    if (!e.isMaster) return
-
     let quits = e.msg.replace(/#|删好友/g, "").trim()
 
     if (e.message[1]) {
@@ -489,8 +477,6 @@ export class example extends plugin {
 
   /**改性别 */
   async Sex(e) {
-    if (!e.isMaster) return;
-
     let sex = e.msg.replace(/#|改性别/g, "").trim();
 
     if (!sex) return e.reply("❎ 性别不能为空 可选值：男，女，无\n（改为无，为无性别）");
@@ -593,8 +579,6 @@ export class example extends plugin {
 
   /**QQ空间 说说列表*/
   async Qzonelist(e) {
-    if (!e.isMaster) return;
-
     let page = e.msg.replace(/#|获?取说说列表/g, "").trim()
     if (!page) {
       page = 0
@@ -620,7 +604,6 @@ export class example extends plugin {
 
   /** 删除说说 */
   async Qzonedel(e) {
-    if (!e.isMaster) return;
     let pos = e.msg.match(/\d+/)
     //获取说说列表
     let list = await QQInterface.getQzone(pos - 1, 1)
@@ -644,7 +627,6 @@ export class example extends plugin {
 
   /** 发说说 */
   async Qzonesay(e) {
-    if (!e.isMaster) return;
     let con = e.msg.replace(/#|发说说/g, "").trim()
     let result = await QQInterface.setQzone(con, e.img)
     if (!result) return e.reply(API_ERROR)
@@ -661,8 +643,6 @@ export class example extends plugin {
 
   /** 清空说说和留言*/
   async QzoneEmpty(e) {
-    if (!e.isMaster) return;
-
     if (/清空说说/.test(e.msg)) {
       this.setContext('QzonedelAll')
       e.reply("✳️ 即将删除全部说说请发送：\n" + "------确认清空或取消------");
@@ -700,8 +680,6 @@ export class example extends plugin {
 
   //获取群|好友列表
   async Grouplist(e) {
-    if (!e.isMaster) return;
-
     let msg = [];
     if (/群列表/.test(e.msg)) {
       //获取群列表并转换为数组
@@ -772,7 +750,6 @@ export class example extends plugin {
 
   //开关好友添加
   async friend_switch(e) {
-    if (!e.isMaster) return
     let res = await QQInterface.addFriendSwitch(/开启/.test(e.msg) ? 1 : 2)
     if (!res) return e.reply(API_ERROR)
     e.reply(res.ActionStatus)
@@ -780,7 +757,6 @@ export class example extends plugin {
 
   //好友申请方式
   async friend_type(e) {
-    if (!e.isMaster) return
     let regRet = friend_typeReg.exec(e.msg)
     if (regRet[1] == 0) return e.reply("1为允许所有人，2为需要验证，3为问答正确问答(需填问题和答案，格式为：#更改好友申请方式3 问题 答案)")
     //单独处理
@@ -794,8 +770,6 @@ export class example extends plugin {
 
   /**开关戳一戳 */
   async cyc(e) {
-    if (!e.isMaster) return;
-
     let result = await QQInterface.setcyc(/开启/.test(e.msg) ? 0 : 1)
     if (!result) return e.reply(API_ERROR)
 

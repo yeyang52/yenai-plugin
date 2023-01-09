@@ -2,7 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
 import lodash from 'lodash'
 import { Config } from '../components/index.js'
-import { Cfg, Gpadmin, common, QQInterface, Browser } from '../model/index.js'
+import { Gpadmin, common, QQInterface, Browser } from '../model/index.js'
 import moment from 'moment'
 
 
@@ -212,7 +212,7 @@ export class Basics extends plugin {
 
         if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
         //判断是否为主人
-        if (Cfg.masterQQ?.includes(Number(qq))) {
+        if (Config.masterQQ?.includes(Number(qq))) {
             return e.reply("居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ");
         }
         let Memberinfo = e.group.pickMember(Number(qq)).info
@@ -310,7 +310,7 @@ export class Basics extends plugin {
         }
         if (!qq || !(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
         //判断是否为主人
-        if (Cfg.masterQQ?.includes(Number(qq))) {
+        if (Config.masterQQ?.includes(Number(qq))) {
             return e.reply("居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ");
         }
         let Memberinfo = e.group.pickMember(Number(qq)).info
@@ -579,10 +579,10 @@ export class Basics extends plugin {
                 `\n昵称：${info.card || info.nickname}\n`,
                 `QQ：${info.user_id}\n`,
                 `群身份：${common.ROLE_MAP[info.role]}\n`,
-                `禁言剩余时间：${Cfg.getsecondformat(Member.mute_left)}`
+                `禁言剩余时间：${common.getsecondformat(Member.mute_left)}`
             ])
         }
-        Cfg.getforwardMsg(e, msg)
+        common.getforwardMsg(e, msg)
     }
 
     //解除全部禁言
@@ -595,7 +595,7 @@ export class Basics extends plugin {
         if (!mutelist) return e.reply("都没有人被禁言我怎么解的辣＼(`Δ’)／")
         for (let i of mutelist) {
             await e.group.muteMember(i, 0)
-            await Cfg.sleep(2000)
+            await common.sleep(2000)
         }
         e.reply("已经把全部的禁言解除辣╮( •́ω•̀ )╭")
     }
@@ -625,7 +625,7 @@ export class Basics extends plugin {
 
             e.reply(`本此共需清理「${list.length}」人，防止误触发\n请发送：#确认清理${Reg[2]}${Reg[3]}没发言的人`)
         }
-        Cfg.getforwardMsg(e, msg)
+        common.getforwardMsg(e, msg)
     }
 
     //查看和清理从未发言的人
@@ -640,7 +640,7 @@ export class Basics extends plugin {
             }
             let removelist = list.map(item => item.user_id)
             let msg = await Gpadmin.getkickMember(e, removelist)
-            return Cfg.getforwardMsg(e, msg)
+            return common.getforwardMsg(e, msg)
         }
         //清理
         if (/^#?清理/.test(e.msg)) {
@@ -653,7 +653,8 @@ export class Basics extends plugin {
         let num = e.msg.match(new RegExp(Numreg))
         num = num ? common.translateChinaNum(num[0]) : 1
         let listinfo = await Gpadmin.getneverspeakinfo(e, num)
-        Cfg.getforwardMsg(e, listinfo)
+        if (!listinfo) return false;
+        common.getforwardMsg(e, listinfo)
     }
 
     //查看不活跃排行榜和入群记录
@@ -666,7 +667,7 @@ export class Basics extends plugin {
         } else {
             msg = await Gpadmin.getRecentlyJoined(e, num)
         }
-        Cfg.getforwardMsg(e, msg)
+        common.getforwardMsg(e, msg)
     }
     //发送通知
     async Send_notice(e) {
@@ -692,7 +693,7 @@ export class Basics extends plugin {
                 let data = JSON.parse(await redis.get(task[i]))
                 msglist.push(`${i + 1}.\n群号:${data.groupNumber}\n禁言时间:${data.muteTime}\n解禁时间:${data.remTime}`)
             }
-            Cfg.getforwardMsg(e, msglist)
+            common.getforwardMsg(e, msglist)
             return true
         }
         if (/取消/.test(e.msg)) {

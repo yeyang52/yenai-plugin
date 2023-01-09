@@ -1,7 +1,233 @@
-import { core } from "oicq";
+import common from '../../../lib/common/common.js'
+import fs from 'fs'
+import Config from '../components/Config.js'
 import child_process from 'child_process'
 
-export default new class common {
+
+export default new class newCommon {
+    /**
+     * @description: 延时函数
+     * @param {*} ms 时间(毫秒)
+     */
+    sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms))
+    }
+
+    /** 读取文件 */
+    getJson(path) {
+        try {
+            return JSON.parse(fs.readFileSync(path, 'utf8'))
+        } catch (err) {
+            logger.error('读取失败')
+            logger.error(err)
+            return false
+        }
+    }
+
+    /** 写入json文件 */
+    setJson(path, cot = {}) {
+        try {
+            fs.writeFileSync(path, JSON.stringify(cot, '', '\t'))
+            return true
+        } catch (error) {
+            logger.error('写入失败')
+            logger.error(err)
+            return false
+        }
+
+    }
+
+    /** 发消息 */
+    async sendMasterMsg(msg) {
+        if (Config.Notice.notificationsAll) {
+            // 发送全部管理
+            for (let index of Config.masterQQ) {
+                await common.relpyPrivate(index, msg)
+                await this.sleep(5000)
+            }
+        } else {
+            // 发给第一个管理
+            await common.relpyPrivate(Config.masterQQ[0], msg)
+            await common.sleep(200)
+        }
+    }
+
+    /**
+     * @description: 秒转换返回对象
+     * @param {Number} time  秒数
+     * @param {boolean} repair  是否需要补零
+     * @return {object} 包含天，时，分，秒
+     */
+    getsecond(time, repair) {
+        let second = parseInt(time)
+        let minute = 0
+        let hour = 0
+        let day = 0
+        if (second > 60) {
+            minute = parseInt(second / 60)
+            second = parseInt(second % 60)
+        }
+        if (minute > 60) {
+            hour = parseInt(minute / 60)
+            minute = parseInt(minute % 60)
+        }
+        if (hour > 23) {
+            day = parseInt(hour / 24)
+            hour = parseInt(hour % 24)
+        }
+        if (repair) {
+            hour = hour < 10 ? "0" + hour : hour
+            minute = minute < 10 ? "0" + minute : minute
+            second = second < 10 ? "0" + second : second
+        }
+        return {
+            day,
+            hour,
+            minute,
+            second
+        }
+    }
+
+    /**
+     * @description: //发送转发消息
+     * @param {*} e oicq
+     * @param {Array} message 发送的消息
+     * @param {Number} time  撤回时间
+     * @param {Boolean} isBot 转发信息是否以bot信息发送
+     * @param {Boolean} isfk 是否发送默认风控消息
+     * @return {Boolean}
+     */
+    async getforwardMsg(e, message, time = 0, isBot = true, isfk = true) {
+        let forwardMsg = []
+        for (let i of message) {
+            forwardMsg.push(
+                {
+                    message: i,
+                    nickname: isBot ? Bot.nickname : e.sender.card || e.sender.nickname,
+                    user_id: isBot ? Bot.uin : e.sender.user_id
+                }
+            )
+        }
+        //发送
+        if (e.isGroup) {
+            forwardMsg = await e.group.makeForwardMsg(forwardMsg)
+        } else {
+            forwardMsg = await e.friend.makeForwardMsg(forwardMsg)
+        }
+        //处理转发卡片
+        forwardMsg.data = forwardMsg.data
+            .replace('<?xml version="1.0" encoding="utf-8"?>', '<?xml version="1.0" encoding="utf-8" ?>')
+            .replace(/\n/g, '')
+            .replace(/<title color="#777777" size="26">(.+?)<\/title>/g, '___')
+            .replace(/___+/, '<title color="#777777" size="26">涩批(//// ^ ////)</title>');
+        //发送消息
+        let res = await e.reply(forwardMsg, false, { recallMsg: time })
+        if (!res) {
+            if (isfk) {
+                await e.reply("消息发送失败，可能被风控")
+            }
+            return false
+        }
+        return true;
+    }
+
+
+    /**
+     * @description: 发送普通消息并根据指定时间撤回群消息
+     * @param {*} e oicq
+     * @param {*} msg 消息
+     * @param {Number} time 撤回时间
+     * @param {Boolean} isfk 是否发送默认风控消息
+     * @return {*}
+     */
+    async recallsendMsg(e, msg, time = 0, isfk = true) {
+        time = time || this.getRecallTime(e.group_id);
+
+        //发送消息
+        let res = await e.reply(msg, false, { recallMsg: time })
+        if (!res) {
+            if (isfk) {
+                await e.reply("消息发送失败，可能被风控")
+            }
+            return false
+        }
+        return true;
+    }
+
+    /**
+     * @description: 获取配置的撤回时间发送转发消息
+     * @param {*} e oicq
+     * @param {Array} msg 发送的消息
+     * @param {Boolean} isBot 转发信息是否以bot信息发送
+     * @param {Boolean} isfk  是否发送默认风控消息
+     * @return {Boolean}
+     */
+    async getRecallsendMsg(e, msg, isBot = true, isfk = true) {
+        let time = this.getRecallTime(e.group_id)
+
+        let res = await this.getforwardMsg(e, msg, time, isBot, isfk)
+
+        if (!res) return false;
+
+        return true;
+    }
+
+    /**
+     * @description: 获取群的撤回时间
+     * @param {*} e oicq
+     * @return {Number} 
+     */
+    getRecallTime(groupId) {
+        if (!groupId) return 0;
+        let path = "./plugins/yenai-plugin/config/setu/setu.json"
+        //获取撤回时间
+        let cfgs = {};
+        let time = 120;
+        if (fs.existsSync(path)) {
+            cfgs = this.getJson(path)
+        }
+
+        if (cfgs[groupId]) {
+            time = cfgs[groupId].recall
+        }
+        return time
+    }
+
+    /**
+     * @description: 取cookie
+     * @param {String} data 如：qun.qq.com
+     * @return {Object} 
+     */
+    getck(data) {
+        let cookie = Bot.cookies[data]
+        let ck = cookie.replace(/=/g, `":"`).replace(/;/g, `","`).replace(/ /g, "").trim()
+        ck = ck.substring(0, ck.length - 2)
+        ck = `{"`.concat(ck).concat("}")
+        return JSON.parse(ck)
+    }
+
+    /**默认秒转换格式 */
+    getsecondformat(value) {
+        let time = this.getsecond(value)
+
+        let { second, minute, hour, day } = time
+        // 处理返回消息
+        let result = ''
+        if (second != 0) {
+            result = parseInt(second) + '秒'
+        }
+        if (minute > 0) {
+            result = parseInt(minute) + '分' + result
+        }
+        if (hour > 0) {
+            result = parseInt(hour) + '小时' + result
+        }
+        if (day > 0) {
+            result = parseInt(day) + '天' + result
+        }
+        return result
+    }
+
     /**
      * @description: 使用JS将数字从汉字形式转化为阿拉伯形式
      * @param {string} s_123
@@ -10,7 +236,7 @@ export default new class common {
     translateChinaNum(s_123) {
         //如果是纯数字直接返回
         if (/^\d+$/.test(s_123)) return Number(s_123)
-        // -------------------------------------------------- 字典，甚至可以使用繁体 --------------------------------------------------
+        //字典
         let map = new Map()
         map.set('一', 1)
         map.set('壹', 1) // 特殊
@@ -23,8 +249,7 @@ export default new class common {
         map.set('七', 7)
         map.set('八', 8)
         map.set('九', 9)
-
-        // -------------------------------------------------- 按照亿、万为分割将字符串划分为三部分 --------------------------------------------------
+        //按照亿、万为分割将字符串划分为三部分
         let split = ''
         split = s_123.split('亿')
         let s_1_23 = split.length > 1 ? split : ['', s_123]
@@ -69,37 +294,10 @@ export default new class common {
     }
 
     /**
-     * @description: 陌生人点赞
-     * @param {Number} uid QQ号
-     * @param {Number} times 数量
-     * @return {Object}
+     * @description: Promise执行exec
+     * @param {String} cmd
+     * @return {*}
      */
-    async thumbUp(uid, times = 1) {
-        if (times > 20)
-            times = 20;
-        let ReqFavorite;
-        if (Bot.fl.get(uid)) {
-            ReqFavorite = core.jce.encodeStruct([
-                core.jce.encodeNested([
-                    Bot.uin, 1, Bot.sig.seq + 1, 1, 0, Buffer.from("0C180001060131160131", "hex")
-                ]),
-                uid, 0, 1, Number(times)
-            ]);
-        }
-        else {
-            ReqFavorite = core.jce.encodeStruct([
-                core.jce.encodeNested([
-                    Bot.uin, 1, Bot.sig.seq + 1, 1, 0, Buffer.from("0C180001060131160135", "hex")
-                ]),
-                uid, 0, 5, Number(times)
-            ]);
-        }
-        const body = core.jce.encodeWrapper({ ReqFavorite }, "VisitorSvc", "ReqFavorite", Bot.sig.seq + 1);
-        const payload = await Bot.sendUni("VisitorSvc.ReqFavorite", body);
-        let result = core.jce.decodeWrapper(payload)[0];
-        return { code: result[3], msg: result[4] };
-    }
-
     async execSync(cmd) {
         return new Promise((resolve, reject) => {
             child_process.exec(cmd, (error, stdout, stderr) => {

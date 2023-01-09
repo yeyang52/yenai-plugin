@@ -1,7 +1,8 @@
 import fetch from "node-fetch"
-import { Cfg } from './index.js';
+import { common } from './index.js';
 import lodash from 'lodash'
 import moment from 'moment'
+import { core } from "oicq";
 import { segment } from "oicq";
 /**获取gtk */
 const gtk = function (t) {
@@ -64,7 +65,7 @@ export default new class assistant {
     }
     /**发送说说 */
     async setQzone(con, img) {
-        let ck = Cfg.getck('qzone.qq.com')
+        let ck = common.getck('qzone.qq.com')
 
         if (img) {
             let url = `http://xiaobai.klizi.cn/API/qqgn/ss_sendimg.php?uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&url=${img[0]}&msg=${con}`
@@ -287,7 +288,7 @@ export default new class assistant {
 
     /**今日打卡 */
     async signInToday(groupId) {
-        let ck = Cfg.getck('qun.qq.com')
+        let ck = common.getck('qun.qq.com')
         let body = JSON.stringify({
             "dayYmd": moment().format("YYYYMMDD"),
             "offset": 0,
@@ -384,5 +385,38 @@ export default new class assistant {
             headers: this.headers,
             body,
         }).then(res => res.json()).catch(err => console.error(err));
+    }
+
+
+    /**
+     * @description: 陌生人点赞
+     * @param {Number} uid QQ号
+     * @param {Number} times 数量
+     * @return {Object}
+     */
+    async thumbUp(uid, times = 1) {
+        if (times > 20)
+            times = 20;
+        let ReqFavorite;
+        if (Bot.fl.get(uid)) {
+            ReqFavorite = core.jce.encodeStruct([
+                core.jce.encodeNested([
+                    Bot.uin, 1, Bot.sig.seq + 1, 1, 0, Buffer.from("0C180001060131160131", "hex")
+                ]),
+                uid, 0, 1, Number(times)
+            ]);
+        }
+        else {
+            ReqFavorite = core.jce.encodeStruct([
+                core.jce.encodeNested([
+                    Bot.uin, 1, Bot.sig.seq + 1, 1, 0, Buffer.from("0C180001060131160135", "hex")
+                ]),
+                uid, 0, 5, Number(times)
+            ]);
+        }
+        const body = core.jce.encodeWrapper({ ReqFavorite }, "VisitorSvc", "ReqFavorite", Bot.sig.seq + 1);
+        const payload = await Bot.sendUni("VisitorSvc.ReqFavorite", body);
+        let result = core.jce.decodeWrapper(payload)[0];
+        return { code: result[3], msg: result[4] };
     }
 }

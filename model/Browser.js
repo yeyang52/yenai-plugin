@@ -1,6 +1,6 @@
 import puppeteer from 'puppeteer'
 import { segment } from 'oicq'
-class Browser {
+export default new class Browser {
     /**
      * @description:返回网页截图
      * @param {String} url 网页链接
@@ -91,6 +91,3 @@ class Browser {
         return segment.image(res)
     }
 }
-
-
-export default new Browser();

@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import os from 'os';
 import { render, Config } from '../components/index.js'
-import { CPU, Cfg, common } from '../model/index.js'
+import { CPU, common } from '../model/index.js'
 import moment from 'moment';
 // import si from 'systeminformation'
 let si = await redis.get('yenai:node_modules') ? await import("systeminformation") : false
@@ -106,7 +106,7 @@ export class example extends plugin {
  * @return {String} 天:?时:分:秒
  */
 function Formatting(time, repair) {
-  let times = Cfg.getsecond(time, repair)
+  let times = common.getsecond(time, repair)
 
   let { second, minute, hour, day } = times
 

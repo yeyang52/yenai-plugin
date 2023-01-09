@@ -225,7 +225,7 @@ export class NewConfig extends plugin {
     }
     //查看涩涩设置
     async View_Settings(e) {
-        let set = setu.getConfig(e)
+        let set = setu.getSeSeConfig(e)
         let data = Config.Notice
         e.reply([
             `sese：${data.sese ? "✅" : "❎"}\n`,

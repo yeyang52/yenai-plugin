@@ -1,4 +1,4 @@
-import Cfg from './Config.js';
+import { common } from './index.js';
 import lodash from 'lodash';
 import moment from 'moment'
 import { segment } from 'oicq'
@@ -41,19 +41,18 @@ class Group_admin {
             `最后发言时间：${moment(item.last_sent_time * 1000).format("YYYY-MM-DD HH:mm:ss")}`
             ]
         })
-        let Page = Cfg.returnAllPageFunc(30, msg)
+        let Page = lodash.chunk(msg, 30)
         if (num > Page.length) {
             e.reply("哪有那么多人辣o(´^｀)o")
             return false
         }
         let msgs = Page[num - 1]
-        let res = msgs.list
-        res.unshift(`当前为第${msgs.pageNum}页，共${Page.length}页，本页共${res.length}人，总共${msg.length}人`)
-        res.unshift(`以下为${times}${unit}没发言过的坏淫`)
+        msgs.unshift(`当前为第${num}页，共${Page.length}页，本页共${msgs.length}人，总共${msg.length}人`)
+        msgs.unshift(`以下为${times}${unit}没发言过的坏淫`)
         if (num < Page.length) {
-            res.splice(2, 0, `可用 "#查看${times}${unit}没发言过的人第${msgs.pageNum + 1}页" 翻页`)
+            msgs.splice(2, 0, `可用 "#查看${times}${unit}没发言过的人第${num + 1}页" 翻页`)
         }
-        return res
+        return msgs
     }
 
     /**
@@ -68,7 +67,7 @@ class Group_admin {
         if (!list) return false
         list = list.map(item => item.user_id)
         let msg = await this.getkickMember(e, list)
-        Cfg.getforwardMsg(e, msg)
+        common.getforwardMsg(e, msg)
         return true
     }
 
@@ -133,19 +132,18 @@ class Group_admin {
             `进群时间：${moment(item.join_time * 1000).format("YYYY-MM-DD HH:mm:ss")}`
             ]
         })
-        let Page = Cfg.returnAllPageFunc(30, msg)
+        let Page = lodash.chunk(msg, 30)
         if (num > Page.length) {
             e.reply("哪有那么多人辣o(´^｀)o")
             return false
         }
         let msgs = Page[num - 1]
-        let res = msgs.list
-        res.unshift(`当前为第${msgs.pageNum}页，共${Page.length}页，本页共${res.length}人，总共${msg.length}人`)
-        res.unshift(`以下为进群后从未发言过的坏淫`)
+        msgs.unshift(`当前为第${num}页，共${Page.length}页，本页共${msgs.length}人，总共${msg.length}人`)
+        msgs.unshift(`以下为进群后从未发言过的坏淫`)
         if (num < Page.length) {
-            res.splice(2, 0, `可用 "#查看从未发言过的人第${msgs.pageNum + 1}页" 翻页`)
+            msgs.splice(2, 0, `可用 "#查看从未发言过的人第${num + 1}页" 翻页`)
         }
-        return res
+        return msgs
     }
     /**
      * @description: 批量踢出群成员
@@ -162,7 +160,7 @@ class Group_admin {
             } else {
                 fail.push(i)
             }
-            await Cfg.sleep(5000)
+            await common.sleep(5000)
         }
         let msg = [
             [`本次共清理${arr.length}人\n`,

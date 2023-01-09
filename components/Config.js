@@ -2,6 +2,7 @@ import YAML from 'yaml'
 import chokidar from 'chokidar'
 import fs from 'node:fs'
 import YamlReader from '../model/YamlReader.js'
+import cfg from '../../../lib/config/config.js'
 
 const Path = process.cwd();
 const Plugin_Name = 'yenai-plugin'
@@ -38,7 +39,10 @@ class Config {
     }
     return { ...defCfg, ...config }
   }
-
+  /**主人QQ */
+  get masterQQ() {
+    return cfg.masterQQ
+  }
   //获取全局设置
   get Notice() {
     return this.getNotice()

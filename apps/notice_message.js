@@ -1,6 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
-import Cfg from '../model/Config.js'
+import { common } from '../model/index.js'
 import { Config } from '../components/index.js'
 
 export class anotice extends plugin {
@@ -18,7 +18,7 @@ Bot.on("message", async (e) => {
     // 判断是否为机器人消息
     if (e.user_id == Bot.uin) return false;
     // 判断是否主人消息
-    if (Cfg.masterQQ.includes(e.user_id)) return false;
+    if (Config.masterQQ.includes(e.user_id)) return false;
     //删除缓存时间
     let deltime = Config.Notice.deltime
     // 判断群聊还是私聊
@@ -183,10 +183,9 @@ Bot.on("message", async (e) => {
         ]
     }
     // 发送消息
-    await Cfg.getSend(msg)
-    if (forwardMsg) {
-        await Cfg.getSend(forwardMsg)
-    }
+    await common.sendMasterMsg(msg)
+    if (forwardMsg) await common.sendMasterMsg(forwardMsg)
+    
 })
 
 // 特殊消息处理

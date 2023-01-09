@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from "oicq";
 import { Config } from "../components/index.js"
-import { YamlReader, Cfg } from '../model/index.js'
+import { YamlReader, common } from '../model/index.js'
 //全局
 let temp = {};
 const ops = ["+", "-"];
@@ -65,7 +65,7 @@ export class NEWCMD extends plugin {
 
     if (qq == Bot.uin) return
 
-    if (Cfg.masterQQ.includes(qq)) return e.reply("❎ 该命令对机器人管理员无效");
+    if (Config.masterQQ.includes(qq)) return e.reply("❎ 该命令对机器人管理员无效");
 
     if (temp[qq + e.group_id]) return e.reply("❎ 目标群成员处于验证状态");
 
@@ -156,7 +156,7 @@ Bot.on("notice.group.increase", async (e) => {
 
   if (e.user_id == Bot.uin) return
 
-  if (Cfg.masterQQ.includes(e.user_id)) return
+  if (Config.masterQQ.includes(e.user_id)) return
 
   if (e?.group?.mute_left > 0) return
 
@@ -270,7 +270,7 @@ async function verify(user_id, group_id, e) {
 
   const msg = ` 欢迎，请在「${verifycfg.time}」秒内发送「${m}${operator}${n}」的运算结果，否则将会被移出群聊`;
 
-  await Cfg.sleep(600);
+  await common.sleep(600);
   //消息发送成功才写入
   if (await e.reply([segment.at(user_id), msg])) {
     temp[user_id + group_id] = {

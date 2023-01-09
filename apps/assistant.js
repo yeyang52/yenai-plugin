@@ -1,6 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js';
 import { segment } from "oicq";
-import { Cfg, QQInterface, common } from '../model/index.js';
+import { common, QQInterface } from '../model/index.js';
 import lodash from 'lodash'
 import moment from 'moment'
 
@@ -428,7 +428,7 @@ export class example extends plugin {
         await Bot.pickGroup(i).sendMsg(e.message)
           .then(() => e.reply("✅ " + i + " 群聊消息已送达"))
           .catch((err) => e.reply(`❎ ${i} 发送失败\n错误信息为:${err.message}`))
-        await Cfg.sleep(5000)
+        await common.sleep(5000)
       }
     }
     return false;
@@ -527,7 +527,7 @@ export class example extends plugin {
       for (let i of img) {
         msg.push([segment.image(i), "直链:", i])
       }
-      Cfg.getforwardMsg(e, msg)
+      common.getforwardMsg(e, msg)
     } else {
       await e.reply([segment.image(img[0]), "直链:", img[0]])
     }
@@ -571,7 +571,7 @@ export class example extends plugin {
     })
 
     if (res.length >= 2) {
-      Cfg.getforwardMsg(e, res)
+      common.getforwardMsg(e, res)
     } else {
       e.reply(res[0])
     }
@@ -700,7 +700,7 @@ export class example extends plugin {
       ]
     }
 
-    Cfg.getforwardMsg(e, msg)
+    common.getforwardMsg(e, msg)
 
   }
 
@@ -730,7 +730,7 @@ export class example extends plugin {
     //撤回消息
     await target.recallMsg(source.message_id);
 
-    await Cfg.sleep(300);
+    await common.sleep(300);
     let recallcheck = await Bot.getMsg(source.message_id)
     if (recallcheck && recallcheck.message_id == source.message_id) {
       let msg;

@@ -3,7 +3,7 @@ import fetch from 'node-fetch'
 import { segment } from "oicq"
 import lodash from 'lodash'
 import { Config } from '../components/index.js'
-import { Cfg, uploadRecord, common, Interface } from '../model/index.js'
+import { common, uploadRecord, QQInterface, Interface } from '../model/index.js'
 
 const heisitype = {
   "白丝": "baisi",
@@ -156,7 +156,7 @@ export class example extends plugin {
         } else break;
       } else {
         //陌生人点赞
-        let res = await common.thumbUp(e.user_id, 10)
+        let res = await QQInterface.thumbUp(e.user_id, 10)
         logger.debug("[椰奶陌生人点赞]", res)
         if (res.code != 0) {
           if (res.code == 1) {
@@ -223,7 +223,7 @@ export class example extends plugin {
         item++
       }
     }
-    Cfg.getRecallsendMsg(e, msg, false)
+    common.getRecallsendMsg(e, msg, false)
     return true
   }
   //cos/acg搜索
@@ -256,7 +256,7 @@ export class example extends plugin {
       ?.map(item => (!/www.pandadiu.com/.test(item) ? domain : "") + (item.match(/<img src="(.*?)".*/)[1]))
       ?.map(item => segment.image(item)) || false
     if (!imglist) return e.reply(API_ERROR)
-    Cfg.getRecallsendMsg(e, imglist, false)
+    common.getRecallsendMsg(e, imglist, false)
   }
 
   //黑丝
@@ -288,7 +288,7 @@ export class example extends plugin {
       return item
     })
     //发送消息
-    Cfg.getRecallsendMsg(e, lodash.take(imglist, 20), false)
+    common.getRecallsendMsg(e, lodash.take(imglist, 20), false)
   }
   //萌堆
   async mengdui(e) {
@@ -341,7 +341,7 @@ export class example extends plugin {
     }
     let msg = list.map(item => segment.image(item.match(/https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*/i)[0]))
     msg = lodash.take(msg, 30)
-    Cfg.getRecallsendMsg(e, msg, false)
+    common.getRecallsendMsg(e, msg, false)
   }
 
   //铃声多多
@@ -372,7 +372,7 @@ export class example extends plugin {
       msg.push(i.image.map(item => segment.image(item)))
     }
     if (lodash.isEmpty(msg)) return this.bcy_topic(e)
-    Cfg.getforwardMsg(e, msg)
+    common.getforwardMsg(e, msg)
   }
 
   //api大集合

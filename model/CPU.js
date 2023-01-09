@@ -5,7 +5,8 @@ import fs from 'fs'
 import { common } from './index.js'
 import { Config } from '../components/index.js'
 let si = await redis.get('yenai:node_modules') ? await import("systeminformation") : false
-class OSUtils {
+
+export default new class OSUtils {
   constructor() {
     this.cpuUsageMSDefault = 1000; // CPU 利用率默认时间段
     this.isGPU = false;
@@ -254,4 +255,3 @@ class OSUtils {
     }
   }
 }
-export default new OSUtils();

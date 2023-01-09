@@ -1,6 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
-import Cfg from '../model/Config.js'
+import { common } from '../model/index.js'
 import { Config } from '../components/index.js'
 
 
@@ -45,7 +45,7 @@ export class Friends extends plugin {
 
                 if (e.user_id == Bot.uin) return false;
 
-                if (Cfg.masterQQ.includes(e.user_id)) return false
+                if (Config.masterQQ.includes(e.user_id)) return false
                 logger.mark("[椰奶]好友撤回")
                 // 读取
                 let res = JSON.parse(
@@ -94,10 +94,8 @@ export class Friends extends plugin {
             default:
                 return false;
         }
-        await Cfg.getSend(msg)
-        if (forwardMsg) {
-            await Cfg.getSend(forwardMsg)
-        }
+        await common.sendMasterMsg(msg)
+        if (forwardMsg) await common.sendMasterMsg(forwardMsg)
     }
 }
 

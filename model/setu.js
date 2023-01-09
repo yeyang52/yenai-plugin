@@ -1,7 +1,7 @@
 import { segment } from "oicq";
 import fetch from 'node-fetch'
 import fs from 'fs'
-import Cfg from './Config.js';
+import { common } from './index.js';
 import lodash from "lodash";
 
 export default new class setu {
@@ -40,7 +40,7 @@ export default new class setu {
     async setuapi(e, r18, num = 1, tag = "") {
         let api = "https://api.lolicon.app/setu/v2";
         if (fs.existsSync(this.apicfg)) {
-            let apicfg = Cfg.getJson(this.apicfg)
+            let apicfg = common.getJson(this.apicfg)
             if (apicfg.api) api = apicfg.api
         }
         let size = "original"
@@ -93,11 +93,11 @@ export default new class setu {
         let present = parseInt(new Date().getTime() / 1000)
 
         //发送消息
-        let res = await Cfg.getRecallsendMsg(e, msg, false)
+        let res = await common.getRecallsendMsg(e, msg, false)
         if (e.isGroup) {
             //获取CD
             if (fs.existsSync(this.path)) {
-                let groupCD = Cfg.getJson(this.path)
+                let groupCD = common.getJson(this.path)
                 if (groupCD[e.group_id]) cd = groupCD[e.group_id].cd
             }
             if (!e.isMaster && res) {
@@ -112,7 +112,7 @@ export default new class setu {
         } else {
             //私聊
             if (fs.existsSync(this.path_s)) {
-                let friendCD = Cfg.getJson(this.path_s)
+                let friendCD = common.getJson(this.path_s)
                 if (friendCD[e.user_id]) cd = friendCD[e.user_id]
             }
             if (!e.isMaster && res) {
@@ -166,14 +166,14 @@ export default new class setu {
         if (e.isGroup) {
             //获取配置
             if (fs.existsSync(this.path)) {
-                cfgs = Cfg.getJson(this.path)
+                cfgs = common.getJson(this.path)
                 if (cfgs[e.group_id]) {
                     return cfgs[e.group_id].r18
                 }
             }
         } else {
             if (fs.existsSync(this.path_s)) {
-                cfgs = Cfg.getJson(this.path_s)
+                cfgs = common.getJson(this.path_s)
                 if (cfgs.friendr18 !== undefined) {
                     return cfgs.friendr18
                 }
@@ -191,13 +191,13 @@ export default new class setu {
     setGroupRecallTimeAndCd(e, num, yes = true) {
         let res = {};
 
-        if (fs.existsSync(this.path)) res = Cfg.getJson(this.path)
+        if (fs.existsSync(this.path)) res = common.getJson(this.path)
 
         if (!res[e.group_id]) res[e.group_id] = lodash.cloneDeep(this.def)
 
         yes ? res[e.group_id].recall = Number(num) : res[e.group_id].cd = Number(num)
 
-        return Cfg.setJson(this.path, res) ? true : false
+        return common.setJson(this.path, res) ? true : false
     }
     /**
      * @description: 设置CD
@@ -208,10 +208,10 @@ export default new class setu {
     setUserCd(e, qq, cd) {
         let res = {};
         if (fs.existsSync(this.path_s)) {
-            res = Cfg.getJson(this.path_s)
+            res = common.getJson(this.path_s)
         }
         res[qq] = Number(cd)
-        if (Cfg.setJson(this.path_s, res)) {
+        if (common.setJson(this.path_s, res)) {
             e.reply(`✅ 设置用户${qq}的cd成功，cd时间为${cd}秒`)
             delete this.temp[qq]
             return true
@@ -230,7 +230,7 @@ export default new class setu {
         let res = {};
         if (group) {
             if (fs.existsSync(this.path)) {
-                res = Cfg.getJson(this.path)
+                res = common.getJson(this.path)
             }
 
             if (!res[e.group_id]) res[e.group_id] = lodash.cloneDeep(this.def)
@@ -238,7 +238,7 @@ export default new class setu {
 
             res[e.group_id].r18 = yes ? 1 : 0
 
-            if (Cfg.setJson(this.path, res)) {
+            if (common.setJson(this.path, res)) {
                 e.reply(`✅ 已${yes ? "开启" : "关闭"}${e.group_id}的涩涩模式~`)
                 return true
             } else {
@@ -247,12 +247,12 @@ export default new class setu {
             }
         } else {
             if (fs.existsSync(this.path_s)) {
-                res = Cfg.getJson(this.path_s)
+                res = common.getJson(this.path_s)
             }
 
             res.friendr18 = yes ? 1 : 0
 
-            if (Cfg.setJson(this.path_s, res)) {
+            if (common.setJson(this.path_s, res)) {
                 e.reply(`✅ 已${yes ? "开启" : "关闭"}私聊涩涩功能~`)
                 return true
             } else {
@@ -267,19 +267,19 @@ export default new class setu {
      * @param {*} e oicq
      * @return {*}
      */
-    getConfig(e) {
+    getSeSeConfig(e) {
         let set = lodash.cloneDeep(this.def)
         if (e.isGroup) {
             //获取群聊单独cd
             if (fs.existsSync(this.path)) {
-                let groupCD = Cfg.getJson(this.path)
+                let groupCD = common.getJson(this.path)
                 if (groupCD[e.group_id]) set.cd = groupCD[e.group_id].cd
             }
-            set.recall = Cfg.getRecallTime(e)
+            set.recall = common.getRecallTime(e.group_id)
         } else {
             //获取私聊单独cd
             if (fs.existsSync(this.path_s)) {
-                let friendCD = Cfg.getJson(this.path_s)
+                let friendCD = common.getJson(this.path_s)
                 if (friendCD[e.user_id]) set.cd = friendCD[e.user_id]
             }
             delete set.recall
@@ -293,7 +293,7 @@ export default new class setu {
     * @return {String} 
     */
     Secondformat(value) {
-        let time = Cfg.getsecond(value)
+        let time = common.getsecond(value)
 
         let { second, minute, hour, day } = time
         // 处理返回消息

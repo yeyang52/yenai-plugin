@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import moment from 'moment';
 import { Config } from '../components/index.js'
-import { Cfg, Pixiv, common, setu } from '../model/index.js'
+import { Pixiv, common, setu } from '../model/index.js'
 
 //文案
 const SWITCH_ERROR = "主人没有开放这个功能哦(＊／ω＼＊)"
@@ -75,7 +75,7 @@ export class example extends plugin {
 
         await e.reply(msg)
 
-        img.length == 1 || /R-18/.test(msg[4]) ? Cfg.recallsendMsg(e, img) : Cfg.getRecallsendMsg(e, img, false)
+        img.length == 1 || /R-18/.test(msg[4]) ? common.recallsendMsg(e, img) : common.getRecallsendMsg(e, img, false)
 
         return true;
     }
@@ -101,7 +101,7 @@ export class example extends plugin {
 
         if (!res) return
 
-        Cfg.getRecallsendMsg(e, res, false)
+        common.getRecallsendMsg(e, res, false)
 
         return true;
     }
@@ -136,7 +136,7 @@ export class example extends plugin {
             res = await new Pixiv(e).searchTags(tag, page)
         }
         if (!res) return
-        Cfg.getRecallsendMsg(e, res, false)
+        common.getRecallsendMsg(e, res, false)
 
         return true;
     }
@@ -150,7 +150,7 @@ export class example extends plugin {
 
         if (!res) return
 
-        Cfg.getRecallsendMsg(e, res, false)
+        common.getRecallsendMsg(e, res, false)
     }
 
     /**以uid搜图**/
@@ -179,7 +179,7 @@ export class example extends plugin {
 
         if (!res) return
 
-        Cfg.getRecallsendMsg(e, res, false)
+        common.getRecallsendMsg(e, res, false)
     }
 
     //随机原创插画
@@ -200,7 +200,7 @@ export class example extends plugin {
 
         if (!res) return
 
-        Cfg.getRecallsendMsg(e, res, false)
+        common.getRecallsendMsg(e, res, false)
     }
 
     //相关作品
@@ -211,7 +211,7 @@ export class example extends plugin {
         let regRet = relatedReg.exec(e.msg)
         let msg = await new Pixiv(e).getrelated_works(regRet[1])
         if (!msg) return
-        Cfg.getRecallsendMsg(e, msg, false)
+        common.getRecallsendMsg(e, msg, false)
     }
 
     //p站单图
@@ -222,6 +222,6 @@ export class example extends plugin {
         if ((!sese && !sesepro || !sesepro && ispro) && !e.isMaster) return e.reply(SWITCH_ERROR)
 
         let msg = await new Pixiv(e).getPximg(ispro)
-        ispro ? Cfg.getRecallsendMsg(e, [msg], false) : Cfg.recallsendMsg(e, msg)
+        ispro ? common.getRecallsendMsg(e, [msg], false) : common.recallsendMsg(e, msg)
     }
 }

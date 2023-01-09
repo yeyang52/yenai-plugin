@@ -1,6 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
-import Cfg from '../model/Config.js'
+import { common } from '../model/index.js'
 import { Config } from '../components/index.js'
 import moment from 'moment'
 
@@ -164,7 +164,7 @@ export class newgroups extends plugin {
             }
             // 禁言 (这里仅处理机器人被禁言)
             case 'ban': {
-                let Forbiddentime = Cfg.getsecondformat(e.duration)
+                let Forbiddentime = common.getsecondformat(e.duration)
 
                 if (!Config.getGroup(e.group_id).botBeenBanned) return false;
 
@@ -220,7 +220,7 @@ export class newgroups extends plugin {
                 // 是否为机器人撤回
                 if (e.user_id == Bot.uin) return false;
                 // 是否为主人撤回
-                if (Cfg.masterQQ.includes(e.user_id)) return false;
+                if (Config.masterQQ.includes(e.user_id)) return false;
                 // 读取
                 let res = JSON.parse(
                     await redis.get(`notice:messageGroup:${e.message_id}`)
@@ -253,7 +253,7 @@ export class newgroups extends plugin {
                     special = '[合并消息]'
                 } else {
                     // 正常处理
-                    forwardMsg = await Bot.pickFriend(Cfg.masterQQ[0]).makeForwardMsg([
+                    forwardMsg = await Bot.pickFriend(Config.masterQQ[0]).makeForwardMsg([
                         {
                             message: res,
                             nickname: e.group.pickMember(e.user_id).card,
@@ -287,10 +287,8 @@ export class newgroups extends plugin {
             default:
                 return false;
         }
-        await Cfg.getSend(msg)
-        if (forwardMsg) {
-            await Cfg.getSend(forwardMsg)
-        }
+        await common.sendMasterMsg(msg)
+        if (forwardMsg) await common.sendMasterMsg(forwardMsg)
     }
 }
 

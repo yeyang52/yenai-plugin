@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
 import cfg from '../../../lib/config/config.js'
-import xcfg from '../model/Config.js'
+import { common } from '../model/index.js'
 import { Config } from '../components/index.js'
 const ROLE_MAP = {
     admin: '群管理',
@@ -79,6 +79,6 @@ export class invitation extends plugin {
                 }
                 break;
         }
-        await xcfg.getSend(msg)
+        await common.sendMasterMsg(msg)
     }
 }

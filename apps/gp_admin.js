@@ -6,11 +6,12 @@ import { Cfg, Gpadmin, common, QQInterface, Browser } from '../model/index.js'
 import moment from 'moment'
 
 
-/**API请求错误文案 */
+//API请求错误文案
 const API_ERROR = "❎ 出错辣，请稍后重试"
 //无管理文案
 const ROLE_ERROR = "做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ"
-
+//权限不足文案
+const Permission_ERROR = "❎ 该命令仅限管理员可用"
 //正则
 let Numreg = "[一壹二两三四五六七八九十百千万亿\\d]+"
 let noactivereg = new RegExp(`^#(查看|清理|确认清理|获取)(${Numreg})个?(年|月|周|天)没发言的人(第(${Numreg})页)?$`)
@@ -26,52 +27,42 @@ export class Basics extends plugin {
                 {
                     reg: '^#禁言.*$',
                     fnc: 'Taboo',
-                    permission: 'admin'
                 },
                 {
                     reg: '^#解禁.*$',
                     fnc: 'Relieve',
-                    permission: 'admin'
                 },
                 {
                     reg: '^#全体(禁言|解禁)$',
                     fnc: 'TabooAll',
-                    permission: 'admin'
                 },
                 {
                     reg: '^#踢(.*)$',
                     fnc: 'Kick',
-                    permission: 'admin'
                 },
                 {
                     reg: '^#(设置|取消)管理.*$',
                     fnc: 'SetAdmin',
-                    permission: 'master'
                 },
                 {
                     reg: '^#(允许|禁止|开启|关闭)匿名$',
                     fnc: 'AllowAnony',
-                    permission: 'admin'
                 },
                 {
                     reg: '^#发群公告.*$',
                     fnc: 'AddAnnounce',
-                    permission: 'admin'
                 },
                 {
                     reg: '^#删群公告(\\d+)$',
                     fnc: 'DelAnnounce',
-                    permission: 'admin'
                 },
                 {
                     reg: '^#查群公告$',
                     fnc: 'GetAnnounce',
-                    permission: 'admin'
                 },
                 {
                     reg: '^#修改头衔.*$',
                     fnc: 'adminsetTitle',
-                    permission: 'master'
                 },
                 {
                     reg: '^#申请头衔.*$',
@@ -88,12 +79,10 @@ export class Basics extends plugin {
                 {
                     reg: '^#替换(幸运)?字符(\\d+)$',
                     fnc: 'qun_luckyuse',
-                    permission: 'admin'
                 },
                 {
                     reg: '^#(开启|关闭)(幸运)?字符$',
                     fnc: 'qun_luckyset',
-                    permission: 'admin'
                 },
                 {
                     reg: '^#(获取|查看)?禁言列表$',
@@ -102,12 +91,10 @@ export class Basics extends plugin {
                 {
                     reg: '^#解除全部禁言$',
                     fnc: 'relieveAllMute',
-                    permission: 'admin'
                 },
                 {
                     reg: `^#(查看|(确认)?清理)从未发言过?的人(第(${Numreg})页)?$`,
                     fnc: 'neverspeak',
-                    permission: 'admin'
                 },
                 {
                     reg: `^#(查看|获取)?(不活跃|潜水)排行榜(${Numreg})?$`,
@@ -120,17 +107,14 @@ export class Basics extends plugin {
                 {
                     reg: noactivereg,//清理多久没发言的人
                     fnc: 'noactive',
-                    permission: 'admin'
                 },
                 {
                     reg: `^#发通知.*$`,
                     fnc: 'Send_notice',
-                    permission: 'admin'
                 },
                 {
                     reg: `(^#定时禁言(.*)解禁(.*)$)|(^#定时禁言任务$)|(^#取消定时禁言$)`,
                     fnc: 'timeMute',
-                    permission: 'admin'
                 },
                 {
                     reg: `^#(查看|获取)?群?发言榜单((7|七)天)?`,
@@ -177,7 +161,8 @@ export class Basics extends plugin {
     }
     /**禁言 */
     async Taboo(e) {
-
+        //判断权限
+        if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
             return e.reply(ROLE_ERROR, true);
@@ -256,6 +241,8 @@ export class Basics extends plugin {
     }
     /**解禁 */
     async Relieve(e) {
+        //判断权限
+        if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
             return e.reply(ROLE_ERROR, true);
@@ -282,6 +269,8 @@ export class Basics extends plugin {
     }
     /**全体禁言 */
     async TabooAll(e) {
+        //判断权限
+        if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
             return e.reply(ROLE_ERROR, true);
@@ -305,6 +294,8 @@ export class Basics extends plugin {
     }
     //踢群员
     async Kick(e) {
+        //判断权限
+        if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
         // 判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
             return e.reply(ROLE_ERROR, true);
@@ -362,6 +353,8 @@ export class Basics extends plugin {
 
     //设置管理
     async SetAdmin(e) {
+        //判断权限
+        if (!e.isMaster) return e.reply(Permission_ERROR)
         if (!e.group.is_owner) return e.reply(ROLE_ERROR, true)
 
         let qq
@@ -395,6 +388,8 @@ export class Basics extends plugin {
 
     //匿名
     async AllowAnony(e) {
+        //判断权限
+        if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
             return e.reply(ROLE_ERROR, true);
@@ -419,6 +414,8 @@ export class Basics extends plugin {
 
     //发群公告
     async AddAnnounce(e) {
+        //判断权限
+        if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
             return e.reply(ROLE_ERROR, true);
@@ -442,6 +439,8 @@ export class Basics extends plugin {
     }
     //删群公告
     async DelAnnounce(e) {
+        //判断权限
+        if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
             return e.reply(ROLE_ERROR, true);
@@ -462,6 +461,8 @@ export class Basics extends plugin {
 
     //修改头衔
     async adminsetTitle(e) {
+        if (!e.isMaster) return e.reply(Permission_ERROR)
+
         if (e.message.length < 2) return
 
         if (e.message[1].type != 'at') return
@@ -540,6 +541,7 @@ export class Basics extends plugin {
     }
     //替换幸运字符
     async qun_luckyuse(e) {
+        if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) {
             return e.reply(ROLE_ERROR, true);
@@ -554,6 +556,8 @@ export class Basics extends plugin {
 
     //开启或关闭群字符
     async qun_luckyset(e) {
+        if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
+
         let res = await QQInterface.swichLucky(e.group_id, /开启/.test(e.msg))
         if (!res) return e.reply(API_ERROR)
 
@@ -581,12 +585,12 @@ export class Basics extends plugin {
         Cfg.getforwardMsg(e, msg)
     }
 
-    //解禁全部禁言
+    //解除全部禁言
     async relieveAllMute(e) {
+        if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
         //判断是否有管理
-        if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply(ROLE_ERROR, true);
-        }
+        if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true);
+
         let mutelist = await Gpadmin.getMuteList(e)
         if (!mutelist) return e.reply("都没有人被禁言我怎么解的辣＼(`Δ’)／")
         for (let i of mutelist) {
@@ -598,6 +602,7 @@ export class Basics extends plugin {
 
     //查看和清理多久没发言的人
     async noactive(e) {
+        if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
         let Reg = noactivereg.exec(e.msg)
         Reg[2] = common.translateChinaNum(Reg[2] || 1)
         //确认清理直接执行
@@ -625,6 +630,7 @@ export class Basics extends plugin {
 
     //查看和清理从未发言的人
     async neverspeak(e) {
+        if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
         let list = await Gpadmin.getneverspeak(e)
         if (!list) return
         //确认清理直接执行
@@ -664,9 +670,9 @@ export class Basics extends plugin {
     }
     //发送通知
     async Send_notice(e) {
-        if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply(ROLE_ERROR, true);
-        }
+        if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
+        if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true);
+
         e.message[0].text = e.message[0].text.replace("#发通知", "").trim()
         if (!e.message[0].text) e.message.shift()
         if (lodash.isEmpty(e.message)) return e.reply("❎ 通知不能为空")
@@ -677,6 +683,7 @@ export class Basics extends plugin {
 
     //设置定时群禁言
     async timeMute(e) {
+        if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
         if (/任务/.test(e.msg)) {
             let task = await redis.keys('Yunzai:yenai:Taboo:*')
             if (!task.length) return e.reply('目前还没有定时禁言任务')

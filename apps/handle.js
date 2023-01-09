@@ -18,41 +18,34 @@ export class anotice extends plugin {
                 {
                     reg: '^#?(同意|拒绝)$',
                     fnc: 'agrees',
-                    permission: 'master',
                     event: 'message.private',
                 },
                 {
                     reg: '^#?回复.*$',
                     fnc: 'Replys',
-                    permission: 'master',
                     event: 'message.private',
                 },
                 {
                     reg: '^#?(同意|拒绝|查看)(全部)?好友申请(\\d+)?$',
                     fnc: 'agreesAll',
-                    permission: 'master',
                 },
                 {
                     reg: '^#?(加为|添加)好友$',
                     fnc: 'addFriend',
-                    permission: 'master',
                     event: 'message.private',
                 },
                 {
                     reg: '^#?(同意|拒绝|查看)(全部)?(加|入)?群申请(\\d+)?$',
                     fnc: 'GroupAdd',
-                    permission: 'admin',
                     event: 'message.group',
                 },
                 {
                     reg: '^#?(同意|拒绝|查看)(全部)?群邀请(\\d+)?$',
                     fnc: 'GroupInvite',
-                    permission: 'master',
                 },
                 {
                     reg: '^#?查看全部请求$',
                     fnc: 'SystemMsgAll',
-                    permission: 'master',
                 }
             ]
         })
@@ -60,6 +53,7 @@ export class anotice extends plugin {
 
     /** 同意好友申请 */
     async agree(e) {
+        if (!e.isMaster) return false;
         let yes = /同意/.test(e.msg) ? true : false
         let qq = e.message[0].text.replace(/#|(同意|拒绝)好友申请/g, '').trim()
         if (e.message[1]) {
@@ -81,7 +75,7 @@ export class anotice extends plugin {
 
     /**同意拒绝全部好友申请 */
     async agreesAll(e) {
-
+        if (!e.isMaster) return false;
         let yes = /同意/.test(e.msg) ? true : false
 
         let FriendAdd = (await Bot.getSystemMsg())
@@ -146,7 +140,8 @@ export class anotice extends plugin {
     }
     /** 引用同意好友申请和群邀请 */
     async agrees(e) {
-        if (!e.source) return
+        if (!e.isMaster) return false;
+        if (!e.source) return false;
         let yes = /同意/.test(e.msg) ? true : false
         let source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
 
@@ -200,6 +195,7 @@ export class anotice extends plugin {
 
     // 回复好友消息
     async Replys(e) {
+        if (!e.isMaster) return false;
         let qq = '';
         let group = '';
         let msgs = e.message[0].text.split(' ')
@@ -256,10 +252,11 @@ export class anotice extends plugin {
 
     //加群员为好友
     async addFriend(e) {
-        if (!e.source) return
+        if (!e.isMaster) return false;
+        if (!e.source) return false;
         let source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
         let msg = source.raw_message.split('\n')
-        if (!/临时消息/.test(msg[0]) || !/来源群号/.test(msg[1]) || !/发送人QQ/.test(msg[2])) return
+        if (!/临时消息/.test(msg[0]) || !/来源群号/.test(msg[1]) || !/发送人QQ/.test(msg[2])) return false;
         let group = msg[1].match(/\d+/g)
         let qq = msg[2].match(/\d+/g)
         if (Bot.fl.get(Number(qq))) return e.reply('❎ 已经有这个人的好友了哦~')
@@ -339,6 +336,7 @@ export class anotice extends plugin {
     }
     //群邀请列表
     async GroupInvite(e) {
+        if (!e.isMaster) return false;
         let SystemMsg = (await Bot.getSystemMsg()).filter(item => item.request_type == "group" && item.sub_type == "invite")
         if (lodash.isEmpty(SystemMsg)) return e.reply("暂无群邀请哦(。-ω-)zzz", true)
         //查看
@@ -395,6 +393,7 @@ export class anotice extends plugin {
     }
     //全部请求
     async SystemMsgAll(e) {
+        if (!e.isMaster) return false;
         let SystemMsg = await Bot.getSystemMsg()
         let FriendAdd = [], onewayFriend = [], GroupAdd = [], GroupInvite = []
         for (let i of SystemMsg) {

@@ -109,12 +109,10 @@ export class example extends plugin {
         {
           reg: '^#改群头像.*$',
           fnc: 'GroupPhoto',
-          permission: 'admin'
         },
         {
           reg: '^#改群昵称.*$',
           fnc: 'Groupname',
-          permission: 'admin'
         },
         {
           reg: '^#获取(群|好友)列表$',
@@ -228,7 +226,7 @@ export class example extends plugin {
   /**改群头像 */
   async GroupPhoto(e) {
     if (e.isPrivate) {
-      if (!e.isMaster) return;
+      if (!e.isMaster) return logger.mark("[椰奶][改群头像]不为主人");
       groupPhotoid = e.msg.replace(/#|改群头像/g, "").trim()
 
       if (!groupPhotoid) return e.reply("❎ 群号不能为空");
@@ -237,6 +235,7 @@ export class example extends plugin {
 
       if (!Bot.gl.get(Number(groupPhotoid))) return e.reply("❎ 群聊列表查无此群");
     } else {
+      if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return logger.mark("[椰奶][改群头像]该群员权限不足")
       groupPhotoid = e.group_id
     }
     groupPhotoid = Number(groupPhotoid);
@@ -296,6 +295,7 @@ export class example extends plugin {
       if (!group) return e.reply("❎ 群号不能为空");
       if (!Bot.gl.get(Number(msg[1]))) return e.reply("❎ 群聊列表查无此群");
     } else {
+      if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return logger.mark("[椰奶][改群昵称]该群员权限不足")
       group = e.group_id
       card = e.msg.replace(/#|改群昵称/g, "").trim()
     }

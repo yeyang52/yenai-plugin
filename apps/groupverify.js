@@ -15,33 +15,27 @@ export class NEWCMD extends plugin {
       rule: [
         {
           reg: '^#重新验证.*$',
-          fnc: 'cmdReverify',
-          permission: 'admin'
+          fnc: 'cmdReverify'
         },
         {
           reg: '^#绕过验证.*$',
-          fnc: 'cmdPass',
-          permission: 'admin'
+          fnc: 'cmdPass'
         },
         {
           reg: '^#开启验证$',
-          fnc: 'openverify',
-          permission: 'admin'
+          fnc: 'openverify'
         },
         {
           reg: '^#关闭验证$',
-          fnc: 'closeverify',
-          permission: 'admin'
+          fnc: 'closeverify'
         },
         {
           reg: '^#切换验证模式$',
-          fnc: 'setmode',
-          permission: 'master'
+          fnc: 'setmode'
         },
         {
           reg: '^#设置验证超时时间(\\d+)(s|秒)?$',
-          fnc: 'setovertime',
-          permission: 'master'
+          fnc: 'setovertime'
         }
       ]
     })
@@ -57,6 +51,8 @@ export class NEWCMD extends plugin {
     if (!e.group.is_admin && !e.group.is_owner) return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
 
     if (!verifycfg.openGroup.includes(e.group_id)) return e.reply("当前群未开启验证哦~", true);
+
+    if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply("❎ 该命令仅限管理员可用", true);
 
     let qq = e.msg.replace(/#|重新验证/g, "").trim();
 
@@ -83,6 +79,8 @@ export class NEWCMD extends plugin {
 
     if (!verifycfg.openGroup.includes(e.group_id)) return e.reply("当前群未开启验证哦~", true);
 
+    if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply("❎ 该命令仅限管理员可用", true);
+
     let qq = e.msg.replace(/#|绕过验证/g, "").trim();
 
     if (e.message.length != 1) {
@@ -107,6 +105,7 @@ export class NEWCMD extends plugin {
 
   //开启验证
   async openverify(e) {
+    if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply("❎ 该命令仅限管理员可用", true);
     if (!e.group.is_admin && !e.group.is_owner) return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
     let verifycfg = Config.verifycfg
     if (verifycfg.openGroup.indexOf(e.group_id) != -1) return e.reply("❎ 本群验证已处于开启状态")
@@ -116,6 +115,7 @@ export class NEWCMD extends plugin {
 
   //关闭验证
   async closeverify(e) {
+    if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply("❎ 该命令仅限管理员可用", true);
     let verifycfg = Config.verifycfg
     let key = verifycfg.openGroup.indexOf(e.group_id)
     if (key == -1) return e.reply("❎ 本群暂未开启验证")
@@ -124,6 +124,7 @@ export class NEWCMD extends plugin {
   }
   //切换验证模式
   async setmode(e) {
+    if (!e.isMaster) return e.reply("❎ 该命令仅限主人可用", true);
     let verifycfg = Config.verifycfg
     let value = verifycfg.mode == "模糊" ? "精确" : "模糊"
     new YamlReader(this.verifypath).set(`mode`, value)
@@ -131,6 +132,7 @@ export class NEWCMD extends plugin {
   }
   //设置验证超时时间
   async setovertime(e) {
+    if (!e.isMaster) return e.reply("❎ 该命令仅限主人可用", true);
     let overtime = e.msg.match(/\d+/g)
     new YamlReader(this.verifypath).set("time", Number(overtime))
     e.reply(`✅ 已将验证超时时间设置为${overtime}秒`)

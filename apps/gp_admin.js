@@ -793,7 +793,7 @@ export class Basics extends plugin {
     //今日打卡
     async DaySigned(e) {
         //浏览器截图
-        let url = `https://qun.qq.com/v2/signin/list?gc=${e.group_id}}`
+        let url = `https://qun.qq.com/v2/signin/list?gc=${e.group_id}`
         let screenshot = await Browser.Webpage(url, undefined, {
             width: 375,
             height: 667,
@@ -827,9 +827,9 @@ export class Basics extends plugin {
         let url = `https://qun.qq.com/qqweb/m/qun/calendar/detail.html?_wv=1031&_bid=2340&src=3&gc=${e.group_id}&type=2&date=${date}`
         e.reply(
             await Browser.Webpage(url, undefined, {
-                width: 375,
-                height: 667,
-                deviceScaleFactor: 2
+                width: 700,
+                height: 1000,
+                deviceScaleFactor: 3
             }, true, common.getck('qun.qq.com', true))
         )
     }

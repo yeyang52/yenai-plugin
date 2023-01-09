@@ -796,7 +796,7 @@ export class Basics extends plugin {
         let url = `https://qun.qq.com/v2/signin/list?gc=${e.group_id}`
         let screenshot = await Browser.Webpage(url, undefined, {
             width: 375,
-            height: 667,
+            height: 625,
             deviceScaleFactor: 2
         }, true, common.getck('qun.qq.com', true), false)
         if (screenshot) return e.reply(screenshot)

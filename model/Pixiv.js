@@ -1,12 +1,12 @@
 import fetch from "node-fetch";
 import lodash from "lodash";
 import { segment } from "oicq";
-import { Config } from '../components/index.js'
-import setu from "./setu.js"
 import moment from "moment";
-export default class Pixiv {
-    constructor(e = {}) {
-        this.e = e
+
+/**API请求错误文案 */
+const API_ERROR = "❎ 出错辣，请稍后重试"
+export default new class Pixiv {
+    constructor() {
         this.proxy = `yenai:proxy`
         this.ranktype = {
             "日": {
@@ -72,19 +72,17 @@ export default class Pixiv {
      * @param {String} ids 插画ID
      * @return {Object}
      */
-    async Worker(ids) {
+    async Worker(ids, filter = false) {
         let api = `https://api.moedog.org/pixiv/v2/?id=${ids}`
-        let res = await this.getfetch(api)
+        let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
 
         if (!res) {
-            this.e.reply("尝试使用备用接口")
-            api = `https://api.imki.moe/api/pixiv/illust?id=${ids}`
-            res = await this.getfetch(api)
-            if (!res) return false;
+            let spareApi = `https://api.imki.moe/api/pixiv/illust?id=${ids}`
+            res = await fetch(spareApi).then(res => res.json()).catch(err => console.log(err))
+            if (!res) return { error: API_ERROR };
         }
         if (res.error) {
-            this.e.reply(res.error.user_message || "无法获取数据")
-            return false;
+            return { error: res.error?.user_message || "无法获取数据" };
         }
         let proxy = await redis.get(this.proxy)
         let illust = this.format(res.illust, proxy)
@@ -102,8 +100,7 @@ export default class Pixiv {
             `直链：https://pixiv.re/${id}.jpg\n`,
             `传送门：https://www.pixiv.net/artworks/${id}`
         ]
-
-        if (!this.e.isMaster && !setu.getR18(this.e) && x_restrict) {
+        if (filter && x_restrict) {
             let linkmsg = [
                 `该作品不适合所有年龄段，请自行使用链接查看：`,
 
@@ -113,14 +110,13 @@ export default class Pixiv {
             } else {
                 linkmsg.push(`\nhttps://pixiv.re/${id}.jpg`)
             }
-            this.e.reply(linkmsg)
-            return false;
+            return { error: linkmsg };
         }
 
         let img = url.map(item => segment.image(item))
         return { msg, img }
     }
-
+    //榜单类型
     get RankReg() {
         return this.ranktype
     }
@@ -141,16 +137,7 @@ export default class Pixiv {
         let pageSize = this.ranktype[mode].quantity
         //r18处理
         if (r18) {
-            if (!this.e.isMaster) {
-                if (!Config.getGroup(this.e.group_id).sesepro) {
-                    this.e.reply(`达咩，不可以瑟瑟(〃ﾉωﾉ)`)
-                    return false
-                };
-            }
-            if (!this.ranktype[mode].r18) {
-                this.e.reply("该排行没有不适合所有年龄段的分类哦~")
-                return false
-            }
+            if (!this.ranktype[mode].r18) return { error: "该排行没有不适合所有年龄段的分类哦~" }
             type = type.split("_")
             type.splice(1, 0, "r18")
             type = type.join("_")
@@ -159,17 +146,15 @@ export default class Pixiv {
         //总页数
         let pageAll = Math.ceil(pageSize / 30)
         if (page > pageAll) {
-            this.e.reply("哪有那么多图片给你辣(•̀へ •́ ╮ )")
-            return false
+            return { error: "哪有那么多图片给你辣(•̀へ •́ ╮ )" }
         }
         //请求api
         let api = `https://api.moedog.org/pixiv/v2/?type=rank&mode=${type}&page=${page}&date=${date}`
-        let res = await this.getfetch(api)
-        if (!res) return false
+        let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
+        if (!res) return { error: API_ERROR }
 
         if (lodash.isEmpty(res.illusts)) {
-            this.e.reply("暂无数据，请等待榜单更新哦(。-ω-)zzz")
-            return false
+            return { error: "暂无数据，请等待榜单更新哦(。-ω-)zzz" }
         };
         let proxy = await redis.get(this.proxy)
 
@@ -212,18 +197,16 @@ export default class Pixiv {
      */
     async searchTags(tag, page = "1") {
         let api = `https://www.vilipix.com/api/v1/picture/public?limit=30&tags=${tag}&sort=new&offset=${(page - 1) * 30}`
-        let res = await this.getfetch(api)
-        if (!res) return false
+        let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
+        if (!res) return { error: API_ERROR }
         if (res.data.count == 0) {
-            this.e.reply("呜呜呜，人家没有找到相关的插画(ó﹏ò｡)")
-            return false;
+            return { error: "呜呜呜，人家没有找到相关的插画(ó﹏ò｡)" };
         }
 
         let pageall = Math.ceil(res.data.count / 30)
 
         if (page > pageall) {
-            this.e.reply("啊啊啊，淫家给不了你那么多辣d(ŐдŐ๑)")
-            return false
+            return { error: "啊啊啊，淫家给不了你那么多辣d(ŐдŐ๑)" };
         }
 
         let list = [
@@ -242,8 +225,6 @@ export default class Pixiv {
                 segment.image(regular_url)
             ])
         }
-
-
         return list
     }
     /**
@@ -252,22 +233,19 @@ export default class Pixiv {
      * @param {String} page 页数
      * @return {*}
      */
-    async searchTagspro(tag, page = "1") {
+    async searchTagspro(tag, page = "1", isfilter = true) {
         let api = `https://api.moedog.org/pixiv/v2/?type=search&word=${tag}&page=${page}`
-        let res = await this.getfetch(api)
-        if (!res) return false
-        if (lodash.isEmpty(res.illusts)) {
-            this.e.reply("宝~没有数据了哦(๑＞︶＜)و")
-            return false;
-        }
+        let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
+        if (!res) return { error: API_ERROR }
+        if (lodash.isEmpty(res.illusts)) return { error: "宝~没有数据了哦(๑＞︶＜)و" };
+
         let proxy = await redis.get(this.proxy)
-        let r18 = setu.getR18(this.e)
         let illusts = [];
         let filter = 0
         let NowNum = res.illusts.length
         for (let i of res.illusts) {
             let { id, title, user, tags, total_bookmarks, image_urls, x_restrict } = this.format(i, proxy)
-            if (!r18 && x_restrict) {
+            if (isfilter && x_restrict) {
                 filter++
                 continue
             }
@@ -281,10 +259,8 @@ export default class Pixiv {
                 segment.image(image_urls.large)
             ])
         }
-        if (lodash.isEmpty(illusts)) {
-            this.e.reply("该页全为涩涩内容已全部过滤(#／。＼#)")
-            return false
-        }
+        if (lodash.isEmpty(illusts)) return { error: "该页全为涩涩内容已全部过滤(#／。＼#)" }
+
         return [
             `本页共${NowNum}张${filter ? `，过滤${filter}张` : ""}\n可尝试使用 "#tagpro搜图${tag}第${page - 0 + 1}页" 翻页\n无数据则代表无下一页`,
             ...illusts
@@ -303,18 +279,15 @@ export default class Pixiv {
     async gettrend_tags() {
         let api = "https://api.moedog.org/pixiv/v2/?type=tags"
 
-        let res = await this.getfetch(api)
+        let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
 
         if (!res) {
-            this.e.reply("尝试使用备用接口")
             api = `https://api.imki.moe/api/pixiv/tags`
-            res = await this.getfetch(api)
-            if (!res) return false;
+            res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
+            if (!res) return { error: API_ERROR }
         }
-        if (!res.trend_tags) {
-            this.e.reply("呜呜呜，没有获取到数据(๑ १д१)")
-            return false
-        }
+        if (!res.trend_tags) return { error: "呜呜呜，没有获取到数据(๑ १д१)" }
+
         let list = []
         let proxy = await redis.get(`yenai:proxy`)
         for (let i of res.trend_tags) {
@@ -340,28 +313,24 @@ export default class Pixiv {
      * @param {String} page 页数
      * @return {Array}
      */
-    async public(keyword, page = "1") {
+    async public(keyword, page = "1", isfilter = true) {
         //关键词搜索
         if (!/^\d+$/.test(keyword)) {
             let wordapi = `https://api.moedog.org/pixiv/v2/?type=search_user&word=${keyword}`
-            let wordlist = await this.getfetch(wordapi)
-            if (!wordlist) return false
-            if (lodash.isEmpty(wordlist.user_previews)) {
-                this.e.reply("呜呜呜，人家没有找到这个淫d(ŐдŐ๑)")
-                return false;
-            }
+            let wordlist = await fetch(wordapi).then(res => res.json()).catch(err => console.log(err))
+            if (!wordlist) return { error: API_ERROR }
+
+            if (lodash.isEmpty(wordlist.user_previews)) return { error: "呜呜呜，人家没有找到这个淫d(ŐдŐ๑)" };
+
             keyword = wordlist.user_previews[0].user.id
         }
         let proxy = await redis.get(this.proxy)
         // let userapi = `https://www.vilipix.com/api/v1/search/user?type=author&keyword=${keyword}&limit=30&offset=0`
         let userapi = `https://api.moedog.org/pixiv/v2/?type=member&id=${keyword}`
-        let user = await this.getfetch(userapi)
-        if (!user) return false
+        let user = await fetch(userapi).then(res => res.json()).catch(err => console.log(err))
+        if (!user) return { error: API_ERROR }
 
-        if (user.error) {
-            this.e.reply(user.error.user_message)
-            return false;
-        }
+        if (user.error) return { error: user.error.user_message };
 
         let { id, name, comment, profile_image_urls } = user.user
         let { total_follow_users, total_illust_bookmarks_public, total_illusts } = user.profile
@@ -376,8 +345,8 @@ export default class Pixiv {
         ]]
         //作品
         let api = `https://api.moedog.org/pixiv/v2/?type=member_illust&id=${id}&page=${page}`
-        let res = await this.getfetch(api)
-        if (!res) return false;
+        let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
+        if (!res) return { error: API_ERROR };
         //没有作品直接返回信息
         if (lodash.isEmpty(res.illusts)) {
             list.push("Σ(っ °Д °;)っ这个淫居然没有作品")
@@ -385,17 +354,14 @@ export default class Pixiv {
         }
         let illustsall = Math.ceil(total_illusts / 30)
 
-        if (page > illustsall) {
-            this.e.reply("这个淫已经没有涩图给你辣(oＡo川)")
-            return false
-        }
-        let r18 = setu.getR18(this.e)
+        if (page > illustsall) return { error: "这个淫已经没有涩图给你辣(oＡo川)" }
+
         let illusts = [];
         let filter = 0
         let NowNum = res.illusts.length
         for (let i of res.illusts) {
             let { id, title, tags, total_bookmarks, total_view, url, x_restrict } = this.format(i, proxy)
-            if (!r18 && x_restrict) {
+            if (isfilter && x_restrict) {
                 filter++
                 continue
             }
@@ -408,42 +374,13 @@ export default class Pixiv {
                 segment.image(url[0]),
             ])
         }
-        if (lodash.isEmpty(illusts)) {
-            this.e.reply("该页全为涩涩内容已全部过滤(#／。＼#)")
-            return false
-        }
+        if (lodash.isEmpty(illusts)) return { error: "该页全为涩涩内容已全部过滤(#／。＼#)" }
+
         list.push(`当前为第${page}页，共${illustsall}页\n本页共${NowNum}张，${filter ? `过滤${filter}张，` : ""}总共${total_illusts}张`)
         if (page < illustsall) {
             list.push(`可使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页`)
         }
         list.push(...illusts)
-
-        // let api = `https://www.vilipix.com/api/v1/picture/public?sort=new&type=0&author_user_id=${user_id}&limit=30&offset=${(page - 1) * 30}`
-        // let res = await this.getfetch(api)
-        // if (!res) return false
-        // if (res.data.count == 0) {
-        //     this.e.reply("Σ(っ °Д °;)っ这个淫居然没有插画")
-        //     return false;
-        // }
-        // let pageall = Math.ceil(res.data.count / 30)
-        // if (page > pageall) {
-        //     this.e.reply("这个淫已经没有涩图给你辣(oＡo川)")
-        //     return false
-        // }
-        // list.push(`当前为第${page}页，共${pageall}页，本页共${res.data.rows.length}张，总共${res.data.count}张`)
-        // if (page < pageall) {
-        //     list.push(`可使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页`)
-        // }
-        // for (let i of res.data.rows) {
-        //     let { picture_id, title, regular_url, tags, like_total } = i
-        //     list.push([
-        //         `标题：${title}\n`,
-        //         `点赞: ${like_total}\n`,
-        //         `插画ID：${picture_id}\n`,
-        //         `Tag：${lodash.truncate(tags)}\n`,
-        //         segment.image(regular_url)
-        //     ])
-        // }
         return list
     }
     /**
@@ -452,12 +389,10 @@ export default class Pixiv {
      */
     async getrandomimg(num) {
         let api = `https://www.vilipix.com/api/v1/picture/public?limit=${num}&offset=${lodash.random(1500)}&sort=hot&type=0`
-        let res = await this.getfetch(api)
-        if (!res) return false
-        if (!res.data || !res.data.rows) {
-            this.e.reply("呜呜呜，没拿到瑟瑟的图片(˃ ⌑ ˂ഃ )")
-            return false;
-        }
+        let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
+        if (!res) return { error: API_ERROR }
+        if (!res.data || !res.data.rows) return { error: "呜呜呜，没拿到瑟瑟的图片(˃ ⌑ ˂ഃ )" };
+
         let list = []
         for (let i of res.data.rows) {
             let { picture_id, title, regular_url, tags, like_total } = i
@@ -477,25 +412,19 @@ export default class Pixiv {
      * @param {String} pid
      * @return {*} 
      */
-    async getrelated_works(pid) {
+    async getrelated_works(pid, isfilter = true) {
         let api = `https://api.moedog.org/pixiv/v2/?type=related&id=${pid}`
-        let res = await this.getfetch(api)
-        if (!res) return false
-        if (res.error) {
-            this.e.reply(res.error.user_message)
-            return false;
-        }
-        if (lodash.isEmpty(res.illusts)) {
-            this.e.reply("呃...没有数据(•ิ_•ิ)")
-            return false;
-        }
+        let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
+        if (!res) return { error: API_ERROR }
+        if (res.error) return { error: res.error.user_message };
+        if (lodash.isEmpty(res.illusts)) return { error: "呃...没有数据(•ิ_•ิ)" };
+
         let proxy = await redis.get(this.proxy)
-        let r18 = setu.getR18(this.e)
         let illusts = [];
         let filter = 0
         for (let i of res.illusts) {
             let { id, title, user, tags, total_bookmarks, image_urls, x_restrict } = this.format(i, proxy)
-            if (!r18) if (x_restrict) {
+            if (isfilter && x_restrict) {
                 filter++
                 continue
             }
@@ -509,10 +438,8 @@ export default class Pixiv {
                 segment.image(image_urls.large)
             ])
         }
-        if (lodash.isEmpty(illusts)) {
-            this.e.reply("啊啊啊！！！居然全是瑟瑟哒不给你看(＊／ω＼＊)")
-            return false
-        }
+        if (lodash.isEmpty(illusts)) return { error: "啊啊啊！！！居然全是瑟瑟哒不给你看(＊／ω＼＊)" };
+
         return [
             `Pid:${pid}的相关作品，共${res.illusts.length}张${filter ? `，过滤${filter}张` : ""}`,
             ...illusts
@@ -524,8 +451,8 @@ export default class Pixiv {
         if (type) {
             url = "https://xiaobapi.top/api/xb/api/setu.php"
         }
-        let res = await this.getfetch(url)
-        if (!res) return false;
+        let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))
+        if (!res) return { error: API_ERROR };
         let { pid, uid, title, author, tags, urls, r18 } = res.data[0] || res.data
         let msg = [
             `Pid: ${pid}\n`,
@@ -543,18 +470,6 @@ export default class Pixiv {
 
 
 
-    /**
-     * @description: 请求api
-     * @param {String} url 链接
-     * @return {Object}
-     */
-    async getfetch(url) {
-        return await fetch(url).then(res => res.json()).catch(err => {
-            this.e.reply("接口失效辣(๑ŐдŐ)b")
-            console.log(err)
-            return false;
-        })
-    }
 
     /**
      * @description: 格式化

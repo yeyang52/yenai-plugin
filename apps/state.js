@@ -24,12 +24,11 @@ export class example extends plugin {
   }
 
   async state(e) {
-    if (!/椰奶/.test(e.msg) && !Config.Notice.state) {
-      return false;
-    }
-    if (!si) return e.reply("❎ 没有检测到systeminformation依赖，请运行：'pnpm add systeminformation -w'进行安装")
+    if (!/椰奶/.test(e.msg) && !Config.Notice.state) return false;
+
+    if (!si) return e.reply(`❎ 没有检测到systeminformation依赖，请运行："pnpm add systeminformation -w"进行安装`)
     //防止多次触发
-    if (interval) { return } else interval = true;
+    if (interval) { return false; } else interval = true;
     //系统
     let osinfo = await si.osInfo();
     //可视化数据

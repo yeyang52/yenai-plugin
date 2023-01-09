@@ -5,11 +5,10 @@ import { Pixiv, common, setu } from '../model/index.js'
 
 //文案
 const SWITCH_ERROR = "主人没有开放这个功能哦(＊／ω＼＊)"
-//类型
-let rankType = new Pixiv().RankReg
+//汉字数字匹配正则
 let numReg = "[一壹二两三四五六七八九十百千万亿\\d]+"
 //正则
-let rankingrReg = new RegExp(`^#?看看((\\d{4}-\\d{1,2}-\\d{1,2})的)?(${Object.keys(rankType).join("|")})(r18)?榜\\s?(第(${numReg})页)?$`, "i")
+let rankingrReg = new RegExp(`^#?看看((\\d{4}-\\d{1,2}-\\d{1,2})的)?(${Object.keys(Pixiv.RankReg).join("|")})(r18)?榜\\s?(第(${numReg})页)?$`, "i")
 let tagReg = new RegExp('^#?tag(pro)?搜图(.*)$', "i")
 let pidReg = new RegExp('^#?pid搜图\\s?(\\d+)$', "i")
 let uidReg = new RegExp('^#?uid搜图(.*)$', "i")
@@ -67,17 +66,15 @@ export class example extends plugin {
 
         let regRet = pidReg.exec(e.msg)
 
-        let res = await new Pixiv(e).Worker(regRet[1])
+        let res = await Pixiv.Worker(regRet[1], !e.isMaster && !setu.getR18(e))
 
-        if (!res) return;
+        if (res?.error) return e.reply(res.error);
 
         let { msg, img } = res
 
         await e.reply(msg)
 
         img.length == 1 || /R-18/.test(msg[4]) ? common.recallsendMsg(e, img) : common.getRecallsendMsg(e, img, false)
-
-        return true;
     }
 
     //p站排行榜
@@ -97,9 +94,9 @@ export class example extends plugin {
 
         let page = common.translateChinaNum(regRet[6] || "1")
 
-        let res = await new Pixiv(e).Rank(page, date, regRet[3], !!regRet[4], regRet[2])
+        let res = await Pixiv.Rank(page, date, regRet[3], regRet[4], regRet[2])
 
-        if (!res) return
+        if (res?.error) return e.reply(res.error)
 
         common.getRecallsendMsg(e, res, false)
 
@@ -131,11 +128,11 @@ export class example extends plugin {
         }
         let res = null;
         if (regRet[1]) {
-            res = await new Pixiv(e).searchTagspro(tag, page)
+            res = await Pixiv.searchTagspro(tag, page, !setu.getR18(e))
         } else {
-            res = await new Pixiv(e).searchTags(tag, page)
+            res = await Pixiv.searchTags(tag, page)
         }
-        if (!res) return
+        if (res?.error) return e.reply(res.error)
         common.getRecallsendMsg(e, res, false)
 
         return true;
@@ -146,9 +143,9 @@ export class example extends plugin {
         if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
         await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
 
-        let res = await new Pixiv(e).gettrend_tags()
+        let res = await Pixiv.gettrend_tags()
 
-        if (!res) return
+        if (res?.error) return e.reply(res.error)
 
         common.getRecallsendMsg(e, res, false)
     }
@@ -175,9 +172,9 @@ export class example extends plugin {
         }
         page = common.translateChinaNum(page)
 
-        let res = await new Pixiv(e).public(key, page)
+        let res = await Pixiv.public(key, page, !setu.getR18(e))
 
-        if (!res) return
+        if (res?.error) return e.reply(res.error)
 
         common.getRecallsendMsg(e, res, false)
     }
@@ -196,9 +193,9 @@ export class example extends plugin {
             num = 1
         }
         num = common.translateChinaNum(num)
-        let res = await new Pixiv(e).getrandomimg(num);
+        let res = await Pixiv.getrandomimg(num);
 
-        if (!res) return
+        if (res?.error) return e.reply(res.error)
 
         common.getRecallsendMsg(e, res, false)
     }
@@ -209,9 +206,9 @@ export class example extends plugin {
         if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
         await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
         let regRet = relatedReg.exec(e.msg)
-        let msg = await new Pixiv(e).getrelated_works(regRet[1])
-        if (!msg) return
-        common.getRecallsendMsg(e, msg, false)
+        let res = await Pixiv.getrelated_works(regRet[1], !setu.getR18(e))
+        if (res?.error) return e.reply(res.error)
+        common.getRecallsendMsg(e, res, false)
     }
 
     //p站单图
@@ -221,7 +218,8 @@ export class example extends plugin {
         let { sese, sesepro } = Config.getGroup(e.group_id)
         if ((!sese && !sesepro || !sesepro && ispro) && !e.isMaster) return e.reply(SWITCH_ERROR)
 
-        let msg = await new Pixiv(e).getPximg(ispro)
-        ispro ? common.getRecallsendMsg(e, [msg], false) : common.recallsendMsg(e, msg)
+        let res = await Pixiv.getPximg(ispro)
+        if (res?.error) return e.reply(res.error)
+        ispro ? common.getRecallsendMsg(e, [res], false) : common.recallsendMsg(e, res)
     }
 }

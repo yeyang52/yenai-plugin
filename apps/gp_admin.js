@@ -117,7 +117,7 @@ export class Basics extends plugin {
                     fnc: 'timeMute',
                 },
                 {
-                    reg: `^#(查看|获取)?群?发言榜单((7|七)天)?`,
+                    reg: `^#(查看|获取)?群?发言(榜单|排行)((7|七)天)?`,
                     fnc: 'SpeakRank'
                 },
                 {
@@ -137,7 +137,7 @@ export class Basics extends plugin {
                     fnc: 'Autistic'
                 },
                 {
-                    reg: '^#?(今天|昨天|明天|后天|\\d{4}-\\d{1,2}-\\d{1,2})谁生日$',
+                    reg: '^#(今天|昨天|明天|后天|\\d{4}-\\d{1,2}-\\d{1,2})谁生日$',
                     fnc: 'groupBirthday'
                 }
             ]
@@ -734,11 +734,7 @@ export class Basics extends plugin {
     async dragonKing(e) {
         //浏览器截图
         let url = `https://qun.qq.com/interactive/honorlist?gc=${e.group_id}&type=1&_wv=3&_wwv=129`
-        let screenshot = await Browser.Webpage(url, { "Cookie": Bot.cookies['qun.qq.com'] }, {
-            width: 375,
-            height: 667,
-            deviceScaleFactor: 3
-        }, true)
+        let screenshot = await Browser.Webpage(url, { "Cookie": Bot.cookies['qun.qq.com'] }, false, true)
         if (screenshot) return e.reply(screenshot)
         //数据版
         let res = await QQInterface.dragon(e.group_id)
@@ -751,6 +747,10 @@ export class Basics extends plugin {
 
     /**群星级 */
     async Group_xj(e) {
+        let url = `https://qqweb.qq.com/m/business/qunlevel/index.html?gc=254974507&from=0&_wv=1027`
+        let screenshot = await Browser.Webpage(url, false, false, true, common.getck('qqweb.qq.com', true), false, "QQTheme")
+        if (screenshot) return e.reply(screenshot)
+        //出错后发送数据
         let result = await QQInterface.getCreditLevelInfo(e.group_id)
         if (!result) return e.reply("❎ 接口失效")
         if (result.ec != 0) return e.reply("❎ 查询错误\n" + JSON.stringify(result))
@@ -771,30 +771,23 @@ export class Basics extends plugin {
         }
         //图片截图
         let url = `https://qun.qq.com/m/qun/activedata/speaking.html?gc=${e.group_id}&time=${/(7|七)天/.test(e.msg) ? 1 : 0}`
-        //接口数据
+        let screenshot = await Browser.Webpage(url, { "Cookie": Bot.cookies['qun.qq.com'] }, false, true)
+        if (screenshot) return e.reply(screenshot)
+        //出错后发送文字数据
         let res = await QQInterface.SpeakRank(e.group_id, /(7|七)天/.test(e.msg) ? 1 : 0)
         if (!res) return e.reply("接口失效辣！！！")
         if (res.retcode != 0) return e.reply("❎ 未知错误\n" + JSON.stringify(res))
         let msg = lodash.take(res.data.speakRank.map((item, index) =>
             `${index + 1}:${item.nickname}-${item.uin}\n连续活跃${item.active}天:发言${item.msgCount}次`
         ), 10).join("\n");
-        e.reply([
-            ...msg,
-            await Browser.Webpage(url, {
-                "Cookie": Bot.cookies['qun.qq.com']
-            }, {
-                width: 700,
-                height: 700,
-                deviceScaleFactor: 2
-            }, true)
-        ])
+        e.reply(msg)
     }
 
     //今日打卡
     async DaySigned(e) {
         //浏览器截图
         let url = `https://qun.qq.com/v2/signin/list?gc=${e.group_id}`
-        let screenshot = await Browser.Webpage(url, undefined, {
+        let screenshot = await Browser.Webpage(url, false, {
             width: 375,
             height: 625,
             deviceScaleFactor: 2
@@ -826,7 +819,7 @@ export class Basics extends plugin {
         }
         let url = `https://qun.qq.com/qqweb/m/qun/calendar/detail.html?_wv=1031&_bid=2340&src=3&gc=${e.group_id}&type=2&date=${date}`
         e.reply(
-            await Browser.Webpage(url, undefined, {
+            await Browser.Webpage(url, false, {
                 width: 700,
                 height: 1000,
                 deviceScaleFactor: 3

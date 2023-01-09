@@ -198,12 +198,25 @@ export default new class newCommon {
      * @param {String} data 如：qun.qq.com
      * @return {Object} 
      */
-    getck(data) {
+    getck(data, transformation) {
         let cookie = Bot.cookies[data]
         let ck = cookie.replace(/=/g, `":"`).replace(/;/g, `","`).replace(/ /g, "").trim()
         ck = ck.substring(0, ck.length - 2)
-        ck = `{"`.concat(ck).concat("}")
-        return JSON.parse(ck)
+        ck = JSON.parse(`{"`.concat(ck).concat("}"))
+        if (transformation) {
+            let arr = []
+            for (let i in ck) {
+                arr.push({
+                    name: i,
+                    value: ck[i],
+                    domain: data,
+                    path: "/",
+                    expires: Date.now() + 3600 * 1000
+                })
+            }
+            return arr
+        } else return ck
+
     }
 
     /**默认秒转换格式 */

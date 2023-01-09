@@ -204,7 +204,7 @@ export default new class assistant {
             .then(res => res.text()).catch(err => console.error(err));
         let data = res.match(/<script>window.__INITIAL_STATE__=(.*?)<\/script>/)
         if (!data) return false;
-        return data[1]
+        return JSON.parse(data[1])?.currentTalkative
     }
 
 

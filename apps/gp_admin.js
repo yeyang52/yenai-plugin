@@ -136,6 +136,10 @@ export class Basics extends plugin {
                     reg: Autisticreg,//我要自闭
                     fnc: 'Autistic'
                 },
+                {
+                    reg: '^#?(今天|昨天|明天|后天|\\d{4}-\\d{1,2}-\\d{1,2})谁生日$',
+                    fnc: 'groupBirthday'
+                }
             ]
         })
 
@@ -728,19 +732,20 @@ export class Basics extends plugin {
 
     //谁是龙王
     async dragonKing(e) {
-        //图片版
+        //浏览器截图
         let url = `https://qun.qq.com/interactive/honorlist?gc=${e.group_id}&type=1&_wv=3&_wwv=129`
+        let screenshot = await Browser.Webpage(url, { "Cookie": Bot.cookies['qun.qq.com'] }, {
+            width: 375,
+            height: 667,
+            deviceScaleFactor: 3
+        }, true)
+        if (screenshot) return e.reply(screenshot)
         //数据版
-        // let res = await QQInterface.dragon(e.group_id)
+        let res = await QQInterface.dragon(e.group_id)
         e.reply([
-            // `本群龙王：${res.name}`,
-            // segment.image(res.avatar),
-            // `蝉联天数：${res.desc}`,
-            await Browser.Webpage(url, { "Cookie": Bot.cookies['qun.qq.com'] }, {
-                width: 700,
-                height: 700,
-                deviceScaleFactor: 3
-            }, true)
+            `本群龙王：${res.nick}`,
+            segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${res.uin}`),
+            `蝉联天数：${res.avatar_size}`,
         ]);
     }
 
@@ -765,7 +770,7 @@ export class Basics extends plugin {
             return e.reply(ROLE_ERROR, true);
         }
         //图片截图
-        let url = `https://qun.qq.com/m/qun/activedata/speaking.html?gc=${e.group_id}&time=${/(7|七)天/.test(e.msg) ? 1 : 0}&_wv=3&&_wwv=128`
+        let url = `https://qun.qq.com/m/qun/activedata/speaking.html?gc=${e.group_id}&time=${/(7|七)天/.test(e.msg) ? 1 : 0}`
         //接口数据
         let res = await QQInterface.SpeakRank(e.group_id, /(7|七)天/.test(e.msg) ? 1 : 0)
         if (!res) return e.reply("接口失效辣！！！")
@@ -776,8 +781,7 @@ export class Basics extends plugin {
         e.reply([
             ...msg,
             await Browser.Webpage(url, {
-                "Cookie":
-                    Bot.cookies['qun.qq.com']
+                "Cookie": Bot.cookies['qun.qq.com']
             }, {
                 width: 700,
                 height: 700,
@@ -788,8 +792,16 @@ export class Basics extends plugin {
 
     //今日打卡
     async DaySigned(e) {
+        //浏览器截图
+        let url = `https://qun.qq.com/v2/signin/list?gc=${e.group_id}}`
+        let screenshot = await Browser.Webpage(url, undefined, {
+            width: 375,
+            height: 667,
+            deviceScaleFactor: 2
+        }, true, common.getck('qun.qq.com', true), false)
+        if (screenshot) return e.reply(screenshot)
+        //出错后使用接口
         let res = await QQInterface.signInToday(e.group_id)
-
         if (!res) return e.reply("❎ 出错辣，请稍后重试")
         if (res.retCode != 0) return e.reply("❎ 未知错误\n" + JSON.stringify(res));
 
@@ -798,5 +810,27 @@ export class Basics extends plugin {
         //发送消息
         let msg = list.infos.map((item, index) => `${index + 1}:${item.uidGroupNick}-${item.uid}\n打卡时间:${moment(item.signedTimeStamp * 1000).format("YYYY-MM-DD HH:mm:ss")}`).join("\n");
         e.reply(msg)
+    }
+
+    //查看某天谁生日
+    async groupBirthday(e) {
+        let date = e.msg.match(/^#?(今天|昨天|明天|后天|\d{4}-\d{1,2}-\d{1,2})谁生日$/)[1]
+        if (date == '昨天') {
+            date = moment().subtract(1, 'days').format("YYYY-MM-DD");
+        } else if (date == '明天') {
+            date = moment().add(1, 'days').format("YYYY-MM-DD");
+        } else if (date == '后天') {
+            date = moment().add(2, 'days').format("YYYY-MM-DD");
+        } else if (date == '今天') {
+            date = moment().format("YYYY-MM-DD");
+        }
+        let url = `https://qun.qq.com/qqweb/m/qun/calendar/detail.html?_wv=1031&_bid=2340&src=3&gc=${e.group_id}&type=2&date=${date}`
+        e.reply(
+            await Browser.Webpage(url, undefined, {
+                width: 375,
+                height: 667,
+                deviceScaleFactor: 2
+            }, true, common.getck('qun.qq.com', true))
+        )
     }
 }

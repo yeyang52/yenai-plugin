@@ -243,6 +243,10 @@ export const helpList = [{
       "title": "#acg刻晴",
       "desc": "acgcos",
       "icon": 9
+    }, {
+      "title": "#今天谁生日",
+      "desc": "今天可换为昨天或后天或日期",
+      "icon": 12
     },]
 },
 {

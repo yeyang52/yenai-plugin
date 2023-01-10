@@ -26,10 +26,10 @@ Yenai-Plugin是一个Yunzai-Bot的扩展插件，提供对Bot的一些便捷操�
 
 ```
 // 使用gitee
-git clone https://gitee.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
+git clone --depth=1 https://gitee.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 
 // 使用github
-git clone https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
+git clone --depth=1 https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 ```
 
 2. 如需使用椰奶状态则需安装以下依赖：

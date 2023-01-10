@@ -7,16 +7,25 @@ export default new class Browser {
 
     /**
      * @description: 返回网页截图
-     * @param {String} url 网页链接
-     * @param {Object} headers 请求头
-     * @param {Object} setViewport 设置宽度和高度和缩放
-     * @param {Boolean} font 是否修改字体
-     * @param {Object} cookie 设置cookie
-     * @param {Boolean} fullPage 是否截取完整网页
-     * @param {Object} emulate 模拟设备
+     * @param {Object} Methods 参数对象
+     * @param {String} Methods.url 网页链接
+     * @param {Object} Methods.headers 请求头
+     * @param {Object} Methods.setViewport 设置宽度和高度和缩放
+     * @param {Boolean} Methods.font 是否修改字体
+     * @param {Object} Methods.cookie 设置cookie
+     * @param {Boolean} Methods.fullPage 是否截取完整网页
+     * @param {Object} Methods.emulate 模拟设备
      * @return {img} 可直接发送的构造图片
      */
-    async Webpage(url, headers = false, setViewport = false, font = false, cookie = false, fullPage = true, emulate = false) {
+    async Webpage({
+        url,
+        headers = false,
+        setViewport = false,
+        font = false,
+        cookie = false,
+        fullPage = true,
+        emulate = false
+    }) {
 
         const browser = await puppeteer.launch({
             args: [
@@ -36,7 +45,7 @@ export default new class Browser {
             //设置cookie
             if (cookie) await page.setCookie(...cookie)
             //模拟设备
-            if (emulate) await page.emulate(this.devices[emulate] || emulate)
+            if (emulate) await page.emulate(this.devices[emulate] || puppeteer.devices[emulate] || emulate)
             //设置宽度
             if (setViewport) await page.setViewport(setViewport)
             await page.goto(url, { 'timeout': 1000 * 30, 'waitUntil': 'networkidle0' });
@@ -75,7 +84,7 @@ export default new class Browser {
                     hasTouch: true,
                     isLandscape: false,
                 },
-            }
+            },
         }
     }
 }

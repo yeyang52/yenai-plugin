@@ -733,8 +733,11 @@ export class Basics extends plugin {
     //谁是龙王
     async dragonKing(e) {
         //浏览器截图
-        let url = `https://qun.qq.com/interactive/honorlist?gc=${e.group_id}&type=1&_wv=3&_wwv=129`
-        let screenshot = await Browser.Webpage(url, { "Cookie": Bot.cookies['qun.qq.com'] }, false, true)
+        let screenshot = await Browser.Webpage({
+            url: `https://qun.qq.com/interactive/honorlist?gc=${e.group_id}&type=1&_wv=3&_wwv=129`,
+            headers: { "Cookie": Bot.cookies['qun.qq.com'] },
+            font: true
+        })
         if (screenshot) return e.reply(screenshot)
         //数据版
         let res = await QQInterface.dragon(e.group_id)
@@ -747,8 +750,12 @@ export class Basics extends plugin {
 
     /**群星级 */
     async Group_xj(e) {
-        let url = `https://qqweb.qq.com/m/business/qunlevel/index.html?gc=254974507&from=0&_wv=1027`
-        let screenshot = await Browser.Webpage(url, false, false, true, common.getck('qqweb.qq.com', true), false, "QQTheme")
+        let screenshot = await Browser.Webpage({
+            url: `https://qqweb.qq.com/m/business/qunlevel/index.html?gc=254974507&from=0&_wv=1027`,
+            cookie: common.getck('qqweb.qq.com', true),
+            emulate: "QQTheme",
+            font: true,
+        })
         if (screenshot) return e.reply(screenshot)
         //出错后发送数据
         let result = await QQInterface.getCreditLevelInfo(e.group_id)
@@ -770,8 +777,11 @@ export class Basics extends plugin {
             return e.reply(ROLE_ERROR, true);
         }
         //图片截图
-        let url = `https://qun.qq.com/m/qun/activedata/speaking.html?gc=${e.group_id}&time=${/(7|七)天/.test(e.msg) ? 1 : 0}`
-        let screenshot = await Browser.Webpage(url, { "Cookie": Bot.cookies['qun.qq.com'] }, false, true)
+        let screenshot = await Browser.Webpage({
+            url: `https://qun.qq.com/m/qun/activedata/speaking.html?gc=${e.group_id}&time=${/(7|七)天/.test(e.msg) ? 1 : 0}`,
+            headers: { "Cookie": Bot.cookies['qun.qq.com'] },
+            font: true
+        })
         if (screenshot) return e.reply(screenshot)
         //出错后发送文字数据
         let res = await QQInterface.SpeakRank(e.group_id, /(7|七)天/.test(e.msg) ? 1 : 0)
@@ -786,12 +796,12 @@ export class Basics extends plugin {
     //今日打卡
     async DaySigned(e) {
         //浏览器截图
-        let url = `https://qun.qq.com/v2/signin/list?gc=${e.group_id}`
-        let screenshot = await Browser.Webpage(url, false, {
-            width: 375,
-            height: 625,
-            deviceScaleFactor: 2
-        }, true, common.getck('qun.qq.com', true), false)
+        let screenshot = await Browser.Webpage({
+            url: `https://qun.qq.com/v2/signin/list?gc=${e.group_id}`,
+            emulate: "iPhone 6",
+            cookie: common.getck('qun.qq.com', true),
+            font: true
+        })
         if (screenshot) return e.reply(screenshot)
         //出错后使用接口
         let res = await QQInterface.signInToday(e.group_id)
@@ -817,13 +827,13 @@ export class Basics extends plugin {
         } else if (date == '今天') {
             date = moment().format("YYYY-MM-DD");
         }
-        let url = `https://qun.qq.com/qqweb/m/qun/calendar/detail.html?_wv=1031&_bid=2340&src=3&gc=${e.group_id}&type=2&date=${date}`
         e.reply(
-            await Browser.Webpage(url, false, {
-                width: 700,
-                height: 1000,
-                deviceScaleFactor: 3
-            }, true, common.getck('qun.qq.com', true))
+            await Browser.Webpage({
+                url: `https://qun.qq.com/qqweb/m/qun/calendar/detail.html?_wv=1031&_bid=2340&src=3&gc=${e.group_id}&type=2&date=${date}`,
+                cookie: common.getck('qun.qq.com', true),
+                emulate: "iPhone 6",
+                font: true
+            })
         )
     }
 }

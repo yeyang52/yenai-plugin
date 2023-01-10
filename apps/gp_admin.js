@@ -13,9 +13,10 @@ const ROLE_ERROR = "做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ"
 //权限不足文案
 const Permission_ERROR = "❎ 该命令仅限管理员可用"
 //正则
-let Numreg = "[一壹二两三四五六七八九十百千万亿\\d]+"
+const Numreg = "[一壹二两三四五六七八九十百千万亿\\d]+"
+const TimeUnitReg = Object.keys(common.Time_unit).join("|")
 let noactivereg = new RegExp(`^#(查看|清理|确认清理|获取)(${Numreg})个?(年|月|周|天)没发言的人(第(${Numreg})页)?$`)
-let Autisticreg = new RegExp(`^#?我要(自闭|禅定)(${Numreg})?个?(${Object.keys(common.Time_unit).join("|")})?$`, "i")
+let Autisticreg = new RegExp(`^#?我要(自闭|禅定)(${Numreg})?个?(${TimeUnitReg})?$`, "i")
 
 export class Basics extends plugin {
     constructor() {
@@ -29,7 +30,7 @@ export class Basics extends plugin {
                     fnc: 'Taboo',
                 },
                 {
-                    reg: '^#解禁.*$',
+                    reg: '^#解禁(\\d+)?$',
                     fnc: 'Relieve',
                 },
                 {
@@ -37,11 +38,11 @@ export class Basics extends plugin {
                     fnc: 'TabooAll',
                 },
                 {
-                    reg: '^#踢(.*)$',
+                    reg: '^#踢(\\d+)?$',
                     fnc: 'Kick',
                 },
                 {
-                    reg: '^#(设置|取消)管理.*$',
+                    reg: '^#(设置|取消)管理(\\d+)?$',
                     fnc: 'SetAdmin',
                 },
                 {
@@ -163,155 +164,97 @@ export class Basics extends plugin {
             }
         }
     }
+
     /**禁言 */
     async Taboo(e) {
         //判断权限
         if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
         //判断是否有管理
-        if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply(ROLE_ERROR, true);
-        }
+        if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true);
 
-        let qq;
-        let TabooTime;
-        let Company;
+        let qq = e.message.find(item => item.type == 'at')?.qq
+        let TabooTime = 5;
+        let Company = 300;
         //判断有无@
-        if (e.message.length == 1) {
+        if (!qq) {
+            let regRet = e.msg.match(new RegExp(`#禁言\\s?(\\d+)\\s(${Numreg})?(${TimeUnitReg})?`));
+            if (!regRet) return e.reply("❎ 请检查指令格式是否正确");
             //处理消息
-            let msg = e.msg.split(" ");
-            if (msg.length >= 4) return e.reply("❎ 指令有误请检查");
-            //取qq号
-            if (msg.length == 1) {
-                qq = msg[0].match(/[1-9]\d*/g);
-            } else if (msg.length == 2) {
-                qq = msg[0].match(/[1-9]\d*/g);
-                if (!qq) qq = msg[1].match(/[1-9]\d*/g);
-            } else {
-                qq = msg[1].match(/[1-9]\d*/g);
-            }
-            //取禁言时间如果没取到走默认时间
-            if (msg[2]) {
-                TabooTime = msg[2].match(/[1-9]\d*/g);
-                Company = msg[2].match(/(天|时|分)/g);
-            } else if (msg.length == 2 && qq) {
-                TabooTime = msg[1].match(/[1-9]\d*/g);
-                Company = msg[1].match(/(天|时|分)/g);
-            }
+            if (!regRet[1]) return e.reply("❎ 未取得QQ号请检查指令格式");
+            qq = regRet[1]
+            // 获取数字
+            TabooTime = common.translateChinaNum(regRet[2] || 5)
+            //获取单位
+            Company = common.Time_unit[lodash.toUpper(regRet[3]) || "分"]
 
         } else {
-            //有艾特处理
-            for (let i of e.message) {
-                //取信息中艾特的QQ号
-                if (i.type == "at") {
-                    qq = i.qq;
-                } else if (i.type == 'text') {
-                    //取禁言时间
-                    if (/\d/g.test(i.text)) {
-                        TabooTime = i.text.match(/[1-9]\d*/g);
-                        Company = i.text.match(/(天|时|分)/g);
-                    }
-                }
-            }
+            TabooTime = common.translateChinaNum(e.msg.match(new RegExp(Numreg)) || 5)
+            Company = common.Time_unit[lodash.toUpper(e.msg.match(new RegExp(TimeUnitReg))) || "分"]
         }
-
         if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
         //判断是否为主人
         if (Config.masterQQ?.includes(Number(qq))) {
-            return e.reply("居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ");
+            e.reply("居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ");
+            return e.group.muteMember(e.user_id, 300);
         }
         let Memberinfo = e.group.pickMember(Number(qq)).info
         //判断是否有这个人
         if (!Memberinfo) return e.reply("❎ 这个群没有这个人哦~", true)
-        if (Memberinfo.role === 'owner') return e.reply("调戏群主拖出去枪毙5分钟(。>︿<)_θ", true)
+        //特殊处理
+        if (Memberinfo.role === 'owner') {
+            e.reply("调戏群主拖出去枪毙5分钟(。>︿<)_θ", true)
+            return e.group.muteMember(e.user_id, 300);
+        }
         if (Memberinfo.role === 'admin') {
             if (!e.group.is_owner) return e.reply("人家又不是群主这种事做不到的辣！", true)
             if (!e.isMaster && !e.member.is_owner) return e.reply("这个淫系管理员辣，只有主淫和群主才可以干ta", true)
         }
-        //如无时间默认禁言五分钟
-        if (!TabooTime) TabooTime = 5;
-        //默认单位为分
-        if (/天/.test(Company)) {
-            Company = 86400;
-        } else if (/时/.test(Company)) {
-            Company = 3600;
-        } else {
-            Company = 60;
-        }
-
+        console.log(qq, TabooTime * Company);
         await e.group.muteMember(qq, TabooTime * Company);
         e.reply(`已把「${Memberinfo.card || Memberinfo.nickname}」扔进了小黑屋( ･_･)ﾉ⌒●~*`, true);
         return true;
-
     }
     /**解禁 */
     async Relieve(e) {
         //判断权限
         if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
         //判断是否有管理
-        if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply(ROLE_ERROR, true);
-        }
+        if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true);
 
-        let qq = e.msg.replace(/#|解禁/g, "").trim();
-
-        if (e.message.length != 1) {
-            qq = e.message.find(item => item.type == "at")?.qq
-        } else {
-            qq = qq.match(/[1-9]\d*/g);
-        }
+        let qq = e.message.find(item => item.type == "at")?.qq
+        if (!qq) qq = e.msg.replace(/#|解禁/g, "").trim();
 
         if (!qq || !(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
+
         let Member = e.group.pickMember(Number(qq))
         //判断是否有这个人
         if (!Member.info) return e.reply("❎ 这个群没有这个人哦~");
 
-
         await e.group.muteMember(qq, 0)
         e.reply(`已把「${Member.card || Member.nickname}」从小黑屋揪了出来(｡>∀<｡)`, true);
-        return true;
-
     }
     /**全体禁言 */
     async TabooAll(e) {
         //判断权限
         if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
         //判断是否有管理
-        if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply(ROLE_ERROR, true);
-        }
+        if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true);
 
-        let type = false;
-        if (/全体禁言/.test(e.msg)) type = true;
-
-
+        let type = /全体禁言/.test(e.msg)
         let res = await e.group.muteAll(type)
-        if (res) {
-            if (type) {
-                e.reply("全都不准说话了哦~")
-            } else {
-                e.reply("好耶！！可以说话啦~")
-            }
-        } else {
-            e.reply("❎ 未知错误", true)
-        }
-        return true
+        if (!res) return e.reply("❎ 未知错误", true)
+        type ? e.reply("全都不准说话了哦~") : e.reply("好耶！！可以说话啦~")
     }
     //踢群员
     async Kick(e) {
         //判断权限
         if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
         // 判断是否有管理
-        if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply(ROLE_ERROR, true);
-        }
+        if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true);
 
-        let qq = e.msg.replace(/#|踢/g, "").trim()
+        let qq = e.message.find(item => item.type == "at")?.qq
+        if (!qq) qq = e.msg.replace(/#|踢/g, "").trim()
 
-        if (e.message.length != 1) {
-            qq = e.message.find(item => item.type == "at")?.qq
-        } else {
-            qq = qq.match(/[1-9]\d*/g);
-        }
         if (!qq || !(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
         //判断是否为主人
         if (Config.masterQQ?.includes(Number(qq))) {
@@ -326,13 +269,7 @@ export class Basics extends plugin {
             if (!e.isMaster && !e.member.is_owner) return e.reply("这个淫系管理员辣，只有主淫和群主才可以干ta", true)
         }
         let res = await e.group.kickMember(Number(qq))
-        if (res) {
-            e.reply("已把这个坏淫踢掉惹！！！", true)
-        } else {
-            e.reply("额...踢出失败哩，可能这个淫比较腻害>_<", true)
-        }
-        return true
-
+        res ? e.reply("已把这个坏淫踢掉惹！！！", true) : e.reply("额...踢出失败哩，可能这个淫比较腻害>_<", true)
     }
 
     //我要自闭
@@ -351,8 +288,6 @@ export class Basics extends plugin {
 
         await e.group.muteMember(e.user_id, TabooTime * Company);
         e.reply(`那我就不手下留情了~`, true);
-        return true;
-
     }
 
     //设置管理
@@ -361,33 +296,19 @@ export class Basics extends plugin {
         if (!e.isMaster) return e.reply(Permission_ERROR)
         if (!e.group.is_owner) return e.reply(ROLE_ERROR, true)
 
-        let qq
-        let yes = false
-        qq = e.msg.replace(/#|(设置|取消)管理/g, "").trim();
-        if (/设置管理/.test(e.msg)) yes = true
-
-        if (e.message.length != 1) {
-            qq = e.message.find(item => item.type == "at")?.qq
-        } else {
-            qq = qq.match(/[1-9]\d*/g);
-        }
+        let qq = e.message.find(item => item.type == "at")?.qq
+        let type = /设置管理/.test(e.msg)
+        if (!qq) qq = e.msg.replace(/#|(设置|取消)管理/g, "").trim();
 
         if (!qq || !(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
         let Member = e.group.pickMember(Number(qq))
         //判断是否有这个人
         if (!Member.info) return e.reply("❎ 这个群没有这个人哦~");
 
-        let res = await e.group.setAdmin(qq, yes)
+        let res = await e.group.setAdmin(qq, type)
         let name = Member.card || Member.nickname
-        if (res) {
-            if (yes) {
-                e.reply(`已经把「${name}」设置为管理啦！！`)
-            } else {
-                e.reply(`「${name}」的管理已经被我吃掉啦~`)
-            }
-        } else {
-            e.reply(`❎ 未知错误`)
-        }
+        if (!res) return e.reply(`❎ 未知错误`)
+        type ? e.reply(`已经把「${name}」设置为管理啦！！`) : e.reply(`「${name}」的管理已经被我吃掉啦~`)
     }
 
     //匿名
@@ -395,25 +316,12 @@ export class Basics extends plugin {
         //判断权限
         if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
         //判断是否有管理
-        if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply(ROLE_ERROR, true);
-        }
-        let yes = false
-        if (/(允许|开启)匿名/.test(e.msg)) {
-            yes = true
-        }
+        if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true);
 
-        let res = await e.group.allowAnony(yes)
-        if (res) {
-            if (yes) {
-                e.reply("已把匿名开启了哦，可以藏起来了~")
-            } else {
-                e.reply("已关闭匿名，小贼们不准藏了~")
-            }
-        } else {
-            e.reply("❎ 未知错误", true)
-        }
-        return true;
+        let type = /(允许|开启)匿名/.test(e.msg)
+        let res = await e.group.allowAnony(type)
+        if (!res) return e.reply("❎ 未知错误", true)
+        type ? e.reply("已把匿名开启了哦，可以藏起来了~") : e.reply("已关闭匿名，小贼们不准藏了~")
     }
 
     //发群公告
@@ -505,15 +413,11 @@ export class Basics extends plugin {
             }
         }
         let res = await e.group.setTitle(e.user_id, Title)
-        if (res) {
-            if (!Title) {
-                e.reply(`什么"(º Д º*)！没有头衔，哼把你的头衔吃掉！！！`, true)
-            } else {
-                e.reply(lodash.sample(msgs), true)
-            }
-        } else {
-            e.reply('❎ 未知错误', true)
-        }
+        if (!res) return e.reply('❎ 未知错误', true)
+
+        if (!Title) return e.reply(`什么"(º Д º*)！没有头衔，哼把你的头衔吃掉！！！`, true)
+
+        e.reply(lodash.sample(msgs), true)
     }
 
     //字符列表
@@ -707,17 +611,15 @@ export class Basics extends plugin {
             e.reply('此群定时禁言任务删除成功')
             return true
         }
-        if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply(ROLE_ERROR, true);
-        }
+        if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true);
+
         try {
             var muteTime = e.msg.match(/禁言(\d+):(\d+)/)[0].replace(/禁言/g, '')
             var remTime = e.msg.match(/解禁(\d+):(\d+)/)[0].replace(/解禁/g, '')
             if (muteTime.length != 5 || remTime.length != 5) return e.reply('格式不对\n示范：#定时禁言00:00，解禁08:00')
         } catch (err) {
             logger.error(err)
-            e.reply('格式不对\n示范：#定时禁言00:00，解禁08:00')
-            return
+            return e.reply('格式不对\n示范：#定时禁言00:00，解禁08:00')
         }
 
         if (muteTime == remTime) return e.reply('没事就吃溜溜梅')

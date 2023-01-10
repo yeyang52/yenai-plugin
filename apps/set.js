@@ -228,6 +228,7 @@ export class NewConfig extends plugin {
         let set = setu.getSeSeConfig(e)
         let data = Config.Notice
         e.reply([
+            e.group_id ? `群${e.group_id}涩涩设置：\n` : `私聊涩涩瑟瑟设置：\n`,
             `sese：${data.sese ? "✅" : "❎"}\n`,
             `sesepro：${data.sesepro ? "✅" : "❎"}\n`,
             `R17.9 + 0.1：${set.r18 ? "✅" : "❎"}\n`,

@@ -52,7 +52,7 @@ export default new class Browser {
             //设置字体
             if (font) await page.addStyleTag({ content: `* {font-family: "汉仪文黑-65W","雅痞-简","圆体-简","PingFang SC","微软雅黑", sans-serif !important;}` })
 
-            let res = await page.screenshot({
+            let screenshot = await page.screenshot({
                 // path: './paper.jpeg',
                 type: 'jpeg',
                 fullPage,
@@ -61,7 +61,7 @@ export default new class Browser {
                 console.log('截图失败');
                 console.log(err);
             });
-            return segment.image(res)
+            return segment.image(screenshot)
         } catch (e) {
             logger.error(e);
             return false;

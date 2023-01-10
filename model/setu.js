@@ -183,19 +183,19 @@ export default new class setu {
     }
     /**
      * @description: 设置群cd和撤回时间
-     * @param {*} e 
-     * @param {Number} num
-     * @param {Boolean} yes 为true设置撤回时间反之设置CD
-     * @return {*}
+     * @param {Number} groupId 群号
+     * @param {Number} num 设置时间
+     * @param {Boolean} type 为true设置撤回时间反之设置CD
+     * @return {Boolean}
      */
-    setGroupRecallTimeAndCd(e, num, yes = true) {
+    setGroupRecallTimeAndCd(groupId, num, type = true) {
         let res = {};
 
         if (fs.existsSync(this.path)) res = common.getJson(this.path)
 
-        if (!res[e.group_id]) res[e.group_id] = lodash.cloneDeep(this.def)
+        if (!res[groupId]) res[groupId] = lodash.cloneDeep(this.def)
 
-        yes ? res[e.group_id].recall = Number(num) : res[e.group_id].cd = Number(num)
+        type ? res[groupId].recall = Number(num) : res[groupId].cd = Number(num)
 
         return common.setJson(this.path, res) ? true : false
     }
@@ -222,27 +222,26 @@ export default new class setu {
     }
     /**
      * @description: 设置r18
-     * @param {*} e oicq
-     * @param {Boolean} yes 开启或关闭
-     * @param {Boolean} group 设置群聊还是私聊
+     * @param {String|Number} groupID 群聊id为假时设置私聊
+     * @param {Boolean} isopen 开启或关闭
      */
-    setR18(e, yes, group) {
+    setR18(groupID, isopen) {
         let res = {};
-        if (group) {
+        if (groupID) {
             if (fs.existsSync(this.path)) {
                 res = common.getJson(this.path)
             }
 
-            if (!res[e.group_id]) res[e.group_id] = lodash.cloneDeep(this.def)
+            if (!res[groupID]) res[groupID] = lodash.cloneDeep(this.def)
 
 
-            res[e.group_id].r18 = yes ? 1 : 0
+            res[groupID].r18 = isopen ? 1 : 0
 
             if (common.setJson(this.path, res)) {
-                e.reply(`✅ 已${yes ? "开启" : "关闭"}${e.group_id}的涩涩模式~`)
+                logger.mark(`[椰奶R18][群聊]已${isopen ? "开启" : "关闭"}${groupID}的涩涩模式`)
                 return true
             } else {
-                e.reply(`❎ 设置失败`)
+                logger.mark(`[椰奶R18][群聊]设置失败`)
                 return false
             }
         } else {
@@ -250,13 +249,13 @@ export default new class setu {
                 res = common.getJson(this.path_s)
             }
 
-            res.friendr18 = yes ? 1 : 0
+            res.friendr18 = isopen ? 1 : 0
 
             if (common.setJson(this.path_s, res)) {
-                e.reply(`✅ 已${yes ? "开启" : "关闭"}私聊涩涩功能~`)
+                logger.mark(`[椰奶R18][私聊]已${isopen ? "开启" : "关闭"}私聊涩涩功能~`)
                 return true
             } else {
-                e.reply(`❎ 设置失败`)
+                logger.mark(`[椰奶R18][私聊]设置失败`)
                 return false
             }
         }

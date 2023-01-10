@@ -1,8 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import lodash from "lodash";
 import { Config } from '../components/index.js'
 import { setu, common } from '../model/index.js'
-
+import { NewConfig } from './set.js'
 const SWITCH_ERROR = "主人没有开放这个功能哦(＊／ω＼＊)"
 
 let NumReg = "[一壹二两三四五六七八九十百千万亿\\d]+"
@@ -36,13 +35,13 @@ export class sese extends plugin {
         },
         {
           reg: `(c|C)(d|D)(${NumReg})(s|秒)?$`,
-          fnc: 'atcd',
+          fnc: 'atSetCd',
           event: 'message.group',
           permission: 'master'
         },
         {
-          reg: setcdReg,
-          fnc: 'instsetcd',
+          reg: setcdReg,//设置cd
+          fnc: 'setCd',
           permission: 'master'
         }
       ]
@@ -122,32 +121,21 @@ export class sese extends plugin {
   //设置群撤回间隔和cd
   async setGroupRecallAndCD(e) {
     let num = e.msg.replace(/#|撤回间隔|群cd/gi, "").trim()
-
     num = common.translateChinaNum(num)
     let type = /撤回间隔/.test(e.msg)
-    let res = setu.setGroupRecallTimeAndCd(e, num, type)
-
-    if (res) {
-      e.reply(`✅ 设置群「${e.group_id}」${type ? "撤回间隔" : "CD"}「${num}s」成功`)
-    } else {
-      e.reply(`❎ 设置失败`)
-    }
-
+    setu.setGroupRecallTimeAndCd(e.group_id, num, type)
+    new NewConfig().View_Settings(e)
   }
 
   //开启r18
   async setsese(e) {
-    let yes = /开启/.test(e.msg) ? true : false
-
-    if (/私聊/.test(e.msg) || !e.isGroup) {
-      setu.setR18(e, yes, false)
-    } else {
-      setu.setR18(e, yes, true)
-    }
+    let isopen = /开启/.test(e.msg) ? true : false
+    setu.setR18(e.group_id, isopen)
+    new NewConfig().View_Settings(e)
   }
 
   //艾特设置cd
-  async atcd(e) {
+  async atSetCd(e) {
     if (e.message[0].type != "at") return false;
 
     let cd = e.msg.match(new RegExp(NumReg))
@@ -162,7 +150,7 @@ export class sese extends plugin {
   }
 
   //指令设置
-  async instsetcd(e) {
+  async setCd(e) {
     let cdreg = setcdReg.exec(e.msg);
     let qq = cdreg[1]
     let cd = common.translateChinaNum(cdreg[2])

@@ -378,7 +378,7 @@ export class example extends plugin {
   //api大集合
   async picture(e) {
     let { sese, sesepro } = Config.getGroup(e.group_id)
-    if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
+    if (!sese && !sesepro && !e.isMaster) return false;
     let key = `yenai:apiAggregate:CD`
     if (await redis.get(key)) return
     if (/jktj/.test(e.msg)) {

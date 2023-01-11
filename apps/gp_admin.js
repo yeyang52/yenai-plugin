@@ -15,8 +15,8 @@ const Permission_ERROR = "❎ 该命令仅限管理员可用"
 //正则
 const Numreg = "[一壹二两三四五六七八九十百千万亿\\d]+"
 const TimeUnitReg = Object.keys(common.Time_unit).join("|")
-let noactivereg = new RegExp(`^#(查看|清理|确认清理|获取)(${Numreg})个?(年|月|周|天)没发言的人(第(${Numreg})页)?$`)
-let Autisticreg = new RegExp(`^#?我要(自闭|禅定)(${Numreg})?个?(${TimeUnitReg})?$`, "i")
+const noactivereg = new RegExp(`^#(查看|清理|确认清理|获取)(${Numreg})个?(年|月|周|天)没发言的人(第(${Numreg})页)?$`)
+const Autisticreg = new RegExp(`^#?我要(自闭|禅定)(${Numreg})?个?(${TimeUnitReg})?$`, "i")
 
 export class Basics extends plugin {
     constructor() {
@@ -596,11 +596,20 @@ export class Basics extends plugin {
         if (/任务/.test(e.msg)) {
             let task = await redis.keys('Yunzai:yenai:Taboo:*')
             if (!task.length) return e.reply('目前还没有定时禁言任务')
-            let msglist = [`目前定时禁言任务有${task.length}个`]
-            for (let i = 0; i < task.length; i++) {
-                let data = JSON.parse(await redis.get(task[i]))
-                msglist.push(`${i + 1}.\n群号:${data.groupNumber}\n禁言时间:${data.muteTime}\n解禁时间:${data.remTime}`)
-            }
+            let msglist = [
+                `目前定时禁言任务有${task.length}个`,
+                ...await Promise.all(task.map(async item => {
+                    item = JSON.parse(await redis.get(item))
+                    return [
+                        segment.image(`https://p.qlogo.cn/gh/${item.groupNumber}/${item.groupNumber}/100`),
+                        `\n群号:${item.groupNumber}\n`,
+                        `禁言时间:${item.muteTime}\n`,
+                        `解禁时间:${item.remTime}`
+                    ]
+                })),
+                "可在目标群发送 “#取消定时禁言” 进行取消"
+            ]
+            console.log(task);
             common.getforwardMsg(e, msglist)
             return true
         }
@@ -614,9 +623,12 @@ export class Basics extends plugin {
         if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true);
 
         try {
-            var muteTime = e.msg.match(/禁言(\d+):(\d+)/)[0].replace(/禁言/g, '')
-            var remTime = e.msg.match(/解禁(\d+):(\d+)/)[0].replace(/解禁/g, '')
-            if (muteTime.length != 5 || remTime.length != 5) return e.reply('格式不对\n示范：#定时禁言00:00，解禁08:00')
+            let RegRet = e.msg.match(/禁言(\d{1,2})(:|：)(\d{1,2})解禁(\d{1,2})(:|：)(\d{1,2})/)
+            if (!RegRet || !RegRet[1] || !RegRet[3] || !RegRet[4] || !RegRet[6]) {
+                return e.reply('格式不对\n示范：#定时禁言00:00，解禁08:00')
+            }
+            var muteTime = RegRet[1].padStart(2, "0") + ':' + RegRet[3].padStart(2, "0")
+            var remTime = RegRet[4].padStart(2, "0") + ':' + RegRet[6].padStart(2, "0")
         } catch (err) {
             logger.error(err)
             return e.reply('格式不对\n示范：#定时禁言00:00，解禁08:00')
@@ -629,7 +641,7 @@ export class Basics extends plugin {
             remTime
         }
         await redis.set(`Yunzai:yenai:Taboo:${e.group_id}`, JSON.stringify(data))
-        e.reply(`设置定时禁言成功，可发【#定时禁言任务】查看`)``
+        e.reply(`设置定时禁言成功，可发【#定时禁言任务】查看`)
     }
 
     //谁是龙王

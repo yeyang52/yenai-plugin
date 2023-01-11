@@ -138,7 +138,7 @@ export class Basics extends plugin {
                     fnc: 'Autistic'
                 },
                 {
-                    reg: '^#(今天|昨天|明天|后天|\\d{4}-\\d{1,2}-\\d{1,2})谁生日$',
+                    reg: '^#((今|昨|前|明|后)天|\\d{4}-\\d{1,2}-\\d{1,2})谁生日$',
                     fnc: 'groupBirthday'
                 }
             ]
@@ -734,6 +734,8 @@ export class Basics extends plugin {
         let date = e.msg.match(/^#?(今天|昨天|明天|后天|\d{4}-\d{1,2}-\d{1,2})谁生日$/)[1]
         if (date == '昨天') {
             date = moment().subtract(1, 'days').format("YYYY-MM-DD");
+        } else if (date == '前天') {
+            date = moment().subtract(2, 'days').format("YYYY-MM-DD");
         } else if (date == '明天') {
             date = moment().add(1, 'days').format("YYYY-MM-DD");
         } else if (date == '后天') {

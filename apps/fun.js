@@ -395,8 +395,9 @@ export class example extends plugin {
 
     let des = apirag.exec(e.msg)
     let imgs = apis[des[1]]
-    let img = des[2] ? imgs[des - 1] : lodash.sample(imgs)
-    e.reply(segment.image(img || lodash.sample(imgs)), false, { recallMsg: 120 })
+    let img = (des[2] ? imgs[des[2] - 1] : lodash.sample(imgs)) || lodash.sample(imgs)
+    logger.debug(`[椰奶图片]${des[2] && imgs[des[2] - 1] ? "指定" : "随机"}接口:${img}`)
+    e.reply(segment.image(img), false, { recallMsg: 120 })
     redis.set(key, "cd", { EX: 2 })
   }
 }

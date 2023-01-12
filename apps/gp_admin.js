@@ -2,7 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
 import lodash from 'lodash'
 import { Config } from '../components/index.js'
-import { Gpadmin, common, QQInterface, Browser } from '../model/index.js'
+import { Gpadmin, common, QQInterface, puppeteer } from '../model/index.js'
 import moment from 'moment'
 
 
@@ -647,7 +647,7 @@ export class Basics extends plugin {
     //谁是龙王
     async dragonKing(e) {
         //浏览器截图
-        let screenshot = await Browser.Webpage({
+        let screenshot = await puppeteer.Webpage({
             url: `https://qun.qq.com/interactive/honorlist?gc=${e.group_id}&type=1&_wv=3&_wwv=129`,
             headers: { "Cookie": Bot.cookies['qun.qq.com'] },
             font: true
@@ -664,7 +664,7 @@ export class Basics extends plugin {
 
     /**群星级 */
     async Group_xj(e) {
-        let screenshot = await Browser.Webpage({
+        let screenshot = await puppeteer.Webpage({
             url: `https://qqweb.qq.com/m/business/qunlevel/index.html?gc=254974507&from=0&_wv=1027`,
             cookie: common.getck('qqweb.qq.com', true),
             emulate: "QQTheme",
@@ -691,7 +691,7 @@ export class Basics extends plugin {
             return e.reply(ROLE_ERROR, true);
         }
         //图片截图
-        let screenshot = await Browser.Webpage({
+        let screenshot = await puppeteer.Webpage({
             url: `https://qun.qq.com/m/qun/activedata/speaking.html?gc=${e.group_id}&time=${/(7|七)天/.test(e.msg) ? 1 : 0}`,
             headers: { "Cookie": Bot.cookies['qun.qq.com'] },
             font: true
@@ -710,7 +710,7 @@ export class Basics extends plugin {
     //今日打卡
     async DaySigned(e) {
         //浏览器截图
-        let screenshot = await Browser.Webpage({
+        let screenshot = await puppeteer.Webpage({
             url: `https://qun.qq.com/v2/signin/list?gc=${e.group_id}`,
             emulate: "iPhone 6",
             cookie: common.getck('qun.qq.com', true),
@@ -744,7 +744,7 @@ export class Basics extends plugin {
             date = moment().format("YYYY-MM-DD");
         }
         e.reply(
-            await Browser.Webpage({
+            await puppeteer.Webpage({
                 url: `https://qun.qq.com/qqweb/m/qun/calendar/detail.html?_wv=1031&_bid=2340&src=3&gc=${e.group_id}&type=2&date=${date}`,
                 cookie: common.getck('qun.qq.com', true),
                 emulate: "iPhone 6",

@@ -1,7 +1,9 @@
 import fetch from "node-fetch";
 import md5 from "md5";
 import lodash from "lodash";
+
 const API_ERROR = "出了点小问题，待会再试试吧";
+
 export default new class Interface {
     /**有道翻译 */
     async youdao(msg) {

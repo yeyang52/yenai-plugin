@@ -4,7 +4,7 @@ import puppeteer from 'puppeteer'
 import pet from '../../../lib/puppeteer/puppeteer.js';
 
 
-export default new class Browser {
+export default new class newPuppeteer {
     constructor() {
         this.devices = {
             'QQTheme': {

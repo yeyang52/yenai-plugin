@@ -623,12 +623,12 @@ export class Basics extends plugin {
         if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true);
 
         try {
-            let RegRet = e.msg.match(/禁言(\d{1,2})(:|：)(\d{1,2})解禁(\d{1,2})(:|：)(\d{1,2})/)
-            if (!RegRet || !RegRet[1] || !RegRet[3] || !RegRet[4] || !RegRet[6]) {
+            let RegRet = e.msg.match(/禁言(\d{1,2})(:|：)(\d{1,2})(，|,)?解禁(\d{1,2})(:|：)(\d{1,2})/)
+            if (!RegRet || !RegRet[1] || !RegRet[3] || !RegRet[5] || !RegRet[7]) {
                 return e.reply('格式不对\n示范：#定时禁言00:00，解禁08:00')
             }
             var muteTime = RegRet[1].padStart(2, "0") + ':' + RegRet[3].padStart(2, "0")
-            var remTime = RegRet[4].padStart(2, "0") + ':' + RegRet[6].padStart(2, "0")
+            var remTime = RegRet[5].padStart(2, "0") + ':' + RegRet[7].padStart(2, "0")
         } catch (err) {
             logger.error(err)
             return e.reply('格式不对\n示范：#定时禁言00:00，解禁08:00')

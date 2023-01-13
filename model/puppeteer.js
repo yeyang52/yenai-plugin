@@ -1,9 +1,8 @@
-import { segment } from 'oicq'
-import lodash from 'lodash'
-import puppeteer from 'puppeteer'
+import { segment } from 'oicq';
+import lodash from 'lodash';
+import puppeteer from 'puppeteer';
 import pet from '../../../lib/puppeteer/puppeteer.js';
-
-
+import { common } from './index.js'
 export default new class newPuppeteer {
     constructor() {
         this.devices = {
@@ -42,7 +41,8 @@ export default new class newPuppeteer {
         font = false,
         cookie = false,
         fullPage = true,
-        emulate = false
+        emulate = false,
+        click = false,
     }) {
         if (!await pet.browserInit()) {
             return false
@@ -61,9 +61,10 @@ export default new class newPuppeteer {
             if (emulate) await page.emulate(this.devices[emulate] || emulate)
             //设置宽度
             if (setViewport) await page.setViewport(setViewport)
-            await page.goto(url, { 'timeout': 1000 * 30, 'waitUntil': 'networkidle0' });
+            await page.goto(url, { 'timeout': 1000 * 60, 'waitUntil': 'networkidle0' });
             //设置字体
             if (font) await page.addStyleTag({ content: `* {font-family: "汉仪文黑-65W","雅痞-简","圆体-简","PingFang SC","微软雅黑", sans-serif !important;}` })
+            if (click) for (let i of click) { await page.click(i.selector); await page.waitForTimeout(i.time) }
 
             buff = await page.screenshot({
                 // path: './paper.jpeg',

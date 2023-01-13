@@ -186,6 +186,33 @@ export const helpList = [{
   ]
 },
 {
+  "group": "群信息",
+  "list": [
+    {
+      "icon": 2,
+      "title": "#群星级",
+      "desc": "查看群星级"
+    },
+    {
+      "title": "#今天谁生日",
+      "desc": "今天可换为昨天或后天或日期",
+      "icon": 12
+    }, {
+      "title": "#哪个叼毛是龙王",
+      "desc": "查看谁是龙王",
+      "icon": 6
+    }, {
+      "title": "#今日打卡",
+      "desc": "查看今日打卡",
+      "icon": 5
+    }, {
+      "title": "#群数据(7天)?",
+      "desc": "活跃数据等",
+      "icon": 7
+    },
+  ]
+},
+{
   "group": "进群验证(更多设置请在config/groupverify.yaml进行设置)",
   "list": [
     {

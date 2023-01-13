@@ -130,6 +130,10 @@ export class Basics extends plugin {
                     fnc: 'Group_xj'
                 },
                 {
+                    reg: '^#群数据((7|七)天)?$',
+                    fnc: 'groupData'
+                },
+                {
                     reg: '^#今日打卡$',
                     fnc: 'DaySigned'
                 },
@@ -655,6 +659,7 @@ export class Basics extends plugin {
         if (screenshot) return e.reply(screenshot)
         //数据版
         let res = await QQInterface.dragon(e.group_id)
+        if (!res) return e.reply(API_ERROR)
         e.reply([
             `本群龙王：${res.nick}`,
             segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${res.uin}`),
@@ -673,7 +678,7 @@ export class Basics extends plugin {
         if (screenshot) return e.reply(screenshot)
         //出错后发送数据
         let result = await QQInterface.getCreditLevelInfo(e.group_id)
-        if (!result) return e.reply("❎ 接口失效")
+        if (!result) return e.reply(API_ERROR)
         if (result.ec != 0) return e.reply("❎ 查询错误\n" + JSON.stringify(result))
         let { uiGroupLevel, group_name, group_uin } = result.info
         let str = "⭐"
@@ -698,8 +703,8 @@ export class Basics extends plugin {
         })
         if (screenshot) return e.reply(screenshot)
         //出错后发送文字数据
-        let res = await QQInterface.SpeakRank(e.group_id, /(7|七)天/.test(e.msg) ? 1 : 0)
-        if (!res) return e.reply("接口失效辣！！！")
+        let res = await QQInterface.SpeakRank(e.group_id, /(7|七)天/.test(e.msg))
+        if (!res) return e.reply(API_ERROR)
         if (res.retcode != 0) return e.reply("❎ 未知错误\n" + JSON.stringify(res))
         let msg = lodash.take(res.data.speakRank.map((item, index) =>
             `${index + 1}:${item.nickname}-${item.uin}\n连续活跃${item.active}天:发言${item.msgCount}次`
@@ -719,7 +724,7 @@ export class Basics extends plugin {
         if (screenshot) return e.reply(screenshot)
         //出错后使用接口
         let res = await QQInterface.signInToday(e.group_id)
-        if (!res) return e.reply("❎ 出错辣，请稍后重试")
+        if (!res) return e.reply(API_ERROR)
         if (res.retCode != 0) return e.reply("❎ 未知错误\n" + JSON.stringify(res));
 
         let list = res.response.page[0]
@@ -752,4 +757,46 @@ export class Basics extends plugin {
             })
         )
     }
+
+    //群数据
+    async groupData(e) {
+        //浏览器截图
+        let screenshot = await puppeteer.Webpage({
+            url: `https://qun.qq.com/m/qun/activedata/active.html?_wv=3&_wwv=128&gc=${e.group_id}&src=2`,
+            cookie: common.getck('qun.qq.com', true),
+            click: /(7|七)天/.test(e.msg) ? [
+                {
+                    selector: "#app > div.tabbar > div.tabbar__time > div.tabbar__time__date",
+                    time: 500,
+                },
+                {
+                    selector: "#app > div.tabbar > div.tabbar__date-selector > div > div:nth-child(3)",
+                    time: 1000,
+                }
+            ] : false,
+            font: true
+        })
+        if (screenshot) return e.reply(screenshot)
+        //数据
+        let res = await QQInterface.groupData(e.group_id, /(7|七)天/.test(e.msg))
+        if (!res) return e.reply(API_ERROR)
+        if (res.retcode != 0) return e.reply(res.msg || JSON.stringify(res))
+        let { groupInfo, activeData, msgInfo, joinData, exitData, applyData } = res.data
+        e.reply(
+            [
+                `${groupInfo.groupName}(${groupInfo.groupCode})${/(7|七)天/.test(e.msg) ? "七天" : "昨天"}的群数据\n`,
+                `------------消息条数---------\n`,
+                `消息条数：${msgInfo.total}\n`,
+                `------------活跃人数---------\n`,
+                `活跃人数：${activeData.activeData}\n`,
+                `总人数：${activeData.groupMember}\n`,
+                `活跃比例：${activeData.ratio}%\n`,
+                `-----------加退群人数--------\n`,
+                `申请人数：${joinData.total}\n`,
+                `入群人数：${applyData.total}\n`,
+                `退群人数：${exitData.total}\n`,
+            ]
+        )
+    }
+
 }

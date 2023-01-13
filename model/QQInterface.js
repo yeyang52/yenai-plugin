@@ -307,14 +307,27 @@ export default new class assistant {
     /**
      * @description: 群发言榜单
      * @param {Number} groupId 群号
-     * @param {Strng} time 0为7天1为昨天
+     * @param {Strng} time true为7天false为昨天
      */
-    async SpeakRank(groupId, time) {
-        let url = `https://qun.qq.com/m/qun/activedata/proxy/domain/qun.qq.com/cgi-bin/manager/report/list?bkn=${Bot.bkn}&gc=${groupId}&type=0&start=0&time=${time}`
+    async SpeakRank(groupId, time = false) {
+        let url = `https://qun.qq.com/m/qun/activedata/proxy/domain/qun.qq.com/cgi-bin/manager/report/list?bkn=${Bot.bkn}&gc=${groupId}&type=0&start=0&time=${time ? 1 : 0}`
         return await fetch(url, {
             "headers": this.headers,
         }).then(res => res.json()).catch(err => console.error(err));
     }
+    /**
+     * @description: 群数据
+     * @param {String} groupId 群号
+     * @param {Strng} time true为7天false为昨天
+     */
+    async groupData(groupId, time = false) {
+        let url = `https://qun.qq.com/m/qun/activedata/proxy/domain/qun.qq.com/cgi-bin/manager/report/index?gc=${groupId}&time=${time ? 1 : 0}&bkn=${Bot.bkn}`
+        return await fetch(url, {
+            "headers": this.headers,
+        }).then(res => res.json());
+    }
+
+
     // ---------------------------------字符---------------------------------------------
 
     /**

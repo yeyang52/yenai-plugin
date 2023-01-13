@@ -232,38 +232,10 @@ export const helpList = [{
       "title": "#铃声搜索",
       "desc": "铃声多多"
     }, {
-      "title": "#今日打卡",
-      "desc": "查看今日打卡",
-      "icon": 5
-    }, {
-      "title": "#哪个叼毛是龙王",
-      "desc": "查看谁是龙王",
-      "icon": 6
-    }, {
       "title": "#acg刻晴",
       "desc": "acgcos",
       "icon": 9
-    }, {
-      "title": "#今天谁生日",
-      "desc": "今天可换为昨天或后天或日期",
-      "icon": 12
     },]
-},
-{
-  "group": "其他功能",
-  "list": [{
-    "icon": 7,
-    "title": "#取直链 <图片>",
-    "desc": "取图片的链接"
-  }, {
-    "icon": 20,
-    "title": "#取face <face表情>",
-    "desc": "没啥用=-="
-  }, {
-    "icon": 1,
-    "title": "#群星级",
-    "desc": "查看群星级"
-  },]
 },
 {
   "group": "设置，版本相关",

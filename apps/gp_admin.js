@@ -692,9 +692,8 @@ export class Basics extends plugin {
 
     //群发言榜单
     async SpeakRank(e) {
-        if (!e.group.is_admin && !e.group.is_owner) {
-            return e.reply(ROLE_ERROR, true);
-        }
+        if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true);
+
         //图片截图
         let screenshot = await puppeteer.Webpage({
             url: `https://qun.qq.com/m/qun/activedata/speaking.html?gc=${e.group_id}&time=${/(7|七)天/.test(e.msg) ? 1 : 0}`,
@@ -760,6 +759,8 @@ export class Basics extends plugin {
 
     //群数据
     async groupData(e) {
+        if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true);
+
         //浏览器截图
         let screenshot = await puppeteer.Webpage({
             url: `https://qun.qq.com/m/qun/activedata/active.html?_wv=3&_wwv=128&gc=${e.group_id}&src=2`,

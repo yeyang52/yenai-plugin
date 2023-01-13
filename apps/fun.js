@@ -301,9 +301,9 @@ export class example extends plugin {
       let keywords = e.msg.match(/#?来点神秘图s(.*)/)
       let mengduipage = JSON.parse(await redis.get('yenai:mengduipage')) || {}
 
-      let searcjurl = `https://b8s6.com/search.php?mdact=community&q=${keywords[1]}&page=${lodash.random(1, mengduipage[keywords[1]] || 1)}`
+      let searcjurl = `https://c6x9.com/search.php?mdact=community&q=${keywords[1]}&page=${lodash.random(1, mengduipage[keywords[1]] || 1)}`
       let search = await fetch(searcjurl).then(res => res.text());
-      let searchList = search.match(/https:\/\/b8s6.com\/post\/\d+.html/g)
+      let searchList = search.match(/https:\/\/c6x9.com\/post\/\d+.html/g)
 
       if (lodash.isEmpty(searchList)) {
         let ERROR = search.match(/抱歉，未找到(.*)相关内容，建议简化一下搜索的关键词|搜索频率太快，请等一等再尝试！/)
@@ -326,7 +326,7 @@ export class example extends plugin {
       } else {
         random = appoint[0]
       }
-      url = `https://c8a9.com/post/${random}.html`
+      url = `https://c6x9.com/post/${random}.html`
     }
 
     let res = await fetch(url).then(res => res.text()).catch(err => console.error(err));

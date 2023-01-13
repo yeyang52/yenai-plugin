@@ -670,7 +670,7 @@ export class Basics extends plugin {
     /**群星级 */
     async Group_xj(e) {
         let screenshot = await puppeteer.Webpage({
-            url: `https://qqweb.qq.com/m/business/qunlevel/index.html?gc=254974507&from=0&_wv=1027`,
+            url: `https://qqweb.qq.com/m/business/qunlevel/index.html?gc=${e.group_id}&from=0&_wv=1027`,
             cookie: common.getck('qqweb.qq.com', true),
             emulate: "QQTheme",
             font: true,

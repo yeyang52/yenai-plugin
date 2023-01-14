@@ -204,9 +204,16 @@ hr {
     justify-content: space-between;
 }
 
-.speed p:nth-child(2) {
-    margin-left: 40px;
+.speed p {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.speed p:nth-child(1) {
+    max-width: 50%;
+}
+
+.speed p:nth-child(2) {
+    margin-left: 40px;
 }

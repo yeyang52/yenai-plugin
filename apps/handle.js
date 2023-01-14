@@ -17,7 +17,7 @@ export class anotice extends plugin {
             rule: [
                 {
                     reg: '^#?(同意|拒绝)$',
-                    fnc: 'agrees',
+                    fnc: 'Handle',
                     event: 'message.private',
                 },
                 {
@@ -27,7 +27,7 @@ export class anotice extends plugin {
                 },
                 {
                     reg: '^#?(同意|拒绝|查看)(全部)?好友申请(\\d+)?$',
-                    fnc: 'agreesAll',
+                    fnc: 'PrivateAdd',
                 },
                 {
                     reg: '^#?(加为|添加)好友$',
@@ -51,30 +51,8 @@ export class anotice extends plugin {
         })
     }
 
-    /** 同意好友申请 */
-    async agree(e) {
-        if (!e.isMaster) return false;
-        let yes = /同意/.test(e.msg) ? true : false
-        let qq = e.message[0].text.replace(/#|(同意|拒绝)好友申请/g, '').trim()
-        if (e.message[1]) {
-            qq = e.message[1].qq
-        } else {
-            qq = qq.match(/[1-9]\d*/g)
-        }
-
-        if (!qq) {
-            e.reply('❎ 请输入正确的QQ号')
-            return false
-        }
-        logger.mark(`[椰奶]${yes ? '同意' : '拒绝'}好友申请`)
-        await Bot.pickFriend(qq)
-            .setFriendReq('', yes)
-            .then(() => e.reply(`✅ 已${yes ? '同意' : '拒绝'}${qq}的好友申请`))
-            .catch((err) => console.log(err))
-    }
-
-    /**同意拒绝全部好友申请 */
-    async agreesAll(e) {
+    /**同意拒绝好友申请 */
+    async PrivateAdd(e) {
         if (!e.isMaster) return false;
         let yes = /同意/.test(e.msg) ? true : false
 
@@ -139,7 +117,7 @@ export class anotice extends plugin {
         }
     }
     /** 引用同意好友申请和群邀请 */
-    async agrees(e) {
+    async Handle(e) {
         if (!e.isMaster) return false;
         if (!e.source) return false;
         let yes = /同意/.test(e.msg) ? true : false

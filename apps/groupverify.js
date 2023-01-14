@@ -203,7 +203,7 @@ Bot.on('message.group', async (e) => {
     clearTimeout(remindTimer);
     await e.reply([segment.at(e.user_id), `验证失败，请重新申请`]);
     delete temp[e.user_id + e.group_id];
-    return await e.group.kickMember(e.user_id, true)
+    return await e.group.kickMember(e.user_id)
   }
 })
 
@@ -250,7 +250,7 @@ async function verify(user_id, group_id, e) {
 
     clearTimeout(kickTimer);
 
-    return await e.group.kickMember(user_id, true)
+    return await e.group.kickMember(user_id)
 
   }, verifycfg.time * 1000);
 

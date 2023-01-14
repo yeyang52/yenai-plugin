@@ -11,7 +11,7 @@ logger.info(chalk.rgb(255, 207, 247)(`椰奶插件${Ver.ver}初始化~`))
 logger.info(chalk.rgb(253, 235, 255)('-------------------------'))
 
 try {
-    await import('systeminformation2')
+    await import('systeminformation')
     if (!await redis.get('yenai:node_modules')) await redis.set('yenai:node_modules', '1')
 } catch (error) {
     if (error.stack?.includes('Cannot find package')) {

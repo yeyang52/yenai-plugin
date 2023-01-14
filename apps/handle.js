@@ -123,10 +123,10 @@ export class anotice extends plugin {
             return common.getforwardMsg(e, msg)
         } else {
             //处理单个好友申请
-            let qq = e.message[0].text.replace(/#|(同意|拒绝)好友申请/g, '').trim()
+            let qq = e.msg.replace(/#|(同意|拒绝)好友申请/g, '').trim()
             if (!qq) return e.reply('❎ 请输入正确的QQ')
 
-            let member = FriendAdd.find(item => item.user_id === qq)
+            let member = FriendAdd.find(item => item.user_id == qq)
             if (lodash.isEmpty(member)) return e.reply('❎ 没有找到这个人的好友申请')
 
             let result = member.approve(yes)

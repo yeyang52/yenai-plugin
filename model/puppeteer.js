@@ -32,6 +32,7 @@ export default new class newPuppeteer {
      * @param {Object} Methods.cookie 设置cookie
      * @param {Boolean} Methods.fullPage 是否截取完整网页
      * @param {Object} Methods.emulate 模拟设备
+     * @param {Object} Methods.click 点击事件
      * @return {img} 可直接发送的构造图片
      */
     async Webpage({
@@ -61,9 +62,11 @@ export default new class newPuppeteer {
             if (emulate) await page.emulate(this.devices[emulate] || emulate)
             //设置宽度
             if (setViewport) await page.setViewport(setViewport)
+            //打卡新标签页
             await page.goto(url, { 'timeout': 1000 * 60, 'waitUntil': 'networkidle0' });
             //设置字体
             if (font) await page.addStyleTag({ content: `* {font-family: "汉仪文黑-65W","雅痞-简","圆体-简","PingFang SC","微软雅黑", sans-serif !important;}` })
+            //点击事件
             if (click) for (let i of click) { await page.click(i.selector); await page.waitForTimeout(i.time) }
 
             buff = await page.screenshot({

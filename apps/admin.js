@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { update } from '../../other/update.js'
-import { Version, render, Plugin_Name } from '../components/index.js'
-
+import { Version, Plugin_Name } from '../components/index.js'
+import { puppeteer } from '../model/index.js'
 export class admin extends plugin {
     constructor() {
         super({
@@ -40,7 +40,7 @@ export class admin extends plugin {
 
 
 async function versionInfo(e) {
-    return await render('help/version-info', {
+    return await puppeteer.render('help/version-info', {
         currentVersion: Version.ver,
         changelogs: Version.logs,
         elem: 'cryo'

@@ -1,8 +1,8 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import fs from "fs";
 import lodash from "lodash";
-import { Config, render } from '../components/index.js'
-import { YamlReader, setu } from '../model/index.js';
+import { Config } from '../components/index.js'
+import { YamlReader, setu, puppeteer } from '../model/index.js';
 const configs = {
     "好友消息": "privateMessage",
     "群消息": "groupMessage",
@@ -201,7 +201,7 @@ export class NewConfig extends plugin {
             bg: await rodom(), //获取底图
         }
         //渲染图像
-        return await render("admin/index", {
+        return await puppeteer.render("admin/index", {
             ...data,
         }, {
             e,

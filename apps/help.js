@@ -1,8 +1,8 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import fs from 'fs'
 import lodash from 'lodash'
-import { render, Data } from '../components/index.js'
-
+import { Data } from '../components/index.js'
+import { puppeteer } from '../model/index.js'
 export class yenai_help extends plugin {
   constructor() {
     super({
@@ -60,7 +60,7 @@ async function help(e) {
   })
   let bg = await rodom()
   let colCount = 3;
-  return await render('help/index', {
+  return await puppeteer.render('help/index', {
     helpCfg: helpConfig,
     helpGroup,
     bg,

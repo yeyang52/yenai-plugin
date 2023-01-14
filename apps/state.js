@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import os from 'os';
-import { render, Config } from '../components/index.js'
-import { CPU, common } from '../model/index.js'
+import { Config } from '../components/index.js'
+import { CPU, common, puppeteer } from '../model/index.js'
 import moment from 'moment';
 import lodash from 'lodash'
 
@@ -87,7 +87,7 @@ export class State extends plugin {
       osinfo,
     }
     //渲染图片
-    await render('state/state', {
+    await puppeteer.render('state/state', {
       ...data,
     }, {
       e,

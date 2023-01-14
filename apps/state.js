@@ -3,11 +3,12 @@ import os from 'os';
 import { render, Config } from '../components/index.js'
 import { CPU, common } from '../model/index.js'
 import moment from 'moment';
-// import si from 'systeminformation'
-let si = await redis.get('yenai:node_modules') ? await import("systeminformation") : false
 import lodash from 'lodash'
+
+let si = await redis.get('yenai:node_modules') ? await import("systeminformation") : false
+
 let interval = false;
-export class example extends plugin {
+export class State extends plugin {
   constructor() {
     super({
       name: '椰奶状态',

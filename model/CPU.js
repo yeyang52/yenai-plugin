@@ -1,5 +1,4 @@
 import os from 'os';
-// import si from 'systeminformation'
 import lodash from 'lodash'
 import fs from 'fs'
 import { common } from './index.js'

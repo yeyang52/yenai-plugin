@@ -1,7 +1,7 @@
 import common from '../../../lib/common/common.js'
-import fs from 'fs'
 import Config from '../components/Config.js'
 import child_process from 'child_process'
+import setu from './setu.js'
 
 
 export default new class newCommon {
@@ -11,30 +11,6 @@ export default new class newCommon {
      */
     sleep(ms) {
         return new Promise((resolve) => setTimeout(resolve, ms))
-    }
-
-    /** 读取文件 */
-    getJson(path) {
-        try {
-            return JSON.parse(fs.readFileSync(path, 'utf8'))
-        } catch (err) {
-            logger.error('读取失败')
-            logger.error(err)
-            return false
-        }
-    }
-
-    /** 写入json文件 */
-    setJson(path, cot = {}) {
-        try {
-            fs.writeFileSync(path, JSON.stringify(cot, '', '\t'))
-            return true
-        } catch (error) {
-            logger.error('写入失败')
-            logger.error(err)
-            return false
-        }
-
     }
 
     /** 发消息 */
@@ -48,7 +24,6 @@ export default new class newCommon {
         } else {
             // 发给第一个管理
             await common.relpyPrivate(Config.masterQQ[0], msg)
-            await common.sleep(200)
         }
     }
 
@@ -141,7 +116,7 @@ export default new class newCommon {
      * @return {*}
      */
     async recallsendMsg(e, msg, time = 0, isfk = true) {
-        time = time || this.getRecallTime(e.group_id);
+        time = time || setu.getRecallTime(e.group_id);
 
         //发送消息
         let res = await e.reply(msg, false, { recallMsg: time })
@@ -163,34 +138,13 @@ export default new class newCommon {
      * @return {Boolean}
      */
     async getRecallsendMsg(e, msg, isBot = true, isfk = true) {
-        let time = this.getRecallTime(e.group_id)
+        let time = setu.getRecallTime(e.group_id)
 
         let res = await this.getforwardMsg(e, msg, time, isBot, isfk)
 
         if (!res) return false;
 
         return true;
-    }
-
-    /**
-     * @description: 获取群的撤回时间
-     * @param {*} e oicq
-     * @return {Number} 
-     */
-    getRecallTime(groupId) {
-        if (!groupId) return 0;
-        let path = "./plugins/yenai-plugin/config/setu/setu.json"
-        //获取撤回时间
-        let cfgs = {};
-        let time = 120;
-        if (fs.existsSync(path)) {
-            cfgs = this.getJson(path)
-        }
-
-        if (cfgs[groupId]) {
-            time = cfgs[groupId].recall
-        }
-        return time
     }
 
     /**

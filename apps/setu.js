@@ -34,7 +34,7 @@ export class sese extends plugin {
           permission: 'master'
         },
         {
-          reg: `(c|C)(d|D)(${NumReg})(s|秒)?$`,
+          reg: `^#?(c|C)(d|D)(${NumReg})(s|秒)?$`,
           fnc: 'atSetCd',
           event: 'message.group',
           permission: 'master'
@@ -51,7 +51,7 @@ export class sese extends plugin {
   async seturd(e) {
     if (!Config.getGroup(e.group_id).sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
 
-    let iscd = setu.getcd(e)
+    let iscd = setu.getremainingCd(e)
 
     if (iscd) return e.reply(` ${setu.CDMsg}你的CD还有${iscd}`, false, { at: true })
 
@@ -78,7 +78,7 @@ export class sese extends plugin {
   async setutag(e) {
     if (!Config.getGroup(e.group_id).sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
 
-    let iscd = setu.getcd(e)
+    let iscd = setu.getremainingCd(e)
 
     if (iscd) return e.reply(` ${setu.CDMsg}你的CD还有${iscd}`, false, { at: true })
 
@@ -136,15 +136,15 @@ export class sese extends plugin {
 
   //艾特设置cd
   async atSetCd(e) {
-    if (e.message[0].type != "at") return false;
+    let qq = e.message.find(item => item.type == 'at')?.qq
+
+    if (!qq) return false;
 
     let cd = e.msg.match(new RegExp(NumReg))
 
     if (!cd) return e.reply("❎ CD为空，请检查", true);
 
     cd = common.translateChinaNum(cd[0])
-
-    let qq = e.message[0].qq
 
     setu.setUserCd(e, qq, cd)
   }

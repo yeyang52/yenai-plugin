@@ -34,9 +34,7 @@ let Data = {
     })
   },
 
-  /*
-  * 读取json
-  * */
+  /**读取json */
   readJSON(file = '', root = '') {
     root = getRoot(root)
     if (fs.existsSync(`${root}/${file}`)) {
@@ -49,15 +47,19 @@ let Data = {
     return {}
   },
 
-  /*
-  * 写JSON
-  * */
-  writeJSON(file, data, space = '\t', root = '') {
+  /**写JSON */
+  writeJSON(file, data, root = '', space = '\t') {
     // 检查并创建目录
     Data.createDir(file, root, true)
     root = getRoot(root)
-    delete data._res
-    return fs.writeFileSync(`${root}/${file}`, JSON.stringify(data, null, space))
+    // delete data._res
+    try {
+      fs.writeFileSync(`${root}/${file}`, JSON.stringify(data, null, space))
+      return true
+    } catch (err) {
+      logger.error(err)
+      return false;
+    }
   },
 
   async getCacheJSON(key) {

@@ -271,10 +271,11 @@ export class anotice extends plugin {
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
             return e.reply("❎ 该命令仅限管理员可用", true);
         }
-        await e.reply("好哒，我开始处理辣٩(๑•ㅂ•)۶")
-        let yes = /同意/.test(e.msg) ? true : false
-        let success = [], fail = [], risk = []
+        let yes = /同意/.test(e.msg)
+        
         if (/全部/.test(e.msg)) {
+            e.reply("好哒，我开始处理辣٩(๑•ㅂ•)۶")
+            let success = [], fail = [], risk = []
             for (let i of SystemMsg) {
                 if (await i.approve(yes)) {
                     success.push(`${success.length + 1}、${i.user_id}`)
@@ -299,14 +300,14 @@ export class anotice extends plugin {
 
             if (!qq) return e.reply("QQ号呢，QQ号呢d(ŐдŐ๑)", true)
 
-            let member = SystemMsg.filter(item => item.user_id == qq)
+            let member = SystemMsg.find(item => item.user_id == qq)
 
             if (lodash.isEmpty(member)) return e.reply("呜呜呜，没找到这个淫的加群申请(つд⊂)")
 
-            if (/风险/.test(member[0].tips)) return e.reply(`该账号为风险账号请手动处理哦ಠ~ಠ`)
+            if (/风险/.test(member.tips)) return e.reply(`该账号为风险账号请手动处理哦ಠ~ಠ`)
 
-            if (await member[0].approve(yes)) {
-                e.reply(`已${yes ? '同意' : '拒绝'}${member[0].user_id}的加群申请辣٩(๑^o^๑)۶`)
+            if (await member.approve(yes)) {
+                e.reply(`已${yes ? '同意' : '拒绝'}${member.nickname}(${member.user_id})的加群申请辣٩(๑^o^๑)۶`)
             } else {
                 e.reply(`呜呜呜，处理失败辣(இωஇ)`)
             }
@@ -317,6 +318,7 @@ export class anotice extends plugin {
         if (!e.isMaster) return false;
         let SystemMsg = (await Bot.getSystemMsg()).filter(item => item.request_type == "group" && item.sub_type == "invite")
         if (lodash.isEmpty(SystemMsg)) return e.reply("暂无群邀请哦(。-ω-)zzz", true)
+        let yes = /同意/.test(e.msg)
         //查看
         if (/查看/.test(e.msg)) {
             SystemMsg = SystemMsg.map(item => {
@@ -335,12 +337,9 @@ export class anotice extends plugin {
                 ...SystemMsg
             ]
             return common.getforwardMsg(e, msg)
-        }
-
-        await e.reply("好哒，我开始处理辣٩(๑•ㅂ•)۶")
-        let yes = /同意/.test(e.msg) ? true : false
-        let success = [], fail = []
-        if (/全部/.test(e.msg)) {
+        }else if (/全部/.test(e.msg)) {
+            e.reply("好哒，我开始处理辣٩(๑•ㅂ•)۶")
+            let success = [], fail = []
             for (let i of SystemMsg) {
                 if (await i.approve(yes)) {
                     success.push(`${success.length + 1}、${i.user_id}`)

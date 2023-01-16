@@ -3,7 +3,9 @@ import gsCfg from '../../genshin/model/gsCfg.js'
 import { segment } from 'oicq'
 import fs from 'node:fs'
 import common from '../../../lib/common/common.js'
+import { Data } from '../components/index.js'
 
+const _path = "./plugins/yenai-plugin"
 export class NGA extends plugin {
   constructor() {
     super({
@@ -18,19 +20,14 @@ export class NGA extends plugin {
         }
       ]
     })
-    this.curvepath = './plugins/yenai-plugin/resources/curveimg'
-    this.ReferencPanelpath = './plugins/yenai-plugin/resources/ReferencPanel'
-    this.json = './plugins/yenai-plugin/config/curve.json'
-    this.curve = JSON.parse(fs.readFileSync(this.json, 'utf8'))
+    this.incomeCurvePath = `${_path}/resources/curveimg`
+    this.referencePanelPath = `${_path}/resources/ReferencPanel`
+    this.incomeCurveObj = Data.readJSON("config/incomeCurve/incomeCurve.json")
   }
   //初始化
   async init() {
-    if (!fs.existsSync(this.curvepath)) {
-      fs.mkdirSync(this.curvepath)
-    }
-    if (!fs.existsSync(this.ReferencPanelpath)) {
-      fs.mkdirSync(this.ReferencPanelpath)
-    }
+    Data.createDir("resources/curveimg")
+    Data.createDir("resources/ReferencPanel")
   }
 
   async NGA() {
@@ -57,12 +54,12 @@ export class NGA extends plugin {
     let url
     if (type == '收益曲线') {
       //收益曲线
-      if (!this.curve[role.name]) return this.e.reply("暂时无该角色收益曲线~>_<")
-      url = this.curve[role.name]
-      imgPath = `${this.curvepath}/${role.name}.png`
+      if (!this.incomeCurveObj[role.name]) return this.e.reply("暂时无该角色收益曲线~>_<")
+      url = this.incomeCurveObj[role.name]
+      imgPath = `${this.incomeCurvePath}/${role.name}.png`
     } else {
       //参考面板
-      imgPath = `${this.ReferencPanelpath}/${role.name}.png`
+      imgPath = `${this.referencePanelPath}/${role.name}.png`
       url = `http://www.liaobiao.top/Referenc/${role.name}.png`
     }
     if (!fs.existsSync(imgPath)) {

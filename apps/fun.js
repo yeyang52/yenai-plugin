@@ -21,7 +21,7 @@ const SWITCH_ERROR = "主人没有开放这个功能哦(＊／ω＼＊)"
 const START_Execution = "椰奶产出中......"
 
 const picapis = Config.getConfig("picApi")
-const apiReg = new RegExp(`^#?(${Object.keys(picapis).join("|")}|jktj|接口统计)(\\d+)?$`)
+const apiReg = new RegExp(`${picapis.mode ? "^" : ""}#?(${Object.keys(picapis).join("|")}|jktj|接口统计)(\\d+)?${picapis.mode ? "$" : ""}`)
 export class example extends plugin {
   constructor() {
     super({
@@ -381,7 +381,7 @@ export class example extends plugin {
     let { sese, sesepro } = Config.getGroup(e.group_id)
     if (!sese && !sesepro && !e.isMaster) return false;
     let key = `yenai:apiAggregate:CD`
-    if (await redis.get(key)) return
+    if (await redis.get(key)) return false;
 
     if (/jktj|接口统计/.test(e.msg)) {
       let msg = ['现接口数量如下']
@@ -393,10 +393,10 @@ export class example extends plugin {
     }
     //解析消息中的类型
     let regRet = apiReg.exec(e.msg)
-
+    console.log(picapis);
     let picObj = picapis[Object.keys(picapis).find(item => new RegExp(item).test(regRet[1]))]
     let urlReg = /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i
-    if (!picObj.url && !urlReg.test(picObj)) {
+    if (!picObj.url && !urlReg.test(picObj) && !Array.isArray(picObj)) {
       return logger.error("[椰奶][pic]未找到url");
     }
 

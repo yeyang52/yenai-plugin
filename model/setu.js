@@ -159,7 +159,7 @@ export default new class setu {
             if (groupCfg[e.group_id]?.r18) R18 = groupCfg[e.group_id].r18
         } else {
             let friendCfg = Data.readJSON(`setu_s.json`, this.root)
-            if (friendCfg[e.user_id]?.friendr18) R18 = friendCfg[e.user_id].friendr18
+            if (friendCfg.friendr18) R18 = friendCfg.friendr18
         }
         return R18
     }

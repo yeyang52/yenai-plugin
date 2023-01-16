@@ -115,9 +115,7 @@ export default new class newCommon {
      * @param {Boolean} isfk 是否发送默认风控消息
      * @return {*}
      */
-    async recallsendMsg(e, msg, time = 0, isfk = true) {
-        time = time || setu.getRecallTime(e.group_id);
-
+    async recallsendMsg(e, msg, time = setu.getRecallTime(e.group_id), isfk = true) {
         //发送消息
         let res = await e.reply(msg, false, { recallMsg: time })
         if (!res) {

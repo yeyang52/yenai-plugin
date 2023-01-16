@@ -20,8 +20,8 @@ const SWITCH_ERROR = "主人没有开放这个功能哦(＊／ω＼＊)"
 /**开始执行文案 */
 const START_Execution = "椰奶产出中......"
 
-const picapi = Config.getConfig("picApi")
-const apirag = new RegExp(`^#?(${Object.keys(picapi).join("|")}|jktj|接口统计)(\\d+)?$`)
+const picapis = Config.getConfig("picApi")
+const apiReg = new RegExp(`^#?(${Object.keys(picapis).join("|")}|jktj|接口统计)(\\d+)?$`)
 export class example extends plugin {
   constructor() {
     super({
@@ -66,7 +66,7 @@ export class example extends plugin {
           fnc: 'bcy_topic'
         },
         {
-          reg: apirag,
+          reg: apiReg,
           fnc: 'picture'
         },
         {
@@ -384,46 +384,42 @@ export class example extends plugin {
     if (await redis.get(key)) return
 
     if (/jktj|接口统计/.test(e.msg)) {
-      let msg = [
-        '现接口数量如下',
-      ]
-      for (let i in picapi) {
-        let urls = picapi[i].url || picapi[i]
-        msg.push(
-          `\n${i}：\t${Array.isArray(urls) ? urls.length : 1}`
-        )
+      let msg = ['现接口数量如下']
+      for (let i in picapis) {
+        let urls = picapis[i].url || picapis[i]
+        msg.push(`\n${i}：\t${Array.isArray(urls) ? urls.length : 1}`)
       }
       return e.reply(msg)
     }
-    let des = apirag.exec(e.msg)
-    let objReg = Object.keys(picapi).find(item => new RegExp(item).test(des[1]))
+    //解析消息中的类型
+    let regRet = apiReg.exec(e.msg)
 
-    let obj = picapi[objReg]
+    let picObj = picapis[Object.keys(picapis).find(item => new RegExp(item).test(regRet[1]))]
     let urlReg = /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i
-    if (!obj.url && !urlReg.test(obj)) {
+    if (!picObj.url && !urlReg.test(picObj)) {
       return logger.error("[椰奶][pic]未找到url");
     }
 
-    if (obj.type !== 'image' && obj.type !== 'text' && obj.type !== 'json' && obj.type) {
+    if (picObj.type !== 'image' && picObj.type !== 'text' && picObj.type !== 'json' && picObj.type) {
       return logger.error("[椰奶][pic]类型不正确")
     }
 
-    let url = obj.url || obj
+    let url = picObj.url || picObj
     //数组随机取或指定
     if (Array.isArray(url)) {
-      url = (des[2] ? obj[des[2] - 1] : lodash.sample(url)) || lodash.sample(url)
+      url = (regRet[2] ? picObj[regRet[2] - 1] : lodash.sample(url)) || lodash.sample(url)
     }
 
-    if (obj.type == 'text') {
+    if (picObj.type == 'text') {
       url = await fetch(url).then(res => res.text()).catch(err => console.log(err))
-    } else if (obj.type == 'json') {
-      if (!obj.path) return logger.error("[椰奶][pic]json为指定路径")
+    } else if (picObj.type == 'json') {
+      if (!picObj.path) return logger.error("[椰奶][pic]json未指定路径")
       let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))
-      url = lodash.get(res, obj.path)
+      url = lodash.get(res, picObj.path)
     }
+    if (!url) return logger.error("[椰奶][pic]未获取到图片链接")
 
-
-    logger.debug(`[椰奶图片]${des[2] && obj[des[2] - 1] ? "指定" : "随机"}接口:${url}`)
+    logger.debug(`[椰奶图片]${regRet[2] && picObj[regRet[2] - 1] ? "指定" : "随机"}接口:${url}`)
     common.recallsendMsg(e, segment.image(url))
     redis.set(key, "cd", { EX: 2 })
   }

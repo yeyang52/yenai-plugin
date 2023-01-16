@@ -1,4 +1,4 @@
-#注：修改后重启生效
+#注：修改后重启生效，请严格按照yaml语法进行修改，否则会出现意料之外的错误
 #key值设置为要触发的词
 bs:
   url:
@@ -17,19 +17,25 @@ hs|黑丝:
     - http://api.caonm.net/api/bhs/h.php
     - http://api.starrobotwl.com/api/heisi.php
 
+#返回json示例
+pixiv:
+  url: https://sex.nyan.xyz/api/v2/
+  type: json
+  path: data[0].url #接口返回链接在 "data数组" 里面用 "[0]" 来指定数组的第几个值后再 ".url" 即可，最后必须指向图片链接
+
+bm:
+  url: http://iw233.cn/api.php?sort=yin #在url字段后面写链接，仅限直接返回图片的api
+
+sy: https://iw233.cn/api.php?sort=cat #或者直接写链接效果同上
+
 jk:
   url:
     - http://api.starrobotwl.com/api/jk.php
     - http://www.ggapi.cn/api/jkzf
 
-bm:
-  url: http://iw233.cn/api.php?sort=yin #也可以直接只写链接
-
-sy: https://iw233.cn/api.php?sort=cat #可以直接写url 全都走默认
-
 mt:
   - https://api.sdgou.cc/api/meitui/
-  - https://ovooa.com/API/meizi/api.php?type=image
+  - https://ovooa.com/API/meizi/api.php?type=image #一个指令设置多个API
 
 ks: http://api.wqwlkj.cn/wqwlapi/ks_xjj.php?type=image
 
@@ -53,8 +59,3 @@ mjx:
   - https://api.sdgou.cc/api/tao/
   - https://api.vvhan.com/api/tao
   - https://api.dzzui.com/api/imgtaobao
-
-pixiv:
-  url: https://sex.nyan.xyz/api/v2/
-  type: json
-  path: data[0].url #接口返回链接在 "data数组" 里面用 "[0]" 来指定数组的第几个值后再 ".url" 即可

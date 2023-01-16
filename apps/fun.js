@@ -2,7 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import fetch from 'node-fetch'
 import { segment } from "oicq"
 import lodash from 'lodash'
-import { Config } from '../components/index.js'
+import { Config, Data } from '../components/index.js'
 import { common, uploadRecord, QQInterface, Interface } from '../model/index.js'
 
 const heisitype = {
@@ -20,7 +20,8 @@ const SWITCH_ERROR = "主人没有开放这个功能哦(＊／ω＼＊)"
 /**开始执行文案 */
 const START_Execution = "椰奶产出中......"
 
-
+const picapi = Config.getConfig("picApi")
+const apirag = new RegExp(`^#?(${Object.keys(picapi).join("|")}|jktj|接口统计)(\\d+)?$`)
 export class example extends plugin {
   constructor() {
     super({
@@ -381,75 +382,101 @@ export class example extends plugin {
     if (!sese && !sesepro && !e.isMaster) return false;
     let key = `yenai:apiAggregate:CD`
     if (await redis.get(key)) return
-    if (/jktj/.test(e.msg)) {
+
+    if (/jktj|接口统计/.test(e.msg)) {
       let msg = [
         '现接口数量如下',
       ]
-      for (let i in apis) {
+      for (let i in picapi) {
+        let urls = picapi[i].url || picapi[i]
         msg.push(
-          `\n${i}：\t${apis[i].length}`
+          `\n${i}：\t${Array.isArray(urls) ? urls.length : 1}`
         )
       }
       return e.reply(msg)
     }
-
     let des = apirag.exec(e.msg)
-    let imgs = apis[des[1]]
-    let img = (des[2] ? imgs[des[2] - 1] : lodash.sample(imgs)) || lodash.sample(imgs)
-    logger.debug(`[椰奶图片]${des[2] && imgs[des[2] - 1] ? "指定" : "随机"}接口:${img}`)
-    common.recallsendMsg(e, segment.image(img))
+    let objReg = Object.keys(picapi).find(item => new RegExp(item).test(des[1]))
+
+    let obj = picapi[objReg]
+    let urlReg = /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i
+    if (!obj.url && !urlReg.test(obj)) {
+      return logger.error("[椰奶][pic]未找到url");
+    }
+
+    if (obj.type !== 'image' && obj.type !== 'text' && obj.type !== 'json' && obj.type) {
+      return logger.error("[椰奶][pic]类型不正确")
+    }
+
+    let url = obj.url || obj
+    //数组随机取或指定
+    if (Array.isArray(url)) {
+      url = (des[2] ? obj[des[2] - 1] : lodash.sample(url)) || lodash.sample(url)
+    }
+
+    if (obj.type == 'text') {
+      url = await fetch(url).then(res => res.text()).catch(err => console.log(err))
+    } else if (obj.type == 'json') {
+      if (!obj.path) return logger.error("[椰奶][pic]json为指定路径")
+      let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))
+      url = lodash.get(res, obj.path)
+    }
+
+
+    logger.debug(`[椰奶图片]${des[2] && obj[des[2] - 1] ? "指定" : "随机"}接口:${url}`)
+    common.recallsendMsg(e, segment.image(url))
     redis.set(key, "cd", { EX: 2 })
   }
 }
-let apis = {
-  "bs": [
-    "http://api.starrobotwl.com/api/baisi.php",
-    "http://api.caonm.net/api/bhs/b.php"
-  ],
-  "hs": [
-    "http://api.caonm.net/api/bhs/h.php",
-    "http://api.starrobotwl.com/api/heisi.php"
-  ],
-  "jk": [
-    "http://api.starrobotwl.com/api/jk.php",
-    "http://www.ggapi.cn/api/jkzf"
-  ],
-  "bm": [
-    "http://iw233.cn/api.php?sort=yin"
-  ],
-  "sy": [
-    "https://iw233.cn/api.php?sort=cat"
-  ],
-  "mt": [
-    "https://api.sdgou.cc/api/meitui/",
-    "https://ovooa.com/API/meizi/api.php?type=image",
-  ],
-  "ks": [
-    "http://api.wqwlkj.cn/wqwlapi/ks_xjj.php?type=image"
-  ],
-  "fj": [
-    "http://api.starrobotwl.com/api/fuji.php"
-  ],
-  "ecy": [
-    "https://iw233.cn/api.php?sort=top",
-    "https://iw233.cn/api.php?sort=mp",
-    "http://api.wqwlkj.cn/wqwlapi/ks_2cy.php?type=image"
-  ],
-  "cos": [
-    "http://api.starrobotwl.com/api/yscos.php"
-  ],
-  "hso": [
-    "http://www.ggapi.cn/api/girls",
-  ],
-  "xjj": [
-    "https://api.btstu.cn/sjbz/api.php",
-    "https://ovooa.com/API/meinv/api.php?type=image",
-    "http://api.sakura.gold/ksxjjtp"
-  ],
-  "mjx": [
-    "https://api.sdgou.cc/api/tao/",
-    "https://api.vvhan.com/api/tao",
-    "https://api.dzzui.com/api/imgtaobao"
-  ],
-}
-let apirag = new RegExp(`^#?(${Object.keys(apis).join("|")}|jktj)(\\d+)?$`)
+// let apis = {
+//   "bs": [
+//     "http://api.starrobotwl.com/api/baisi.php",
+//     "http://api.caonm.net/api/bhs/b.php"
+//   ],
+//   "hs": [
+//     "http://api.caonm.net/api/bhs/h.php",
+//     "http://api.starrobotwl.com/api/heisi.php"
+//   ],
+//   "jk": [
+//     "http://api.starrobotwl.com/api/jk.php",
+//     "http://www.ggapi.cn/api/jkzf"
+//   ],
+//   "bm": [
+//     "http://iw233.cn/api.php?sort=yin"
+//   ],
+//   "sy": [
+//     "https://iw233.cn/api.php?sort=cat"
+//   ],
+//   "mt": [
+//     "https://api.sdgou.cc/api/meitui/",
+//     "https://ovooa.com/API/meizi/api.php?type=image",
+//   ],
+//   "ks": [
+//     "http://api.wqwlkj.cn/wqwlapi/ks_xjj.php?type=image"
+//   ],
+//   "fj": [
+//     "http://api.starrobotwl.com/api/fuji.php"
+//   ],
+//   "ecy": [
+//     "https://iw233.cn/api.php?sort=top",
+//     "https://iw233.cn/api.php?sort=mp",
+//     "http://api.wqwlkj.cn/wqwlapi/ks_2cy.php?type=image"
+//   ],
+//   "cos": [
+//     "http://api.starrobotwl.com/api/yscos.php"
+//   ],
+//   "hso": [
+//     "http://www.ggapi.cn/api/girls",
+//   ],
+//   "xjj": [
+//     "https://api.btstu.cn/sjbz/api.php",
+//     "https://ovooa.com/API/meinv/api.php?type=image",
+//     "http://api.sakura.gold/ksxjjtp"
+//   ],
+//   "mjx": [
+//     "https://api.sdgou.cc/api/tao/",
+//     "https://api.vvhan.com/api/tao",
+//     "https://api.dzzui.com/api/imgtaobao"
+//   ],
+// }
+// let apirag = new RegExp(`^#?(${Object.keys(apis).join("|")}|jktj)(\\d+)?$`)

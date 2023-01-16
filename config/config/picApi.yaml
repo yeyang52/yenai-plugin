@@ -1,0 +1,60 @@
+#注：修改后重启生效
+#key值设置为要触发的词
+bs:
+  url:
+    - http://api.starrobotwl.com/api/baisi.php
+    - http://api.caonm.net/api/bhs/b.php #url可使用数组设置多个触发时随机抽取或用数字指定
+
+  type: image
+  #根据接口指定类型类型包括 image text json 如不写则默认为image
+  # image指接口直接返回图片
+  # text指接口返回链接
+  # json指接口返回json字符串 ,返回json需指定path请参考以下json示例
+
+#也可以以正则设置触发词
+hs|黑丝:
+  url:
+    - http://api.caonm.net/api/bhs/h.php
+    - http://api.starrobotwl.com/api/heisi.php
+
+jk:
+  url:
+    - http://api.starrobotwl.com/api/jk.php
+    - http://www.ggapi.cn/api/jkzf
+
+bm:
+  url: http://iw233.cn/api.php?sort=yin #也可以直接只写链接
+
+sy: https://iw233.cn/api.php?sort=cat #可以直接写url 全都走默认
+
+mt:
+  - https://api.sdgou.cc/api/meitui/
+  - https://ovooa.com/API/meizi/api.php?type=image
+
+ks: http://api.wqwlkj.cn/wqwlapi/ks_xjj.php?type=image
+
+fj: http://api.starrobotwl.com/api/fuji.php
+
+ecy:
+  - https://iw233.cn/api.php?sort=top
+  - https://iw233.cn/api.php?sort=mp
+  - http://api.wqwlkj.cn/wqwlapi/ks_2cy.php?type=image
+
+cos: http://api.starrobotwl.com/api/yscos.php
+
+hso: http://www.ggapi.cn/api/girls
+
+xjj:
+  - https://api.btstu.cn/sjbz/api.php
+  - https://ovooa.com/API/meinv/api.php?type=image
+  - http://api.sakura.gold/ksxjjtp
+
+mjx:
+  - https://api.sdgou.cc/api/tao/
+  - https://api.vvhan.com/api/tao
+  - https://api.dzzui.com/api/imgtaobao
+
+pixiv:
+  url: https://sex.nyan.xyz/api/v2/
+  type: json
+  path: data[0].url #接口返回链接在 "data数组" 里面用 "[0]" 来指定数组的第几个值后再 ".url" 即可

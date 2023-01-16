@@ -397,16 +397,17 @@ export class example extends plugin {
     let imgs = apis[des[1]]
     let img = (des[2] ? imgs[des[2] - 1] : lodash.sample(imgs)) || lodash.sample(imgs)
     logger.debug(`[椰奶图片]${des[2] && imgs[des[2] - 1] ? "指定" : "随机"}接口:${img}`)
-    e.reply(segment.image(img), false, { recallMsg: 120 })
+    common.recallsendMsg(e, segment.image(img))
     redis.set(key, "cd", { EX: 2 })
   }
 }
 let apis = {
   "bs": [
-    "http://api.starrobotwl.com/api/baisi.php"
+    "http://api.starrobotwl.com/api/baisi.php",
+    "http://api.caonm.net/api/bhs/b.php"
   ],
   "hs": [
-    "https://api.caonm.net/api/bhs/h.php?",
+    "http://api.caonm.net/api/bhs/h.php",
     "http://api.starrobotwl.com/api/heisi.php"
   ],
   "jk": [

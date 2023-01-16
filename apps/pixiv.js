@@ -66,7 +66,7 @@ export class example extends plugin {
 
         let regRet = pidReg.exec(e.msg)
 
-        let res = await Pixiv.Worker(regRet[1], !e.isMaster && !setu.getR18(e))
+        let res = await Pixiv.Worker(regRet[1], !e.isMaster && !setu.getR18(e.group_id))
 
         if (res?.error) return e.reply(res.error);
 
@@ -81,7 +81,7 @@ export class example extends plugin {
     async pixivRanking(e) {
         let regRet = rankingrReg.exec(e.msg)
         let { sese, sesepro } = Config.getGroup(e.group_id)
-        if ((!sese && !sesepro || regRet[4] && !setu.getR18(e)) && !e.isMaster) return e.reply(SWITCH_ERROR)
+        if ((!sese && !sesepro || regRet[4] && !setu.getR18(e.group_id)) && !e.isMaster) return e.reply(SWITCH_ERROR)
 
 
         await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
@@ -128,7 +128,7 @@ export class example extends plugin {
         }
         let res = null;
         if (regRet[1]) {
-            res = await Pixiv.searchTagspro(tag, page, !setu.getR18(e))
+            res = await Pixiv.searchTagspro(tag, page, !setu.getR18(e.group_id))
         } else {
             res = await Pixiv.searchTags(tag, page)
         }
@@ -172,7 +172,7 @@ export class example extends plugin {
         }
         page = common.translateChinaNum(page)
 
-        let res = await Pixiv.public(key, page, !setu.getR18(e))
+        let res = await Pixiv.public(key, page, !setu.getR18(e.group_id))
 
         if (res?.error) return e.reply(res.error)
 
@@ -206,7 +206,7 @@ export class example extends plugin {
         if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
         await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
         let regRet = relatedReg.exec(e.msg)
-        let res = await Pixiv.getrelated_works(regRet[1], !setu.getR18(e))
+        let res = await Pixiv.getrelated_works(regRet[1], !setu.getR18(e.group_id))
         if (res?.error) return e.reply(res.error)
         common.getRecallsendMsg(e, res, false)
     }

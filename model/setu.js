@@ -79,89 +79,77 @@ export default new class setu {
      * @param {Array} img 消息数组
      * @return {Boolean}
      */
-    async sendMsg(e, msg) {
-        //默认CD
-        let cd = this.getCfgCd(e);
-        //获取当前时间
-        let present = parseInt(new Date().getTime() / 1000)
-
+    async sendMsgOrSetCd(e, msg) {
         //发送消息
         let res = await common.getRecallsendMsg(e, msg, false)
         if (!res) return false;
         //设置CD
-        if (!e.isMaster || !cd) {
-            if (e.isGroup) {
-                this.temp[e.user_id + e.group_id] = present + cd
-                setTimeout(() => {
-                    delete this.temp[e.user_id + e.group_id];
-                }, cd * 1000);
-            } else {
-                this.temp[e.user_id] = present + cd
-                setTimeout(() => {
-                    delete this.temp[e.user_id];
-                }, cd * 1000);
-            }
-        }
+        if (!e.isMaster) this.setCdTime(e.user_id, e.group_id)
     }
+    /**
+     * @description: 设置cd
+     * @param {Number} userId QQ号
+     * @param {Number} groupId 群号不传为私聊CD
+     * @param {Number} cd cd时间
+     * @return {*}
+     */
+    setCdTime(userId, groupId, cd = this.getCfgCd(userId, groupId)) {
+        let present = parseInt(Date.now() / 1000)
 
-    //获取配置CD
-    getCfgCd(e) {
-        let cd = this.def.cd;//300
-        if (e.isGroup) {
-            let groupCD = Data.readJSON(`setu.json`, this.root)
-            if (groupCD[e.group_id]?.cd) cd = groupCD[e.group_id].cd
+        if (!cd) return false;
+        if (groupId) {
+            this.temp[userId + groupId] = present + cd
+            setTimeout(() => {
+                delete this.temp[userId + groupId];
+            }, cd * 1000);
         } else {
-            let friendCD = Data.readJSON(`setu_s.json`, this.root)
-            if (friendCD[e.user_id]?.cd) cd = friendCD[e.user_id]
+            this.temp[userId] = present + cd
+            setTimeout(() => {
+                delete this.temp[userId];
+            }, cd * 1000);
         }
-        return cd
+        return true;
     }
-
     //获取剩余CD时间
     getremainingCd(e) {
         //获取现在的时间并转换为秒
         let present = parseInt(new Date().getTime() / 1000)
-
+        let over = 0;
         if (e.isGroup) {
-
-            if (this.temp[e.user_id + e.group_id]) {
-
-                let over = (this.temp[e.user_id + e.group_id] - present)
-
-                if (over > 0) {
-                    return this.Secondformat(over)
-                } else return false
-
-            } else return false
-
+            if (!this.temp[e.user_id + e.group_id]) return false
+            over = (this.temp[e.user_id + e.group_id] - present)
         } else {
-            if (this.temp[e.user_id]) {
-
-                let over = (this.temp[e.user_id] - present)
-
-                if (over > 0) {
-                    return this.Secondformat(over)
-                } else return false
-
-            } else return false
+            if (!this.temp[e.user_id]) return false
+            over = (this.temp[e.user_id] - present)
         }
+        if (over <= 0) return false
+        return this.Secondformat(over)
+
+    }
+
+    /**
+     * @description: 获取配置cd
+     * @param {Number} userId QQ号
+     * @param {Number} groupId 传群号为群聊配置
+     * @return {*}
+     */
+    getCfgCd(userId, groupId) {
+        let data = Data.readJSON(`setu${groupId ? "" : "_s"}.json`, this.root)
+        let CD = groupId ? data[groupId]?.cd : data[userId]
+        if (CD !== undefined) return CD;
+        return this.def.cd // 默认300
     }
 
     /**
      * @description: 获取r18
-     * @param {*} e oicq
+     * @param {Number} groupID 群号不传为私聊
      * @return {String}  0或1
      */
-    getR18(e) {
-        let R18 = this.def.r18
-        if (e.isGroup) {
-            let groupCfg = Data.readJSON(`setu.json`, this.root)
-            if (groupCfg[e.group_id]?.r18) R18 = groupCfg[e.group_id].r18
-        } else {
-            let friendCfg = Data.readJSON(`setu_s.json`, this.root)
-            if (friendCfg.friendr18) R18 = friendCfg.friendr18
-        }
-        return R18
+    getR18(groupID) {
+        let data = Data.readJSON(`setu${groupID ? "" : "_s"}.json`, this.root)
+        let R18 = groupID ? data[groupID]?.r18 : data.r18
+        if (R18 !== undefined) return R18
+        return this.def.r18
     }
 
     /**
@@ -171,12 +159,10 @@ export default new class setu {
      */
     getRecallTime(groupId) {
         if (!groupId) return 0;
-        //获取撤回时间
-        let groupCfg = Data.readJSON(`setu.json`, this.root)
-        let recalltime = this.def.recall;
-
-        if (groupCfg[groupId]) recalltime = groupCfg[groupId].recall
-        return recalltime
+        let data = Data.readJSON(`setu.json`, this.root)
+        let recalltime = data[groupId]?.recall
+        if (recalltime !== undefined) return recalltime
+        return this.def.recall // 默认120
     }
     /**
      * @description: 设置群cd和撤回时间
@@ -220,14 +206,14 @@ export default new class setu {
      * @param {Boolean} isopen 开启或关闭
      */
     setR18(groupID, isopen) {
-        let data = Data.readJSON(`setu${!groupID ? "_s" : ""}.json`, this.root)
+        let data = Data.readJSON(`setu${groupID ? "" : "_s"}.json`, this.root)
         if (groupID) {
             if (!data[groupID]) data[groupID] = lodash.cloneDeep(this.def)
             data[groupID].r18 = isopen ? 1 : 0
         } else {
-            data.friendr18 = isopen ? 1 : 0
+            data.r18 = isopen ? 1 : 0
         }
-        if (Data.writeJSON(`setu${!groupID ? "_s" : ""}.json`, data, this.root)) {
+        if (Data.writeJSON(`setu${groupID ? "" : "_s"}.json`, data, this.root)) {
             logger.mark(`[椰奶R18][${groupID ? "群聊" : "私聊"}]已${isopen ? "开启" : "关闭"}${groupID}的涩涩模式`)
             return true
         } else {
@@ -243,8 +229,8 @@ export default new class setu {
      */
     getSeSeConfig(e) {
         let set = lodash.cloneDeep(this.def)
-        set.cd = this.getCfgCd(e)
-        set.r18 = this.getR18(e)
+        set.cd = this.getCfgCd(e.user_id, e.group_id)
+        set.r18 = this.getR18(e.group_id)
         set.recall = this.getRecallTime(e.group_id)
         if (!e.isGroup) delete set.recall
         return set

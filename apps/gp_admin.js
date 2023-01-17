@@ -18,7 +18,7 @@ const TimeUnitReg = Object.keys(common.Time_unit).join("|")
 const noactivereg = new RegExp(`^#(查看|清理|确认清理|获取)(${Numreg})个?(年|月|周|天)没发言的人(第(${Numreg})页)?$`)
 const Autisticreg = new RegExp(`^#?我要(自闭|禅定)(${Numreg})?个?(${TimeUnitReg})?$`, "i")
 //获取定时任务
-const redisTask = await Gpadmin.getRedisMuteTask()
+const redisTask = await Gpadmin.getRedisMuteTask() || false;
 export class Basics extends plugin {
     constructor() {
         super({

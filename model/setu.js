@@ -44,7 +44,7 @@ export default new class setu {
         let url = `${api}?r18=${r18}&num=${num}${tag}&proxy=${proxy}&size=${size}`;
         let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
         if (!result) {
-            logger.warn("[椰奶setu]使用备用接口")
+            logger.warn(`${e.logFnc}使用备用接口`)
             let apiReserve = `https://sex.nyan.xyz/api/v2/?r18=${r18}&num=${num}${tag}`;
             result = await fetch(apiReserve).then(res => res.json()).catch(err => console.log(err))
             if (!result) {

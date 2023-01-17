@@ -226,7 +226,7 @@ export class example extends plugin {
   /**改群头像 */
   async GroupPhoto(e) {
     if (e.isPrivate) {
-      if (!e.isMaster) return logger.mark("[椰奶][改群头像]不为主人");
+      if (!e.isMaster) return logger.mark(`${e.logFnc}不为主人`);
       groupPhotoid = e.msg.replace(/#|改群头像/g, "").trim()
 
       if (!groupPhotoid) return e.reply("❎ 群号不能为空");
@@ -235,7 +235,7 @@ export class example extends plugin {
 
       if (!Bot.gl.get(Number(groupPhotoid))) return e.reply("❎ 群聊列表查无此群");
     } else {
-      if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return logger.mark("[椰奶][改群头像]该群员权限不足")
+      if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return logger.mark(`${e.logFnc}该群员权限不足`)
       groupPhotoid = e.group_id
     }
     groupPhotoid = Number(groupPhotoid);
@@ -295,7 +295,7 @@ export class example extends plugin {
       if (!group) return e.reply("❎ 群号不能为空");
       if (!Bot.gl.get(Number(msg[1]))) return e.reply("❎ 群聊列表查无此群");
     } else {
-      if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return logger.mark("[椰奶][改群昵称]该群员权限不足")
+      if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return logger.mark(`${e.logFnc}该群员权限不足`)
       group = e.group_id
       card = e.msg.replace(/#|改群昵称/g, "").trim()
     }
@@ -617,7 +617,7 @@ export class example extends plugin {
     let result = await QQInterface.delQzone(domain.tid, domain.t1_source)
     if (!result) return e.reply(API_ERROR)
     //debug
-    logger.debug(`[椰奶删除说说]`, result)
+    logger.debug(e.logFnc, result)
 
     if (result.subcode != 0) e.reply(`❎ 未知错误` + JSON.parse(result))
     //发送结果
@@ -719,14 +719,14 @@ export class example extends plugin {
       if (e.isGroup) {
         //群聊判断权限
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
-          return logger.warn("[椰奶撤回]该群员权限不足")
+          return logger.warn(`${e.logFnc}该群员权限不足`)
         }
       } else {
         //私聊判断是否为Bot消息
-        return logger.warn("[椰奶撤回]引用不是Bot消息")
+        return logger.warn(`${e.logFnc}引用不是Bot消息`)
       }
     }
-    logger.info("[椰奶撤回]执行撤回")
+    logger.info(`${e.logFnc}执行撤回`)
     //撤回消息
     await target.recallMsg(source.message_id);
 

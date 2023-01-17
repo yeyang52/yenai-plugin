@@ -151,14 +151,14 @@ export class example extends plugin {
       //好友点赞
       if (!likeByStrangers || isFriend) {
         let res = await Bot.sendLike(e.user_id, 10)
-        logger.debug("[椰奶好友点赞]", res)
+        logger.debug(`${e.logFnc}好友点赞`, res)
         if (res) {
           n += 10;
         } else break;
       } else {
         //陌生人点赞
         let res = await QQInterface.thumbUp(e.user_id, 10)
-        logger.debug("[椰奶陌生人点赞]", res)
+        logger.debug(`${e.logFnc}陌生人点赞`, res)
         if (res.code != 0) {
           if (res.code == 1) {
             failsmsg = "点赞失败，请检查是否开启陌生人点赞或添加好友"
@@ -386,22 +386,23 @@ export class example extends plugin {
     if (/jktj|接口统计/.test(e.msg)) {
       let msg = ['现接口数量如下']
       for (let i in picapis) {
+        if (i == 'mode') continue;
         let urls = picapis[i].url || picapis[i]
-        msg.push(`\n${i}：\t${Array.isArray(urls) ? urls.length : 1}`)
+        msg.push(`\n♡ ${i} => ${Array.isArray(urls) ? urls.length : 1}`)
       }
       return e.reply(msg)
     }
     //解析消息中的类型
     let regRet = apiReg.exec(e.msg)
-    console.log(picapis);
+    if (regRet[1] == 'mode') return false;
     let picObj = picapis[Object.keys(picapis).find(item => new RegExp(item).test(regRet[1]))]
     let urlReg = /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i
     if (!picObj.url && !urlReg.test(picObj) && !Array.isArray(picObj)) {
-      return logger.error("[椰奶][pic]未找到url");
+      return logger.error(`${e.logFnc}未找到url`);
     }
 
     if (picObj.type !== 'image' && picObj.type !== 'text' && picObj.type !== 'json' && picObj.type) {
-      return logger.error("[椰奶][pic]类型不正确")
+      return logger.error(`${e.logFnc}类型不正确`)
     }
 
     let url = picObj.url || picObj
@@ -413,13 +414,13 @@ export class example extends plugin {
     if (picObj.type == 'text') {
       url = await fetch(url).then(res => res.text()).catch(err => console.log(err))
     } else if (picObj.type == 'json') {
-      if (!picObj.path) return logger.error("[椰奶][pic]json未指定路径")
+      if (!picObj.path) return logger.error(`${e.logFnc}json未指定路径`)
       let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))
       url = lodash.get(res, picObj.path)
     }
-    if (!url) return logger.error("[椰奶][pic]未获取到图片链接")
+    if (!url) return logger.error(`${e.logFnc}未获取到图片链接`)
 
-    logger.debug(`[椰奶图片]${regRet[2] && picObj[regRet[2] - 1] ? "指定" : "随机"}接口:${url}`)
+    logger.debug(`${e.logFnc}${regRet[2] && picObj[regRet[2] - 1] ? "指定" : "随机"}接口:${url}`)
     common.recallsendMsg(e, segment.image(url))
     redis.set(key, "cd", { EX: 2 })
   }

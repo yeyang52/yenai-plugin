@@ -38,7 +38,7 @@ export class NGA extends plugin {
       role = gsCfg.getRole(this.e.msg, '收益曲线|参考面板')
     }
 
-    if (!role) return logger.error("[椰奶NGA]指令可能错误", role)
+    if (!role) return logger.error(`${this.e.logFnc}指令可能错误`, role)
 
     let type = /收益曲线/.test(this.e.msg) ? "收益曲线" : "参考面板"
     /** 主角特殊处理 */

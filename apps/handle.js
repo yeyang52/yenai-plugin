@@ -83,7 +83,7 @@ export class anotice extends plugin {
             await e.reply("好哒，我开始处理辣٩(๑•ㅂ•)۶")
             let success = [], fail = []
             for (let i of FriendAdd) {
-                logger.mark(`[椰奶]${yes ? '同意' : '拒绝'}${i.user_id}的好友申请`)
+                logger.mark(`${e.logFnc}${yes ? '同意' : '拒绝'}${i.user_id}的好友申请`)
                 let res = await i.approve(yes)
                 if (res) {
                     success.push(`${success.length + 1}、${i.user_id}`)
@@ -134,7 +134,7 @@ export class anotice extends plugin {
             let qq = res[1].match(/[1-9]\d*/g)
             if (Bot.fl.get(Number(qq))) return e.reply('❎ 已经同意过该申请了哦~')
 
-            logger.mark(`[椰奶]${yes ? '同意' : '拒绝'}好友申请`)
+            logger.mark(`${e.logFnc}${yes ? '同意' : '拒绝'}好友申请`)
 
             await Bot.pickFriend(qq)
                 .setFriendReq('', yes)
@@ -147,7 +147,7 @@ export class anotice extends plugin {
             let qq = res[3].match(/[1-9]\d*/g)
             let seq = res[6].match(/[1-9]\d*/g)
 
-            logger.mark(`[椰奶]${yes ? '同意' : '拒绝'}群邀请`)
+            logger.mark(`${e.logFnc}${yes ? '同意' : '拒绝'}群邀请`)
 
             Bot.pickUser(qq)
                 .setGroupInvite(groupid, seq, yes)
@@ -210,7 +210,7 @@ export class anotice extends plugin {
 
         if (e.message.length === 0) return e.reply('❎ 消息不能为空')
         if (group) {
-            logger.mark(`[椰奶]回复临时消息`)
+            logger.mark(`${e.logFnc}回复临时消息`)
             return Bot.sendTempMsg(group, qq, e.message)
                 .then(() => { e.reply('✅ 已把消息发给它了哦~') })
                 .catch((err) => e.reply(`❎ 发送失败\n错误信息为:${err.message}`))
@@ -220,7 +220,7 @@ export class anotice extends plugin {
 
         if (!Bot.fl.get(Number(qq))) return e.reply('❎ 好友列表查无此人')
 
-        logger.mark(`[椰奶]回复好友消息`)
+        logger.mark(`${e.logFnc}回复好友消息`)
 
         Bot.pickFriend(qq)
             .sendMsg(e.message)
@@ -239,7 +239,7 @@ export class anotice extends plugin {
         let qq = msg[2].match(/\d+/g)
         if (Bot.fl.get(Number(qq))) return e.reply('❎ 已经有这个人的好友了哦~')
         if (!Bot.gl.get(Number(group))) { return e.reply('❎ 群聊列表查无此群') }
-        logger.mark(`[椰奶]主动添加好友`)
+        logger.mark(`${e.logFnc}主动添加好友`)
         Bot.addFriend(group, qq)
             .then(() => e.reply(`✅ 已向${qq}发送了好友请求`))
             .catch(() => e.reply("❎ 发送请求失败"))

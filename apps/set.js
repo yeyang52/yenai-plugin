@@ -218,7 +218,7 @@ export class NewConfig extends plugin {
             "px2.rainchan.win",
             "sex.nyan.xyz"
         ]
-        logger.mark(`[椰奶proxy]切换为${proxy[type]}`)
+        logger.mark(`${e.logFnc}切换为${proxy[type]}`)
         await redis.set(this.rediskey, proxy[type])
             .then(() => e.reply(`✅ 已经切换代理为「${proxy[type]}」`))
             .catch(err => console.log(err))

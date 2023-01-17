@@ -2,9 +2,11 @@ import { common } from './index.js';
 import lodash from 'lodash';
 import moment from 'moment'
 import { segment } from 'oicq'
-
+import loader from '../../../lib/plugins/loader.js'
 class Group_admin {
-
+    constructor() {
+        this.MuteTaskKey = 'yenai:MuteTasks'
+    }
     /**
      * @description: 获取禁言人数组
      * @param {*} e oicq
@@ -225,6 +227,88 @@ class Group_admin {
         })
         msg.unshift(`最近的${num}条入群记录`)
         return msg
+    }
+    /**
+     * @description: 设置群定时禁言
+     * @param {Number} group 群号
+     * @param {String} cron cron 表达式
+     * @param {true|false} type true为禁言false为解禁
+     */
+    async setMuteTask(group, cron, type) {
+        let name = `椰奶群定时${type ? '禁言' : "解禁"}${group}`
+        if (loader.task.find(item => item.name == name)) return false;
+        let redisTask = JSON.parse(await redis.get(this.MuteTaskKey)) || []
+        let task = {
+            cron: cron,
+            name,
+            fnc: () => {
+                Bot.pickGroup(Number(group)).muteAll(type)
+            },
+        }
+        loader.task.push(lodash.cloneDeep(task))
+        loader.creatTask()
+        redisTask.push({ cron, group, type })
+        redis.set(this.MuteTaskKey, JSON.stringify(redisTask))
+        return true;
+    }
+
+    /**
+     * @description: 返回redis储存定时任务
+     * @return {Array} 定时任务数组
+     */
+    async getRedisMuteTask() {
+        return JSON.parse(await redis.get(this.MuteTaskKey))?.map(item => {
+            return {
+                cron: item.cron,
+                name: `椰奶群定时${item.type ? '禁言' : "解禁"}${item.group}`,
+                fnc: () => {
+                    Bot.pickGroup(Number(item.group)).muteAll(item.type)
+                }
+            }
+        })
+    }
+
+    /**
+     * @description: 删除定时任务
+     * @param {Number} group
+     * @param {true|false} type true为禁言false为解禁
+     * @return {*}
+     */
+    async delMuteTask(group, type) {
+        let redisTask = JSON.parse(await redis.get(this.MuteTaskKey)) || []
+        loader.task = loader.task.filter(item => item.name !== `椰奶群定时${type ? '禁言' : "解禁"}${group}`)
+        redisTask = redisTask.filter(item => item.group !== group && item.type !== type)
+        redis.set(this.MuteTaskKey, JSON.stringify(redisTask))
+        return true
+    }
+
+    /**
+     * @description: 获取定时任务
+     */
+    getMuteTask() {
+        let RegEx = /椰奶群定时(禁言|解禁)(\d+)/
+        let taskList = lodash.cloneDeep(loader.task)
+        let MuteList = taskList.filter(item => /椰奶群定时禁言\d+/.test(item.name))
+        let noMuteList = taskList.filter(item => /椰奶群定时解禁\d+/.test(item.name))
+        noMuteList.forEach(noitem => {
+            let index = MuteList.findIndex(item => noitem.name.match(RegEx)[2] == item.name.match(RegEx)[2])
+            if (index !== -1) {
+                MuteList[index].nocron = noitem.cron
+            } else {
+                noitem.nocron = noitem.cron
+                delete noitem.cron
+                MuteList.push(noitem)
+            }
+        })
+        return MuteList.map(item => {
+            let analysis = item.name.match(RegEx)
+            return [
+                segment.image(`https://p.qlogo.cn/gh/${analysis[2]}/${analysis[2]}/100`),
+                `\n群号：${analysis[2]}`,
+                item.cron ? `\n禁言时间：'${item.cron}'` : "",
+                item.nocron ? `\n解禁时间：'${item.nocron}'` : "",
+            ]
+        })
     }
 }
 

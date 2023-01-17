@@ -46,11 +46,13 @@ export const helpList = [{
     "desc": "顾名思义"
   },
   {
-    "icon": 5, "title": "#改昵称 <昵称> ",
+    "icon": 5,
+    "title": "#改昵称 <昵称> ",
     "desc": "顾名思义"
   },
   {
-    "icon": 6, "title": "#改签名 <签名> ",
+    "icon": 6,
+    "title": "#改签名 <签名> ",
     "desc": "顾名思义"
   },
   {
@@ -161,26 +163,6 @@ export const helpList = [{
   },]
 },
 {
-  "group": "通知相关",
-  "auth": "master",
-  "list": [{
-    "icon": 5,
-    "title": "#椰奶设置 xx 开启/关闭",
-    "desc": "具体可使用#椰奶设置查看"
-  },
-  {
-    "icon": 12,
-    "title": "#椰奶启用全部通知",
-    "desc": "一键启用全部通知"
-  },
-  {
-    "icon": 20,
-    "title": "#椰奶禁用全部通知",
-    "desc": "一键禁用全部通知"
-  },
-  ]
-},
-{
   "group": "娱乐功能",
   "list": [
     {
@@ -267,7 +249,11 @@ export const helpList = [{
     "icon": 3,
     "title": "#椰奶群管帮助",
     "desc": "群管帮助"
-  }]
+  }, {
+    "icon": 12,
+    "title": "#椰奶(启|禁)用全部通知",
+    "desc": "一键启用或禁用全部通知"
+  },]
 }]
 
 export const isSys = true

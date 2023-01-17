@@ -2,7 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
 import lodash from 'lodash'
 import { Config } from '../components/index.js'
-import { Gpadmin, common, QQInterface, puppeteer } from '../model/index.js'
+import { Gpadmin, common, QQInterface, puppeteer, cronValidate } from '../model/index.js'
 import moment from 'moment'
 
 
@@ -17,7 +17,8 @@ const Numreg = "[一壹二两三四五六七八九十百千万亿\\d]+"
 const TimeUnitReg = Object.keys(common.Time_unit).join("|")
 const noactivereg = new RegExp(`^#(查看|清理|确认清理|获取)(${Numreg})个?(年|月|周|天)没发言的人(第(${Numreg})页)?$`)
 const Autisticreg = new RegExp(`^#?我要(自闭|禅定)(${Numreg})?个?(${TimeUnitReg})?$`, "i")
-
+//获取定时任务
+const redisTask = await Gpadmin.getRedisMuteTask()
 export class Basics extends plugin {
     constructor() {
         super({
@@ -114,7 +115,7 @@ export class Basics extends plugin {
                     fnc: 'Send_notice',
                 },
                 {
-                    reg: `(^#定时禁言(.*)解禁(.*)$)|(^#定时禁言任务$)|(^#取消定时禁言$)`,
+                    reg: `^#(设置)?定时(禁言|解禁)(.*)$|^#定时禁言任务$|^#取消定时(禁言|解禁)$`,
                     fnc: 'timeMute',
                 },
                 {
@@ -147,26 +148,7 @@ export class Basics extends plugin {
                 }
             ]
         })
-
-        this.task = {
-            cron: '0 0/1 * * * ?',
-            name: '定时禁言',
-            fnc: () => this.timeTaboo(),
-        }
-    }
-    /**定时群禁言 */
-    async timeTaboo() {
-        let time = moment(new Date()).format('HH:mm')
-        let task = await redis.keys('Yunzai:yenai:Taboo:*')
-        if (!task.length) return
-        for (let i of task) {
-            let data = JSON.parse(await redis.get(i))
-            if (data.muteTime == time) {
-                await Bot.pickGroup(data.groupNumber).muteAll(true)
-            } else if (data.remTime == time) {
-                await Bot.pickGroup(data.groupNumber).muteAll(false)
-            }
-        }
+        this.task = redisTask
     }
 
     /**禁言 */
@@ -597,55 +579,37 @@ export class Basics extends plugin {
     //设置定时群禁言
     async timeMute(e) {
         if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
+        let type = /禁言/.test(e.msg)
         if (/任务/.test(e.msg)) {
-            let task = await redis.keys('Yunzai:yenai:Taboo:*')
+            let task = Gpadmin.getMuteTask()
             if (!task.length) return e.reply('目前还没有定时禁言任务')
-            let msglist = [
-                `目前定时禁言任务有${task.length}个`,
-                ...await Promise.all(task.map(async item => {
-                    item = JSON.parse(await redis.get(item))
-                    return [
-                        segment.image(`https://p.qlogo.cn/gh/${item.groupNumber}/${item.groupNumber}/100`),
-                        `\n群号:${item.groupNumber}\n`,
-                        `禁言时间:${item.muteTime}\n`,
-                        `解禁时间:${item.remTime}`
-                    ]
-                })),
-                "可在目标群发送 “#取消定时禁言” 进行取消"
-            ]
-            console.log(task);
-            common.getforwardMsg(e, msglist)
-            return true
+            return common.getforwardMsg(e, task)
         }
         if (/取消/.test(e.msg)) {
-            let data = JSON.parse(await redis.get(`Yunzai:yenai:Taboo:${e.group_id}`))
-            if (!data) return e.reply('这群目前没有定时禁言任务')
-            await redis.del(`Yunzai:yenai:Taboo:${e.group_id}`)
-            e.reply('此群定时禁言任务删除成功')
-            return true
+            Gpadmin.delMuteTask(e.group_id, type)
+            return e.reply(`已取消本群定时${type ? "禁言" : "解禁"}`)
         }
         if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true);
 
-        try {
-            let RegRet = e.msg.match(/禁言(\d{1,2})(:|：)(\d{1,2})(，|,)?解禁(\d{1,2})(:|：)(\d{1,2})/)
-            if (!RegRet || !RegRet[1] || !RegRet[3] || !RegRet[5] || !RegRet[7]) {
-                return e.reply('格式不对\n示范：#定时禁言00:00，解禁08:00')
-            }
-            var muteTime = RegRet[1].padStart(2, "0") + ':' + RegRet[3].padStart(2, "0")
-            var remTime = RegRet[5].padStart(2, "0") + ':' + RegRet[7].padStart(2, "0")
-        } catch (err) {
-            logger.error(err)
-            return e.reply('格式不对\n示范：#定时禁言00:00，解禁08:00')
+        let RegRet = e.msg.match(/定时(禁言|解禁)((\d{1,2})(:|：)(\d{1,2})|.*)/)
+        console.log(RegRet);
+        if (!RegRet || !RegRet[2]) return e.reply(`格式不对\n示范：#定时${type ? "禁言" : "解禁"}00:00 或 #定时${type ? "禁言" : "解禁"} + cron表达式`)
+        let cron = ''
+        if (RegRet[3] && RegRet[5]) {
+            cron = `0 ${RegRet[5]} ${RegRet[3]} * * ?`
+        } else {
+            cron = RegRet[2]
+            //校验cron表达式
+            let Validate = cronValidate(cron.trim())
+            if (Validate !== true) return e.reply(Validate)
         }
 
-        if (muteTime == remTime) return e.reply('没事就吃溜溜梅')
-        let data = {
-            groupNumber: e.group_id,
-            muteTime,
-            remTime
-        }
-        await redis.set(`Yunzai:yenai:Taboo:${e.group_id}`, JSON.stringify(data))
-        e.reply(`设置定时禁言成功，可发【#定时禁言任务】查看`)
+        let res = await Gpadmin.setMuteTask(e.group_id, cron, type)
+
+        res ?
+            e.reply(`✅设置定时禁言成功，可发【#定时禁言任务】查看`) :
+            e.reply(`❎ 该群定时${type ? "禁言" : "解禁"}已存在不可重复设置`)
+
     }
 
     //谁是龙王

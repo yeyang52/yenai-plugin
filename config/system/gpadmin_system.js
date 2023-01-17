@@ -37,12 +37,7 @@ export const helpList = [{
   },
   {
     "icon": 3,
-    "title": "#全体禁言",
-    "desc": "顾名思义"
-  },
-  {
-    "icon": 4,
-    "title": "#全体解禁",
+    "title": "#全体禁言|解禁",
     "desc": "顾名思义"
   },
   {
@@ -52,12 +47,7 @@ export const helpList = [{
   },
   {
     "icon": 5,
-    "title": "#允许匿名",
-    "desc": "顾名思义"
-  },
-  {
-    "icon": 6,
-    "title": "#禁止匿名",
+    "title": "#允许|禁止 匿名",
     "desc": "顾名思义"
   },
   {
@@ -133,11 +123,6 @@ export const helpList = [{
     "icon": 3
   },
   {
-    "title": "#群发言榜单(7天)?",
-    "desc": "不加7天查看昨天的数据",
-    "icon": 16
-  },
-  {
     "title": "#我要自闭 <时间>",
     "desc": "自闭一会",
     "icon": 20
@@ -171,15 +156,15 @@ export const helpList = [{
   "group": "定时禁言",
   "list": [
     {
-      "title": "#定时禁言00:00，解禁08:00",
-      "desc": "设置定时禁言",
+      "title": "#定时(禁言|解禁)(00:00 | cron)",
+      "desc": "设置定时禁言或解禁可用cron表达式设置",
       "icon": 12
     }, {
       "title": "#定时禁言任务",
       "desc": "查看禁言任务",
       "icon": 10
     }, {
-      "title": "#取消定时禁言",
+      "title": "#取消定时(禁言|解禁)",
       "desc": "取消查看禁言任务",
       "icon": 3
     },
@@ -209,6 +194,10 @@ export const helpList = [{
       "title": "#群数据(7天)?",
       "desc": "活跃数据等",
       "icon": 7
+    }, {
+      "title": "#群发言榜单(7天)?",
+      "desc": "不加7天查看昨天的数据",
+      "icon": 16
     },
   ]
 },

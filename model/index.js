@@ -7,6 +7,6 @@ import uploadRecord from "./uploadRecord.js";
 import YamlReader from "./YamlReader.js";
 import Gpadmin from "./Group_admin.js";
 import QQInterface from "./QQInterface.js";
-import Interface from './Interface.js'
-
-export { puppeteer, common, CPU, Pixiv, setu, uploadRecord, YamlReader, Gpadmin, QQInterface, Interface }
+import Interface from './Interface.js';
+import cronValidate from './cronValidate.js';
+export { puppeteer, common, CPU, Pixiv, setu, uploadRecord, YamlReader, cronValidate, Gpadmin, QQInterface, Interface }

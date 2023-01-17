@@ -21,7 +21,16 @@ const SWITCH_ERROR = "主人没有开放这个功能哦(＊／ω＼＊)"
 const START_Execution = "椰奶产出中......"
 
 const picapis = Config.getConfig("picApi")
-const apiReg = new RegExp(`${picapis.mode ? "^" : ""}#?(${Object.keys(picapis).join("|")}|jktj|接口统计)(\\d+)?${picapis.mode ? "$" : ""}`)
+/**解析匹配模式 */
+let picApiKeys = []
+lodash.forIn(picapis, (values, key) => {
+  let mode = values.mode !== undefined ? values.mode : picapis.mode
+  key = key.split("|").map(item => mode ? "^" + item + "$" : item).join("|")
+  picApiKeys.push(key)
+})
+
+const apiReg = new RegExp(`(${picApiKeys.join("|")}|^jktj$|^接口统计$)`)
+
 export class example extends plugin {
   constructor() {
     super({
@@ -408,7 +417,8 @@ export class example extends plugin {
     let url = picObj.url || picObj
     //数组随机取或指定
     if (Array.isArray(url)) {
-      url = (regRet[2] ? picObj[regRet[2] - 1] : lodash.sample(url)) || lodash.sample(url)
+      // url = (regRet[2] ? picObj[regRet[2] - 1] : lodash.sample(url)) || lodash.sample(url)
+      url = lodash.sample(url)
     }
 
     if (picObj.type == 'text') {
@@ -420,7 +430,7 @@ export class example extends plugin {
     }
     if (!url) return logger.error(`${e.logFnc}未获取到图片链接`)
 
-    logger.debug(`${e.logFnc}${regRet[2] && picObj[regRet[2] - 1] ? "指定" : "随机"}接口:${url}`)
+    logger.debug(`${e.logFnc}使用接口:${url}`)
     common.recallsendMsg(e, segment.image(url))
     redis.set(key, "cd", { EX: 2 })
   }

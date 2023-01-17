@@ -250,7 +250,7 @@ export default new class OSUtils {
 
     return {
       plugins: plugin?.length || 0,
-      js: fs.readdirSync("./plugins/example")?.length || 0
+      js: fs.readdirSync("./plugins/example")?.filter(item => item.includes(".js"))?.length || 0
     }
   }
 }

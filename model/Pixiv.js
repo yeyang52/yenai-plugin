@@ -310,18 +310,20 @@ export default new class Pixiv {
      * @return {Array}
      */
     async public(keyword, page = "1", isfilter = true) {
+        console.log(keyword);
         //关键词搜索
         if (!/^\d+$/.test(keyword)) {
             let wordapi = `https://www.vilipix.com/api/v1/search/user?type=author&keyword=${keyword}&limit=1&offset=0`
             let wordlist = await fetch(wordapi).then(res => res.json()).catch(err => console.log(err))
+            console.log(wordlist);
             if (!wordlist) return { error: API_ERROR }
 
-            if (lodash.isEmpty(data.rows)) return { error: "呜呜呜，人家没有找到这个淫d(ŐдŐ๑)" };
+            if (lodash.isEmpty(wordlist.data?.rows)) return { error: "呜呜呜，人家没有找到这个淫d(ŐдŐ๑)" };
 
-            keyword = data.rows[0].user.id
+            keyword = wordlist.data.rows[0].user.id
         }
         let proxy = await redis.get(this.proxy)
-        let userapi = `https://api.obfs.dev/api/pixiv/member?id==${keyword}`
+        let userapi = `https://api.obfs.dev/api/pixiv/member?id=${keyword}`
         let user = await fetch(userapi).then(res => res.json()).catch(err => console.log(err))
         if (!user) return { error: API_ERROR }
 

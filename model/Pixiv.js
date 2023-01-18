@@ -315,7 +315,6 @@ export default new class Pixiv {
         if (!/^\d+$/.test(keyword)) {
             let wordapi = `https://www.vilipix.com/api/v1/search/user?type=author&keyword=${keyword}&limit=1&offset=0`
             let wordlist = await fetch(wordapi).then(res => res.json()).catch(err => console.log(err))
-            console.log(wordlist);
             if (!wordlist) return { error: API_ERROR }
 
             if (lodash.isEmpty(wordlist.data?.rows)) return { error: "呜呜呜，人家没有找到这个淫d(ŐдŐ๑)" };
@@ -327,7 +326,7 @@ export default new class Pixiv {
         let user = await fetch(userapi).then(res => res.json()).catch(err => console.log(err))
         if (!user) return { error: API_ERROR }
 
-        if (user.error) return { error: user.error.user_message };
+        if (user.error) return { error: user.error.message };
 
         let { id, name, comment, profile_image_urls } = user.user
         let { total_follow_users, total_illust_bookmarks_public, total_illusts } = user.profile

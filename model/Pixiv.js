@@ -23,11 +23,11 @@ export default new class Pixiv {
                 type: "month",
                 quantity: 500
             },
-            "AI": {
-                type: "day_ai",
-                quantity: 50,
-                r18: 50,
-            },
+            // "AI": {
+            //     type: "day_ai",
+            //     quantity: 50,
+            //     r18: 50,
+            // },
             "男性向": {
                 type: "day_male",
                 quantity: 500,
@@ -38,24 +38,24 @@ export default new class Pixiv {
                 quantity: 500,
                 r18: 300,
             },
-            "漫画日": {
-                type: "day_manga",
-                quantity: 500,
-                r18: 100,
-            },
-            "漫画周": {
-                type: "week_manga",
-                quantity: 500,
-                r18: 100,
-            },
-            "漫画月": {
-                type: "month_manga",
-                quantity: 500
-            },
-            "漫画新秀周": {
-                type: "week_rookie_manga",
-                quantity: 500
-            },
+            // "漫画日": {
+            //     type: "day_manga",
+            //     quantity: 500,
+            //     r18: 100,
+            // },
+            // "漫画周": {
+            //     type: "week_manga",
+            //     quantity: 500,
+            //     r18: 100,
+            // },
+            // "漫画月": {
+            //     type: "month_manga",
+            //     quantity: 500
+            // },
+            // "漫画新秀周": {
+            //     type: "week_rookie_manga",
+            //     quantity: 500
+            // },
             "新人": {
                 type: "week_rookie",
                 quantity: 500
@@ -73,14 +73,11 @@ export default new class Pixiv {
      * @return {Object}
      */
     async Worker(ids, filter = false) {
-        let api = `https://api.moedog.org/pixiv/v2/?id=${ids}`
-        let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
 
-        if (!res) {
-            let spareApi = `https://api.imki.moe/api/pixiv/illust?id=${ids}`
-            res = await fetch(spareApi).then(res => res.json()).catch(err => console.log(err))
-            if (!res) return { error: API_ERROR };
-        }
+        let api = `https://api.obfs.dev/api/pixiv/illust?id=${ids}`
+        let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
+        if (!res) return { error: API_ERROR };
+
         if (res.error) {
             return { error: res.error?.user_message || "无法获取数据" };
         }
@@ -134,22 +131,20 @@ export default new class Pixiv {
         //排行榜类型
         let type = this.ranktype[mode].type
         //总张数
-        let pageSize = this.ranktype[mode].quantity
+        let pageSizeAll = this.ranktype[mode].quantity
         //r18处理
         if (r18) {
             if (!this.ranktype[mode].r18) return { error: "该排行没有不适合所有年龄段的分类哦~" }
-            type = type.split("_")
-            type.splice(1, 0, "r18")
-            type = type.join("_")
-            pageSize = this.ranktype[mode].r18
+            type = type + "_r18";
+            pageSizeAll = this.ranktype[mode].r18
         }
         //总页数
-        let pageAll = Math.ceil(pageSize / 30)
+        let pageAll = Math.ceil(pageSizeAll / 30)
         if (page > pageAll) {
             return { error: "哪有那么多图片给你辣(•̀へ •́ ╮ )" }
         }
         //请求api
-        let api = `https://api.moedog.org/pixiv/v2/?type=rank&mode=${type}&page=${page}&date=${date}`
+        let api = `https://api.obfs.dev/api/pixiv/rank?&mode=${type}&page=${page}&date=${date}`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
         if (!res) return { error: API_ERROR }
 
@@ -180,7 +175,7 @@ export default new class Pixiv {
         }
         let list = [
             `${date}的${mode}${r18 ? "R18" : ""}榜`,
-            `当前为第${page}页，共${pageAll}页，本页共${illusts.length}张，总共${pageSize}张`,
+            `当前为第${page}页，共${pageAll}页，本页共${illusts.length}张，总共${pageSizeAll}张`,
         ];
         if (page < pageAll) {
             list.push(`可使用 "#看看${Specifydate ? `${Specifydate}的` : ""}${mode}${r18 ? "R18" : ""}榜第${page - 0 + 1}页" 翻页`)
@@ -234,9 +229,10 @@ export default new class Pixiv {
      * @return {*}
      */
     async searchTagspro(tag, page = "1", isfilter = true) {
-        let api = `https://api.moedog.org/pixiv/v2/?type=search&word=${tag}&page=${page}`
+        let api = `https://api.obfs.dev/api/pixiv/search?word=${tag}&page=${page}&order=popular_desc`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
         if (!res) return { error: API_ERROR }
+        if (res.error) return { error: res.message }
         if (lodash.isEmpty(res.illusts)) return { error: "宝~没有数据了哦(๑＞︶＜)و" };
 
         let proxy = await redis.get(this.proxy)
@@ -277,11 +273,11 @@ export default new class Pixiv {
      * @return {Array}
      */
     async gettrend_tags() {
-        let api = "https://api.moedog.org/pixiv/v2/?type=tags"
+        let api = "https://api.obfs.dev/api/pixiv/tags"
 
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
 
-        if (!res) {
+        if (!res || res.error) {
             api = `https://api.imki.moe/api/pixiv/tags`
             res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
             if (!res) return { error: API_ERROR }
@@ -316,17 +312,16 @@ export default new class Pixiv {
     async public(keyword, page = "1", isfilter = true) {
         //关键词搜索
         if (!/^\d+$/.test(keyword)) {
-            let wordapi = `https://api.moedog.org/pixiv/v2/?type=search_user&word=${keyword}`
+            let wordapi = `https://www.vilipix.com/api/v1/search/user?type=author&keyword=${keyword}&limit=1&offset=0`
             let wordlist = await fetch(wordapi).then(res => res.json()).catch(err => console.log(err))
             if (!wordlist) return { error: API_ERROR }
 
-            if (lodash.isEmpty(wordlist.user_previews)) return { error: "呜呜呜，人家没有找到这个淫d(ŐдŐ๑)" };
+            if (lodash.isEmpty(data.rows)) return { error: "呜呜呜，人家没有找到这个淫d(ŐдŐ๑)" };
 
-            keyword = wordlist.user_previews[0].user.id
+            keyword = data.rows[0].user.id
         }
         let proxy = await redis.get(this.proxy)
-        // let userapi = `https://www.vilipix.com/api/v1/search/user?type=author&keyword=${keyword}&limit=30&offset=0`
-        let userapi = `https://api.moedog.org/pixiv/v2/?type=member&id=${keyword}`
+        let userapi = `https://api.obfs.dev/api/pixiv/member?id==${keyword}`
         let user = await fetch(userapi).then(res => res.json()).catch(err => console.log(err))
         if (!user) return { error: API_ERROR }
 
@@ -344,7 +339,7 @@ export default new class Pixiv {
             `介绍：${lodash.truncate(comment)}`
         ]]
         //作品
-        let api = `https://api.moedog.org/pixiv/v2/?type=member_illust&id=${id}&page=${page}`
+        let api = `https://api.obfs.dev/api/pixiv/member_illust?id=${id}&page=${page}`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
         if (!res) return { error: API_ERROR };
         //没有作品直接返回信息
@@ -413,7 +408,7 @@ export default new class Pixiv {
      * @return {*} 
      */
     async getrelated_works(pid, isfilter = true) {
-        let api = `https://api.moedog.org/pixiv/v2/?type=related&id=${pid}`
+        let api = `https://api.obfs.dev/api/pixiv/related?id=${pid}`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
         if (!res) return { error: API_ERROR }
         if (res.error) return { error: res.error.user_message };

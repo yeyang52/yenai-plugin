@@ -310,7 +310,6 @@ export default new class Pixiv {
      * @return {Array}
      */
     async public(keyword, page = "1", isfilter = true) {
-        console.log(keyword);
         //关键词搜索
         if (!/^\d+$/.test(keyword)) {
             let wordapi = `https://www.vilipix.com/api/v1/search/user?type=author&keyword=${keyword}&limit=1&offset=0`
@@ -322,48 +321,47 @@ export default new class Pixiv {
             keyword = wordlist.data.rows[0].user.id
         }
         let proxy = await redis.get(this.proxy)
-        let userapi = `https://api.obfs.dev/api/pixiv/member?id=${keyword}`
-        let user = await fetch(userapi).then(res => res.json()).catch(err => console.log(err))
-        if (!user) return { error: API_ERROR }
+        // let userapi = `https://api.obfs.dev/api/pixiv/member?id=${keyword}`
+        // let user = await fetch(userapi).then(res => res.json()).catch(err => console.log(err))
+        // if (!user) return { error: API_ERROR }
 
-        if (user.error) return { error: user.error.message };
+        // if (user.error) return { error: user.error.message };
 
-        let { id, name, comment, profile_image_urls } = user.user
-        let { total_follow_users, total_illust_bookmarks_public, total_illusts } = user.profile
-        let list = [[
-            segment.image(profile_image_urls.medium.replace("i.pximg.net", proxy)),
-            `\nuid：${id}\n`,
-            `画师：${name}\n`,
-            `作品：${total_illusts}\n`,
-            `关注：${total_follow_users}\n`,
-            `收藏：${total_illust_bookmarks_public}\n`,
-            `介绍：${lodash.truncate(comment)}`
-        ]]
+        // let { id, name, comment, profile_image_urls } = user.user
+        // let { total_follow_users, total_illust_bookmarks_public, total_illusts } = user.profile
+        // let list = [[
+        //     segment.image(profile_image_urls.medium.replace("i.pximg.net", proxy)),
+        //     `\nuid：${id}\n`,
+        //     `画师：${name}\n`,
+        //     `作品：${total_illusts}\n`,
+        //     `关注：${total_follow_users}\n`,
+        //     `收藏：${total_illust_bookmarks_public}\n`,
+        //     `介绍：${lodash.truncate(comment)}`
+        // ]]
         //作品
-        let api = `https://api.obfs.dev/api/pixiv/member_illust?id=${id}&page=${page}`
+        let api = `https://api.obfs.dev/api/pixiv/member_illust?id=${keyword}&page=${page}`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
         if (!res) return { error: API_ERROR };
+        if (res.error) return { error: user.error.message };
         //没有作品直接返回信息
-        if (lodash.isEmpty(res.illusts)) {
-            list.push("Σ(っ °Д °;)っ这个淫居然没有作品")
-            return list
-        }
-        let illustsall = Math.ceil(total_illusts / 30)
+        if (lodash.isEmpty(res.illusts)) return { error: page >= 2 ? "这一页没有作品辣（＞人＜；）" : "Σ(っ °Д °;)っ这个淫居然没有作品" }
 
-        if (page > illustsall) return { error: "这个淫已经没有涩图给你辣(oＡo川)" }
+        // let illustsall = Math.ceil(total_illusts / 30)
+
+        // if (page > illustsall) return { error: "这个淫已经没有涩图给你辣(oＡo川)" }
 
         let illusts = [];
         let filter = 0
         let NowNum = res.illusts.length
         for (let i of res.illusts) {
-            let { id, title, tags, total_bookmarks, total_view, url, x_restrict } = this.format(i, proxy)
+            let { id: pid, title, tags, total_bookmarks, total_view, url, x_restrict } = this.format(i, proxy)
             if (isfilter && x_restrict) {
                 filter++
                 continue
             }
             illusts.push([
                 `标题：${title}\n`,
-                `PID：${id}\n`,
+                `PID：${pid}\n`,
                 `点赞：${total_bookmarks}\n`,
                 `访问：${total_view}\n`,
                 `Tag：${lodash.truncate(tags)}\n`,
@@ -371,13 +369,21 @@ export default new class Pixiv {
             ])
         }
         if (lodash.isEmpty(illusts)) return { error: "该页全为涩涩内容已全部过滤(#／。＼#)" }
-
-        list.push(`当前为第${page}页，共${illustsall}页\n本页共${NowNum}张，${filter ? `过滤${filter}张，` : ""}总共${total_illusts}张`)
-        if (page < illustsall) {
-            list.push(`可使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页`)
-        }
-        list.push(...illusts)
-        return list
+        let { id: uid, name, profile_image_urls } = res.user
+        // list.push(`当前为第${page}页，共${illustsall}页\n本页共${NowNum}张，${filter ? `过滤${filter}张，` : ""}总共${total_illusts}张`)
+        // if (page < illustsall) {
+        //     list.push(`可使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页`)
+        // }
+        // list.push(...illusts)
+        return [
+            [
+                segment.image(profile_image_urls.medium.replace("i.pximg.net", proxy)),
+                `\nUid：${uid}\n`,
+                `画师：${name}\n`,
+            ],
+            `本页共${NowNum}张${filter ? `，过滤${filter}张` : ""}\n可尝试使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页\n无数据则代表无下一页`,
+            ...illusts
+        ];
     }
     /**
      * @description: 随机图片

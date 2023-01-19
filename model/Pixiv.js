@@ -143,14 +143,20 @@ export default new class Pixiv {
         if (page > pageAll) {
             return { error: "哪有那么多图片给你辣(•̀へ •́ ╮ )" }
         }
-        //请求api
-        let api = `https://api.obfs.dev/api/pixiv/rank?&mode=${type}&page=${page}&date=${date}`
+        let parameters = `mode=${type}&page=${page}&date=${date}`
+        //请求api   
+        let api = `https://api.obfs.dev/api/pixiv/rank?${parameters}`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
-        if (!res) return { error: API_ERROR }
 
-        if (lodash.isEmpty(res.illusts)) {
-            return { error: "暂无数据，请等待榜单更新哦(。-ω-)zzz" }
+
+        if (!res || res.error || lodash.isEmpty(res.illusts)) {
+            res = await fetch(`https://api.imki.moe/api/pixiv/rank?${parameters}`).then(res => res.json())
+                .catch(err => console.log(err))
         };
+        if (!res) return { error: API_ERROR }
+        if (res.error) return { error: res.error.message }
+        if (lodash.isEmpty(res.illusts)) return { error: "暂无数据，请等待榜单更新哦(。-ω-)zzz" }
+        
         let proxy = await redis.get(this.proxy)
 
         let illusts = res.illusts.map((item, index) => {

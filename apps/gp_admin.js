@@ -2,7 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
 import lodash from 'lodash'
 import { Config } from '../components/index.js'
-import { Gpadmin, common, QQInterface, puppeteer, cronValidate } from '../model/index.js'
+import { GroupAdmin as gd, common, QQInterface, puppeteer, CronValidate } from '../model/index.js'
 import moment from 'moment'
 
 
@@ -18,7 +18,7 @@ const TimeUnitReg = Object.keys(common.Time_unit).join("|")
 const noactivereg = new RegExp(`^#(查看|清理|确认清理|获取)(${Numreg})个?(年|月|周|天)没发言的人(第(${Numreg})页)?$`)
 const Autisticreg = new RegExp(`^#?我要(自闭|禅定)(${Numreg})?个?(${TimeUnitReg})?$`, "i")
 //获取定时任务
-const redisTask = await Gpadmin.getRedisMuteTask() || false;
+const redisTask = await gd.getRedisMuteTask() || false;
 export class Basics extends plugin {
     constructor() {
         super({
@@ -462,7 +462,7 @@ export class Basics extends plugin {
 
     //获取禁言列表
     async Mutelist(e) {
-        let mutelist = await Gpadmin.getMuteList(e)
+        let mutelist = await gd.getMuteList(e)
         if (!mutelist) return e.reply("还没有人被禁言欸(O∆O)")
         let msg = [];
         for (let i of mutelist) {
@@ -485,7 +485,7 @@ export class Basics extends plugin {
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true);
 
-        let mutelist = await Gpadmin.getMuteList(e)
+        let mutelist = await gd.getMuteList(e)
         if (!mutelist) return e.reply("都没有人被禁言我怎么解的辣＼(`Δ’)／")
         for (let i of mutelist) {
             await e.group.muteMember(i, 0)
@@ -504,18 +504,18 @@ export class Basics extends plugin {
             if (!e.group.is_admin && !e.group.is_owner) {
                 return e.reply(ROLE_ERROR, true);
             }
-            return Gpadmin.getclearnoactive(e, Reg[2], Reg[3])
+            return gd.getclearnoactive(e, Reg[2], Reg[3])
         }
         //查看和清理都会发送列表
         let page = common.translateChinaNum(Reg[5] || 1)
-        let msg = await Gpadmin.getnoactive(e, Reg[2], Reg[3], page)
+        let msg = await gd.getnoactive(e, Reg[2], Reg[3], page)
         if (!msg) return
         //清理
         if (Reg[1] == "清理") {
             if (!e.group.is_admin && !e.group.is_owner) {
                 return e.reply(ROLE_ERROR, true);
             }
-            let list = await Gpadmin.noactivelist(e, Reg[2], Reg[3])
+            let list = await gd.noactivelist(e, Reg[2], Reg[3])
 
             e.reply(`本此共需清理「${list.length}」人，防止误触发\n请发送：#确认清理${Reg[2]}${Reg[3]}没发言的人`)
         }
@@ -525,7 +525,7 @@ export class Basics extends plugin {
     //查看和清理从未发言的人
     async neverspeak(e) {
         if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
-        let list = await Gpadmin.getneverspeak(e)
+        let list = await gd.getneverspeak(e)
         if (!list) return
         //确认清理直接执行
         if (/^#?确认清理/.test(e.msg)) {
@@ -533,7 +533,7 @@ export class Basics extends plugin {
                 return e.reply(ROLE_ERROR, true);
             }
             let removelist = list.map(item => item.user_id)
-            let msg = await Gpadmin.getkickMember(e, removelist)
+            let msg = await gd.getkickMember(e, removelist)
             return common.getforwardMsg(e, msg)
         }
         //清理
@@ -546,7 +546,7 @@ export class Basics extends plugin {
         //发送列表
         let num = e.msg.match(new RegExp(Numreg))
         num = num ? common.translateChinaNum(num[0]) : 1
-        let listinfo = await Gpadmin.getneverspeakinfo(e, num)
+        let listinfo = await gd.getneverspeakinfo(e, num)
         if (!listinfo) return false;
         common.getforwardMsg(e, listinfo)
     }
@@ -557,9 +557,9 @@ export class Basics extends plugin {
         num = num ? common.translateChinaNum(num[0]) : 10
         let msg = '';
         if (/(不活跃|潜水)/.test(e.msg)) {
-            msg = await Gpadmin.InactiveRanking(e, num)
+            msg = await gd.InactiveRanking(e, num)
         } else {
-            msg = await Gpadmin.getRecentlyJoined(e, num)
+            msg = await gd.getRecentlyJoined(e, num)
         }
         common.getforwardMsg(e, msg)
     }
@@ -581,12 +581,12 @@ export class Basics extends plugin {
         if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
         let type = /禁言/.test(e.msg)
         if (/任务/.test(e.msg)) {
-            let task = Gpadmin.getMuteTask()
+            let task = gd.getMuteTask()
             if (!task.length) return e.reply('目前还没有定时禁言任务')
             return common.getforwardMsg(e, task)
         }
         if (/取消/.test(e.msg)) {
-            Gpadmin.delMuteTask(e.group_id, type)
+            gd.delMuteTask(e.group_id, type)
             return e.reply(`已取消本群定时${type ? "禁言" : "解禁"}`)
         }
         if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true);
@@ -600,11 +600,11 @@ export class Basics extends plugin {
         } else {
             cron = RegRet[2]
             //校验cron表达式
-            let Validate = cronValidate(cron.trim())
+            let Validate = CronValidate(cron.trim())
             if (Validate !== true) return e.reply(Validate)
         }
 
-        let res = await Gpadmin.setMuteTask(e.group_id, cron, type)
+        let res = await gd.setMuteTask(e.group_id, cron, type)
 
         res ?
             e.reply(`✅设置定时禁言成功，可发【#定时禁言任务】查看`) :

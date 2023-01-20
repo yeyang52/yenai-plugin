@@ -2,7 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import fetch from 'node-fetch'
 import { segment } from "oicq"
 import lodash from 'lodash'
-import { Config, Data } from '../components/index.js'
+import { Config } from '../components/index.js'
 import { common, uploadRecord, QQInterface, Interface } from '../model/index.js'
 
 const heisitype = {
@@ -277,7 +277,7 @@ export class example extends plugin {
     //获取类型
     let types = e.msg.match(/#?来点(.*)/)
     //请求主页面
-    let url = `http://hs.heisiwu.com/${heisitype[types[1]]}#/page/${lodash.random(1, 20)}`
+    let url = `http://hs.heisiwu.com/${heisitype[types[1]]}/page/${lodash.random(1, 25)}`
     let homePage = await fetch(url).then(res => res.text()).catch(err => console.error(err))
     if (!homePage) return e.reply(API_ERROR)
     //解析html
@@ -404,7 +404,8 @@ export class example extends plugin {
     //解析消息中的类型
     let regRet = apiReg.exec(e.msg)
     if (regRet[1] == 'mode') return false;
-    let picObj = picapis[Object.keys(picapis).find(item => new RegExp(item).test(regRet[1]))]
+    let picObj = picapis[lodash.sample(Object.keys(picapis).filter(item => new RegExp(item).test(regRet[1])))]
+    if (Array.isArray(picObj)) picObj = lodash.sample(picObj)
     let urlReg = /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i
     if (!picObj.url && !urlReg.test(picObj) && !Array.isArray(picObj)) {
       return logger.error(`${e.logFnc}未找到url`);

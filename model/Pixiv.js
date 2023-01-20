@@ -117,15 +117,18 @@ export default new class Pixiv {
     get RankReg() {
         return this.ranktype
     }
+
     /**
      * @description: 获取Pixiv榜单
-     * @param {String} page 页数
-     * @param {String} date 时间
+     * @param {Number} page 页数
+     * @param {Date} date 时间YYYY-MM-DD
      * @param {String} mode 榜单类型
+     * @param {Boolean} r18 是否为R18榜单 
      * @return {Array} 
      */
-    async Rank(page, date, mode = "周", r18 = false, Specifydate) {
+    async Rank(page = 1, date = '', mode = "周", r18 = false) {
         // let api = `https://api.bbmang.me/ranks?page=${page}&date=${date}&mode=${this.ranktype[mode]}&pageSize=30`
+
         //转为大写
         mode = lodash.toUpper(mode)
         //排行榜类型
@@ -143,20 +146,20 @@ export default new class Pixiv {
         if (page > pageAll) {
             return { error: "哪有那么多图片给你辣(•̀へ •́ ╮ )" }
         }
-        let parameters = `mode=${type}&page=${page}&date=${date}`
+        let parame = `mode=${type}&page=${page}${date ? `&date=${date}` : ""}`
         //请求api   
-        let api = `https://api.obfs.dev/api/pixiv/rank?${parameters}`
+        let api = `https://api.obfs.dev/api/pixiv/rank?${parame}`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
 
-
         if (!res || res.error || lodash.isEmpty(res.illusts)) {
-            res = await fetch(`https://api.imki.moe/api/pixiv/rank?${parameters}`).then(res => res.json())
+            logger.mark(`[椰奶Pixiv][排行榜]使用备用接口`)
+            res = await fetch(`https://api.imki.moe/api/pixiv/rank?${parame}`).then(res => res.json())
                 .catch(err => console.log(err))
         };
         if (!res) return { error: API_ERROR }
         if (res.error) return { error: res.error.message }
         if (lodash.isEmpty(res.illusts)) return { error: "暂无数据，请等待榜单更新哦(。-ω-)zzz" }
-        
+
         let proxy = await redis.get(this.proxy)
 
         let illusts = res.illusts.map((item, index) => {
@@ -173,18 +176,19 @@ export default new class Pixiv {
                 segment.image(image_urls.large)
             ]
         })
-        date = moment(date, "YYYY-MM-DD").format("YYYY年MM月DD日")
+        let formatDate = res.next_url.match(/date=(\d{4}-\d{1,2}-\d{1,2})/)[1]
+        formatDate = moment(formatDate, "YYYY-MM-DD").format("YYYY年MM月DD日")
         if (/周/.test(mode)) {
-            date = `${moment(date, "YYYY年MM月DD日").subtract(6, "days").format("YYYY年MM月DD日")} ~ ${date}`
+            formatDate = `${moment(formatDate, "YYYY年MM月DD日").subtract(6, "days").format("YYYY年MM月DD日")} ~ ${formatDate}`
         } else if (/月/.test(mode)) {
-            date = `${moment(date, "YYYY年MM月DD日").subtract(29, "days").format("YYYY年MM月DD日")} ~ ${date}`
+            formatDate = `${moment(formatDate, "YYYY年MM月DD日").subtract(29, "days").format("YYYY年MM月DD日")} ~ ${formatDate}`
         }
         let list = [
-            `${date}的${mode}${r18 ? "R18" : ""}榜`,
+            `${formatDate}的${mode}${r18 ? "R18" : ""}榜`,
             `当前为第${page}页，共${pageAll}页，本页共${illusts.length}张，总共${pageSizeAll}张`,
         ];
         if (page < pageAll) {
-            list.push(`可使用 "#看看${Specifydate ? `${Specifydate}的` : ""}${mode}${r18 ? "R18" : ""}榜第${page - 0 + 1}页" 翻页`)
+            list.push(`可使用 "#看看${date ? `${formatDate}的` : ""}${mode}${r18 ? "R18" : ""}榜第${page - 0 + 1}页" 翻页`)
         }
 
         list.push(...illusts)
@@ -196,7 +200,7 @@ export default new class Pixiv {
      * @param {String} page 页数
      * @return {Array}
      */
-    async searchTags(tag, page = "1") {
+    async searchTags(tag, page = 1) {
         let api = `https://www.vilipix.com/api/v1/picture/public?limit=30&tags=${tag}&sort=new&offset=${(page - 1) * 30}`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
         if (!res) return { error: API_ERROR }
@@ -234,7 +238,7 @@ export default new class Pixiv {
      * @param {String} page 页数
      * @return {*}
      */
-    async searchTagspro(tag, page = "1", isfilter = true) {
+    async searchTagspro(tag, page = 1, isfilter = true) {
         let api = `https://api.obfs.dev/api/pixiv/search?word=${tag}&page=${page}&order=popular_desc`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
         if (!res) return { error: API_ERROR }
@@ -311,11 +315,11 @@ export default new class Pixiv {
 
     /**
      * @description: 用户uid搜图
-     * @param {String} uid 用户uid
-     * @param {String} page 页数
+     * @param {Number|String} keyword 用户uid或名称
+     * @param {Number|String} page 页数
      * @return {Array}
      */
-    async public(keyword, page = "1", isfilter = true) {
+    async public(keyword, page = 1, isfilter = true) {
         //关键词搜索
         if (!/^\d+$/.test(keyword)) {
             let wordapi = `https://www.vilipix.com/api/v1/search/user?type=author&keyword=${keyword}&limit=1&offset=0`
@@ -348,7 +352,7 @@ export default new class Pixiv {
         let api = `https://api.obfs.dev/api/pixiv/member_illust?id=${keyword}&page=${page}`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
         if (!res) return { error: API_ERROR };
-        if (res.error) return { error: user.error.message };
+        if (res.error) return { error: res.error.message };
         //没有作品直接返回信息
         if (lodash.isEmpty(res.illusts)) return { error: page >= 2 ? "这一页没有作品辣（＞人＜；）" : "Σ(っ °Д °;)っ这个淫居然没有作品" }
 

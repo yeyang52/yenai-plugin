@@ -86,15 +86,8 @@ export class example extends plugin {
 
         await e.reply("你先别急，马上去给你找哦ε(*´･ω･)з")
 
-        let day = moment().hour() >= 12 ? 1 : 2
-
-        let date = moment().subtract(day, "days").format("YYYY-MM-DD")
-
-        if (regRet[2]) date = regRet[2]
-
-        let page = common.translateChinaNum(regRet[6] || "1")
-
-        let res = await Pixiv.Rank(page, date, regRet[3], regRet[4], regRet[2])
+        let page = common.translateChinaNum(regRet[6] || 1)
+        let res = await Pixiv.Rank(page, regRet[2], regRet[3], regRet[4])
 
         if (res?.error) return e.reply(res.error)
 

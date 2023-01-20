@@ -108,7 +108,7 @@ export class example extends plugin {
         let regRet = tagReg.exec(e.msg)
 
         let { sese, sesepro } = Config.getGroup(e.group_id)
-        if ((!sese && !sesepro || sesepro && regRet[1]) && !e.isMaster) {
+        if ((!sese && !sesepro || !sesepro && regRet[1]) && !e.isMaster) {
             return e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
         }
 

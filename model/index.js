@@ -9,4 +9,17 @@ import GroupAdmin from "./GroupAdmin.js";
 import QQInterface from "./QQInterface.js";
 import Interface from './Interface.js';
 import CronValidate from './CronValidate.js';
-export { puppeteer, common, CPU, Pixiv, setu, uploadRecord, YamlReader, CronValidate, GroupAdmin, QQInterface, Interface }
+
+export {
+    puppeteer,
+    common,
+    CPU,
+    Pixiv,
+    setu,
+    uploadRecord,
+    YamlReader,
+    CronValidate,
+    GroupAdmin,
+    QQInterface,
+    Interface
+}

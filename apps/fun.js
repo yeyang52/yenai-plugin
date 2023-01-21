@@ -6,12 +6,12 @@ import { Config } from '../components/index.js'
 import { common, uploadRecord, QQInterface, Interface } from '../model/index.js'
 
 const heisitype = {
-  "白丝": "baisi",
-  "黑丝": "heisi",
-  "巨乳": "juru",
-  "jk": "jk",
-  "网红": "mcn",
-  "美足": "meizu"
+  "白丝": { type: "baisi", page: 43 },
+  "黑丝": { type: "heisi", page: 17 },
+  "巨乳": { type: "juru", page: 8 },
+  "jk": { type: "jk", page: 6 },
+  "网红": { type: "mcn", page: 36 },
+  "美足": { type: "meizu", page: 9 }
 }
 /**API请求错误文案 */
 const API_ERROR = "❎ 出错辣，请稍后重试"
@@ -275,9 +275,10 @@ export class example extends plugin {
 
     e.reply(START_Execution)
     //获取类型
-    let types = e.msg.match(/#?来点(.*)/)
+    let { type, page } = heisitype[e.msg.match(/#?来点(.*)/)[1]]
     //请求主页面
-    let url = `http://hs.heisiwu.com/${heisitype[types[1]]}/page/${lodash.random(1, 25)}`
+    let url = `http://hs.heisiwu.com/${type}/page/${lodash.random(1, page)}`
+    console.log(url);
     let homePage = await fetch(url).then(res => res.text()).catch(err => console.error(err))
     if (!homePage) return e.reply(API_ERROR)
     //解析html
@@ -303,7 +304,7 @@ export class example extends plugin {
   //萌堆
   async mengdui(e) {
     if (!Config.getGroup(e.group_id).sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
-
+    let domain = 'https://a6z9.com'
     //开始执行
     e.reply(START_Execution)
     let url = ''
@@ -311,9 +312,9 @@ export class example extends plugin {
       let keywords = e.msg.match(/#?来点神秘图s(.*)/)
       let mengduipage = JSON.parse(await redis.get('yenai:mengduipage')) || {}
 
-      let searcjurl = `https://c6x9.com/search.php?mdact=community&q=${keywords[1]}&page=${lodash.random(1, mengduipage[keywords[1]] || 1)}`
+      let searcjurl = `${domain}/search.php?mdact=community&q=${keywords[1]}&page=${lodash.random(1, mengduipage[keywords[1]] || 1)}`
       let search = await fetch(searcjurl).then(res => res.text());
-      let searchList = search.match(/https:\/\/c6x9.com\/post\/\d+.html/g)
+      let searchList = search.match(new RegExp(`${domain}/post/\\d+.html`, 'g'))
 
       if (lodash.isEmpty(searchList)) {
         let ERROR = search.match(/抱歉，未找到(.*)相关内容，建议简化一下搜索的关键词|搜索频率太快，请等一等再尝试！/)
@@ -336,7 +337,7 @@ export class example extends plugin {
       } else {
         random = appoint[0]
       }
-      url = `https://c6x9.com/post/${random}.html`
+      url = `${domain}/post/${random}.html`
     }
 
     let res = await fetch(url).then(res => res.text()).catch(err => console.error(err));

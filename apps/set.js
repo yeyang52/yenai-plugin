@@ -63,7 +63,7 @@ export class NewConfig extends plugin {
                     permission: 'master'
                 },
                 {
-                    reg: '^#椰奶更换代理[1234]$',
+                    reg: '^#椰奶(查看|更换)代理.*$',
                     fnc: 'proxy',
                     permission: 'master'
                 },
@@ -85,13 +85,19 @@ export class NewConfig extends plugin {
             ]
         })
         this.NoTitlepath = './plugins/yenai-plugin/config/config/Shielding_words.yaml'
-        this.rediskey = `yenai:proxy`
+        this.proxykey = `yenai:proxy`
+        this.proxydef = [
+            "i.pixiv.re",
+            "proxy.pixivel.moe",
+            "px2.rainchan.win",
+            "sex.nyan.xyz"
+        ]
     }
 
     //初始化
     async init() {
-        if (!await redis.get(this.rediskey)) {
-            await redis.set(this.rediskey, "i.pixiv.re")
+        if (!await redis.get(this.proxykey)) {
+            await redis.set(this.proxykey, "i.pixiv.re")
         }
     }
 
@@ -211,18 +217,16 @@ export class NewConfig extends plugin {
 
     //更换代理
     async proxy(e) {
-        let type = e.msg.match(/\d/) - 1
-        let proxy = [
-            "i.pixiv.re",
-            "proxy.pixivel.moe",
-            "px2.rainchan.win",
-            "sex.nyan.xyz"
-        ]
-        logger.mark(`${e.logFnc}切换为${proxy[type]}`)
-        await redis.set(this.rediskey, proxy[type])
-            .then(() => e.reply(`✅ 已经切换代理为「${proxy[type]}」`))
+        if (/查看/.test(e.msg)) return e.reply(await redis.get(this.proxykey))
+        let proxy = e.msg.replace(/#|椰奶更换代理/g, "").trim();
+        if (/^[1234]$/.test(proxy)) proxy = this.proxydef[proxy - 1]
+        if (!/([\w\d]+\.){2}[\w\d]+/.test(proxy)) return e.reply('请检查代理地址是否正确')
+        logger.mark(`${e.logFnc}切换为${proxy}`)
+        await redis.set(this.proxykey, proxy)
+            .then(() => e.reply(`✅ 已经切换代理为「${proxy}」`))
             .catch(err => console.log(err))
     }
+
     //查看涩涩设置
     async View_Settings(e) {
         let set = setu.getSeSeConfig(e)

@@ -341,10 +341,11 @@ export class example extends plugin {
 
     let res = await fetch(url).then(res => res.text()).catch(err => console.error(err));
     let div = res.match(/<div class="md-text mb20 f-16">[\s\S]+?<\/div>/)
+    if (!div) return e.reply("未获取到图片，请稍后重试")
     let list = div[0].match(/https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*/ig);
     if (!list) {
       if (!appoint) {
-        return e.reply(`可能超过今日限制，或稍后再试`, true)
+        return e.reply(`可能超过今日限制，请稍后再试`, true)
       } else {
         return e.reply(`请检查指定是否正确`, true)
       }

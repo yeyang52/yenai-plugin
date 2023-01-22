@@ -48,13 +48,13 @@ export class State extends plugin {
       //头像
       portrait: `https://q1.qlogo.cn/g?b=qq&s=0&nk=${Bot.uin}`,
       //运行时间
-      runTime: Formatting(Date.now() / 1000 - Bot.stat.start_time, true),
+      runTime: Formatting(Date.now() / 1000 - Bot.stat.start_time),
       //日历
       calendar: moment().format("YYYY-MM-DD HH:mm:ss"),
       //昵称
       nickname: Bot.nickname,
       //系统运行时间
-      systime: Formatting(os.uptime(), true),
+      systime: Formatting(os.uptime()),
       //收
       recv: Bot.statistics.recv_msg_cnt,
       //发
@@ -105,7 +105,7 @@ export class State extends plugin {
  * @param {boolean} yes  是否补零
  * @return {String} 天:?时:分:秒
  */
-function Formatting(time, repair) {
+function Formatting(time, repair = true) {
   let times = common.getsecond(time, repair)
 
   let { second, minute, hour, day } = times

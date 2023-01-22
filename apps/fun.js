@@ -6,8 +6,8 @@ import { Config } from '../components/index.js'
 import { common, uploadRecord, QQInterface, Interface } from '../model/index.js'
 
 const heisitype = {
-  "白丝": { type: "baisi", page: 43 },
-  "黑丝": { type: "heisi", page: 17 },
+  "白丝": { type: "baisi", page: 17 },
+  "黑丝": { type: "heisi", page: 43 },
   "巨乳": { type: "juru", page: 8 },
   "jk": { type: "jk", page: 6 },
   "网红": { type: "mcn", page: 36 },

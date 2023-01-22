@@ -66,7 +66,7 @@ export default new class Pixiv {
             },
 
         }
-        this.domain = 'http://43.133.97.139'
+        this.domain = 'http://api.liaobiao.top/'
     }
     /**
      * @description: 获取插画信息

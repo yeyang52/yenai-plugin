@@ -309,20 +309,19 @@ export class example extends plugin {
     e.reply(START_Execution)
     let url = ''
     if (/#?来点神秘图s/.test(e.msg)) {
-      let keywords = e.msg.match(/#?来点神秘图s(.*)/)
+      let keywords = e.msg.match(/#?来点神秘图s(.*)/)[1]
       let mengduipage = JSON.parse(await redis.get('yenai:mengduipage')) || {}
-
-      let searcjurl = `${domain}/search.php?mdact=community&q=${keywords[1]}&page=${lodash.random(1, mengduipage[keywords[1]] || 1)}`
-      let search = await fetch(searcjurl).then(res => res.text());
-      let searchList = search.match(new RegExp(`${domain}/post/\\d+.html`, 'g'))
-
+      let randomPage = lodash.random(1, mengduipage[keywords] || 1)
+      let searchurl = `${domain}/search.php?mdact=community&q=${keywords}&page=${randomPage}`
+      let search = await fetch(searchurl).then(res => res.text());
+      let searchList = lodash.uniq(search.match(/https?:\/\/.*?\.com\/post\/\d+.html/g))
       if (lodash.isEmpty(searchList)) {
         let ERROR = search.match(/抱歉，未找到(.*)相关内容，建议简化一下搜索的关键词|搜索频率太快，请等一等再尝试！/)
         return ERROR ? e.reply(ERROR[0]?.replace(/<.*?>/g, "") || "未找到相关内容") : e.reply("未找到相关内容")
       }
       //保存该关键词的最大页数
-      let searchpage = Math.max(...search.match(/<a href=".*?" class="">(\d+)<\/a>/g).map(item => item.match(/<a href=".*?" class="">(\d+)<\/a>/)[1]))
-      mengduipage[keywords[1]] = searchpage
+      let searchpage = Math.max(...search.match(/<a href=".*?" class="(now-page)?">(\d+)<\/a>/g)?.map(item => item.match(/<a href=".*?" class="(now-page)?">(\d+)<\/a>/)[2])) || 1
+      mengduipage[keywords] = searchpage
       await redis.set('yenai:mengduipage', JSON.stringify(mengduipage))
 
       url = lodash.sample(searchList)
@@ -341,8 +340,8 @@ export class example extends plugin {
     }
 
     let res = await fetch(url).then(res => res.text()).catch(err => console.error(err));
-    let resReg = new RegExp(`<img src="(https://md1\.lianhevipimg\.com/(.*?)/(\\d+).jpg")`, 'g');
-    let list = res.match(resReg);
+    let div = res.match(/<div class="md-text mb20 f-16">[\s\S]+?<\/div>/)
+    let list = div[0].match(/https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*/ig);
     if (!list) {
       if (!appoint) {
         return e.reply(`可能超过今日限制，或稍后再试`, true)
@@ -350,8 +349,7 @@ export class example extends plugin {
         return e.reply(`请检查指定是否正确`, true)
       }
     }
-    let msg = list.map(item => segment.image(item.match(/https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*/i)[0]))
-    msg = lodash.take(msg, 30)
+    let msg = lodash.take(list.map(item => segment.image(item)), 30)
     common.getRecallsendMsg(e, msg, false)
   }
 

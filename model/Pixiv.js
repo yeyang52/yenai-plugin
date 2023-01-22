@@ -66,6 +66,7 @@ export default new class Pixiv {
             },
 
         }
+        this.domain = 'http://43.133.97.139'
     }
     /**
      * @description: 获取插画信息
@@ -74,7 +75,7 @@ export default new class Pixiv {
      */
     async Worker(ids, filter = false) {
 
-        let api = `https://api.obfs.dev/api/pixiv/illust?id=${ids}`
+        let api = `${this.domain}/api/pixiv/illust?id=${ids}`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
         if (!res) return { error: API_ERROR };
 
@@ -127,7 +128,6 @@ export default new class Pixiv {
      * @return {Array} 
      */
     async Rank(page = 1, date = '', mode = "周", r18 = false) {
-        // let api = `https://api.bbmang.me/ranks?page=${page}&date=${date}&mode=${this.ranktype[mode]}&pageSize=30`
 
         //转为大写
         mode = lodash.toUpper(mode)
@@ -148,7 +148,7 @@ export default new class Pixiv {
         }
         let parame = `mode=${type}&page=${page}${date ? `&date=${date}` : ""}`
         //请求api   
-        let api = `https://api.obfs.dev/api/pixiv/rank?${parame}`
+        let api = `${this.domain}/api/pixiv/rank?${parame}`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
 
         if (!res || res.error || lodash.isEmpty(res.illusts)) {
@@ -239,7 +239,7 @@ export default new class Pixiv {
      * @return {*}
      */
     async searchTagspro(tag, page = 1, isfilter = true) {
-        let api = `https://api.obfs.dev/api/pixiv/search?word=${tag}&page=${page}&order=popular_desc`
+        let api = `${this.domain}/api/pixiv/search?word=${tag}&page=${page}&order=popular_desc`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
         if (!res) return { error: API_ERROR }
         if (res.error) return { error: res.message }
@@ -283,15 +283,10 @@ export default new class Pixiv {
      * @return {Array}
      */
     async gettrend_tags() {
-        let api = "https://api.obfs.dev/api/pixiv/tags"
+        let api = `${this.domain}/api/pixiv/tags`
 
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
-
-        if (!res || res.error) {
-            api = `https://api.imki.moe/api/pixiv/tags`
-            res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
-            if (!res) return { error: API_ERROR }
-        }
+        if (!res) return { error: API_ERROR }
         if (!res.trend_tags) return { error: "呜呜呜，没有获取到数据(๑ १д१)" }
 
         let list = []
@@ -349,7 +344,7 @@ export default new class Pixiv {
         //     `介绍：${lodash.truncate(comment)}`
         // ]]
         //作品
-        let api = `https://api.obfs.dev/api/pixiv/member_illust?id=${keyword}&page=${page}`
+        let api = `${this.domain}/api/pixiv/member_illust?id=${keyword}&page=${page}`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
         if (!res) return { error: API_ERROR };
         if (res.error) return { error: res.error.message };
@@ -425,7 +420,7 @@ export default new class Pixiv {
      * @return {*} 
      */
     async getrelated_works(pid, isfilter = true) {
-        let api = `https://api.obfs.dev/api/pixiv/related?id=${pid}`
+        let api = `${this.domain}/api/pixiv/related?id=${pid}`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
         if (!res) return { error: API_ERROR }
         if (res.error) return { error: res.error.user_message };

@@ -66,7 +66,7 @@ export default new class Pixiv {
             },
 
         }
-        this.domain = 'http://api.liaobiao.top/'
+        this.domain = 'http://api.liaobiao.top'
     }
     /**
      * @description: 获取插画信息
@@ -146,7 +146,9 @@ export default new class Pixiv {
         if (page > pageAll) {
             return { error: "哪有那么多图片给你辣(•̀へ •́ ╮ )" }
         }
-        let parame = `mode=${type}&page=${page}${date ? `&date=${date}` : ""}`
+        if (!date) date = moment().subtract(moment().hour() >= 12 ? 1 : 2, "days").format("YYYY-MM-DD")
+
+        let parame = `mode=${type}&page=${page}&date=${date}`
         //请求api   
         let api = `${this.domain}/api/pixiv/rank?${parame}`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))

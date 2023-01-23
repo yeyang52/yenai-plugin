@@ -47,7 +47,7 @@ export class example extends plugin {
           fnc: 'ZFB'
         },
         {
-          reg: '^#翻译.*$',
+          reg: '^#(([\u4e00-\u9fa5]{2,6})-)?([\u4e00-\u9fa5]{2,6})翻译(.*)$',
           fnc: 'youdao'
         },
         {
@@ -125,9 +125,9 @@ export class example extends plugin {
       msg = source.message.filter(item => item.type == 'text').map(item => item.text).join("");
     }
 
-    msg = msg.replace(/#|翻译/g, "").trim()
+    msg = msg.match(/#(([\u4e00-\u9fa5]{2,6})-)?([\u4e00-\u9fa5]{2,6})翻译(.*)/)
     if (!msg) return;
-    let results = await Interface.youdao(msg);
+    let results = await Interface.youdao(msg[4], msg[3], msg[2]);
     return e.reply(results, true)
   }
 

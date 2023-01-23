@@ -74,7 +74,7 @@ export class example extends plugin {
 
         await e.reply(msg)
 
-        img.length == 1 || /R-18/.test(msg[4]) ? common.recallsendMsg(e, img) : common.getRecallsendMsg(e, img, false)
+        img.length == 1 ? common.recallsendMsg(e, img) : common.getRecallsendMsg(e, img, false)
     }
 
     //p站排行榜

@@ -47,7 +47,7 @@ export class example extends plugin {
           fnc: 'ZFB'
         },
         {
-          reg: '^#(([\u4e00-\u9fa5]{2,6})-)?([\u4e00-\u9fa5]{2,6})翻译(.*)$',
+          reg: '^#(([\u4e00-\u9fa5]{2,6})-)?([\u4e00-\u9fa5]{2,6})?翻译(.*)$',
           fnc: 'youdao'
         },
         {
@@ -114,7 +114,8 @@ export class example extends plugin {
 
   /**有道翻译 */
   async youdao(e) {
-    let msg = e.msg
+    let msg = e.msg.match(/#(([\u4e00-\u9fa5]{2,6})-)?([\u4e00-\u9fa5]{2,6})?翻译(.*)/)
+    if (!msg) return;
     if (e.source) {
       let source;
       if (e.isGroup) {
@@ -122,11 +123,9 @@ export class example extends plugin {
       } else {
         source = (await e.friend.getChatHistory(e.source.time, 1)).pop();
       }
-      msg = source.message.filter(item => item.type == 'text').map(item => item.text).join("");
+      msg[4] = source.message.filter(item => item.type == 'text').map(item => item.text).join("");
     }
 
-    msg = msg.match(/#(([\u4e00-\u9fa5]{2,6})-)?([\u4e00-\u9fa5]{2,6})翻译(.*)/)
-    if (!msg) return;
     let results = await Interface.youdao(msg[4], msg[3], msg[2]);
     return e.reply(results, true)
   }

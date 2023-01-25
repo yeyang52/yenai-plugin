@@ -241,7 +241,16 @@ export default new class Pixiv {
      * @return {*}
      */
     async searchTagspro(tag, page = 1, isfilter = true) {
-        let api = `${this.domain}/api/pixiv/search?word=${tag}&page=${page}&order=popular_desc`
+        let autocomplete = await fetch(`${this.domain}/api/pixiv/search_autocomplete?word=${tag}`).then(res => res.json()).catch(err => console.log(err))
+        let translated_tag = '';
+        autocomplete.tags.some(item => {
+            if (tag === item.translated_name) {
+                logger.mark(`[椰奶Pixiv][searchTagspro]替换关键词 ${logger.yellow(tag)} 为 ${logger.green(item.name)}`)
+                translated_tag = item.name
+                return true
+            }
+        })
+        let api = `${this.domain}/api/pixiv/search?word=${translated_tag || tag}&page=${page}&order=popular_desc`
         let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
         if (!res) return { error: API_ERROR }
         if (res.error) return { error: res.message }

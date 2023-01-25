@@ -405,8 +405,8 @@ export class example extends plugin {
     if (regRet[1] == 'mode') return false;
     let picObj = picapis[lodash.sample(Object.keys(picapis).filter(item => new RegExp(item).test(regRet[1])))]
     if (Array.isArray(picObj)) picObj = lodash.sample(picObj)
-    let urlReg = /(https?|ftp|file):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]/i
-    if (!picObj.url && !urlReg.test(picObj) && !Array.isArray(picObj)) {
+    let urlReg = /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i
+    if (!picObj.url && !urlReg.test(encodeURI(picObj)) && !Array.isArray(picObj)) {
       return logger.error(`${e.logFnc}未找到url`);
     }
 

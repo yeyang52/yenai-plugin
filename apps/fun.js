@@ -340,6 +340,8 @@ export class example extends plugin {
 
     let res = await fetch(url).then(res => res.text()).catch(err => console.error(err));
     let div = res.match(/<div class="md-text mb20 f-16">[\s\S]+?<\/div>/)
+    let title = res.match(/<h1.*?>(.*?)</)
+
     if (!div) return e.reply("未获取到图片，请稍后重试")
     let list = div[0].match(/https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*/ig);
     if (!list) {
@@ -350,6 +352,7 @@ export class example extends plugin {
       }
     }
     let msg = lodash.take(list.map(item => segment.image(item)), 30)
+    if (title) msg.unshift(title[1])
     common.getRecallsendMsg(e, msg, false)
   }
 

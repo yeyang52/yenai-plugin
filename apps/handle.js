@@ -18,7 +18,6 @@ export class anotice extends plugin {
                 {
                     reg: '^#?(同意|拒绝)$',
                     fnc: 'Handle',
-                    event: 'message',
                 },
                 {
                     reg: '^#?回复.*$',
@@ -121,7 +120,12 @@ export class anotice extends plugin {
         if (!e.isMaster) return false;
         if (!e.source) return false;
         let yes = /同意/.test(e.msg) ? true : false
-        let source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
+        let source;
+        if (e.isGroup) {
+            source = (await e.group.getChatHistory(e.source.seq, 1)).pop();
+        } else {
+            source = (await e.friend.getChatHistory(e.source.time, 1)).pop();
+        }
 
         let res
         try {

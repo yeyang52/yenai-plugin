@@ -44,6 +44,17 @@ export class invitation extends plugin {
                         }
                         break;
                     case 'add':
+                        if (Config.groupAdd.openGroup.includes(e.group_id)) {
+                            let msg = [`${Config.groupAdd.msg}\n`,
+                            segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
+                            `QQ号：${e.user_id}\n`,
+                            `昵称：${e.nickname}\n`,
+                            `${e.comment}`
+                            ]
+                            if (e.inviter_id !== undefined) { msg.push(`邀请人：${e.inviter_id}`) }
+                            let sendmsg = await Bot.pickGroup(e.group_id).sendMsg(msg)
+                            await redis.set(`yenai:groupAdd:${sendmsg.message_id}`, e.user_id, { EX: 3600 })
+                        }
                         if (!Config.getGroup(e.group_id).addGroupApplication) return false;
                         logger.mark("[椰奶]加群申请")
                         msg = [
@@ -82,3 +93,6 @@ export class invitation extends plugin {
         await common.sendMasterMsg(msg)
     }
 }
+Bot.on("request.group.add", async (e) => {
+
+})

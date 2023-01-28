@@ -46,38 +46,29 @@ class Config {
   get masterQQ() {
     return cfg.masterQQ
   }
-  //获取全局设置
+  /**获取全局设置 */
   get Notice() {
-    return this.getNotice()
+    return this.getDefOrConfig('whole')
   }
-  //进群验证配置
+  /**进群验证配置 */
   get verifycfg() {
-    return this.getverifycfg();
+    return this.getDefOrConfig("groupverify");
   }
-  //头衔屏蔽词
+  /**头衔屏蔽词 */
   get NoTitle() {
-    return this.getNoTitle();
+    return this.getDefOrConfig("Shielding_words");
   }
-  //头衔屏蔽词
-  getNoTitle() {
-    let config = this.getConfig("Shielding_words")
-    let def = this.getdefSet("Shielding_words")
-    return { ...def, ...config }
-  }
-  //进群验证
-  getverifycfg() {
-    let config = this.getConfig("groupverify")
-    let def = this.getdefSet("groupverify")
-    return { ...def, ...config }
+  /**加群通知 */
+  get groupAdd() {
+    return this.getDefOrConfig("groupAdd");
   }
 
-  /** 通知配置 */
-  getNotice() {
-    let def = this.getdefSet('whole')
-    let config = this.getConfig('whole')
+  /** 默认配置和用户配置*/
+  getDefOrConfig(name) {
+    let def = this.getdefSet(name)
+    let config = this.getConfig(name)
     return { ...def, ...config }
   }
-
   /** 默认配置 */
   getdefSet(name) {
     return this.getYaml('default_config', name)

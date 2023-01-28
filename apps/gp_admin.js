@@ -2,7 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
 import lodash from 'lodash'
 import { Config } from '../components/index.js'
-import { GroupAdmin as ga, common, QQInterface, puppeteer, CronValidate } from '../model/index.js'
+import { GroupAdmin as ga, common, QQInterface, puppeteer, CronValidate, YamlReader } from '../model/index.js'
 import moment from 'moment'
 
 
@@ -145,6 +145,10 @@ export class Basics extends plugin {
                 {
                     reg: '^#((今|昨|前|明|后)天|\\d{4}-\\d{1,2}-\\d{1,2})谁生日$',
                     fnc: 'groupBirthday'
+                },
+                {
+                    reg: '^#?(开启|关闭)加群通知$',
+                    fnc: 'handleGroupAdd'
                 }
             ]
         })
@@ -580,7 +584,6 @@ export class Basics extends plugin {
         if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true);
 
         let RegRet = e.msg.match(/定时(禁言|解禁)((\d{1,2})(:|：)(\d{1,2})|.*)/)
-        console.log(RegRet);
         if (!RegRet || !RegRet[2]) return e.reply(`格式不对\n示范：#定时${type ? "禁言" : "解禁"}00:00 或 #定时${type ? "禁言" : "解禁"} + cron表达式`)
         let cron = ''
         if (RegRet[3] && RegRet[5]) {
@@ -752,4 +755,21 @@ export class Basics extends plugin {
         )
     }
 
+    async handleGroupAdd(e) {
+        if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
+        if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true);
+        let path = `./plugins/yenai-plugin/config/config/groupAdd.yaml`
+        let yaml = new YamlReader(path)
+        let type = /开启/.test(e.msg)
+        let key = Config.groupAdd.openGroup.indexOf(e.group_id)
+        console.log(key != -1 && type);
+        if (key != -1 && type) return e.reply("❎ 本群加群申请通知已处于开启状态")
+        if (key == -1 && !type) return e.reply("❎ 本群暂未开启加群申请通知")
+        if (type) {
+            yaml.addIn('openGroup', e.group_id)
+        } else {
+            yaml.delete(`openGroup.${key}`)
+        }
+        e.reply(`✅ 已${type ? "开启" : "关闭"}「${e.group_id}」的加群申请通知`)
+    }
 }

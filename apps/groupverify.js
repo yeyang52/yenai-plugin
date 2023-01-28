@@ -22,12 +22,8 @@ export class NEWCMD extends plugin {
           fnc: 'cmdPass'
         },
         {
-          reg: '^#开启验证$',
-          fnc: 'openverify'
-        },
-        {
-          reg: '^#关闭验证$',
-          fnc: 'closeverify'
+          reg: '^#(开启|关闭)验证$',
+          fnc: 'handelverify'
         },
         {
           reg: '^#切换验证模式$',
@@ -106,24 +102,24 @@ export class NEWCMD extends plugin {
   }
 
   //开启验证
-  async openverify(e) {
+  async handelverify(e) {
     if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply("❎ 该命令仅限管理员可用", true);
     if (!e.group.is_admin && !e.group.is_owner) return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
     let verifycfg = Config.verifycfg
-    if (verifycfg.openGroup.indexOf(e.group_id) != -1) return e.reply("❎ 本群验证已处于开启状态")
-    new YamlReader(this.verifypath).addIn('openGroup', e.group_id)
-    e.reply("✅ 已开启本群验证")
+    let type = /开启/.test(e.msg)
+    let key = verifycfg.openGroup.indexOf(e.group_id)
+    if (key != -1 && type) return e.reply("❎ 本群验证已处于开启状态")
+    if (key == -1 && !type) return e.reply("❎ 本群暂未开启验证")
+    let yaml = new YamlReader(this.verifypath)
+    if (type) {
+      yaml.addIn('openGroup', e.group_id)
+    } else {
+
+      yaml.delete(`openGroup.${key}`)
+    }
+    e.reply(`✅ 已${type ? "开启" : "关闭"}本群验证`)
   }
 
-  //关闭验证
-  async closeverify(e) {
-    if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply("❎ 该命令仅限管理员可用", true);
-    let verifycfg = Config.verifycfg
-    let key = verifycfg.openGroup.indexOf(e.group_id)
-    if (key == -1) return e.reply("❎ 本群暂未开启验证")
-    new YamlReader(this.verifypath).delete(`openGroup.${key}`)
-    e.reply("✅ 已关闭本群验证")
-  }
   //切换验证模式
   async setmode(e) {
     if (!e.isMaster) return e.reply("❎ 该命令仅限主人可用", true);

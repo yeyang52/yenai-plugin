@@ -67,10 +67,11 @@ export default new class newCommon {
      * @description: //发送转发消息
      * @param {*} e oicq
      * @param {Array} message 发送的消息
-     * @param {Number} recallMsg  撤回时间
-     * @param {Boolean} isBot 转发信息是否以bot信息发送
-     * @param {String} fkmsg 风控消息不传则默认消息
-     * @param {Boolean} isxml 是否处理卡片
+     * @param {Object} data 发送的消息
+     * @param {Number} data.recallMsg  撤回时间
+     * @param {Boolean} data.isBot 转发信息是否以bot信息发送
+     * @param {String} data.fkmsg 风控消息不传则默认消息
+     * @param {Boolean} data.isxml 是否处理卡片
      * @return {Object} 消息是否发送成功的对象
      */
     async getforwardMsg(e, message, { recallMsg = 0, isBot = true, fkmsg = "", isxml = false } = {}) {

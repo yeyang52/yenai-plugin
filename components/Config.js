@@ -28,6 +28,7 @@ class Config {
       if (!fs.existsSync(`${path}${file}`)) {
         fs.copyFileSync(`${pathDef}${file}`, `${path}${file}`)
       }
+      this.watch(`${path}${file}`, file.replace('.yaml', ""), 'config')
     }
   }
 

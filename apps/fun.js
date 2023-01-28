@@ -304,7 +304,7 @@ export class example extends plugin {
   // 萌堆
   async mengdui (e) {
     if (!Config.getGroup(e.group_id).sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
-    let domain = 'https://a6z9.com'
+    let domain = 'https://b8m9.com'
     // 开始执行
     e.reply(START_EXECUTION)
     let url = ''

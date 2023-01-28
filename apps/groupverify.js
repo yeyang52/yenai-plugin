@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from "oicq";
 import { Config } from "../components/index.js"
-import { YamlReader, common } from '../model/index.js'
+import { YamlReader, common, GroupAdmin as ga } from '../model/index.js'
 //全局
 let temp = {};
 const ops = ["+", "-"];
@@ -14,11 +14,11 @@ export class NEWCMD extends plugin {
       priority: 5,
       rule: [
         {
-          reg: '^#重新验证.*$',
+          reg: '^#重新验证(\d+|从未发言的人)?$',
           fnc: 'cmdReverify'
         },
         {
-          reg: '^#绕过验证.*$',
+          reg: '^#绕过验证(\d+)?$',
           fnc: 'cmdPass'
         },
         {
@@ -43,7 +43,6 @@ export class NEWCMD extends plugin {
   }
   //重新验证
   async cmdReverify(e) {
-
     if (e?.group?.mute_left > 0) return
 
     let verifycfg = Config.verifycfg
@@ -54,15 +53,13 @@ export class NEWCMD extends plugin {
 
     if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply("❎ 该命令仅限管理员可用", true);
 
-    let qq = e.msg.replace(/#|重新验证/g, "").trim();
+    let qq = e.message.find(item => item.type == "at")?.qq
+    if (!qq) qq = e.msg.replace(/#|重新验证/g, "").trim();
 
-    if (e.message.length != 1) {
-      qq = e.message.find(item => item.type == "at")?.qq
-    } else {
-      qq = Number(qq.match(/[1-9]\d*/g));
-    }
+    if (qq == "从未发言的人") return this.cmdReverifyNeverSpeak(e)
+
     if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
-
+    qq = Number(qq);
     if (qq == Bot.uin) return
 
     if (Config.masterQQ.includes(qq)) return e.reply("❎ 该命令对机器人管理员无效");
@@ -81,17 +78,13 @@ export class NEWCMD extends plugin {
 
     if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply("❎ 该命令仅限管理员可用", true);
 
-    let qq = e.msg.replace(/#|绕过验证/g, "").trim();
+    let qq = e.message.find(item => item.type == "at")?.qq
+    if (!qq) qq = e.msg.replace(/#|绕过验证/g, "").trim();
 
-    if (e.message.length != 1) {
-      qq = e.message.find(item => item.type == "at")?.qq
-    } else {
-      qq = Number(qq.match(/[1-9]\d*/g));
-    }
     if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
 
     if (qq == Bot.uin) return
-
+    qq = Number(qq);
     if (!temp[qq + e.group_id]) return e.reply("❎ 目标群成员当前无需验证");
 
     clearTimeout(temp[qq + e.group_id].kickTimer);
@@ -101,6 +94,15 @@ export class NEWCMD extends plugin {
     delete temp[qq + e.group_id];
 
     return await e.reply(verifycfg.SuccessMsgs[e.group_id] || verifycfg.SuccessMsgs[0] || "✅ 验证成功，欢迎入群");
+  }
+
+  async cmdReverifyNeverSpeak(e) {
+    let list = ga.getNeverSpeak(e.group_id)
+    if (!list) return e.reply("咋群全是好淫哦~全都发过言辣٩(๑•̀ω•́๑)۶")
+    list.forEach(async item => {
+      await verify(item.user_id, e.group_id, e)
+      await common.sleep(200)
+    })
   }
 
   //开启验证
@@ -225,8 +227,9 @@ Bot.on('notice.group.decrease', async (e) => {
 //发送验证信息
 async function verify(user_id, group_id, e) {
   if (!e.group.is_admin && !e.group.is_owner) return;
-
-  logger.mark(`${e.logFnc}进行${user_id}的验证`)
+  user_id = Number(user_id);
+  group_id = Number(group_id);
+  logger.mark(`[椰奶进群验证]进行${user_id}的验证`)
 
   let verifycfg = Config.verifycfg
   let { range } = verifycfg

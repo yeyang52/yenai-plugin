@@ -69,10 +69,11 @@ export default new class newCommon {
      * @param {Array} message 发送的消息
      * @param {Number} time  撤回时间
      * @param {Boolean} isBot 转发信息是否以bot信息发送
-     * @param {Boolean} isfk 是否发送默认风控消息
+     * @param {String} fkmsg 风控消息不传则默认消息
+     * @param {Boolean} isxml 是否处理卡片
      * @return {Boolean}
      */
-    async getforwardMsg(e, message, time = 0, isBot = true, isfk = true) {
+    async getforwardMsg(e, message, time = 0, isBot = true, fkmsg = "", isxml = false) {
         let forwardMsg = []
         for (let i of message) {
             forwardMsg.push(
@@ -89,21 +90,18 @@ export default new class newCommon {
         } else {
             forwardMsg = await e.friend.makeForwardMsg(forwardMsg)
         }
-        //处理转发卡片
-        forwardMsg.data = forwardMsg.data
-            .replace('<?xml version="1.0" encoding="utf-8"?>', '<?xml version="1.0" encoding="utf-8" ?>')
-            .replace(/\n/g, '')
-            .replace(/<title color="#777777" size="26">(.+?)<\/title>/g, '___')
-            .replace(/___+/, '<title color="#777777" size="26">涩批(//// ^ ////)</title>');
+        if (isxml) {
+            //处理转发卡片
+            forwardMsg.data = forwardMsg.data
+                .replace('<?xml version="1.0" encoding="utf-8"?>', '<?xml version="1.0" encoding="utf-8" ?>')
+                .replace(/\n/g, '')
+                .replace(/<title color="#777777" size="26">(.+?)<\/title>/g, '___')
+                .replace(/___+/, '<title color="#777777" size="26">涩批(//// ^ ////)</title>');
+        }
         //发送消息
         let res = await e.reply(forwardMsg, false, { recallMsg: time })
-        if (!res) {
-            if (isfk) {
-                await e.reply("消息发送失败，可能被风控")
-            }
-            return false
-        }
-        return true;
+        if (!res) await e.reply(fkmsg ? fkmsg : "消息发送失败，可能被风控")
+        return res;
     }
 
 
@@ -112,19 +110,14 @@ export default new class newCommon {
      * @param {*} e oicq
      * @param {*} msg 消息
      * @param {Number} time 撤回时间
-     * @param {Boolean} isfk 是否发送默认风控消息
+     * @param {Boolean} fkmsg 风控消息
      * @return {*}
      */
-    async recallsendMsg(e, msg, time = setu.getRecallTime(e.group_id), isfk = true) {
+    async recallsendMsg(e, msg, time = setu.getRecallTime(e.group_id), fkmsg = '') {
         //发送消息
         let res = await e.reply(msg, false, { recallMsg: time })
-        if (!res) {
-            if (isfk) {
-                await e.reply("消息发送失败，可能被风控")
-            }
-            return false
-        }
-        return true;
+        if (!res) await e.reply(fkmsg ? fkmsg : "消息发送失败，可能被风控")
+        return res;
     }
 
     /**
@@ -132,17 +125,12 @@ export default new class newCommon {
      * @param {*} e oicq
      * @param {Array} msg 发送的消息
      * @param {Boolean} isBot 转发信息是否以bot信息发送
-     * @param {Boolean} isfk  是否发送默认风控消息
+     * @param {String} fkmsg  风控消息
      * @return {Boolean}
      */
-    async getRecallsendMsg(e, msg, isBot = true, isfk = true) {
+    async getRecallsendMsg(e, msg, isBot = true, fkmsg = '') {
         let time = setu.getRecallTime(e.group_id)
-
-        let res = await this.getforwardMsg(e, msg, time, isBot, isfk)
-
-        if (!res) return false;
-
-        return true;
+        return await this.getforwardMsg(e, msg, time, isBot, fkmsg, true)
     }
 
     /**

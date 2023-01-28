@@ -2,7 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
 import lodash from 'lodash'
 import { Config } from '../components/index.js'
-import { GroupAdmin as gd, common, QQInterface, puppeteer, CronValidate } from '../model/index.js'
+import { GroupAdmin as ga, common, QQInterface, puppeteer, CronValidate } from '../model/index.js'
 import moment from 'moment'
 
 
@@ -18,7 +18,7 @@ const TimeUnitReg = Object.keys(common.Time_unit).join("|")
 const noactivereg = new RegExp(`^#(查看|清理|确认清理|获取)(${Numreg})个?(${TimeUnitReg})没发言的人(第(${Numreg})页)?$`)
 const Autisticreg = new RegExp(`^#?我要(自闭|禅定)(${Numreg})?个?(${TimeUnitReg})?$`, "i")
 //获取定时任务
-const redisTask = await gd.getRedisMuteTask() || false;
+const redisTask = await ga.getRedisMuteTask() || false;
 export class Basics extends plugin {
     constructor() {
         super({
@@ -462,7 +462,7 @@ export class Basics extends plugin {
 
     //获取禁言列表
     async Mutelist(e) {
-        let mutelist = await gd.getMuteList(e.group_id)
+        let mutelist = await ga.getMuteList(e.group_id)
         if (!mutelist) return e.reply("还没有人被禁言欸(O∆O)")
         let msg = [];
         for (let i of mutelist) {
@@ -484,7 +484,7 @@ export class Basics extends plugin {
         if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
         //判断是否有管理
         if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true);
-        let res = await gd.releaseAllMute(e.group_id)
+        let res = await ga.releaseAllMute(e.group_id)
         e.reply(res ? "已经把全部的禁言解除辣╮( •́ω•̀ )╭" : "都没有人被禁言我怎么解的辣＼(`Δ’)／")
     }
 
@@ -496,17 +496,17 @@ export class Basics extends plugin {
         //确认清理直接执行
         if (Reg[1] == "确认清理") {
             if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true);
-            let msg = gd.clearNoactive(e.group_id, Reg[2], Reg[3])
+            let msg = ga.clearNoactive(e.group_id, Reg[2], Reg[3])
             return common.getforwardMsg(e, msg)
         }
         //查看和清理都会发送列表
         let page = common.translateChinaNum(Reg[5] || 1)
-        let msg = await gd.getNoactiveInfo(e.group_id, Reg[2], Reg[3], page)
+        let msg = await ga.getNoactiveInfo(e.group_id, Reg[2], Reg[3], page)
         if (msg?.error) return e.reply(msg.error)
         //清理
         if (Reg[1] == "清理") {
             if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true);
-            let list = await gd.noactiveList(e.group_id, Reg[2], Reg[3])
+            let list = await ga.noactiveList(e.group_id, Reg[2], Reg[3])
             e.reply(`本此共需清理「${list.length}」人，防止误触发\n请发送：#确认清理${Reg[2]}${Reg[3]}没发言的人`)
         }
         common.getforwardMsg(e, msg)
@@ -515,13 +515,13 @@ export class Basics extends plugin {
     //查看和清理从未发言的人
     async neverspeak(e) {
         if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
-        let list = await gd.getNeverSpeak(e.group_id)
+        let list = await ga.getNeverSpeak(e.group_id)
         if (!list) return e.reply(`咋群全是好淫哦~全都发过言辣٩(๑•̀ω•́๑)۶`)
         //确认清理直接执行
         if (/^#?确认清理/.test(e.msg)) {
             if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true);
             e.reply("我要开始清理了哦，这可能需要一点时间٩(๑•ㅂ•)۶")
-            let msg = await gd.BatchKickMember(e.group_id, list.map(item => item.user_id))
+            let msg = await ga.BatchKickMember(e.group_id, list.map(item => item.user_id))
             return common.getforwardMsg(e, msg)
         }
         //清理
@@ -534,7 +534,7 @@ export class Basics extends plugin {
         //发送列表
         let page = e.msg.match(new RegExp(Numreg))
         page = page ? common.translateChinaNum(page[0]) : 1
-        let listInfo = await gd.getNeverSpeakInfo(e.group_id, page)
+        let listInfo = await ga.getNeverSpeakInfo(e.group_id, page)
         if (listInfo.error) return e.reply(listInfo.error);
         common.getforwardMsg(e, listInfo)
     }
@@ -545,9 +545,9 @@ export class Basics extends plugin {
         num = num ? common.translateChinaNum(num[0]) : 10
         let msg = '';
         if (/(不活跃|潜水)/.test(e.msg)) {
-            msg = await gd.InactiveRanking(e.group_id, num)
+            msg = await ga.InactiveRanking(e.group_id, num)
         } else {
-            msg = await gd.getRecentlyJoined(e.group_id, num)
+            msg = await ga.getRecentlyJoined(e.group_id, num)
         }
         common.getforwardMsg(e, msg)
     }
@@ -569,12 +569,12 @@ export class Basics extends plugin {
         if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(Permission_ERROR)
         let type = /禁言/.test(e.msg)
         if (/任务/.test(e.msg)) {
-            let task = gd.getMuteTask()
+            let task = ga.getMuteTask()
             if (!task.length) return e.reply('目前还没有定时禁言任务')
             return common.getforwardMsg(e, task)
         }
         if (/取消/.test(e.msg)) {
-            gd.delMuteTask(e.group_id, type)
+            ga.delMuteTask(e.group_id, type)
             return e.reply(`已取消本群定时${type ? "禁言" : "解禁"}`)
         }
         if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true);
@@ -592,7 +592,7 @@ export class Basics extends plugin {
             if (Validate !== true) return e.reply(Validate)
         }
 
-        let res = await gd.setMuteTask(e.group_id, cron, type)
+        let res = await ga.setMuteTask(e.group_id, cron, type)
 
         res ?
             e.reply(`✅设置定时禁言成功，可发【#定时禁言任务】查看`) :

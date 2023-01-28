@@ -1,12 +1,12 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import { segment } from "oicq";
-import { Config } from "../components/index.js"
+import { segment } from 'oicq'
+import { Config } from '../components/index.js'
 import { YamlReader, common, GroupAdmin as ga } from '../model/index.js'
-//全局
-let temp = {};
-const ops = ["+", "-"];
+// 全局
+let temp = {}
+const ops = ['+', '-']
 export class NEWCMD extends plugin {
-  constructor() {
+  constructor () {
     super({
       name: '椰奶入群验证',
       dsc: '重新验证和绕过验证',
@@ -14,11 +14,11 @@ export class NEWCMD extends plugin {
       priority: 5,
       rule: [
         {
-          reg: '^#重新验证(\d+|从未发言的人)?$',
+          reg: '^#重新验证(\\d+|从未发言的人)?$',
           fnc: 'cmdReverify'
         },
         {
-          reg: '^#绕过验证(\d+)?$',
+          reg: '^#绕过验证(\\d+)?$',
           fnc: 'cmdPass'
         },
         {
@@ -35,122 +35,120 @@ export class NEWCMD extends plugin {
         }
       ]
     })
-    this.verifypath = `./plugins/yenai-plugin/config/config/groupverify.yaml`;
+    this.verifypath = './plugins/yenai-plugin/config/config/groupverify.yaml'
   }
-  //重新验证
-  async cmdReverify(e) {
+
+  // 重新验证
+  async cmdReverify (e) {
     if (e?.group?.mute_left > 0) return
 
     let verifycfg = Config.verifycfg
 
-    if (!e.group.is_admin && !e.group.is_owner) return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
+    if (!e.group.is_admin && !e.group.is_owner) return e.reply('做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ', true)
 
-    if (!verifycfg.openGroup.includes(e.group_id)) return e.reply("当前群未开启验证哦~", true);
+    if (!verifycfg.openGroup.includes(e.group_id)) return e.reply('当前群未开启验证哦~', true)
 
-    if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply("❎ 该命令仅限管理员可用", true);
+    if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply('❎ 该命令仅限管理员可用', true)
 
-    let qq = e.message.find(item => item.type == "at")?.qq
-    if (!qq) qq = e.msg.replace(/#|重新验证/g, "").trim();
+    let qq = e.message.find(item => item.type == 'at')?.qq
+    if (!qq) qq = e.msg.replace(/#|重新验证/g, '').trim()
 
-    if (qq == "从未发言的人") return this.cmdReverifyNeverSpeak(e)
+    if (qq == '从未发言的人') return this.cmdReverifyNeverSpeak(e)
 
-    if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
-    qq = Number(qq);
+    if (!(/\d{5,}/.test(qq))) return e.reply('❎ 请输入正确的QQ号')
+    qq = Number(qq)
     if (qq == Bot.uin) return
 
-    if (Config.masterQQ.includes(qq)) return e.reply("❎ 该命令对机器人管理员无效");
+    if (Config.masterQQ.includes(qq)) return e.reply('❎ 该命令对机器人管理员无效')
 
-    if (temp[qq + e.group_id]) return e.reply("❎ 目标群成员处于验证状态");
+    if (temp[qq + e.group_id]) return e.reply('❎ 目标群成员处于验证状态')
 
     await verify(qq, e.group_id, e)
   }
-  //绕过验证
-  async cmdPass(e) {
+
+  // 绕过验证
+  async cmdPass (e) {
     let verifycfg = Config.verifycfg
 
-    if (!e.group.is_admin && !e.group.is_owner) return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
+    if (!e.group.is_admin && !e.group.is_owner) return e.reply('做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ', true)
 
-    if (!verifycfg.openGroup.includes(e.group_id)) return e.reply("当前群未开启验证哦~", true);
+    if (!verifycfg.openGroup.includes(e.group_id)) return e.reply('当前群未开启验证哦~', true)
 
-    if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply("❎ 该命令仅限管理员可用", true);
+    if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply('❎ 该命令仅限管理员可用', true)
 
-    let qq = e.message.find(item => item.type == "at")?.qq
-    if (!qq) qq = e.msg.replace(/#|绕过验证/g, "").trim();
+    let qq = e.message.find(item => item.type == 'at')?.qq
+    if (!qq) qq = e.msg.replace(/#|绕过验证/g, '').trim()
 
-    if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号");
+    if (!(/\d{5,}/.test(qq))) return e.reply('❎ 请输入正确的QQ号')
 
     if (qq == Bot.uin) return
-    qq = Number(qq);
-    if (!temp[qq + e.group_id]) return e.reply("❎ 目标群成员当前无需验证");
+    qq = Number(qq)
+    if (!temp[qq + e.group_id]) return e.reply('❎ 目标群成员当前无需验证')
 
-    clearTimeout(temp[qq + e.group_id].kickTimer);
+    clearTimeout(temp[qq + e.group_id].kickTimer)
 
-    clearTimeout(temp[qq + e.group_id].remindTimer);
+    clearTimeout(temp[qq + e.group_id].remindTimer)
 
-    delete temp[qq + e.group_id];
+    delete temp[qq + e.group_id]
 
-    return await e.reply(verifycfg.SuccessMsgs[e.group_id] || verifycfg.SuccessMsgs[0] || "✅ 验证成功，欢迎入群");
+    return await e.reply(verifycfg.SuccessMsgs[e.group_id] || verifycfg.SuccessMsgs[0] || '✅ 验证成功，欢迎入群')
   }
 
-  async cmdReverifyNeverSpeak(e) {
+  async cmdReverifyNeverSpeak (e) {
     let list = await ga.getNeverSpeak(e.group_id)
-    if (!list) return e.reply("咋群全是好淫哦~全都发过言辣٩(๑•̀ω•́๑)۶")
+    if (!list) return e.reply('咋群全是好淫哦~全都发过言辣٩(๑•̀ω•́๑)۶')
     for (let item of list) {
       await verify(item.user_id, e.group_id, e)
       await common.sleep(2000)
     }
   }
 
-  //开启验证
-  async handelverify(e) {
-    if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply("❎ 该命令仅限管理员可用", true);
-    if (!e.group.is_admin && !e.group.is_owner) return e.reply("做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ", true);
+  // 开启验证
+  async handelverify (e) {
+    if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply('❎ 该命令仅限管理员可用', true)
+    if (!e.group.is_admin && !e.group.is_owner) return e.reply('做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ', true)
     let verifycfg = Config.verifycfg
     let type = /开启/.test(e.msg)
     let key = verifycfg.openGroup.indexOf(e.group_id)
-    if (key != -1 && type) return e.reply("❎ 本群验证已处于开启状态")
-    if (key == -1 && !type) return e.reply("❎ 本群暂未开启验证")
+    if (key != -1 && type) return e.reply('❎ 本群验证已处于开启状态')
+    if (key == -1 && !type) return e.reply('❎ 本群暂未开启验证')
     let yaml = new YamlReader(this.verifypath)
     if (type) {
       yaml.addIn('openGroup', e.group_id)
     } else {
-
       yaml.delete(`openGroup.${key}`)
     }
-    e.reply(`✅ 已${type ? "开启" : "关闭"}本群验证`)
+    e.reply(`✅ 已${type ? '开启' : '关闭'}本群验证`)
   }
 
-  //切换验证模式
-  async setmode(e) {
-    if (!e.isMaster) return e.reply("❎ 该命令仅限主人可用", true);
+  // 切换验证模式
+  async setmode (e) {
+    if (!e.isMaster) return e.reply('❎ 该命令仅限主人可用', true)
     let verifycfg = Config.verifycfg
-    let value = verifycfg.mode == "模糊" ? "精确" : "模糊"
-    new YamlReader(this.verifypath).set(`mode`, value)
+    let value = verifycfg.mode == '模糊' ? '精确' : '模糊'
+    new YamlReader(this.verifypath).set('mode', value)
     e.reply(`✅ 已切换验证模式为${value}验证`)
   }
-  //设置验证超时时间
-  async setovertime(e) {
-    if (!e.isMaster) return e.reply("❎ 该命令仅限主人可用", true);
+
+  // 设置验证超时时间
+  async setovertime (e) {
+    if (!e.isMaster) return e.reply('❎ 该命令仅限主人可用', true)
     let overtime = e.msg.match(/\d+/g)
-    new YamlReader(this.verifypath).set("time", Number(overtime))
+    new YamlReader(this.verifypath).set('time', Number(overtime))
     e.reply(`✅ 已将验证超时时间设置为${overtime}秒`)
     if (overtime < 60) {
-      e.reply(`建议至少一分钟(60秒)哦ε(*´･ω･)з`)
+      e.reply('建议至少一分钟(60秒)哦ε(*´･ω･)з')
     }
   }
 }
 
-
-
-
-
-//进群监听
-Bot.on("notice.group.increase", async (e) => {
+// 进群监听
+Bot.on('notice.group.increase', async (e) => {
   let verifycfg = Config.verifycfg
 
-  if (!verifycfg.openGroup.includes(e.group_id)) return;
+  if (!verifycfg.openGroup.includes(e.group_id)) return
 
-  if (!e.group.is_admin && !e.group.is_owner) return;
+  if (!e.group.is_admin && !e.group.is_owner) return
 
   if (e.user_id == Bot.uin) return
 
@@ -161,116 +159,112 @@ Bot.on("notice.group.increase", async (e) => {
   await verify(e.user_id, e.group_id, e)
 })
 
-//答案监听
+// 答案监听
 Bot.on('message.group', async (e) => {
   let verifycfg = Config.verifycfg
 
-  if (!verifycfg.openGroup.includes(e.group_id)) return;
+  if (!verifycfg.openGroup.includes(e.group_id)) return
 
-  if (!e.group.is_admin && !e.group.is_owner) return;
+  if (!e.group.is_admin && !e.group.is_owner) return
 
-  if (!temp[e.user_id + e.group_id]) return;
+  if (!temp[e.user_id + e.group_id]) return
 
-  const { verifyCode, kickTimer, remindTimer } = temp[e.user_id + e.group_id];
+  const { verifyCode, kickTimer, remindTimer } = temp[e.user_id + e.group_id]
 
-  const { nums, operator } = temp[e.user_id + e.group_id];
+  const { nums, operator } = temp[e.user_id + e.group_id]
 
-  const isAccurateModeOK = verifycfg.mode === "精确" && e.raw_message == verifyCode;
+  const isAccurateModeOK = verifycfg.mode === '精确' && e.raw_message == verifyCode
 
-  const isVagueModeOK = verifycfg.mode === "模糊" && e.raw_message.includes(verifyCode);
+  const isVagueModeOK = verifycfg.mode === '模糊' && e.raw_message.includes(verifyCode)
 
-  const isOK = isAccurateModeOK || isVagueModeOK;
+  const isOK = isAccurateModeOK || isVagueModeOK
 
   if (isOK) {
-    delete temp[e.user_id + e.group_id];
-    clearTimeout(kickTimer);
-    clearTimeout(remindTimer);
-    return await e.reply(verifycfg.SuccessMsgs[e.group_id] || verifycfg.SuccessMsgs[0] || "✅ 验证成功，欢迎入群");
+    delete temp[e.user_id + e.group_id]
+    clearTimeout(kickTimer)
+    clearTimeout(remindTimer)
+    return await e.reply(verifycfg.SuccessMsgs[e.group_id] || verifycfg.SuccessMsgs[0] || '✅ 验证成功，欢迎入群')
   } else {
-    temp[e.user_id + e.group_id].remainTimes -= 1;
+    temp[e.user_id + e.group_id].remainTimes -= 1
 
-    const { remainTimes } = temp[e.user_id + e.group_id];
+    const { remainTimes } = temp[e.user_id + e.group_id]
 
     if (remainTimes > 0) {
-      await e.recall();
+      await e.recall()
 
-      const msg = `❎ 验证失败，你还有「${remainTimes}」次机会，请发送「${nums[0]} ${operator} ${nums[1]}」的运算结果`;
-      return await e.reply([segment.at(e.user_id), msg]);
+      const msg = `❎ 验证失败，你还有「${remainTimes}」次机会，请发送「${nums[0]} ${operator} ${nums[1]}」的运算结果`
+      return await e.reply([segment.at(e.user_id), msg])
     }
-    clearTimeout(kickTimer);
-    clearTimeout(remindTimer);
-    await e.reply([segment.at(e.user_id), `验证失败，请重新申请`]);
-    delete temp[e.user_id + e.group_id];
+    clearTimeout(kickTimer)
+    clearTimeout(remindTimer)
+    await e.reply([segment.at(e.user_id), '验证失败，请重新申请'])
+    delete temp[e.user_id + e.group_id]
     return await e.group.kickMember(e.user_id)
   }
 })
 
-//主动退群
+// 主动退群
 Bot.on('notice.group.decrease', async (e) => {
-  if (!e.group.is_admin && !e.group.is_owner) return;
+  if (!e.group.is_admin && !e.group.is_owner) return
 
-  if (!temp[e.user_id + e.group_id]) return;
+  if (!temp[e.user_id + e.group_id]) return
 
-  clearTimeout(temp[e.user_id + e.group_id].kickTimer);
+  clearTimeout(temp[e.user_id + e.group_id].kickTimer)
 
-  clearTimeout(temp[e.user_id + e.group_id].remindTimer);
+  clearTimeout(temp[e.user_id + e.group_id].remindTimer)
 
-  delete temp[e.user_id + e.group_id];
+  delete temp[e.user_id + e.group_id]
 
-  return e.reply(`「${e.user_id}」主动退群，验证流程结束`);
+  return e.reply(`「${e.user_id}」主动退群，验证流程结束`)
 })
 
-//发送验证信息
-async function verify(user_id, group_id, e) {
-  if (!e.group.is_admin && !e.group.is_owner) return;
-  user_id = Number(user_id);
-  group_id = Number(group_id);
+// 发送验证信息
+async function verify (user_id, group_id, e) {
+  if (!e.group.is_admin && !e.group.is_owner) return
+  user_id = Number(user_id)
+  group_id = Number(group_id)
   logger.mark(`[椰奶进群验证]进行${user_id}的验证`)
 
   let verifycfg = Config.verifycfg
   let { range } = verifycfg
-  const remainTimes = verifycfg.times;
+  const remainTimes = verifycfg.times
 
   const operator = ops[getRndInteger(0, 1)]
 
   let [m, n] = [getRndInteger(range.min, range.max), getRndInteger(range.min, range.max)]
   while (m == n) {
-    n = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+    n = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min
   }
 
-  [m, n] = [m >= n ? m : n, m >= n ? n : m];
+  [m, n] = [m >= n ? m : n, m >= n ? n : m]
 
-  const verifyCode = String(operator === "-" ? m - n : m + n);
+  const verifyCode = String(operator === '-' ? m - n : m + n)
   logger.mark(`[验证]答案：${verifyCode}`)
   const kickTimer = setTimeout(async () => {
-    e.reply([segment.at(user_id), " 验证超时，移出群聊，请重新申请"]);
+    e.reply([segment.at(user_id), ' 验证超时，移出群聊，请重新申请'])
 
-    delete temp[user_id + group_id];
+    delete temp[user_id + group_id]
 
-    clearTimeout(kickTimer);
+    clearTimeout(kickTimer)
 
     return await e.group.kickMember(user_id)
+  }, verifycfg.time * 1000)
 
-  }, verifycfg.time * 1000);
-
-  const shouldRemind = verifycfg.remindAtLastMinute && verifycfg.time >= 120;
+  const shouldRemind = verifycfg.remindAtLastMinute && verifycfg.time >= 120
 
   const remindTimer = setTimeout(async () => {
-
     if (shouldRemind && temp[user_id + group_id].remindTimer) {
+      const msg = ` 验证仅剩最后一分钟，请发送「${m}${operator}${n}」的运算结果，否则将会被移出群聊`
 
-      const msg = ` 验证仅剩最后一分钟，请发送「${m}${operator}${n}」的运算结果，否则将会被移出群聊`;
-
-      await e.reply([segment.at(user_id), msg]);
+      await e.reply([segment.at(user_id), msg])
     }
-    clearTimeout(remindTimer);
+    clearTimeout(remindTimer)
+  }, Math.abs(verifycfg.time * 1000 - 60000))
 
-  }, Math.abs(verifycfg.time * 1000 - 60000));
+  const msg = ` 欢迎，请在「${verifycfg.time}」秒内发送「${m}${operator}${n}」的运算结果，否则将会被移出群聊`
 
-  const msg = ` 欢迎，请在「${verifycfg.time}」秒内发送「${m}${operator}${n}」的运算结果，否则将会被移出群聊`;
-
-  await common.sleep(600);
-  //消息发送成功才写入
+  await common.sleep(600)
+  // 消息发送成功才写入
   if (await e.reply([segment.at(user_id), msg])) {
     temp[user_id + group_id] = {
       remainTimes,
@@ -279,10 +273,10 @@ async function verify(user_id, group_id, e) {
       verifyCode,
       kickTimer,
       remindTimer
-    };
+    }
   }
 }
-//随机数
-function getRndInteger(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+// 随机数
+function getRndInteger (min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min
 }

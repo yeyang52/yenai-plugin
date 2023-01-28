@@ -1,15 +1,15 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import os from 'os';
+import os from 'os'
 import { Config } from '../components/index.js'
 import { CPU, common, puppeteer } from '../model/index.js'
-import moment from 'moment';
+import moment from 'moment'
 import lodash from 'lodash'
 
-let si = await redis.get('yenai:node_modules') ? await import("systeminformation") : false
+let si = await redis.get('yenai:node_modules') ? await import('systeminformation') : false
 
-let interval = false;
+let interval = false
 export class State extends plugin {
-  constructor() {
+  constructor () {
     super({
       name: '椰奶状态',
       event: 'message',
@@ -24,79 +24,77 @@ export class State extends plugin {
     })
   }
 
-  async state(e) {
-    if (!/椰奶/.test(e.msg) && !Config.Notice.state) return false;
+  async state (e) {
+    if (!/椰奶/.test(e.msg) && !Config.Notice.state) return false
 
-    if (!si) return e.reply(`❎ 没有检测到systeminformation依赖，请运行："pnpm add systeminformation -w"进行安装`)
-    //防止多次触发
-    if (interval) { return false; } else interval = true;
-    //系统
-    let osinfo = await si.osInfo();
-    //可视化数据
+    if (!si) return e.reply('❎ 没有检测到systeminformation依赖，请运行："pnpm add systeminformation -w"进行安装')
+    // 防止多次触发
+    if (interval) { return false } else interval = true
+    // 系统
+    let osinfo = await si.osInfo()
+    // 可视化数据
     let visualData = lodash.compact([
-      //CPU板块
+      // CPU板块
       await CPU.getCpuInfo(osinfo.arch),
-      //内存板块
+      // 内存板块
       await CPU.getMemUsage(),
-      //GPU板块
+      // GPU板块
       await CPU.getGPU(),
-      //Node板块
+      // Node板块
       await CPU.getNodeInfo()
     ])
-    //渲染数据
+    // 渲染数据
     let data = {
-      //头像
+      // 头像
       portrait: `https://q1.qlogo.cn/g?b=qq&s=0&nk=${Bot.uin}`,
-      //运行时间
+      // 运行时间
       runTime: Formatting(Date.now() / 1000 - Bot.stat.start_time),
-      //日历
-      calendar: moment().format("YYYY-MM-DD HH:mm:ss"),
-      //昵称
+      // 日历
+      calendar: moment().format('YYYY-MM-DD HH:mm:ss'),
+      // 昵称
       nickname: Bot.nickname,
-      //系统运行时间
+      // 系统运行时间
       systime: Formatting(os.uptime()),
-      //收
+      // 收
       recv: Bot.statistics.recv_msg_cnt,
-      //发
-      sent: await redis.get(`Yz:count:sendMsg:total`) || 0,
-      //图片
-      screenshot: await redis.get(`Yz:count:screenshot:total`) || 0,
-      //nodejs版本
+      // 发
+      sent: await redis.get('Yz:count:sendMsg:total') || 0,
+      // 图片
+      screenshot: await redis.get('Yz:count:screenshot:total') || 0,
+      // nodejs版本
       nodeversion: process.version,
-      //群数
+      // 群数
       group_quantity: Array.from(Bot.gl.values()).length,
-      //好友数
+      // 好友数
       friend_quantity: Array.from(Bot.fl.values()).length,
-      //登陆设备
+      // 登陆设备
       platform: common.platform[Bot.config.platform],
-      //在线状态
+      // 在线状态
       status: common.status[Bot.status],
-      //硬盘内存
+      // 硬盘内存
       HardDisk: await CPU.getfsSize(),
-      //FastFetch
+      // FastFetch
       FastFetch: await CPU.getFastFetch(e),
       // 取插件
       plugin: CPU.numberOfPlugIns,
-      //硬盘速率
+      // 硬盘速率
       fsStats: CPU.DiskSpeed,
-      //网络
+      // 网络
       network: CPU.getnetwork,
-      //可视化数据
+      // 可视化数据
       visualData,
-      //系统信息
-      osinfo,
+      // 系统信息
+      osinfo
     }
-    //渲染图片
+    // 渲染图片
     await puppeteer.render('state/state', {
-      ...data,
+      ...data
     }, {
       e,
       scale: 2.0
     })
-    interval = false;
+    interval = false
   }
-
-
 }
 
 /**
@@ -105,15 +103,14 @@ export class State extends plugin {
  * @param {boolean} yes  是否补零
  * @return {String} 天:?时:分:秒
  */
-function Formatting(time, repair = true) {
+function Formatting (time, repair = true) {
   let times = common.getsecond(time, repair)
 
   let { second, minute, hour, day } = times
 
   if (day > 0) {
-    return day + "天 " + hour + ":" + minute + ":" + second
+    return day + '天 ' + hour + ':' + minute + ':' + second
   } else {
-    return hour + ":" + minute + ":" + second
+    return hour + ':' + minute + ':' + second
   }
-
 }

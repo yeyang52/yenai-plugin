@@ -1,10 +1,11 @@
+
 import fs from 'fs'
 import lodash from 'lodash'
 import cfg from '../../../lib/config/config.js'
-const Plugin_Path = `${process.cwd()}/plugins/yenai-plugin`;
+const Plugin_Path = `${process.cwd()}/plugins/yenai-plugin`
 const README_path = `${Plugin_Path}/README.md`
 const CHANGELOG_path = `${Plugin_Path}/CHANGELOG.md`
-const yunzai_ver = `v${cfg.package.version}`;
+const yunzai_ver = `v${cfg.package.version}`
 
 let logs = {}
 let changelogs = []
@@ -15,7 +16,7 @@ const getLine = function (line) {
   line = line.replace(/(^\s*\*|\r)/g, '')
   line = line.replace(/\s*`([^`]+`)/g, '<span class="cmd">$1')
   line = line.replace(/`\s*/g, '</span>')
-  line = line.replace(/\s*\*\*([^\*]+\*\*)/g, '<span class="strong">$1')
+  line = line.replace(/\s*\*\*([^*]+\*\*)/g, '<span class="strong">$1')
   line = line.replace(/\*\*\s*/g, '</span>')
   line = line.replace(/ⁿᵉʷ/g, '<span class="new"></span>')
   return line
@@ -25,7 +26,7 @@ try {
   if (fs.existsSync(CHANGELOG_path)) {
     logs = fs.readFileSync(CHANGELOG_path, 'utf8') || ''
     logs = logs.replace(/\t/g, '   ').split('\n')
-    let temp = {};
+    let temp = {}
     let lastLine = {}
     lodash.forEach(logs, (line) => {
       if (versionCount <= -1) {
@@ -39,7 +40,7 @@ try {
         } else {
           changelogs.push(temp)
           if (/0\s*$/.test(v) && versionCount > 0) {
-            //versionCount = 0
+            // versionCount = 0
             versionCount--
           } else {
             versionCount--
@@ -72,7 +73,7 @@ try {
     })
   }
 } catch (e) {
-  logger.error(e);
+  logger.error(e)
   // do nth
 }
 
@@ -87,14 +88,14 @@ try {
 } catch (err) { }
 
 let Version = {
-  get ver() {
-    return currentVersion;
+  get ver () {
+    return currentVersion
   },
-  get yunzai() {
-    return yunzai_ver;
+  get yunzai () {
+    return yunzai_ver
   },
-  get logs() {
-    return changelogs;
+  get logs () {
+    return changelogs
   }
 }
 export default Version

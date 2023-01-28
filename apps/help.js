@@ -4,7 +4,7 @@ import lodash from 'lodash'
 import { Data } from '../components/index.js'
 import { puppeteer } from '../model/index.js'
 export class yenai_help extends plugin {
-  constructor() {
+  constructor () {
     super({
       name: '椰奶帮助',
       event: 'message',
@@ -15,16 +15,15 @@ export class yenai_help extends plugin {
           fnc: 'message'
         }
       ]
-    });
+    })
   }
 
-  async message() {
-    return await help(this.e);
+  async message () {
+    return await help(this.e)
   }
-
 }
 
-async function help(e) {
+async function help (e) {
   let custom = {}
   let help = {}
   let { diyCfg, sysCfg } = await Data.importCfg('help')
@@ -59,7 +58,7 @@ async function help(e) {
     helpGroup.push(group)
   })
   let bg = await rodom()
-  let colCount = 3;
+  let colCount = 3
   return await puppeteer.render('help/index', {
     helpCfg: helpConfig,
     helpGroup,
@@ -73,11 +72,11 @@ async function help(e) {
 }
 
 const rodom = async function () {
-  var image = fs.readdirSync(`./plugins/yenai-plugin/resources/help/imgs/`);
-  var list_img = [];
+  let image = fs.readdirSync('./plugins/yenai-plugin/resources/help/imgs/')
+  let list_img = []
   for (let val of image) {
     list_img.push(val)
   }
-  var imgs = list_img.length == 1 ? list_img[0] : list_img[lodash.random(0, list_img.length - 1)];
-  return imgs;
+  let imgs = list_img.length == 1 ? list_img[0] : list_img[lodash.random(0, list_img.length - 1)]
+  return imgs
 }

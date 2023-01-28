@@ -1,3 +1,4 @@
+
 import YAML from 'yaml'
 import chokidar from 'chokidar'
 import fs from 'node:fs'
@@ -7,11 +8,11 @@ import loader from '../../../lib/plugins/loader.js'
 import lodash from 'lodash'
 import moment from 'moment'
 
-const Path = process.cwd();
+const Path = process.cwd()
 const Plugin_Name = 'yenai-plugin'
-const Plugin_Path = `${Path}/plugins/${Plugin_Name}`;
+const Plugin_Path = `${Path}/plugins/${Plugin_Name}`
 class Config {
-  constructor() {
+  constructor () {
     this.config = {}
 
     /** 监听文件 */
@@ -19,8 +20,9 @@ class Config {
 
     this.initCfg()
   }
+
   /** 初始化配置 */
-  initCfg() {
+  initCfg () {
     let path = `${Plugin_Path}/config/config/`
     let pathDef = `${Plugin_Path}/config/default_config/`
     const files = fs.readdirSync(pathDef).filter(file => file.endsWith('.yaml'))
@@ -28,14 +30,14 @@ class Config {
       if (!fs.existsSync(`${path}${file}`)) {
         fs.copyFileSync(`${pathDef}${file}`, `${path}${file}`)
       }
-      this.watch(`${path}${file}`, file.replace('.yaml', ""), 'config')
+      this.watch(`${path}${file}`, file.replace('.yaml', ''), 'config')
     }
   }
 
   /** 群配置 */
-  getGroup(groupId = '') {
+  getGroup (groupId = '') {
     let config = this.getConfig('whole')
-    let group = this.getConfig("group")
+    let group = this.getConfig('group')
     let defCfg = this.getdefSet('whole')
 
     if (group[groupId]) {
@@ -43,40 +45,46 @@ class Config {
     }
     return { ...defCfg, ...config }
   }
-  /**主人QQ */
-  get masterQQ() {
+
+  /** 主人QQ */
+  get masterQQ () {
     return cfg.masterQQ
   }
-  /**获取全局设置 */
-  get Notice() {
+
+  /** 获取全局设置 */
+  get Notice () {
     return this.getDefOrConfig('whole')
   }
-  /**进群验证配置 */
-  get verifycfg() {
-    return this.getDefOrConfig("groupverify");
-  }
-  /**头衔屏蔽词 */
-  get NoTitle() {
-    return this.getDefOrConfig("Shielding_words");
-  }
-  /**加群通知 */
-  get groupAdd() {
-    return this.getDefOrConfig("groupAdd");
+
+  /** 进群验证配置 */
+  get verifycfg () {
+    return this.getDefOrConfig('groupverify')
   }
 
-  /** 默认配置和用户配置*/
-  getDefOrConfig(name) {
+  /** 头衔屏蔽词 */
+  get NoTitle () {
+    return this.getDefOrConfig('Shielding_words')
+  }
+
+  /** 加群通知 */
+  get groupAdd () {
+    return this.getDefOrConfig('groupAdd')
+  }
+
+  /** 默认配置和用户配置 */
+  getDefOrConfig (name) {
     let def = this.getdefSet(name)
     let config = this.getConfig(name)
     return { ...def, ...config }
   }
+
   /** 默认配置 */
-  getdefSet(name) {
+  getdefSet (name) {
     return this.getYaml('default_config', name)
   }
 
   /** 用户配置 */
-  getConfig(name) {
+  getConfig (name) {
     return this.getYaml('config', name)
   }
 
@@ -85,7 +93,7 @@ class Config {
    * @param type 默认跑配置-defSet，用户配置-config
    * @param name 名称
    */
-  getYaml(type, name) {
+  getYaml (type, name) {
     let file = `${Plugin_Path}/config/${type}/${name}.yaml`
     let key = `${type}.${name}`
 
@@ -101,7 +109,7 @@ class Config {
   }
 
   /** 监听配置文件 */
-  watch(file, name, type = 'default_config') {
+  watch (file, name, type = 'default_config') {
     let key = `${type}.${name}`
 
     if (this.watcher[key]) return
@@ -126,22 +134,17 @@ class Config {
    * @param {*} value 修改的value值
    * @return {Boolean} 返回是否成功写入
    */
-  modify(name, key, value) {
+  modify (name, key, value) {
     let path = `${Plugin_Path}/config/config/${name}.yaml`
     new YamlReader(path).set(key, value)
     delete this.config[`config.${name}`]
   }
 
-  async change_picApi() {
+  async change_picApi () {
     let tmp = {}
-    try {
-      logger.debug("[椰奶]api接口修改，重载fun.js")
-      tmp = await import(`../apps/fun.js?${moment().format('x')}`)
-    } catch (error) {
-      logger.error(`载入插件错误：${logger.red(dirName + '/' + appName)}`)
-      logger.error(decodeURI(error.stack))
-      return
-    }
+
+    logger.debug('[椰奶]api接口修改，重载fun.js')
+    tmp = await import(`../apps/fun.js?${moment().format('x')}`)
 
     lodash.forEach(tmp, (p) => {
       /* eslint-disable new-cap */

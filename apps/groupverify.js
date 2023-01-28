@@ -101,7 +101,7 @@ export class NEWCMD extends plugin {
     if (!list) return e.reply("咋群全是好淫哦~全都发过言辣٩(๑•̀ω•́๑)۶")
     list.forEach(async item => {
       await verify(item.user_id, e.group_id, e)
-      await common.sleep(200)
+      await common.sleep(2000)
     })
   }
 

@@ -122,9 +122,7 @@ class Group_admin {
     async getNeverSpeakInfo(groupId, page = 1) {
         let list = await this.getNeverSpeak(groupId)
         if (!list) return { error: `咋群全是好淫哦~全都发过言辣٩(๑•̀ω•́๑)۶` }
-        list.sort((a, b) => {
-            return a.join_time - b.join_time
-        })
+        list.sort((a, b) => a.join_time - b.join_time)
         let msg = list.map(item => {
             return [segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
             `\nQQ：${item.user_id}\n`,

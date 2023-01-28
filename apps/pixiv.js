@@ -91,7 +91,7 @@ export class example extends plugin {
 
         if (res?.error) return e.reply(res.error)
 
-        common.getRecallsendMsg(e, res, false)
+        common.getRecallsendMsg(e, res)
 
         return true;
     }
@@ -126,7 +126,7 @@ export class example extends plugin {
             res = await Pixiv.searchTags(tag, page)
         }
         if (res?.error) return e.reply(res.error)
-        common.getRecallsendMsg(e, res, false)
+        common.getRecallsendMsg(e, res)
 
         return true;
     }
@@ -140,7 +140,7 @@ export class example extends plugin {
 
         if (res?.error) return e.reply(res.error)
 
-        common.getRecallsendMsg(e, res, false)
+        common.getRecallsendMsg(e, res)
     }
 
     /**以uid搜图**/
@@ -169,7 +169,7 @@ export class example extends plugin {
 
         if (res?.error) return e.reply(res.error)
 
-        common.getRecallsendMsg(e, res, false)
+        common.getRecallsendMsg(e, res)
     }
 
     //随机原创插画
@@ -190,7 +190,7 @@ export class example extends plugin {
 
         if (res?.error) return e.reply(res.error)
 
-        common.getRecallsendMsg(e, res, false)
+        common.getRecallsendMsg(e, res)
     }
 
     //相关作品
@@ -201,7 +201,7 @@ export class example extends plugin {
         let regRet = relatedReg.exec(e.msg)
         let res = await Pixiv.getrelated_works(regRet[1], !setu.getR18(e.group_id))
         if (res?.error) return e.reply(res.error)
-        common.getRecallsendMsg(e, res, false)
+        common.getRecallsendMsg(e, res)
     }
 
     //p站单图
@@ -213,6 +213,6 @@ export class example extends plugin {
 
         let res = await Pixiv.getPximg(ispro)
         if (res?.error) return e.reply(res.error)
-        ispro ? common.getRecallsendMsg(e, [res], false) : common.recallsendMsg(e, res)
+        ispro ? common.getRecallsendMsg(e, [res]) : common.recallsendMsg(e, res)
     }
 }

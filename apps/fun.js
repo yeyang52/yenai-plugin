@@ -232,7 +232,7 @@ export class example extends plugin {
         item++
       }
     }
-    common.getRecallsendMsg(e, msg, false)
+    common.getRecallsendMsg(e, msg)
     return true
   }
   //cos/acg搜索
@@ -265,7 +265,7 @@ export class example extends plugin {
       ?.map(item => (!/www.pandadiu.com/.test(item) ? domain : "") + (item.match(/<img src="(.*?)".*/)[1]))
       ?.map(item => segment.image(item)) || false
     if (!imglist) return e.reply(API_ERROR)
-    common.getRecallsendMsg(e, imglist, false)
+    common.getRecallsendMsg(e, imglist)
   }
 
   //黑丝
@@ -298,7 +298,7 @@ export class example extends plugin {
       return item
     })
     //发送消息
-    common.getRecallsendMsg(e, lodash.take(imglist, 20), false)
+    common.getRecallsendMsg(e, lodash.take(imglist, 20))
   }
   //萌堆
   async mengdui(e) {
@@ -353,7 +353,7 @@ export class example extends plugin {
     }
     let msg = lodash.take(list.map(item => segment.image(item)), 30)
     if (title) msg.unshift(title[1])
-    common.getRecallsendMsg(e, msg, false)
+    common.getRecallsendMsg(e, msg)
   }
 
   //铃声多多

@@ -1,8 +1,8 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
 import lodash from 'lodash'
-import { Config } from '../components/index.js'
-import { GroupAdmin as ga, common, QQInterface, puppeteer, CronValidate, YamlReader } from '../model/index.js'
+import { Config, YamlReader } from '../components/index.js'
+import { GroupAdmin as ga, common, QQInterface, puppeteer, CronValidate } from '../model/index.js'
 import moment from 'moment'
 
 // API请求错误文案

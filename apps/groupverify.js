@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
-import { Config } from '../components/index.js'
-import { YamlReader, common, GroupAdmin as ga } from '../model/index.js'
+import { Config, YamlReader } from '../components/index.js'
+import { common, GroupAdmin as ga } from '../model/index.js'
 // 全局
 let temp = {}
 const ops = ['+', '-']

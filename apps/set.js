@@ -1,8 +1,8 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import fs from 'fs'
 import lodash from 'lodash'
-import { Config } from '../components/index.js'
-import { YamlReader, setu, puppeteer } from '../model/index.js'
+import { Config, YamlReader } from '../components/index.js'
+import { setu, puppeteer } from '../model/index.js'
 const configs = {
   好友消息: 'privateMessage',
   群消息: 'groupMessage',

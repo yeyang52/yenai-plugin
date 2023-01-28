@@ -4,7 +4,6 @@ import CPU from './CPU.js'
 import Pixiv from './Pixiv.js'
 import setu from './setu.js'
 import uploadRecord from './uploadRecord.js'
-import YamlReader from './YamlReader.js'
 import GroupAdmin from './GroupAdmin.js'
 import QQInterface from './QQInterface.js'
 import Interface from './Interface.js'
@@ -17,7 +16,6 @@ export {
   Pixiv,
   setu,
   uploadRecord,
-  YamlReader,
   CronValidate,
   GroupAdmin,
   QQInterface,

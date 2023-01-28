@@ -97,7 +97,7 @@ export class NEWCMD extends plugin {
   }
 
   async cmdReverifyNeverSpeak(e) {
-    let list = ga.getNeverSpeak(e.group_id)
+    let list = await ga.getNeverSpeak(e.group_id)
     if (!list) return e.reply("咋群全是好淫哦~全都发过言辣٩(๑•̀ω•́๑)۶")
     list.forEach(async item => {
       await verify(item.user_id, e.group_id, e)

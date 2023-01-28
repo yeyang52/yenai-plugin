@@ -73,7 +73,7 @@ export default new class newCommon {
      * @param {Boolean} isxml 是否处理卡片
      * @return {Object} 消息是否发送成功的对象
      */
-    async getforwardMsg(e, message, { recallMsg = 0, isBot = true, fkmsg = "", isxml = false }) {
+    async getforwardMsg(e, message, { recallMsg = 0, isBot = true, fkmsg = "", isxml = false } = {}) {
         let forwardMsg = []
         for (let i of message) {
             forwardMsg.push(

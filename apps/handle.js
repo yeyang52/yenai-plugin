@@ -117,7 +117,6 @@ export class anotice extends plugin {
     }
     /** 引用同意好友申请和群邀请 */
     async Handle(e) {
-        if (!e.isMaster) return false;
         if (!e.source) return false;
         let yes = /同意/.test(e.msg) ? true : false
         let source;
@@ -126,41 +125,40 @@ export class anotice extends plugin {
         } else {
             source = (await e.friend.getChatHistory(e.source.time, 1)).pop();
         }
+        if (!source) return e.reply("❎ 获取消息失败")
+        let source_msg = source.raw_message?.split('\n')
 
-        let res
-        try {
-            res = source.raw_message.split('\n')
-        } catch {
-            e.reply('❎ 消息可能已过期')
-            return false
-        }
         if (e.isGroup) {
+            if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
+                return e.reply("❎ 该命令仅限管理员可用", true);
+            }
             if (e.source.user_id != Bot.uin) return false
-            if (/入群申请/.test(res[0])) return false
+            if (/入群申请/.test(source_msg[0])) return false
             if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply('你是坏人！')
 
             let source = (await e.group.getChatHistory(e.source.seq, 1)).pop()
             let yes = /同意/.test(e.msg)
-            if (source) {
-                let user_id = await redis.get(`yenai:groupAdd:${source.message_id}`)
-                if (!user_id) user_id = res[1].match(/\d+/)[0]
-                let member = (await Bot.getSystemMsg())
-                    .find(item => item.request_type == "group" && item.sub_type == "add" && item.group_id == e.group_id && item.user_id == user_id)
+            logger.mark(`${e.logFnc}${yes ? '同意' : '拒绝'}加群通知`)
+            let user_id = await redis.get(`yenai:groupAdd:${source.message_id}`)
+            if (!user_id) user_id = source_msg[1].match(/\d+/)[0]
+            let member = (await Bot.getSystemMsg())
+                .find(item => item.request_type == "group" && item.sub_type == "add" && item.group_id == e.group_id && item.user_id == user_id)
 
-                if (lodash.isEmpty(member)) return e.reply("呜呜呜，没找到这个淫的加群申请(つд⊂)")
+            if (lodash.isEmpty(member)) return e.reply("呜呜呜，没找到这个淫的加群申请(つд⊂)")
 
-                if (/风险/.test(member.tips)) return e.reply(`该账号为风险账号请手动处理哦ಠ~ಠ`)
+            if (/风险/.test(member.tips)) return e.reply(`该账号为风险账号请手动处理哦ಠ~ಠ`)
 
-                if (await member.approve(yes)) {
-                    e.reply(`已${yes ? '同意' : '拒绝'}${member.nickname}(${member.user_id})的加群申请辣٩(๑^o^๑)۶`)
-                } else {
-                    e.reply(`呜呜呜，处理失败辣(இωஇ)`)
-                }
-                return true
+            if (await member.approve(yes)) {
+                e.reply(`已${yes ? '同意' : '拒绝'}${member.nickname}(${member.user_id})的加群申请辣٩(๑^o^๑)۶`)
+            } else {
+                e.reply(`呜呜呜，处理失败辣(இωஇ)`)
             }
+            return true
+
         } else {
-            if (/添加好友申请/.test(res[0])) {
-                let qq = res[1].match(/[1-9]\d*/g)
+            if (!e.isMaster) return false;
+            if (/添加好友申请/.test(source_msg[0])) {
+                let qq = source_msg[1].match(/[1-9]\d*/g)
                 if (Bot.fl.get(Number(qq))) return e.reply('❎ 已经同意过该申请了哦~')
 
                 logger.mark(`${e.logFnc}${yes ? '同意' : '拒绝'}好友申请`)
@@ -169,12 +167,12 @@ export class anotice extends plugin {
                     .setFriendReq('', yes)
                     .then(() => e.reply(`✅ 已${yes ? '同意' : '拒绝'}${qq}的好友申请`))
                     .catch(() => e.reply('❎ 请检查是否已同意该申请'))
-            } else if (/邀请机器人进群/.test(res[0])) {
-                let groupid = res[1].match(/[1-9]\d*/g)
+            } else if (/邀请机器人进群/.test(source_msg[0])) {
+                let groupid = source_msg[1].match(/[1-9]\d*/g)
                 if (Bot.fl.get(Number(groupid))) { return e.reply('❎ 已经同意过该申请了哦~') }
 
-                let qq = res[3].match(/[1-9]\d*/g)
-                let seq = res[6].match(/[1-9]\d*/g)
+                let qq = source_msg[3].match(/[1-9]\d*/g)
+                let seq = source_msg[6].match(/[1-9]\d*/g)
 
                 logger.mark(`${e.logFnc}${yes ? '同意' : '拒绝'}群邀请`)
 
@@ -182,9 +180,9 @@ export class anotice extends plugin {
                     .setGroupInvite(groupid, seq, yes)
                     .then(() => e.reply(`✅ 已${yes ? '同意' : '拒绝'}${qq}的群邀请`))
                     .catch(() => e.reply('❎ 请检查是否已同意该邀请'))
-            } else if (/加群申请/.test(res[0])) {
-                let group_id = res[1].match(/\d+/g)
-                let qq = res[3].match(/\d+/g)
+            } else if (/加群申请/.test(source_msg[0])) {
+                let group_id = source_msg[1].match(/\d+/g)
+                let qq = source_msg[3].match(/\d+/g)
 
                 let member = (await Bot.getSystemMsg()).find(item => item.sub_type == "add" && item.group_id == group_id && item.user_id == qq)
                 if (lodash.isEmpty(member)) return e.reply("没有找到这个人的加群申请哦")

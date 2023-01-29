@@ -58,16 +58,18 @@ export default new class assistant {
 
   /** 删除全部说说 */
   async delQzoneAll () {
-    let num = 0
-    while (true) {
-      let list = await this.getQzone(40)
-      if (list.total == 0) return num == 0 ? '❎ 说说列表空空' : '✅ 已清空全部说说'
-      for (let item of list.msglist) {
-        let res = await this.delQzone(item.tid, item.t1_source)
-        if (res.code != 0) return `❎ 遇到错误 ${JSON.stringify(res)}`
-      }
-      num++
-    }
+    let ck = common.getck('qzone.qq.com')
+    return await fetch(`http://xiaobai.klizi.cn/API/qqgn/ss_empty.php?data=&uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}`).then(res => res.text()).catch(err => console.log(err))
+    // let num = 0
+    // while (true) {
+    //   let list = await this.getQzone(40)
+    //   if (list.total == 0) return num == 0 ? '❎ 说说列表空空' : '✅ 已清空全部说说'
+    //   for (let item of list.msglist) {
+    //     let res = await this.delQzone(item.tid, item.t1_source)
+    //     if (res.code != 0) return `❎ 遇到错误 ${JSON.stringify(res)}`
+    //   }
+    //   num++
+    // }
   }
 
   /** 发送说说 */
@@ -123,17 +125,19 @@ export default new class assistant {
 
   /** 删除全部留言 */
   async delQzoneMsgbAll () {
-    let num = 0
-    while (true) {
-      let list = await this.getQzoneMsgb(40)
-      if (list.code != 0) return `❎ 获取列表错误 ${JSON.stringify(list)}`
-      if (list.data.total == 0) return num == 0 ? '❎ 留言列表空空' : '✅ 已清空全部留言'
-      for (let item of list.data.commentList) {
-        let res = await this.delQzoneMsgb(item.id, item.uin)
-        if (res.code != 0) return `❎ 遇到错误 ${JSON.stringify(res)}`
-      }
-      num++
-    }
+    let ck = common.getck('qzone.qq.com')
+    return await fetch(`http://xiaobai.klizi.cn/API/qqgn/qzone_emptymsgb.php?data=&uin=${Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}`).then(res => res.text()).catch(err => console.log(err))
+    // let num = 0
+    // while (true) {
+    //   let list = await this.getQzoneMsgb(40)
+    //   if (list.code != 0) return `❎ 获取列表错误 ${JSON.stringify(list)}`
+    //   if (list.data.total == 0) return num == 0 ? '❎ 留言列表空空' : '✅ 已清空全部留言'
+    //   for (let item of list.data.commentList) {
+    //     let res = await this.delQzoneMsgb(item.id, item.uin)
+    //     if (res.code != 0) return `❎ 遇到错误 ${JSON.stringify(res)}`
+    //   }
+    //   num++
+    // }
   }
 
   // ----------------------------------------------------公告---------------------------------------------

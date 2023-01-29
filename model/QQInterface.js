@@ -26,11 +26,11 @@ export default new class assistant {
   /**
      * @description: 取说说列表
      * @param {*} e oicq
-     * @param {Number} pos 偏移量
      * @param {Number} num 数量
+     * @param {Number} pos 偏移量
      * @return {Object} QQ空间数据
      */
-  async getQzone (pos = 0, num = 20) {
+  async getQzone (num = 20, pos = 0) {
     let url = `https://user.qzone.qq.com/proxy/domain/taotao.qq.com/cgi-bin/emotion_cgi_msglist_v6?uin=${Bot.uin}&ftype=0&sort=0&pos=${pos}&num=${num}&replynum=100&g_tk=${Bot.bkn}&code_version=1&format=json&need_private_comment=1`
     return await fetch(url, {
       headers: {
@@ -58,13 +58,16 @@ export default new class assistant {
 
   /** 删除全部说说 */
   async delQzoneAll () {
-    let list = await this.getQzone(0, -1)
-    if (list.total == 0) return '❎ 说说列表空空'
-    for (let item of list.msglist) {
-      let res = await this.delQzone(item.tid, item.t1_source)
-      if (res.code != 0) return `❎ 遇到错误 ${JSON.stringify(res)}`
+    let num = 0
+    while (true) {
+      let list = await this.getQzone(40)
+      if (list.total == 0) return num == 0 ? '❎ 说说列表空空' : '✅ 已清空全部说说'
+      for (let item of list.msglist) {
+        let res = await this.delQzone(item.tid, item.t1_source)
+        if (res.code != 0) return `❎ 遇到错误 ${JSON.stringify(res)}`
+      }
+      num++
     }
-    return '✅ 已清空全部说说'
   }
 
   /** 发送说说 */
@@ -120,14 +123,17 @@ export default new class assistant {
 
   /** 删除全部留言 */
   async delQzoneMsgbAll () {
-    let list = await this.getQzoneMsgb()
-    if (list.code != 0) return `❎ 获取列表错误 ${JSON.stringify(list)}`
-    if (list.data.total == 0) return '❎ 留言列表空空'
-    for (let item of list.data.commentList) {
-      let res = await this.delQzoneMsgb(item.id, item.uin)
-      if (res.code != 0) return `❎ 遇到错误 ${JSON.stringify(res)}`
+    let num = 0
+    while (true) {
+      let list = await this.getQzoneMsgb(40)
+      if (list.code != 0) return `❎ 获取列表错误 ${JSON.stringify(list)}`
+      if (list.data.total == 0) return num == 0 ? '❎ 留言列表空空' : '✅ 已清空全部留言'
+      for (let item of list.data.commentList) {
+        let res = await this.delQzoneMsgb(item.id, item.uin)
+        if (res.code != 0) return `❎ 遇到错误 ${JSON.stringify(res)}`
+      }
+      num++
     }
-    return '✅ 已清空全部留言'
   }
 
   // ----------------------------------------------------公告---------------------------------------------

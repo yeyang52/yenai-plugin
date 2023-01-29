@@ -582,7 +582,7 @@ export class Assistant extends plugin {
     }
 
     // 获取说说列表
-    let list = await QQInterface.getQzone(page * 5, 5)
+    let list = await QQInterface.getQzone(5, page * 5)
 
     if (!list) return e.reply(API_ERROR)
     if (list.total == 0) return e.reply('✅ 说说列表为空')
@@ -601,7 +601,7 @@ export class Assistant extends plugin {
   async Qzonedel (e) {
     let pos = e.msg.match(/\d+/)
     // 获取说说列表
-    let list = await QQInterface.getQzone(pos - 1, 1)
+    let list = await QQInterface.getQzone(1, pos - 1)
 
     if (!list) return e.reply(API_ERROR)
     if (!list.msglist) return e.reply('❎ 未获取到该说说')

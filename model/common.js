@@ -71,19 +71,19 @@ export default new class newCommon {
      * @param {Boolean} data.isBot 转发信息是否以bot信息发送
      * @param {String} data.fkmsg 风控消息不传则默认消息
      * @param {Boolean} data.isxml 是否处理卡片
+     * @param {Boolean} data.oneMsg 是否只有一条消息
      * @return {Object} 消息是否发送成功的对象
      */
-  async getforwardMsg (e, message, { recallMsg = 0, isBot = true, fkmsg = '', isxml = false } = {}) {
+  async getforwardMsg (e, message, { recallMsg = 0, isBot = true, fkmsg = '', isxml = false, oneMsg = false } = {}) {
     let forwardMsg = []
-    for (let i of message) {
-      forwardMsg.push(
-        {
-          message: i,
-          nickname: isBot ? Bot.nickname : e.sender.card || e.sender.nickname,
-          user_id: isBot ? Bot.uin : e.sender.user_id
-        }
-      )
-    }
+    let add = (msg) => forwardMsg.push(
+      {
+        message: msg,
+        nickname: isBot ? Bot.nickname : e.sender.card || e.sender.nickname,
+        user_id: isBot ? Bot.uin : e.sender.user_id
+      }
+    )
+    oneMsg ? add(message) : message.forEach(item => add(item))
     // 发送
     if (e.isGroup) {
       forwardMsg = await e.group.makeForwardMsg(forwardMsg)
@@ -124,15 +124,16 @@ export default new class newCommon {
      * @param {*} e oicq
      * @param {Array} msg 发送的消息
      * @param {String} fkmsg  风控消息
+     * @param {Object} data  其他参数
      * @return {Object} 消息是否发送成功的对象
      */
-  async getRecallsendMsg (e, msg, fkmsg = '') {
+  async getRecallsendMsg (e, msg, data = {}) {
     let recalltime = setu.getRecallTime(e.group_id)
     return await this.getforwardMsg(e, msg, {
       recallMsg: recalltime,
       isBot: false,
-      fkmsg,
-      isxml: true
+      isxml: true,
+      ...data
     })
   }
 

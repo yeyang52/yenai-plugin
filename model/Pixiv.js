@@ -147,7 +147,7 @@ export default new class Pixiv {
     if (page > pageAll) {
       return { error: '哪有那么多图片给你辣(•̀へ •́ ╮ )' }
     }
-    if (!date) date = moment().subtract(moment().hour() >= 12 ? 1 : 2, 'days').format('YYYY-MM-DD')
+    if (!date) date = moment().subtract(moment().utcOffset(9).hour() >= 12 ? 1 : 2, 'days').format('YYYY-MM-DD')
 
     let parame = `mode=${type}&page=${page}&date=${date}`
     // 请求api

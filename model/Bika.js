@@ -7,12 +7,17 @@ export default new (class {
   constructor () {
     this.domain = 'http://api.liaobiao.top/api/bika'
     this.imgproxy = 'https://proxy.liaobiao.top/'
-    this.imageQuality = 'original'
+    this.imageQuality = 'medium'
     this.hearder = {
       headers: {
         'x-image-quality': this.imageQuality
       }
     }
+    this.init()
+  }
+
+  async init () {
+    this.imageQuality = await redis.get('yenai:bika:imageQuality') ?? 'medium'
   }
 
   /**

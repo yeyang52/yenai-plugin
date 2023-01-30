@@ -32,6 +32,10 @@ export class newBika extends plugin {
         {
           reg: `#?${Prefix}(详情|细节)(.*)`,
           fnc: 'comicDetail'
+        },
+        {
+          reg: `#?${Prefix}修改图片质量(.*)`,
+          fnc: 'imageQuality'
         }
       ]
 
@@ -75,6 +79,22 @@ export class newBika extends plugin {
     let id = e.msg.match(new RegExp(`#?${Prefix}(详情|细节)(.*)`))[3]
     let msg = await Bika.comicDetail(id)
     common.getRecallsendMsg(e, msg, { oneMsg: true })
+  }
+
+  /** 图片质量 */
+  async imageQuality (e) {
+    let quality = e.msg.match(new RegExp(`#?${Prefix}修改图片质量(.*)`))[2]
+    let imageQualityType = {
+      低质量: 'low',
+      中等质量: 'medium',
+      高质量: 'high',
+      原图: 'original'
+    }
+    if (!imageQualityType[quality] && !Object.values(imageQualityType).includes(quality)) return e.reply(`错误参数，支持的参数为${Object.keys(imageQualityType).join('，')}`)
+    let type = imageQualityType[quality] ?? quality
+    await redis.set('yenai:bika:imageQuality', type)
+    Bika.imageQuality = type
+    e.reply(`✅ 已将bika图片质量修改为${quality}(${type})`)
   }
 
   /** 权限判定 */

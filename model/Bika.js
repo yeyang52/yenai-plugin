@@ -26,13 +26,13 @@ export default new (class {
    * @param {String} keyword 关键词
    * @param {Number} page 页数
    * @param {'dd'|'da'|'ld'|'vd'} sort dd : 最新发布 da : 最早发布 ld : 最多喜欢 vd : 最多浏览
-   * @param {'search'|'category'|'类别'} type search为高级搜索acategory为类别搜索
+   * @param {String} type 搜索类型
    * @return {Array}
    */
-  async search (keyword, page = 1, type = 'search', sort = 'ld') {
+  async search (keyword, page = 1, type = 'advanced', sort = 'ld') {
     let types = [
       {
-        alias: ['关键词', 'search', '高级搜索'],
+        alias: ['关键词', 'advanced', '高级'],
         url: `${this.domain}/advanced_search?keyword=${keyword}&page=${page}&sort=${sort}`
       },
       {

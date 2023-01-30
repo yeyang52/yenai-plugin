@@ -131,13 +131,32 @@ class Config {
    * @description: 修改设置
    * @param {String} name 文件名
    * @param {String} key 修改的key值
-   * @param {*} value 修改的value值
-   * @return {Boolean} 返回是否成功写入
+   * @param {String|Number} value 修改的value值
+   * @param {'config'|'default_config'} type 配置文件或默认
    */
-  modify (name, key, value) {
-    let path = `${Plugin_Path}/config/config/${name}.yaml`
+  modify (name, key, value, type = 'config') {
+    let path = `${Plugin_Path}/config/${type}/${name}.yaml`
     new YamlReader(path).set(key, value)
-    delete this.config[`config.${name}`]
+    delete this.config[`${type}.${name}`]
+  }
+
+  /**
+   * @description: 修改配置数组
+   * @param {String} name 文件名
+   * @param {String|Number} key key值
+   * @param {String|Number} value value
+   * @param {'add'|'del'} category 类别 add or del
+   * @param {'config'|'default_config'} type 配置文件或默认
+   */
+  modifyarr (name, key, value, category = 'add', type = 'config') {
+    let path = `${Plugin_Path}/config/${type}/${name}.yaml`
+    let yaml = new YamlReader(path)
+    if (category == 'add') {
+      yaml.addIn(key, value)
+    } else {
+      let index = yaml.jsonData[key].indexOf(value)
+      yaml.delete(`${key}.${index}`)
+    }
   }
 
   async change_picApi () {

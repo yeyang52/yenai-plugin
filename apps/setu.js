@@ -23,7 +23,7 @@ export class sese extends plugin {
           fnc: 'seturd'
         },
         {
-          reg: `^#(撤回间隔|群(c|C)(d|D))(${NumReg})$`,
+          reg: `^#(撤回间隔|群(c|C)(d|D))(${NumReg})(s|秒)?$`,
           fnc: 'setGroupRecallAndCD',
           event: 'message.group',
           permission: 'master'
@@ -120,8 +120,8 @@ export class sese extends plugin {
 
   // 设置群撤回间隔和cd
   async setGroupRecallAndCD (e) {
-    let num = e.msg.replace(/#|撤回间隔|群cd/gi, '').trim()
-    num = common.translateChinaNum(num)
+    let num = e.msg.match(new RegExp(NumReg))
+    num = common.translateChinaNum(num[0])
     let type = /撤回间隔/.test(e.msg)
     setu.setGroupRecallTimeAndCd(e.group_id, num, type)
     new NewConfig().View_Settings(e)

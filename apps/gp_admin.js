@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
 import lodash from 'lodash'
-import { Config, YamlReader } from '../components/index.js'
+import { Config } from '../components/index.js'
 import { GroupAdmin as ga, common, QQInterface, puppeteer, CronValidate } from '../model/index.js'
 import moment from 'moment'
 
@@ -478,10 +478,10 @@ export class Basics extends plugin {
       let { info } = Member
       msg.push([
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${info.user_id}`),
-                `\n昵称：${info.card || info.nickname}\n`,
-                `QQ：${info.user_id}\n`,
-                `群身份：${common.ROLE_MAP[info.role]}\n`,
-                `禁言剩余时间：${common.getsecondformat(Member.mute_left)}`
+        `\n昵称：${info.card || info.nickname}\n`,
+        `QQ：${info.user_id}\n`,
+        `群身份：${common.ROLE_MAP[info.role]}\n`,
+        `禁言剩余时间：${common.getsecondformat(Member.mute_left)}`
       ])
     }
     common.getforwardMsg(e, msg)
@@ -619,9 +619,9 @@ export class Basics extends plugin {
     let res = await QQInterface.dragon(e.group_id)
     if (!res) return e.reply(API_ERROR)
     e.reply([
-            `本群龙王：${res.nick}`,
-            segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${res.uin}`),
-            `蝉联天数：${res.avatar_size}`
+      `本群龙王：${res.nick}`,
+      segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${res.uin}`),
+      `蝉联天数：${res.avatar_size}`
     ])
   }
 
@@ -642,9 +642,9 @@ export class Basics extends plugin {
     let str = '⭐'
     str = str.repeat(uiGroupLevel)
     e.reply([
-            `群名：${group_name}\n`,
-            `群号：${group_uin}\n`,
-            `群星级：${str}`
+      `群名：${group_name}\n`,
+      `群号：${group_uin}\n`,
+      `群星级：${str}`
     ])
   }
 
@@ -664,7 +664,7 @@ export class Basics extends plugin {
     if (!res) return e.reply(API_ERROR)
     if (res.retcode != 0) return e.reply('❎ 未知错误\n' + JSON.stringify(res))
     let msg = lodash.take(res.data.speakRank.map((item, index) =>
-            `${index + 1}:${item.nickname}-${item.uin}\n连续活跃${item.active}天:发言${item.msgCount}次`
+      `${index + 1}:${item.nickname}-${item.uin}\n连续活跃${item.active}天:发言${item.msgCount}次`
     ), 10).join('\n')
     e.reply(msg)
   }
@@ -745,17 +745,17 @@ export class Basics extends plugin {
     let { groupInfo, activeData, msgInfo, joinData, exitData, applyData } = res.data
     e.reply(
       [
-                `${groupInfo.groupName}(${groupInfo.groupCode})${/(7|七)天/.test(e.msg) ? '七天' : '昨天'}的群数据\n`,
-                '------------消息条数---------\n',
-                `消息条数：${msgInfo.total}\n`,
-                '------------活跃人数---------\n',
-                `活跃人数：${activeData.activeData}\n`,
-                `总人数：${activeData.groupMember}\n`,
-                `活跃比例：${activeData.ratio}%\n`,
-                '-----------加退群人数--------\n',
-                `申请人数：${joinData.total}\n`,
-                `入群人数：${applyData.total}\n`,
-                `退群人数：${exitData.total}\n`
+        `${groupInfo.groupName}(${groupInfo.groupCode})${/(7|七)天/.test(e.msg) ? '七天' : '昨天'}的群数据\n`,
+        '------------消息条数---------\n',
+        `消息条数：${msgInfo.total}\n`,
+        '------------活跃人数---------\n',
+        `活跃人数：${activeData.activeData}\n`,
+        `总人数：${activeData.groupMember}\n`,
+        `活跃比例：${activeData.ratio}%\n`,
+        '-----------加退群人数--------\n',
+        `申请人数：${joinData.total}\n`,
+        `入群人数：${applyData.total}\n`,
+        `退群人数：${exitData.total}\n`
       ]
     )
   }
@@ -763,18 +763,11 @@ export class Basics extends plugin {
   async handleGroupAdd (e) {
     if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(PERMISSION_ERROR)
     if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true)
-    let path = './plugins/yenai-plugin/config/config/groupAdd.yaml'
-    let yaml = new YamlReader(path)
-    let type = /开启/.test(e.msg)
-    let key = Config.groupAdd.openGroup.indexOf(e.group_id)
-    console.log(key != -1 && type)
-    if (key != -1 && type) return e.reply('❎ 本群加群申请通知已处于开启状态')
-    if (key == -1 && !type) return e.reply('❎ 本群暂未开启加群申请通知')
-    if (type) {
-      yaml.addIn('openGroup', e.group_id)
-    } else {
-      yaml.delete(`openGroup.${key}`)
-    }
-    e.reply(`✅ 已${type ? '开启' : '关闭'}「${e.group_id}」的加群申请通知`)
+    let type = /开启/.test(e.msg) ? 'add' : 'del'
+    let isopen = Config.groupAdd.openGroup.includes(e.group_id)
+    if (isopen && type == 'add') return e.reply('❎ 本群加群申请通知已处于开启状态')
+    if (!isopen && type == 'del') return e.reply('❎ 本群暂未开启加群申请通知')
+    Config.modifyarr('groupAdd', 'openGroup', e.group_id, type)
+    e.reply(`✅ 已${type == 'add' ? '开启' : '关闭'}「${e.group_id}」的加群申请通知`)
   }
 }

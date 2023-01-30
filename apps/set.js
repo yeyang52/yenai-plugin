@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import fs from 'fs'
 import lodash from 'lodash'
-import { Config, YamlReader } from '../components/index.js'
+import { Config } from '../components/index.js'
 import { setu, puppeteer } from '../model/index.js'
 const configs = {
   好友消息: 'privateMessage',
@@ -83,7 +83,6 @@ export class NewConfig extends plugin {
         }
       ]
     })
-    this.NoTitlepath = './plugins/yenai-plugin/config/config/Shielding_words.yaml'
     this.proxykey = 'yenai:proxy'
     this.proxydef = [
       'i.pixiv.re',
@@ -243,13 +242,12 @@ export class NewConfig extends plugin {
 
   // 增删查头衔屏蔽词
   async NoTitle (e) {
-    let getdata = new YamlReader(this.NoTitlepath)
-    let data = getdata.jsonData.Shielding_words
+    let data = Config.NoTitle.Shielding_words
     if (/查看/.test(e.msg)) {
       return e.reply(`现有的头衔屏蔽词如下：${data.join('\n')}`)
     }
     let msg = e.msg.replace(/#|(增加|减少)头衔屏蔽词/g, '').trim().split(',')
-    let type = !!/增加/.test(e.msg)
+    let type = /增加/.test(e.msg)
     let no = []; let yes = []
     for (let i of msg) {
       if (data.includes(i)) {
@@ -263,7 +261,7 @@ export class NewConfig extends plugin {
     if (type) {
       if (!lodash.isEmpty(yes)) {
         for (let i of yes) {
-          getdata.addIn('Shielding_words', i)
+          Config.modifyarr('Shielding_words', 'Shielding_words', i, 'add')
         }
         e.reply(`✅ 成功添加：${yes.join(',')}`)
       }
@@ -273,8 +271,7 @@ export class NewConfig extends plugin {
     } else {
       if (!lodash.isEmpty(no)) {
         for (let i of no) {
-          let index = data.indexOf(i)
-          getdata.delete('Shielding_words.' + index)
+          Config.modifyarr('Shielding_words', 'Shielding_words', i, 'del')
         }
         e.reply(`✅ 成功删除：${no.join(',')}`)
       }
@@ -286,15 +283,9 @@ export class NewConfig extends plugin {
 
   // 修改头衔匹配模式
   async NoTitlepattern (e) {
-    let getdata = new YamlReader(this.NoTitlepath)
-    let data = getdata.jsonData.Match_pattern
-    if (data) {
-      getdata.set('Match_pattern', 0)
-      e.reply('✅ 已修改匹配模式为精确匹配')
-    } else {
-      getdata.set('Match_pattern', 1)
-      e.reply('✅ 已修改匹配模式为模糊匹配')
-    }
+    let data = Config.NoTitle.Match_pattern ? 0 : 1
+    Config.modify('Shielding_words', 'Match_pattern', data)
+    e.reply(`✅ 已修改匹配模式为${data ? '精确' : '模糊'}匹配`)
   }
 }
 

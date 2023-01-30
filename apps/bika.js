@@ -8,7 +8,7 @@ const SWITCH_ERROR = '主人没有开放这个功能哦(＊／ω＼＊)'
 const numReg = '[一壹二两三四五六七八九十百千万亿\\d]+'
 const Prefix = '(bika|哔咔)'
 // 命令正则
-const searchReg = new RegExp(`^#?${Prefix}(类别|作者)?搜索(.*?)(第(${numReg})页)?$`)
+const searchReg = new RegExp(`^#?${Prefix}(类别|作者|高级)?搜索(.*?)(第(${numReg})页)?$`)
 const comicPageReg = new RegExp(`^#?${Prefix}id(.*?)(第(${numReg})页)?$`)
 export class newBika extends plugin {
   constructor () {

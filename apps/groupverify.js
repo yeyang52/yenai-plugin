@@ -1,6 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
-import { Config, YamlReader } from '../components/index.js'
+import { Config } from '../components/index.js'
 import { common, GroupAdmin as ga } from '../model/index.js'
 // 全局
 let temp = {}
@@ -108,17 +108,12 @@ export class NEWCMD extends plugin {
     if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply('❎ 该命令仅限管理员可用', true)
     if (!e.group.is_admin && !e.group.is_owner) return e.reply('做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ', true)
     let verifycfg = Config.verifycfg
-    let type = /开启/.test(e.msg)
-    let key = verifycfg.openGroup.indexOf(e.group_id)
-    if (key != -1 && type) return e.reply('❎ 本群验证已处于开启状态')
-    if (key == -1 && !type) return e.reply('❎ 本群暂未开启验证')
-    let yaml = new YamlReader(this.verifypath)
-    if (type) {
-      yaml.addIn('openGroup', e.group_id)
-    } else {
-      yaml.delete(`openGroup.${key}`)
-    }
-    e.reply(`✅ 已${type ? '开启' : '关闭'}本群验证`)
+    let type = /开启/.test(e.msg) ? 'add' : 'del'
+    let isopen = verifycfg.openGroup.includes(e.group_id)
+    if (isopen && type == 'add') return e.reply('❎ 本群验证已处于开启状态')
+    if (!isopen && type == 'del') return e.reply('❎ 本群暂未开启验证')
+    Config.modifyarr('groupverify', 'openGroup', e.group_id, type)
+    e.reply(`✅ 已${type == 'add' ? '开启' : '关闭'}本群验证`)
   }
 
   // 切换验证模式
@@ -126,7 +121,7 @@ export class NEWCMD extends plugin {
     if (!e.isMaster) return e.reply('❎ 该命令仅限主人可用', true)
     let verifycfg = Config.verifycfg
     let value = verifycfg.mode == '模糊' ? '精确' : '模糊'
-    new YamlReader(this.verifypath).set('mode', value)
+    Config.modify('groupverify', 'mode', value)
     e.reply(`✅ 已切换验证模式为${value}验证`)
   }
 
@@ -134,7 +129,7 @@ export class NEWCMD extends plugin {
   async setovertime (e) {
     if (!e.isMaster) return e.reply('❎ 该命令仅限主人可用', true)
     let overtime = e.msg.match(/\d+/g)
-    new YamlReader(this.verifypath).set('time', Number(overtime))
+    Config.modify('groupverify', 'time', Number(overtime))
     e.reply(`✅ 已将验证超时时间设置为${overtime}秒`)
     if (overtime < 60) {
       e.reply('建议至少一分钟(60秒)哦ε(*´･ω･)з')

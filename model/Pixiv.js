@@ -485,7 +485,7 @@ export default new class Pixiv {
 
   /** 开始执行文案 */
   get startMsg () {
-    lodash.sample([
+    return lodash.sample([
       '你先别急，正在给你搜了(。-ω-)zzz',
       '你先别急，马上去给你找哦ε(*´･ω･)з',
       '你先别急，正在给你搜了(。-ω-)zzz',

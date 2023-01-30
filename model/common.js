@@ -189,6 +189,7 @@ export default new class newCommon {
      * @return {number}
      */
   translateChinaNum (s_123) {
+    if (!s_123 && s_123 != 0) return s_123
     // 如果是纯数字直接返回
     if (/^\d+$/.test(s_123)) return Number(s_123)
     // 字典

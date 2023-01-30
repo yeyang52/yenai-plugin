@@ -246,7 +246,7 @@ export default new class Pixiv {
   async searchTagspro (tag, page = 1, isfilter = true) {
     let autocomplete = await fetch(`${this.domain}/search_autocomplete?word=${tag}`).then(res => res.json()).catch(err => console.log(err))
     let translated_tag = ''
-    autocomplete.tags.some(item => {
+    autocomplete.tags?.some(item => {
       if (tag === item.translated_name) {
         logger.mark(`[椰奶Pixiv][searchTagspro]替换关键词 ${logger.yellow(tag)} 为 ${logger.green(item.name)}`)
         translated_tag = item.name

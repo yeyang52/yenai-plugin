@@ -10,7 +10,8 @@ export default new (class {
     this.imageQuality = 'medium'
     this.hearder = {
       headers: {
-        'x-image-quality': this.imageQuality
+        'x-image-quality': this.imageQuality,
+        'user-agent': 'Yenai-Plugin-bika'
       }
     }
     this.init()

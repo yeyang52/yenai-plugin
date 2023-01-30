@@ -26,19 +26,19 @@ export class newBika extends plugin {
           fnc: 'comicPage'
         },
         {
-          reg: `#?${Prefix}类别列表`,
+          reg: `^#?${Prefix}类别列表$`,
           fnc: 'categories'
         },
         {
-          reg: `#?${Prefix}(详情|细节)(.*)`,
+          reg: `^#?${Prefix}(详情|细节)(.*)$`,
           fnc: 'comicDetail'
         },
         {
-          reg: `#?${Prefix}修改图片质量(.*)`,
+          reg: `^#?${Prefix}修改图片质量(.*)$`,
           fnc: 'imageQuality'
         },
         {
-          reg: `#?${Prefix}(开启|关闭)直连`,
+          reg: `^#?${Prefix}(开启|关闭)直连$`,
           fnc: 'directConnection'
         }
       ]

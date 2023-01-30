@@ -114,6 +114,7 @@ export default new (class {
     return res.map(item => {
       let { title, thumb, description = '未知' } = item
       let { fileServer, path } = thumb
+      fileServer = /static/.test(fileServer) ? fileServer : fileServer + '/static/'
       return [
         `category: ${title}\n`,
         `描述:${description}\n`,

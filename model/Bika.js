@@ -70,7 +70,7 @@ export default new (class {
           `喜欢：${likesCount}\n`,
           `完结：${finished}\n`,
           tags ? `tag：${lodash.truncate(tags.join(','))}\n` : '',
-          segment.image(this.imgproxy ?? `${thumb.fileServer}/static/` + thumb.path)
+          segment.image((this.imgproxy ?? `${thumb.fileServer}/static/`) + thumb.path)
         ]
       })
     ]
@@ -94,7 +94,7 @@ export default new (class {
     return [
       `id: ${_id}, ${title}`,
       `共${total}张，当前为第${pg}页，共${pages}页`,
-      ...docs.map(item => segment.image(this.imgproxy ?? `${item.media.fileServer}/static/` + item.media.path))
+      ...docs.map(item => segment.image((this.imgproxy ?? `${item.media.fileServer}/static/`) + item.media.path))
     ]
   }
 
@@ -146,7 +146,7 @@ export default new (class {
       `评论量：${totalComments}\n`,
       `分类：${categories.join('，')}\n`,
       `tag：${tags.join('，')}`,
-      segment.image(this.imgproxy ?? `${thumb.fileServer}/static/` + thumb.path)
+      segment.image((this.imgproxy ?? `${thumb.fileServer}/static/`) + thumb.path)
     ]
   }
 })()

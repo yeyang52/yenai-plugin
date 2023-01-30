@@ -61,7 +61,7 @@ export class example extends plugin {
     let { sese, sesepro } = Config.getGroup(e.group_id)
     if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
 
-    await e.reply('你先别急，正在给你搜了(。-ω-)zzz')
+    e.reply(Pixiv.startMsg)
 
     let regRet = pidReg.exec(e.msg)
 
@@ -84,7 +84,7 @@ export class example extends plugin {
       return e.reply(SWITCH_ERROR)
     }
 
-    await e.reply('你先别急，马上去给你找哦ε(*´･ω･)з')
+    e.reply(Pixiv.startMsg)
 
     let page = common.translateChinaNum(regRet[6] || 1)
     let res = await Pixiv.Rank(page, regRet[2], regRet[3], regRet[4])
@@ -105,7 +105,7 @@ export class example extends plugin {
       return e.reply('主人没有开放这个功能哦(＊／ω＼＊)')
     }
 
-    await e.reply('你先别急，正在给你搜了(。-ω-)zzz')
+    e.reply(Pixiv.startMsg)
 
     let tag = regRet[2]
 
@@ -135,7 +135,8 @@ export class example extends plugin {
   async trendTags (e) {
     let { sese, sesepro } = Config.getGroup(e.group_id)
     if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
-    await e.reply('你先别急，马上去给你找哦ε(*´･ω･)з')
+
+    e.reply(Pixiv.startMsg)
 
     let res = await Pixiv.gettrend_tags()
 
@@ -148,7 +149,8 @@ export class example extends plugin {
   async saucenaoUid (e) {
     let { sese, sesepro } = Config.getGroup(e.group_id)
     if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
-    await e.reply('你先别急，正在给你搜了(。-ω-)zzz')
+
+    e.reply(Pixiv.startMsg)
 
     let regRet = uidReg.exec(e.msg)
 
@@ -177,7 +179,8 @@ export class example extends plugin {
   async randomImg (e) {
     let { sese, sesepro } = Config.getGroup(e.group_id)
     if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
-    await e.reply('你先别急，马上去给你找哦ε(*´･ω･)з')
+
+    e.reply(Pixiv.startMsg)
 
     let regRet = randomImgReg.exec(e.msg)
 
@@ -198,7 +201,9 @@ export class example extends plugin {
   async relatedWorks (e) {
     let { sese, sesepro } = Config.getGroup(e.group_id)
     if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
-    await e.reply('你先别急，马上去给你找哦ε(*´･ω･)з')
+
+    e.reply(Pixiv.startMsg)
+
     let regRet = e.msg.match(/\d+/)
     let res = await Pixiv.getrelated_works(regRet[0], !setu.getR18(e.group_id))
     if (res?.error) return e.reply(res.error)

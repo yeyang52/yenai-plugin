@@ -26,7 +26,8 @@ export default new class Pixiv {
       AI: {
         type: 'day_ai',
         quantity: 50,
-        r18: 50
+        r18: 50,
+        r18type: 'day_r18_ai'
       },
       男性向: {
         type: 'day_male',
@@ -138,7 +139,7 @@ export default new class Pixiv {
     // r18处理
     if (r18) {
       if (!this.ranktype[mode].r18) return { error: '该排行没有不适合所有年龄段的分类哦~' }
-      type = type + '_r18'
+      type = this.ranktype[mode].r18type ?? type + '_r18'
       pageSizeAll = this.ranktype[mode].r18
     }
     // 总页数
@@ -480,6 +481,16 @@ export default new class Pixiv {
             segment.image(urls.original.replace('i.der.ink', await redis.get('yenai:proxy')))
     ]
     return msg
+  }
+
+  /** 开始执行文案 */
+  get startMsg () {
+    lodash.sample([
+      '你先别急，正在给你搜了(。-ω-)zzz',
+      '你先别急，马上去给你找哦ε(*´･ω･)з',
+      '你先别急，正在给你搜了(。-ω-)zzz',
+      '你先别急，马上去给你找哦ε(*´･ω･)з'
+    ])
   }
 
   /**

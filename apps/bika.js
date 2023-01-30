@@ -1,4 +1,4 @@
-import { Bika, common } from '../model/index.js'
+import { Bika, common, Pixiv } from '../model/index.js'
 import { Config } from '../components/index.js'
 
 // 文案
@@ -6,7 +6,7 @@ const SWITCH_ERROR = '主人没有开放这个功能哦(＊／ω＼＊)'
 
 // 汉字数字匹配正则
 let numReg = '[一壹二两三四五六七八九十百千万亿\\d]+'
-let newPageReg = new RegExp(`第(${numReg}页`)
+let newPageReg = new RegExp(`第(${numReg})页`)
 export class newBika extends plugin {
   constructor () {
     super({
@@ -27,8 +27,10 @@ export class newBika extends plugin {
     })
   }
 
+  /** 搜索 */
   async search (e) {
     if (!this.handlePermission()) return e.reply(SWITCH_ERROR)
+    e.reply(e.reply(Pixiv.startMsg))
     let keyword = e.msg.replace(/#?(bika|哔咔)搜索/g, '').trim()
     let page = e.msg.match(newPageReg)
     let msg = await Bika.search(keyword, page[1])
@@ -36,8 +38,10 @@ export class newBika extends plugin {
     common.getRecallsendMsg(e, msg)
   }
 
+  /** 漫画页面 */
   async comicPage (e) {
     if (!this.handlePermission()) return e.reply(SWITCH_ERROR)
+    e.reply(Pixiv.startMsg)
     let id = e.msg.replace(/#?(bika|哔咔)id/g, '').trim()
     let page = e.msg.match(newPageReg)
     let msg = await Bika.comicPage(id, page[1])
@@ -45,6 +49,7 @@ export class newBika extends plugin {
     common.getRecallsendMsg(e, msg)
   }
 
+  /** 权限判定 */
   handlePermission () {
     let { sesepro } = Config.getGroup(this.e.group_id)
     return !sesepro && !this.e.isMaster

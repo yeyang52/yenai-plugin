@@ -1,6 +1,6 @@
 import { segment } from 'oicq'
 import fetch from 'node-fetch'
-import { common } from './index.js'
+import { common, Pixiv } from './index.js'
 import { Data } from '../components/index.js'
 import lodash from 'lodash'
 
@@ -38,11 +38,10 @@ export default new class setu {
     if (apicfg.api) api = apicfg.api
 
     let size = 'original'
-    let proxy = await redis.get('yenai:proxy')
     if (num > 6) {
       size = 'regular'
     }
-    let url = `${api}?r18=${r18}&num=${num}${tag}&proxy=${proxy}&size=${size}`
+    let url = `${api}?r18=${r18}&num=${num}${tag}&proxy=${Pixiv.proxy}&size=${size}`
     let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
     if (!result) {
       logger.warn(`${e.logFnc}使用备用接口`)
@@ -67,7 +66,7 @@ export default new class setu {
         `pid：${pid}\n`,
         r18 !== undefined ? `r18：${r18}\n` : '',
         `tag：${lodash.truncate(tags.join(','))}\n`,
-        segment.image(url || urls?.original || urls?.regular || urls?.small)
+        segment.image(url || urls?.original || urls?.regular || urls?.small, undefined, undefined, Pixiv.headers)
       ]
     })
     return msg

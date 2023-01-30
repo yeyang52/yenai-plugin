@@ -2,7 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import fs from 'fs'
 import lodash from 'lodash'
 import { Config } from '../components/index.js'
-import { setu, puppeteer } from '../model/index.js'
+import { setu, puppeteer, Pixiv } from '../model/index.js'
 const configs = {
   好友消息: 'privateMessage',
   群消息: 'groupMessage',
@@ -67,6 +67,11 @@ export class NewConfig extends plugin {
           permission: 'master'
         },
         {
+          reg: '^#(开启|关闭)(p站|pixiv)直连$',
+          fnc: 'proxy',
+          permission: 'master'
+        },
+        {
           reg: '^#(增加|减少|查看)头衔屏蔽词.*$',
           fnc: 'NoTitle',
           permission: 'master'
@@ -83,20 +88,6 @@ export class NewConfig extends plugin {
         }
       ]
     })
-    this.proxykey = 'yenai:proxy'
-    this.proxydef = [
-      'i.pixiv.re',
-      'proxy.pixivel.moe',
-      'px2.rainchan.win',
-      'sex.nyan.xyz'
-    ]
-  }
-
-  // 初始化
-  async init () {
-    if (!await redis.get(this.proxykey)) {
-      await redis.set(this.proxykey, 'i.pixiv.re')
-    }
   }
 
   // 更改配置
@@ -216,14 +207,25 @@ export class NewConfig extends plugin {
 
   // 更换代理
   async proxy (e) {
-    if (/查看/.test(e.msg)) return e.reply(await redis.get(this.proxykey))
+    let proxykey = 'yenai:proxy'
+    let proxydef = [
+      'i.pixiv.re',
+      'proxy.pixivel.moe',
+      'px2.rainchan.win',
+      'sex.nyan.xyz'
+    ]
+    if (/查看/.test(e.msg)) return e.reply(await redis.get(proxykey))
     let proxy = e.msg.replace(/#|椰奶更换代理/g, '').trim()
-    if (/^[1234]$/.test(proxy)) proxy = this.proxydef[proxy - 1]
+    if (/直连/.test(e.msg)) {
+      proxy = /开启/.test(e.msg) ? 'i.pximg.net' : proxydef[0]
+    }
+    if (/^[1234]$/.test(proxy)) proxy = proxydef[proxy - 1]
     if (!/([\w\d]+\.){2}[\w\d]+/.test(proxy)) return e.reply('请检查代理地址是否正确')
     logger.mark(`${e.logFnc}切换为${proxy}`)
-    await redis.set(this.proxykey, proxy)
+    await redis.set(proxykey, proxy)
       .then(() => e.reply(`✅ 已经切换代理为「${proxy}」`))
       .catch(err => console.log(err))
+    Pixiv.init()
   }
 
   // 查看涩涩设置

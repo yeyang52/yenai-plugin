@@ -7,7 +7,8 @@ import moment from 'moment'
 const API_ERROR = '❎ 出错辣，请稍后重试'
 export default new class Pixiv {
   constructor () {
-    this.proxy = 'yenai:proxy'
+    this.proxy = 'i.pixiv.re'
+    this.headers = {}
     this.ranktype = {
       日: {
         type: 'day',
@@ -68,6 +69,23 @@ export default new class Pixiv {
 
     }
     this.domain = 'http://api.liaobiao.top/api/pixiv'
+    this.init()
+  }
+
+  async init () {
+    this.proxy = await redis.get('yenai:proxy')
+    if (!this.proxy) {
+      await redis.set('yenai:proxy', 'i.pixiv.re')
+      this.proxy = 'i.pixiv.re'
+    }
+    if (this.proxy == 'i.pximg.net') {
+      this.headers = {
+        host: 'i.pximg.net',
+        referer: 'https://www.pixiv.net/'
+      }
+    } else {
+      delete this.headers
+    }
   }
 
   /**
@@ -83,8 +101,7 @@ export default new class Pixiv {
     if (res.error) {
       return { error: res.error?.user_message || '无法获取数据' }
     }
-    let proxy = await redis.get(this.proxy)
-    let illust = this.format(res.illust, proxy)
+    let illust = this.format(res.illust, this.proxy)
     let { id, title, user, tags, total_bookmarks, total_view, url, create_date, x_restrict, illust_ai_type } = illust
     let msg = [
       `标题：${title}\n`,
@@ -112,7 +129,7 @@ export default new class Pixiv {
       return { error: linkmsg }
     }
 
-    let img = url.map(item => segment.image(item))
+    let img = url.map(item => segment.image(item, undefined, undefined, this.headers))
     return { msg, img }
   }
 
@@ -163,10 +180,8 @@ export default new class Pixiv {
     if (res.error) return { error: res.error.message }
     if (lodash.isEmpty(res.illusts)) return { error: '暂无数据，请等待榜单更新哦(。-ω-)zzz' }
 
-    let proxy = await redis.get(this.proxy)
-
     let illusts = res.illusts.map((item, index) => {
-      let list = this.format(item, proxy)
+      let list = this.format(item)
       let { id, title, user, tags, total_bookmarks, image_urls } = list
       return [
         `标题：${title}\n`,
@@ -176,7 +191,7 @@ export default new class Pixiv {
         `点赞：${total_bookmarks}\n`,
         `排名：${(page - 1) * 30 + (index + 1)}\n`,
         `Tag：${lodash.truncate(tags)}\n`,
-        segment.image(image_urls.large)
+        segment.image(image_urls.large, undefined, undefined, this.headers)
       ]
     })
     let formatDate = res.next_url.match(/date=(\d{4}-\d{1,2}-\d{1,2})/)[1]
@@ -226,12 +241,12 @@ export default new class Pixiv {
     }
     res.data.rows.sort((a, b) => b.like_total - a.like_total)
     for (let i of res.data.rows) {
-      let { picture_id, title, regular_url, tags } = i
+      let { picture_id, title, original_url, tags } = i
       list.push([
         `标题：${title}\n`,
         `PID：${picture_id}\n`,
         `Tag：${lodash.truncate(tags)}\n`,
-        segment.image(regular_url)
+        segment.image(original_url)
       ])
     }
     return list
@@ -260,12 +275,11 @@ export default new class Pixiv {
     if (res.error) return { error: res.message }
     if (lodash.isEmpty(res.illusts)) return { error: '宝~没有数据了哦(๑＞︶＜)و' }
 
-    let proxy = await redis.get(this.proxy)
     let illusts = []
     let filter = 0
     let NowNum = res.illusts.length
     for (let i of res.illusts) {
-      let { id, title, user, tags, total_bookmarks, image_urls, x_restrict } = this.format(i, proxy)
+      let { id, title, user, tags, total_bookmarks, image_urls, x_restrict } = this.format(i)
       if (isfilter && x_restrict) {
         filter++
         continue
@@ -277,7 +291,7 @@ export default new class Pixiv {
         `UID：${user.id}\n`,
         `点赞：${total_bookmarks}\n`,
         `Tag：${lodash.truncate(tags)}\n`,
-        segment.image(image_urls.large)
+        segment.image(image_urls.large, undefined, undefined, this.headers)
       ])
     }
     if (lodash.isEmpty(illusts)) return { error: '该页全为涩涩内容已全部过滤(#／。＼#)' }
@@ -300,16 +314,15 @@ export default new class Pixiv {
     if (!res.trend_tags) return { error: '呜呜呜，没有获取到数据(๑ १д१)' }
 
     let list = []
-    let proxy = await redis.get('yenai:proxy')
     for (let i of res.trend_tags) {
       let { tag, translated_name } = i
-      let url = i.illust.image_urls.large.replace('i.pximg.net', proxy)
+      let url = i.illust.image_urls.large.replace('i.pximg.net', this.proxy)
       list.push(
         [
           `Tag：${tag}\n`,
           `Translated：${translated_name}\n`,
           `Pid：${i.illust.id}\n`,
-          segment.image(url)
+          segment.image(url, undefined, undefined, this.headers)
         ]
       )
     }
@@ -333,7 +346,6 @@ export default new class Pixiv {
 
       keyword = wordlist.data.rows[0].user.id
     }
-    let proxy = await redis.get(this.proxy)
     // let userapi = `https://api.obfs.dev/api/pixiv/member?id=${keyword}`
     // let user = await fetch(userapi).then(res => res.json()).catch(err => console.log(err))
     // if (!user) return { error: API_ERROR }
@@ -367,7 +379,7 @@ export default new class Pixiv {
     let filter = 0
     let NowNum = res.illusts.length
     for (let i of res.illusts) {
-      let { id: pid, title, tags, total_bookmarks, total_view, url, x_restrict } = this.format(i, proxy)
+      let { id: pid, title, tags, total_bookmarks, total_view, url, x_restrict } = this.format(i)
       if (isfilter && x_restrict) {
         filter++
         continue
@@ -378,7 +390,7 @@ export default new class Pixiv {
         `点赞：${total_bookmarks}\n`,
         `访问：${total_view}\n`,
         `Tag：${lodash.truncate(tags)}\n`,
-        segment.image(url[0])
+        segment.image(url[0], undefined, undefined, this.headers)
       ])
     }
     if (lodash.isEmpty(illusts)) return { error: '该页全为涩涩内容已全部过滤(#／。＼#)' }
@@ -390,7 +402,7 @@ export default new class Pixiv {
     // list.push(...illusts)
     return [
       [
-        segment.image(profile_image_urls.medium.replace('i.pximg.net', proxy)),
+        segment.image(profile_image_urls.medium.replace('i.pximg.net', this.proxy), undefined, undefined, this.headers),
         `\nUid：${uid}\n`,
         `画师：${name}\n`
       ],
@@ -417,7 +429,7 @@ export default new class Pixiv {
         `点赞: ${like_total}\n`,
         `插画ID：${picture_id}\n`,
         `Tag：${lodash.truncate(tags)}\n`,
-        segment.image(regular_url)
+        segment.image(regular_url, undefined, undefined, this.headers)
       ])
     }
     return list
@@ -435,11 +447,10 @@ export default new class Pixiv {
     if (res.error) return { error: res.error.user_message }
     if (lodash.isEmpty(res.illusts)) return { error: '呃...没有数据(•ิ_•ิ)' }
 
-    let proxy = await redis.get(this.proxy)
     let illusts = []
     let filter = 0
     for (let i of res.illusts) {
-      let { id, title, user, tags, total_bookmarks, image_urls, x_restrict } = this.format(i, proxy)
+      let { id, title, user, tags, total_bookmarks, image_urls, x_restrict } = this.format(i)
       if (isfilter && x_restrict) {
         filter++
         continue
@@ -451,7 +462,7 @@ export default new class Pixiv {
         `UID：${user.id}\n`,
         `点赞：${total_bookmarks}\n`,
         `Tag：${lodash.truncate(tags)}\n`,
-        segment.image(image_urls.large)
+        segment.image(image_urls.large, undefined, undefined, this.headers)
       ])
     }
     if (lodash.isEmpty(illusts)) return { error: '啊啊啊！！！居然全是瑟瑟哒不给你看(＊／ω＼＊)' }
@@ -478,7 +489,7 @@ export default new class Pixiv {
       `标题：${title}\n`,
       `画师：${author}\n`,
       `Tag：${tags.join('，')}\n`,
-      segment.image(urls.original.replace('i.der.ink', await redis.get('yenai:proxy')))
+      segment.image(urls.original.replace('i.der.ink', this.proxy), undefined, undefined, this.headers)
     ]
     return msg
   }
@@ -496,19 +507,18 @@ export default new class Pixiv {
   /**
      * @description: 格式化
      * @param {Object} illusts 处理对象
-     * @param {Object} proxy 代理
      * @return {Object}
      */
-  format (illusts, proxy) {
+  format (illusts) {
     let url = []
     let { id, title, tags, total_bookmarks, total_view, meta_single_page, meta_pages, user, image_urls, x_restrict, create_date, illust_ai_type, visible } = illusts
     tags = lodash.uniq(lodash.compact(lodash.flattenDeep(tags?.map(item => Object.values(item)))))
     if (!lodash.isEmpty(meta_single_page)) {
-      url.push(meta_single_page.original_image_url.replace('i.pximg.net', proxy))
+      url.push(meta_single_page.original_image_url.replace('i.pximg.net', this.proxy))
     } else {
-      url = meta_pages.map(item => item.image_urls.original.replace('i.pximg.net', proxy))
+      url = meta_pages.map(item => item.image_urls.original.replace('i.pximg.net', this.proxy))
     }
-    image_urls = lodash.mapValues(image_urls, (item) => item.replace('i.pximg.net', proxy))
+    image_urls = lodash.mapValues(image_urls, (item) => item.replace('i.pximg.net', this.proxy))
 
     return {
       title, // 标题

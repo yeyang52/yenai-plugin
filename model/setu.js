@@ -31,7 +31,7 @@ export default new class setu {
      * @param {String} tag 关键词
      * @return {Object}
      */
-  async setuapi (e, r18, num = 1, tag = '') {
+  async setuapi (r18, num = 1, tag = '') {
     let api = 'https://api.lolicon.app/setu/v2'
 
     let apicfg = Data.readJSON('api.json', this.root)
@@ -44,17 +44,15 @@ export default new class setu {
     let url = `${api}?r18=${r18}&num=${num}${tag}&proxy=${Pixiv.proxy}&size=${size}`
     let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
     if (!result) {
-      logger.warn(`${e.logFnc}使用备用接口`)
+      logger.warn('[椰奶][setuapi]使用备用接口')
       let apiReserve = `https://sex.nyan.xyz/api/v2/?r18=${r18}&num=${num}${tag}`
       result = await fetch(apiReserve).then(res => res.json()).catch(err => console.log(err))
       if (!result) {
-        e.reply('❎ 接口失效')
-        return false
+        return { error: '❎ 接口失效' }
       }
     }
     if (lodash.isEmpty(result.data)) {
-      e.reply('没有找到相关的tag', false, { at: true })
-      return false
+      return { error: '没有找到相关的tag' }
     }
     // 消息
     let msg = result.data.map(item => {

@@ -133,11 +133,6 @@ export default new class Pixiv {
     return { msg, img }
   }
 
-  // 榜单类型
-  get RankReg () {
-    return this.ranktype
-  }
-
   /**
      * @description: 获取Pixiv榜单
      * @param {Number} page 页数

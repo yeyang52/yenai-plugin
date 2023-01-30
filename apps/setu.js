@@ -67,9 +67,9 @@ export class sese extends plugin {
       e.reply(setu.startMsg)
     }
 
-    let res = await setu.setuapi(e, setu.getR18(e.group_id), num)
+    let res = await setu.setuapi(setu.getR18(e.group_id), num)
 
-    if (!res) return false
+    if (res.error) return e.reply(res.error)
 
     setu.sendMsgOrSetCd(e, res)
   }
@@ -110,9 +110,9 @@ export class sese extends plugin {
     tag = tag.map((item) => `&tag=${item}`).join('')
 
     // 接口
-    let res = await setu.setuapi(e, setu.getR18(e.group_id), num, tag)
+    let res = await setu.setuapi(setu.getR18(e.group_id), num, tag)
 
-    if (!res) return false
+    if (res.error) return e.reply(res.error)
 
     // 发送消息
     setu.sendMsgOrSetCd(e, res)

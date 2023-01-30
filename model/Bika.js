@@ -18,6 +18,11 @@ export default new (class {
   }
 
   async init () {
+    if (!await redis.get('yenai:bika:directConnection')) {
+      this.imgproxy = 'https://proxy.liaobiao.top/'
+    } else {
+      delete this.imgproxy
+    }
     this.imageQuality = await redis.get('yenai:bika:imageQuality') ?? 'medium'
   }
 
@@ -51,7 +56,6 @@ export default new (class {
     if (!res) return { error: API_ERROR }
     let { docs, total, page: pg, pages } = res.data.comics
     if (total == 0) return { error: `未找到作品，换个${type.alias[0]}试试吧` }
-
     return [
       `共找到${total}个关于「${keyword}」${type.alias[0]}的作品`,
       `当前为第${pg}页，共${pages}页`,
@@ -66,7 +70,7 @@ export default new (class {
           `喜欢：${likesCount}\n`,
           `完结：${finished}\n`,
           tags ? `tag：${lodash.truncate(tags.join(','))}\n` : '',
-          segment.image(this.imgproxy + thumb.path)
+          segment.image(this.imgproxy ?? `${thumb.fileServer}/static/` + thumb.path)
         ]
       })
     ]
@@ -90,7 +94,7 @@ export default new (class {
     return [
       `id: ${_id}, ${title}`,
       `共${total}张，当前为第${pg}页，共${pages}页`,
-      ...docs.map(item => segment.image(this.imgproxy + item.media.path))
+      ...docs.map(item => segment.image(this.imgproxy ?? `${item.media.fileServer}/static/` + item.media.path))
     ]
   }
 
@@ -113,7 +117,7 @@ export default new (class {
       return [
         `category: ${title}\n`,
         `描述:${description}\n`,
-        segment.image((/storage(-b|1).picacomic.com/.test(fileServer) ? this.imgproxy : fileServer) + path)
+        segment.image((/storage(-b|1).picacomic.com/.test(fileServer) && this.imgproxy ? this.imgproxy : fileServer) + path)
       ]
     })
   }
@@ -141,7 +145,7 @@ export default new (class {
       `评论量：${totalComments}\n`,
       `分类：${categories.join('，')}\n`,
       `tag：${tags.join('，')}`,
-      segment.image(this.imgproxy + thumb.path)
+      segment.image(this.imgproxy ?? `${thumb.fileServer}/static/` + thumb.path)
     ]
   }
 })()

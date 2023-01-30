@@ -7,7 +7,7 @@ const SWITCH_ERROR = '主人没有开放这个功能哦(＊／ω＼＊)'
 // 汉字数字匹配正则
 let numReg = '[一壹二两三四五六七八九十百千万亿\\d]+'
 // 正则
-let rankingrReg = new RegExp(`^#?看看((\\d{4}-\\d{1,2}-\\d{1,2})的)?(${Object.keys(Pixiv.RankReg).join('|')})(r18)?榜\\s?(第(${numReg})页)?$`, 'i')
+let rankingrReg = new RegExp(`^#?看看((\\d{4}-\\d{1,2}-\\d{1,2})的)?(${Object.keys(Pixiv.ranktype).join('|')})(r18)?榜\\s?(第(${numReg})页)?$`, 'i')
 let tagReg = /^#?tag(pro)?搜图(.*)$/i
 let pidReg = /^#?pid搜图\s?(\d+)$/i
 let uidReg = /^#?uid搜图(.*)$/i

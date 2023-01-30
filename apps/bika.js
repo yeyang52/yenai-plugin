@@ -36,6 +36,10 @@ export class newBika extends plugin {
         {
           reg: `#?${Prefix}修改图片质量(.*)`,
           fnc: 'imageQuality'
+        },
+        {
+          reg: `#?${Prefix}(开启|关闭)直连`,
+          fnc: 'directConnection'
         }
       ]
 
@@ -95,6 +99,18 @@ export class newBika extends plugin {
     await redis.set('yenai:bika:imageQuality', type)
     Bika.imageQuality = type
     e.reply(`✅ 已将bika图片质量修改为${quality}(${type})`)
+  }
+
+  /** 图片直连 */
+  async directConnection (e) {
+    if (!e.isMaster) return false
+    if (/开启/.test(e.msg)) {
+      await redis.set('yenai:bika:directConnection', '1')
+    } else {
+      await redis.del('yenai:bika:directConnection')
+    }
+    await Bika.init()
+    e.reply(`✅ 已${/开启/.test(e.msg) ? '开启' : '关闭'}哔咔直连`)
   }
 
   /** 权限判定 */

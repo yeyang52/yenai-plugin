@@ -31,9 +31,8 @@ export default new (class {
   async search (keyword, page = 1, type = 'search', sort = 'ld') {
     let types = [
       {
-        alias: ['高级搜索', 'search'],
-        url: `${this.domain}/advanced_search?keyword=${keyword}&page=${page}&sort=${sort}`,
-        default: true
+        alias: ['关键词', 'search', '高级搜索'],
+        url: `${this.domain}/advanced_search?keyword=${keyword}&page=${page}&sort=${sort}`
       },
       {
         alias: ['类别', 'category'],
@@ -45,16 +44,15 @@ export default new (class {
       }
     ]
     type = types.find(item => item.alias.includes(type))
-    console.log(type)
     let res = await fetch(type.url, this.hearder)
       .then((res) => res.json())
       .catch((err) => console.log(err))
     if (!res) return { error: API_ERROR }
     let { docs, total, page: pg, pages } = res.data.comics
-    if (total == 0) return { error: `未找到作品，换个${type.alias[1]}试试吧` }
+    if (total == 0) return { error: `未找到作品，换个${type.alias[0]}试试吧` }
 
     return [
-      `共找到${total}个关于「${keyword}」${type.alias[1]}的作品`,
+      `共找到${total}个关于「${keyword}」${type.alias[0]}的作品`,
       `当前为第${pg}页，共${pages}页`,
       ...docs.map((item) => {
         let { title, tags, categories, author, description = '未知', likesCount, thumb, _id, finished } = item

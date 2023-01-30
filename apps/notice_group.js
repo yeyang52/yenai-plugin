@@ -52,11 +52,11 @@ export class newgroups extends plugin {
 
           msg = [
             segment.image(
-                            `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
+              `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
             ),
             '[通知 - 群聊被解散]\n',
-                        `操作人QQ：${e.operator_id}\n`,
-                        `解散群号：${e.group_id}`
+            `操作人QQ：${e.operator_id}\n`,
+            `解散群号：${e.group_id}`
           ]
         } else if (e.user_id === Bot.uin && e.operator_id !== Bot.uin) {
           if (!Config.getGroup(e.group_id).groupNumberChange) return false
@@ -65,11 +65,11 @@ export class newgroups extends plugin {
 
           msg = [
             segment.image(
-                            `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
+              `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
             ),
             '[通知 - 机器人被踢]\n',
-                        `操作人QQ：${e.operator_id}\n`,
-                        `被踢群号：${e.group_id}`
+            `操作人QQ：${e.operator_id}\n`,
+            `被踢群号：${e.group_id}`
           ]
         } else if (e.user_id === Bot.uin && e.operator_id === Bot.uin) {
           if (!Config.getGroup(e.group_id).groupNumberChange) return false
@@ -78,10 +78,10 @@ export class newgroups extends plugin {
 
           msg = [
             segment.image(
-                            `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
+              `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
             ),
             '[通知 - 机器人退群]\n',
-                        `退出群号：${e.group_id}`
+            `退出群号：${e.group_id}`
           ]
         } else if (e.operator_id === e.user_id) {
           if (!Config.getGroup(e.group_id).groupMemberNumberChange) return false
@@ -90,13 +90,13 @@ export class newgroups extends plugin {
 
           msg = [
             segment.image(
-                            `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
+              `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
             ),
             '[通知 - 群员退群]\n',
-                        `退群人QQ：${e.user_id}\n`,
-                        `退群人昵称：${e.member.nickname}\n`,
-                        `退群人群名片：${e.member.card}\n`,
-                        `退出群号：${e.group_id}`
+            `退群人QQ：${e.user_id}\n`,
+            `退群人昵称：${e.member.nickname}\n`,
+            `退群人群名片：${e.member.card}\n`,
+            `退出群号：${e.group_id}`
           ]
         } else if (e.operator_id !== e.user_id) {
           if (!Config.getGroup(e.group_id).groupMemberNumberChange) return false
@@ -105,14 +105,14 @@ export class newgroups extends plugin {
 
           msg = [
             segment.image(
-                            `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
+              `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
             ),
             '[通知 - 群员被踢]\n',
-                        `操作人QQ：${e.operator_id}\n`,
-                        `被踢人QQ：${e.user_id}\n`,
-                        `被踢人昵称：${e.member.nickname}\n`,
-                        `被踢人群名片：${e.member.card}\n`,
-                        `被踢群号：${e.group_id}`
+            `操作人QQ：${e.operator_id}\n`,
+            `被踢人QQ：${e.user_id}\n`,
+            `被踢人昵称：${e.member.nickname}\n`,
+            `被踢人群名片：${e.member.card}\n`,
+            `被踢群号：${e.group_id}`
           ]
         }
         break
@@ -125,23 +125,23 @@ export class newgroups extends plugin {
         if (e.user_id === Bot.uin) {
           msg = [
             segment.image(
-                            `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
+              `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
             ),
             e.set
               ? '[通知 - 机器人被设置管理]:\n'
               : '[通知 - 机器人被取消管理]:\n',
-                        `被操作群号：${e.group_id}`
+            `被操作群号：${e.group_id}`
           ]
         } else {
           e.set ? logger.mark('[椰奶]新增群管理员') : logger.mark('[椰奶]取消群管理员')
 
           msg = [
             segment.image(
-                            `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
+              `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
             ),
             e.set ? '[通知 - 新增群管理员]:\n' : '[通知 - 取消群管理员]:\n',
-                        `被操作QQ：${e.user_id}\n`,
-                        `被操作群号：${e.group_id}`
+            `被操作QQ：${e.user_id}\n`,
+            `被操作群号：${e.group_id}`
           ]
         }
         break
@@ -158,23 +158,23 @@ export class newgroups extends plugin {
           logger.mark('[椰奶]机器人被解除禁言')
           msg = [
             segment.image(
-                            `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
+              `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
             ),
             '[通知 - 机器人被解除禁言]\n',
-                        `处理人QQ：${e.operator_id}\n`,
-                        `处理群号：${e.group_id}`
+            `处理人QQ：${e.operator_id}\n`,
+            `处理群号：${e.group_id}`
           ]
         } else if (e.user_id === Bot.uin) {
           logger.mark('[椰奶]机器人被禁言')
 
           msg = [
             segment.image(
-                            `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
+              `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
             ),
             '[通知 - 机器人被禁言]\n',
-                        `禁言人QQ：${e.operator_id}\n`,
-                        `禁言群号：${e.group_id}\n`,
-                        `禁言时长：${Forbiddentime}`
+            `禁言人QQ：${e.operator_id}\n`,
+            `禁言群号：${e.group_id}\n`,
+            `禁言时长：${Forbiddentime}`
           ]
         }
         break
@@ -187,12 +187,12 @@ export class newgroups extends plugin {
 
         msg = [
           segment.image(
-                        `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
+            `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
           ),
           '[通知 - 群聊转让]\n',
-                    `转让群号：${e.group_id}\n`,
-                    `旧群主：${e.operator_id}\n`,
-                    `新群主：${e.user_id}`
+          `转让群号：${e.group_id}\n`,
+          `旧群主：${e.operator_id}\n`,
+          `新群主：${e.user_id}`
         ]
         break
       }
@@ -248,20 +248,20 @@ export class newgroups extends plugin {
         let isManage = ''
         if (e.operator_id != e.user_id) {
           isManage = `撤回管理：${e.group.pickMember(e.operator_id).card}(${e.operator_id
-                        })\n`
+            })\n`
         }
         isManage ? logger.mark('[椰奶]群聊管理撤回') : logger.mark('[椰奶]群聊撤回')
         // 发送的消息
         msg = [
           segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`),
-        `[通知 - 群聊${isManage ? '管理' : ''}撤回]\n`,
-                    `撤回群名：${e.group_name}\n`,
-                    `撤回群号：${e.group_id}\n`,
-                    isManage,
-                    `${isManage ? '被撤回人' : '撤回人员'}：${e.group.pickMember(e.user_id).card
-                    }(${e.user_id})\n`,
-                    `撤回时间：${moment(e.time * 1000).format('MM-DD HH:mm:ss')}`,
-                    special ? `\n特殊消息：${special}` : ''
+          `[通知 - 群聊${isManage ? '管理' : ''}撤回]\n`,
+          `撤回群名：${e.group_name}\n`,
+          `撤回群号：${e.group_id}\n`,
+          isManage,
+          `${isManage ? '被撤回人' : '撤回人员'}：${e.group.pickMember(e.user_id).card
+          }(${e.user_id})\n`,
+          `撤回时间：${moment(e.time * 1000).format('MM-DD HH:mm:ss')}`,
+          special ? `\n特殊消息：${special}` : ''
         ]
         break
       }

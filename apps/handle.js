@@ -64,17 +64,17 @@ export class anotice extends plugin {
       FriendAdd = FriendAdd.map((item) => {
         return [
           segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
-                    `\n申请人QQ：${item.user_id}\n`,
-                    `申请人昵称：${item.nickname}\n`,
-                    `申请来源：${item.source || '未知'}\n`,
-                    `申请时间：${moment(item.time * 1000).format('YYYY-MM-DD HH:mm:ss')}\n`,
-                    `附加信息：${item.comment || '无附加信息'}`
+          `\n申请人QQ：${item.user_id}\n`,
+          `申请人昵称：${item.nickname}\n`,
+          `申请来源：${item.source || '未知'}\n`,
+          `申请时间：${moment(item.time * 1000).format('YYYY-MM-DD HH:mm:ss')}\n`,
+          `附加信息：${item.comment || '无附加信息'}`
         ]
       })
       let msg = [
-                `现有未处理的好友申请如下，共${FriendAdd.length}条`,
-                '可用"#同意好友申请<QQ>"或"#拒绝好友申请<QQ>"进行处理',
-                ...FriendAdd
+        `现有未处理的好友申请如下，共${FriendAdd.length}条`,
+        '可用"#同意好友申请<QQ>"或"#拒绝好友申请<QQ>"进行处理',
+        ...FriendAdd
       ]
       return common.getforwardMsg(e, msg)
     } else if (/全部/.test(e.msg)) {
@@ -92,7 +92,7 @@ export class anotice extends plugin {
         await common.sleep(2000)
       }
       let msg = [
-                `本次共${yes ? '同意' : '拒绝'}${FriendAdd.length}条好友申请\n成功：${success.length}\n失败：${fail.length}`
+        `本次共${yes ? '同意' : '拒绝'}${FriendAdd.length}条好友申请\n成功：${success.length}\n失败：${fail.length}`
       ]
       if (!lodash.isEmpty(success)) msg.push(['以下为成功的名单：\n', success.join('\n')])
       if (!lodash.isEmpty(fail)) msg.push(['以下为失败的名单：\n', fail.join('\n')])
@@ -281,16 +281,16 @@ export class anotice extends plugin {
       SystemMsg = SystemMsg.map(item => {
         return [
           segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
-                    `\nQQ：${item.user_id}\n`,
-                    `昵称：${item.nickname}\n`,
-                    item.tips ? `Tips：${item.tips}\n` : '',
-                    `${item.comment}`
+          `\nQQ：${item.user_id}\n`,
+          `昵称：${item.nickname}\n`,
+          item.tips ? `Tips：${item.tips}\n` : '',
+          `${item.comment}`
         ]
       })
       let msg = [
-                `现有未处理的加群申请如下，总共${SystemMsg.length}条`,
-                '可使用 "#(同意|拒绝)加群申请xxx"\n或 "#(同意|拒绝)全部加群申请"',
-                ...SystemMsg
+        `现有未处理的加群申请如下，总共${SystemMsg.length}条`,
+        '可使用 "#(同意|拒绝)加群申请xxx"\n或 "#(同意|拒绝)全部加群申请"',
+        ...SystemMsg
       ]
       return common.getforwardMsg(e, msg)
     }
@@ -315,7 +315,7 @@ export class anotice extends plugin {
         await common.sleep(1000)
       }
       let msg = [
-                `本次共处理${SystemMsg.length}条群申请\n成功：${success.length}\n失败：${fail.length}\n风险：${risk.length}`
+        `本次共处理${SystemMsg.length}条群申请\n成功：${success.length}\n失败：${fail.length}\n风险：${risk.length}`
       ]
       if (!lodash.isEmpty(success)) msg.push(['以下为成功的名单：\n', success.join('\n')])
       if (!lodash.isEmpty(fail)) msg.push(['以下为失败的名单：\n', fail.join('\n')])
@@ -351,17 +351,17 @@ export class anotice extends plugin {
       SystemMsg = SystemMsg.map(item => {
         return [
           segment.image(`https://p.qlogo.cn/gh/${item.group_id}/${item.group_id}/100`),
-                    `\n邀请群号：${item.group_id}\n`,
-                    `邀请群名：${item.group_name}\n`,
-                    `邀请人QQ：${item.user_id}\n`,
-                    `邀请人昵称：${item.nickname}\n`,
-                    `邀请人身份：${ROLE_MAP[item.role]}`
+          `\n邀请群号：${item.group_id}\n`,
+          `邀请群名：${item.group_name}\n`,
+          `邀请人QQ：${item.user_id}\n`,
+          `邀请人昵称：${item.nickname}\n`,
+          `邀请人身份：${ROLE_MAP[item.role]}`
         ]
       })
       let msg = [
-                `现有未处理的群邀请如下，总共${SystemMsg.length}条`,
-                '可使用 "#(同意|拒绝)群邀请xxx"\n或 "#(同意|拒绝)全部群邀请"',
-                ...SystemMsg
+        `现有未处理的群邀请如下，总共${SystemMsg.length}条`,
+        '可使用 "#(同意|拒绝)群邀请xxx"\n或 "#(同意|拒绝)全部群邀请"',
+        ...SystemMsg
       ]
       return common.getforwardMsg(e, msg)
     } else if (/全部/.test(e.msg)) {

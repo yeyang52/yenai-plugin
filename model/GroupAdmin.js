@@ -55,9 +55,9 @@ class Group_admin {
     let msg = list.map(item =>
       [
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
-                `\nQQ：${item.user_id}\n`,
-                `昵称：${item.card || item.nickname}\n`,
-                `最后发言时间：${moment(item.last_sent_time * 1000).format('YYYY-MM-DD HH:mm:ss')}`
+        `\nQQ：${item.user_id}\n`,
+        `昵称：${item.card || item.nickname}\n`,
+        `最后发言时间：${moment(item.last_sent_time * 1000).format('YYYY-MM-DD HH:mm:ss')}`
       ]
     )
     let pageChunk = lodash.chunk(msg, 30)
@@ -128,9 +128,9 @@ class Group_admin {
     list.sort((a, b) => a.join_time - b.join_time)
     let msg = list.map(item => {
       return [segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
-            `\nQQ：${item.user_id}\n`,
-            `昵称：${item.card || item.nickname}\n`,
-            `进群时间：${moment(item.join_time * 1000).format('YYYY-MM-DD HH:mm:ss')}`
+      `\nQQ：${item.user_id}\n`,
+      `昵称：${item.card || item.nickname}\n`,
+      `进群时间：${moment(item.join_time * 1000).format('YYYY-MM-DD HH:mm:ss')}`
       ]
     })
     let pageChunk = lodash.chunk(msg, 30)
@@ -163,8 +163,8 @@ class Group_admin {
     }
     let msg = [
       [`本次共清理${arr.length}人\n`,
-            `成功：${success.length}人\n`,
-            `失败：${fail.length}人`]
+      `成功：${success.length}人\n`,
+      `失败：${fail.length}人`]
     ]
     if (!lodash.isEmpty(success)) {
       success = success.map((item, index) => `\n${index + 1}、${item}`)
@@ -194,9 +194,9 @@ class Group_admin {
     msg = msg.map((item, index) => {
       return [`第${index + 1}名：\n`,
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
-            `\nQQ：${item.user_id}\n`,
-            `昵称：${item.card || item.nickname}\n`,
-            `最后发言时间：${moment(item.last_sent_time * 1000).format('YYYY-MM-DD HH:mm:ss')}`
+      `\nQQ：${item.user_id}\n`,
+      `昵称：${item.card || item.nickname}\n`,
+      `最后发言时间：${moment(item.last_sent_time * 1000).format('YYYY-MM-DD HH:mm:ss')}`
       ]
     })
     msg.unshift(`不活跃排行榜top1 - top${num}`)
@@ -218,10 +218,10 @@ class Group_admin {
     msg = msg.map((item) => {
       return [
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
-                `\nQQ：${item.user_id}\n`,
-                `昵称：${item.card || item.nickname}\n`,
-                `入群时间：${moment(item.join_time * 1000).format('YYYY-MM-DD HH:mm:ss')}\n`,
-                `最后发言时间：${moment(item.last_sent_time * 1000).format('YYYY-MM-DD HH:mm:ss')}`
+        `\nQQ：${item.user_id}\n`,
+        `昵称：${item.card || item.nickname}\n`,
+        `入群时间：${moment(item.join_time * 1000).format('YYYY-MM-DD HH:mm:ss')}\n`,
+        `最后发言时间：${moment(item.last_sent_time * 1000).format('YYYY-MM-DD HH:mm:ss')}`
       ]
     })
     msg.unshift(`最近的${num}条入群记录`)
@@ -304,9 +304,9 @@ class Group_admin {
       let analysis = item.name.match(RegEx)
       return [
         segment.image(`https://p.qlogo.cn/gh/${analysis[2]}/${analysis[2]}/100`),
-                `\n群号：${analysis[2]}`,
-                item.cron ? `\n禁言时间：'${item.cron}'` : '',
-                item.nocron ? `\n解禁时间：'${item.nocron}'` : ''
+        `\n群号：${analysis[2]}`,
+        item.cron ? `\n禁言时间：'${item.cron}'` : '',
+        item.nocron ? `\n解禁时间：'${item.nocron}'` : ''
       ]
     })
   }

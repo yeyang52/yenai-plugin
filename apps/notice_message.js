@@ -26,9 +26,9 @@ Bot.on('message', async (e) => {
     if (Config.getGroup(e.group_id).groupRecall) {
       // 写入
       await redis.set(
-                `notice:messageGroup:${e.message_id}`,
-                JSON.stringify(e.message),
-                { EX: deltime }
+        `notice:messageGroup:${e.message_id}`,
+        JSON.stringify(e.message),
+        { EX: deltime }
       )
     }
   } else if (e.isPrivate) {
@@ -36,9 +36,9 @@ Bot.on('message', async (e) => {
     if (Config.Notice.PrivateRecall) {
       // 写入
       await redis.set(
-                `notice:messagePrivate:${e.message_id}`,
-                JSON.stringify(e.message),
-                { EX: deltime }
+        `notice:messagePrivate:${e.message_id}`,
+        JSON.stringify(e.message),
+        { EX: deltime }
       )
     }
   }
@@ -48,46 +48,46 @@ Bot.on('message', async (e) => {
   let forwardMsg
   if (
     e.message[0].type == 'flash' &&
-        e.message_type === 'group'
+    e.message_type === 'group'
   ) {
     if (!Config.getGroup(e.group_id).flashPhoto) return false
     logger.mark('[椰奶]群聊闪照')
     msg = [
       segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`),
       '[消息 - 闪照消息]\n',
-            `发送人QQ：${e.user_id}\n`,
-            `发送人昵称：${e.sender.nickname}\n`,
-            `来源群号：${e.group_id}\n`,
-            `来源群名：${e.group_name}\n`,
-            `闪照链接:${e.message[0].url}`
+      `发送人QQ：${e.user_id}\n`,
+      `发送人昵称：${e.sender.nickname}\n`,
+      `来源群号：${e.group_id}\n`,
+      `来源群名：${e.group_name}\n`,
+      `闪照链接:${e.message[0].url}`
     ]
   } else if (
     e.message[0].type == 'flash' &&
-        e.message_type === 'discuss' &&
-        Config.Notice.flashPhoto
+    e.message_type === 'discuss' &&
+    Config.Notice.flashPhoto
   ) {
     logger.mark('[椰奶]讨论组闪照')
     msg = [
       segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
       '[消息 - 闪照消息]\n',
-            `发送人QQ：${e.user_id}\n`,
-            `发送人昵称：${e.sender.nickname}\n`,
-            `讨论组号：${e.discuss_id}\n`,
-            `讨论组名：${e.discuss_name}\n`,
-            `闪照链接:${e.message[0].url}`
+      `发送人QQ：${e.user_id}\n`,
+      `发送人昵称：${e.sender.nickname}\n`,
+      `讨论组号：${e.discuss_id}\n`,
+      `讨论组名：${e.discuss_name}\n`,
+      `闪照链接:${e.message[0].url}`
     ]
   } else if (
     e.message[0].type == 'flash' &&
-        e.message_type === 'private' &&
-        Config.Notice.flashPhoto
+    e.message_type === 'private' &&
+    Config.Notice.flashPhoto
   ) {
     logger.mark('[椰奶]好友闪照')
     msg = [
       segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
       '[消息 - 闪照消息]\n',
-            `发送人QQ：${e.user_id}\n`,
-            `发送人昵称：${e.sender.nickname}\n`,
-            `闪照链接:${e.message[0].url}`
+      `发送人QQ：${e.user_id}\n`,
+      `发送人昵称：${e.sender.nickname}\n`,
+      `闪照链接:${e.message[0].url}`
     ]
   } else if (e.message_type === 'private' && e.sub_type === 'friend') {
     if (!Config.Notice.privateMessage) return false
@@ -103,10 +103,10 @@ Bot.on('message', async (e) => {
     msg = [
       segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
       '[消息 - 好友消息]\n',
-            `好友QQ：${e.user_id}\n`,
-            `好友昵称：${e.sender.nickname}\n`,
-            '消息内容：',
-            ...res
+      `好友QQ：${e.user_id}\n`,
+      `好友昵称：${e.sender.nickname}\n`,
+      '消息内容：',
+      ...res
     ]
     // 添加提示消息
     let key = `tz:privateMessage:${e.user_id}`
@@ -115,7 +115,7 @@ Bot.on('message', async (e) => {
       msg.push(
         '\n-------------\n',
         '引用该消息：回复 <内容>\n',
-                `或发送:回复 ${e.user_id} <内容>`
+        `或发送:回复 ${e.user_id} <内容>`
       )
     }
   } else if (e.message_type === 'private' && e.sub_type === 'group') {
@@ -132,10 +132,10 @@ Bot.on('message', async (e) => {
     msg = [
       segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
       '[消息 - 群临时消息]\n',
-            `来源群号：${e.sender.group_id}\n`,
-            `发送人QQ：${e.user_id}\n`,
-            '消息内容：',
-            ...res
+      `来源群号：${e.sender.group_id}\n`,
+      `发送人QQ：${e.user_id}\n`,
+      '消息内容：',
+      ...res
     ]
     // 添加提示消息
     let key = `tz:tempprivateMessage:${e.user_id}`
@@ -159,12 +159,12 @@ Bot.on('message', async (e) => {
     msg = [
       segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`),
       '[消息 - 群聊消息]\n',
-            `来源群号：${e.group_id}\n`,
-            `来源群名：${e.group_name}\n`,
-            `发送人QQ：${e.user_id}\n`,
-            `发送人昵称：${e.sender.nickname}\n`,
-            '消息内容：',
-            ...res
+      `来源群号：${e.group_id}\n`,
+      `来源群名：${e.group_name}\n`,
+      `发送人QQ：${e.user_id}\n`,
+      `发送人昵称：${e.sender.nickname}\n`,
+      '消息内容：',
+      ...res
     ]
   } else if (e.message_type === 'discuss') {
     if (!Config.getGroup(e.group_id).groupMessage) return false
@@ -172,11 +172,11 @@ Bot.on('message', async (e) => {
     msg = [
       segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
       '[消息 - 群聊消息]\n',
-            `来源讨论组号：${e.discuss_id}\n`,
-            `来源讨论组名：${e.discuss_name}\n`,
-            `发送人QQ：${e.user_id}\n`,
-            `发送人昵称：${e.sender.nickname}\n`,
-            `消息内容：${e.raw_message}`
+      `来源讨论组号：${e.discuss_id}\n`,
+      `来源讨论组名：${e.discuss_name}\n`,
+      `发送人QQ：${e.user_id}\n`,
+      `发送人昵称：${e.sender.nickname}\n`,
+      `消息内容：${e.raw_message}`
     ]
   }
   // 发送消息

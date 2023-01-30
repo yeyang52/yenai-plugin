@@ -87,17 +87,17 @@ export default new class Pixiv {
     let illust = this.format(res.illust, proxy)
     let { id, title, user, tags, total_bookmarks, total_view, url, create_date, x_restrict, illust_ai_type } = illust
     let msg = [
-            `标题：${title}\n`,
-            `画师：${user.name}\n`,
-            `PID：${id}\n`,
-            `UID：${user.id}\n`,
-            `点赞：${total_bookmarks}\n`,
-            `访问：${total_view}\n`,
-            `isAI：${illust_ai_type == 2}\n`,
-            `发布：${moment(create_date).format('YYYY-MM-DD HH:mm:ss')}\n`,
-            `Tag：${tags.join('，')}\n`,
-            `直链：https://pixiv.re/${id}.jpg\n`,
-            `传送门：https://www.pixiv.net/artworks/${id}`
+      `标题：${title}\n`,
+      `画师：${user.name}\n`,
+      `PID：${id}\n`,
+      `UID：${user.id}\n`,
+      `点赞：${total_bookmarks}\n`,
+      `访问：${total_view}\n`,
+      `isAI：${illust_ai_type == 2}\n`,
+      `发布：${moment(create_date).format('YYYY-MM-DD HH:mm:ss')}\n`,
+      `Tag：${tags.join('，')}\n`,
+      `直链：https://pixiv.re/${id}.jpg\n`,
+      `传送门：https://www.pixiv.net/artworks/${id}`
     ]
     if (filter && x_restrict) {
       let linkmsg = [
@@ -169,14 +169,14 @@ export default new class Pixiv {
       let list = this.format(item, proxy)
       let { id, title, user, tags, total_bookmarks, image_urls } = list
       return [
-                `标题：${title}\n`,
-                `画师：${user.name}\n`,
-                `PID：${id}\n`,
-                `UID：${user.id}\n`,
-                `点赞：${total_bookmarks}\n`,
-                `排名：${(page - 1) * 30 + (index + 1)}\n`,
-                `Tag：${lodash.truncate(tags)}\n`,
-                segment.image(image_urls.large)
+        `标题：${title}\n`,
+        `画师：${user.name}\n`,
+        `PID：${id}\n`,
+        `UID：${user.id}\n`,
+        `点赞：${total_bookmarks}\n`,
+        `排名：${(page - 1) * 30 + (index + 1)}\n`,
+        `Tag：${lodash.truncate(tags)}\n`,
+        segment.image(image_urls.large)
       ]
     })
     let formatDate = res.next_url.match(/date=(\d{4}-\d{1,2}-\d{1,2})/)[1]
@@ -187,8 +187,8 @@ export default new class Pixiv {
       formatDate = `${moment(formatDate, 'YYYY年MM月DD日').subtract(29, 'days').format('YYYY年MM月DD日')} ~ ${formatDate}`
     }
     let list = [
-            `${formatDate}的${mode}${r18 ? 'R18' : ''}榜`,
-            `当前为第${page}页，共${pageAll}页，本页共${illusts.length}张，总共${pageSizeAll}张`
+      `${formatDate}的${mode}${r18 ? 'R18' : ''}榜`,
+      `当前为第${page}页，共${pageAll}页，本页共${illusts.length}张，总共${pageSizeAll}张`
     ]
     if (page < pageAll) {
       list.push(`可使用 "#看看${date ? `${formatDate}的` : ''}${mode}${r18 ? 'R18' : ''}榜第${page - 0 + 1}页" 翻页`)
@@ -219,7 +219,7 @@ export default new class Pixiv {
     }
 
     let list = [
-            `当前为第${page}页，共${pageall}页，本页共${res.data.rows.length}张，总共${res.data.count}张`
+      `当前为第${page}页，共${pageall}页，本页共${res.data.rows.length}张，总共${res.data.count}张`
     ]
     if (page < pageall) {
       list.push(`可使用 "#tag搜图${tag}第${page - 0 + 1}页" 翻页`)
@@ -228,10 +228,10 @@ export default new class Pixiv {
     for (let i of res.data.rows) {
       let { picture_id, title, regular_url, tags } = i
       list.push([
-                `标题：${title}\n`,
-                `PID：${picture_id}\n`,
-                `Tag：${lodash.truncate(tags)}\n`,
-                segment.image(regular_url)
+        `标题：${title}\n`,
+        `PID：${picture_id}\n`,
+        `Tag：${lodash.truncate(tags)}\n`,
+        segment.image(regular_url)
       ])
     }
     return list
@@ -271,20 +271,20 @@ export default new class Pixiv {
         continue
       }
       illusts.push([
-                `标题：${title}\n`,
-                `画师：${user.name}\n`,
-                `PID：${id}\n`,
-                `UID：${user.id}\n`,
-                `点赞：${total_bookmarks}\n`,
-                `Tag：${lodash.truncate(tags)}\n`,
-                segment.image(image_urls.large)
+        `标题：${title}\n`,
+        `画师：${user.name}\n`,
+        `PID：${id}\n`,
+        `UID：${user.id}\n`,
+        `点赞：${total_bookmarks}\n`,
+        `Tag：${lodash.truncate(tags)}\n`,
+        segment.image(image_urls.large)
       ])
     }
     if (lodash.isEmpty(illusts)) return { error: '该页全为涩涩内容已全部过滤(#／。＼#)' }
 
     return [
-            `本页共${NowNum}张${filter ? `，过滤${filter}张` : ''}\n可尝试使用 "#tagpro搜图${tag}第${page - 0 + 1}页" 翻页\n无数据则代表无下一页`,
-            ...illusts
+      `本页共${NowNum}张${filter ? `，过滤${filter}张` : ''}\n可尝试使用 "#tagpro搜图${tag}第${page - 0 + 1}页" 翻页\n无数据则代表无下一页`,
+      ...illusts
     ]
   }
 
@@ -306,10 +306,10 @@ export default new class Pixiv {
       let url = i.illust.image_urls.large.replace('i.pximg.net', proxy)
       list.push(
         [
-                    `Tag：${tag}\n`,
-                    `Translated：${translated_name}\n`,
-                    `Pid：${i.illust.id}\n`,
-                    segment.image(url)
+          `Tag：${tag}\n`,
+          `Translated：${translated_name}\n`,
+          `Pid：${i.illust.id}\n`,
+          segment.image(url)
         ]
       )
     }
@@ -373,12 +373,12 @@ export default new class Pixiv {
         continue
       }
       illusts.push([
-                `标题：${title}\n`,
-                `PID：${pid}\n`,
-                `点赞：${total_bookmarks}\n`,
-                `访问：${total_view}\n`,
-                `Tag：${lodash.truncate(tags)}\n`,
-                segment.image(url[0])
+        `标题：${title}\n`,
+        `PID：${pid}\n`,
+        `点赞：${total_bookmarks}\n`,
+        `访问：${total_view}\n`,
+        `Tag：${lodash.truncate(tags)}\n`,
+        segment.image(url[0])
       ])
     }
     if (lodash.isEmpty(illusts)) return { error: '该页全为涩涩内容已全部过滤(#／。＼#)' }
@@ -391,11 +391,11 @@ export default new class Pixiv {
     return [
       [
         segment.image(profile_image_urls.medium.replace('i.pximg.net', proxy)),
-                `\nUid：${uid}\n`,
-                `画师：${name}\n`
+        `\nUid：${uid}\n`,
+        `画师：${name}\n`
       ],
-            `本页共${NowNum}张${filter ? `，过滤${filter}张` : ''}\n可尝试使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页\n无数据则代表无下一页`,
-            ...illusts
+      `本页共${NowNum}张${filter ? `，过滤${filter}张` : ''}\n可尝试使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页\n无数据则代表无下一页`,
+      ...illusts
     ]
   }
 
@@ -413,11 +413,11 @@ export default new class Pixiv {
     for (let i of res.data.rows) {
       let { picture_id, title, regular_url, tags, like_total } = i
       list.push([
-                `标题：${title}\n`,
-                `点赞: ${like_total}\n`,
-                `插画ID：${picture_id}\n`,
-                `Tag：${lodash.truncate(tags)}\n`,
-                segment.image(regular_url)
+        `标题：${title}\n`,
+        `点赞: ${like_total}\n`,
+        `插画ID：${picture_id}\n`,
+        `Tag：${lodash.truncate(tags)}\n`,
+        segment.image(regular_url)
       ])
     }
     return list
@@ -445,20 +445,20 @@ export default new class Pixiv {
         continue
       }
       illusts.push([
-                `标题：${title}\n`,
-                `画师：${user.name}\n`,
-                `PID：${id}\n`,
-                `UID：${user.id}\n`,
-                `点赞：${total_bookmarks}\n`,
-                `Tag：${lodash.truncate(tags)}\n`,
-                segment.image(image_urls.large)
+        `标题：${title}\n`,
+        `画师：${user.name}\n`,
+        `PID：${id}\n`,
+        `UID：${user.id}\n`,
+        `点赞：${total_bookmarks}\n`,
+        `Tag：${lodash.truncate(tags)}\n`,
+        segment.image(image_urls.large)
       ])
     }
     if (lodash.isEmpty(illusts)) return { error: '啊啊啊！！！居然全是瑟瑟哒不给你看(＊／ω＼＊)' }
 
     return [
-            `Pid:${pid}的相关作品，共${res.illusts.length}张${filter ? `，过滤${filter}张` : ''}`,
-            ...illusts
+      `Pid:${pid}的相关作品，共${res.illusts.length}张${filter ? `，过滤${filter}张` : ''}`,
+      ...illusts
     ]
   }
 
@@ -472,13 +472,13 @@ export default new class Pixiv {
     if (!res) return { error: API_ERROR }
     let { pid, uid, title, author, tags, urls, r18 } = res.data[0] || res.data
     let msg = [
-            `Pid: ${pid}\n`,
-            `Uid: ${uid}\n`,
-            r18 ? `R18: ${r18}\n` : '',
-            `标题：${title}\n`,
-            `画师：${author}\n`,
-            `Tag：${tags.join('，')}\n`,
-            segment.image(urls.original.replace('i.der.ink', await redis.get('yenai:proxy')))
+      `Pid: ${pid}\n`,
+      `Uid: ${uid}\n`,
+      r18 ? `R18: ${r18}\n` : '',
+      `标题：${title}\n`,
+      `画师：${author}\n`,
+      `Tag：${tags.join('，')}\n`,
+      segment.image(urls.original.replace('i.der.ink', await redis.get('yenai:proxy')))
     ]
     return msg
   }

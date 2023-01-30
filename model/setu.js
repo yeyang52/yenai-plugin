@@ -61,13 +61,13 @@ export default new class setu {
     let msg = result.data.map(item => {
       let { pid, title, tags, author, r18, urls, url } = item
       return [
-                `${this.sendMsgs}\n`,
-                `标题：${title}\n`,
-                `画师：${author}\n`,
-                `pid：${pid}\n`,
-                r18 !== undefined ? `r18：${r18}\n` : '',
-                `tag：${lodash.truncate(tags.join(','))}\n`,
-                segment.image(url || urls?.original || urls?.regular || urls?.small)
+        `${this.sendMsgs}\n`,
+        `标题：${title}\n`,
+        `画师：${author}\n`,
+        `pid：${pid}\n`,
+        r18 !== undefined ? `r18：${r18}\n` : '',
+        `tag：${lodash.truncate(tags.join(','))}\n`,
+        segment.image(url || urls?.original || urls?.regular || urls?.small)
       ]
     })
     return msg

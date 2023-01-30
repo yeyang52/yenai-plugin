@@ -23,8 +23,8 @@ export class Friends extends plugin {
         msg = [
           segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
           '[通知 - 新增好友]\n',
-                    `好友QQ：${e.user_id}\n`,
-                    `好友昵称：${e.nickname}`
+          `好友QQ：${e.user_id}\n`,
+          `好友昵称：${e.nickname}`
         ]
         break
       }
@@ -34,8 +34,8 @@ export class Friends extends plugin {
         msg = [
           segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
           '[通知 - 好友减少]\n',
-                    `好友QQ：${e.user_id}\n`,
-                    `好友昵称：${e.nickname}`
+          `好友QQ：${e.user_id}\n`,
+          `好友昵称：${e.nickname}`
         ]
         break
       }
@@ -73,10 +73,10 @@ export class Friends extends plugin {
         msg = [
           segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
           '[消息 - 好友撤回消息]\n',
-                    `好友QQ：${e.user_id}\n`,
-                    `撤回时间：${formatDate(e.time)}\n`,
-                    '撤回消息：',
-                    ...res
+          `好友QQ：${e.user_id}\n`,
+          `撤回时间：${formatDate(e.time)}\n`,
+          '撤回消息：',
+          ...res
         ]
         break
       }
@@ -86,7 +86,7 @@ export class Friends extends plugin {
         msg = [
           segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
           '[消息 - 戳一戳]\n',
-                    `来源QQ：${e.user_id}`
+          `来源QQ：${e.user_id}`
         ]
         break
       }

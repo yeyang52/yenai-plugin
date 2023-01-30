@@ -23,11 +23,11 @@ export default new class Pixiv {
         type: 'month',
         quantity: 500
       },
-      // "AI": {
-      //     type: "day_ai",
-      //     quantity: 50,
-      //     r18: 50,
-      // },
+      AI: {
+        type: 'day_ai',
+        quantity: 50,
+        r18: 50
+      },
       男性向: {
         type: 'day_male',
         quantity: 500,
@@ -66,7 +66,7 @@ export default new class Pixiv {
       }
 
     }
-    this.domain = 'http://api.liaobiao.top'
+    this.domain = 'http://api.liaobiao.top/api/pixiv'
   }
 
   /**
@@ -75,7 +75,7 @@ export default new class Pixiv {
      * @return {Object}
      */
   async Worker (ids, filter = false) {
-    let api = `${this.domain}/api/pixiv/illust?id=${ids}`
+    let api = `${this.domain}/illust?id=${ids}`
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
     if (!res) return { error: API_ERROR }
 
@@ -150,7 +150,7 @@ export default new class Pixiv {
 
     let parame = `mode=${type}&page=${page}&date=${date}`
     // 请求api
-    let api = `${this.domain}/api/pixiv/rank?${parame}`
+    let api = `${this.domain}/rank?${parame}`
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
 
     if (!res || res.error || lodash.isEmpty(res.illusts)) {
@@ -243,7 +243,7 @@ export default new class Pixiv {
      * @return {*}
      */
   async searchTagspro (tag, page = 1, isfilter = true) {
-    let autocomplete = await fetch(`${this.domain}/api/pixiv/search_autocomplete?word=${tag}`).then(res => res.json()).catch(err => console.log(err))
+    let autocomplete = await fetch(`${this.domain}/search_autocomplete?word=${tag}`).then(res => res.json()).catch(err => console.log(err))
     let translated_tag = ''
     autocomplete.tags.some(item => {
       if (tag === item.translated_name) {
@@ -253,7 +253,7 @@ export default new class Pixiv {
       }
       return false
     })
-    let api = `${this.domain}/api/pixiv/search?word=${translated_tag || tag}&page=${page}&order=popular_desc`
+    let api = `${this.domain}/search?word=${translated_tag || tag}&page=${page}&order=popular_desc`
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
     if (!res) return { error: API_ERROR }
     if (res.error) return { error: res.message }
@@ -292,7 +292,7 @@ export default new class Pixiv {
      * @return {Array}
      */
   async gettrend_tags () {
-    let api = `${this.domain}/api/pixiv/tags`
+    let api = `${this.domain}/tags`
 
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
     if (!res) return { error: API_ERROR }
@@ -351,7 +351,7 @@ export default new class Pixiv {
     //     `介绍：${lodash.truncate(comment)}`
     // ]]
     // 作品
-    let api = `${this.domain}/api/pixiv/member_illust?id=${keyword}&page=${page}`
+    let api = `${this.domain}/member_illust?id=${keyword}&page=${page}`
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
     if (!res) return { error: API_ERROR }
     if (res.error) return { error: res.error.message }
@@ -428,7 +428,7 @@ export default new class Pixiv {
      * @return {*}
      */
   async getrelated_works (pid, isfilter = true) {
-    let api = `${this.domain}/api/pixiv/related?id=${pid}`
+    let api = `${this.domain}/related?id=${pid}`
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
     if (!res) return { error: API_ERROR }
     if (res.error) return { error: res.error.user_message }

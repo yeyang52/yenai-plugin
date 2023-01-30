@@ -8,13 +8,14 @@ import GroupAdmin from './GroupAdmin.js'
 import QQInterface from './QQInterface.js'
 import Interface from './Interface.js'
 import CronValidate from './CronValidate.js'
-
+import Bika from './Bika.js'
 export {
   puppeteer,
   common,
   CPU,
   Pixiv,
   setu,
+  Bika,
   uploadRecord,
   CronValidate,
   GroupAdmin,

@@ -1,6 +1,6 @@
 import fetch from 'node-fetch'
 import lodash from 'lodash'
-import { segment } from 'oicq'
+import { Pixiv } from './index.js'
 /** API请求错误文案 */
 const API_ERROR = '❎ 出错辣，请稍后重试'
 export default new (class {
@@ -59,7 +59,7 @@ export default new (class {
     return [
       `共找到${total}个关于「${keyword}」${type.alias[0]}的作品`,
       `当前为第${pg}页，共${pages}页`,
-      ...docs.map((item) => {
+      ...await Promise.all(docs.map(async (item) => {
         let { title, tags, categories, author, description = '未知', likesCount, thumb, _id, finished } = item
         return [
           `id：${_id}\n`,
@@ -70,9 +70,9 @@ export default new (class {
           `喜欢：${likesCount}\n`,
           `完结：${finished}\n`,
           tags ? `tag：${lodash.truncate(tags.join(','))}\n` : '',
-          segment.image((this.imgproxy ?? `${thumb.fileServer}/static/`) + thumb.path)
+          await Pixiv.proxyFetchImg((this.imgproxy ?? `${thumb.fileServer}/static/`) + thumb.path)
         ]
-      })
+      }))
     ]
   }
 
@@ -92,9 +92,9 @@ export default new (class {
     let { docs, total, page: pg, pages } = res.data.pages
     let { _id, title } = res.data.ep
     return [
-      `id: ${_id}, ${title}`,
-      `共${total}张，当前为第${pg}页，共${pages}页`,
-      ...docs.map(item => segment.image((this.imgproxy ?? `${item.media.fileServer}/static/`) + item.media.path))
+      `id: ${_id}， ${title}`,
+      `共${total}张，当前为第${pg}页，共${pages}页，当前为第${order}话`,
+      ...await Promise.all(docs.map(async item => await Pixiv.proxyFetchImg((this.imgproxy ?? `${item.media.fileServer}/static/`) + item.media.path)))
     ]
   }
 
@@ -111,16 +111,16 @@ export default new (class {
       res = res.data.categories.filter(item => !item.isWeb)
       await redis.set(key, JSON.stringify(res), { EX: 43200 })
     }
-    return res.map(item => {
+    return await Promise.all(res.map(async item => {
       let { title, thumb, description = '未知' } = item
       let { fileServer, path } = thumb
       fileServer = /static/.test(fileServer) ? fileServer : fileServer + '/static/'
       return [
         `category: ${title}\n`,
         `描述:${description}\n`,
-        segment.image((/storage(-b|1).picacomic.com/.test(fileServer) && this.imgproxy ? this.imgproxy : fileServer) + path)
+        await Pixiv.proxyFetchImg((/storage(-b|1).picacomic.com/.test(fileServer) && this.imgproxy ? this.imgproxy : fileServer) + path)
       ]
-    })
+    }))
   }
 
   async comicDetail (id) {
@@ -146,7 +146,7 @@ export default new (class {
       `评论量：${totalComments}\n`,
       `分类：${categories.join('，')}\n`,
       `tag：${tags.join('，')}`,
-      segment.image((this.imgproxy ?? `${thumb.fileServer}/static/`) + thumb.path)
+      await Pixiv.proxyFetchImg((this.imgproxy ?? `${thumb.fileServer}/static/`) + thumb.path)
     ]
   }
 })()

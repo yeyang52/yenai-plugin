@@ -1,4 +1,3 @@
-import { segment } from 'oicq'
 import fetch from 'node-fetch'
 import { common, Pixiv } from './index.js'
 import { Data } from '../components/index.js'
@@ -55,7 +54,7 @@ export default new class setu {
       return { error: '没有找到相关的tag' }
     }
     // 消息
-    let msg = result.data.map(item => {
+    let msg = await Promise.all(result.data.map(async item => {
       let { pid, title, tags, author, r18, urls, url } = item
       return [
         `${this.sendMsgs}\n`,
@@ -64,9 +63,9 @@ export default new class setu {
         `pid：${pid}\n`,
         r18 !== undefined ? `r18：${r18}\n` : '',
         `tag：${lodash.truncate(tags.join(','))}\n`,
-        segment.image(url || urls?.original || urls?.regular || urls?.small, undefined, undefined, Pixiv.headers)
+        await Pixiv.proxyFetchImg(url || urls?.original || urls?.regular || urls?.small, { headers: '_pixiv' })
       ]
-    })
+    }))
     return msg
   }
 

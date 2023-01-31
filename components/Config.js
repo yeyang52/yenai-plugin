@@ -71,6 +71,11 @@ class Config {
     return this.getDefOrConfig('groupAdd')
   }
 
+  /** 其他 */
+  get other () {
+    return this.getDefOrConfig('other')
+  }
+
   /** 默认配置和用户配置 */
   getDefOrConfig (name) {
     let def = this.getdefSet(name)

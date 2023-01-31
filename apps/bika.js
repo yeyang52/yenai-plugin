@@ -9,7 +9,7 @@ const numReg = '[一壹二两三四五六七八九十百千万亿\\d]+'
 const Prefix = '(bika|哔咔)'
 // 命令正则
 const searchReg = new RegExp(`^#?${Prefix}(类别|作者|高级)?搜索(.*?)(第(${numReg})页)?$`)
-const comicPageReg = new RegExp(`^#?${Prefix}id(.*?)(第(${numReg})页)?$`)
+const comicPageReg = new RegExp(`^#?${Prefix}id(.*?)(第(${numReg})页)?(第(${numReg})话)?$`)
 export class newBika extends plugin {
   constructor () {
     super({
@@ -63,7 +63,8 @@ export class newBika extends plugin {
     e.reply(Pixiv.startMsg)
     let regRet = e.msg.match(comicPageReg)
     let page = common.translateChinaNum(regRet[4])
-    let msg = await Bika.comicPage(regRet[2], page)
+    let order = common.translateChinaNum(regRet[6])
+    let msg = await Bika.comicPage(regRet[2], page, order)
     if (msg.error) return e.reply(msg.error)
     common.getRecallsendMsg(e, msg)
   }

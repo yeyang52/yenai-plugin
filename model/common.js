@@ -2,7 +2,7 @@ import common from '../../../lib/common/common.js'
 import Config from '../components/Config.js'
 import child_process from 'child_process'
 import setu from './setu.js'
-
+let HttpsProxyAgent = ''
 export default new class newCommon {
   /**
      * @description: 延时函数
@@ -160,6 +160,26 @@ export default new class newCommon {
       }
       return arr
     } else return ck
+  }
+
+  async getAgent () {
+    let proxyAddress = Config.other.proxyAddress
+    if (!proxyAddress) return null
+    if (proxyAddress === 'http://0.0.0.0:0') return null
+
+    if (HttpsProxyAgent === '') {
+      HttpsProxyAgent = await import('https-proxy-agent').catch((err) => {
+        logger.error(err)
+      })
+
+      HttpsProxyAgent = HttpsProxyAgent ? HttpsProxyAgent.default : undefined
+    }
+
+    if (HttpsProxyAgent) {
+      return new HttpsProxyAgent(proxyAddress)
+    }
+
+    return null
   }
 
   /** 默认秒转换格式 */

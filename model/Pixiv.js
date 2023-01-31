@@ -2,9 +2,10 @@ import fetch from 'node-fetch'
 import lodash from 'lodash'
 import { segment } from 'oicq'
 import moment from 'moment'
-
+import { common } from './index.js'
 /** API请求错误文案 */
 const API_ERROR = '❎ 出错辣，请稍后重试'
+
 export default new class Pixiv {
   constructor () {
     this.proxy = 'i.pixiv.re'
@@ -130,7 +131,7 @@ export default new class Pixiv {
       return { error: linkmsg }
     }
 
-    let img = url.map(item => segment.image(item, undefined, undefined, this.headers))
+    let img = await Promise.all(url.map(async item => await this.proxyFetchImg(item, { headers: this.headers })))
     return { msg, img }
   }
 
@@ -176,7 +177,7 @@ export default new class Pixiv {
     if (res.error) return { error: res.error.message }
     if (lodash.isEmpty(res.illusts)) return { error: '暂无数据，请等待榜单更新哦(。-ω-)zzz' }
 
-    let illusts = res.illusts.map((item, index) => {
+    let illusts = await Promise.all(res.illusts.map(async (item, index) => {
       let list = this.format(item)
       let { id, title, user, tags, total_bookmarks, image_urls } = list
       return [
@@ -187,9 +188,9 @@ export default new class Pixiv {
         `点赞：${total_bookmarks}\n`,
         `排名：${(page - 1) * 30 + (index + 1)}\n`,
         `Tag：${lodash.truncate(tags)}\n`,
-        segment.image(image_urls.large, undefined, undefined, this.headers)
+        await this.proxyFetchImg(image_urls.large, { headers: this.headers })
       ]
-    })
+    }))
     let formatDate = res.next_url.match(/date=(\d{4}-\d{1,2}-\d{1,2})/)[1]
     formatDate = moment(formatDate, 'YYYY-MM-DD').format('YYYY年MM月DD日')
     if (/周/.test(mode)) {
@@ -287,7 +288,7 @@ export default new class Pixiv {
         `UID：${user.id}\n`,
         `点赞：${total_bookmarks}\n`,
         `Tag：${lodash.truncate(tags)}\n`,
-        segment.image(image_urls.large, undefined, undefined, this.headers)
+        await this.proxyFetchImg(image_urls.large, { headers: this.headers })
       ])
     }
     if (lodash.isEmpty(illusts)) return { error: '该页全为涩涩内容已全部过滤(#／。＼#)' }
@@ -318,7 +319,7 @@ export default new class Pixiv {
           `Tag：${tag}\n`,
           `Translated：${translated_name}\n`,
           `Pid：${i.illust.id}\n`,
-          segment.image(url, undefined, undefined, this.headers)
+          await this.proxyFetchImg(url, { headers: this.headers })
         ]
       )
     }
@@ -396,9 +397,10 @@ export default new class Pixiv {
     //     list.push(`可使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页`)
     // }
     // list.push(...illusts)
+    let url = profile_image_urls.medium.replace('i.pximg.net', this.proxy)
     return [
       [
-        segment.image(profile_image_urls.medium.replace('i.pximg.net', this.proxy), undefined, undefined, this.headers),
+        await this.proxyFetchImg(url, { headers: this.headers }),
         `\nUid：${uid}\n`,
         `画师：${name}\n`
       ],
@@ -425,7 +427,7 @@ export default new class Pixiv {
         `点赞: ${like_total}\n`,
         `插画ID：${picture_id}\n`,
         `Tag：${lodash.truncate(tags)}\n`,
-        segment.image(regular_url, undefined, undefined, this.headers)
+        await this.proxyFetchImg(regular_url, { headers: this.headers })
       ])
     }
     return list
@@ -458,7 +460,7 @@ export default new class Pixiv {
         `UID：${user.id}\n`,
         `点赞：${total_bookmarks}\n`,
         `Tag：${lodash.truncate(tags)}\n`,
-        segment.image(image_urls.large, undefined, undefined, this.headers)
+        await this.proxyFetchImg(image_urls.large, { headers: this.headers })
       ])
     }
     if (lodash.isEmpty(illusts)) return { error: '啊啊啊！！！居然全是瑟瑟哒不给你看(＊／ω＼＊)' }
@@ -478,6 +480,7 @@ export default new class Pixiv {
     let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))
     if (!res) return { error: API_ERROR }
     let { pid, uid, title, author, tags, urls, r18 } = res.data[0] || res.data
+    urls = urls.original.replace('i.der.ink', this.proxy)
     let msg = [
       `Pid: ${pid}\n`,
       `Uid: ${uid}\n`,
@@ -485,9 +488,26 @@ export default new class Pixiv {
       `标题：${title}\n`,
       `画师：${author}\n`,
       `Tag：${tags.join('，')}\n`,
-      segment.image(urls.original.replace('i.der.ink', this.proxy), undefined, undefined, this.headers)
+      await this.proxyFetchImg(urls, { headers: this.headers })
     ]
     return msg
+  }
+
+  async proxyFetchImg (file, { cache, timeout, headers } = {}) {
+    try {
+      let agent = await common.getAgent()
+      if (!agent) return segment.image(file, cache, timeout, headers)
+      if (headers === '_pixiv')headers = this.headers
+      let buffer = await fetch(file, {
+        agent,
+        headers
+      }).then(res => res.arrayBuffer())
+        .catch(err => console.error(err))
+      return segment.image(Buffer.from(buffer), cache, timeout)
+    } catch (err) {
+      logger.error(err)
+      return segment.image('/plugins/yenai-plugin/resources/img/imgerror.png')
+    }
   }
 
   /** 开始执行文案 */

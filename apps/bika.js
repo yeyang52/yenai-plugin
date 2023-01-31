@@ -74,6 +74,7 @@ export class newBika extends plugin {
     if (!this.handlePermission()) return e.reply(SWITCH_ERROR)
     e.reply(Pixiv.startMsg)
     let msg = await Bika.categories()
+    if (msg.error) return e.reply(msg.error)
     common.getRecallsendMsg(e, msg)
   }
 
@@ -83,6 +84,7 @@ export class newBika extends plugin {
     e.reply(Pixiv.startMsg)
     let id = e.msg.match(new RegExp(`#?${Prefix}(详情|细节)(.*)`))[3]
     let msg = await Bika.comicDetail(id)
+    if (msg.error) return e.reply(msg.error)
     common.getRecallsendMsg(e, msg, { oneMsg: true })
   }
 

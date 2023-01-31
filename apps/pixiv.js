@@ -22,7 +22,7 @@ export class example extends plugin {
       rule: [
         {
           reg: pidReg,
-          fnc: 'saucenaoPid'
+          fnc: 'searchPid'
         },
         {
           reg: rankingrReg,
@@ -30,7 +30,7 @@ export class example extends plugin {
         },
         {
           reg: tagReg,
-          fnc: 'saucenaoTags'
+          fnc: 'searchTags'
         },
         {
           reg: '^#?(查看|获取)?热门(t|T)(a|A)(g|G)$',
@@ -38,7 +38,7 @@ export class example extends plugin {
         },
         {
           reg: uidReg,
-          fnc: 'saucenaoUid'
+          fnc: 'searchUid'
         },
         {
           reg: randomImgReg,
@@ -51,13 +51,17 @@ export class example extends plugin {
         {
           reg: '^#?(P|p)ximg(pro)?$',
           fnc: 'pximg'
+        },
+        {
+          reg: '^#?user搜索.*$',
+          fnc: 'searchUser'
         }
       ]
     })
   }
 
   // pid搜图
-  async saucenaoPid (e) {
+  async searchPid (e) {
     let { sese, sesepro } = Config.getGroup(e.group_id)
     if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
 
@@ -97,7 +101,7 @@ export class example extends plugin {
   }
 
   /** 关键词搜图 */
-  async saucenaoTags (e) {
+  async searchTags (e) {
     let regRet = tagReg.exec(e.msg)
 
     let { sese, sesepro } = Config.getGroup(e.group_id)
@@ -146,7 +150,7 @@ export class example extends plugin {
   }
 
   /** 以uid搜图**/
-  async saucenaoUid (e) {
+  async searchUid (e) {
     let { sese, sesepro } = Config.getGroup(e.group_id)
     if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
 
@@ -168,7 +172,7 @@ export class example extends plugin {
     }
     page = common.translateChinaNum(page)
 
-    let res = await Pixiv.public(key, page, !setu.getR18(e.group_id))
+    let res = await Pixiv.userIllust(key, page, !setu.getR18(e.group_id))
 
     if (res?.error) return e.reply(res.error)
 
@@ -220,5 +224,20 @@ export class example extends plugin {
     let res = await Pixiv.getPximg(ispro)
     if (res?.error) return e.reply(res.error)
     ispro ? common.getRecallsendMsg(e, [res]) : common.recallsendMsg(e, res)
+  }
+
+  /** 搜索用户 */
+  async searchUser (e) {
+    let { sese, sesepro } = Config.getGroup(e.group_id)
+    if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
+
+    e.reply(Pixiv.startMsg)
+    let regRet = e.msg.match(new RegExp(`^#?user搜索(.*?)(第(${numReg})页)?$`))
+    console.log(regRet)
+    let msg = await Pixiv.searchUser(regRet[1], regRet[3], !setu.getR18(e.group_id))
+    console.log(msg)
+    if (msg.error) return e.reply(msg.error)
+
+    common.getRecallsendMsg(e, msg)
   }
 }

@@ -256,19 +256,8 @@ export default new class Pixiv {
      * @return {*}
      */
   async searchTagspro (tag, page = 1, isfilter = true) {
-    let autocomplete = await fetch(`${this.domain}/search_autocomplete?word=${tag}`).then(res => res.json()).catch(err => console.log(err))
-    let translated_tag = ''
-    autocomplete.tags?.some(item => {
-      if (tag === item.translated_name) {
-        logger.mark(`[椰奶Pixiv][searchTagspro]替换关键词 ${logger.yellow(tag)} 为 ${logger.green(item.name)}`)
-        translated_tag = item.name
-        return true
-      }
-      return false
-    })
-    let api = `${this.domain}/search?word=${translated_tag || tag}&page=${page}&order=popular_desc`
+    let api = `${this.domain}/search?word=${tag}&page=${page}&order=popular_desc`
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
-    console.log(res)
     if (!res) return { error: API_ERROR }
     if (res.error) return { error: res.error.message }
     if (lodash.isEmpty(res.illusts)) return { error: '宝~没有数据了哦(๑＞︶＜)و' }
@@ -328,39 +317,23 @@ export default new class Pixiv {
   }
 
   /**
-     * @description: 用户uid搜图
+     * @description: 搜索用户插画
      * @param {Number|String} keyword 用户uid或名称
      * @param {Number|String} page 页数
+     * @param {Boolean} isfilter 是否过滤敏感内容
      * @return {Array}
      */
-  async public (keyword, page = 1, isfilter = true) {
+  async userIllust (keyword, page = 1, isfilter = true) {
     // 关键词搜索
     if (!/^\d+$/.test(keyword)) {
-      let wordapi = `https://www.vilipix.com/api/v1/search/user?type=author&keyword=${keyword}&limit=1&offset=0`
+      let wordapi = `${this.domain}/search_user?word=${keyword}`
       let wordlist = await fetch(wordapi).then(res => res.json()).catch(err => console.log(err))
       if (!wordlist) return { error: API_ERROR }
 
-      if (lodash.isEmpty(wordlist.data?.rows)) return { error: '呜呜呜，人家没有找到这个淫d(ŐдŐ๑)' }
+      if (lodash.isEmpty(wordlist.user_previews)) return { error: '呜呜呜，人家没有找到这个淫d(ŐдŐ๑)' }
 
-      keyword = wordlist.data.rows[0].user.id
+      keyword = wordlist.user_previews[0].user.id
     }
-    // let userapi = `https://api.obfs.dev/api/pixiv/member?id=${keyword}`
-    // let user = await fetch(userapi).then(res => res.json()).catch(err => console.log(err))
-    // if (!user) return { error: API_ERROR }
-
-    // if (user.error) return { error: user.error.message };
-
-    // let { id, name, comment, profile_image_urls } = user.user
-    // let { total_follow_users, total_illust_bookmarks_public, total_illusts } = user.profile
-    // let list = [[
-    //     segment.image(profile_image_urls.medium.replace("i.pximg.net", proxy)),
-    //     `\nuid：${id}\n`,
-    //     `画师：${name}\n`,
-    //     `作品：${total_illusts}\n`,
-    //     `关注：${total_follow_users}\n`,
-    //     `收藏：${total_illust_bookmarks_public}\n`,
-    //     `介绍：${lodash.truncate(comment)}`
-    // ]]
     // 作品
     let api = `${this.domain}/member_illust?id=${keyword}&page=${page}`
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
@@ -368,10 +341,6 @@ export default new class Pixiv {
     if (res.error) return { error: res.error.message }
     // 没有作品直接返回信息
     if (lodash.isEmpty(res.illusts)) return { error: page >= 2 ? '这一页没有作品辣（＞人＜；）' : 'Σ(っ °Д °;)っ这个淫居然没有作品' }
-
-    // let illustsall = Math.ceil(total_illusts / 30)
-
-    // if (page > illustsall) return { error: "这个淫已经没有涩图给你辣(oＡo川)" }
 
     let illusts = []
     let filter = 0
@@ -393,11 +362,6 @@ export default new class Pixiv {
     }
     if (lodash.isEmpty(illusts)) return { error: '该页全为涩涩内容已全部过滤(#／。＼#)' }
     let { id: uid, name, profile_image_urls } = res.user
-    // list.push(`当前为第${page}页，共${illustsall}页\n本页共${NowNum}张，${filter ? `过滤${filter}张，` : ""}总共${total_illusts}张`)
-    // if (page < illustsall) {
-    //     list.push(`可使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页`)
-    // }
-    // list.push(...illusts)
     let url = profile_image_urls.medium.replace('i.pximg.net', this.proxy)
     return [
       [
@@ -408,6 +372,35 @@ export default new class Pixiv {
       `本页共${NowNum}张${filter ? `，过滤${filter}张` : ''}\n可尝试使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页\n无数据则代表无下一页`,
       ...illusts
     ]
+  }
+
+  async searchUser (word, page = 1, isfilter = true) {
+    let api = `${this.domain}/search_user?word=${word}&page=${page}&size=10`
+    let user = await fetch(api).then(res => res.json()).catch(err => console.log(err))
+    if (!user) return { error: API_ERROR }
+    if (user.error) return { error: user.error.message }
+    if (lodash.isEmpty(user.user_previews)) return { error: '呜呜呜，人家没有找到这个淫d(ŐдŐ๑)' }
+
+    let msg = await Promise.all(user.user_previews.map(async (item, index) => {
+      let { id, name, profile_image_urls } = item.user
+      profile_image_urls = profile_image_urls.medium.replace('i.pximg.net', this.proxy)
+      let ret = [
+        `${index + 1}、`,
+        await this.proxyFetchImg(profile_image_urls, { headers: this.headers }),
+        `\nid: ${id}\n`,
+        `name: ${name}\n`,
+        '作品:\n'
+      ]
+      for (let i of item.illusts) {
+        let { image_urls, x_restrict } = this.format(i)
+        if (!isfilter && x_restrict) continue
+        ret.push(await this.proxyFetchImg(image_urls.square_medium), { headers: this.headers })
+      }
+      return ret
+    }))
+    if (msg.length == 30)msg.unshift(`可尝试使用 "#user搜索${word}第${page + 1}页" 翻页`)
+    msg.unshift(`当前为第${page}页，已${!isfilter ? '开启' : '关闭'}过滤`)
+    return msg
   }
 
   /**

@@ -268,8 +268,9 @@ export default new class Pixiv {
     })
     let api = `${this.domain}/search?word=${translated_tag || tag}&page=${page}&order=popular_desc`
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
+    console.log(res)
     if (!res) return { error: API_ERROR }
-    if (res.error) return { error: res.message }
+    if (res.error) return { error: res.error.message }
     if (lodash.isEmpty(res.illusts)) return { error: '宝~没有数据了哦(๑＞︶＜)و' }
 
     let illusts = []

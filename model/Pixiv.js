@@ -495,19 +495,17 @@ export default new class Pixiv {
   }
 
   async proxyFetchImg (file, { cache, timeout, headers } = {}) {
-    try {
-      let agent = await common.getAgent()
-      if (!agent) return segment.image(file, cache, timeout, headers)
-      let buffer = await fetch(file, {
-        agent,
-        headers
-      }).then(res => res.arrayBuffer())
-        .catch(err => console.error(err))
-      return segment.image(Buffer.from(buffer), cache, timeout)
-    } catch (err) {
-      logger.error(err)
-      return segment.image('/plugins/yenai-plugin/resources/img/imgerror.png')
-    }
+    let agent = await common.getAgent()
+    if (!agent) return segment.image(file, cache, timeout, headers)
+    let buffer = await fetch(file, {
+      agent,
+      headers
+    }).then(res => res.arrayBuffer())
+      .catch((err) => logger.warn(`图片加载失败，${err.message}`))
+    if (!buffer) return segment.image('/plugins/yenai-plugin/resources/img/imgerror.png')
+    let buff = Buffer.from(buffer)
+    logger.debug(`Success: imgSize => ${(buff.length / 1024).toFixed(2) + 'kb'}`)
+    return segment.image(buff, cache, timeout)
   }
 
   /** 开始执行文案 */

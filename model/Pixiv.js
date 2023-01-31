@@ -14,12 +14,14 @@ export default new class Pixiv {
       日: {
         type: 'day',
         quantity: 500,
-        r18: 100
+        r18: 100,
+        r18type: 'day_r18'
       },
       周: {
         type: 'week',
         quantity: 500,
-        r18: 100
+        r18: 100,
+        r18type: 'week_r18'
       },
       月: {
         type: 'month',
@@ -34,31 +36,35 @@ export default new class Pixiv {
       男性向: {
         type: 'day_male',
         quantity: 500,
-        r18: 300
+        r18: 300,
+        r18type: 'day_male_r18'
       },
       女性向: {
         type: 'day_female',
         quantity: 500,
-        r18: 300
+        r18: 300,
+        r18type: 'day_female_r18'
       },
-      // "漫画日": {
-      //     type: "day_manga",
-      //     quantity: 500,
-      //     r18: 100,
-      // },
-      // "漫画周": {
-      //     type: "week_manga",
-      //     quantity: 500,
-      //     r18: 100,
-      // },
-      // "漫画月": {
-      //     type: "month_manga",
-      //     quantity: 500
-      // },
-      // "漫画新秀周": {
-      //     type: "week_rookie_manga",
-      //     quantity: 500
-      // },
+      漫画日: {
+        type: 'day_manga',
+        quantity: 500,
+        r18: 100,
+        r18type: 'day_r18_manga'
+      },
+      漫画周: {
+        type: 'week_manga',
+        quantity: 500,
+        r18: 100,
+        r18type: 'week_r18_manga'
+      },
+      漫画月: {
+        type: 'month_manga',
+        quantity: 500
+      },
+      漫画新人周: {
+        type: 'week_rookie_manga',
+        quantity: 500
+      },
       新人: {
         type: 'week_rookie',
         quantity: 500
@@ -153,7 +159,7 @@ export default new class Pixiv {
     // r18处理
     if (r18) {
       if (!this.ranktype[mode].r18) return { error: '该排行没有不适合所有年龄段的分类哦~' }
-      type = this.ranktype[mode].r18type ?? type + '_r18'
+      type = this.ranktype[mode].r18type
       pageSizeAll = this.ranktype[mode].r18
     }
     // 总页数

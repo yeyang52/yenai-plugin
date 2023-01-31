@@ -497,7 +497,6 @@ export default new class Pixiv {
     try {
       let agent = await common.getAgent()
       if (!agent) return segment.image(file, cache, timeout, headers)
-      if (headers === '_pixiv')headers = this.headers
       let buffer = await fetch(file, {
         agent,
         headers

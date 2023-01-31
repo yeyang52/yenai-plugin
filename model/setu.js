@@ -63,7 +63,7 @@ export default new class setu {
         `pid：${pid}\n`,
         r18 !== undefined ? `r18：${r18}\n` : '',
         `tag：${lodash.truncate(tags.join(','))}\n`,
-        await Pixiv.proxyFetchImg(url || urls?.original || urls?.regular || urls?.small, { headers: '_pixiv' })
+        await Pixiv.proxyFetchImg(url || urls?.original || urls?.regular || urls?.small, { headers: Pixiv.headers })
       ]
     }))
     return msg

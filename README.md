@@ -1,6 +1,6 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <div align="center">
@@ -205,7 +205,7 @@ A：请参考[此教程](https://docs.qq.com/doc/p/108e5d788607d988ac62e1512552c
 1. 功能仅限内部交流与小范围使用，请勿将Yunzai-Bot及Yenai-Plugin用于任何以盈利为目的的场景.
 2. 图片与其他素材均来自于网络，仅供交流学习使用，如有侵权请联系，会立即删除.
 
-## 贡献 ✨
+## 贡献者 ✨
 
 感谢这些了不起的人 ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
@@ -216,6 +216,7 @@ A：请参考[此教程](https://docs.qq.com/doc/p/108e5d788607d988ac62e1512552c
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/TimeRainStarSky"><img src="https://avatars.githubusercontent.com/u/63490117?v=4?s=100" width="100px;" alt="时雨◎星空"/><br /><sub><b>时雨◎星空</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=TimeRainStarSky" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Saury-loser"><img src="https://avatars.githubusercontent.com/u/106982493?v=4?s=100" width="100px;" alt="花海里的秋刀鱼"/><br /><sub><b>花海里的秋刀鱼</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=Saury-loser" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

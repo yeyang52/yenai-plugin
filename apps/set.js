@@ -75,6 +75,11 @@ export class NewConfig extends plugin {
           reg: '^#查看(sese|涩涩)设置$',
           fnc: 'View_Settings',
           permission: 'master'
+        },
+        {
+          reg: '^#椰奶(开启|关闭)代理$',
+          fnc: 'switchProxy',
+          permission: 'master'
         }
       ]
     })
@@ -207,6 +212,12 @@ export class NewConfig extends plugin {
             `CD：${set.cd}s`,
             set.recall ? `\n撤回：${set.recall}s` : ''
     ])
+  }
+
+  async switchProxy (e) {
+    let is = /开启/.test(e.msg)
+    Config.modify('other', 'switchProxy', is)
+    e.reply(`✅ 已${is ? '开启' : '关闭'}代理`)
   }
 
   // 增删查头衔屏蔽词

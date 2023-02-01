@@ -164,6 +164,7 @@ export default new class newCommon {
 
   async getAgent () {
     let proxyAddress = Config.other.proxyAddress
+    if (!Config.other.switchProxy) return null
     if (!proxyAddress) return null
     if (proxyAddress === 'http://0.0.0.0:0') return null
 

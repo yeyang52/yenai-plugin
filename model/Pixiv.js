@@ -99,7 +99,6 @@ export default new class Pixiv {
   }
 
   get proxy () {
-    console.log('proxy：' + this._proxy)
     return this._proxy
   }
 

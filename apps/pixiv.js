@@ -5,13 +5,15 @@ import { Pixiv, common, setu } from '../model/index.js'
 // 文案
 const SWITCH_ERROR = '主人没有开放这个功能哦(＊／ω＼＊)'
 // 汉字数字匹配正则
-let numReg = '[一壹二两三四五六七八九十百千万亿\\d]+'
+const numReg = '[一壹二两三四五六七八九十百千万亿\\d]+'
 // 正则
-let rankingrReg = new RegExp(`^#?看看((\\d{4}-\\d{1,2}-\\d{1,2})的)?(${Object.keys(Pixiv.ranktype).join('|')})(r18)?榜\\s?(第(${numReg})页)?$`, 'i')
-let tagReg = /^#?tag(pro)?搜图(.*)$/i
-let pidReg = /^#?pid搜图\s?(\d+)$/i
-let uidReg = /^#?uid搜图(.*)$/i
-let randomImgReg = new RegExp(`^#?来(${numReg})?张(好(康|看)(的|哒)|hkd|涩图)$|#有内鬼$`)
+const pidReg = /^#?pid搜图\s?(\d+)$/i
+
+const rankingrReg = new RegExp(`^#?看看((\\d{4}-\\d{1,2}-\\d{1,2})的)?(${Object.keys(Pixiv.ranktype).join('|')})(r18)?榜\\s?(第(${numReg})页)?$`, 'i')
+const tagReg = new RegExp(`^#?tag(pro)?搜图(.*?)(第(${numReg})页)?$`, 'i')
+const uidReg = new RegExp(`^#?uid搜图(.*?)(第(${numReg})页)?$`, 'i')
+const searchUser = new RegExp(`^#?user搜索(.*?)(第(${numReg})页)?$`, 'i')
+const randomImgReg = new RegExp(`^#?来(${numReg})?张(好(康|看)(的|哒)|hkd|涩图)$|#有内鬼$`)
 
 export class example extends plugin {
   constructor () {
@@ -33,28 +35,33 @@ export class example extends plugin {
           fnc: 'searchTags'
         },
         {
-          reg: '^#?(查看|获取)?热门(t|T)(a|A)(g|G)$',
-          fnc: 'trendTags'
-        },
-        {
           reg: uidReg,
           fnc: 'searchUid'
+        },
+        {
+          reg: searchUser,
+          fnc: 'searchUser'
         },
         {
           reg: randomImgReg,
           fnc: 'randomImg'
         },
         {
+          reg: '^#?(查看|获取)?热门(t|T)(a|A)(g|G)$',
+          fnc: 'trendTags'
+        },
+        {
           reg: '^#?看?看?相关作品(\\d+)$',
-          fnc: 'relatedWorks'
+          fnc: 'related'
         },
         {
           reg: '^#?(P|p)ximg(pro)?$',
           fnc: 'pximg'
         },
         {
-          reg: '^#?user搜索.*$',
-          fnc: 'searchUser'
+          reg: '^#(p站|pixiv)((查看|更换)代理.*|(开启|关闭)直连)$',
+          fnc: 'setProxy',
+          permission: 'master'
         }
       ]
     })
@@ -69,7 +76,7 @@ export class example extends plugin {
 
     let regRet = pidReg.exec(e.msg)
 
-    let res = await Pixiv.Worker(regRet[1], !e.isMaster && !setu.getR18(e.group_id))
+    let res = await Pixiv.illust(regRet[1], !e.isMaster && !setu.getR18(e.group_id))
 
     if (res?.error) return e.reply(res.error)
 
@@ -90,7 +97,7 @@ export class example extends plugin {
 
     e.reply(Pixiv.startMsg)
 
-    let page = common.translateChinaNum(regRet[6] || 1)
+    let page = common.translateChinaNum(regRet[6])
     let res = await Pixiv.Rank(page, regRet[2], regRet[3], regRet[4])
 
     if (res?.error) return e.reply(res.error)
@@ -105,44 +112,25 @@ export class example extends plugin {
     let regRet = tagReg.exec(e.msg)
 
     let { sese, sesepro } = Config.getGroup(e.group_id)
-    if (((!sese && !sesepro) || (!sesepro && regRet[1])) && !e.isMaster) {
-      return e.reply('主人没有开放这个功能哦(＊／ω＼＊)')
-    }
+    if (((!sese && !sesepro) || (!sesepro && regRet[1])) && !e.isMaster) return e.reply(SWITCH_ERROR)
 
     e.reply(Pixiv.startMsg)
 
-    let tag = regRet[2]
-
-    let pagereg = new RegExp(`第(${numReg})页`)
-
-    let page = pagereg.exec(e.msg)
-
-    if (page) {
-      tag = tag.replace(page[0], '')
-      page = common.translateChinaNum(page[1])
-    } else {
-      page = '1'
-    }
-    let res = null
-    if (regRet[1]) {
-      res = await Pixiv.searchTagspro(tag, page, !setu.getR18(e.group_id))
-    } else {
-      res = await Pixiv.searchTags(tag, page)
-    }
+    let page = common.translateChinaNum(regRet[4])
+    let res = await Pixiv[`searchTags${regRet[1] ? 'pro' : ''}`](regRet[2], page, !setu.getR18(e.group_id))
     if (res?.error) return e.reply(res.error)
-    common.getRecallsendMsg(e, res)
 
-    return true
+    common.getRecallsendMsg(e, res)
   }
 
   /** 获取热门tag */
-  async trendTags (e) {
+  async PopularTags (e) {
     let { sese, sesepro } = Config.getGroup(e.group_id)
     if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
 
     e.reply(Pixiv.startMsg)
 
-    let res = await Pixiv.gettrend_tags()
+    let res = await Pixiv.PopularTags()
 
     if (res?.error) return e.reply(res.error)
 
@@ -157,22 +145,9 @@ export class example extends plugin {
     e.reply(Pixiv.startMsg)
 
     let regRet = uidReg.exec(e.msg)
+    let page = common.translateChinaNum(regRet[3])
 
-    let key = regRet[1]
-
-    let pagereg = new RegExp(`第(${numReg})页`)
-
-    let page = pagereg.exec(e.msg)
-
-    if (page) {
-      key = key.replace(page[0], '')
-      page = page[1]
-    } else {
-      page = '1'
-    }
-    page = common.translateChinaNum(page)
-
-    let res = await Pixiv.userIllust(key, page, !setu.getR18(e.group_id))
+    let res = await Pixiv.userIllust(regRet[1], page, !setu.getR18(e.group_id))
 
     if (res?.error) return e.reply(res.error)
 
@@ -194,7 +169,7 @@ export class example extends plugin {
       num = 1
     }
     num = common.translateChinaNum(num)
-    let res = await Pixiv.getrandomimg(num)
+    let res = await Pixiv.randomImg(num)
 
     if (res?.error) return e.reply(res.error)
 
@@ -202,14 +177,14 @@ export class example extends plugin {
   }
 
   // 相关作品
-  async relatedWorks (e) {
+  async related (e) {
     let { sese, sesepro } = Config.getGroup(e.group_id)
     if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
 
     e.reply(Pixiv.startMsg)
 
     let regRet = e.msg.match(/\d+/)
-    let res = await Pixiv.getrelated_works(regRet[0], !setu.getR18(e.group_id))
+    let res = await Pixiv.related(regRet[0], !setu.getR18(e.group_id))
     if (res?.error) return e.reply(res.error)
     common.getRecallsendMsg(e, res)
   }
@@ -221,7 +196,7 @@ export class example extends plugin {
     let { sese, sesepro } = Config.getGroup(e.group_id)
     if (((!sese && !sesepro) || (!sesepro && ispro)) && !e.isMaster) return e.reply(SWITCH_ERROR)
 
-    let res = await Pixiv.getPximg(ispro)
+    let res = await Pixiv.pximg(ispro)
     if (res?.error) return e.reply(res.error)
     ispro ? common.getRecallsendMsg(e, [res]) : common.recallsendMsg(e, res)
   }
@@ -232,11 +207,31 @@ export class example extends plugin {
     if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
 
     e.reply(Pixiv.startMsg)
-    let regRet = e.msg.match(new RegExp(`^#?user搜索(.*?)(第(${numReg})页)?$`))
+    let regRet = e.msg.match(searchUser)
     let page = common.translateChinaNum(regRet[3])
     let msg = await Pixiv.searchUser(regRet[1], page, !setu.getR18(e.group_id))
     if (msg.error) return e.reply(msg.error)
 
     common.getRecallsendMsg(e, msg)
+  }
+
+  // 更换代理
+  async setProxy (e) {
+    let proxydef = [
+      'i.pixiv.re',
+      'proxy.pixivel.moe',
+      'px2.rainchan.win',
+      'sex.nyan.xyz'
+    ]
+    if (/查看/.test(e.msg)) return e.reply(await redis.get('yenai:proxy'))
+    let proxy = e.msg.replace(/#|(p站|pixiv)更换代理/g, '').trim()
+    if (/直连/.test(e.msg)) {
+      proxy = /开启/.test(e.msg) ? 'i.pximg.net' : proxydef[0]
+    }
+    if (/^[1234]$/.test(proxy)) proxy = proxydef[proxy - 1]
+    if (!/([\w\d]+\.){2}[\w\d]+/.test(proxy)) return e.reply('请检查代理地址是否正确')
+    logger.mark(`${e.logFnc}切换为${proxy}`)
+    Pixiv.proxy = proxy
+    e.reply(`✅ 已经切换代理为「${proxy}」`)
   }
 }

@@ -8,8 +8,7 @@ const API_ERROR = '❎ 出错辣，请稍后重试'
 
 export default new class Pixiv {
   constructor () {
-    this.proxy = 'i.pixiv.re'
-    this.headers = {}
+    this._proxy = 'i.pixiv.re'
     this.ranktype = {
       日: {
         type: 'day',
@@ -80,20 +79,33 @@ export default new class Pixiv {
   }
 
   async init () {
-    this.proxy = await redis.get('yenai:proxy')
+    this._proxy = await redis.get('yenai:proxy')
     if (!this.proxy) {
       await redis.set('yenai:proxy', 'i.pixiv.re')
-      this.proxy = 'i.pixiv.re'
+      this._proxy = 'i.pixiv.re'
     }
+  }
+
+  get headers () {
     if (this.proxy == 'i.pximg.net') {
-      this.headers = {
+      return {
         Host: 'i.pximg.net',
         Referer: 'https://www.pixiv.net/',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.46'
       }
     } else {
-      delete this.headers
+      return undefined
     }
+  }
+
+  get proxy () {
+    console.log('proxy：' + this._proxy)
+    return this._proxy
+  }
+
+  set proxy (value) {
+    redis.set('yenai:proxy', value)
+    this._proxy = value
   }
 
   /**
@@ -101,7 +113,7 @@ export default new class Pixiv {
      * @param {String} ids 插画ID
      * @return {Object}
      */
-  async Worker (ids, filter = false) {
+  async illust (ids, filter = false) {
     let api = `${this.domain}/illust?id=${ids}`
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
     if (!res) return { error: API_ERROR }
@@ -136,7 +148,7 @@ export default new class Pixiv {
       }
       return { error: linkmsg }
     }
-
+    console.log(this.headers)
     let img = await Promise.all(url.map(async item => await this.proxyFetchImg(item, { headers: this.headers })))
     return { msg, img }
   }
@@ -299,7 +311,7 @@ export default new class Pixiv {
      * @description: 获取热门tag
      * @return {Array}
      */
-  async gettrend_tags () {
+  async PopularTags () {
     let api = `${this.domain}/tags`
 
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
@@ -380,6 +392,13 @@ export default new class Pixiv {
     ]
   }
 
+  /**
+   * @description:搜索用户
+   * @param {String} word 用户name
+   * @param {Number} page 页数
+   * @param {Boolean} isfilter 是否过滤敏感内容
+   * @return {Array} 可直接发送的消息数组
+   */
   async searchUser (word, page = 1, isfilter = true) {
     let api = `${this.domain}/search_user?word=${word}&page=${page}&size=10`
     let user = await fetch(api).then(res => res.json()).catch(err => console.log(err))
@@ -413,7 +432,7 @@ export default new class Pixiv {
      * @description: 随机图片
      * @return {Array}
      */
-  async getrandomimg (num) {
+  async randomImg (num) {
     let api = `https://www.vilipix.com/api/v1/picture/public?limit=${num}&offset=${lodash.random(1500)}&sort=hot&type=0`
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
     if (!res) return { error: API_ERROR }
@@ -438,7 +457,7 @@ export default new class Pixiv {
      * @param {String} pid
      * @return {*}
      */
-  async getrelated_works (pid, isfilter = true) {
+  async related (pid, isfilter = true) {
     let api = `${this.domain}/related?id=${pid}`
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
     if (!res) return { error: API_ERROR }
@@ -472,7 +491,7 @@ export default new class Pixiv {
   }
 
   /** p站单图 */
-  async getPximg (type) {
+  async pximg (type) {
     let url = 'https://ovooa.com/API/Pximg/'
     if (type) {
       url = 'https://xiaobapi.top/api/xb/api/setu.php'
@@ -480,7 +499,7 @@ export default new class Pixiv {
     let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))
     if (!res) return { error: API_ERROR }
     let { pid, uid, title, author, tags, urls, r18 } = res.data[0] || res.data
-    urls = urls.original.replace('i.der.ink', this.proxy)
+    urls = urls.original.replace(/i.der.ink|i.pixiv.re/, this.proxy)
     let msg = [
       `Pid: ${pid}\n`,
       `Uid: ${uid}\n`,

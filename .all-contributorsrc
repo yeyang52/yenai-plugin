@@ -27,6 +27,24 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Georgebillion",
+      "name": "Georgebillion",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40432824?v=4",
+      "profile": "https://github.com/Georgebillion",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "xfdown",
+      "name": "小飞",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42599406?v=4",
+      "profile": "https://github.com/xfdown",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,

@@ -7,8 +7,8 @@
     "README.md"
   ],
   "imageSize": 100,
-  "commit": true,
-  "commitConvention": "gitmoji",
+  "commit": false,
+  "commitConvention": "none",
   "contributors": [
     {
       "login": "TimeRainStarSky",
@@ -16,11 +16,11 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/63490117?v=4",
       "profile": "https://github.com/TimeRainStarSky",
       "contributions": [
-        "doc",
         "code"
       ]
     }
   ],
   "contributorsPerLine": 7,
-  "linkToUsage": true
+  "skipCi": true,
+  "linkToUsage": false
 }

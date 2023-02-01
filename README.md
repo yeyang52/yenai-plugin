@@ -9,7 +9,7 @@
 
 Yenai-Plugin是一个Yunzai-Bot的扩展插件，提供对Bot的一些便捷操作。<br><br><img src="https://count.getloli.com/get/@:yenai-plugin?theme=rule34" /> <br>
 
-[![GitHub](https://img.shields.io/badge/GitHub-Yenai-black?style=flat-square&logo=github)](https://github.com/yeyang52/yenai-plugin) [![插件库](https://img.shields.io/badge/Gitee-插件库-black?style=flat-square&logo=gitee)](https://gitee.com/yhArcadia/Yunzai-Bot-plugins-index) [![YunzaiBot](https://img.shields.io/badge/Yunzai-v3.0.0-black?style=flat-square&logo=dependabot)](https://gitee.com/Le-niao/Yunzai-Bot) [![Group](https://img.shields.io/badge/群号-254974507-red?style=flat-square&logo=GroupMe&logoColor=white)](https://jq.qq.com/?_wv=1027&k=o8FTig5Z) [![QQ](https://img.shields.io/badge/QQ-746659424-success?style=flat-square&logo=tencent-qq)](https://qm.qq.com/cgi-bin/qm/qr?k=m6tyVb1v5y7a5_YK8CU7AoKyuR51aEaI&noverify=0&personal_qrcode_source=4)
+[![GitHub](https://img.shields.io/badge/GitHub-Yenai-black?style=flat-square&logo=github)](https://github.com/yeyang52/yenai-plugin)[![Gitee](https://img.shields.io/badge/GitHub-Yenai-black?style=flat-square&logo=gitee)](https://gitee.com/yeyang52/yenai-plugin) [![插件库](https://img.shields.io/badge/Gitee-插件库-black?style=flat-square&logo=gitee)](https://gitee.com/yhArcadia/Yunzai-Bot-plugins-index) [![YunzaiBot](https://img.shields.io/badge/Yunzai-v3.0.0-black?style=flat-square&logo=dependabot)](https://gitee.com/Le-niao/Yunzai-Bot) [![Group](https://img.shields.io/badge/群号-254974507-red?style=flat-square&logo=GroupMe&logoColor=white)](https://jq.qq.com/?_wv=1027&k=o8FTig5Z) [![QQ](https://img.shields.io/badge/QQ-746659424-success?style=flat-square&logo=tencent-qq)](https://qm.qq.com/cgi-bin/qm/qr?k=m6tyVb1v5y7a5_YK8CU7AoKyuR51aEaI&noverify=0&personal_qrcode_source=4)
 
 <br>
 
@@ -228,7 +228,7 @@ A：请参考[此教程](https://docs.qq.com/doc/p/108e5d788607d988ac62e1512552c
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-该项目遵循 [all-contributors](https://github.com/all-contributors/all-contributors) 规范。欢迎任何形式的贡献！
+本段遵循 [all-contributors](https://github.com/all-contributors/all-contributors) 规范，欢迎任何形式的贡献！
 
 ---
 

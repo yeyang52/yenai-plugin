@@ -387,11 +387,11 @@ export default new class Pixiv {
     if (user.error) return { error: user.error.message }
     if (lodash.isEmpty(user.user_previews)) return { error: '呜呜呜，人家没有找到这个淫d(ŐдŐ๑)' }
 
-    let msg = await Promise.all(user.user_previews.map(async (item, index) => {
+    let msg = await Promise.all(user.user_previews.slice(0, 10).map(async (item, index) => {
       let { id, name, profile_image_urls } = item.user
       profile_image_urls = profile_image_urls.medium.replace('i.pximg.net', this.proxy)
       let ret = [
-        `${index + 1}、`,
+        `${(page - 1) * 10 + index + 1}、`,
         await this.proxyFetchImg(profile_image_urls, { headers: this.headers }),
         `\nid: ${id}\n`,
         `name: ${name}\n`,
@@ -399,13 +399,13 @@ export default new class Pixiv {
       ]
       for (let i of item.illusts) {
         let { image_urls, x_restrict } = this.format(i)
-        if (!isfilter && x_restrict) continue
+        if (isfilter && x_restrict) continue
         ret.push(await this.proxyFetchImg(image_urls.square_medium), { headers: this.headers })
       }
       return ret
     }))
     if (msg.length == 30)msg.unshift(`可尝试使用 "#user搜索${word}第${page + 1}页" 翻页`)
-    msg.unshift(`当前为第${page}页，已${!isfilter ? '开启' : '关闭'}过滤`)
+    msg.unshift(`当前为第${page}页，已${isfilter ? '开启' : '关闭'}过滤`)
     return msg
   }
 

@@ -233,9 +233,8 @@ export class example extends plugin {
 
     e.reply(Pixiv.startMsg)
     let regRet = e.msg.match(new RegExp(`^#?user搜索(.*?)(第(${numReg})页)?$`))
-    console.log(regRet)
-    let msg = await Pixiv.searchUser(regRet[1], regRet[3], !setu.getR18(e.group_id))
-    console.log(msg)
+    let page = common.translateChinaNum(regRet[3])
+    let msg = await Pixiv.searchUser(regRet[1], page, !setu.getR18(e.group_id))
     if (msg.error) return e.reply(msg.error)
 
     common.getRecallsendMsg(e, msg)

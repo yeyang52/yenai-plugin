@@ -205,17 +205,9 @@ A：请参考[此教程](https://docs.qq.com/doc/p/108e5d788607d988ac62e1512552c
 1. 功能仅限内部交流与小范围使用，请勿将Yunzai-Bot及Yenai-Plugin用于任何以盈利为目的的场景.
 2. 图片与其他素材均来自于网络，仅供交流学习使用，如有侵权请联系，会立即删除.
 
-#### 联系方式
+## 贡献 ✨
 
-QQ：[746659424](https://qm.qq.com/cgi-bin/qm/qr?k=m6tyVb1v5y7a5_YK8CU7AoKyuR51aEaI&noverify=0&personal_qrcode_source=4)
-
-群号：[254974507](https://jq.qq.com/?_wv=1027&k=o8FTig5Z)
-
-投喂：[爱发电](https://afdian.net/a/yeyang52)
-
-## Contributors ✨
-
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+感谢这些了不起的人 ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
@@ -223,7 +215,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tbody>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/TimeRainStarSky"><img src="https://avatars.githubusercontent.com/u/63490117?v=4?s=100" width="100px;" alt="时雨◎星空"/><br /><sub><b>时雨◎星空</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=TimeRainStarSky" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/TimeRainStarSky"><img src="https://avatars.githubusercontent.com/u/63490117?v=4?s=100" width="100px;" alt="时雨◎星空"/><br /><sub><b>时雨◎星空</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=TimeRainStarSky" title="Documentation">📖</a> <a href="https://github.com/yeyang52/yenai-plugin/commits?author=TimeRainStarSky" title="Code">💻</a></td>
     </tr>
   </tbody>
   <tfoot>
@@ -242,4 +234,13 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+该项目遵循 [all-contributors](https://github.com/all-contributors/all-contributors) 规范。欢迎任何形式的贡献！
+
+#### 联系方式
+
+QQ：[746659424](https://qm.qq.com/cgi-bin/qm/qr?k=m6tyVb1v5y7a5_YK8CU7AoKyuR51aEaI&noverify=0&personal_qrcode_source=4)
+
+群号：[254974507](https://jq.qq.com/?_wv=1027&k=o8FTig5Z)
+
+投喂：[爱发电](https://afdian.net/a/yeyang52)
+

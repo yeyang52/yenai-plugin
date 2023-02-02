@@ -20,14 +20,14 @@ export class NGA extends plugin {
         }
       ]
     })
-    this.incomeCurvePath = `${_path}/resources/curveimg`
+    this.incomeCurvePath = `${_path}/resources/incomeCurve`
     this.referencePanelPath = `${_path}/resources/ReferencPanel`
     this.incomeCurveObj = Data.readJSON('data/nga/incomeCurve.json')
   }
 
   // 初始化
   async init () {
-    Data.createDir('resources/curveimg')
+    Data.createDir('resources/incomeCurve')
     Data.createDir('resources/ReferencPanel')
   }
 

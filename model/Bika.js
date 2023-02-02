@@ -1,6 +1,6 @@
 import fetch from 'node-fetch'
 import lodash from 'lodash'
-import { Pixiv } from './index.js'
+import { common } from './index.js'
 /** API请求错误文案 */
 const API_ERROR = '❎ 出错辣，请稍后重试'
 export default new (class {
@@ -70,7 +70,7 @@ export default new (class {
           `喜欢：${likesCount}\n`,
           `完结：${finished}\n`,
           tags ? `tag：${lodash.truncate(tags.join(','))}\n` : '',
-          await Pixiv.proxyFetchImg((this.imgproxy ?? `${thumb.fileServer}/static/`) + thumb.path)
+          await this.requestBikaImg(thumb.fileServer, thumb.path)
         ]
       }))
     ]
@@ -94,7 +94,7 @@ export default new (class {
     return [
       `id: ${_id}， ${title}`,
       `共${total}张，当前为第${pg}页，共${pages}页，当前为第${order}话`,
-      ...await Promise.all(docs.map(async item => await Pixiv.proxyFetchImg((this.imgproxy ?? `${item.media.fileServer}/static/`) + item.media.path)))
+      ...await Promise.all(docs.map(async item => await this.requestBikaImg(item.media.fileServer, item.media.path)))
     ]
   }
 
@@ -113,16 +113,19 @@ export default new (class {
     }
     return await Promise.all(res.map(async item => {
       let { title, thumb, description = '未知' } = item
-      let { fileServer, path } = thumb
-      fileServer = /static/.test(fileServer) ? fileServer : fileServer + '/static/'
       return [
         `category: ${title}\n`,
         `描述:${description}\n`,
-        await Pixiv.proxyFetchImg((/storage(-b|1).picacomic.com/.test(fileServer) && this.imgproxy ? this.imgproxy : fileServer) + path)
+        await this.requestBikaImg(thumb.fileServer, thumb.path)
       ]
     }))
   }
 
+  /**
+   * @description: 作品详情
+   * @param {String} id
+   * @return {*}
+   */
   async comicDetail (id) {
     let res = await fetch(`${this.domain}/comic_detail?id=${id}`, this.hearder)
       .then((res) => res.json())
@@ -146,7 +149,14 @@ export default new (class {
       `评论量：${totalComments}\n`,
       `分类：${categories.join('，')}\n`,
       `tag：${tags.join('，')}`,
-      await Pixiv.proxyFetchImg((this.imgproxy ?? `${thumb.fileServer}/static/`) + thumb.path)
+      await this.requestBikaImg(thumb.fileServer, thumb.path)
     ]
+  }
+
+  async requestBikaImg (fileServer, path) {
+    fileServer = /static/.test(fileServer) ? fileServer : fileServer + '/static/'
+    let url = (/picacomic.com/.test(fileServer) && this.imgproxy ? this.imgproxy : fileServer) + path
+    console.log(url)
+    return common.proxyRequestImg(url)
   }
 })()

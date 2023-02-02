@@ -1,12 +1,11 @@
 import fetch from 'node-fetch'
 import { common, Pixiv } from './index.js'
-import { Data } from '../components/index.js'
+import { Data, Plugin_Path } from '../components/index.js'
 import lodash from 'lodash'
 
-const _path = process.cwd()
 export default new class setu {
   constructor () {
-    this.root = `${_path}/plugins/yenai-plugin/config/setu`
+    this.root = `${Plugin_Path}/config/setu`
     // 默认配置
     this.def = {
       r18: 0,
@@ -63,10 +62,9 @@ export default new class setu {
         `pid：${pid}\n`,
         r18 !== undefined ? `r18：${r18}\n` : '',
         `tag：${lodash.truncate(tags.join(','))}\n`,
-        await Pixiv.proxyFetchImg(url || urls?.original || urls?.regular || urls?.small, { headers: Pixiv.headers })
+        await Pixiv.requestPixivImg(url || urls?.original || urls?.regular || urls?.small)
       ]
     }))
-    console.log(msg)
     return msg
   }
 

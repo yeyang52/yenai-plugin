@@ -120,7 +120,7 @@ export default new class Pixiv {
     if (res.error) {
       return { error: res.error?.user_message || '无法获取数据' }
     }
-    let illust = this.format(res.illust, this.proxy)
+    let illust = this.format(res.illust)
     let { id, title, user, tags, total_bookmarks, total_view, url, create_date, x_restrict, illust_ai_type } = illust
     let msg = [
       `标题：${title}\n`,
@@ -147,7 +147,7 @@ export default new class Pixiv {
       }
       return { error: linkmsg }
     }
-    let img = await Promise.all(url.map(async item => await this.proxyFetchImg(item, { headers: this.headers })))
+    let img = await Promise.all(url.map(async item => await this.requestPixivImg(item)))
     return { msg, img }
   }
 
@@ -204,7 +204,7 @@ export default new class Pixiv {
         `点赞：${total_bookmarks}\n`,
         `排名：${(page - 1) * 30 + (index + 1)}\n`,
         `Tag：${lodash.truncate(tags)}\n`,
-        await this.proxyFetchImg(image_urls.large, { headers: this.headers })
+        await this.requestPixivImg(image_urls.large)
       ]
     }))
     let formatDate = res.next_url.match(/date=(\d{4}-\d{1,2}-\d{1,2})/)[1]
@@ -294,7 +294,7 @@ export default new class Pixiv {
         `UID：${user.id}\n`,
         `点赞：${total_bookmarks}\n`,
         `Tag：${lodash.truncate(tags)}\n`,
-        await this.proxyFetchImg(image_urls.large, { headers: this.headers })
+        await this.requestPixivImg(image_urls.large)
       ])
     }
     if (lodash.isEmpty(illusts)) return { error: '该页全为涩涩内容已全部过滤(#／。＼#)' }
@@ -325,7 +325,7 @@ export default new class Pixiv {
           `Tag：${tag}\n`,
           `Translated：${translated_name}\n`,
           `Pid：${i.illust.id}\n`,
-          await this.proxyFetchImg(url, { headers: this.headers })
+          await this.requestPixivImg(url)
         ]
       )
     }
@@ -381,7 +381,7 @@ export default new class Pixiv {
     let url = profile_image_urls.medium.replace('i.pximg.net', this.proxy)
     return [
       [
-        await this.proxyFetchImg(url, { headers: this.headers }),
+        await this.requestPixivImg(url),
         `\nUid：${uid}\n`,
         `画师：${name}\n`
       ],
@@ -406,10 +406,9 @@ export default new class Pixiv {
 
     let msg = await Promise.all(user.user_previews.slice(0, 10).map(async (item, index) => {
       let { id, name, profile_image_urls } = item.user
-      profile_image_urls = profile_image_urls.medium.replace('i.pximg.net', this.proxy)
       let ret = [
         `${(page - 1) * 10 + index + 1}、`,
-        await this.proxyFetchImg(profile_image_urls, { headers: this.headers }),
+        await this.requestPixivImg(profile_image_urls),
         `\nid: ${id}\n`,
         `name: ${name}\n`,
         '作品:\n'
@@ -417,7 +416,7 @@ export default new class Pixiv {
       for (let i of item.illusts) {
         let { image_urls, x_restrict } = this.format(i)
         if (isfilter && x_restrict) continue
-        ret.push(await this.proxyFetchImg(image_urls.square_medium), { headers: this.headers })
+        ret.push(await this.requestPixivImg(image_urls.square_medium))
       }
       return ret
     }))
@@ -444,7 +443,7 @@ export default new class Pixiv {
         `点赞: ${like_total}\n`,
         `插画ID：${picture_id}\n`,
         `Tag：${lodash.truncate(tags)}\n`,
-        await this.proxyFetchImg(regular_url, { headers: this.headers })
+        await this.requestPixivImg(regular_url)
       ])
     }
     return list
@@ -477,7 +476,7 @@ export default new class Pixiv {
         `UID：${user.id}\n`,
         `点赞：${total_bookmarks}\n`,
         `Tag：${lodash.truncate(tags)}\n`,
-        await this.proxyFetchImg(image_urls.large, { headers: this.headers })
+        await this.requestPixivImg(image_urls.large)
       ])
     }
     if (lodash.isEmpty(illusts)) return { error: '啊啊啊！！！居然全是瑟瑟哒不给你看(＊／ω＼＊)' }
@@ -505,23 +504,18 @@ export default new class Pixiv {
       `标题：${title}\n`,
       `画师：${author}\n`,
       `Tag：${tags.join('，')}\n`,
-      await this.proxyFetchImg(urls, { headers: this.headers })
+      await this.requestPixivImg(urls)
     ]
     return msg
   }
 
-  async proxyFetchImg (file, { cache, timeout, headers } = {}) {
-    let agent = await common.getAgent()
-    if (!agent) return segment.image(file, cache, timeout, headers)
-    let buffer = await fetch(file, {
-      agent,
-      headers
-    }).then(res => res.arrayBuffer())
-      .catch((err) => logger.warn(`图片加载失败 reason: ${err.message}`))
-    if (!buffer) return segment.image('/plugins/yenai-plugin/resources/img/imgerror.png')
-    let buff = Buffer.from(buffer)
-    logger.debug(`Success: imgSize => ${(buff.length / 1024).toFixed(2) + 'kb'}`)
-    return segment.image(buff, cache, timeout)
+  /**
+   * @description: 请求p站图片
+   * @param {String} url
+   */
+  async requestPixivImg (url) {
+    url = url.replace('i.pximg.net', this.proxy)
+    return common.proxyRequestImg(url, { headers: this.headers })
   }
 
   /** 开始执行文案 */
@@ -538,31 +532,32 @@ export default new class Pixiv {
      * @description: 格式化
      * @param {Object} illusts 处理对象
      * @return {Object}
+     * title  标题
+     * id  pid
+     * total_bookmarks  点赞
+     * total_view  访问量
+     * tags  标签
+     * url  图片链接
+     * user  作者信息
+     * image_urls  单张图片
+     * x_restrict  是否为全年龄
+     * create_date  发布时间
+     * illust_ai_type  是否为AI作品
+     * visible  是否为可见作品
      */
   format (illusts) {
     let url = []
-    let { id, title, tags, total_bookmarks, total_view, meta_single_page, meta_pages, user, image_urls, x_restrict, create_date, illust_ai_type, visible } = illusts
+    let { tags, meta_single_page, meta_pages } = illusts
     tags = lodash.uniq(lodash.compact(lodash.flattenDeep(tags?.map(item => Object.values(item)))))
     if (!lodash.isEmpty(meta_single_page)) {
-      url.push(meta_single_page.original_image_url.replace('i.pximg.net', this.proxy))
+      url.push(meta_single_page.original_image_url)
     } else {
-      url = meta_pages.map(item => item.image_urls.original.replace('i.pximg.net', this.proxy))
+      url = meta_pages.map(item => item.image_urls.original)
     }
-    image_urls = lodash.mapValues(image_urls, (item) => item.replace('i.pximg.net', this.proxy))
-
     return {
-      title, // 标题
-      id, // pid
-      total_bookmarks, // 点赞
-      total_view, // 访问量
-      tags, // 标签
-      url, // 图片链接
-      user, // 作者信息
-      image_urls, // 单张图片
-      x_restrict, // 是否为全年龄
-      create_date, // 发布时间
-      illust_ai_type, // 是否为AI作品
-      visible // 是否为可见作品
+      ...illusts,
+      tags,
+      url
     }
   }
 }()

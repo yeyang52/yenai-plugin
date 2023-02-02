@@ -1,6 +1,8 @@
+import child_process from 'child_process'
+import fetch from 'node-fetch'
+import { segment } from 'oicq'
 import common from '../../../lib/common/common.js'
 import Config from '../components/Config.js'
-import child_process from 'child_process'
 import setu from './setu.js'
 let HttpsProxyAgent = ''
 export default new class newCommon {
@@ -181,6 +183,28 @@ export default new class newCommon {
     }
 
     return null
+  }
+
+  /**
+   * @description: 代理请求图片
+   * @param {String} url 图片链接
+   * @param {Boolean} cache 是否缓存
+   * @param {Number} timeout 超时时间
+   * @param {Object} headers 请求头
+   * @return {segment.image} 构造图片消息
+   */
+  async proxyRequestImg (url, { cache, timeout, headers } = {}) {
+    let agent = await this.getAgent()
+    if (!agent) return segment.image(url, cache, timeout, headers)
+    let buffer = await fetch(url, {
+      agent,
+      headers
+    }).then(res => res.arrayBuffer())
+      .catch((err) => logger.warn(`图片加载失败 reason: ${err.message}`))
+    if (!buffer) return segment.image('/plugins/yenai-plugin/resources/img/imgerror.png')
+    let buff = Buffer.from(buffer)
+    logger.debug(`Success: imgSize => ${(buff.length / 1024).toFixed(2) + 'kb'}`)
+    return segment.image(buff, cache, timeout)
   }
 
   /** 默认秒转换格式 */

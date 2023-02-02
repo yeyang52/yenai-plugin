@@ -1,4 +1,4 @@
- import plugin from '../../../lib/plugins/plugin.js'
+import plugin from '../../../lib/plugins/plugin.js'
 import { GroupAdmin as ga, common } from '../model/index.js'
 
 // 正则

@@ -59,7 +59,7 @@ export default new (class {
     return [
       `共找到${total}个关于「${keyword}」${type.alias[0]}的作品`,
       `当前为第${pg}页，共${pages}页`,
-      ...await Promise.allSettled(docs.map(async (item) => {
+      ...await Promise.all(docs.map(async (item) => {
         let { title, tags, categories, author, description = '未知', likesCount, thumb, _id, finished } = item
         return [
           `id：${_id}\n`,
@@ -94,7 +94,7 @@ export default new (class {
     return [
       `id: ${_id}， ${title}`,
       `共${total}张，当前为第${pg}页，共${pages}页，当前为第${order}话`,
-      ...await Promise.allSettled(docs.map(async item => await Pixiv.proxyFetchImg((this.imgproxy ?? `${item.media.fileServer}/static/`) + item.media.path)))
+      ...await Promise.all(docs.map(async item => await Pixiv.proxyFetchImg((this.imgproxy ?? `${item.media.fileServer}/static/`) + item.media.path)))
     ]
   }
 
@@ -111,7 +111,7 @@ export default new (class {
       res = res.data.categories.filter(item => !item.isWeb)
       await redis.set(key, JSON.stringify(res), { EX: 43200 })
     }
-    return await Promise.allSettled(res.map(async item => {
+    return await Promise.all(res.map(async item => {
       let { title, thumb, description = '未知' } = item
       let { fileServer, path } = thumb
       fileServer = /static/.test(fileServer) ? fileServer : fileServer + '/static/'

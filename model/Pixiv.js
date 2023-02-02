@@ -147,7 +147,7 @@ export default new class Pixiv {
       }
       return { error: linkmsg }
     }
-    let img = await Promise.allSettled(url.map(async item => await this.proxyFetchImg(item, { headers: this.headers })))
+    let img = await Promise.all(url.map(async item => await this.proxyFetchImg(item, { headers: this.headers })))
     return { msg, img }
   }
 
@@ -193,7 +193,7 @@ export default new class Pixiv {
     if (res.error) return { error: res.error.message }
     if (lodash.isEmpty(res.illusts)) return { error: '暂无数据，请等待榜单更新哦(。-ω-)zzz' }
 
-    let illusts = await Promise.allSettled(res.illusts.map(async (item, index) => {
+    let illusts = await Promise.all(res.illusts.map(async (item, index) => {
       let list = this.format(item)
       let { id, title, user, tags, total_bookmarks, image_urls } = list
       return [
@@ -404,7 +404,7 @@ export default new class Pixiv {
     if (user.error) return { error: user.error.message }
     if (lodash.isEmpty(user.user_previews)) return { error: '呜呜呜，人家没有找到这个淫d(ŐдŐ๑)' }
 
-    let msg = await Promise.allSettled(user.user_previews.slice(0, 10).map(async (item, index) => {
+    let msg = await Promise.all(user.user_previews.slice(0, 10).map(async (item, index) => {
       let { id, name, profile_image_urls } = item.user
       profile_image_urls = profile_image_urls.medium.replace('i.pximg.net', this.proxy)
       let ret = [

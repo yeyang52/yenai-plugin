@@ -54,7 +54,7 @@ export default new class setu {
       return { error: '没有找到相关的tag' }
     }
     // 消息
-    let msg = await Promise.allSettled(result.data.map(async item => {
+    let msg = await Promise.all(result.data.map(async item => {
       let { pid, title, tags, author, r18, urls, url } = item
       return [
         `${this.sendMsgs}\n`,
@@ -66,6 +66,7 @@ export default new class setu {
         await Pixiv.proxyFetchImg(url || urls?.original || urls?.regular || urls?.small, { headers: Pixiv.headers })
       ]
     }))
+    console.log(msg)
     return msg
   }
 

@@ -22,7 +22,7 @@ export class NGA extends plugin {
     })
     this.incomeCurvePath = `${_path}/resources/curveimg`
     this.referencePanelPath = `${_path}/resources/ReferencPanel`
-    this.incomeCurveObj = Data.readJSON('config/incomeCurve/incomeCurve.json')
+    this.incomeCurveObj = Data.readJSON('data/nga/incomeCurve.json')
   }
 
   // 初始化

@@ -3,77 +3,14 @@ import lodash from 'lodash'
 import { segment } from 'oicq'
 import moment from 'moment'
 import { common } from './index.js'
+import { Data } from '../components/index.js'
 /** API请求错误文案 */
 const API_ERROR = '❎ 出错辣，请稍后重试'
 
 export default new class Pixiv {
   constructor () {
     this._proxy = 'i.pixiv.re'
-    this.ranktype = {
-      日: {
-        type: 'day',
-        quantity: 500,
-        r18: 100,
-        r18type: 'day_r18'
-      },
-      周: {
-        type: 'week',
-        quantity: 500,
-        r18: 100,
-        r18type: 'week_r18'
-      },
-      月: {
-        type: 'month',
-        quantity: 500
-      },
-      AI: {
-        type: 'day_ai',
-        quantity: 50,
-        r18: 50,
-        r18type: 'day_r18_ai'
-      },
-      男性向: {
-        type: 'day_male',
-        quantity: 500,
-        r18: 300,
-        r18type: 'day_male_r18'
-      },
-      女性向: {
-        type: 'day_female',
-        quantity: 500,
-        r18: 300,
-        r18type: 'day_female_r18'
-      },
-      漫画日: {
-        type: 'day_manga',
-        quantity: 500,
-        r18: 100,
-        r18type: 'day_r18_manga'
-      },
-      漫画周: {
-        type: 'week_manga',
-        quantity: 500,
-        r18: 100,
-        r18type: 'week_r18_manga'
-      },
-      漫画月: {
-        type: 'month_manga',
-        quantity: 500
-      },
-      漫画新人周: {
-        type: 'week_rookie_manga',
-        quantity: 500
-      },
-      新人: {
-        type: 'week_rookie',
-        quantity: 500
-      },
-      原创: {
-        type: 'week_original',
-        quantity: 500
-      }
-
-    }
+    this.ranktype = Data.readJSON('data/pixiv/rankType.json')
     this.domain = 'http://api.liaobiao.top/api/pixiv'
     this.init()
   }
@@ -165,12 +102,13 @@ export default new class Pixiv {
     // 排行榜类型
     let type = this.ranktype[mode].type
     // 总张数
-    let pageSizeAll = this.ranktype[mode].quantity
+    let pageSizeAll = this.ranktype[mode].totble
     // r18处理
     if (r18) {
-      if (!this.ranktype[mode].r18) return { error: '该排行没有不适合所有年龄段的分类哦~' }
-      type = this.ranktype[mode].r18type
-      pageSizeAll = this.ranktype[mode].r18
+      let R18 = this.ranktype[mode].r18
+      if (!R18) return { error: '该排行没有不适合所有年龄段的分类哦~' }
+      type = R18.type
+      pageSizeAll = R18.totble
     }
     // 总页数
     let pageAll = Math.ceil(pageSizeAll / 30)

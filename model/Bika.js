@@ -21,7 +21,7 @@ export default new (class {
     if (!await redis.get('yenai:bika:directConnection')) {
       this.imgproxy = 'https://p.sesepic.top/static/'
     } else {
-      this.imgproxy = false
+      this.imgproxy = undefined
     }
     this.imageQuality = await redis.get('yenai:bika:imageQuality') ?? 'medium'
   }

@@ -102,13 +102,13 @@ export default new class Pixiv {
     // 排行榜类型
     let type = this.ranktype[mode].type
     // 总张数
-    let pageSizeAll = this.ranktype[mode].totble
+    let pageSizeAll = this.ranktype[mode].total
     // r18处理
     if (r18) {
       let R18 = this.ranktype[mode].r18
       if (!R18) return { error: '该排行没有不适合所有年龄段的分类哦~' }
       type = R18.type
-      pageSizeAll = R18.totble
+      pageSizeAll = R18.total
     }
     // 总页数
     let pageAll = Math.ceil(pageSizeAll / 30)

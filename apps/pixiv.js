@@ -15,7 +15,7 @@ const uidReg = new RegExp(`^#?uid搜图(.*?)(第(${numReg})页)?$`, 'i')
 const searchUser = new RegExp(`^#?user搜索(.*?)(第(${numReg})页)?$`, 'i')
 const randomImgReg = new RegExp(`^#?来(${numReg})?张(好(康|看)(的|哒)|hkd|涩图)$|#有内鬼$`)
 
-export class example extends plugin {
+export class NewPixiv extends plugin {
   constructor () {
     super({
       name: '椰奶pixiv',

@@ -3,7 +3,7 @@ import fs from 'fs'
 import lodash from 'lodash'
 import { Data } from '../components/index.js'
 import { puppeteer } from '../model/index.js'
-export class yenai_help extends plugin {
+export class YenaiHelp extends plugin {
   constructor () {
     super({
       name: '椰奶帮助',

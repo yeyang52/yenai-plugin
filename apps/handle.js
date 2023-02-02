@@ -8,7 +8,7 @@ const ROLE_MAP = {
   owner: '群主',
   member: '群员'
 }
-export class anotice extends plugin {
+export class NewHandle extends plugin {
   constructor () {
     super({
       name: '椰奶申请处理',

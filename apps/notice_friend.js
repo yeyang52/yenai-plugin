@@ -4,7 +4,7 @@ import { common } from '../model/index.js'
 import { Config } from '../components/index.js'
 
 /** 好友通知 */
-export class Friends extends plugin {
+export class NoticeFriends extends plugin {
   constructor () {
     super({
       name: '椰奶好友通知',

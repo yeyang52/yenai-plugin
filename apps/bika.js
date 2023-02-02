@@ -10,7 +10,7 @@ const Prefix = '(bika|哔咔)'
 // 命令正则
 const searchReg = new RegExp(`^#?${Prefix}(类别|作者|高级)?搜索(.*?)(第(${numReg})页)?$`)
 const comicPageReg = new RegExp(`^#?${Prefix}id(.*?)(第(${numReg})页)?(第(${numReg})话)?$`)
-export class newBika extends plugin {
+export class NewBika extends plugin {
   constructor () {
     super({
       name: '椰奶哔咔',

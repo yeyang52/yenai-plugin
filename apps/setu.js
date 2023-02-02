@@ -7,7 +7,7 @@ const SWITCH_ERROR = '主人没有开放这个功能哦(＊／ω＼＊)'
 let NumReg = '[一壹二两三四五六七八九十百千万亿\\d]+'
 let seturdReg = new RegExp(`^#(setu|无内鬼)\\s?((${NumReg})张)?$`)
 let setcdReg = new RegExp(`^#?设置cd\\s?(\\d+)\\s(${NumReg})(s|秒)?$`, 'i')
-export class sese extends plugin {
+export class SeSe extends plugin {
   constructor () {
     super({
       name: '椰奶setu',

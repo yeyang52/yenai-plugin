@@ -10,7 +10,7 @@ const ROLE_MAP = {
 }
 
 /** 群邀请 */
-export class invitation extends plugin {
+export class NoticeRequest extends plugin {
   constructor () {
     super({
       name: '椰奶请求通知',

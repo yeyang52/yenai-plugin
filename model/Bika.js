@@ -6,7 +6,7 @@ const API_ERROR = '❎ 出错辣，请稍后重试'
 export default new (class {
   constructor () {
     this.domain = 'http://api.liaobiao.top/api/bika'
-    this.imgproxy = 'https://proxy.liaobiao.top/'
+    this.imgproxy = null
     this.imageQuality = 'medium'
     this.hearder = {
       headers: {
@@ -19,9 +19,9 @@ export default new (class {
 
   async init () {
     if (!await redis.get('yenai:bika:directConnection')) {
-      this.imgproxy = 'https://proxy.liaobiao.top/'
+      this.imgproxy = 'https://p.sesepic.top/static/'
     } else {
-      delete this.imgproxy
+      this.imgproxy = false
     }
     this.imageQuality = await redis.get('yenai:bika:imageQuality') ?? 'medium'
   }

@@ -3,7 +3,7 @@ import { segment } from 'oicq'
 import { common } from '../model/index.js'
 import { Config } from '../components/index.js'
 
-export class anotice extends plugin {
+export class NoticeMessage extends plugin {
   constructor () {
     super({
       name: '椰奶消息通知',

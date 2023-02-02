@@ -5,7 +5,7 @@ import { common, GroupAdmin as ga } from '../model/index.js'
 // 全局
 let temp = {}
 const ops = ['+', '-']
-export class NEWCMD extends plugin {
+export class NewGroupVerify extends plugin {
   constructor () {
     super({
       name: '椰奶入群验证',

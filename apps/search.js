@@ -61,7 +61,7 @@ const SEARCH_MAP = {
 
 const searchReg = new RegExp(`^#?(${lodash.keys(SEARCH_MAP).join('|')})搜索(.*)`)
 
-export class example extends plugin {
+export class NewSearch extends plugin {
   constructor () {
     super({
       name: '椰奶搜索',

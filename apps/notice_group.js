@@ -5,7 +5,7 @@ import { Config } from '../components/index.js'
 import moment from 'moment'
 
 /** 群通知 */
-export class newgroups extends plugin {
+export class NoticeGroup extends plugin {
   constructor () {
     super({
       name: '椰奶群通知',

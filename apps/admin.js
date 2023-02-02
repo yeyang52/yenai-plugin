@@ -2,7 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import { update } from '../../other/update.js'
 import { Version, Plugin_Name } from '../components/index.js'
 import { puppeteer } from '../model/index.js'
-export class admin extends plugin {
+export class Admin extends plugin {
   constructor () {
     super({
       name: '椰奶版本信息',

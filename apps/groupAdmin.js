@@ -173,7 +173,7 @@ export class GroupAdmin extends plugin {
     if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true)
 
     let qq = e.message.find(item => item.type == 'at')?.qq
-    let regRet = e.msg.match(/#解禁(\\d+)/)
+    let regRet = e.msg.match(/#解禁(\d+)/)
     let res = await ga.muteMember(e.group_id, qq ?? regRet[1], e.user_id, 0)
     e.reply(res)
   }

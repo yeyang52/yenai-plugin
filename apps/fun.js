@@ -31,7 +31,7 @@ lodash.forIn(picapis, (values, key) => {
 
 const apiReg = new RegExp(`(${picApiKeys.join('|')}|^jktj$|^接口统计$)`)
 
-export class example extends plugin {
+export class Fun extends plugin {
   constructor () {
     super({
       name: '椰奶娱乐',

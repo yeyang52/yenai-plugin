@@ -1,9 +1,13 @@
-import { common } from './index.js'
 import lodash from 'lodash'
 import moment from 'moment'
 import { segment } from 'oicq'
 import loader from '../../../lib/plugins/loader.js'
-class Group_admin {
+import { Config } from '../components/index.js'
+import { common } from './index.js'
+
+// 无管理文案
+const ROLE_ERROR = '做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ'
+export default new class {
   constructor () {
     this.MuteTaskKey = 'yenai:MuteTasks'
   }
@@ -310,6 +314,65 @@ class Group_admin {
       ]
     })
   }
-}
 
-export default new Group_admin()
+  /**
+   * @description: 禁言某人
+   * @param {Number} groupId 群号
+   * @param {Number} userId 被禁言人QQ
+   * @param {Number} executor 执行人QQ
+   * @param {Number} time 时间倍数 0为解禁
+   * @param {String} unit 时间单位
+   * @return {String} 回复消息
+   */
+  async muteMember (groupId, userId, executor, time = 5, unit = '分') {
+    unit = common.Time_unit[unit.toUpperCase()] ?? (/^\d+$/.test(unit) ? unit : 60)
+    let group = null
+    try { group = Bot.pickGroup(Number(groupId), true) } catch (err) { return err.message }
+    // 判断是否有管理
+    if (!group.is_admin && !group.is_owner) return ROLE_ERROR
+    if (!(/\d{5,}/.test(userId))) return '❎ 请输入正确的QQ号'
+    // 判断是否为主人
+    if (Config.masterQQ?.includes(Number(userId)) && time != 0) return '居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ'
+
+    let Memberinfo = group.pickMember(Number(userId)).info
+    // 判断是否有这个人
+    if (!Memberinfo) return '❎ 这个群没有这个人哦~'
+
+    // 特殊处理
+    if (Memberinfo.role === 'owner') return '调戏群主拖出去枪毙5分钟(。>︿<)_θ'
+
+    let user = group.pickMember(Number(executor))
+    let isMaster = Config.masterQQ?.includes(executor)
+
+    if (Memberinfo.role === 'admin') {
+      if (!group.is_owner) return '人家又不是群主这种事做不到的辣！'
+      if (!isMaster && !user.member.is_owner) return '这个淫系管理员辣，只有主淫和群主才可以干ta'
+    }
+
+    await group.muteMember(userId, time * unit)
+    return time == 0 ? `✅ 已把「${Memberinfo.card || Memberinfo.nickname}」从小黑屋揪了出来(｡>∀<｡)` : `已把「${Memberinfo.card || Memberinfo.nickname}」扔进了小黑屋( ･_･)ﾉ⌒●~*`
+  }
+
+  async kickMember (groupId, userId, executor) {
+    let group = null
+    try { group = Bot.pickGroup(Number(groupId), true) } catch (err) { return err.message }
+
+    if (!userId || !(/^\d+$/.test(userId))) return '❎ 请输入正确的QQ号'
+    if (!groupId || !(/^\d+$/.test(groupId))) return '❎ 请输入正确的群号'
+    // 判断是否为主人
+    if (Config.masterQQ?.includes(Number(userId))) return '居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ'
+
+    let Memberinfo = group?.pickMember(Number(userId)).info
+    // 判断是否有这个人
+    if (!Memberinfo) return '❎ 这个群没有这个人哦~'
+    if (Memberinfo.role === 'owner') return '调戏群主拖出去枪毙5分钟(。>︿<)_θ'
+    let isMaster = Config.masterQQ?.includes(executor)
+    let user = group.pickMember(Number(executor))
+    if (Memberinfo.role === 'admin') {
+      if (!group.is_owner) return '人家又不是群主这种事做不到的辣！'
+      if (!isMaster && !user.is_owner) return '这个淫系管理员辣，只有主淫和群主才可以干ta'
+    }
+    let res = await group.kickMember(Number(userId))
+    return res ? '已把这个坏淫踢掉惹！！！' : '额...踢出失败哩，可能这个淫比较腻害>_<'
+  }
+}()

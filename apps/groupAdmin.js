@@ -18,28 +18,28 @@ const noactivereg = new RegExp(`^#(查看|清理|确认清理|获取)(${Numreg})
 const Autisticreg = new RegExp(`^#?我要(自闭|禅定)(${Numreg})?个?(${TimeUnitReg})?$`, 'i')
 // 获取定时任务
 const redisTask = await ga.getRedisMuteTask() || false
-export class Basics extends plugin {
+export class GroupAdmin extends plugin {
   constructor () {
     super({
-      name: '椰奶基础群管',
+      name: '椰奶群管',
       event: 'message.group',
       priority: 500,
       rule: [
         {
-          reg: '^#禁言.*$',
-          fnc: 'Taboo'
+          reg: `^#禁言\\s?((\\d+)\\s)?(${Numreg})?(${TimeUnitReg})?$`,
+          fnc: 'muteMember'
         },
         {
           reg: '^#解禁(\\d+)?$',
-          fnc: 'Relieve'
+          fnc: 'noMuteMember'
         },
         {
           reg: '^#全体(禁言|解禁)$',
-          fnc: 'TabooAll'
+          fnc: 'muteAll'
         },
         {
           reg: '^#踢(\\d+)?$',
-          fnc: 'Kick'
+          fnc: 'kickMember'
         },
         {
           reg: '^#(设置|取消)管理(\\d+)?$',
@@ -155,76 +155,31 @@ export class Basics extends plugin {
   }
 
   /** 禁言 */
-  async Taboo (e) {
+  async muteMember (e) {
     // 判断权限
     if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(PERMISSION_ERROR)
-    // 判断是否有管理
-    if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true)
-
     let qq = e.message.find(item => item.type == 'at')?.qq
-    let TabooTime = 5
-    let Company = 300
-    // 判断有无@
-    if (!qq) {
-      let regRet = e.msg.match(new RegExp(`#禁言\\s?(\\d+)\\s(${Numreg})?(${TimeUnitReg})?`))
-      if (!regRet) return e.reply('❎ 请检查指令格式是否正确')
-      // 处理消息
-      if (!regRet[1]) return e.reply('❎ 未取得QQ号请检查指令格式')
-      qq = regRet[1]
-      // 获取数字
-      TabooTime = common.translateChinaNum(regRet[2] || 5)
-      // 获取单位
-      Company = common.Time_unit[lodash.toUpper(regRet[3]) || '分']
-    } else {
-      TabooTime = common.translateChinaNum(e.msg.match(new RegExp(Numreg)) || 5)
-      Company = common.Time_unit[lodash.toUpper(e.msg.match(new RegExp(TimeUnitReg))) || '分']
-    }
-    if (!(/\d{5,}/.test(qq))) return e.reply('❎ 请输入正确的QQ号')
-    // 判断是否为主人
-    if (Config.masterQQ?.includes(Number(qq))) {
-      e.reply('居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ')
-      return e.group.muteMember(e.user_id, 300)
-    }
-    let Memberinfo = e.group.pickMember(Number(qq)).info
-    // 判断是否有这个人
-    if (!Memberinfo) return e.reply('❎ 这个群没有这个人哦~', true)
-    // 特殊处理
-    if (Memberinfo.role === 'owner') {
-      e.reply('调戏群主拖出去枪毙5分钟(。>︿<)_θ', true)
-      return e.group.muteMember(e.user_id, 300)
-    }
-    if (Memberinfo.role === 'admin') {
-      if (!e.group.is_owner) return e.reply('人家又不是群主这种事做不到的辣！', true)
-      if (!e.isMaster && !e.member.is_owner) return e.reply('这个淫系管理员辣，只有主淫和群主才可以干ta', true)
-    }
-    console.log(qq, TabooTime * Company)
-    await e.group.muteMember(qq, TabooTime * Company)
-    e.reply(`已把「${Memberinfo.card || Memberinfo.nickname}」扔进了小黑屋( ･_･)ﾉ⌒●~*`, true)
-    return true
+    let regRet = e.msg.match(new RegExp(`#禁言\\s?((\\d+)\\s)?(${Numreg})?(${TimeUnitReg})?`))
+    console.log(regRet)
+    let res = await ga.muteMember(e.group_id, qq ?? regRet[2], e.user_id, regRet[3], regRet[4])
+    e.reply(res)
   }
 
   /** 解禁 */
-  async Relieve (e) {
+  async noMuteMember (e) {
     // 判断权限
     if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(PERMISSION_ERROR)
     // 判断是否有管理
     if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true)
 
     let qq = e.message.find(item => item.type == 'at')?.qq
-    if (!qq) qq = e.msg.replace(/#|解禁/g, '').trim()
-
-    if (!qq || !(/\d{5,}/.test(qq))) return e.reply('❎ 请输入正确的QQ号')
-
-    let Member = e.group.pickMember(Number(qq))
-    // 判断是否有这个人
-    if (!Member.info) return e.reply('❎ 这个群没有这个人哦~')
-
-    await e.group.muteMember(qq, 0)
-    e.reply(`已把「${Member.card || Member.nickname}」从小黑屋揪了出来(｡>∀<｡)`, true)
+    let regRet = e.msg.match(/#解禁(\\d+)/)
+    let res = await ga.muteMember(e.group_id, qq ?? regRet[1], e.user_id, 0)
+    e.reply(res)
   }
 
   /** 全体禁言 */
-  async TabooAll (e) {
+  async muteAll (e) {
     // 判断权限
     if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(PERMISSION_ERROR)
     // 判断是否有管理
@@ -237,7 +192,7 @@ export class Basics extends plugin {
   }
 
   // 踢群员
-  async Kick (e) {
+  async kickMember (e) {
     // 判断权限
     if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(PERMISSION_ERROR)
     // 判断是否有管理
@@ -245,22 +200,8 @@ export class Basics extends plugin {
 
     let qq = e.message.find(item => item.type == 'at')?.qq
     if (!qq) qq = e.msg.replace(/#|踢/g, '').trim()
-
-    if (!qq || !(/\d{5,}/.test(qq))) return e.reply('❎ 请输入正确的QQ号')
-    // 判断是否为主人
-    if (Config.masterQQ?.includes(Number(qq))) {
-      return e.reply('居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ')
-    }
-    let Memberinfo = e.group.pickMember(Number(qq)).info
-    // 判断是否有这个人
-    if (!Memberinfo) return e.reply('❎ 这个群没有这个人哦~', true)
-    if (Memberinfo.role === 'owner') return e.reply('调戏群主拖出去枪毙5分钟(。>︿<)_θ', true)
-    if (Memberinfo.role === 'admin') {
-      if (!e.group.is_owner) return e.reply('人家又不是群主这种事做不到的辣！', true)
-      if (!e.isMaster && !e.member.is_owner) return e.reply('这个淫系管理员辣，只有主淫和群主才可以干ta', true)
-    }
-    let res = await e.group.kickMember(Number(qq))
-    res ? e.reply('已把这个坏淫踢掉惹！！！', true) : e.reply('额...踢出失败哩，可能这个淫比较腻害>_<', true)
+    let res = await ga.kickMember(e.group_id, qq, e.user_id)
+    e.reply(res)
   }
 
   // 我要自闭

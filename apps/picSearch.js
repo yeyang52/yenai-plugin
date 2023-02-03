@@ -17,6 +17,7 @@ export class newPicSearch extends plugin {
   async search (e) {
     if (!e.img) return e.reply('请将图片与消息一起发送')
     let msg = await PicSearch.SauceNAO(e.img[0])
+    if (msg.error) return e.reply(msg.error)
     common.getforwardMsg(e, msg)
   }
 }

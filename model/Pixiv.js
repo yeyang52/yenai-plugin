@@ -3,7 +3,7 @@ import lodash from 'lodash'
 import { segment } from 'oicq'
 import moment from 'moment'
 import { common } from './index.js'
-import { rankType } from '../tools/pixiv.js'
+import { rankType, MSG } from '../tools/pixiv.js'
 /** API请求错误文案 */
 const API_ERROR = '❎ 出错辣，请稍后重试'
 
@@ -42,6 +42,11 @@ export default new class Pixiv {
   set proxy (value) {
     redis.set('yenai:proxy', value)
     this._proxy = value
+  }
+
+  /** 开始执行文案 */
+  get startMsg () {
+    return lodash.sample(MSG.start)
   }
 
   /**
@@ -454,16 +459,6 @@ export default new class Pixiv {
   async requestPixivImg (url) {
     url = url.replace('i.pximg.net', this.proxy)
     return common.proxyRequestImg(url, { headers: this.headers })
-  }
-
-  /** 开始执行文案 */
-  get startMsg () {
-    return lodash.sample([
-      '你先别急，正在给你搜了(。-ω-)zzz',
-      '你先别急，马上去给你找哦ε(*´･ω･)з',
-      '你先别急，正在给你搜了(。-ω-)zzz',
-      '你先别急，马上去给你找哦ε(*´･ω･)з'
-    ])
   }
 
   /**

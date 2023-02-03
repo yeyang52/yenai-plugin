@@ -18,6 +18,7 @@ export default new class {
     }
     let res = await this.request('https://saucenao.com/search.php', params)
     if (!res) return { error: 'SauceNAO搜图请求失败' }
+    console.log(res)
     let msg = await Promise.all(sites(res).map(async item => [
       `SauceNAO (${item.similarity})\n`,
       await common.proxyRequestImg(item.thumbnail),
@@ -26,8 +27,8 @@ export default new class {
       `作者主页：${item.authorUrl}\n`,
       `作品链接：${item.url[0]}`
     ]))
-    if (res.headers.long_remaining < 10) {
-      msg.push(`SauceNAO 24h 内仅剩 ${res.headers.long_remaining} 次使用次数`)
+    if (res.header.long_remaining < 10) {
+      msg.push(`SauceNAO 24h 内仅剩 ${res.header.long_remaining} 次使用次数`)
     }
   }
 

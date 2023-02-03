@@ -76,6 +76,11 @@ class Config {
     return this.getDefOrConfig('other')
   }
 
+  /** 搜图配置 */
+  get picSearch () {
+    return this.getDefOrConfig('picSearch')
+  }
+
   /** 默认配置和用户配置 */
   getDefOrConfig (name) {
     let def = this.getdefSet(name)

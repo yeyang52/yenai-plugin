@@ -9,6 +9,7 @@ import QQInterface from './QQInterface.js'
 import Interface from './Interface.js'
 import CronValidate from './CronValidate.js'
 import Bika from './Bika.js'
+import PicSearch from './PicSearch.js'
 export {
   puppeteer,
   common,
@@ -20,5 +21,6 @@ export {
   CronValidate,
   GroupAdmin,
   QQInterface,
-  Interface
+  Interface,
+  PicSearch
 }

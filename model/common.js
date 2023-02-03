@@ -109,14 +109,15 @@ export default new class newCommon {
   /**
      * @description: 发送普通消息并根据指定时间撤回群消息
      * @param {*} e oicq
-     * @param {*} msg 消息
+     * @param {Array|String} msg 消息
+     * @param {Boolean} quote 是否引用回复
      * @param {Number} time 撤回时间
      * @param {Boolean} fkmsg 风控消息
      * @return {*}
      */
-  async recallsendMsg (e, msg, time = setu.getRecallTime(e.group_id), fkmsg = '') {
+  async recallsendMsg (e, msg, quote, time = setu.getRecallTime(e.group_id), fkmsg = '') {
     // 发送消息
-    let res = await e.reply(msg, false, { recallMsg: time })
+    let res = await e.reply(msg, quote, { recallMsg: time })
     if (!res) await e.reply(fkmsg || '消息发送失败，可能被风控')
     return res
   }

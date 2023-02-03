@@ -1,8 +1,4 @@
 /* eslint-disable no-void */
-'use strict'
-// Object.defineProperty(exports, '__esModule', { value: true })
-// const errors_1 = require('./errors')
-// #region Site data objects
 const DoujinMangaLexicon = {
   name: 'The Doujinshi & Manga Lexicon',
   index: 3,
@@ -357,7 +353,7 @@ const resolveResult = item => {
   }, ((_a = authorData === null || authorData === void 0 ? void 0 : authorData(item.data)) !== null && _a !== void 0 ? _a : { authorName: null, authorUrl: null }))
 }
 
-export default (response) => {
+const sagiri = (response) => {
   const unknownIds = new Set(response.results.filter((result) => !sites[result.header.index_id]).map((result) => result.header.index_id))
   const results = response.results
     .filter((result) => !unknownIds.has(result.header.index_id))
@@ -378,4 +374,5 @@ export default (response) => {
     }
   })
 }
+export default sagiri
 // # sourceMappingURL=sites.js.map

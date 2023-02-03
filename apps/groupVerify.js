@@ -249,14 +249,14 @@ async function verify (user_id, group_id, e) {
 
   const remindTimer = setTimeout(async () => {
     if (shouldRemind && temp[user_id + group_id].remindTimer) {
-      const msg = ` 验证仅剩最后一分钟，请发送「${m}${operator}${n}」的运算结果，否则将会被移出群聊`
+      const msg = ` 验证仅剩最后一分钟，请发送「${m} ${operator} ${n}」的运算结果，否则将会被移出群聊`
 
       await e.reply([segment.at(user_id), msg])
     }
     clearTimeout(remindTimer)
   }, Math.abs(verifycfg.time * 1000 - 60000))
 
-  const msg = ` 欢迎，请在「${verifycfg.time}」秒内发送「${m}${operator}${n}」的运算结果，否则将会被移出群聊`
+  const msg = ` 欢迎，请在「${verifycfg.time}」秒内发送「${m} ${operator} ${n}」的运算结果，否则将会被移出群聊`
 
   await common.sleep(600)
   // 消息发送成功才写入

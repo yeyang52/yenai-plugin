@@ -20,5 +20,8 @@
   "license": "GPL-3.0",
   "dependencies": {
     "systeminformation": "^5.17.1"
+  },
+  "devDependencies": {
+    "all-contributors-cli": "^6.24.0"
   }
 }

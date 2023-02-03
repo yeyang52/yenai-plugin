@@ -3,9 +3,9 @@ import gsCfg from '../../genshin/model/gsCfg.js'
 import { segment } from 'oicq'
 import fs from 'node:fs'
 import common from '../../../lib/common/common.js'
-import { Data } from '../components/index.js'
+import { Data, Plugin_Path } from '../components/index.js'
+import { incomeCurve } from '../tools/nga.js'
 
-const _path = './plugins/yenai-plugin'
 export class NGA extends plugin {
   constructor () {
     super({
@@ -20,15 +20,14 @@ export class NGA extends plugin {
         }
       ]
     })
-    this.incomeCurvePath = `${_path}/resources/incomeCurve`
-    this.referencePanelPath = `${_path}/resources/ReferencPanel`
-    this.incomeCurveObj = Data.readJSON('data/nga/incomeCurve.json')
+    this.incomeCurvePath = `${Plugin_Path}/data/incomeCurve`
+    this.referencePanelPath = `${Plugin_Path}/data/referencPanel`
+    this.incomeCurveObj = incomeCurve
   }
 
   // 初始化
-  async init () {
-    Data.createDir('resources/incomeCurve')
-    Data.createDir('resources/ReferencPanel')
+  async initFolder (type) {
+    Data.createDir(`data/${type == '收益曲线' ? 'incomeCurve' : 'referencPanel'}`)
   }
 
   async NGA () {
@@ -39,7 +38,7 @@ export class NGA extends plugin {
       role = gsCfg.getRole(this.e.msg, '收益曲线|参考面板')
     }
 
-    if (!role) return logger.error(`${this.e.logFnc}指令可能错误`, role)
+    if (!role) return logger.error(`${this.e.logFnc}未找到该角色`, role)
 
     let type = /收益曲线/.test(this.e.msg) ? '收益曲线' : '参考面板'
     /** 主角特殊处理 */
@@ -64,6 +63,7 @@ export class NGA extends plugin {
       url = `http://www.liaobiao.top/Referenc/${role.name}.png`
     }
     if (!fs.existsSync(imgPath)) {
+      this.initFolder(type)
       await this.getImg(url, imgPath)
     }
 

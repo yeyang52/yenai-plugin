@@ -202,6 +202,14 @@ export const helpList = [{
   ]
 },
 {
+  group: '其他',
+  list: [{
+    title: '#开启/关闭加群通知',
+    desc: '将加群申请发送至群',
+    icon: 2
+  }]
+},
+{
   group: '进群验证(更多设置请在config/groupverify.yaml进行设置)',
   list: [
     {

@@ -3,14 +3,14 @@ import lodash from 'lodash'
 import { segment } from 'oicq'
 import moment from 'moment'
 import { common } from './index.js'
-import { Data } from '../components/index.js'
+import { rankType } from '../tools/pixiv.js'
 /** API请求错误文案 */
 const API_ERROR = '❎ 出错辣，请稍后重试'
 
 export default new class Pixiv {
   constructor () {
-    this._proxy = 'i.pixiv.re'
-    this.ranktype = Data.readJSON('data/pixiv/rankType.json')
+    this._proxy = ''
+    this.ranktype = rankType
     this.domain = 'http://api.liaobiao.top/api/pixiv'
     this.init()
   }

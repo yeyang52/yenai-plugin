@@ -124,7 +124,7 @@ export default new class Pixiv {
 
     if (!res || res.error || lodash.isEmpty(res.illusts)) {
       logger.mark('[椰奶Pixiv][排行榜]使用备用接口')
-      res = await fetch(`https://api.imki.moe/api/pixiv/rank?${parame}`).then(res => res.json())
+      res = await fetch(`https://api.obfs.dev/api/pixiv/rank?${parame}`).then(res => res.json())
         .catch(err => console.log(err))
     };
     if (!res) return { error: API_ERROR }
@@ -367,8 +367,8 @@ export default new class Pixiv {
      * @description: 随机图片
      * @return {Array}
      */
-  async randomImg (num) {
-    let api = `https://www.vilipix.com/api/v1/picture/public?limit=${num}&offset=${lodash.random(1500)}&sort=hot&type=0`
+  async randomImg (limit) {
+    let api = `https://www.vilipix.com/api/v1/picture/recommand?limit=${limit}&offset=${lodash.random(1, 700)}`
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
     if (!res) return { error: API_ERROR }
     if (!res.data || !res.data.rows) return { error: '呜呜呜，没拿到瑟瑟的图片(˃ ⌑ ˂ഃ )' }

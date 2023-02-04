@@ -4,6 +4,10 @@ import { common } from './index.js'
 import sagiri from '../tools/sagiri.js'
 import lodash from 'lodash'
 export default new class {
+  constructor () {
+    this.ascii2dDomain = 'https://ascii2d.net'
+  }
+
   async SauceNAO (url) {
     let apiKey = Config.picSearch.SauceNAOApiKey
     if (!apiKey) return { error: '未配置SauceNAOApiKey，无法使用SauceNAO搜图，请在 https://saucenao.com/user.php?page=search-api 进行获取' }
@@ -16,10 +20,11 @@ export default new class {
       numres: 3
     }
     let res = await this.request('https://saucenao.com/search.php', params)
-    if (!res) return { error: 'SauceNAO搜图网络请求失败' }
+    if (!res) return { error: 'SauceNAO搜图网络请求失败，注：移动网络无法访问saucenao，可尝试配置代理' }
     if (res.header.status != 0) return { error: 'SauceNAO搜图，错误信息：' + res.header.message.replace(/<.*?>/g, '') }
     let format = sagiri(res)
-    if (lodash.isEmpty(format)) return { error: 'SauceNAO搜图无数据，使用 Ascii2D 进行搜图' }
+    // if (lodash.isEmpty(format)) return { error: 'SauceNAO搜图无数据，使用 Ascii2D 进行搜图' }
+    if (lodash.isEmpty(format)) return { error: 'SauceNAO搜图无数据' }
 
     let msgMap = async item => [
       `SauceNAO (${item.similarity}%)\n`,
@@ -29,7 +34,18 @@ export default new class {
       `来源：${item.url[0]}`
     ]
     let maxSimilarity = format[0].similarity
-    let message = maxSimilarity > 80 ? [await msgMap(format[0])] : await Promise.all(format.map(msgMap))
+    let filterSimilarity = format.filter(item => item.similarity > 80)
+    let message = []
+    if (lodash.isEmpty(filterSimilarity)) {
+      let filterPixiv = filterSimilarity.filter(item => item.site == 'Pixiv')
+      if (lodash.isEmpty(filterPixiv)) {
+        message.push(await msgMap(filterPixiv[0]))
+      } else {
+        message.push(await msgMap(filterSimilarity[0]))
+      }
+    } else {
+      message = await Promise.all(format.map(msgMap))
+    }
 
     if (res.header.long_remaining < 30) {
       message.push(`${maxSimilarity > 80 ? '\n' : ''}SauceNAO 24h 内仅剩 ${res.header.long_remaining} 次使用次数`)
@@ -42,6 +58,10 @@ export default new class {
       isTooLow: maxSimilarity > Config.picSearch.SauceNAO_Min_sim,
       message
     }
+  }
+
+  async Ascii2D () {
+    // ing~
   }
 
   async request (url, params, headers) {

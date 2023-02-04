@@ -235,7 +235,7 @@ A：请参考[此教程](https://docs.qq.com/doc/p/108e5d788607d988ac62e1512552c
 
 #### 联系方式
 
-QQ：[746659424](https://qm.qq.com/cgi-bin/qm/qr?k=m6tyVb1v5y7a5_YK8CU7AoKyuR51aEaI&noverify=0&personal_qrcode_source=4)
+QQ：746659424
 
 群号：[254974507](https://jq.qq.com/?_wv=1027&k=o8FTig5Z)
 

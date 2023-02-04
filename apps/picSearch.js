@@ -22,6 +22,7 @@ export class newPicSearch extends plugin {
     if (!res.error && res.isTooLow) {
       return res.length > 1 ? common.recallsendMsg(e, res, true) : common.getRecallsendMsg(e, res)
     }
-    e.reply(`相似度 ${res.maxSimilarity}% 过低，自动使用 Ascii2D 进行搜索`)
+    // e.reply(`相似度 ${res.maxSimilarity}% 过低，自动使用 Ascii2D 进行搜索`)
+    e.reply(`相似度 ${res.maxSimilarity}% 过低`)
   }
 }

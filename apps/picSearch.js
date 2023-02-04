@@ -1,5 +1,5 @@
 import { PicSearch, common } from '../model/index.js'
-
+import { Config } from '../components/index.js'
 export class newPicSearch extends plugin {
   constructor () {
     super({
@@ -8,8 +8,12 @@ export class newPicSearch extends plugin {
       priority: 2000,
       rule: [
         {
-          reg: '^#?(椰奶)?搜图.*$',
+          reg: '^#?(椰奶)?(以图)?搜图.*$',
           fnc: 'search'
+        },
+        {
+          reg: /^#?SauceNAOapiKey.*$/i,
+          fnc: 'UploadSauceNAOKey'
         }
       ]
     })
@@ -24,5 +28,14 @@ export class newPicSearch extends plugin {
     // }
     // e.reply(`SauceNAO 相似度 ${res.maxSimilarity}% 过低，自动使用 Ascii2D 进行搜索`)
     return res.message.length == 1 ? common.recallsendMsg(e, res.message[0], true) : common.getRecallsendMsg(e, res.message)
+  }
+
+  async UploadSauceNAOKey (e) {
+    if (!e.isMaster) return false
+    if (e.isGroup) return e.reply('请私聊进行添加')
+    let apiKey = e.msg.replace(/#?SauceNAOapiKey/i, '').trim()
+    if (!apiKey) return e.reply('❎ 请发送正确的apikey')
+    Config.modify('picSearch', 'SauceNAOApiKey', apiKey)
+    e.reply('OK')
   }
 }

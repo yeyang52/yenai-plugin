@@ -10,7 +10,7 @@ export default new class {
 
   async SauceNAO (url) {
     let apiKey = Config.picSearch.SauceNAOApiKey
-    if (!apiKey) return { error: '未配置SauceNAOApiKey，无法使用SauceNAO搜图，请在 https://saucenao.com/user.php?page=search-api 进行获取' }
+    if (!apiKey) return { error: '未配置SauceNAOApiKey，无法使用SauceNAO搜图，请在 https://saucenao.com/user.php?page=search-api 进行获取，请用指令：#SauceNAOapiKey <apikey> 进行添加' }
 
     let params = {
       url,

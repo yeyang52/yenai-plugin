@@ -1,5 +1,6 @@
 import { PicSearch, common } from '../model/index.js'
 import { Config } from '../components/index.js'
+import lodash from 'lodash'
 export class newPicSearch extends plugin {
   constructor () {
     super({
@@ -20,7 +21,20 @@ export class newPicSearch extends plugin {
   }
 
   async search (e) {
-    if (!e.img) return e.reply('请将图片与消息一起发送')
+    if (e.source) {
+      let source
+      if (e.isGroup) {
+        source = (await e.group.getChatHistory(e.source.seq, 1)).pop()
+      } else {
+        source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
+      }
+      e.img = [source.message.find(item => item.type == 'image')?.url]
+    }
+    if (lodash.isEmpty(e.img)) {
+      this.setContext('MonitorImg')
+      e.reply('✅ 请发送图片')
+      return
+    }
     let res = await PicSearch.SauceNAO(e.img[0])
     if (res.error) return e.reply(res.error)
     // if (!res.error && res.isTooLow) {
@@ -28,6 +42,17 @@ export class newPicSearch extends plugin {
     // }
     // e.reply(`SauceNAO 相似度 ${res.maxSimilarity}% 过低，自动使用 Ascii2D 进行搜索`)
     return res.message.length == 1 ? common.recallsendMsg(e, res.message[0], true) : common.getRecallsendMsg(e, res.message)
+  }
+
+  async MonitorImg () {
+    if (!this.e.img) {
+      this.e.reply('❎ 未检测到图片操作已取消')
+    } else {
+      let res = await PicSearch.SauceNAO(this.e.img[0])
+      if (res.error) return this.e.reply(res.error)
+      res.message.length == 1 ? common.recallsendMsg(this.e, res.message[0], true) : common.getRecallsendMsg(this.e, res.message)
+    }
+    this.finish('MonitorImg')
   }
 
   async UploadSauceNAOKey (e) {

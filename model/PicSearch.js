@@ -1,8 +1,10 @@
 import fetch from 'node-fetch'
 import { Config } from '../components/index.js'
-import { common } from './index.js'
+import { common, puppeteer } from './index.js'
 import sagiri from '../tools/sagiri.js'
 import lodash from 'lodash'
+import { segment } from 'oicq'
+let cheerio = ''
 export default new class {
   constructor () {
     this.ascii2dDomain = 'https://ascii2d.net'
@@ -23,8 +25,8 @@ export default new class {
     if (!res) return { error: 'SauceNAO搜图网络请求失败，注：移动网络无法访问saucenao，可尝试配置代理' }
     if (res.header.status != 0) return { error: 'SauceNAO搜图，错误信息：' + res.header.message.replace(/<.*?>/g, '') }
     let format = sagiri(res)
-    // if (lodash.isEmpty(format)) return { error: 'SauceNAO搜图无数据，使用 Ascii2D 进行搜图' }
-    if (lodash.isEmpty(format)) return { error: 'SauceNAO搜图无数据' }
+    if (lodash.isEmpty(format)) return { error: 'SauceNAO搜图无数据，自动使用 Ascii2D 进行搜图' }
+    // if (lodash.isEmpty(format)) return { error: 'SauceNAO搜图无数据' }
 
     let msgMap = async item => [
       `SauceNAO (${item.similarity}%)\n`,
@@ -34,6 +36,9 @@ export default new class {
       `来源：${item.url.toString()}`
     ]
     let maxSimilarity = format[0].similarity
+    if (res.maxSimilarity < Config.picSearch.SauceNAO_Min_sim) {
+      return { error: `SauceNAO 相似度 ${res.maxSimilarity}% 过低，自动使用 Ascii2D 进行搜索` }
+    }
     let filterSimilarity = format.filter(item => item.similarity > 80)
     let message = []
     if (!lodash.isEmpty(filterSimilarity)) {
@@ -53,15 +58,61 @@ export default new class {
     if (res.header.short_remaining < 3) {
       message.push(`${maxSimilarity > 80 ? '\n' : ''}SauceNAO 30s 内仅剩 ${res.header.short_remaining} 次。`)
     }
-    return {
-      maxSimilarity,
-      isTooLow: maxSimilarity > Config.picSearch.SauceNAO_Min_sim,
-      message
-    }
+    return message
   }
 
-  async Ascii2D () {
-    // ing~
+  async Ascii2D (url) {
+    let res = await puppeteer.get(`https://ascii2d.net//search/url/${url}`, 'body > .container')
+    if (!res) return { error: 'Ascii2D搜图请求失败' }
+    let data = await this.parse(res.data)
+    if (data?.error) return data.error
+    if (lodash.isEmpty(data)) return { error: 'Ascii2D数据获取失败' }
+    let msg = data.map(item => [
+      segment.image(item.image),
+      `\n${item.hash}\n`,
+      `${item.info}\n`,
+      `作者:${item.author.text}(${item.author.link})\n`,
+      `来源:${item.source.text}(${item.source.link})`
+    ])
+    msg.unshift('Ascii2D搜图结果')
+    return msg
+  }
+
+  async parse (body) {
+    if (!cheerio) {
+      try {
+        cheerio = await import('cheerio')
+      } catch (e) {
+        return { error: '未检测到依赖cheerio，请安装后再使用Ascii2D搜图' }
+      }
+    }
+    const BASE_URL = 'https://ascii2d.obfs.dev/'
+    const $ = cheerio.load(body, { decodeEntities: true })
+    return lodash.map($('.item-box'), (item) => {
+      const detail = $('.detail-box', item)
+      const hash = $('.hash', item)
+      const info = $('.info-box > .text-muted', item)
+      const [image] = $('.image-box > img', item)
+
+      const [source, author] = $('a[rel=noopener]', detail)
+
+      if (!source && !author) return
+
+      return {
+        hash: hash.text(),
+        info: info.text(),
+        image: new URL(
+          image.attribs.src ?? image.attribs['data-cfsrc'],
+          BASE_URL
+        ).toString(),
+        source: source
+          ? { link: source.attribs.href, text: $(source).text() }
+          : undefined,
+        author: author
+          ? { link: author.attribs.href, text: $(author).text() }
+          : undefined
+      }
+    }).filter(v => v !== undefined)
   }
 
   async request (url, params, headers) {

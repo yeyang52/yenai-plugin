@@ -15,6 +15,10 @@ export class newPicSearch extends plugin {
         {
           reg: /^#?SauceNAOapiKey.*$/i,
           fnc: 'UploadSauceNAOKey'
+        },
+        {
+          reg: '^#?Ascii2D搜图.*$',
+          fnc: 'Ascii2D'
         }
       ]
     })
@@ -36,12 +40,19 @@ export class newPicSearch extends plugin {
       return
     }
     let res = await PicSearch.SauceNAO(e.img[0])
-    if (res.error) return e.reply(res.error)
-    // if (!res.error && res.isTooLow) {
-    //   return res.length > 1 ? common.recallsendMsg(e, res, true) : common.getRecallsendMsg(e, res)
-    // }
-    // e.reply(`SauceNAO 相似度 ${res.maxSimilarity}% 过低，自动使用 Ascii2D 进行搜索`)
-    return res.message.length == 1 ? common.recallsendMsg(e, res.message[0], true) : common.getRecallsendMsg(e, res.message)
+    if (res.error) {
+      e.reply(res.error)
+      return this.Ascii2D(e)
+    }
+
+    res.length == 1 ? common.recallsendMsg(e, res[0], true) : common.getRecallsendMsg(e, res)
+  }
+
+  async Ascii2D (e) {
+    if (!e.img) return
+    let res = await PicSearch.Ascii2D(e.img[0])
+    if (res?.error) return e.reply(res.error)
+    common.getforwardMsg(e, res)
   }
 
   async MonitorImg () {

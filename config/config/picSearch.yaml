@@ -1,4 +1,0 @@
-#SauceNAO搜图apikey 请在 https://saucenao.com/user.php?page=search-api 进行获取
-SauceNAOApiKey: 
-#SauceNAO搜图相似度低于这个百分比将被认定为相似度过低
-SauceNAO_Min_sim: 60

@@ -1,5 +1,0 @@
-#匹配模式 1为模糊 0为精确
-Match_pattern: 0
-#屏蔽词
-Shielding_words:
-  - 示例

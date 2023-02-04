@@ -31,14 +31,14 @@ export default new class {
       await common.proxyRequestImg(item.thumbnail),
       `\nSite：${item.site}\n`,
       `作者：${item.authorName}(${item.authorUrl})\n`,
-      `来源：${item.url[0]}`
+      `来源：${item.url.toString()}`
     ]
     let maxSimilarity = format[0].similarity
     let filterSimilarity = format.filter(item => item.similarity > 80)
     let message = []
-    if (lodash.isEmpty(filterSimilarity)) {
+    if (!lodash.isEmpty(filterSimilarity)) {
       let filterPixiv = filterSimilarity.filter(item => item.site == 'Pixiv')
-      if (lodash.isEmpty(filterPixiv)) {
+      if (!lodash.isEmpty(filterPixiv)) {
         message.push(await msgMap(filterPixiv[0]))
       } else {
         message.push(await msgMap(filterSimilarity[0]))

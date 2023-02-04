@@ -18,11 +18,11 @@ export class newPicSearch extends plugin {
   async search (e) {
     if (!e.img) return e.reply('请将图片与消息一起发送')
     let res = await PicSearch.SauceNAO(e.img[0])
-    if (res.error) e.reply(res.error)
-    if (!res.error && res.isTooLow) {
-      return res.length > 1 ? common.recallsendMsg(e, res, true) : common.getRecallsendMsg(e, res)
-    }
-    // e.reply(`相似度 ${res.maxSimilarity}% 过低，自动使用 Ascii2D 进行搜索`)
-    e.reply(`相似度 ${res.maxSimilarity}% 过低`)
+    if (res.error) return e.reply(res.error)
+    // if (!res.error && res.isTooLow) {
+    //   return res.length > 1 ? common.recallsendMsg(e, res, true) : common.getRecallsendMsg(e, res)
+    // }
+    // e.reply(`SauceNAO 相似度 ${res.maxSimilarity}% 过低，自动使用 Ascii2D 进行搜索`)
+    return res.message.length == 1 ? common.recallsendMsg(e, res.message[0], true) : common.getRecallsendMsg(e, res.message)
   }
 }

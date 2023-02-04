@@ -62,6 +62,13 @@ export default new class {
   }
 
   async Ascii2D (url) {
+    if (!cheerio) {
+      try {
+        cheerio = await import('cheerio')
+      } catch (e) {
+        return { error: '未检测到依赖cheerio，请安装后再使用Ascii2D搜图' }
+      }
+    }
     let res = await puppeteer.get(`https://ascii2d.net//search/url/${url}`, 'body > .container')
     if (!res) return { error: 'Ascii2D搜图请求失败' }
     let data = await this.parse(res.data)
@@ -79,13 +86,6 @@ export default new class {
   }
 
   async parse (body) {
-    if (!cheerio) {
-      try {
-        cheerio = await import('cheerio')
-      } catch (e) {
-        return { error: '未检测到依赖cheerio，请安装后再使用Ascii2D搜图' }
-      }
-    }
     const BASE_URL = 'https://ascii2d.obfs.dev/'
     const $ = cheerio.load(body, { decodeEntities: true })
     return lodash.map($('.item-box'), (item) => {

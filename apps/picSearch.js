@@ -52,7 +52,7 @@ export class newPicSearch extends plugin {
     if (!e.img) return
     let res = await PicSearch.Ascii2D(e.img[0])
     if (res?.error) return e.reply(res.error)
-    common.getforwardMsg(e, res)
+    common.getRecallsendMsg(e, res)
   }
 
   async MonitorImg () {

@@ -78,8 +78,8 @@ export default new class {
       segment.image(item.image),
       `\n${item.hash}\n`,
       `${item.info}\n`,
-      `作者:${item.author.text}(${item.author.link})\n`,
-      `来源:${item.source.text}(${item.source.link})`
+      `作者:${item.author?.text}(${item.author?.link})\n`,
+      `来源:${item.source?.text}(${item.source?.link})`
     ])
     msg.unshift('Ascii2D搜图结果')
     return msg

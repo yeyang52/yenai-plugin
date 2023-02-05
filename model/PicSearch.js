@@ -36,8 +36,8 @@ export default new class {
       `来源：${item.url.toString()}`
     ]
     let maxSimilarity = format[0].similarity
-    if (res.maxSimilarity < Config.picSearch.SauceNAO_Min_sim) {
-      return { error: `SauceNAO 相似度 ${res.maxSimilarity}% 过低，自动使用 Ascii2D 进行搜索` }
+    if (maxSimilarity < Config.picSearch.SauceNAO_Min_sim) {
+      return { error: `SauceNAO 相似度 ${maxSimilarity}% 过低，自动使用 Ascii2D 进行搜索` }
     }
     let filterSimilarity = format.filter(item => item.similarity > 80)
     let message = []

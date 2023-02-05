@@ -5,3 +5,9 @@ SauceNAOMinSim: 60
 #saucanao 得到 NSFW 结果时隐藏缩略图，可选 0~3，严格程度依次增加
 #0-不隐藏，1-隐藏明确为 NSFW 的缩略图，2-隐藏明确和可能为 NSFW 的缩略图，3-只显示明确为非 NSFW 的缩略图
 hideImgWhenSaucenaoNSFW: 0
+#绕过 Cloudflare Challenge 所使用的 TLS 版本，建议可选值：["TLSv1.1", "TLSv1.2"]
+cfTLSVersion: TLSv1.1
+#是否使用 Puppeteer 请求 ascii2d 以绕过 cf js challenge，（启用时 ascii2dLocalUpload 配置将不生效）
+ascii2dUsePuppeteer: false
+#隐藏所有搜索结果的缩略图
+hideImg: false

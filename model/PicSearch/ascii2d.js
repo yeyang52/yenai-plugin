@@ -1,7 +1,9 @@
+/* eslint-disable no-unused-vars */
 import lodash from 'lodash'
 import { segment } from 'oicq'
 import { puppeteer } from '../index.js'
-
+import request from '../../lib/request/request.js'
+import { Config } from '../../components/index.js'
 let cheerio = ''
 
 let domain = 'https://ascii2d.net/'
@@ -14,22 +16,59 @@ export default async function doSearch (url) {
       return { error: '未检测到依赖cheerio，请安装后再使用Ascii2D搜图，安装命令：pnpm add cheerio -w 或 pnpm install -P' }
     }
   }
-  let res = await puppeteer.get(`${domain}/search/url/${url}`, 'body > .container')
-  if (!res) return { error: 'Ascii2D搜图请求失败' }
-  let data = await parse(res.data)
-  if (data?.error) return data.error
-  if (lodash.isEmpty(data)) return { error: 'Ascii2D数据获取失败' }
-  let msg = data.map(item => [
-    segment.image(item.image),
-      `\n${item.hash}\n`,
-      `${item.info}\n`,
-      `作者:${item.author?.text}(${item.author?.link})\n`,
-      `来源:${item.source?.text}(${item.source?.link})`
-  ])
-  msg.unshift('Ascii2D搜图结果')
-  return msg
-}
+  const { ascii2dUsePuppeteer } = Config.picSearch
+  const callApi = ascii2dUsePuppeteer ? callAscii2dUrlApiWithPuppeteer : callAscii2dUrlApi
+  let ret = await callApi(url)
+  if (!ret) return { error: 'Ascii2D搜图请求失败' }
+  const colorURL = ret.url
+  if (!colorURL.includes('/color/')) {
+    const $ = cheerio.load(ret.data, { decodeEntities: false })
+    console.error('[error] ascii2d url:', colorURL)
+    logger.debug(ret.data)
+    return { error: ($('.container > .row > div:first-child > p').text().trim()) }
+  }
+  const bovwURL = colorURL.replace('/color/', '/bovw/')
+  let bovwDetail = await (ascii2dUsePuppeteer ? getAscii2dWithPuppeteer(bovwURL) : request.cfGet(bovwURL))
+  if (!ascii2dUsePuppeteer) {
+    bovwDetail = {
+      url: bovwDetail.url,
+      data: await bovwDetail.text()
+    }
+  }
+  let colorData = await parse(ret.data)
+  let bovwData = await parse(bovwDetail.data)
+  if (lodash.isEmpty(colorData)) return { error: 'Ascii2D数据获取失败' }
+  let mapfun = item => [
+    Config.picSearch.hideImg ? '' : segment.image(item.image),
+    `${item.info}\n`,
+    `标题：${item.source?.text}\n`,
+    `作者:${item.author?.text}(${item.author?.link})\n`,
+    `来源:(${item.source?.link})`
+  ]
+  let color = colorData.map(mapfun)
+  let bovw = bovwData.map(mapfun)
 
+  color.unshift('ascii2d 色合検索')
+  bovw.unshift('ascii2d 特徴検索')
+  return {
+    color,
+    bovw
+  }
+}
+const callAscii2dUrlApiWithPuppeteer = (imgUrl) => {
+  return getAscii2dWithPuppeteer(`${domain}/search/url/${imgUrl}`)
+}
+const callAscii2dUrlApi = async (imgUrl) => {
+  let res = await request.cfGet(`${domain}/search/url/${imgUrl}`)
+  if (!res.ok) return false
+  return {
+    url: res.url,
+    data: await res.text()
+  }
+}
+async function getAscii2dWithPuppeteer (url) {
+  return await puppeteer.get(url, 'body > .container')
+}
 async function parse (body) {
   const $ = cheerio.load(body, { decodeEntities: true })
   return lodash.map($('.item-box'), (item) => {

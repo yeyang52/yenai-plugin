@@ -19,6 +19,10 @@ export class newPicSearch extends plugin {
         {
           reg: '^#?(Ascii2D|ac)搜图.*$',
           fnc: 'Ascii2D'
+        },
+        {
+          reg: '^#?(SauceNAO|sn)搜图.*$',
+          fnc: 'SauceNAO'
         }
       ]
     })
@@ -37,33 +41,36 @@ export class newPicSearch extends plugin {
     if (lodash.isEmpty(e.img)) {
       this.setContext('MonitorImg')
       e.reply('✅ 请发送图片')
-      return
     }
-    let res = await PicSearch.SauceNAO(e.img[0])
-    if (res.error) {
-      e.reply(res.error)
-      return this.Ascii2D(e)
-    }
-
-    res.length == 1 ? common.recallsendMsg(e, res[0], true) : common.getRecallsendMsg(e, res)
-  }
-
-  async Ascii2D (e) {
-    if (!e.img) return
-    let res = await PicSearch.Ascii2D(e.img[0])
-    if (res?.error) return e.reply(res.error)
-    common.getRecallsendMsg(e, res)
+    this.SauceNAO(e)
   }
 
   async MonitorImg () {
     if (!this.e.img) {
       this.e.reply('❎ 未检测到图片操作已取消')
     } else {
-      let res = await PicSearch.SauceNAO(this.e.img[0])
-      if (res.error) return this.e.reply(res.error)
-      res.message.length == 1 ? common.recallsendMsg(this.e, res.message[0], true) : common.getRecallsendMsg(this.e, res.message)
+      this.SauceNAO(this.e)
     }
     this.finish('MonitorImg')
+  }
+
+  async SauceNAO (e) {
+    if (!e.img) return
+    let res = await PicSearch.SauceNAO(e.img[0])
+    if (res.error) {
+      e.reply(res.error)
+      return this.Ascii2D(e)
+    }
+
+    res.maxSimilarity > 80 ? common.recallsendMsg(e, res.message, true) : common.getRecallsendMsg(e, res.message)
+  }
+
+  async Ascii2D (e) {
+    if (!e.img) return
+    let res = await PicSearch.Ascii2D(e.img[0])
+    if (res?.error) return e.reply(res.error)
+    common.getRecallsendMsg(e, res.color)
+    common.getRecallsendMsg(e, res.bovw)
   }
 
   async UploadSauceNAOKey (e) {

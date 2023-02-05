@@ -6,7 +6,7 @@ import request from '../../lib/request/request.js'
 export default async function doSearch (url) {
   let res = await getSearchResult(url)
   if (res.error) return res.error
-  if (res.header.status != 0) return { error: 'SauceNAO搜图，错误信息：' + res.header.message.replace(/<.*?>/g, '') }
+  if (res.header.status != 0) return { error: 'SauceNAO搜图，错误信息：' + res.header.message?.replace(/<.*?>/g, '') }
   let format = sagiri(res)
   if (lodash.isEmpty(format)) return { error: 'SauceNAO搜图无数据' }
 
@@ -57,6 +57,6 @@ async function getSearchResult (imgURL, db = 999) {
       hide: Config.picSearch.hideImgWhenSaucenaoNSFW
     }
   })
-  if (!res.ok) return { error: 'SauceNAO搜图网络请求失败，注：移动网络无法访问SauceNAO，可尝试配置代理' }
+  if (!res || !res.ok) return { error: 'SauceNAO搜图网络请求失败，注：移动网络无法访问SauceNAO，可尝试配置代理' }
   return await res.json()
 }

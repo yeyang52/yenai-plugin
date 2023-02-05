@@ -16,7 +16,7 @@ export default async function doSearch (url) {
       return { error: '未检测到依赖cheerio，请安装后再使用Ascii2D搜图，安装命令：pnpm add cheerio -w 或 pnpm install -P' }
     }
   }
-  const { ascii2dUsePuppeteer } = Config.picSearch
+  const { ascii2dUsePuppeteer, ascii2dResultMaxQuantity } = Config.picSearch
   const callApi = ascii2dUsePuppeteer ? callAscii2dUrlApiWithPuppeteer : callAscii2dUrlApi
   let ret = await callApi(url)
   if (!ret) return { error: 'Ascii2D搜图请求失败' }
@@ -35,8 +35,8 @@ export default async function doSearch (url) {
       data: await bovwDetail.text()
     }
   }
-  let colorData = await parse(ret.data)
-  let bovwData = await parse(bovwDetail.data)
+  let colorData = (await parse(ret.data)).slice(0, ascii2dResultMaxQuantity)
+  let bovwData = (await parse(bovwDetail.data)).slice(0, ascii2dResultMaxQuantity)
   if (lodash.isEmpty(colorData)) return { error: 'Ascii2D数据获取失败' }
   let mapfun = item => [
     Config.picSearch.hideImg ? '' : segment.image(item.image),

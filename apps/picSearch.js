@@ -69,8 +69,8 @@ export class newPicSearch extends plugin {
     if (!e.img) return
     let res = await PicSearch.Ascii2D(e.img[0])
     if (res?.error) return e.reply(res.error)
-    common.getRecallsendMsg(e, res.color)
-    common.getRecallsendMsg(e, res.bovw)
+    common.getRecallsendMsg(e, res.color, { isxml: false })
+    common.getRecallsendMsg(e, res.bovw, { isxml: false })
   }
 
   async UploadSauceNAOKey (e) {

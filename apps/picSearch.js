@@ -17,7 +17,7 @@ export class newPicSearch extends plugin {
           fnc: 'UploadSauceNAOKey'
         },
         {
-          reg: '^#?Ascii2D搜图.*$',
+          reg: '^#?(Ascii2D|ac)搜图.*$',
           fnc: 'Ascii2D'
         }
       ]

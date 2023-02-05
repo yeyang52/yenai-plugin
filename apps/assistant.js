@@ -1,6 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
-import { common, QQInterface } from '../model/index.js'
+import { common, QQApi } from '../model/index.js'
 import lodash from 'lodash'
 import moment from 'moment'
 
@@ -582,7 +582,7 @@ export class Assistant extends plugin {
     }
 
     // 获取说说列表
-    let list = await QQInterface.getQzone(5, page * 5)
+    let list = await QQApi.getQzone(5, page * 5)
 
     if (!list) return e.reply(API_ERROR)
     if (list.total == 0) return e.reply('✅ 说说列表为空')
@@ -601,7 +601,7 @@ export class Assistant extends plugin {
   async Qzonedel (e) {
     let pos = e.msg.match(/\d+/)
     // 获取说说列表
-    let list = await QQInterface.getQzone(1, pos - 1)
+    let list = await QQApi.getQzone(1, pos - 1)
 
     if (!list) return e.reply(API_ERROR)
     if (!list.msglist) return e.reply('❎ 未获取到该说说')
@@ -609,7 +609,7 @@ export class Assistant extends plugin {
     // 要删除的说说
     let domain = list.msglist[0]
     // 请求接口
-    let result = await QQInterface.delQzone(domain.tid, domain.t1_source)
+    let result = await QQApi.delQzone(domain.tid, domain.t1_source)
     if (!result) return e.reply(API_ERROR)
     // debug
     logger.debug(e.logFnc, result)
@@ -622,7 +622,7 @@ export class Assistant extends plugin {
   /** 发说说 */
   async Qzonesay (e) {
     let con = e.msg.replace(/#|发说说/g, '').trim()
-    let result = await QQInterface.setQzone(con, e.img)
+    let result = await QQApi.setQzone(con, e.img)
     if (!result) return e.reply(API_ERROR)
 
     if (result.code != 0) return e.reply(`❎ 说说发表失败\n${JSON.stringify(result)}`)
@@ -654,9 +654,9 @@ export class Assistant extends plugin {
       this.finish('QzonedelAll')
       let result
       if (Qzonedetermine) {
-        result = await QQInterface.delQzoneAll()
+        result = await QQApi.delQzoneAll()
       } else {
-        result = await QQInterface.delQzoneMsgbAll()
+        result = await QQApi.delQzoneMsgbAll()
       }
 
       this.e.reply(result)
@@ -743,7 +743,7 @@ export class Assistant extends plugin {
 
   // 开关好友添加
   async friend_switch (e) {
-    let res = await QQInterface.addFriendSwitch(/开启/.test(e.msg) ? 1 : 2)
+    let res = await QQApi.addFriendSwitch(/开启/.test(e.msg) ? 1 : 2)
     if (!res) return e.reply(API_ERROR)
     e.reply(res.ActionStatus)
   }
@@ -755,7 +755,7 @@ export class Assistant extends plugin {
     // 单独处理
     if ((!regRet[3] || !regRet[4]) && regRet[1] == 3) return e.reply('❎ 请正确输入问题和答案！')
 
-    let res = await QQInterface.setFriendType(regRet[1], regRet[3], regRet[4])
+    let res = await QQApi.setFriendType(regRet[1], regRet[3], regRet[4])
     if (!res) return e.reply(API_ERROR)
     if (res.ec != 0) return e.reply('❎ 修改失败\n' + JSON.stringify(res))
     e.reply(res.msg)
@@ -763,7 +763,7 @@ export class Assistant extends plugin {
 
   /** 开关戳一戳 */
   async cyc (e) {
-    let result = await QQInterface.setcyc(/开启/.test(e.msg) ? 0 : 1)
+    let result = await QQApi.setcyc(/开启/.test(e.msg) ? 0 : 1)
     if (!result) return e.reply(API_ERROR)
 
     if (result.ret != 0) return e.reply('❎ 未知错误\n' + JSON.stringify(result))

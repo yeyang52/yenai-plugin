@@ -1,5 +1,5 @@
 import fetch from 'node-fetch'
-import { common } from './index.js'
+import { common } from '../index.js'
 import lodash from 'lodash'
 import moment from 'moment'
 import { core } from 'oicq'
@@ -13,7 +13,7 @@ const gtk = function (t) {
   return 2147483647 & n
 }
 /** QQ接口 */
-export default new class assistant {
+export default new class {
   constructor () {
     this.headers = {
       'Content-type': 'application/json;charset=UTF-8',

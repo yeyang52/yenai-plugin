@@ -1,4 +1,7 @@
 #SauceNAO搜图apikey 请在 https://saucenao.com/user.php?page=search-api 进行获取
-SauceNAOApiKey: 
+SauceNAOApiKey:
 #SauceNAO搜图相似度低于这个百分比将被认定为相似度过低
-SauceNAO_Min_sim: 60
+SauceNAOMinSim: 60
+#saucanao 得到 NSFW 结果时隐藏缩略图，可选 0~3，严格程度依次增加
+#0-不隐藏，1-隐藏明确为 NSFW 的缩略图，2-隐藏明确和可能为 NSFW 的缩略图，3-只显示明确为非 NSFW 的缩略图
+hideImgWhenSaucenaoNSFW: 0

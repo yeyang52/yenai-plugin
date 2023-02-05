@@ -5,11 +5,16 @@ import common from './common.js'
 import CPU from './CPU.js'
 import CronValidate from './CronValidate.js'
 import GroupAdmin from './GroupAdmin.js'
-import Interface from './Interface.js'
-import PicSearch from './PicSearch.js'
+import funApi from './api/funApi.js'
 import Pixiv from './Pixiv.js'
-import QQInterface from './QQInterface.js'
+import QQApi from './api/QQApi.js'
 import setu from './setu.js'
+import Ascii2D from './PicSearch/ascii2d.js'
+import SauceNAO from './PicSearch/saucenao.js'
+const PicSearch = {
+  Ascii2D,
+  SauceNAO
+}
 export {
   puppeteer,
   common,
@@ -20,7 +25,7 @@ export {
   uploadRecord,
   CronValidate,
   GroupAdmin,
-  QQInterface,
-  Interface,
+  QQApi,
+  funApi,
   PicSearch
 }

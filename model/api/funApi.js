@@ -4,7 +4,7 @@ import lodash from 'lodash'
 
 const API_ERROR = '出了点小问题，待会再试试吧'
 
-export default new class Interface {
+export default new class {
   constructor () {
     this.langtype = [{
       code: 'ar',

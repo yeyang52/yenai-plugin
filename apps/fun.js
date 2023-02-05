@@ -3,7 +3,7 @@ import fetch from 'node-fetch'
 import { segment } from 'oicq'
 import lodash from 'lodash'
 import { Config } from '../components/index.js'
-import { common, uploadRecord, QQInterface, Interface } from '../model/index.js'
+import { common, uploadRecord, QQApi, funApi } from '../model/index.js'
 
 const heisitype = {
   白丝: { type: 'baisi', page: 17 },
@@ -93,7 +93,7 @@ export class Fun extends plugin {
 
   /** 随机唱鸭 */
   async Sing (e) {
-    let data = await Interface.randomSinging()
+    let data = await funApi.randomSinging()
     if (data.error) return e.reply(data.error)
     await e.reply(await uploadRecord(data.audioUrl, 0, false))
     await e.reply(data.lyrics)
@@ -125,7 +125,7 @@ export class Fun extends plugin {
       msg[4] = source.message.filter(item => item.type == 'text').map(item => item.text).join('')
     }
 
-    let results = await Interface.youdao(msg[4], msg[3], msg[2])
+    let results = await funApi.youdao(msg[4], msg[3], msg[2])
     return e.reply(results, true)
   }
 
@@ -164,7 +164,7 @@ export class Fun extends plugin {
         } else break
       } else {
         // 陌生人点赞
-        let res = await QQInterface.thumbUp(e.user_id, 10)
+        let res = await QQApi.thumbUp(e.user_id, 10)
         logger.debug(`${e.logFnc}陌生人点赞`, res)
         if (res.code != 0) {
           if (res.code == 1) {

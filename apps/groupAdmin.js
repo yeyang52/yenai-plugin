@@ -456,7 +456,7 @@ export class GroupAdmin extends plugin {
     if (Reg[1] == '清理') {
       if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true)
       let list = await ga.noactiveList(e.group_id, Reg[2], Reg[3])
-      e.reply(`本此共需清理「${list.length}」人，防止误触发\n请发送：#确认清理${Reg[2]}${Reg[3]}没发言的人`)
+      e.reply(`本次共需清理「${list.length}」人，防止误触发\n请发送：#确认清理${Reg[2]}${Reg[3]}没发言的人`)
     }
     common.getforwardMsg(e, msg)
   }
@@ -478,7 +478,7 @@ export class GroupAdmin extends plugin {
       if (!e.group.is_admin && !e.group.is_owner) {
         return e.reply(ROLE_ERROR, true)
       }
-      e.reply(`本此共需清理「${list.length}」人，防止误触发\n请发送：#确认清理从未发言的人`)
+      e.reply(`本次共需清理「${list.length}」人，防止误触发\n请发送：#确认清理从未发言的人`)
     }
     // 发送列表
     let page = e.msg.match(new RegExp(Numreg))

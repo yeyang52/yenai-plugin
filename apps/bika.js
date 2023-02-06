@@ -52,8 +52,8 @@ export class NewBika extends plugin {
     e.reply(Pixiv.startMsg)
     let regRet = e.msg.match(searchReg)
     let page = common.translateChinaNum(regRet[5])
-    let msg = await Bika.search(regRet[3], page, regRet[2])
-    if (msg.error) return e.reply(msg.error)
+    let msg = await Bika.search(regRet[3], page, regRet[2]).catch(err => { e.reply(err.message) })
+    if (!msg) return
     common.getRecallsendMsg(e, msg)
   }
 
@@ -64,8 +64,8 @@ export class NewBika extends plugin {
     let regRet = e.msg.match(comicPageReg)
     let page = common.translateChinaNum(regRet[4])
     let order = common.translateChinaNum(regRet[6])
-    let msg = await Bika.comicPage(regRet[2], page, order)
-    if (msg.error) return e.reply(msg.error)
+    let msg = await Bika.comicPage(regRet[2], page, order).catch(err => { e.reply(err.message) })
+    if (!msg) return
     common.getRecallsendMsg(e, msg)
   }
 
@@ -73,8 +73,8 @@ export class NewBika extends plugin {
   async categories (e) {
     if (!this.handlePermission()) return e.reply(SWITCH_ERROR)
     e.reply(Pixiv.startMsg)
-    let msg = await Bika.categories()
-    if (msg.error) return e.reply(msg.error)
+    let msg = await Bika.categories().catch(err => { e.reply(err.message) })
+    if (!msg) return
     common.getRecallsendMsg(e, msg)
   }
 
@@ -83,8 +83,8 @@ export class NewBika extends plugin {
     if (!this.handlePermission()) return e.reply(SWITCH_ERROR)
     e.reply(Pixiv.startMsg)
     let id = e.msg.match(new RegExp(`#?${Prefix}(详情|细节)(.*)`))[3]
-    let msg = await Bika.comicDetail(id)
-    if (msg.error) return e.reply(msg.error)
+    let msg = await Bika.comicDetail(id).catch(err => { e.reply(err.message) })
+    if (!msg) return
     common.getRecallsendMsg(e, msg, { oneMsg: true })
   }
 

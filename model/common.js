@@ -2,6 +2,7 @@ import child_process from 'child_process'
 import common from '../../../lib/common/common.js'
 import Config from '../components/Config.js'
 import setu from './setu.js'
+import _ from 'lodash'
 export default new class newCommon {
   /**
      * @description: 延时函数
@@ -75,6 +76,7 @@ export default new class newCommon {
      */
   async getforwardMsg (e, message, { recallMsg = 0, isBot = true, fkmsg = '', isxml = false, oneMsg = false } = {}) {
     let forwardMsg = []
+    if (_.isEmpty(message)) throw Error('[椰奶sendforwardMsg][Error]发送的转发消息不能为空')
     let add = (msg) => forwardMsg.push(
       {
         message: msg,

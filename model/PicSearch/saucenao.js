@@ -4,11 +4,10 @@ import sagiri from '../../tools/sagiri.js'
 import request from '../../lib/request/request.js'
 export default async function doSearch (url) {
   let res = await getSearchResult(url)
-  logger.debug(`SauceNAO result: ${res}`)
-  if (!res) return { error: 'SauceNAO搜图网络请求失败，注：移动网络无法访问SauceNAO，可尝试配置代理' }
-  if (res.header.status != 0) return { error: 'SauceNAO搜图，错误信息：' + res.header.message?.replace(/<.*?>/g, '') }
+  logger.debug('SauceNAO result:', res)
+  if (res.header.status != 0) throw Error('SauceNAO搜图，错误信息：' + res.header.message?.replace(/<.*?>/g, ''))
   let format = sagiri(res)
-  if (lodash.isEmpty(format)) return { error: 'SauceNAO搜图无数据' }
+  if (lodash.isEmpty(format)) throw Error('SauceNAO搜图无数据')
 
   let msgMap = async item => [
       `SauceNAO (${item.similarity}%)\n`,
@@ -18,9 +17,6 @@ export default async function doSearch (url) {
       `来源：${item.url.toString()}`
   ]
   let maxSimilarity = format[0].similarity
-  if (maxSimilarity < Config.picSearch.SauceNAOMinSim) {
-    return { error: `SauceNAO 相似度 ${maxSimilarity}% 过低` }
-  }
   let filterSimilarity = format.filter(item => item.similarity > 80)
   let message = []
   if (!lodash.isEmpty(filterSimilarity)) {
@@ -56,5 +52,11 @@ async function getSearchResult (imgURL, db = 999) {
       url: imgURL,
       hide: Config.picSearch.hideImgWhenSaucenaoNSFW
     }
-  }).then(res => res.json()).catch(err => console.error(err))
+  }).then(res => {
+    if (res.status === 429) {
+      return { error: 'SauceNAO搜图 搜索次数已达单位时间上限，请稍候再试' }
+    } else {
+      return res.json()
+    }
+  })
 }

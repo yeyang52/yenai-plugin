@@ -1,9 +1,7 @@
-import fetch from 'node-fetch'
 import lodash from 'lodash'
 import request from '../lib/request/request.js'
 import { Config } from '../components/index.js'
-/** API请求错误文案 */
-const API_ERROR = '❎ 出错辣，请稍后重试'
+
 export default new (class {
   constructor () {
     this.domain = 'http://api.liaobiao.top/api/bika'
@@ -43,12 +41,14 @@ export default new (class {
       }
     ]
     type = types.find(item => item.alias.includes(type))
-    let res = await fetch(type.url, this.hearder)
-      .then((res) => res.json())
-      .catch((err) => console.log(err))
-    if (!res) return { error: API_ERROR }
+    let res = await request.get(type.url, this.hearder)
+      .then(res => res.json())
+      .catch(err => {
+        logger.error(err)
+        throw Error(`bika search Error，reason：${err.message.match(/reason:(.*)/)[1]}`)
+      })
     let { docs, total, page: pg, pages } = res.data.comics
-    if (total == 0) return { error: `未找到作品，换个${type.alias[0]}试试吧` }
+    if (total == 0) throw Error(`未找到作品，换个${type.alias[0]}试试吧`)
     return [
       `共找到${total}个关于「${keyword}」${type.alias[0]}的作品`,
       `当前为第${pg}页，共${pages}页`,
@@ -77,11 +77,13 @@ export default new (class {
    * @return {*}
    */
   async comicPage (id, page = 1, order = 1) {
-    let res = await fetch(`${this.domain}/comic_page?id=${id}&page=${page}&order=${order}`, this.hearder)
+    let res = await request.get(`${this.domain}/comic_page?id=${id}&page=${page}&order=${order}`, this.hearder)
       .then((res) => res.json())
-      .catch((err) => console.log(err))
-    if (!res) return { error: API_ERROR }
-    if (res.error) return { error: res.message }
+      .catch(err => {
+        logger.error(err)
+        throw Error(`bika comicPage Error，reason：${err.message.match(/reason:(.*)/)[1]}`)
+      })
+    if (res.error) throw Error(res.message)
     let { docs, total, page: pg, pages } = res.data.pages
     let { _id, title } = res.data.ep
     return [
@@ -96,11 +98,13 @@ export default new (class {
     let key = 'yenai:bika:categories'
     let res = JSON.parse(await redis.get(key))
     if (!res) {
-      res = await fetch(`${this.domain}/categories`, this.hearder)
+      res = await request.get(`${this.domain}/categories`, this.hearder)
         .then((res) => res.json())
-        .catch((err) => console.log(err))
-      if (!res) return { error: API_ERROR }
-      if (res.error) return { error: res.message }
+        .catch(err => {
+          logger.error(err)
+          throw Error(`bika categories Error，reason：${err.message.match(/reason:(.*)/)[1]}`)
+        })
+      if (res.error) throw Error(res.message)
       res = res.data.categories.filter(item => !item.isWeb)
       await redis.set(key, JSON.stringify(res), { EX: 43200 })
     }
@@ -120,11 +124,13 @@ export default new (class {
    * @return {*}
    */
   async comicDetail (id) {
-    let res = await fetch(`${this.domain}/comic_detail?id=${id}`, this.hearder)
+    let res = await request.get(`${this.domain}/comic_detail?id=${id}`, this.hearder)
       .then((res) => res.json())
-      .catch((err) => console.log(err))
-    if (!res) return { error: API_ERROR }
-    if (res.error) return { error: res.message }
+      .catch(err => {
+        logger.error(err)
+        throw Error(`bika comicDetail Error，reason：${err.message.match(/reason:(.*)/)[1]}`)
+      })
+    if (res.error) throw Error(res.message)
     let {
       _id, title, description, author, chineseTeam, categories, tags, pagesCount, epsCount, finished, totalLikes, totalViews, totalComments, thumb
     } = res.data.comic

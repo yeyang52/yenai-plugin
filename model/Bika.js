@@ -1,6 +1,6 @@
 import fetch from 'node-fetch'
 import lodash from 'lodash'
-import { common } from './index.js'
+import request from '../lib/request/request.js'
 /** API请求错误文案 */
 const API_ERROR = '❎ 出错辣，请稍后重试'
 export default new (class {
@@ -156,7 +156,6 @@ export default new (class {
   async requestBikaImg (fileServer, path) {
     fileServer = /static/.test(fileServer) ? fileServer : fileServer + '/static/'
     let url = (/picacomic.com/.test(fileServer) && this.imgproxy ? this.imgproxy : fileServer) + path
-    console.log(url)
-    return common.proxyRequestImg(url)
+    return request.proxyRequestImg(url)
   }
 })()

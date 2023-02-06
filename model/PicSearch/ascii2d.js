@@ -59,7 +59,7 @@ const callAscii2dUrlApiWithPuppeteer = (imgUrl) => {
   return getAscii2dWithPuppeteer(`${domain}/search/url/${imgUrl}`)
 }
 const callAscii2dUrlApi = async (imgUrl) => {
-  let res = await request.cfGet(`${domain}/search/url/${imgUrl}`)
+  let res = await request.cfGet(`${domain}/search/url/${imgUrl}`).catch(err => console.error(err))
   if (!res || !res.ok) return false
   return {
     url: res.url,

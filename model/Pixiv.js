@@ -2,8 +2,8 @@ import fetch from 'node-fetch'
 import lodash from 'lodash'
 import { segment } from 'oicq'
 import moment from 'moment'
-import { common } from './index.js'
 import { rankType, MSG } from '../tools/pixiv.js'
+import request from '../lib/request/request.js'
 /** API请求错误文案 */
 const API_ERROR = '❎ 出错辣，请稍后重试'
 
@@ -458,7 +458,7 @@ export default new class Pixiv {
    */
   async requestPixivImg (url) {
     url = url.replace('i.pximg.net', this.proxy)
-    return common.proxyRequestImg(url, { headers: this.headers })
+    return request.proxyRequestImg(url, { headers: this.headers })
   }
 
   /**

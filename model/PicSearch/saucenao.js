@@ -1,7 +1,6 @@
 import lodash from 'lodash'
 import { Config } from '../../components/index.js'
 import sagiri from '../../tools/sagiri.js'
-import { common } from '../index.js'
 import request from '../../lib/request/request.js'
 export default async function doSearch (url) {
   let res = await getSearchResult(url)
@@ -12,7 +11,7 @@ export default async function doSearch (url) {
 
   let msgMap = async item => [
       `SauceNAO (${item.similarity}%)\n`,
-      Config.picSearch.hideImg ? '' : await common.proxyRequestImg(item.thumbnail),
+      Config.picSearch.hideImg ? '' : await request.proxyRequestImg(item.thumbnail),
       `图源：${item.site}\n`,
       `作者：${item.authorName}(${item.authorUrl})\n`,
       `来源：${item.url.toString()}`
@@ -56,7 +55,7 @@ async function getSearchResult (imgURL, db = 999) {
       url: imgURL,
       hide: Config.picSearch.hideImgWhenSaucenaoNSFW
     }
-  })
+  }).catch(err => console.error(err))
   if (!res || !res.ok) return { error: 'SauceNAO搜图网络请求失败，注：移动网络无法访问SauceNAO，可尝试配置代理' }
   return await res.json()
 }

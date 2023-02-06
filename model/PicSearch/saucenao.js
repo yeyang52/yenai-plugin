@@ -4,7 +4,8 @@ import sagiri from '../../tools/sagiri.js'
 import request from '../../lib/request/request.js'
 export default async function doSearch (url) {
   let res = await getSearchResult(url)
-  if (res.error) return res.error
+  logger.debug(`SauceNAO result: ${res}`)
+  if (!res) return { error: 'SauceNAO搜图网络请求失败，注：移动网络无法访问SauceNAO，可尝试配置代理' }
   if (res.header.status != 0) return { error: 'SauceNAO搜图，错误信息：' + res.header.message?.replace(/<.*?>/g, '') }
   let format = sagiri(res)
   if (lodash.isEmpty(format)) return { error: 'SauceNAO搜图无数据' }
@@ -46,7 +47,7 @@ async function getSearchResult (imgURL, db = 999) {
   logger.debug(`saucenao [${imgURL}]}`)
   let api_key = Config.picSearch.SauceNAOApiKey
   if (!api_key) return { error: '未配置SauceNAOApiKey，无法使用SauceNAO搜图，请在 https://saucenao.com/user.php?page=search-api 进行获取，请用指令：#SauceNAOapiKey <apikey> 进行添加' }
-  let res = await request.get('https://saucenao.com/search.php', {
+  return await request.get('https://saucenao.com/search.php', {
     params: {
       api_key,
       db,
@@ -55,7 +56,5 @@ async function getSearchResult (imgURL, db = 999) {
       url: imgURL,
       hide: Config.picSearch.hideImgWhenSaucenaoNSFW
     }
-  }).catch(err => console.error(err))
-  if (!res || !res.ok) return { error: 'SauceNAO搜图网络请求失败，注：移动网络无法访问SauceNAO，可尝试配置代理' }
-  return await res.json()
+  }).then(res => res.json()).catch(err => console.error(err))
 }

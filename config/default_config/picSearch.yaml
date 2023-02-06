@@ -7,7 +7,7 @@ SauceNAOMinSim: 60
 hideImgWhenSaucenaoNSFW: 0
 #绕过 Cloudflare Challenge 所使用的 TLS 版本，建议可选值：["TLSv1.1", "TLSv1.2"]
 cfTLSVersion: TLSv1.1
-#是否使用 Puppeteer 请求 ascii2d 以绕过 cf js challenge，关闭则需安装OpenSSL
+#是否使用 Puppeteer 请求 ascii2d 以绕过 cf js challenge
 ascii2dUsePuppeteer: false
 #ascii2d搜图返回结果的最大数量
 ascii2dResultMaxQuantity: 6

@@ -14,18 +14,18 @@ export class newPicSearch extends plugin {
         },
         {
           reg: '^#?(椰奶)?(以图)?搜番.*$',
-          fnc: 'whatanime'
+          fnc: 'WhatAnime'
         },
         {
           reg: /^#?SauceNAOapiKey.*$/i,
           fnc: 'UploadSauceNAOKey'
         },
         {
-          reg: '^#?(Ascii2D|ac)搜图.*$',
+          reg: /^#?(Ascii2D|ac)搜图.*$/i,
           fnc: 'Ascii2D'
         },
         {
-          reg: '^#?(SauceNAO|sn)搜图.*$',
+          reg: /^#?(SauceNAO|sn)搜图.*$/i,
           fnc: 'SauceNAO'
         }
       ]
@@ -33,6 +33,11 @@ export class newPicSearch extends plugin {
   }
 
   async search (e) {
+    if (!await this.handelImg(e, 'SauceNAO')) return
+    this.SauceNAO(e)
+  }
+
+  async handelImg (e, funName) {
     if (e.source) {
       let source
       if (e.isGroup) {
@@ -42,24 +47,24 @@ export class newPicSearch extends plugin {
       }
       e.img = [source.message.find(item => item.type == 'image')?.url]
     }
-    if (lodash.isEmpty(e.img)) {
-      this.setContext('MonitorImg')
-      e.reply('✅ 请发送图片')
-    }
-    this.SauceNAO(e)
+    if (!lodash.isEmpty(e.img)) return true
+    e.sourceFunName = funName
+    this.setContext('MonitorImg')
+    e.reply('✅ 请发送图片')
+    return false
   }
 
   async MonitorImg () {
     if (!this.e.img) {
       this.e.reply('❎ 未检测到图片操作已取消')
     } else {
-      this.SauceNAO(this.e)
+      this[this.getContext().MonitorImg.sourceFunName](this.e)
     }
     this.finish('MonitorImg')
   }
 
   async SauceNAO (e) {
-    if (!e.img) return
+    if (!await this.handelImg(e, 'SauceNAO')) return
     let res = await PicSearch.SauceNAO(e.img[0])
     if (res.error) {
       e.reply(res.error)
@@ -70,19 +75,19 @@ export class newPicSearch extends plugin {
   }
 
   async Ascii2D (e) {
-    if (!e.img) return
+    if (!await this.handelImg(e, 'Ascii2D')) return
     let res = await PicSearch.Ascii2D(e.img[0])
     if (res?.error) return e.reply(res.error)
     common.getRecallsendMsg(e, res.color, { isxml: false })
     common.getRecallsendMsg(e, res.bovw, { isxml: false })
   }
 
-  async whatanime (e) {
-    if (!e.img) return
-    let res = await PicSearch.whatanime(e.img[0])
+  async WhatAnime (e) {
+    if (!await this.handelImg(e, 'WhatAnime')) return
+    let res = await PicSearch.WhatAnime(e.img[0])
     if (res.error) return e.reply(res.error)
     for (let i of res) {
-      e.reply(i)
+      await e.reply(i)
     }
   }
 

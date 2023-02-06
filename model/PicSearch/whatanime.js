@@ -57,12 +57,17 @@ const date2str = ({ year, month, day }) => [year, month, day].join('-')
  */
 async function getSearchResult (url, key = '') {
   let host = 'https://api.trace.moe'
-  return request.get(`${host}/search`, {
-    params: {
-      url,
-      key
-    }
-  }).then(res => res.json()).catch(err => console.error(err))
+  try {
+    const res = await request.get(`${host}/search`, {
+      params: {
+        url,
+        key
+      }
+    })
+    return await res.json()
+  } catch (err) {
+    return console.error(err)
+  }
 }
 const animeInfoQuery = `
 query ($id: Int) {
@@ -96,13 +101,18 @@ query ($id: Int) {
  * @param {number} id
  * @returns Prased JSON
  */
-function getAnimeInfo (id) {
-  return request.post('https://trace.moe/anilist/', {
-    data: {
-      query: animeInfoQuery,
-      variables: { id }
-    }
-  }).then(res => res.json()).catch(err => console.error(err))
+async function getAnimeInfo (id) {
+  try {
+    const res = await request.post('https://trace.moe/anilist/', {
+      data: {
+        query: animeInfoQuery,
+        variables: { id }
+      }
+    })
+    return await res.json()
+  } catch (err) {
+    return console.error(err)
+  }
 }
 
 async function downFile (url) {

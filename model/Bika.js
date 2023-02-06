@@ -1,29 +1,22 @@
 import fetch from 'node-fetch'
 import lodash from 'lodash'
 import request from '../lib/request/request.js'
+import { Config } from '../components/index.js'
 /** API请求错误文案 */
 const API_ERROR = '❎ 出错辣，请稍后重试'
 export default new (class {
   constructor () {
     this.domain = 'http://api.liaobiao.top/api/bika'
-    this.imgproxy = null
-    this.imageQuality = 'medium'
     this.hearder = {
       headers: {
-        'x-image-quality': this.imageQuality,
-        'user-agent': 'Yenai-Plugin-bika'
+        'x-image-quality': Config.bika.imageQuality,
+        'User-Agent': 'Yenai-Plugin-bika'
       }
     }
-    this.init()
   }
 
-  async init () {
-    if (!await redis.get('yenai:bika:directConnection')) {
-      this.imgproxy = 'https://p.sesepic.top/static/'
-    } else {
-      this.imgproxy = undefined
-    }
-    this.imageQuality = await redis.get('yenai:bika:imageQuality') ?? 'medium'
+  get imgproxy () {
+    return Config.bika.bikaDirectConnection ? undefined : `https://${Config.bika.bikaImageProxy}/`
   }
 
   /**
@@ -156,6 +149,7 @@ export default new (class {
   async requestBikaImg (fileServer, path) {
     fileServer = /static/.test(fileServer) ? fileServer : fileServer + '/static/'
     let url = (/picacomic.com/.test(fileServer) && this.imgproxy ? this.imgproxy : fileServer) + path
+    logger.debug(`Bika getImg URL: ${url}`)
     return request.proxyRequestImg(url)
   }
 })()

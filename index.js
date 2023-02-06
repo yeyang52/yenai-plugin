@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import Ver from './components/Version.js'
 import chalk from 'chalk'
-
+import { CPU } from './model/index.js'
 const files = fs.readdirSync('./plugins/yenai-plugin/apps').filter(file => file.endsWith('.js'))
 
 let ret = []
@@ -11,8 +11,7 @@ logger.info(chalk.rgb(255, 207, 247)(`椰奶插件${Ver.ver}初始化~`))
 logger.info(chalk.rgb(253, 235, 255)('-------------------------'))
 
 try {
-  await import('systeminformation')
-  if (!await redis.get('yenai:node_modules')) await redis.set('yenai:node_modules', '1')
+  CPU.si = await import('systeminformation')
 } catch (error) {
   if (error.stack?.includes('Cannot find package')) {
     logger.warn('--------椰奶依赖缺失--------')
@@ -24,7 +23,6 @@ try {
     logger.error(`椰奶载入依赖错误：${logger.red('systeminformation')}`)
     logger.error(decodeURI(error.stack))
   }
-  await redis.del('yenai:node_modules')
 }
 
 files.forEach((file) => {

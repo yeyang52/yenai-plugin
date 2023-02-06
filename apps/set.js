@@ -216,7 +216,7 @@ export class NewConfig extends plugin {
 
   async switchProxy (e) {
     let is = /开启/.test(e.msg)
-    Config.modify('other', 'switchProxy', is)
+    Config.modify('proxy', 'switchProxy', is)
     e.reply(`✅ 已${is ? '开启' : '关闭'}代理`)
   }
 

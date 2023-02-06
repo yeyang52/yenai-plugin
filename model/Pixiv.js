@@ -4,27 +4,18 @@ import { segment } from 'oicq'
 import moment from 'moment'
 import { rankType, MSG } from '../tools/pixiv.js'
 import request from '../lib/request/request.js'
+import { Config } from '../components/index.js'
 /** API请求错误文案 */
 const API_ERROR = '❎ 出错辣，请稍后重试'
 
 export default new class Pixiv {
   constructor () {
-    this._proxy = ''
     this.ranktype = rankType
     this.domain = 'http://api.liaobiao.top/api/pixiv'
-    this.init()
-  }
-
-  async init () {
-    this._proxy = await redis.get('yenai:proxy')
-    if (!this.proxy) {
-      await redis.set('yenai:proxy', 'i.pixiv.re')
-      this._proxy = 'i.pixiv.re'
-    }
   }
 
   get headers () {
-    if (this.proxy == 'i.pximg.net') {
+    if (Config.pixiv.pixivDirectConnection) {
       return {
         Host: 'i.pximg.net',
         Referer: 'https://www.pixiv.net/',
@@ -36,12 +27,7 @@ export default new class Pixiv {
   }
 
   get proxy () {
-    return this._proxy
-  }
-
-  set proxy (value) {
-    redis.set('yenai:proxy', value)
-    this._proxy = value
+    return Config.pixiv.pixivDirectConnection ? 'i.pximg.net' : Config.pixiv.pixivImageProxy
   }
 
   /** 开始执行文案 */
@@ -262,7 +248,7 @@ export default new class Pixiv {
     let list = []
     for (let i of res.trend_tags) {
       let { tag, translated_name } = i
-      let url = i.illust.image_urls.large.replace('i.pximg.net', this.proxy)
+      let url = i.illust.image_urls.large
       list.push(
         [
           `Tag：${tag}\n`,
@@ -457,6 +443,8 @@ export default new class Pixiv {
    */
   async requestPixivImg (url) {
     url = url.replace('i.pximg.net', this.proxy)
+    console.log(this.proxy)
+    logger.debug(`pixiv getImg URL: ${url}`)
     return request.proxyRequestImg(url, { headers: this.headers })
   }
 

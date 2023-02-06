@@ -3,7 +3,6 @@ import lodash from 'lodash'
 import fs from 'fs'
 import { common } from './index.js'
 import { Config } from '../components/index.js'
-let si = await redis.get('yenai:node_modules') ? await import('systeminformation') : false
 
 export default new class OSUtils {
   constructor () {
@@ -11,24 +10,25 @@ export default new class OSUtils {
     this.isGPU = false
     this.now_network = null
     this.fsStats = null
+    this.si = null
     this.init()
   }
 
   async init () {
-    if (!si) return
+    if (!this.si) return
     // 初始化GPU获取
-    if ((await si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)) {
+    if ((await this.si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)) {
       this.isGPU = true
     }
     // 给有问题的用户关闭定时器
     if (!Config.Notice.statusTask) return
     // 网速
     let worktimer = setInterval(async () => {
-      this.now_network = await si.networkStats()
+      this.now_network = await this.si.networkStats()
     }, 5000)
     // 磁盘写入速度
     let fsStatstimer = setInterval(async () => {
-      this.fsStats = await si.fsStats()
+      this.fsStats = await this.si.fsStats()
     }, 5000)
     // 一分钟后检测是否能获取不能则销毁定时器
     setTimeout(() => {
@@ -122,14 +122,14 @@ export default new class OSUtils {
   /** 获取CPU占用 */
   async getCpuInfo (arch) {
     // cpu使用率
-    let cpu_info = (await si.currentLoad())?.currentLoad
+    let cpu_info = (await this.si.currentLoad())?.currentLoad
     if (cpu_info == null || cpu_info == undefined) return false
     // 核心
     let hx = os.cpus()
     // cpu制造者
     let cpumodel = hx[0]?.model.slice(0, hx[0]?.model.indexOf(' ')) || ''
     // 最大MHZ
-    let maxspeed = await si.cpuCurrentSpeed()
+    let maxspeed = await this.si.cpuCurrentSpeed()
 
     return {
       ...this.Circle(cpu_info / 100),
@@ -148,7 +148,7 @@ export default new class OSUtils {
   async getGPU () {
     if (!this.isGPU) return false
     try {
-      let graphics = (await si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)
+      let graphics = (await this.si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)
       let { vendor, temperatureGpu, utilizationGpu, memoryTotal, memoryUsed, powerDraw } = graphics
       temperatureGpu = temperatureGpu ? temperatureGpu + '℃' : ''
       powerDraw = powerDraw ? powerDraw + 'W' : ''
@@ -174,7 +174,7 @@ export default new class OSUtils {
    */
   async getfsSize () {
     // 去重
-    let HardDisk = lodash.uniqWith(await si.fsSize(),
+    let HardDisk = lodash.uniqWith(await this.si.fsSize(),
       (a, b) => a.used === b.used && a.size === b.size && a.use === b.use && a.available === b.available)
     // 过滤
     HardDisk = HardDisk.filter(item => item.size && item.used && item.available && item.use)

@@ -71,9 +71,19 @@ class Config {
     return this.getDefOrConfig('groupAdd')
   }
 
-  /** 其他 */
-  get other () {
-    return this.getDefOrConfig('other')
+  /** 代理 */
+  get proxy () {
+    return this.getDefOrConfig('proxy')
+  }
+
+  /** pixiv */
+  get pixiv () {
+    return this.getDefOrConfig('pixiv')
+  }
+
+  /** 哔咔 */
+  get bika () {
+    return this.getDefOrConfig('bika')
   }
 
   /** 搜图配置 */

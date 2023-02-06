@@ -126,7 +126,8 @@ export class NewHandle extends plugin {
       source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
     }
     if (!source) return e.reply('❎ 获取消息失败')
-    let sourceMsg = source.source.message?.split('\n')
+    let sourceMsg = source.source?.message?.split('\n')
+    if (!sourceMsg) return e.reply('❎ 获取原消息失败，请使用同意xxx进行处理')
     if (e.isGroup) {
       if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
         return e.reply('❎ 该命令仅限管理员可用', true)

@@ -99,20 +99,14 @@ export class NewBika extends plugin {
     }
     if (!imageQualityType[quality] && !Object.values(imageQualityType).includes(quality)) return e.reply(`错误参数，支持的参数为${Object.keys(imageQualityType).join('，')}`)
     let type = imageQualityType[quality] ?? quality
-    await redis.set('yenai:bika:imageQuality', type)
-    Bika.imageQuality = type
+    Config.modify('bika', 'imageQuality', type)
     e.reply(`✅ 已将bika图片质量修改为${quality}(${type})`)
   }
 
   /** 图片直连 */
   async directConnection (e) {
     if (!e.isMaster) return false
-    if (/开启/.test(e.msg)) {
-      await redis.set('yenai:bika:directConnection', '1')
-    } else {
-      await redis.del('yenai:bika:directConnection')
-    }
-    await Bika.init()
+    Config.modify('bika', 'bikaDirectConnection', /开启/.test(e.msg))
     e.reply(`✅ 已${/开启/.test(e.msg) ? '开启' : '关闭'}哔咔直连`)
   }
 

@@ -59,8 +59,13 @@ export class NewPixiv extends plugin {
           fnc: 'pximg'
         },
         {
-          reg: '^#(p站|pixiv)((查看|更换)代理.*|(开启|关闭)直连)$',
+          reg: '^#(p站|pixiv)(查看|更换)代理.*$',
           fnc: 'setProxy',
+          permission: 'master'
+        },
+        {
+          reg: '^#(p站|pixiv)(开启|关闭)直连$',
+          fnc: 'directConnection',
           permission: 'master'
         }
       ]
@@ -225,13 +230,17 @@ export class NewPixiv extends plugin {
     ]
     if (/查看/.test(e.msg)) return e.reply(await redis.get('yenai:proxy'))
     let proxy = e.msg.replace(/#|(p站|pixiv)更换代理/g, '').trim()
-    if (/直连/.test(e.msg)) {
-      proxy = /开启/.test(e.msg) ? 'i.pximg.net' : proxydef[0]
-    }
     if (/^[1234]$/.test(proxy)) proxy = proxydef[proxy - 1]
     if (!/([\w\d]+\.){2}[\w\d]+/.test(proxy)) return e.reply('请检查代理地址是否正确')
     logger.mark(`${e.logFnc}切换为${proxy}`)
-    Pixiv.proxy = proxy
+    Config.modify('pixiv', 'pixivImageProxy', proxy)
     e.reply(`✅ 已经切换代理为「${proxy}」`)
+  }
+
+  /** 图片直连 */
+  async directConnection (e) {
+    if (!e.isMaster) return false
+    Config.modify('pixiv', 'pixivDirectConnection', /开启/.test(e.msg))
+    e.reply(`✅ 已${/开启/.test(e.msg) ? '开启' : '关闭'}Pixiv直连`)
   }
 }

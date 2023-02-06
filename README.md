@@ -140,6 +140,7 @@ Tip：具体可使用 **#椰奶设置** 查看
 Tip：详情请参考[此教程](https://docs.qq.com/doc/p/108e5d788607d988ac62e1512552c8bd2d870321)
 
 </details>
+
 <details>
   <summary>群管功能</summary>
 
@@ -175,9 +176,18 @@ Tip：详情请参考[此教程](https://docs.qq.com/doc/p/108e5d788607d988ac62e
 
 - [ ] 黑名单/白名单
 
-
 Tip：具体可使用 **#椰奶群管帮助** 查看
   </details>
+
+<details>
+  <summary>搜图搜番</summary>
+
+- [x] [saucenao](https://saucenao.com)
+- [x] [whatanime](https://trace.moe)
+- [x] [ascii2d](https://ascii2d.net)
+
+  </details>
+
 
 <details>
   <summary>图片状态</summary>
@@ -203,7 +213,15 @@ A：请参考[此教程](https://docs.qq.com/doc/p/108e5d788607d988ac62e1512552c
 
 ---
 
-## 贡献者 ✨
+## 特别鸣谢
+
+- [cq-picsearcher-bot](https://github.com/Tsuk1ko/cq-picsearcher-bot)
+- [Yunzai-Bot](https://gitee.com/Le-niao/Yunzai-Bot)
+- [SauceNAO](https://saucenao.com/)
+- [Ascii2D](https://ascii2d.net/)
+-  [trace.moe](https://trace.moe) ([GitHub](https://github.com/soruly/trace.moe))
+
+### 贡献者 ✨
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
@@ -233,11 +251,17 @@ A：请参考[此教程](https://docs.qq.com/doc/p/108e5d788607d988ac62e1512552c
 
 ---
 
-#### 联系方式
+## Star History 
 
-QQ：746659424
+[![Stargazers over time](https://starchart.cc/yeyang52/yenai-plugin.svg)](https://starchart.cc/yeyang52/yenai-plugin) 
 
-群号：[254974507](https://jq.qq.com/?_wv=1027&k=o8FTig5Z)
+## 联系方式
 
-投喂：[爱发电](https://afdian.net/a/yeyang52)
+- QQ：746659424
+
+
+- 群号：[254974507](https://jq.qq.com/?_wv=1027&k=o8FTig5Z)
+
+
+- 投喂：[爱发电](https://afdian.net/a/yeyang52)
 

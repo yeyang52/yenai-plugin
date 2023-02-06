@@ -316,17 +316,16 @@ export default new class Pixiv {
         `点赞：${total_bookmarks}\n`,
         `访问：${total_view}\n`,
         `Tag：${lodash.truncate(tags)}\n`,
-        segment.image(url[0], undefined, undefined, this.headers)
+        await this.requestPixivImg(url[0])
       ])
     }
     if (lodash.isEmpty(illusts)) return { error: '该页全为涩涩内容已全部过滤(#／。＼#)' }
     let { id: uid, name, profile_image_urls } = res.user
-    let url = profile_image_urls.medium.replace('i.pximg.net', this.proxy)
     return [
       [
-        await this.requestPixivImg(url),
+        await this.requestPixivImg(profile_image_urls.medium),
         `\nUid：${uid}\n`,
-        `画师：${name}\n`
+        `画师：${name}`
       ],
       `本页共${NowNum}张${filter ? `，过滤${filter}张` : ''}\n可尝试使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页\n无数据则代表无下一页`,
       ...illusts

@@ -13,3 +13,7 @@ ascii2dUsePuppeteer: false
 ascii2dResultMaxQuantity: 6
 #隐藏所有搜索结果的缩略图
 hideImg: false
+#whatanime 得到 R18 结果时隐藏结果缩略图
+hideImgWhenWhatanimeR18: false
+#whatanime 发送预览视频，R18 结果不会发送
+whatanimeSendVideo: false

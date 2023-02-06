@@ -11,9 +11,11 @@ import QQApi from './api/QQApi.js'
 import setu from './setu.js'
 import Ascii2D from './PicSearch/ascii2d.js'
 import SauceNAO from './PicSearch/saucenao.js'
+import whatanime from './PicSearch/whatanime.js'
 const PicSearch = {
   Ascii2D,
-  SauceNAO
+  SauceNAO,
+  whatanime
 }
 export {
   puppeteer,

@@ -13,6 +13,10 @@ export class newPicSearch extends plugin {
           fnc: 'search'
         },
         {
+          reg: '^#?(椰奶)?(以图)?搜番.*$',
+          fnc: 'whatanime'
+        },
+        {
           reg: /^#?SauceNAOapiKey.*$/i,
           fnc: 'UploadSauceNAOKey'
         },
@@ -71,6 +75,15 @@ export class newPicSearch extends plugin {
     if (res?.error) return e.reply(res.error)
     common.getRecallsendMsg(e, res.color, { isxml: false })
     common.getRecallsendMsg(e, res.bovw, { isxml: false })
+  }
+
+  async whatanime (e) {
+    if (!e.img) return
+    let res = await PicSearch.whatanime(e.img[0])
+    if (res.error) return e.reply(res.error)
+    for (let i of res) {
+      e.reply(i)
+    }
   }
 
   async UploadSauceNAOKey (e) {

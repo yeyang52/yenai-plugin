@@ -196,22 +196,11 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 
 </details>
 
----
-
 ## FAQ
 
 Q：某某功能群员不能用，怎么关闭撤回或设置撤回时间，怎么设置CD等
 
 A：请参考[此教程](https://docs.qq.com/doc/p/108e5d788607d988ac62e1512552c8bd2d870321)进行解决
-
----
-
-## 免责声明
-
-1. 功能仅限内部交流与小范围使用，请勿将Yunzai-Bot及Yenai-Plugin用于任何以盈利为目的的场景.
-2. 图片与其他素材均来自于网络，仅供交流学习使用，如有侵权请联系，会立即删除.
-
----
 
 ## 特别鸣谢
 
@@ -250,19 +239,20 @@ A：请参考[此教程](https://docs.qq.com/doc/p/108e5d788607d988ac62e1512552c
 
 本段遵循 [all-contributors](https://github.com/all-contributors/all-contributors) 规范，欢迎任何形式的贡献！
 
----
-
 ## Star History 
 
 [![Stargazers over time](https://starchart.cc/yeyang52/yenai-plugin.svg)](https://starchart.cc/yeyang52/yenai-plugin) 
 
+## 免责声明
+
+1. 功能仅限内部交流与小范围使用，请勿将Yunzai-Bot及Yenai-Plugin用于任何以盈利为目的的场景.
+2. 图片与其他素材均来自于网络，仅供交流学习使用，如有侵权请联系，会立即删除.
+
 ## 联系方式
 
-- QQ：746659424
+QQ：746659424
 
+群号：[254974507](https://jq.qq.com/?_wv=1027&k=o8FTig5Z)
 
-- 群号：[254974507](https://jq.qq.com/?_wv=1027&k=o8FTig5Z)
-
-
-- 投喂：[爱发电](https://afdian.net/a/yeyang52)
+投喂：[爱发电](https://afdian.net/a/yeyang52)
 

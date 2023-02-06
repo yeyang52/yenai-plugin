@@ -332,17 +332,19 @@ export class GroupAdmin extends plugin {
       '啾咪٩(๑•̀ω•́๑)۶',
       '弃旧恋新了么笨蛋( 。ớ ₃ờ)ھ'
     ]
-    if (!e.group.is_owner) return false
+    // if (!e.group.is_owner) return false
 
     let Title = e.msg.replace(/#|申请头衔/g, '')
     // 屏蔽词处理
-    if (!e.isMaster) {
-      let data = Config.NoTitle
-      if (data.Match_pattern) {
-        let reg = new RegExp(lodash.compact(data.Shielding_words).join('|'))
+    let { Match_pattern, Shielding_words } = Config.NoTitle
+    console.log(Shielding_words)
+    Shielding_words = lodash.compact(Shielding_words)
+    if (!e.isMaster && !lodash.isEmpty(Shielding_words)) {
+      if (Match_pattern) {
+        let reg = new RegExp(Shielding_words.join('|'))
         if (reg.test(Title)) return e.reply('这里面有不好的词汇哦~', true)
       } else {
-        if (data.Shielding_words.includes(Title)) return e.reply('这是有不好的词汇哦~', true)
+        if (Shielding_words.includes(Title)) return e.reply('这是有不好的词汇哦~', true)
       }
     }
     let res = await e.group.setTitle(e.user_id, Title)

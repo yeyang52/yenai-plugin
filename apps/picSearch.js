@@ -65,38 +65,42 @@ export class newPicSearch extends plugin {
 
   async SauceNAO (e) {
     if (!await this.handelImg(e, 'SauceNAO')) return
-    let res = await PicSearch.SauceNAO(e.img[0])
-      .catch(err => {
-        e.reply(err.message)
-        e.reply('SauceNAO搜图出错，自动使用Ascii2D进行搜索')
-        this.Ascii2D(e)
+    await PicSearch.SauceNAO(e.img[0])
+      .then(async res => {
+        res.maxSimilarity > 80
+          ? common.recallsendMsg(e, res.message, true)
+          : common.getRecallsendMsg(e, res.message)
+        if (res.maxSimilarity < Config.picSearch.SauceNAOMinSim) {
+          e.reply(`SauceNAO 相似度 ${res.maxSimilarity}% 过低，使用Ascii2D进行搜索`)
+          await this.Ascii2D(e)
+        }
       })
-    if (!res) return
-
-    res.maxSimilarity > 80 ? common.recallsendMsg(e, res.message, true) : common.getRecallsendMsg(e, res.message)
-    if (res.maxSimilarity < Config.picSearch.SauceNAOMinSim) {
-      e.reply(`SauceNAO 相似度 ${res.maxSimilarity}% 过低，使用Ascii2D进行搜索`)
-      await this.Ascii2D(e)
-    }
+      .catch(async err => {
+        await e.reply(err.message)
+        await e.reply('SauceNAO搜图出错，自动使用Ascii2D进行搜索')
+        await this.Ascii2D(e)
+      })
   }
 
   async Ascii2D (e) {
     if (!await this.handelImg(e, 'Ascii2D')) return
-    let res = await PicSearch.Ascii2D(e.img[0]).catch(err => {
-      e.reply(err.message)
-    })
-    if (!res) return
-    common.getRecallsendMsg(e, res.color, { isxml: false })
-    common.getRecallsendMsg(e, res.bovw, { isxml: false })
+    await PicSearch.Ascii2D(e.img[0])
+      .then(res => {
+        common.getRecallsendMsg(e, res.color, { isxmlMsg: false })
+        common.getRecallsendMsg(e, res.bovw, { isxmlMsg: false })
+      })
+      .catch(err => e.reply(err.message))
   }
 
   async WhatAnime (e) {
     if (!await this.handelImg(e, 'WhatAnime')) return
-    let res = await PicSearch.WhatAnime(e.img[0])
-    if (res.error) return e.reply(res.error)
-    for (let i of res) {
-      await e.reply(i)
-    }
+    await PicSearch.WhatAnime(e.img[0])
+      .then(async res => {
+        for (let i of res) {
+          await e.reply(i)
+        }
+      })
+      .catch(err => e.reply(err.message))
   }
 
   async UploadSauceNAOKey (e) {

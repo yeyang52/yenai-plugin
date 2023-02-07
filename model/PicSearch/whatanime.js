@@ -5,8 +5,7 @@ import common from '../../../../lib/common/common.js'
 import _ from 'lodash'
 export default async function doSearch (imgURL) {
   let result = await getSearchResult(imgURL)
-  if (!result) return { error: 'api请求失败' }
-  if (result.error) return { error: result.error }
+  if (result.error) throw Error(result.error)
 
   let {
     result: [{
@@ -18,7 +17,7 @@ export default async function doSearch (imgURL) {
     // image // 预览图片
     }]
   } = result
-  if (_.isEmpty(result)) return { error: '未获取到相关信息' }
+  if (_.isEmpty(result)) throw Error('未获取到相关信息')
   similarity = (similarity * 100).toFixed(2) // 相似度
   const time = (() => {
     const s = Math.floor(from)
@@ -57,17 +56,12 @@ const date2str = ({ year, month, day }) => [year, month, day].join('-')
  */
 async function getSearchResult (url, key = '') {
   let host = 'https://api.trace.moe'
-  try {
-    const res = await request.get(`${host}/search`, {
-      params: {
-        url,
-        key
-      }
-    })
-    return await res.json()
-  } catch (err) {
-    return console.error(err)
-  }
+  return await request.get(`${host}/search`, {
+    params: {
+      url,
+      key
+    }
+  }).then(res => res.json())
 }
 const animeInfoQuery = `
 query ($id: Int) {
@@ -102,17 +96,12 @@ query ($id: Int) {
  * @returns Prased JSON
  */
 async function getAnimeInfo (id) {
-  try {
-    const res = await request.post('https://trace.moe/anilist/', {
-      data: {
-        query: animeInfoQuery,
-        variables: { id }
-      }
-    })
-    return await res.json()
-  } catch (err) {
-    return console.error(err)
-  }
+  return await request.post('https://trace.moe/anilist/', {
+    data: {
+      query: animeInfoQuery,
+      variables: { id }
+    }
+  }).then(res => res.json())
 }
 
 async function downFile (url) {

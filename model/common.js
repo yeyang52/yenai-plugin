@@ -71,10 +71,18 @@ export default new class newCommon {
      * @param {Boolean} data.isBot 转发信息是否以bot信息发送
      * @param {String} data.fkmsg 风控消息不传则默认消息
      * @param {Boolean} data.isxml 是否处理卡片
+     * @param {Boolean} data.isxmlMsg 是否处理卡片显示消息
      * @param {Boolean} data.oneMsg 是否只有一条消息
      * @return {Object} 消息是否发送成功的对象
      */
-  async getforwardMsg (e, message, { recallMsg = 0, isBot = true, fkmsg = '', isxml = false, oneMsg = false } = {}) {
+  async getforwardMsg (e, message, {
+    recallMsg = 0,
+    isBot = true,
+    fkmsg = '',
+    isxml = false,
+    isxmlMsg = true,
+    oneMsg = false
+  } = {}) {
     let forwardMsg = []
     if (_.isEmpty(message)) throw Error('[椰奶sendforwardMsg][Error]发送的转发消息不能为空')
     let add = (msg) => forwardMsg.push(
@@ -93,11 +101,12 @@ export default new class newCommon {
     }
     if (isxml) {
       // 处理转发卡片
-      forwardMsg.data = forwardMsg.data
-        .replace('<?xml version="1.0" encoding="utf-8"?>', '<?xml version="1.0" encoding="utf-8" ?>')
-        .replace(/\n/g, '')
-        .replace(/<title color="#777777" size="26">(.+?)<\/title>/g, '___')
-        .replace(/___+/, '<title color="#777777" size="26">涩批(//// ^ ////)</title>')
+      forwardMsg.data = forwardMsg.data.replace('<?xml version="1.0" encoding="utf-8"?>', '<?xml version="1.0" encoding="utf-8" ?>')
+      if (isxmlMsg) {
+        forwardMsg.data = forwardMsg.data.replace(/\n/g, '')
+          .replace(/<title color="#777777" size="26">(.+?)<\/title>/g, '___')
+          .replace(/___+/, '<title color="#777777" size="26">涩批(//// ^ ////)</title>')
+      }
     }
     // 发送消息
     let res = await e.reply(forwardMsg, false, { recallMsg })

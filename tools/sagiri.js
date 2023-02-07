@@ -9,7 +9,7 @@ const Pixiv = {
   name: 'Pixiv',
   index: 5,
   urlMatcher: /(?:https?:\/\/)?(?:www\.)?pixiv\.net\/member_illust\.php\?mode=.+&illust_id=\d+/i,
-  backupUrl: ({ data: { pixiv_id } }) => `https://www.pixiv.net/member_illust.php?mode=medium&illust_id=${pixiv_id}`,
+  backupUrl: ({ data: { pixiv_id } }) => `https://www.pixiv.net/artworks/${pixiv_id}`,
   authorData: ({ member_id, member_name }) => ({
     authorName: member_name,
     authorUrl: `https://www.pixiv.net/users/${member_id}`

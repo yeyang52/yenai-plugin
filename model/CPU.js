@@ -14,8 +14,26 @@ export default new class OSUtils {
     this.init()
   }
 
+  async initDependence () {
+    try {
+      this.si = await import('systeminformation')
+      return this.si
+    } catch (error) {
+      if (error.stack?.includes('Cannot find package')) {
+        logger.warn('--------椰奶依赖缺失--------')
+        logger.warn(`yenai-plugin 缺少依赖将无法使用 ${logger.yellow('椰奶状态')}`)
+        logger.warn(`如需使用请运行：${logger.red('pnpm add systeminformation -w')}`)
+        logger.warn('---------------------------')
+        logger.debug(decodeURI(error.stack))
+      } else {
+        logger.error(`椰奶载入依赖错误：${logger.red('systeminformation')}`)
+        logger.error(decodeURI(error.stack))
+      }
+    }
+  }
+
   async init () {
-    if (!this.si) return
+    if (!await this.initDependence()) return
     // 初始化GPU获取
     if ((await this.si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)) {
       this.isGPU = true

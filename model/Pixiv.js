@@ -40,10 +40,9 @@ export default new class Pixiv {
      * @return {Object}
      */
   async illust (ids, filter = false) {
-    const parame = { id: ids }
-    let res = await request.get(`${this.domain}/illust`, { parame }).then(res => res.json())
+    const params = { id: ids }
+    let res = await request.get(`${this.domain}/illust`, { params }).then(res => res.json())
     if (res.error) throw Error(res.error?.user_message || '无法获取数据')
-
     let illust = this.format(res.illust)
     let { id, title, user, tags, total_bookmarks, total_view, url, create_date, x_restrict, illust_ai_type } = illust
     let msg = [
@@ -100,18 +99,18 @@ export default new class Pixiv {
 
     if (!date) date = moment().subtract(moment().utcOffset(9).hour() >= 12 ? 1 : 2, 'days').format('YYYY-MM-DD')
 
-    let parame = {
+    let params = {
       mode: type,
       page,
       date
     }
     // 请求api
     let api = `${this.domain}/rank`
-    let res = await request.get(api, { parame }).then(res => res.json()).catch(err => console.log(err))
+    let res = await request.get(api, { params }).then(res => res.json()).catch(err => console.log(err))
 
     if (!res || res.error || lodash.isEmpty(res.illusts)) {
       logger.mark('[椰奶Pixiv][排行榜]使用备用接口')
-      res = await request.get('https://api.obfs.dev/api/pixiv/rank', { parame }).then(res => res.json())
+      res = await request.get('https://api.obfs.dev/api/pixiv/rank', { params }).then(res => res.json())
     }
     if (res.error) throw Error(res.error.message)
     if (lodash.isEmpty(res.illusts)) throw Error('暂无数据，请等待榜单更新哦(。-ω-)zzz')
@@ -156,8 +155,14 @@ export default new class Pixiv {
      * @return {Array}
      */
   async searchTags (tag, page = 1) {
-    let api = `https://www.vilipix.com/api/v1/picture/public?limit=30&tags=${tag}&sort=new&offset=${(page - 1) * 30}`
-    let res = await request.get(api).then(res => res.json())
+    const api = 'https://www.vilipix.com/api/v1/picture/public'
+    const params = {
+      limit: 30,
+      tags: tag,
+      sort: 'new',
+      offset: (page - 1) * 30
+    }
+    let res = await request.get(api, { params }).then(res => res.json())
     if (res.data.count == 0) throw Error('呜呜呜，人家没有找到相关的插画(ó﹏ò｡)')
 
     let pageall = Math.ceil(res.data.count / 30)
@@ -190,12 +195,12 @@ export default new class Pixiv {
      * @return {*}
      */
   async searchTagspro (tag, page = 1, isfilter = true) {
-    const parame = {
+    const params = {
       word: tag,
       page,
       order: 'popular_desc'
     }
-    let res = await request.get(`${this.domain}/search`, { parame }).then(res => res.json())
+    let res = await request.get(`${this.domain}/search`, { params }).then(res => res.json())
     if (res.error) throw Error(res.error.message)
     if (lodash.isEmpty(res.illusts)) throw Error('宝~没有数据了哦(๑＞︶＜)و')
 

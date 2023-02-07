@@ -34,7 +34,7 @@ export class newPicSearch extends plugin {
 
   async search (e) {
     if (!await this.handelImg(e, 'SauceNAO')) return
-    this.SauceNAO(e)
+    await this.SauceNAO(e)
   }
 
   async handelImg (e, funName) {
@@ -68,7 +68,7 @@ export class newPicSearch extends plugin {
     let res = await PicSearch.SauceNAO(e.img[0])
       .catch(err => {
         e.reply(err.message)
-        e.reply('自动使用Ascii2D进行搜索')
+        e.reply('SauceNAO搜图出错，自动使用Ascii2D进行搜索')
         this.Ascii2D(e)
       })
     if (!res) return
@@ -76,7 +76,7 @@ export class newPicSearch extends plugin {
     res.maxSimilarity > 80 ? common.recallsendMsg(e, res.message, true) : common.getRecallsendMsg(e, res.message)
     if (res.maxSimilarity < Config.picSearch.SauceNAOMinSim) {
       e.reply(`SauceNAO 相似度 ${res.maxSimilarity}% 过低，使用Ascii2D进行搜索`)
-      this.Ascii2D(e)
+      await this.Ascii2D(e)
     }
   }
 

@@ -1,5 +1,5 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import lodash from 'lodash'
+import _ from 'lodash'
 import { puppeteer } from '../model/index.js'
 
 const SEARCH_MAP = {
@@ -59,7 +59,7 @@ const SEARCH_MAP = {
   油猴: 'https://greasyfork.org/zh-CN/scripts?q='
 }
 
-const searchReg = new RegExp(`^#?(${lodash.keys(SEARCH_MAP).join('|')})搜索(.*)`)
+const searchReg = new RegExp(`^#?(${_.keys(SEARCH_MAP).join('|')})搜索(.*)`)
 
 export class NewSearch extends plugin {
   constructor () {

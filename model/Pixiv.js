@@ -1,5 +1,5 @@
 import fetch from 'node-fetch'
-import lodash from 'lodash'
+import _ from 'lodash'
 import { segment } from 'oicq'
 import moment from 'moment'
 import { rankType, MSG } from '../tools/pixiv.js'
@@ -31,7 +31,7 @@ export default new class Pixiv {
 
   /** 开始执行文案 */
   get startMsg () {
-    return lodash.sample(MSG.start)
+    return _.sample(MSG.start)
   }
 
   /**
@@ -81,7 +81,7 @@ export default new class Pixiv {
      */
   async Rank (page = 1, date = '', mode = '周', r18 = false) {
     // 转为大写
-    mode = lodash.toUpper(mode)
+    mode = _.toUpper(mode)
     // 排行榜类型
     let type = this.ranktype[mode].type
     // 总张数
@@ -108,7 +108,7 @@ export default new class Pixiv {
     let api = `${this.domain}/rank`
     let res = await request.get(api, { params }).then(res => res.json())
     if (res.error) throw Error(res.error.message)
-    if (lodash.isEmpty(res.illusts)) throw Error('暂无数据，请等待榜单更新哦(。-ω-)zzz')
+    if (_.isEmpty(res.illusts)) throw Error('暂无数据，请等待榜单更新哦(。-ω-)zzz')
 
     let illusts = await Promise.all(res.illusts.map(async (item, index) => {
       let list = this.format(item)
@@ -120,7 +120,7 @@ export default new class Pixiv {
         `UID：${user.id}\n`,
         `点赞：${total_bookmarks}\n`,
         `排名：${(page - 1) * 30 + (index + 1)}\n`,
-        `Tag：${lodash.truncate(tags)}\n`,
+        `Tag：${_.truncate(tags)}\n`,
         await this.requestPixivImg(image_urls.large)
       ]
     }))
@@ -176,7 +176,7 @@ export default new class Pixiv {
       list.push([
         `标题：${title}\n`,
         `PID：${picture_id}\n`,
-        `Tag：${lodash.truncate(tags)}\n`,
+        `Tag：${_.truncate(tags)}\n`,
         segment.image(original_url)
       ])
     }
@@ -197,7 +197,7 @@ export default new class Pixiv {
     }
     let res = await request.get(`${this.domain}/search`, { params }).then(res => res.json())
     if (res.error) throw Error(res.error.message)
-    if (lodash.isEmpty(res.illusts)) throw Error('宝~没有数据了哦(๑＞︶＜)و')
+    if (_.isEmpty(res.illusts)) throw Error('宝~没有数据了哦(๑＞︶＜)و')
 
     let illusts = []
     let filter = 0
@@ -214,11 +214,11 @@ export default new class Pixiv {
         `PID：${id}\n`,
         `UID：${user.id}\n`,
         `点赞：${total_bookmarks}\n`,
-        `Tag：${lodash.truncate(tags)}\n`,
+        `Tag：${_.truncate(tags)}\n`,
         await this.requestPixivImg(image_urls.large)
       ])
     }
-    if (lodash.isEmpty(illusts)) throw Error('该页全为涩涩内容已全部过滤(#／。＼#)')
+    if (_.isEmpty(illusts)) throw Error('该页全为涩涩内容已全部过滤(#／。＼#)')
 
     return [
       `本页共${NowNum}张${filter ? `，过滤${filter}张` : ''}\n可尝试使用 "#tagpro搜图${tag}第${page - 0 + 1}页" 翻页\n无数据则代表无下一页`,
@@ -265,7 +265,7 @@ export default new class Pixiv {
       let wordapi = `${this.domain}/search_user?word=${keyword}`
       let wordlist = await request.get(wordapi).then(res => res.json())
 
-      if (lodash.isEmpty(wordlist.user_previews)) throw Error('呜呜呜，人家没有找到这个淫d(ŐдŐ๑)')
+      if (_.isEmpty(wordlist.user_previews)) throw Error('呜呜呜，人家没有找到这个淫d(ŐдŐ๑)')
       keyword = wordlist.user_previews[0].user.id
     }
     // 作品
@@ -274,7 +274,7 @@ export default new class Pixiv {
 
     if (res.error) throw Error(res.error.message)
     // 没有作品直接返回信息
-    if (lodash.isEmpty(res.illusts)) throw Error(page >= 2 ? '这一页没有作品辣（＞人＜；）' : 'Σ(っ °Д °;)っ这个淫居然没有作品')
+    if (_.isEmpty(res.illusts)) throw Error(page >= 2 ? '这一页没有作品辣（＞人＜；）' : 'Σ(っ °Д °;)っ这个淫居然没有作品')
 
     let illusts = []
     let filter = 0
@@ -290,11 +290,11 @@ export default new class Pixiv {
         `PID：${pid}\n`,
         `点赞：${total_bookmarks}\n`,
         `访问：${total_view}\n`,
-        `Tag：${lodash.truncate(tags)}\n`,
+        `Tag：${_.truncate(tags)}\n`,
         await this.requestPixivImg(url[0])
       ])
     }
-    if (lodash.isEmpty(illusts)) throw Error('该页全为涩涩内容已全部过滤(#／。＼#)')
+    if (_.isEmpty(illusts)) throw Error('该页全为涩涩内容已全部过滤(#／。＼#)')
     let { id: uid, name, profile_image_urls } = res.user
     return [
       [
@@ -318,7 +318,7 @@ export default new class Pixiv {
     let api = `${this.domain}/search_user?word=${word}&page=${page}&size=10`
     let user = await request.get(api).then(res => res.json())
     if (user.error) throw Error(user.error.message)
-    if (lodash.isEmpty(user.user_previews)) throw Error('呜呜呜，人家没有找到这个淫d(ŐдŐ๑)')
+    if (_.isEmpty(user.user_previews)) throw Error('呜呜呜，人家没有找到这个淫d(ŐдŐ๑)')
 
     let msg = await Promise.all(user.user_previews.slice(0, 10).map(async (item, index) => {
       let { id, name, profile_image_urls } = item.user
@@ -346,7 +346,7 @@ export default new class Pixiv {
      * @return {Array}
      */
   async randomImg (limit) {
-    let api = `https://www.vilipix.com/api/v1/picture/recommand?limit=${limit}&offset=${lodash.random(1, 700)}`
+    let api = `https://www.vilipix.com/api/v1/picture/recommand?limit=${limit}&offset=${_.random(1, 700)}`
     let res = await request.get(api).then(res => res.json())
     if (!res.data || !res.data.rows) throw Error('呜呜呜，没拿到瑟瑟的图片(˃ ⌑ ˂ഃ )')
 
@@ -357,7 +357,7 @@ export default new class Pixiv {
         `标题：${title}\n`,
         `点赞: ${like_total}\n`,
         `插画ID：${picture_id}\n`,
-        `Tag：${lodash.truncate(tags)}\n`,
+        `Tag：${_.truncate(tags)}\n`,
         await this.requestPixivImg(regular_url)
       ])
     }
@@ -373,7 +373,7 @@ export default new class Pixiv {
     let api = `${this.domain}/related?id=${pid}`
     let res = await request.get(api).then(res => res.json())
     if (res.error) throw Error(res.error.user_message)
-    if (lodash.isEmpty(res.illusts)) throw Error('呃...没有数据(•ิ_•ิ)')
+    if (_.isEmpty(res.illusts)) throw Error('呃...没有数据(•ิ_•ิ)')
 
     let illusts = []
     let filter = 0
@@ -389,11 +389,11 @@ export default new class Pixiv {
         `PID：${id}\n`,
         `UID：${user.id}\n`,
         `点赞：${total_bookmarks}\n`,
-        `Tag：${lodash.truncate(tags)}\n`,
+        `Tag：${_.truncate(tags)}\n`,
         await this.requestPixivImg(image_urls.large)
       ])
     }
-    if (lodash.isEmpty(illusts)) throw Error('啊啊啊！！！居然全是瑟瑟哒不给你看(＊／ω＼＊)')
+    if (_.isEmpty(illusts)) throw Error('啊啊啊！！！居然全是瑟瑟哒不给你看(＊／ω＼＊)')
 
     return [
       `Pid:${pid}的相关作品，共${res.illusts.length}张${filter ? `，过滤${filter}张` : ''}`,
@@ -452,8 +452,8 @@ export default new class Pixiv {
   format (illusts) {
     let url = []
     let { tags, meta_single_page, meta_pages } = illusts
-    tags = lodash.uniq(lodash.compact(lodash.flattenDeep(tags?.map(item => Object.values(item)))))
-    if (!lodash.isEmpty(meta_single_page)) {
+    tags = _.uniq(_.compact(_.flattenDeep(tags?.map(item => Object.values(item)))))
+    if (!_.isEmpty(meta_single_page)) {
       url.push(meta_single_page.original_image_url)
     } else {
       url = meta_pages.map(item => item.image_urls.original)

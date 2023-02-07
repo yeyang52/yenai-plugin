@@ -1,5 +1,5 @@
 import os from 'os'
-import lodash from 'lodash'
+import _ from 'lodash'
 import fs from 'fs'
 import { common } from './index.js'
 import { Config } from '../components/index.js'
@@ -192,12 +192,12 @@ export default new class OSUtils {
    */
   async getfsSize () {
     // 去重
-    let HardDisk = lodash.uniqWith(await this.si.fsSize(),
+    let HardDisk = _.uniqWith(await this.si.fsSize(),
       (a, b) => a.used === b.used && a.size === b.size && a.use === b.use && a.available === b.available)
     // 过滤
     HardDisk = HardDisk.filter(item => item.size && item.used && item.available && item.use)
     // 为空返回false
-    if (lodash.isEmpty(HardDisk)) return false
+    if (_.isEmpty(HardDisk)) return false
     // 数值转换
     return HardDisk.map(item => {
       item.used = this.getfilesize(item.used)
@@ -239,7 +239,7 @@ export default new class OSUtils {
    */
   get getnetwork () {
     let network = {}
-    try { network = lodash.cloneDeep(this.now_network)[0] } catch { return false }
+    try { network = _.cloneDeep(this.now_network)[0] } catch { return false }
     if (network.rx_sec == null || network.tx_sec == null) return false
     network.rx_sec = this.getfilesize(network.rx_sec, false, false)
     network.tx_sec = this.getfilesize(network.tx_sec, false, false)

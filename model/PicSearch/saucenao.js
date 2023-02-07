@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import _ from 'lodash'
 import { Config } from '../../components/index.js'
 import sagiri from '../../tools/sagiri.js'
 import request from '../../lib/request/request.js'
@@ -7,7 +7,7 @@ export default async function doSearch (url) {
   logger.debug('SauceNAO result:', res)
   if (res.header.status != 0) throw Error('SauceNAO搜图，错误信息：' + res.header.message?.replace(/<.*?>/g, ''))
   let format = sagiri(res)
-  if (lodash.isEmpty(format)) throw Error('SauceNAO搜图无数据')
+  if (_.isEmpty(format)) throw Error('SauceNAO搜图无数据')
 
   let msgMap = async item => [
       `SauceNAO (${item.similarity}%)\n`,
@@ -19,9 +19,9 @@ export default async function doSearch (url) {
   let maxSimilarity = format[0].similarity
   let filterSimilarity = format.filter(item => item.similarity > 80)
   let message = []
-  if (!lodash.isEmpty(filterSimilarity)) {
+  if (!_.isEmpty(filterSimilarity)) {
     let filterPixiv = filterSimilarity.filter(item => item.site == 'Pixiv')
-    if (!lodash.isEmpty(filterPixiv)) {
+    if (!_.isEmpty(filterPixiv)) {
       message = await msgMap(filterPixiv[0])
     } else {
       message = await msgMap(filterSimilarity[0])

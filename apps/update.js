@@ -1,6 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { createRequire } from 'module'
-import lodash from 'lodash'
+import _ from 'lodash'
 import { Restart } from '../../other/restart.js'
 
 const require = createRequire(import.meta.url)
@@ -152,7 +152,7 @@ export class Update extends plugin {
     let cm = `git -C ./plugins/${plugin}/ rev-parse --short HEAD`
 
     let commitId = await execSync(cm, { encoding: 'utf-8' })
-    commitId = lodash.trim(commitId)
+    commitId = _.trim(commitId)
 
     return commitId
   }
@@ -168,7 +168,7 @@ export class Update extends plugin {
     let time = ''
     try {
       time = await execSync(cm, { encoding: 'utf-8' })
-      time = lodash.trim(time)
+      time = _.trim(time)
     } catch (error) {
       logger.error(error.toString())
       time = '获取时间失败'

@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import _ from 'lodash'
 import moment from 'moment'
 import { segment } from 'oicq'
 import loader from '../../../lib/plugins/loader.js'
@@ -25,7 +25,7 @@ export default new class {
   async getMuteList (groupId) {
     let list = await this.getMemberMap(groupId, true)
     let mutelist = list.filter(item => Bot.pickGroup(groupId - 0).pickMember(item).mute_left != 0)
-    if (lodash.isEmpty(mutelist)) return false
+    if (_.isEmpty(mutelist)) return false
     return mutelist
   }
 
@@ -64,7 +64,7 @@ export default new class {
         `最后发言时间：${moment(item.last_sent_time * 1000).format('YYYY-MM-DD HH:mm:ss')}`
       ]
     )
-    let pageChunk = lodash.chunk(msg, 30)
+    let pageChunk = _.chunk(msg, 30)
     if (page > pageChunk.length) return { error: '哪有那么多人辣o(´^｀)o' }
 
     let msgs = pageChunk[page - 1]
@@ -105,7 +105,7 @@ export default new class {
     let list = await this.getMemberMap(groupId)
 
     list = list.filter(item => item.last_sent_time < time && item.role == 'member' && item.user_id != Bot.uin)
-    if (lodash.isEmpty(list)) return false
+    if (_.isEmpty(list)) return false
     return list
   }
 
@@ -117,7 +117,7 @@ export default new class {
   async getNeverSpeak (groupId) {
     let list = await this.getMemberMap(groupId)
     list = list.filter(item => item.join_time == item.last_sent_time && item.role == 'member' && item.user_id != Bot.uin)
-    if (lodash.isEmpty(list)) return false
+    if (_.isEmpty(list)) return false
     return list
   }
 
@@ -137,7 +137,7 @@ export default new class {
       `进群时间：${moment(item.join_time * 1000).format('YYYY-MM-DD HH:mm:ss')}`
       ]
     })
-    let pageChunk = lodash.chunk(msg, 30)
+    let pageChunk = _.chunk(msg, 30)
     if (page > pageChunk.length) return { error: '哪有那么多人辣o(´^｀)o' }
 
     let msgs = pageChunk[page - 1]
@@ -170,12 +170,12 @@ export default new class {
       `成功：${success.length}人\n`,
       `失败：${fail.length}人`]
     ]
-    if (!lodash.isEmpty(success)) {
+    if (!_.isEmpty(success)) {
       success = success.map((item, index) => `\n${index + 1}、${item}`)
       success.unshift('以下为清理成功的人员')
       msg.push(success)
     }
-    if (!lodash.isEmpty(fail)) {
+    if (!_.isEmpty(fail)) {
       fail = fail.map((item, index) => `\n${index + 1}、${item}`)
       fail.unshift('以下为清理失败的人员')
       msg.push(fail)
@@ -249,7 +249,7 @@ export default new class {
         Bot.pickGroup(Number(group)).muteAll(type)
       }
     }
-    loader.task.push(lodash.cloneDeep(task))
+    loader.task.push(_.cloneDeep(task))
     loader.creatTask()
     redisTask.push({ cron, group, type })
     redis.set(this.MuteTaskKey, JSON.stringify(redisTask))
@@ -291,7 +291,7 @@ export default new class {
      */
   getMuteTask () {
     let RegEx = /椰奶群定时(禁言|解禁)(\d+)/
-    let taskList = lodash.cloneDeep(loader.task)
+    let taskList = _.cloneDeep(loader.task)
     let MuteList = taskList.filter(item => /椰奶群定时禁言\d+/.test(item.name))
     let noMuteList = taskList.filter(item => /椰奶群定时解禁\d+/.test(item.name))
     noMuteList.forEach(noitem => {

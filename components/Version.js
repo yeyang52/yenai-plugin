@@ -1,6 +1,6 @@
 
 import fs from 'fs'
-import lodash from 'lodash'
+import _ from 'lodash'
 import cfg from '../../../lib/config/config.js'
 const Plugin_Path = `${process.cwd()}/plugins/yenai-plugin`
 const README_path = `${Plugin_Path}/README.md`
@@ -28,7 +28,7 @@ try {
     logs = logs.replace(/\t/g, '   ').split('\n')
     let temp = {}
     let lastLine = {}
-    lodash.forEach(logs, (line) => {
+    _.forEach(logs, (line) => {
       if (versionCount <= -1) {
         return false
       }

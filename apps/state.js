@@ -3,7 +3,7 @@ import os from 'os'
 import { Config } from '../components/index.js'
 import { CPU, common, puppeteer } from '../model/index.js'
 import moment from 'moment'
-import lodash from 'lodash'
+import _ from 'lodash'
 
 let interval = false
 export class State extends plugin {
@@ -31,7 +31,7 @@ export class State extends plugin {
     // 系统
     let osinfo = await CPU.si.osInfo()
     // 可视化数据
-    let visualData = lodash.compact([
+    let visualData = _.compact([
       // CPU板块
       await CPU.getCpuInfo(osinfo.arch),
       // 内存板块

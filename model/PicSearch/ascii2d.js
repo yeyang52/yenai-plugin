@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import lodash from 'lodash'
+import _ from 'lodash'
 import { segment } from 'oicq'
 import { puppeteer } from '../index.js'
 import request from '../../lib/request/request.js'
@@ -37,7 +37,7 @@ export default async function doSearch (url) {
   }
   let colorData = (await parse(ret.data)).slice(0, ascii2dResultMaxQuantity)
   let bovwData = (await parse(bovwDetail.data)).slice(0, ascii2dResultMaxQuantity)
-  if (lodash.isEmpty(colorData)) throw Error('Ascii2D数据获取失败')
+  if (_.isEmpty(colorData)) throw Error('Ascii2D数据获取失败')
   let mapfun = item => [
     Config.picSearch.hideImg ? '' : segment.image(item.image),
     `${item.info}\n`,
@@ -70,7 +70,7 @@ async function getAscii2dWithPuppeteer (url) {
 }
 async function parse (body) {
   const $ = cheerio.load(body, { decodeEntities: true })
-  return lodash.map($('.item-box'), (item) => {
+  return _.map($('.item-box'), (item) => {
     const detail = $('.detail-box', item)
     const hash = $('.hash', item)
     const info = $('.info-box > .text-muted', item)

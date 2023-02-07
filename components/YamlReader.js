@@ -1,6 +1,6 @@
 import fs from 'fs'
 import YAML from 'yaml'
-import lodash from 'lodash'
+import _ from 'lodash'
 import chokidar from 'chokidar'
 // import Constant from '../server/constant/Constant.js'
 
@@ -46,7 +46,7 @@ export default class YamlReader {
 
   /* 返回key的值 */
   get (keyPath) {
-    return lodash.get(this.jsonData, keyPath)
+    return _.get(this.jsonData, keyPath)
   }
 
   /* 修改某个key的值 */

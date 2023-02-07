@@ -1,6 +1,6 @@
 import fetch from 'node-fetch'
 import md5 from 'md5'
-import lodash from 'lodash'
+import _ from 'lodash'
 
 const API_ERROR = '出了点小问题，待会再试试吧'
 
@@ -117,7 +117,7 @@ export default new class {
         headers
       }).then(res => res.json()).catch(err => console.error(err))
       if (errorCode != 0) return API_ERROR
-      translateResult = lodash.flattenDeep(translateResult)?.map(item => item.tgt).join('\n')
+      translateResult = _.flattenDeep(translateResult)?.map(item => item.tgt).join('\n')
       if (!translateResult) return RESULT_ERROR
       return translateResult
     } catch (e) {
@@ -133,7 +133,7 @@ export default new class {
       let res = await fetch(api).then(res => res.text())
       let JSONdara = JSON.parse(res.match(/<script id="__NEXT_DATA__" type="application\/json" crossorigin="anonymous">(.*?)<\/script>/)[1])
       if (!JSONdara) return { error: API_ERROR }
-      let piece = lodash.sample(JSONdara.props.pageProps.pieces)
+      let piece = _.sample(JSONdara.props.pageProps.pieces)
       let { songName, lyric, audioUrl } = piece
       if (!audioUrl) return { error: '找不到歌曲文件' }
       return {

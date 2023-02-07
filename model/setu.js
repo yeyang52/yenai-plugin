@@ -1,6 +1,6 @@
 import { common, Pixiv } from './index.js'
 import { Data, Plugin_Path, Config } from '../components/index.js'
-import lodash from 'lodash'
+import _ from 'lodash'
 import { MSG } from '../tools/setu.js'
 import request from '../lib/request/request.js'
 export default new class setu {
@@ -24,17 +24,17 @@ export default new class setu {
 
   /** 开始执行文案 */
   get startMsg () {
-    return lodash.sample(MSG.start)
+    return _.sample(MSG.start)
   }
 
   /** CD中文案 */
   get CDMsg () {
-    return lodash.sample(MSG.cd)
+    return _.sample(MSG.cd)
   }
 
   /** 发送图片文案 */
   get sendMsgs () {
-    return lodash.sample(MSG.send)
+    return _.sample(MSG.send)
   }
 
   /**
@@ -59,7 +59,7 @@ export default new class setu {
       excludeAI: Config.pixiv.loliExcludeAI
     }
     let result = await request.post(api, { data: parans }).then(res => res.json())
-    if (lodash.isEmpty(result.data)) throw Error('没有找到相关的tag')
+    if (_.isEmpty(result.data)) throw Error('没有找到相关的tag')
     // 消息
     return await Promise.all(result.data.map(async item => {
       let { pid, title, tags, author, r18, urls } = item
@@ -69,7 +69,7 @@ export default new class setu {
         `画师：${author}\n`,
         `pid：${pid}\n`,
         `r18：${r18}\n`,
-        `tag：${lodash.truncate(tags.join(','))}\n`,
+        `tag：${_.truncate(tags.join(','))}\n`,
         await Pixiv.requestPixivImg(urls?.original || urls?.regular || urls?.small)
       ]
     }))
@@ -178,7 +178,7 @@ export default new class setu {
   setGroupRecallTimeAndCd (groupId, num, type) {
     let data = Data.readJSON('setu.json', this.root)
 
-    if (!data[groupId]) data[groupId] = lodash.cloneDeep(this.def)
+    if (!data[groupId]) data[groupId] = _.cloneDeep(this.def)
 
     type ? data[groupId].recall = Number(num) : data[groupId].cd = Number(num)
 
@@ -213,7 +213,7 @@ export default new class setu {
   setR18 (groupID, isopen) {
     let data = Data.readJSON(`setu${groupID ? '' : '_s'}.json`, this.root)
     if (groupID) {
-      if (!data[groupID]) data[groupID] = lodash.cloneDeep(this.def)
+      if (!data[groupID]) data[groupID] = _.cloneDeep(this.def)
       data[groupID].r18 = isopen ? 1 : 0
     } else {
       data.r18 = isopen ? 1 : 0
@@ -233,7 +233,7 @@ export default new class setu {
      * @return {*}
      */
   getSeSeConfig (e) {
-    let set = lodash.cloneDeep(this.def)
+    let set = _.cloneDeep(this.def)
     set.cd = this.getCfgCd(e.user_id, e.group_id)
     set.r18 = this.getR18(e.group_id)
     set.recall = this.getRecallTime(e.group_id)

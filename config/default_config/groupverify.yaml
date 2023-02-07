@@ -17,3 +17,5 @@ time: 300
 range:
   min: 10
   max: 100
+#收到进群事件后延迟多少秒再发送验证信息(秒)
+DelayTime: 2

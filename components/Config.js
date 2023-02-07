@@ -5,7 +5,7 @@ import fs from 'node:fs'
 import YamlReader from './YamlReader.js'
 import cfg from '../../../lib/config/config.js'
 import loader from '../../../lib/plugins/loader.js'
-import lodash from 'lodash'
+import _ from 'lodash'
 import moment from 'moment'
 
 const Path = process.cwd()
@@ -185,7 +185,7 @@ class Config {
     logger.debug('[椰奶]api接口修改，重载fun.js')
     tmp = await import(`../apps/fun.js?${moment().format('x')}`)
 
-    lodash.forEach(tmp, (p) => {
+    _.forEach(tmp, (p) => {
       /* eslint-disable new-cap */
       let plugin = new p()
       for (let i in loader.priority) {

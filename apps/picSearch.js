@@ -1,6 +1,6 @@
 import { PicSearch, common } from '../model/index.js'
 import { Config } from '../components/index.js'
-import lodash from 'lodash'
+import _ from 'lodash'
 export class newPicSearch extends plugin {
   constructor () {
     super({
@@ -47,7 +47,7 @@ export class newPicSearch extends plugin {
       }
       e.img = [source.message.find(item => item.type == 'image')?.url]
     }
-    if (!lodash.isEmpty(e.img)) return true
+    if (!_.isEmpty(e.img)) return true
     e.sourceFunName = funName
     this.setContext('MonitorImg')
     e.reply('✅ 请发送图片')

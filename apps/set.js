@@ -1,6 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import fs from 'fs'
-import lodash from 'lodash'
+import _ from 'lodash'
 import { Config } from '../components/index.js'
 import { setu, puppeteer } from '../model/index.js'
 const configs = {
@@ -236,26 +236,26 @@ export class NewConfig extends plugin {
         yes.push(i)
       }
     }
-    no = lodash.compact(lodash.uniq(no))
-    yes = lodash.compact(lodash.uniq(yes))
+    no = _.compact(_.uniq(no))
+    yes = _.compact(_.uniq(yes))
     if (type) {
-      if (!lodash.isEmpty(yes)) {
+      if (!_.isEmpty(yes)) {
         for (let i of yes) {
           Config.modifyarr('Shielding_words', 'Shielding_words', i, 'add')
         }
         e.reply(`✅ 成功添加：${yes.join(',')}`)
       }
-      if (!lodash.isEmpty(no)) {
+      if (!_.isEmpty(no)) {
         e.reply(`❎ 以下词已存在：${no.join(',')}`)
       }
     } else {
-      if (!lodash.isEmpty(no)) {
+      if (!_.isEmpty(no)) {
         for (let i of no) {
           Config.modifyarr('Shielding_words', 'Shielding_words', i, 'del')
         }
         e.reply(`✅ 成功删除：${no.join(',')}`)
       }
-      if (!lodash.isEmpty(yes)) {
+      if (!_.isEmpty(yes)) {
         e.reply(`❎ 以下词未在屏蔽词中：${yes.join(',')}`)
       }
     }
@@ -276,7 +276,7 @@ const rodom = async function () {
   for (let val of image) {
     listImg.push(val)
   }
-  let imgs = listImg.length == 1 ? listImg[0] : listImg[lodash.random(0, listImg.length - 1)]
+  let imgs = listImg.length == 1 ? listImg[0] : listImg[_.random(0, listImg.length - 1)]
   return imgs
 }
 

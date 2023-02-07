@@ -1,6 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
-import lodash from 'lodash'
+import _ from 'lodash'
 import { Config } from '../components/index.js'
 import { GroupAdmin as ga, common, QQApi, puppeteer, CronValidate } from '../model/index.js'
 import moment from 'moment'
@@ -216,7 +216,7 @@ export class GroupAdmin extends plugin {
     // 获取数字
     let TabooTime = common.translateChinaNum(regRet[2] || 5)
 
-    let Company = common.Time_unit[lodash.toUpper(regRet[3]) || '分']
+    let Company = common.Time_unit[_.toUpper(regRet[3]) || '分']
 
     await e.group.muteMember(e.user_id, TabooTime * Company)
     e.reply('那我就不手下留情了~', true)
@@ -338,8 +338,8 @@ export class GroupAdmin extends plugin {
     // 屏蔽词处理
     let { Match_pattern, Shielding_words } = Config.NoTitle
     console.log(Shielding_words)
-    Shielding_words = lodash.compact(Shielding_words)
-    if (!e.isMaster && !lodash.isEmpty(Shielding_words)) {
+    Shielding_words = _.compact(Shielding_words)
+    if (!e.isMaster && !_.isEmpty(Shielding_words)) {
       if (Match_pattern) {
         let reg = new RegExp(Shielding_words.join('|'))
         if (reg.test(Title)) return e.reply('这里面有不好的词汇哦~', true)
@@ -352,7 +352,7 @@ export class GroupAdmin extends plugin {
 
     if (!Title) return e.reply('什么"(º Д º*)！没有头衔，哼把你的头衔吃掉！！！', true)
 
-    e.reply(lodash.sample(msgs), true)
+    e.reply(_.sample(msgs), true)
   }
 
   // 字符列表
@@ -510,7 +510,7 @@ export class GroupAdmin extends plugin {
 
     e.message[0].text = e.message[0].text.replace('#发通知', '').trim()
     if (!e.message[0].text) e.message.shift()
-    if (lodash.isEmpty(e.message)) return e.reply('❎ 通知不能为空')
+    if (_.isEmpty(e.message)) return e.reply('❎ 通知不能为空')
     e.message.unshift(segment.at('all'))
     e.reply(e.message)
   }
@@ -606,7 +606,7 @@ export class GroupAdmin extends plugin {
     let res = await QQApi.SpeakRank(e.group_id, /(7|七)天/.test(e.msg))
     if (!res) return e.reply(API_ERROR)
     if (res.retcode != 0) return e.reply('❎ 未知错误\n' + JSON.stringify(res))
-    let msg = lodash.take(res.data.speakRank.map((item, index) =>
+    let msg = _.take(res.data.speakRank.map((item, index) =>
       `${index + 1}:${item.nickname}-${item.uin}\n连续活跃${item.active}天:发言${item.msgCount}次`
     ), 10).join('\n')
     e.reply(msg)

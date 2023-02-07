@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import _ from 'lodash'
 import request from '../lib/request/request.js'
 import { Config } from '../components/index.js'
 
@@ -58,11 +58,11 @@ export default new (class {
           `id：${_id}\n`,
           `标题：${title}\n`,
           `作者：${author}\n`,
-          `描述：${lodash.truncate(description)}\n`,
+          `描述：${_.truncate(description)}\n`,
           `分类：${categories.join('，')}\n`,
           `喜欢：${likesCount}\n`,
           `完结：${finished}\n`,
-          tags ? `tag：${lodash.truncate(tags.join(','))}\n` : '',
+          tags ? `tag：${_.truncate(tags.join(','))}\n` : '',
           await this.requestBikaImg(thumb.fileServer, thumb.path)
         ]
       }))
@@ -137,7 +137,7 @@ export default new (class {
     return [
       `id: ${_id}\n`,
       `title：${title}\n`,
-      `描述：${lodash.truncate(description)}\n`,
+      `描述：${_.truncate(description)}\n`,
       `作者：${author}\n`,
       `汉化：${chineseTeam}\n`,
       `页数：${pagesCount}\n`,

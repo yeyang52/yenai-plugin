@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import fetch from 'node-fetch'
 import { segment } from 'oicq'
-import lodash from 'lodash'
+import _ from 'lodash'
 import { Config } from '../components/index.js'
 import { common, uploadRecord, QQApi, funApi } from '../model/index.js'
 
@@ -23,7 +23,7 @@ const START_EXECUTION = '椰奶产出中......'
 const picapis = Config.getConfig('picApi')
 /** 解析匹配模式 */
 let picApiKeys = []
-lodash.forIn(picapis, (values, key) => {
+_.forIn(picapis, (values, key) => {
   let mode = values.mode !== undefined ? values.mode : picapis.mode
   key = key.split('|').map(item => mode ? '^' + item + '$' : item).join('|')
   picApiKeys.push(key)
@@ -248,17 +248,17 @@ export class Fun extends plugin {
     if (keywords) {
       url = `${domain}/index.php?m=search&c=index&a=init&typeid=1&siteid=1&q=${keywords}`
     } else {
-      url = `${domain}/list-31-${lodash.random(1, 177)}.html`
+      url = `${domain}/list-31-${_.random(1, 177)}.html`
     }
     // 搜索页面
     let search = await fetch(url).then(res => res.text()).catch(err => console.error(err))
     let searchlist = search.match(/<a href=".*?" target="_blank">/g)
       ?.map(item => item.match(/<a href="(.*?)"/)[1])
     // 无则返回
-    if (lodash.isEmpty(searchlist)) return e.reply('哎呦，木有找到', true)
+    if (_.isEmpty(searchlist)) return e.reply('哎呦，木有找到', true)
 
     // 图片页面
-    let imgurl = domain + lodash.sample(searchlist)
+    let imgurl = domain + _.sample(searchlist)
     let imghtml = await fetch(imgurl).then(res => res.text()).catch(err => console.error(err))
     // 处理图片
     let imglist = imghtml.match(/<img src=".*?" (style|title)=.*?\/>/g)
@@ -276,13 +276,13 @@ export class Fun extends plugin {
     // 获取类型
     let { type, page } = heisitype[e.msg.match(/#?来点(.*)/)[1]]
     // 请求主页面
-    let url = `http://hs.heisiwu.com/${type}/page/${lodash.random(1, page)}`
+    let url = `http://hs.heisiwu.com/${type}/page/${_.random(1, page)}`
     console.log(url)
     let homePage = await fetch(url).then(res => res.text()).catch(err => console.error(err))
     if (!homePage) return e.reply(API_ERROR)
     // 解析html
     let childPageUrlList = homePage.match(/<a target(.*?)html/g)
-    let childPageUrl = lodash.sample(childPageUrlList).match(/href="(.*)/)
+    let childPageUrl = _.sample(childPageUrlList).match(/href="(.*)/)
     // 请求图片页面
     let childPage = await fetch(childPageUrl[1]).then(res => res.text()).catch(err => console.error(err))
     if (!childPage) return e.reply(API_ERROR)
@@ -298,7 +298,7 @@ export class Fun extends plugin {
       return item
     })
     // 发送消息
-    common.getRecallsendMsg(e, lodash.take(imglist, 20))
+    common.getRecallsendMsg(e, _.take(imglist, 20))
   }
 
   // 萌堆
@@ -312,11 +312,11 @@ export class Fun extends plugin {
     if (/#?来点神秘图s/.test(e.msg)) {
       let keywords = e.msg.match(/#?来点神秘图s(.*)/)[1]
       let mengduipage = JSON.parse(await redis.get('yenai:mengduipage')) || {}
-      let randomPage = lodash.random(1, mengduipage[keywords] || 1)
+      let randomPage = _.random(1, mengduipage[keywords] || 1)
       let searchurl = `${domain}/search.php?mdact=community&q=${keywords}&page=${randomPage}`
       let search = await fetch(searchurl).then(res => res.text())
-      let searchList = lodash.uniq(search.match(/https?:\/\/.*?\.com\/post\/\d+.html/g))
-      if (lodash.isEmpty(searchList)) {
+      let searchList = _.uniq(search.match(/https?:\/\/.*?\.com\/post\/\d+.html/g))
+      if (_.isEmpty(searchList)) {
         let ERROR = search.match(/抱歉，未找到(.*)相关内容，建议简化一下搜索的关键词|搜索频率太快，请等一等再尝试！/)
         return ERROR ? e.reply(ERROR[0]?.replace(/<.*?>/g, '') || '未找到相关内容') : e.reply('未找到相关内容')
       }
@@ -325,14 +325,14 @@ export class Fun extends plugin {
       mengduipage[keywords] = searchpage
       await redis.set('yenai:mengduipage', JSON.stringify(mengduipage))
 
-      url = lodash.sample(searchList)
+      url = _.sample(searchList)
     } else {
       appoint = e.msg.match(/\d+/g)
       let random
       if (!appoint) {
-        random = lodash.random(1, 11687)
-        while (lodash.inRange(random, 7886, 10136)) {
-          random = lodash.random(1, 11687)
+        random = _.random(1, 11687)
+        while (_.inRange(random, 7886, 10136)) {
+          random = _.random(1, 11687)
         }
       } else {
         random = appoint[0]
@@ -353,7 +353,7 @@ export class Fun extends plugin {
         return e.reply('请检查指定是否正确', true)
       }
     }
-    let msg = lodash.take(list.map(item => segment.image(item)), 30)
+    let msg = _.take(list.map(item => segment.image(item)), 30)
     if (title) msg.unshift(title[1])
     common.getRecallsendMsg(e, msg)
   }
@@ -379,14 +379,14 @@ export class Fun extends plugin {
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
     if (!res) return e.reply(API_ERROR)
     if (res.code != 200) return e.reply('❎ 出错辣' + JSON.stringify(res))
-    if (lodash.isEmpty(res.data)) return e.reply('请求错误！无数据，请稍后再试')
+    if (_.isEmpty(res.data)) return e.reply('请求错误！无数据，请稍后再试')
     let msg = []
     for (let i of res.data) {
-      if (!i.title || lodash.isEmpty(i.image)) continue
+      if (!i.title || _.isEmpty(i.image)) continue
       msg.push(i.title)
       msg.push(i.image.map(item => segment.image(item)))
     }
-    if (lodash.isEmpty(msg)) return this.bcy_topic(e)
+    if (_.isEmpty(msg)) return this.bcy_topic(e)
     common.getforwardMsg(e, msg)
   }
 
@@ -409,8 +409,8 @@ export class Fun extends plugin {
     // 解析消息中的类型
     let regRet = apiReg.exec(e.msg)
     if (regRet[1] == 'mode') return false
-    let picObj = picapis[lodash.sample(Object.keys(picapis).filter(item => new RegExp(item).test(regRet[1])))]
-    if (Array.isArray(picObj)) picObj = lodash.sample(picObj)
+    let picObj = picapis[_.sample(Object.keys(picapis).filter(item => new RegExp(item).test(regRet[1])))]
+    if (Array.isArray(picObj)) picObj = _.sample(picObj)
     let urlReg = /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i
     if (!picObj.url && !urlReg.test(encodeURI(picObj)) && !Array.isArray(picObj)) {
       return logger.error(`${e.logFnc}未找到url`)
@@ -422,17 +422,14 @@ export class Fun extends plugin {
 
     let url = encodeURI(picObj.url || picObj)
     // 数组随机取或指定
-    if (Array.isArray(url)) {
-      // url = (regRet[2] ? picObj[regRet[2] - 1] : lodash.sample(url)) || lodash.sample(url)
-      url = lodash.sample(url)
-    }
+    if (Array.isArray(url)) url = _.sample(url)
 
     if (picObj.type == 'text') {
       url = await fetch(url).then(res => res.text()).catch(err => console.log(err))
     } else if (picObj.type == 'json') {
       if (!picObj.path) return logger.error(`${e.logFnc}json未指定路径`)
       let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))
-      url = lodash.get(res, picObj.path)
+      url = _.get(res, picObj.path)
     }
     if (!url) return logger.error(`${e.logFnc}未获取到图片链接`)
 

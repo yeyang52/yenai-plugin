@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
 import { common, QQApi } from '../model/index.js'
-import lodash from 'lodash'
+import _ from 'lodash'
 import moment from 'moment'
 
 /** API请求错误文案 */
@@ -332,7 +332,7 @@ export class Assistant extends plugin {
 
     if (!signs) return e.reply('❎ 状态不为空，可选值：我在线上，离开，隐身，忙碌，Q我吧，请勿打扰')
 
-    let status = common.status; let statusMirr = lodash.invert(status)
+    let status = common.status; let statusMirr = _.invert(status)
     if (!(signs in statusMirr)) return e.reply('❎ 可选值：我在线上，离开，隐身，忙碌，Q我吧，请勿打扰')
 
     await Bot.setOnlineStatus(statusMirr[signs])
@@ -509,7 +509,7 @@ export class Assistant extends plugin {
       img = e.img
     }
 
-    if (lodash.isEmpty(img)) {
+    if (_.isEmpty(img)) {
       this.setContext('imgs')
       await this.reply('✅ 请发送图片')
       return
@@ -590,7 +590,7 @@ export class Assistant extends plugin {
     let msg = [
       '✅ 获取成功，说说列表如下:\n',
       ...list.msglist.map((item, index) =>
-        `${page * 5 + index + 1}.${lodash.truncate(item.content, { length: 15 })}\n- [${item.secret ? '私密' : '公开'}] | ${moment(item.created_time * 1000).format('MM/DD HH:mm')} | ${item.commentlist?.length || 0}条评论\n`
+        `${page * 5 + index + 1}.${_.truncate(item.content, { length: 15 })}\n- [${item.secret ? '私密' : '公开'}] | ${moment(item.created_time * 1000).format('MM/DD HH:mm')} | ${item.commentlist?.length || 0}条评论\n`
       ),
       `页数：[${page + 1}/${Math.ceil(list.total / 5)}]`
     ]
@@ -616,7 +616,7 @@ export class Assistant extends plugin {
 
     if (result.subcode != 0) e.reply('❎ 未知错误' + JSON.parse(result))
     // 发送结果
-    e.reply(`✅ 删除说说成功：\n ${pos}.${lodash.truncate(domain.content, { length: 15 })} \n - [${domain.secret ? '私密' : '公开'}] | ${moment(domain.created_time * 1000).format('MM/DD HH:mm')} | ${domain.commentlist?.length || 0} 条评论`)
+    e.reply(`✅ 删除说说成功：\n ${pos}.${_.truncate(domain.content, { length: 15 })} \n - [${domain.secret ? '私密' : '公开'}] | ${moment(domain.created_time * 1000).format('MM/DD HH:mm')} | ${domain.commentlist?.length || 0} 条评论`)
   }
 
   /** 发说说 */
@@ -627,7 +627,7 @@ export class Assistant extends plugin {
 
     if (result.code != 0) return e.reply(`❎ 说说发表失败\n${JSON.stringify(result)}`)
 
-    let msg = ['✅ 说说发表成功，内容：\n', lodash.truncate(result.content, { length: 15 })]
+    let msg = ['✅ 说说发表成功，内容：\n', _.truncate(result.content, { length: 15 })]
     if (result.pic) {
       msg.push(segment.image(result.pic[0].url1))
     }

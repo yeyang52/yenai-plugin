@@ -2,6 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
 import { Config } from '../components/index.js'
 import { common, GroupAdmin as ga } from '../model/index.js'
+import _ from 'lodash'
 // 全局
 let temp = {}
 const ops = ['+', '-']
@@ -35,18 +36,14 @@ export class NewGroupVerify extends plugin {
         }
       ]
     })
-    this.verifypath = './plugins/yenai-plugin/config/config/groupverify.yaml'
+    this.verifycfg = Config.verifycfg
   }
 
   // 重新验证
   async cmdReverify (e) {
-    if (e?.group?.mute_left > 0) return
-
-    let verifycfg = Config.verifycfg
-
     if (!e.group.is_admin && !e.group.is_owner) return e.reply('做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ', true)
 
-    if (!verifycfg.openGroup.includes(e.group_id)) return e.reply('当前群未开启验证哦~', true)
+    if (!this.verifycfg.openGroup.includes(e.group_id)) return e.reply('当前群未开启验证哦~', true)
 
     if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply('❎ 该命令仅限管理员可用', true)
 
@@ -68,11 +65,9 @@ export class NewGroupVerify extends plugin {
 
   // 绕过验证
   async cmdPass (e) {
-    let verifycfg = Config.verifycfg
-
     if (!e.group.is_admin && !e.group.is_owner) return e.reply('做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ', true)
 
-    if (!verifycfg.openGroup.includes(e.group_id)) return e.reply('当前群未开启验证哦~', true)
+    if (!this.verifycfg.openGroup.includes(e.group_id)) return e.reply('当前群未开启验证哦~', true)
 
     if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply('❎ 该命令仅限管理员可用', true)
 
@@ -91,7 +86,7 @@ export class NewGroupVerify extends plugin {
 
     delete temp[qq + e.group_id]
 
-    return await e.reply(verifycfg.SuccessMsgs[e.group_id] || verifycfg.SuccessMsgs[0] || '✅ 验证成功，欢迎入群')
+    return await e.reply(this.verifycfg.SuccessMsgs[e.group_id] || this.verifycfg.SuccessMsgs[0] || '✅ 验证成功，欢迎入群')
   }
 
   async cmdReverifyNeverSpeak (e) {
@@ -107,9 +102,8 @@ export class NewGroupVerify extends plugin {
   async handelverify (e) {
     if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply('❎ 该命令仅限管理员可用', true)
     if (!e.group.is_admin && !e.group.is_owner) return e.reply('做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ', true)
-    let verifycfg = Config.verifycfg
     let type = /开启/.test(e.msg) ? 'add' : 'del'
-    let isopen = verifycfg.openGroup.includes(e.group_id)
+    let isopen = this.verifycfg.openGroup.includes(e.group_id)
     if (isopen && type == 'add') return e.reply('❎ 本群验证已处于开启状态')
     if (!isopen && type == 'del') return e.reply('❎ 本群暂未开启验证')
     Config.modifyarr('groupverify', 'openGroup', e.group_id, type)
@@ -119,8 +113,7 @@ export class NewGroupVerify extends plugin {
   // 切换验证模式
   async setmode (e) {
     if (!e.isMaster) return e.reply('❎ 该命令仅限主人可用', true)
-    let verifycfg = Config.verifycfg
-    let value = verifycfg.mode == '模糊' ? '精确' : '模糊'
+    let value = this.verifycfg.mode == '模糊' ? '精确' : '模糊'
     Config.modify('groupverify', 'mode', value)
     e.reply(`✅ 已切换验证模式为${value}验证`)
   }
@@ -139,26 +132,23 @@ export class NewGroupVerify extends plugin {
 
 // 进群监听
 Bot.on('notice.group.increase', async (e) => {
-  let verifycfg = Config.verifycfg
+  logger.mark(`[椰奶][进群验证]收到${e.user_id}的进群事件`)
+  let { openGroup, DelayTime } = Config.verifycfg
 
-  if (!verifycfg.openGroup.includes(e.group_id)) return
-
+  if (!openGroup.includes(e.group_id)) return
   if (!e.group.is_admin && !e.group.is_owner) return
-
   if (e.user_id == Bot.uin) return
-
   if (Config.masterQQ.includes(e.user_id)) return
 
-  if (e?.group?.mute_left > 0) return
-
+  await common.sleep(DelayTime * 1000)
   await verify(e.user_id, e.group_id, e)
 })
 
 // 答案监听
 Bot.on('message.group', async (e) => {
-  let verifycfg = Config.verifycfg
+  let { openGroup, mode, SuccessMsgs } = Config.verifycfg
 
-  if (!verifycfg.openGroup.includes(e.group_id)) return
+  if (!openGroup.includes(e.group_id)) return
 
   if (!e.group.is_admin && !e.group.is_owner) return
 
@@ -168,9 +158,9 @@ Bot.on('message.group', async (e) => {
 
   const { nums, operator } = temp[e.user_id + e.group_id]
 
-  const isAccurateModeOK = verifycfg.mode === '精确' && e.raw_message == verifyCode
+  const isAccurateModeOK = mode === '精确' && e.raw_message == verifyCode
 
-  const isVagueModeOK = verifycfg.mode === '模糊' && e.raw_message.includes(verifyCode)
+  const isVagueModeOK = mode === '模糊' && e.raw_message.includes(verifyCode)
 
   const isOK = isAccurateModeOK || isVagueModeOK
 
@@ -178,7 +168,7 @@ Bot.on('message.group', async (e) => {
     delete temp[e.user_id + e.group_id]
     clearTimeout(kickTimer)
     clearTimeout(remindTimer)
-    return await e.reply(verifycfg.SuccessMsgs[e.group_id] || verifycfg.SuccessMsgs[0] || '✅ 验证成功，欢迎入群')
+    return await e.reply(SuccessMsgs[e.group_id] || SuccessMsgs[0] || '✅ 验证成功，欢迎入群')
   } else {
     temp[e.user_id + e.group_id].remainTimes -= 1
 
@@ -218,15 +208,12 @@ async function verify (user_id, group_id, e) {
   if (!e.group.is_admin && !e.group.is_owner) return
   user_id = Number(user_id)
   group_id = Number(group_id)
-  logger.mark(`[椰奶进群验证]进行${user_id}的验证`)
+  logger.mark(`[椰奶][进群验证]进行${user_id}的验证`)
 
-  let verifycfg = Config.verifycfg
-  let { range } = verifycfg
-  const remainTimes = verifycfg.times
+  const { times, range, time, remindAtLastMinute } = Config.verifycfg
+  const operator = ops[_.random(0, 1)]
 
-  const operator = ops[getRndInteger(0, 1)]
-
-  let [m, n] = [getRndInteger(range.min, range.max), getRndInteger(range.min, range.max)]
+  let [m, n] = [_.random(range.min, range.max), _.random(range.min, range.max)]
   while (m == n) {
     n = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min
   }
@@ -234,7 +221,7 @@ async function verify (user_id, group_id, e) {
   [m, n] = [m >= n ? m : n, m >= n ? n : m]
 
   const verifyCode = String(operator === '-' ? m - n : m + n)
-  logger.mark(`[验证]答案：${verifyCode}`)
+  logger.mark(`[椰奶][进群验证]答案：${verifyCode}`)
   const kickTimer = setTimeout(async () => {
     e.reply([segment.at(user_id), ' 验证超时，移出群聊，请重新申请'])
 
@@ -243,9 +230,9 @@ async function verify (user_id, group_id, e) {
     clearTimeout(kickTimer)
 
     return await e.group.kickMember(user_id)
-  }, verifycfg.time * 1000)
+  }, time * 1000)
 
-  const shouldRemind = verifycfg.remindAtLastMinute && verifycfg.time >= 120
+  const shouldRemind = remindAtLastMinute && time >= 120
 
   const remindTimer = setTimeout(async () => {
     if (shouldRemind && temp[user_id + group_id].remindTimer) {
@@ -254,15 +241,14 @@ async function verify (user_id, group_id, e) {
       await e.reply([segment.at(user_id), msg])
     }
     clearTimeout(remindTimer)
-  }, Math.abs(verifycfg.time * 1000 - 60000))
+  }, Math.abs(time * 1000 - 60000))
 
-  const msg = ` 欢迎，请在「${verifycfg.time}」秒内发送「${m} ${operator} ${n}」的运算结果，否则将会被移出群聊`
+  const msg = ` 欢迎，请在「${time}」秒内发送「${m} ${operator} ${n}」的运算结果，否则将会被移出群聊`
 
-  await common.sleep(600)
   // 消息发送成功才写入
   if (await e.reply([segment.at(user_id), msg])) {
     temp[user_id + group_id] = {
-      remainTimes,
+      remainTimes: times,
       nums: [m, n],
       operator,
       verifyCode,
@@ -270,8 +256,4 @@ async function verify (user_id, group_id, e) {
       remindTimer
     }
   }
-}
-// 随机数
-function getRndInteger (min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min
 }

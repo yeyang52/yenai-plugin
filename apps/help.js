@@ -1,6 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import fs from 'fs'
-import lodash from 'lodash'
+import _ from 'lodash'
 import { Data } from '../components/index.js'
 import { puppeteer } from '../model/index.js'
 export class YenaiHelp extends plugin {
@@ -35,16 +35,16 @@ async function help (e) {
 
   custom = help
 
-  let helpConfig = lodash.defaults(diyCfg.helpCfg || {}, custom.helpCfg, sysCfg.helpCfg)
+  let helpConfig = _.defaults(diyCfg.helpCfg || {}, custom.helpCfg, sysCfg.helpCfg)
   let helpList = diyCfg.helpList || custom.helpList || sysCfg.helpList
   let helpGroup = []
 
-  lodash.forEach(helpList, (group) => {
+  _.forEach(helpList, (group) => {
     if (group.auth && group.auth === 'master' && !e.isMaster) {
       return true
     }
 
-    lodash.forEach(group.list, (help) => {
+    _.forEach(group.list, (help) => {
       let icon = help.icon * 1
       if (!icon) {
         help.css = 'display:none'
@@ -77,6 +77,6 @@ const rodom = async function () {
   for (let val of image) {
     list_img.push(val)
   }
-  let imgs = list_img.length == 1 ? list_img[0] : list_img[lodash.random(0, list_img.length - 1)]
+  let imgs = list_img.length == 1 ? list_img[0] : list_img[_.random(0, list_img.length - 1)]
   return imgs
 }

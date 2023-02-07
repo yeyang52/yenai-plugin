@@ -1,4 +1,4 @@
-import lodash from 'lodash'
+import _ from 'lodash'
 import fs from 'fs'
 
 const _path = process.cwd()
@@ -137,14 +137,14 @@ let Data = {
       keyList = keyList.split(',')
     }
 
-    lodash.forEach(keyList, (keyCfg) => {
+    _.forEach(keyList, (keyCfg) => {
       // 处理通过:指定 toKey & fromKey
       let _keyCfg = keyCfg.split(':')
       let keyTo = _keyCfg[0].trim()
       let keyFrom = (_keyCfg[1] || _keyCfg[0]).trim()
       let keyRet = keyTo
       if (cfg.lowerFirstKey) {
-        keyRet = lodash.lowerFirst(keyRet)
+        keyRet = _.lowerFirst(keyRet)
       }
       if (cfg.keyPrefix) {
         keyRet = cfg.keyPrefix + keyRet
@@ -156,7 +156,7 @@ let Data = {
   },
 
   getVal (target, keyFrom, defaultValue) {
-    return lodash.get(target, keyFrom, defaultValue)
+    return _.get(target, keyFrom, defaultValue)
   },
 
   // 异步池，聚合请求
@@ -191,7 +191,7 @@ let Data = {
   // 获取默认值
   def () {
     for (let idx in arguments) {
-      if (!lodash.isUndefined(arguments[idx])) {
+      if (!_.isUndefined(arguments[idx])) {
         return arguments[idx]
       }
     }
@@ -199,14 +199,14 @@ let Data = {
 
   // 循环字符串回调
   eachStr: (arr, fn) => {
-    if (lodash.isString(arr)) {
+    if (_.isString(arr)) {
       arr = arr.replace(/\s*(;|；|、|，)\s*/, ',')
       arr = arr.split(',')
-    } else if (lodash.isNumber(arr)) {
+    } else if (_.isNumber(arr)) {
       arr = [arr.toString()]
     }
-    lodash.forEach(arr, (str, idx) => {
-      if (!lodash.isUndefined(str)) {
+    _.forEach(arr, (str, idx) => {
+      if (!_.isUndefined(str)) {
         fn(str.trim ? str.trim() : str, idx)
       }
     })

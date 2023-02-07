@@ -1,5 +1,5 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import lodash from 'lodash'
+import _ from 'lodash'
 import { segment } from 'oicq'
 import { common } from '../model/index.js'
 import moment from 'moment'
@@ -58,7 +58,7 @@ export class NewHandle extends plugin {
     let FriendAdd = (await Bot.getSystemMsg())
       .filter(item => item.request_type == 'friend' && item.sub_type == 'add')
 
-    if (lodash.isEmpty(FriendAdd)) return e.reply('暂无好友申请(。-ω-)zzz', true)
+    if (_.isEmpty(FriendAdd)) return e.reply('暂无好友申请(。-ω-)zzz', true)
 
     if (/查看好友申请/.test(e.msg)) {
       FriendAdd = FriendAdd.map((item) => {
@@ -94,8 +94,8 @@ export class NewHandle extends plugin {
       let msg = [
         `本次共${yes ? '同意' : '拒绝'}${FriendAdd.length}条好友申请\n成功：${success.length}\n失败：${fail.length}`
       ]
-      if (!lodash.isEmpty(success)) msg.push(['以下为成功的名单：\n', success.join('\n')])
-      if (!lodash.isEmpty(fail)) msg.push(['以下为失败的名单：\n', fail.join('\n')])
+      if (!_.isEmpty(success)) msg.push(['以下为成功的名单：\n', success.join('\n')])
+      if (!_.isEmpty(fail)) msg.push(['以下为失败的名单：\n', fail.join('\n')])
 
       return common.getforwardMsg(e, msg)
     } else {
@@ -104,7 +104,7 @@ export class NewHandle extends plugin {
       if (!qq) return e.reply('❎ 请输入正确的QQ')
 
       let member = FriendAdd.find(item => item.user_id == qq)
-      if (lodash.isEmpty(member)) return e.reply('❎ 没有找到这个人的好友申请')
+      if (_.isEmpty(member)) return e.reply('❎ 没有找到这个人的好友申请')
 
       let result = member.approve(yes)
       if (result) {
@@ -144,7 +144,7 @@ export class NewHandle extends plugin {
       let member = (await Bot.getSystemMsg())
         .find(item => item.request_type == 'group' && item.sub_type == 'add' && item.group_id == e.group_id && item.user_id == userId)
 
-      if (lodash.isEmpty(member)) return e.reply('呜呜呜，没找到这个淫的加群申请(つд⊂)')
+      if (_.isEmpty(member)) return e.reply('呜呜呜，没找到这个淫的加群申请(つд⊂)')
 
       if (/风险/.test(member.tips)) return e.reply('该账号为风险账号请手动处理哦ಠ~ಠ')
 
@@ -184,7 +184,7 @@ export class NewHandle extends plugin {
         let qq = sourceMsg[3].match(/\d+/g)
 
         let member = (await Bot.getSystemMsg()).find(item => item.sub_type == 'add' && item.group_id == groupId && item.user_id == qq)
-        if (lodash.isEmpty(member)) return e.reply('没有找到这个人的加群申请哦')
+        if (_.isEmpty(member)) return e.reply('没有找到这个人的加群申请哦')
 
         let result = member.approve(yes)
         if (result) {
@@ -275,7 +275,7 @@ export class NewHandle extends plugin {
   async GroupAdd (e) {
     let SystemMsg = (await Bot.getSystemMsg())
       .filter(item => item.request_type == 'group' && item.sub_type == 'add' && item.group_id == e.group_id)
-    if (lodash.isEmpty(SystemMsg)) return e.reply('暂无加群申请(。-ω-)zzz', true)
+    if (_.isEmpty(SystemMsg)) return e.reply('暂无加群申请(。-ω-)zzz', true)
     // 查看
     if (/查看/.test(e.msg)) {
       SystemMsg = SystemMsg.map(item => {
@@ -317,9 +317,9 @@ export class NewHandle extends plugin {
       let msg = [
         `本次共处理${SystemMsg.length}条群申请\n成功：${success.length}\n失败：${fail.length}\n风险：${risk.length}`
       ]
-      if (!lodash.isEmpty(success)) msg.push(['以下为成功的名单：\n', success.join('\n')])
-      if (!lodash.isEmpty(fail)) msg.push(['以下为失败的名单：\n', fail.join('\n')])
-      if (!lodash.isEmpty(risk)) msg.push(['以下为风险账号名单：\n', risk.join('\n')])
+      if (!_.isEmpty(success)) msg.push(['以下为成功的名单：\n', success.join('\n')])
+      if (!_.isEmpty(fail)) msg.push(['以下为失败的名单：\n', fail.join('\n')])
+      if (!_.isEmpty(risk)) msg.push(['以下为风险账号名单：\n', risk.join('\n')])
       common.getforwardMsg(e, msg)
     } else {
       let qq = e.msg.replace(/#(同意|拒绝)(加|入)群申请/g, '').trim()
@@ -328,7 +328,7 @@ export class NewHandle extends plugin {
 
       let member = SystemMsg.find(item => item.user_id == qq)
 
-      if (lodash.isEmpty(member)) return e.reply('呜呜呜，没找到这个淫的加群申请(つд⊂)')
+      if (_.isEmpty(member)) return e.reply('呜呜呜，没找到这个淫的加群申请(つд⊂)')
 
       if (/风险/.test(member.tips)) return e.reply('该账号为风险账号请手动处理哦ಠ~ಠ')
 
@@ -344,7 +344,7 @@ export class NewHandle extends plugin {
   async GroupInvite (e) {
     if (!e.isMaster) return false
     let SystemMsg = (await Bot.getSystemMsg()).filter(item => item.request_type == 'group' && item.sub_type == 'invite')
-    if (lodash.isEmpty(SystemMsg)) return e.reply('暂无群邀请哦(。-ω-)zzz', true)
+    if (_.isEmpty(SystemMsg)) return e.reply('暂无群邀请哦(。-ω-)zzz', true)
     let yes = /同意/.test(e.msg)
     // 查看
     if (/查看/.test(e.msg)) {
@@ -376,8 +376,8 @@ export class NewHandle extends plugin {
         await common.sleep(1000)
       }
       let msg = [`本次共处理${SystemMsg.length}条群邀请\n成功：${success.length}\n失败：${fail.length}`]
-      if (!lodash.isEmpty(success)) msg.push(['以下为成功的名单：\n', success.join('\n')])
-      if (!lodash.isEmpty(fail)) msg.push(['以下为失败的名单：\n', fail.join('\n')])
+      if (!_.isEmpty(success)) msg.push(['以下为成功的名单：\n', success.join('\n')])
+      if (!_.isEmpty(fail)) msg.push(['以下为失败的名单：\n', fail.join('\n')])
       common.getforwardMsg(e, msg)
     } else {
       let groupid = e.msg.replace(/#(同意|拒绝)群邀请/g, '').trim()
@@ -386,7 +386,7 @@ export class NewHandle extends plugin {
 
       let Invite = SystemMsg.find(item => item.group_id == groupid)
 
-      if (lodash.isEmpty(Invite)) return e.reply('欸，你似不似傻哪有这个群邀请(O∆O)')
+      if (_.isEmpty(Invite)) return e.reply('欸，你似不似傻哪有这个群邀请(O∆O)')
 
       if (await Invite.approve(yes)) {
         e.reply(`已${yes ? '同意' : '拒绝'}${Invite.group_id}这个群邀请辣٩(๑^o^๑)۶`)
@@ -417,14 +417,14 @@ export class NewHandle extends plugin {
       }
     }
     let msg = []
-    if (!lodash.isEmpty(FriendAdd)) msg.push(`好友申请：${FriendAdd.length}条\n可使用"#查看好友申请" 查看详情`)
-    if (!lodash.isEmpty(GroupInvite)) msg.push(`群邀请：${GroupInvite.length}条\n可使用"#查看群邀请" 查看详情`)
-    if (!lodash.isEmpty(onewayFriend)) msg.push(`单向好友：${onewayFriend.length}条`)
+    if (!_.isEmpty(FriendAdd)) msg.push(`好友申请：${FriendAdd.length}条\n可使用"#查看好友申请" 查看详情`)
+    if (!_.isEmpty(GroupInvite)) msg.push(`群邀请：${GroupInvite.length}条\n可使用"#查看群邀请" 查看详情`)
+    if (!_.isEmpty(onewayFriend)) msg.push(`单向好友：${onewayFriend.length}条`)
     if (e.isGroup) {
       GroupAdd = GroupAdd.filter(item => item.group_id == e.group.id)
-      if (!lodash.isEmpty(GroupAdd)) msg.push(`当前群申请：${GroupAdd.length}条`)
+      if (!_.isEmpty(GroupAdd)) msg.push(`当前群申请：${GroupAdd.length}条`)
     }
-    if (lodash.isEmpty(msg)) return e.reply('好耶！！一条请求都没有哦o( ❛ᴗ❛ )o', true)
+    if (_.isEmpty(msg)) return e.reply('好耶！！一条请求都没有哦o( ❛ᴗ❛ )o', true)
     msg.unshift('以下为暂未处理的请求')
     common.getforwardMsg(e, msg)
   }

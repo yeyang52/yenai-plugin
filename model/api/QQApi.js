@@ -1,6 +1,6 @@
 import fetch from 'node-fetch'
 import { common } from '../index.js'
-import lodash from 'lodash'
+import _ from 'lodash'
 import moment from 'moment'
 import { core } from 'oicq'
 
@@ -158,7 +158,7 @@ export default new class {
         fid: res.feeds[0].fid
       }
     } else {
-      return res.feeds.map((item, index) => `${index + 1}、${lodash.truncate(item.msg.text)}`).join('\n')
+      return res.feeds.map((item, index) => `${index + 1}、${_.truncate(item.msg.text)}`).join('\n')
     }
   }
 
@@ -197,7 +197,7 @@ export default new class {
     }).then(res => res.json()).catch(err => console.error(err))
     return {
       ...res,
-      text: lodash.truncate(fid.text)
+      text: _.truncate(fid.text)
     }
   }
 

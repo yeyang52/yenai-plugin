@@ -106,12 +106,7 @@ export default new class Pixiv {
     }
     // 请求api
     let api = `${this.domain}/rank`
-    let res = await request.get(api, { params }).then(res => res.json()).catch(err => console.log(err))
-
-    if (!res || res.error || lodash.isEmpty(res.illusts)) {
-      logger.mark('[椰奶Pixiv][排行榜]使用备用接口')
-      res = await request.get('https://api.obfs.dev/api/pixiv/rank', { params }).then(res => res.json())
-    }
+    let res = await request.get(api, { params }).then(res => res.json())
     if (res.error) throw Error(res.error.message)
     if (lodash.isEmpty(res.illusts)) throw Error('暂无数据，请等待榜单更新哦(。-ω-)zzz')
 

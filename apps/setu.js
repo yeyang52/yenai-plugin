@@ -67,11 +67,9 @@ export class SeSe extends plugin {
       e.reply(setu.startMsg)
     }
 
-    let res = await setu.setuapi(setu.getR18(e.group_id), num)
-
-    if (res.error) return e.reply(res.error)
-
-    setu.sendMsgOrSetCd(e, res)
+    await setu.setuApi(setu.getR18(e.group_id), num)
+      .then(res => setu.sendMsgOrSetCd(e, res))
+      .catch(err => e.reply(err.message))
   }
 
   // tag搜图
@@ -103,19 +101,13 @@ export class SeSe extends plugin {
 
     if (!tag) return e.reply('tag为空！！！', false, { at: true })
 
-    tag = tag.split(' ')
+    tag = tag.split(' ')?.map(item => item.split('|'))
 
     if (tag.length > 3) return e.reply('tag最多只能指定三个哦~', false, { at: true })
 
-    tag = tag.map((item) => `&tag=${item}`).join('')
-
-    // 接口
-    let res = await setu.setuapi(setu.getR18(e.group_id), num, tag)
-
-    if (res.error) return e.reply(res.error)
-
-    // 发送消息
-    setu.sendMsgOrSetCd(e, res)
+    await setu.setuApi(setu.getR18(e.group_id), num, tag)
+      .then(res => setu.sendMsgOrSetCd(e, res))
+      .catch(err => e.reply(err.message))
   }
 
   // 设置群撤回间隔和cd

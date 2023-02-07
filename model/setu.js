@@ -1,8 +1,8 @@
-import fetch from 'node-fetch'
 import { common, Pixiv } from './index.js'
-import { Data, Plugin_Path } from '../components/index.js'
+import { Data, Plugin_Path, Config } from '../components/index.js'
 import lodash from 'lodash'
 import { MSG } from '../tools/setu.js'
+import request from '../lib/request/request.js'
 export default new class setu {
   constructor () {
     this.root = `${Plugin_Path}/config/setu`
@@ -44,43 +44,35 @@ export default new class setu {
      * @param {String} tag 关键词
      * @return {Object}
      */
-  async setuapi (r18, num = 1, tag = '') {
+  async setuApi (r18, num = 1, tag = '') {
     let api = 'https://api.lolicon.app/setu/v2'
 
     let apicfg = Data.readJSON('api.json', this.root)
     if (apicfg.api) api = apicfg.api
 
-    let size = 'original'
-    if (num > 6) {
-      size = 'regular'
+    let parans = {
+      r18,
+      num,
+      tag,
+      proxy: Pixiv.proxy,
+      size: num > 6 ? 'regular' : 'original',
+      excludeAI: Config.pixiv.loliExcludeAI
     }
-    let url = `${api}?r18=${r18}&num=${num}${tag}&proxy=${Pixiv.proxy}&size=${size}`
-    let result = await fetch(url).then(res => res.json()).catch(err => console.log(err))
-    if (!result) {
-      logger.warn('[椰奶][setuapi]使用备用接口')
-      let apiReserve = `https://sex.nyan.xyz/api/v2/?r18=${r18}&num=${num}${tag}`
-      result = await fetch(apiReserve).then(res => res.json()).catch(err => console.log(err))
-      if (!result) {
-        return { error: '❎ 接口失效' }
-      }
-    }
-    if (lodash.isEmpty(result.data)) {
-      return { error: '没有找到相关的tag' }
-    }
+    let result = await request.post(api, { data: parans }).then(res => res.json())
+    if (lodash.isEmpty(result.data)) throw Error('没有找到相关的tag')
     // 消息
-    let msg = await Promise.all(result.data.map(async item => {
-      let { pid, title, tags, author, r18, urls, url } = item
+    return await Promise.all(result.data.map(async item => {
+      let { pid, title, tags, author, r18, urls } = item
       return [
         `${this.sendMsgs}\n`,
         `标题：${title}\n`,
         `画师：${author}\n`,
         `pid：${pid}\n`,
-        r18 !== undefined ? `r18：${r18}\n` : '',
+        `r18：${r18}\n`,
         `tag：${lodash.truncate(tags.join(','))}\n`,
-        await Pixiv.requestPixivImg(url || urls?.original || urls?.regular || urls?.small)
+        await Pixiv.requestPixivImg(urls?.original || urls?.regular || urls?.small)
       ]
     }))
-    return msg
   }
 
   /**

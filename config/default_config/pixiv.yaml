@@ -2,3 +2,6 @@
 pixivDirectConnection: false
 #pixiv图片反代，开启直连后反代服务则无效
 pixivImageProxy: i.pixiv.re
+#loliApi(无内鬼和椰奶tag) 是否排除 AI 作品
+loliExcludeAI: false
+

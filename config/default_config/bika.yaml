@@ -1,3 +1,7 @@
+#是否允许私聊使用
+allowPM: true
+#每名用户每日使用次数限制 0则无限制
+limit: 30
 #哔咔图片直连，直接使用哔咔原图发送不使用图片反代，国内则需使用代理
 bikaDirectConnection: false
 #哔咔图片反代

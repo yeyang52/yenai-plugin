@@ -48,7 +48,7 @@ export class NewBika extends plugin {
 
   /** 搜索 */
   async search (e) {
-    if (!this.handlePermission()) return e.reply(SWITCH_ERROR)
+    if (!await this.Authentication(e)) return
     e.reply(Pixiv.startMsg)
     let regRet = e.msg.match(searchReg)
     let page = common.translateChinaNum(regRet[5])
@@ -59,7 +59,7 @@ export class NewBika extends plugin {
 
   /** 漫画页面 */
   async comicPage (e) {
-    if (!this.handlePermission()) return e.reply(SWITCH_ERROR)
+    if (!await this.Authentication(e)) return
     e.reply(Pixiv.startMsg)
     let regRet = e.msg.match(comicPageReg)
     let page = common.translateChinaNum(regRet[4])
@@ -71,7 +71,7 @@ export class NewBika extends plugin {
 
   /** 类别列表 */
   async categories (e) {
-    if (!this.handlePermission()) return e.reply(SWITCH_ERROR)
+    if (!await this.Authentication(e)) return
     e.reply(Pixiv.startMsg)
     let msg = await Bika.categories().catch(err => { e.reply(err.message) })
     if (!msg) return
@@ -80,7 +80,7 @@ export class NewBika extends plugin {
 
   /** 漫画细节 */
   async comicDetail (e) {
-    if (!this.handlePermission()) return e.reply(SWITCH_ERROR)
+    if (!await this.Authentication(e)) return
     e.reply(Pixiv.startMsg)
     let id = e.msg.match(new RegExp(`#?${Prefix}(详情|细节)(.*)`))[3]
     let msg = await Bika.comicDetail(id).catch(err => { e.reply(err.message) })
@@ -110,9 +110,20 @@ export class NewBika extends plugin {
     e.reply(`✅ 已${/开启/.test(e.msg) ? '开启' : '关闭'}哔咔直连`)
   }
 
-  /** 权限判定 */
-  handlePermission () {
-    let { sesepro } = Config.getGroup(this.e.group_id)
-    return sesepro || this.e.isMaster
+  async Authentication (e) {
+    if (e.isMaster) return true
+    if (!Config.getGroup(e.group_id).sesepro) {
+      e.reply(SWITCH_ERROR)
+      return false
+    }
+    if (!Config.bika.allowPM && !e.isGroup) {
+      e.reply('主人已禁用私聊该功能')
+      return false
+    }
+    if (!await common.limit(e.user_id, 'bika', Config.bika.limit)) {
+      e.reply('[bika]您已达今日次数上限', true, { at: true })
+      return false
+    }
+    return true
   }
 }

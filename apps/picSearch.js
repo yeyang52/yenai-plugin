@@ -90,7 +90,7 @@ export class NewPicSearch extends plugin {
       e.reply('主人已禁用私聊该功能')
       return false
     }
-    if (!await common.limit(e.user_id, 'PicSearch', Config.picSearch.limit)) {
+    if (!await common.limit(e.user_id, 'picSearch', Config.picSearch.limit)) {
       e.reply('[PicSearch]您已达今日次数上限', true, { at: true })
       return false
     }

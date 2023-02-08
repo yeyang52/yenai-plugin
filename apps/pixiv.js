@@ -74,83 +74,72 @@ export class NewPixiv extends plugin {
 
   // pid搜图
   async searchPid (e) {
-    let { sese, sesepro } = Config.getGroup(e.group_id)
-    if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
+    if (!await this.Authentication(e, 'sese')) return
     e.reply(Pixiv.startMsg)
     let regRet = pidReg.exec(e.msg)
-    let res = await Pixiv.illust(regRet[1], !e.isMaster && !setu.getR18(e.group_id)).catch(err => { e.reply(err.message) })
-    if (!res) return
-    let { msg, img } = res
-    await e.reply(msg)
-    img.length == 1 ? common.recallsendMsg(e, img) : common.getRecallsendMsg(e, img, false)
+    await Pixiv.illust(regRet[1], !e.isMaster && !setu.getR18(e.group_id))
+      .then(async res => {
+        await e.reply(res.msg)
+        res.img.length == 1 ? common.recallsendMsg(e, res.img) : common.getRecallsendMsg(e, res.img, false)
+      })
+      .catch(err => e.reply(err.message))
   }
 
   // p站排行榜
   async pixivRanking (e) {
+    if (!await this.Authentication(e, 'sese')) return
     let regRet = rankingrReg.exec(e.msg)
-    let { sese, sesepro } = Config.getGroup(e.group_id)
-    if (((!sese && !sesepro) || (regRet[4] && !setu.getR18(e.group_id))) && !e.isMaster) {
-      return e.reply(SWITCH_ERROR)
-    }
+    if ((regRet[4] && !setu.getR18(e.group_id)) && !e.isMaster) return e.reply(SWITCH_ERROR)
+
     e.reply(Pixiv.startMsg)
 
     let page = common.translateChinaNum(regRet[6])
-    let res = await Pixiv.Rank(page, regRet[2], regRet[3], regRet[4]).catch(err => { e.reply(err.message) })
-    if (!res) return
-
-    common.getRecallsendMsg(e, res)
+    await Pixiv.Rank(page, regRet[2], regRet[3], regRet[4])
+      .then(res => common.getRecallsendMsg(e, res))
+      .catch(err => e.reply(err.message))
   }
 
   /** 关键词搜图 */
   async searchTags (e) {
     let regRet = tagReg.exec(e.msg)
-
-    let { sese, sesepro } = Config.getGroup(e.group_id)
-    if (((!sese && !sesepro) || (!sesepro && regRet[1])) && !e.isMaster) return e.reply(SWITCH_ERROR)
+    if (!await this.Authentication(e, 'sese')) return
+    if (!await this.Authentication(e, 'sesepro') && regRet[1]) return
 
     e.reply(Pixiv.startMsg)
 
     let page = common.translateChinaNum(regRet[4])
-    let res = await Pixiv[`searchTags${regRet[1] ? 'pro' : ''}`](regRet[2], page, !setu.getR18(e.group_id))
-      .catch(err => { e.reply(err.message) })
-    if (!res) return
-    common.getRecallsendMsg(e, res)
+    await Pixiv[`searchTags${regRet[1] ? 'pro' : ''}`](regRet[2], page, !setu.getR18(e.group_id))
+      .then(res => common.getRecallsendMsg(e, res))
+      .catch(err => e.reply(err.message))
   }
 
   /** 获取热门tag */
   async PopularTags (e) {
-    let { sese, sesepro } = Config.getGroup(e.group_id)
-    if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
-
+    if (!await this.Authentication(e, 'sese')) return
     e.reply(Pixiv.startMsg)
-
-    let res = await Pixiv.PopularTags().catch(err => { e.reply(err.message) })
-    if (!res) return
-    common.getRecallsendMsg(e, res)
+    await Pixiv.PopularTags()
+      .then(res => common.getRecallsendMsg(e, res))
+      .catch(err => e.reply(err.message))
   }
 
   /** 以uid搜图**/
   async searchUid (e) {
-    let { sese, sesepro } = Config.getGroup(e.group_id)
-    if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
+    if (!await this.Authentication(e, 'sese')) return
 
     e.reply(Pixiv.startMsg)
 
     let regRet = uidReg.exec(e.msg)
     let page = common.translateChinaNum(regRet[3])
 
-    let res = await Pixiv.userIllust(regRet[1], page, !setu.getR18(e.group_id)).catch(err => { e.reply(err.message) })
-    if (!res) return
-    common.getRecallsendMsg(e, res)
+    await Pixiv.userIllust(regRet[1], page, !setu.getR18(e.group_id))
+      .then(res => common.getRecallsendMsg(e, res))
+      .catch(err => e.reply(err.message))
   }
 
   // 随机原创插画
   async randomImg (e) {
-    let { sese, sesepro } = Config.getGroup(e.group_id)
-    if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
-
+    if (!await this.Authentication(e, 'sese')) return
     e.reply(Pixiv.startMsg)
-
     let regRet = randomImgReg.exec(e.msg)
 
     let num = regRet[1] || 1
@@ -159,48 +148,44 @@ export class NewPixiv extends plugin {
       num = 1
     }
     num = common.translateChinaNum(num)
-    let res = await Pixiv.randomImg(num).catch(err => { e.reply(err.message) })
-    if (!res) return
-    common.getRecallsendMsg(e, res)
+    await Pixiv.randomImg(num)
+      .then(res => common.getRecallsendMsg(e, res))
+      .catch(err => e.reply(err.message))
   }
 
   // 相关作品
   async related (e) {
-    let { sese, sesepro } = Config.getGroup(e.group_id)
-    if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
+    if (!await this.Authentication(e, 'sese')) return
 
     e.reply(Pixiv.startMsg)
 
     let regRet = e.msg.match(/\d+/)
-    let res = await Pixiv.related(regRet[0], !setu.getR18(e.group_id)).catch(err => { e.reply(err.message) })
-    if (!res) return
-    common.getRecallsendMsg(e, res)
+    await Pixiv.related(regRet[0], !setu.getR18(e.group_id))
+      .then(res => common.getRecallsendMsg(e, res))
+      .catch(err => e.reply(err.message))
   }
 
   // p站单图
   async pximg (e) {
     let ispro = /pro/.test(e.msg)
+    if (!await this.Authentication(e, 'sese')) return
+    if (!await this.Authentication(e, 'sesepro') && ispro) return
 
-    let { sese, sesepro } = Config.getGroup(e.group_id)
-    if (((!sese && !sesepro) || (!sesepro && ispro)) && !e.isMaster) return e.reply(SWITCH_ERROR)
-
-    let res = await Pixiv.pximg(ispro).catch(err => { e.reply(err.message) })
-    if (!res) return
-    ispro ? common.getRecallsendMsg(e, [res]) : common.recallsendMsg(e, res)
+    await Pixiv.pximg(ispro)
+      .then(res => ispro ? common.getRecallsendMsg(e, [res]) : common.recallsendMsg(e, res))
+      .catch(err => e.reply(err.message))
   }
 
   /** 搜索用户 */
   async searchUser (e) {
-    let { sese, sesepro } = Config.getGroup(e.group_id)
-    if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
+    if (!await this.Authentication(e, 'sese')) return
 
     e.reply(Pixiv.startMsg)
     let regRet = e.msg.match(searchUser)
     let page = common.translateChinaNum(regRet[3])
-    let res = await Pixiv.searchUser(regRet[1], page, !setu.getR18(e.group_id)).catch(err => { e.reply(err.message) })
-    if (!res) return
-
-    common.getRecallsendMsg(e, res)
+    await Pixiv.searchUser(regRet[1], page, !setu.getR18(e.group_id))
+      .then(res => common.getRecallsendMsg(e, res))
+      .catch(err => e.reply(err.message))
   }
 
   // 更换代理
@@ -225,5 +210,23 @@ export class NewPixiv extends plugin {
     if (!e.isMaster) return false
     Config.modify('pixiv', 'pixivDirectConnection', /开启/.test(e.msg))
     e.reply(`✅ 已${/开启/.test(e.msg) ? '开启' : '关闭'}Pixiv直连`)
+  }
+
+  async Authentication (e, type) {
+    if (e.isMaster) return true
+    if (!Config.pixiv.allowPM && !e.isGroup) {
+      e.reply('主人已禁用私聊该功能')
+      return false
+    }
+    const { sese, sesepro } = Config.getGroup(e.group_id)
+    if ((type == 'sese' && !sese && !sesepro) || (type == 'sesepro' && !sesepro)) {
+      e.reply(SWITCH_ERROR)
+      return false
+    }
+    if (!await common.limit(e.user_id, 'pixiv', Config.pixiv.limit)) {
+      e.reply('[Pixiv]您已达今日次数上限', true, { at: true })
+      return false
+    }
+    return true
   }
 }

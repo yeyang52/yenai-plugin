@@ -34,7 +34,7 @@ const configs = {
 }
 
 let managereg = new RegExp(`^#椰奶设置(${Object.keys(configs).join('|')})(开启|关闭)$`)
-export class NewConfig extends plugin {
+export class Setting extends plugin {
   constructor () {
     super({
       name: '椰奶配置',
@@ -203,11 +203,11 @@ export class NewConfig extends plugin {
   // 查看涩涩设置
   async View_Settings (e) {
     let set = setu.getSeSeConfig(e)
-    let data = Config.Notice
+    let { sese, sesepro } = Config.Notice
     e.reply([
       e.group_id ? `群${e.group_id}涩涩设置：\n` : '私聊涩涩设置：\n',
-            `sese：${data.sese ? '✅' : '❎'}\n`,
-            `sesepro：${data.sesepro ? '✅' : '❎'}\n`,
+            `sese：${sese ? '✅' : '❎'}\n`,
+            `sesepro：${sesepro ? '✅' : '❎'}\n`,
             `R17.9 + 0.1：${set.r18 ? '✅' : '❎'}\n`,
             `CD：${set.cd}s`,
             set.recall ? `\n撤回：${set.recall}s` : ''
@@ -222,7 +222,7 @@ export class NewConfig extends plugin {
 
   // 增删查头衔屏蔽词
   async NoTitle (e) {
-    let data = Config.NoTitle.Shielding_words
+    let data = Config.groupTitle.Shielding_words
     if (/查看/.test(e.msg)) {
       return e.reply(`现有的头衔屏蔽词如下：${data.join('\n')}`)
     }
@@ -241,7 +241,7 @@ export class NewConfig extends plugin {
     if (type) {
       if (!_.isEmpty(yes)) {
         for (let i of yes) {
-          Config.modifyarr('Shielding_words', 'Shielding_words', i, 'add')
+          Config.modifyarr('groupTitle', 'Shielding_words', i, 'add')
         }
         e.reply(`✅ 成功添加：${yes.join(',')}`)
       }
@@ -251,7 +251,7 @@ export class NewConfig extends plugin {
     } else {
       if (!_.isEmpty(no)) {
         for (let i of no) {
-          Config.modifyarr('Shielding_words', 'Shielding_words', i, 'del')
+          Config.modifyarr('groupTitle', 'Shielding_words', i, 'del')
         }
         e.reply(`✅ 成功删除：${no.join(',')}`)
       }
@@ -263,8 +263,8 @@ export class NewConfig extends plugin {
 
   // 修改头衔匹配模式
   async NoTitlepattern (e) {
-    let data = Config.NoTitle.Match_pattern ? 0 : 1
-    Config.modify('Shielding_words', 'Match_pattern', data)
+    let data = Config.groupTitle.Match_pattern ? 0 : 1
+    Config.modify('groupTitle', 'Match_pattern', data)
     e.reply(`✅ 已修改匹配模式为${data ? '精确' : '模糊'}匹配`)
   }
 }

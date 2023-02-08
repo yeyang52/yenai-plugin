@@ -1,3 +1,7 @@
+#是否允许私聊使用
+allowPM: true
+#每名用户每日搜索次数限制
+limit: 30
 #SauceNAO搜图apikey 请在 https://saucenao.com/user.php?page=search-api 进行获取
 SauceNAOApiKey:
 #SauceNAO搜图相似度低于这个百分比将被认定为相似度过低

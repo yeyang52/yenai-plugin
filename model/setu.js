@@ -7,11 +7,7 @@ export default new class setu {
   constructor () {
     this.root = `${Plugin_Path}/config/setu`
     // 默认配置
-    this.def = {
-      r18: 0,
-      recall: 120,
-      cd: 300
-    }
+    this.def = Config.setu.defSet
     // 存cd的变量
     this.temp = {}
     // 初始化
@@ -44,31 +40,30 @@ export default new class setu {
      * @param {String} tag 关键词
      * @return {Object}
      */
-  async setuApi (r18, num = 1, tag = '') {
+  async setuApi (r18, num = 1, tag = []) {
     let api = 'https://api.lolicon.app/setu/v2'
-
-    let apicfg = Data.readJSON('api.json', this.root)
-    if (apicfg.api) api = apicfg.api
-
+    const { imgSize, excludeAI } = Config.setu
+    const size = imgSize[_.max(Object.keys(imgSize).filter(item => num > item))] || 'original'
     let parans = {
       r18,
       num,
       tag,
       proxy: Pixiv.proxy,
-      size: num > 6 ? 'regular' : 'original',
-      excludeAI: Config.pixiv.loliExcludeAI
+      size,
+      excludeAI
     }
     let result = await request.post(api, { data: parans }).then(res => res.json())
     if (_.isEmpty(result.data)) throw Error('没有找到相关的tag')
     // 消息
     return await Promise.all(result.data.map(async item => {
-      let { pid, title, tags, author, r18, urls } = item
+      let { pid, title, tags, author, r18, urls, aiType } = item
       return [
         `${this.sendMsgs}\n`,
         `标题：${title}\n`,
         `画师：${author}\n`,
-        `pid：${pid}\n`,
-        `r18：${r18}\n`,
+        `Pid：${pid}\n`,
+        `R18：${r18}\n`,
+        `AI：${aiType ? aiType == 1 ? '是' : '否' : '未知'}\n`,
         `tag：${_.truncate(tags.join(','))}\n`,
         await Pixiv.requestPixivImg(urls?.original || urls?.regular || urls?.small)
       ]
@@ -98,7 +93,8 @@ export default new class setu {
      */
   setCdTime (userId, groupId, cd = this.getCfgCd(userId, groupId)) {
     let present = parseInt(Date.now() / 1000)
-
+    userId = userId - 0
+    groupId = groupId - 0
     if (!cd) return false
     if (groupId) {
       this.temp[userId + groupId] = present + cd
@@ -114,17 +110,24 @@ export default new class setu {
     return true
   }
 
-  // 获取剩余CD时间
-  getremainingCd (e) {
+  /**
+   * @description: 获取剩余CD时间
+   * @param {Number} userId QQ号
+   * @param {Number} groupId 群号不传则为私聊CD
+   * @return {String} 格式化后的时间
+   */
+  getRemainingCd (userId, groupId) {
+    userId = userId - 0
+    groupId = groupId - 0
     // 获取现在的时间并转换为秒
     let present = parseInt(new Date().getTime() / 1000)
     let over = 0
-    if (e.isGroup) {
-      if (!this.temp[e.user_id + e.group_id]) return false
-      over = (this.temp[e.user_id + e.group_id] - present)
+    if (groupId) {
+      if (!this.temp[userId + groupId]) return false
+      over = (this.temp[userId + groupId] - present)
     } else {
-      if (!this.temp[e.user_id]) return false
-      over = (this.temp[e.user_id] - present)
+      if (!this.temp[userId]) return false
+      over = (this.temp[userId] - present)
     }
     if (over <= 0) return false
     return this.Secondformat(over)

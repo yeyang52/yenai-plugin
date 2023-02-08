@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { Config } from '../components/index.js'
 import { setu, common } from '../model/index.js'
-import { NewConfig } from './set.js'
+import { Setting } from './setting.js'
 const SWITCH_ERROR = '主人没有开放这个功能哦(＊／ω＼＊)'
 
 let NumReg = '[一壹二两三四五六七八九十百千万亿\\d]+'
@@ -49,9 +49,9 @@ export class SeSe extends plugin {
   }
 
   async seturd (e) {
-    if (!Config.getGroup(e.group_id).sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
+    if (!await this.Authentication(e)) return
 
-    let iscd = setu.getremainingCd(e)
+    let iscd = setu.getRemainingCd(e.user_id, e.group_id)
 
     if (iscd) return e.reply(` ${setu.CDMsg}你的CD还有${iscd}`, false, { at: true })
 
@@ -74,16 +74,13 @@ export class SeSe extends plugin {
 
   // tag搜图
   async setutag (e) {
-    if (!Config.getGroup(e.group_id).sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
+    if (!await this.Authentication(e)) return
 
-    let iscd = setu.getremainingCd(e)
-
+    let iscd = setu.getRemainingCd(e.user_id, e.group_id)
     if (iscd) return e.reply(` ${setu.CDMsg}你的CD还有${iscd}`, false, { at: true })
 
     let tag = e.msg.replace(/#|椰奶tag/g, '').trim()
-
     let num = e.msg.match(new RegExp(`(${NumReg})张`))
-
     if (!num) {
       num = 1
     } else {
@@ -100,14 +97,29 @@ export class SeSe extends plugin {
     }
 
     if (!tag) return e.reply('tag为空！！！', false, { at: true })
-
     tag = tag.split(' ')?.map(item => item.split('|'))
-
     if (tag.length > 3) return e.reply('tag最多只能指定三个哦~', false, { at: true })
 
     await setu.setuApi(setu.getR18(e.group_id), num, tag)
       .then(res => setu.sendMsgOrSetCd(e, res))
       .catch(err => e.reply(err.message))
+  }
+
+  async Authentication (e) {
+    if (e.isMaster) return true
+    if (!Config.setu.allowPM && !e.isGroup) {
+      e.reply('主人已禁用私聊该功能')
+      return false
+    }
+    if (!Config.getGroup(e.group_id).sesepro) {
+      e.reply(SWITCH_ERROR)
+      return false
+    }
+    if (!await common.limit(e.user_id, 'setu', Config.setu.limit)) {
+      e.reply('[setu]您已达今日次数上限', true, { at: true })
+      return false
+    }
+    return true
   }
 
   // 设置群撤回间隔和cd
@@ -116,14 +128,14 @@ export class SeSe extends plugin {
     num = common.translateChinaNum(num[0])
     let type = /撤回间隔/.test(e.msg)
     setu.setGroupRecallTimeAndCd(e.group_id, num, type)
-    new NewConfig().View_Settings(e)
+    new Setting().View_Settings(e)
   }
 
   // 开启r18
   async setsese (e) {
     let isopen = !!/开启/.test(e.msg)
     setu.setR18(e.group_id, isopen)
-    new NewConfig().View_Settings(e)
+    new Setting().View_Settings(e)
   }
 
   // 艾特设置cd

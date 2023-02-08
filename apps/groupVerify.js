@@ -36,7 +36,7 @@ export class NewGroupVerify extends plugin {
         }
       ]
     })
-    this.verifycfg = Config.verifycfg
+    this.verifycfg = Config.groupverify
   }
 
   // 重新验证
@@ -133,7 +133,7 @@ export class NewGroupVerify extends plugin {
 // 进群监听
 Bot.on('notice.group.increase', async (e) => {
   logger.mark(`[椰奶][进群验证]收到${e.user_id}的进群事件`)
-  let { openGroup, DelayTime } = Config.verifycfg
+  let { openGroup, DelayTime } = Config.groupverify
 
   if (!openGroup.includes(e.group_id)) return
   if (!e.group.is_admin && !e.group.is_owner) return
@@ -146,7 +146,7 @@ Bot.on('notice.group.increase', async (e) => {
 
 // 答案监听
 Bot.on('message.group', async (e) => {
-  let { openGroup, mode, SuccessMsgs } = Config.verifycfg
+  let { openGroup, mode, SuccessMsgs } = Config.groupverify
 
   if (!openGroup.includes(e.group_id)) return
 
@@ -210,7 +210,7 @@ async function verify (user_id, group_id, e) {
   group_id = Number(group_id)
   logger.mark(`[椰奶][进群验证]进行${user_id}的验证`)
 
-  const { times, range, time, remindAtLastMinute } = Config.verifycfg
+  const { times, range, time, remindAtLastMinute } = Config.groupverify
   const operator = ops[_.random(0, 1)]
 
   let [m, n] = [_.random(range.min, range.max), _.random(range.min, range.max)]

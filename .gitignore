@@ -3,3 +3,4 @@ data/
 *_test.js
 test.*
 *.log
+.vscode/

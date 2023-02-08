@@ -332,12 +332,12 @@ export class GroupAdmin extends plugin {
       '啾咪٩(๑•̀ω•́๑)۶',
       '弃旧恋新了么笨蛋( 。ớ ₃ờ)ھ'
     ]
-    // if (!e.group.is_owner) return false
+    if (!e.group.is_owner) return false
 
     let Title = e.msg.replace(/#|申请头衔/g, '')
     // 屏蔽词处理
-    let { Match_pattern, Shielding_words } = Config.NoTitle
-    console.log(Shielding_words)
+    let { Match_pattern, Shielding_words } = Config.groupTitle
+
     Shielding_words = _.compact(Shielding_words)
     if (!e.isMaster && !_.isEmpty(Shielding_words)) {
       if (Match_pattern) {

@@ -57,13 +57,13 @@ class Config {
   }
 
   /** 进群验证配置 */
-  get verifycfg () {
+  get groupverify () {
     return this.getDefOrConfig('groupverify')
   }
 
   /** 头衔屏蔽词 */
-  get NoTitle () {
-    return this.getDefOrConfig('Shielding_words')
+  get groupTitle () {
+    return this.getDefOrConfig('groupTitle')
   }
 
   /** 加群通知 */
@@ -86,9 +86,14 @@ class Config {
     return this.getDefOrConfig('bika')
   }
 
-  /** 搜图配置 */
+  /** 搜图 */
   get picSearch () {
     return this.getDefOrConfig('picSearch')
+  }
+
+  /** setu */
+  get setu () {
+    return this.getDefOrConfig('setu')
   }
 
   /** 默认配置和用户配置 */

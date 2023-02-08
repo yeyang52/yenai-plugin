@@ -207,6 +207,7 @@ A：请参考[此教程](https://docs.qq.com/doc/p/108e5d788607d988ac62e1512552c
 - [Yunzai-Bot](https://gitee.com/Le-niao/Yunzai-Bot)
 - [cq-picsearcher-bot](https://github.com/Tsuk1ko/cq-picsearcher-bot)
 - [nonebot-plugin-picstatus](https://github.com/lgc2333/nonebot-plugin-picstatus)
+- [HibiAPI](https://github.com/mixmoe/HibiAPI)
 - [SauceNAO](https://saucenao.com/)
 - [Ascii2D](https://ascii2d.net/)
 -  [trace.moe](https://trace.moe) ([GitHub](https://github.com/soruly/trace.moe))

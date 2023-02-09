@@ -172,30 +172,7 @@ export default new class {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.46'
       })
     )
-    return [title, ...msg]
-  }
-
-  /** @deprecated use `funApi.heisiwu()` */
-  async heisiwux (type, page) {
-    // 请求主页面
-    let url = `http://hs.heisiwu.com/${type}/page/${_.random(1, page)}`
-    let homePage = await request.get(url).then(res => res.text())
-    // 解析html
-    let childPageUrlList = homePage.match(/<a target(.*?)html/g)
-    let childPageUrl = _.sample(childPageUrlList).match(/href="(.*)/)
-    // 请求图片页面
-    let childPage = await request.get(childPageUrl[1]).then(res => res.text())
-    // 获取html列表
-    let imghtml = childPage.match(/<img loading(.*?)jpg/g)
-    // 提取图片并转换
-    return imghtml.map(item => {
-      item = segment.image(item.match(/src="(.*)/)[1])
-      item.headers = {
-        Referer: 'http://hs.heisiwu.com',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.46'
-      }
-      return item
-    })
+    return [title, ..._.take(msg, 30)]
   }
 
   async pandadiu (keywords = '') {
@@ -218,9 +195,9 @@ export default new class {
     const title = $('div.title > h1').text()
     return [
       title,
-      ...imgs.map(item => {
+      ..._.take(imgs.map(item => {
         return segment.image(new RegExp(domain).test(item) ? item : domain + item)
-      })
+      }), 30)
     ]
   }
 
@@ -257,6 +234,6 @@ export default new class {
     const $ = cheerio.load(details)
     const imgs = _.map($('div.md-text.mb20.f-16 > p > img'), item => segment.image(item.attribs.src))
     const title = $('h1').text().trim()
-    return [title, ...imgs]
+    return [title, ..._.take(imgs, 30)]
   }
 }()

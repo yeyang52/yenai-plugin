@@ -1,5 +1,5 @@
 #是否只有主人能用
-isMaster: false
+isMasterUse: false
 #是否允许私聊使用
 allowPM: true
 #每名用户每日搜索次数限制

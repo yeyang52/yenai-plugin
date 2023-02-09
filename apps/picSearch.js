@@ -86,8 +86,11 @@ export class NewPicSearch extends plugin {
 
   async Authentication (e) {
     if (e.isMaster) return true
-    const { allowPM, limit, isMaster } = Config.picSearch
-    if (isMaster) return false
+    const { allowPM, limit, isMasterUse } = Config.picSearch
+    if (isMasterUse) {
+      e.reply('主人没有开放这个功能哦(＊／ω＼＊)')
+      return false
+    }
     if (!allowPM && !e.isGroup) {
       e.reply('主人已禁用私聊该功能')
       return false

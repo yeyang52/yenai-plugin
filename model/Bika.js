@@ -49,13 +49,14 @@ export default new (class {
       })
     let { docs, total, page: pg, pages } = res.data.comics
     if (total == 0) throw Error(`未找到作品，换个${type.alias[0]}试试吧`)
-    return [
+    let msg = [
       `共找到${total}个关于「${keyword}」${type.alias[0]}的作品`,
-      `当前为第${pg}页，共${pages}页`,
-      ...await Promise.all(docs.map(async (item) => {
-        let { title, tags, categories, author, description = '未知', likesCount, thumb, _id, finished } = item
-        return [
-          `id：${_id}\n`,
+      `当前为第${pg}页，共${pages}页`
+    ]
+    for (let item of docs) {
+      let { title, tags, categories, author, description = '未知', likesCount, thumb, _id, finished } = item
+      msg.push(_id)
+      msg.push([
           `标题：${title}\n`,
           `作者：${author}\n`,
           `描述：${_.truncate(description)}\n`,
@@ -64,9 +65,9 @@ export default new (class {
           `完结：${finished}\n`,
           tags ? `tag：${_.truncate(tags.join(','))}\n` : '',
           await this.requestBikaImg(thumb.fileServer, thumb.path)
-        ]
-      }))
-    ]
+      ])
+    }
+    return msg
   }
 
   /**

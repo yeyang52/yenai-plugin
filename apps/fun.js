@@ -4,8 +4,7 @@ import { segment } from 'oicq'
 import _ from 'lodash'
 import { Config } from '../components/index.js'
 import { common, uploadRecord, QQApi, funApi } from '../model/index.js'
-
-const heisitype = {
+const heisiType = {
   白丝: { type: 'baisi', page: 17 },
   黑丝: { type: 'heisi', page: 43 },
   巨乳: { type: 'juru', page: 8 },
@@ -63,7 +62,7 @@ export class Fun extends plugin {
           fnc: 'coser'
         },
         {
-          reg: `#?来点(${Object.keys(heisitype).join('|')})$`,
+          reg: `#?来点(${Object.keys(heisiType).join('|')})$`,
           fnc: 'heisiwu'
         },
         {
@@ -243,29 +242,9 @@ export class Fun extends plugin {
     e.reply(START_EXECUTION)
 
     let keywords = e.msg.replace(/#|acg/g, '').trim()
-    let domain = 'https://www.pandadiu.com'
-    let url = ''
-    if (keywords) {
-      url = `${domain}/index.php?m=search&c=index&a=init&typeid=1&siteid=1&q=${keywords}`
-    } else {
-      url = `${domain}/list-31-${_.random(1, 177)}.html`
-    }
-    // 搜索页面
-    let search = await fetch(url).then(res => res.text()).catch(err => console.error(err))
-    let searchlist = search.match(/<a href=".*?" target="_blank">/g)
-      ?.map(item => item.match(/<a href="(.*?)"/)[1])
-    // 无则返回
-    if (_.isEmpty(searchlist)) return e.reply('哎呦，木有找到', true)
-
-    // 图片页面
-    let imgurl = domain + _.sample(searchlist)
-    let imghtml = await fetch(imgurl).then(res => res.text()).catch(err => console.error(err))
-    // 处理图片
-    let imglist = imghtml.match(/<img src=".*?" (style|title)=.*?\/>/g)
-      ?.map(item => (!/www.pandadiu.com/.test(item) ? domain : '') + (item.match(/<img src="(.*?)".*/)[1]))
-      ?.map(item => segment.image(item)) || false
-    if (!imglist) return e.reply(API_ERROR)
-    common.getRecallsendMsg(e, imglist)
+    await funApi.pandadiu(keywords)
+      .then(res => common.getRecallsendMsg(e, res))
+      .catch(err => e.reply(err.message))
   }
 
   // 黑丝
@@ -274,88 +253,21 @@ export class Fun extends plugin {
 
     e.reply(START_EXECUTION)
     // 获取类型
-    let { type, page } = heisitype[e.msg.match(/#?来点(.*)/)[1]]
-    // 请求主页面
-    let url = `http://hs.heisiwu.com/${type}/page/${_.random(1, page)}`
-    console.log(url)
-    let homePage = await fetch(url).then(res => res.text()).catch(err => console.error(err))
-    if (!homePage) return e.reply(API_ERROR)
-    // 解析html
-    let childPageUrlList = homePage.match(/<a target(.*?)html/g)
-    let childPageUrl = _.sample(childPageUrlList).match(/href="(.*)/)
-    // 请求图片页面
-    let childPage = await fetch(childPageUrl[1]).then(res => res.text()).catch(err => console.error(err))
-    if (!childPage) return e.reply(API_ERROR)
-    // 获取html列表
-    let imghtml = childPage.match(/<img loading(.*?)jpg/g)
-    // 提取图片并转换
-    let imglist = imghtml.map(item => {
-      item = segment.image(item.match(/src="(.*)/)[1])
-      item.headers = {
-        Referer: 'http://hs.heisiwu.com',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.46'
-      }
-      return item
-    })
-    // 发送消息
-    common.getRecallsendMsg(e, _.take(imglist, 20))
+    const { type, page } = heisiType[e.msg.match(/#?来点(.*)/)[1]]
+    await funApi.heisiwu(type, page)
+      .then(res => common.getRecallsendMsg(e, _.take(res, 20)))
+      .catch(err => e.reply(err.message))
   }
 
   // 萌堆
   async mengdui (e) {
     if (!Config.getGroup(e.group_id).sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
-    let domain = 'https://b8m9.com'
     // 开始执行
     e.reply(START_EXECUTION)
-    let url = ''
-    let appoint = ''
-    if (/#?来点神秘图s/.test(e.msg)) {
-      let keywords = e.msg.match(/#?来点神秘图s(.*)/)[1]
-      let mengduipage = JSON.parse(await redis.get('yenai:mengduipage')) || {}
-      let randomPage = _.random(1, mengduipage[keywords] || 1)
-      let searchurl = `${domain}/search.php?mdact=community&q=${keywords}&page=${randomPage}`
-      let search = await fetch(searchurl).then(res => res.text())
-      let searchList = _.uniq(search.match(/https?:\/\/.*?\.com\/post\/\d+.html/g))
-      if (_.isEmpty(searchList)) {
-        let ERROR = search.match(/抱歉，未找到(.*)相关内容，建议简化一下搜索的关键词|搜索频率太快，请等一等再尝试！/)
-        return ERROR ? e.reply(ERROR[0]?.replace(/<.*?>/g, '') || '未找到相关内容') : e.reply('未找到相关内容')
-      }
-      // 保存该关键词的最大页数
-      let searchpage = Math.max(...search.match(/<a href=".*?" class="(now-page)?">(\d+)<\/a>/g)?.map(item => item.match(/<a href=".*?" class="(now-page)?">(\d+)<\/a>/)[2])) || 1
-      mengduipage[keywords] = searchpage
-      await redis.set('yenai:mengduipage', JSON.stringify(mengduipage))
-
-      url = _.sample(searchList)
-    } else {
-      appoint = e.msg.match(/\d+/g)
-      let random
-      if (!appoint) {
-        random = _.random(1, 11687)
-        while (_.inRange(random, 7886, 10136)) {
-          random = _.random(1, 11687)
-        }
-      } else {
-        random = appoint[0]
-      }
-      url = `${domain}/post/${random}.html`
-    }
-
-    let res = await fetch(url).then(res => res.text()).catch(err => console.error(err))
-    let div = res.match(/<div class="md-text mb20 f-16">[\s\S]+?<\/div>/)
-    let title = res.match(/<h1.*?>(.*?)</)
-
-    if (!div) return e.reply('未获取到图片，请稍后重试')
-    let list = div[0].match(/https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*/ig)
-    if (!list) {
-      if (!appoint) {
-        return e.reply('可能超过今日限制，请稍后再试', true)
-      } else {
-        return e.reply('请检查指定是否正确', true)
-      }
-    }
-    let msg = _.take(list.map(item => segment.image(item)), 30)
-    if (title) msg.unshift(title[1])
-    common.getRecallsendMsg(e, msg)
+    let regRet = e.msg.match(/#?来点神秘图(s)?(.*)/)
+    await funApi.mengdui(regRet[2], regRet[1])
+      .then(res => common.getRecallsendMsg(e, res))
+      .catch(err => e.reply(err.message))
   }
 
   // 铃声多多

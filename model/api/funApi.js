@@ -1,7 +1,8 @@
 import fetch from 'node-fetch'
 import md5 from 'md5'
 import _ from 'lodash'
-
+import request from '../../lib/request/request.js'
+import { segment } from 'oicq'
 const API_ERROR = '出了点小问题，待会再试试吧'
 
 export default new class {
@@ -74,7 +75,6 @@ export default new class {
     if (to != 'auto') to = this.langtype.find(item => item.label == to)?.code
     if (from != 'auto') from = this.langtype.find(item => item.label == from)?.code
     if (!to || !from) return `未找到翻译的语种，支持的语言为：\n${this.langtype.map(item => item.label).join('，')}\n示例：#翻译你好 - 自动翻译\n#日语翻译你好 - 指定翻译为语种\n#中文-日语翻译你好 - 指定原语言翻译为指定语言`
-    console.log(to, from)
     // 翻译结果为空的提示
     const RESULT_ERROR = '找不到翻译结果'
     // API 请求错误提示
@@ -144,5 +144,119 @@ export default new class {
       console.log(error)
       return { error: API_ERROR }
     }
+  }
+
+  /**
+   * @description: 黑丝屋
+   * @param {data.heisiType} type 类型
+   * @param {Number} page 页数
+   * @return {*}
+   */
+  async heisiwu (type, page) {
+    const { load } = await import('cheerio')
+      .catch(() => {
+        throw Error('未检测到依赖cheerio，请安装后再使用该功能，安装命令：pnpm add cheerio -w 或 pnpm install -P')
+      })
+    const url = `http://hs.heisiwu.com/${type}/page/${_.random(1, page)}`
+    const home = await request.get(url).then(res => res.text())
+    const href = _.sample(_.map(load(home)('article > a'), (item) => item.attribs.href))
+    if (_.isEmpty(href)) throw Error('获取页面失败')
+    const details = await request.get(href).then(res => res.text())
+    const $ = load(details)
+    const imgs = _.map($('.alignnone'), (item) => item.attribs.src)
+    if (_.isEmpty(imgs)) throw Error('获取图片失败')
+    const title = $('.article-content > p:nth-child(1)').text()
+    const msg = imgs.map(item => segment.image(item, undefined, undefined,
+      {
+        Referer: 'http://hs.heisiwu.com',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.46'
+      })
+    )
+    return [title, ...msg]
+  }
+
+  /** @deprecated use `funApi.heisiwu()` */
+  async heisiwux (type, page) {
+    // 请求主页面
+    let url = `http://hs.heisiwu.com/${type}/page/${_.random(1, page)}`
+    let homePage = await request.get(url).then(res => res.text())
+    // 解析html
+    let childPageUrlList = homePage.match(/<a target(.*?)html/g)
+    let childPageUrl = _.sample(childPageUrlList).match(/href="(.*)/)
+    // 请求图片页面
+    let childPage = await request.get(childPageUrl[1]).then(res => res.text())
+    // 获取html列表
+    let imghtml = childPage.match(/<img loading(.*?)jpg/g)
+    // 提取图片并转换
+    return imghtml.map(item => {
+      item = segment.image(item.match(/src="(.*)/)[1])
+      item.headers = {
+        Referer: 'http://hs.heisiwu.com',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.46'
+      }
+      return item
+    })
+  }
+
+  async pandadiu (keywords = '') {
+    const { load } = await import('cheerio')
+      .catch(() => {
+        throw Error('未检测到依赖cheerio，请安装后再使用该功能，安装命令：pnpm add cheerio -w 或 pnpm install -P')
+      })
+    let domain = 'https://www.pandadiu.com'
+    let url = ''
+    if (keywords) {
+      url = `${domain}/index.php?m=search&c=index&a=init&typeid=1&siteid=1&q=${keywords}`
+    } else {
+      url = `${domain}/list-31-${_.random(1, 177)}.html`
+    }
+    const home = await request.get(url).then(res => res.text())
+    const href = _.sample(_.map(load(home)('div.cover.mod_imgLight > a, li.wrap > div > a'), item => item.attribs.href))
+    const details = await request.get(domain + href).then(res => res.text())
+    const $ = load(details)
+    const imgs = _.map($('div.con > p > img'), item => item.attribs.src)
+    const title = $('div.title > h1').text()
+    return [
+      title,
+      ...imgs.map(item => {
+        return segment.image(new RegExp(domain).test(item) ? item : domain + item)
+      })
+    ]
+  }
+
+  async mengdui (keywords, isSearch) {
+    const cheerio = await import('cheerio')
+      .catch(() => {
+        throw Error('未检测到依赖cheerio，请安装后再使用该功能，安装命令：pnpm add cheerio -w 或 pnpm install -P')
+      })
+    const domain = 'https://b6u8.com'
+    let href = ''
+    if (isSearch) {
+      const mengduipage = JSON.parse(await redis.get('yenai:mengduipage')) || {}
+      const randomPage = _.random(1, mengduipage[keywords] || 1)
+      const url = `${domain}/search.php?mdact=community&q=${keywords}&page=${randomPage}`
+      const home = await request.get(url).then(res => res.text())
+      const $ = cheerio.load(home)
+      href = _.sample(_.map($('div.md-wide > ul > li > a'), item => item.attribs.href))
+      if (!href) throw Error($('div.no-tips > p:nth-of-type(1)').text().trim())
+      const maxPage = $('div.pagebar.md-flex-wc.mb20 > a:not(:last-child)').length
+      mengduipage[keywords] = maxPage
+      await redis.set('yenai:mengduipage', JSON.stringify(mengduipage))
+    } else {
+      let random = keywords
+      if (!random) {
+        do {
+          random = _.random(1, 11687)
+        } while (
+          _.inRange(random, 7886, 10136)
+        )
+      }
+      href = `${domain}/post/${random}.html`
+    }
+    const details = await request.get(href).then(res => res.text())
+    const $ = cheerio.load(details)
+    const imgs = _.map($('div.md-text.mb20.f-16 > p > img'), item => segment.image(item.attribs.src))
+    const title = $('h1').text().trim()
+    return [title, ...imgs]
   }
 }()

@@ -86,11 +86,13 @@ export class NewPicSearch extends plugin {
 
   async Authentication (e) {
     if (e.isMaster) return true
-    if (!Config.picSearch.allowPM && !e.isGroup) {
+    const { allowPM, limit, isMaster } = Config.picSearch
+    if (isMaster) return false
+    if (!allowPM && !e.isGroup) {
       e.reply('主人已禁用私聊该功能')
       return false
     }
-    if (!await common.limit(e.user_id, 'picSearch', Config.picSearch.limit)) {
+    if (!await common.limit(e.user_id, 'picSearch', limit)) {
       e.reply('[PicSearch]您已达今日次数上限', true, { at: true })
       return false
     }

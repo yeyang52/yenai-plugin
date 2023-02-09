@@ -11,6 +11,7 @@ export default new (class {
         'User-Agent': 'Yenai-Plugin-bika'
       }
     }
+    this.searchCaching = null
   }
 
   get imgproxy () {
@@ -49,15 +50,16 @@ export default new (class {
       })
     let { docs, total, page: pg, pages } = res.data.comics
     if (total == 0) throw Error(`未找到作品，换个${type.alias[0]}试试吧`)
+    this.searchCaching = docs
     let msg = [
       `共找到${total}个关于「${keyword}」${type.alias[0]}的作品`,
       `当前为第${pg}页，共${pages}页`
     ]
-    for (let item of docs) {
+    for (let [index, item] of docs.entries()) {
       let { title, tags, categories, author, description = '未知', likesCount, thumb, _id, finished } = item
       msg.push(_id)
       msg.push([
-          `标题：${title}\n`,
+          `${index + 1}、${title}\n`,
           `作者：${author}\n`,
           `描述：${_.truncate(description)}\n`,
           `分类：${categories.join('，')}\n`,

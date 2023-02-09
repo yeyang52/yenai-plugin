@@ -26,6 +26,10 @@ export class NewBika extends plugin {
           fnc: 'comicPage'
         },
         {
+          reg: `^#?${Prefix}看\\d+$`,
+          fnc: 'viewComicPage'
+        },
+        {
           reg: `^#?${Prefix}类别列表$`,
           fnc: 'categories'
         },
@@ -52,9 +56,9 @@ export class NewBika extends plugin {
     e.reply(Pixiv.startMsg)
     let regRet = e.msg.match(searchReg)
     let page = common.translateChinaNum(regRet[5])
-    let msg = await Bika.search(regRet[3], page, regRet[2]).catch(err => { e.reply(err.message) })
-    if (!msg) return
-    common.getRecallsendMsg(e, msg)
+    await Bika.search(regRet[3], page, regRet[2])
+      .then(res => common.getRecallsendMsg(e, res))
+      .catch(err => { e.reply(err.message) })
   }
 
   /** 漫画页面 */
@@ -64,18 +68,29 @@ export class NewBika extends plugin {
     let regRet = e.msg.match(comicPageReg)
     let page = common.translateChinaNum(regRet[4])
     let order = common.translateChinaNum(regRet[6])
-    let msg = await Bika.comicPage(regRet[2], page, order).catch(err => { e.reply(err.message) })
-    if (!msg) return
-    common.getRecallsendMsg(e, msg)
+    await Bika.comicPage(regRet[2], page, order)
+      .then(res => common.getRecallsendMsg(e, res))
+      .catch(err => { e.reply(err.message) })
+  }
+
+  async viewComicPage (e) {
+    if (!await this.Authentication(e)) return
+    if (!Bika.searchCaching) return e.reply('请先搜索后再使用此命令')
+    let number = e.msg.match(/\d+/) - 1
+    let id = Bika.searchCaching[number]._id
+    if (!id) return e.reply('未获取到目标作品，请使用id进行查看')
+    await Bika.comicPage(id)
+      .then(res => common.getRecallsendMsg(e, res))
+      .catch(err => { e.reply(err.message) })
   }
 
   /** 类别列表 */
   async categories (e) {
     if (!await this.Authentication(e)) return
     e.reply(Pixiv.startMsg)
-    let msg = await Bika.categories().catch(err => { e.reply(err.message) })
-    if (!msg) return
-    common.getRecallsendMsg(e, msg)
+    await Bika.categories()
+      .then(res => common.getRecallsendMsg(e, res))
+      .catch(err => { e.reply(err.message) })
   }
 
   /** 漫画细节 */
@@ -83,9 +98,9 @@ export class NewBika extends plugin {
     if (!await this.Authentication(e)) return
     e.reply(Pixiv.startMsg)
     let id = e.msg.match(new RegExp(`#?${Prefix}(详情|细节)(.*)`))[3]
-    let msg = await Bika.comicDetail(id).catch(err => { e.reply(err.message) })
-    if (!msg) return
-    common.getRecallsendMsg(e, msg, { oneMsg: true })
+    await Bika.comicDetail(id)
+      .then(res => common.getRecallsendMsg(e, res, { oneMsg: true }))
+      .catch(err => { e.reply(err.message) })
   }
 
   /** 图片质量 */

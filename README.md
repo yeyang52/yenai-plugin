@@ -253,7 +253,7 @@ A：请参考[此教程](https://docs.qq.com/doc/p/108e5d788607d988ac62e1512552c
 
 QQ：746659424
 
-群号：[254974507](https://jq.qq.com/?_wv=1027&k=o8FTig5Z)
+群号：254974507(已锁)
 
 投喂：[爱发电](https://afdian.net/a/yeyang52)
 

@@ -1,7 +1,7 @@
-
 <div align="center">
-  <img src="resources/img/tb.png" alt="看板娘" width = "400">
+  <img src="resources/img/kbn.png" alt="看板娘" width = "350">
   </a><br>
+
 
 
 

@@ -6,3 +6,9 @@ pixivDirectConnection: false
 pixivImageProxy: i.pixiv.re
 #每名用户每日次数限制（0 则无限制）
 limit: 30
+
+# Pixiv 登录凭证刷新令牌 (Refresh Token)
+# 获取方法请参考: https://github.com/mixmoe/HibiAPI/issues/53
+refresh_token: 
+
+language: zh-cn # 返回语言, 会影响标签的翻译

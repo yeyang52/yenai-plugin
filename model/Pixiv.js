@@ -5,12 +5,21 @@ import moment from 'moment'
 import { rankType, MSG } from '../tools/pixiv.js'
 import request from '../lib/request/request.js'
 import { Config } from '../components/index.js'
+import PixivApi from './Pixiv/api.js'
 /** API请求错误文案 */
 
 export default new class Pixiv {
   constructor () {
     this.ranktype = rankType
     this.domain = 'http://api.liaobiao.top/api/pixiv'
+    this.PixivApi = null
+    this.login()
+  }
+
+  async login () {
+    if (Config.pixiv.refresh_token) {
+      this.PixivApi = new PixivApi(Config.pixiv.refresh_token)
+    }
   }
 
   get headers () {
@@ -41,7 +50,12 @@ export default new class Pixiv {
      */
   async illust (ids, filter = false) {
     const params = { id: ids }
-    let res = await request.get(`${this.domain}/illust`, { params }).then(res => res.json())
+    let res = null
+    if (this.PixivApi) {
+      res = await this.PixivApi.illust(params)
+    } else {
+      res = await request.get(`${this.domain}/illust`, { params }).then(res => res.json())
+    }
     if (res.error) throw Error(res.error?.user_message || '无法获取数据')
     let illust = this.format(res.illust)
     let { id, title, user, tags, total_bookmarks, total_view, url, create_date, x_restrict, illust_ai_type } = illust
@@ -99,14 +113,17 @@ export default new class Pixiv {
 
     if (!date) date = moment().subtract(moment().utcOffset(9).hour() >= 12 ? 1 : 2, 'days').format('YYYY-MM-DD')
 
-    let params = {
+    const params = {
       mode: type,
       page,
       date
     }
-    // 请求api
-    let api = `${this.domain}/rank`
-    let res = await request.get(api, { params }).then(res => res.json())
+    let res = null
+    if (this.PixivApi) {
+      res = await this.PixivApi.rank(type, date, page)
+    } else {
+      res = await request.get(`${this.domain}/rank`, { params }).then(res => res.json())
+    }
     if (res.error) throw Error(res.error.message)
     if (_.isEmpty(res.illusts)) throw Error('暂无数据，请等待榜单更新哦(。-ω-)zzz')
 
@@ -195,7 +212,12 @@ export default new class Pixiv {
       page,
       order: 'popular_desc'
     }
-    let res = await request.get(`${this.domain}/search`, { params }).then(res => res.json())
+    let res = null
+    if (this.PixivApi) {
+      res = await this.PixivApi.search(params)
+    } else {
+      res = await request.get(`${this.domain}/search`, { params }).then(res => res.json())
+    }
     if (res.error) throw Error(res.error.message)
     if (_.isEmpty(res.illusts)) throw Error('宝~没有数据了哦(๑＞︶＜)و')
 
@@ -231,9 +253,13 @@ export default new class Pixiv {
      * @return {Array}
      */
   async PopularTags () {
-    let api = `${this.domain}/tags`
+    let res = null
+    if (this.PixivApi) {
+      res = await this.PixivApi.tags()
+    } else {
+      res = await fetch(`${this.domain}/tags`).then(res => res.json())
+    }
 
-    let res = await fetch(api).then(res => res.json())
     if (!res.trend_tags) throw Error('呜呜呜，没有获取到数据(๑ १д१)')
 
     let list = []
@@ -262,15 +288,29 @@ export default new class Pixiv {
   async userIllust (keyword, page = 1, isfilter = true) {
     // 关键词搜索
     if (!/^\d+$/.test(keyword)) {
-      let wordapi = `${this.domain}/search_user?word=${keyword}`
-      let wordlist = await request.get(wordapi).then(res => res.json())
-
+      let wordlist = null
+      if (this.PixivApi) {
+        wordlist = await this.PixivApi.search_user({ word: keyword })
+      } else {
+        wordlist = await request.get(`${this.domain}/search_user`, {
+          params: {
+            word: keyword
+          }
+        }).then(res => res.json())
+      }
       if (_.isEmpty(wordlist.user_previews)) throw Error('呜呜呜，人家没有找到这个淫d(ŐдŐ๑)')
       keyword = wordlist.user_previews[0].user.id
     }
-    // 作品
-    let api = `${this.domain}/member_illust?id=${keyword}&page=${page}`
-    let res = await request.get(api).then(res => res.json())
+    const params = {
+      id: keyword,
+      page
+    }
+    let res = null
+    if (this.PixivApi) {
+      res = await this.PixivApi.member_illust(params)
+    } else {
+      res = await request.get(`${this.domain}/member_illust`, { params }).then(res => res.json())
+    }
 
     if (res.error) throw Error(res.error.message)
     // 没有作品直接返回信息
@@ -315,8 +355,17 @@ export default new class Pixiv {
    * @return {Array} 可直接发送的消息数组
    */
   async searchUser (word, page = 1, isfilter = true) {
-    let api = `${this.domain}/search_user?word=${word}&page=${page}&size=10`
-    let user = await request.get(api).then(res => res.json())
+    let params = {
+      word,
+      page,
+      size: 10
+    }
+    let user = null
+    if (this.PixivApi) {
+      user = await this.PixivApi.search_user(params)
+    } else {
+      user = await request.get(`${this.domain}/search_user`, { params }).then(res => res.json())
+    }
     if (user.error) throw Error(user.error.message)
     if (_.isEmpty(user.user_previews)) throw Error('呜呜呜，人家没有找到这个淫d(ŐдŐ๑)')
 
@@ -370,8 +419,13 @@ export default new class Pixiv {
      * @return {*}
      */
   async related (pid, isfilter = true) {
-    let api = `${this.domain}/related?id=${pid}`
-    let res = await request.get(api).then(res => res.json())
+    let params = { id: pid }
+    let res = null
+    if (this.PixivApi) {
+      res = await this.PixivApi.related(params)
+    } else {
+      res = await request.get(`${this.domain}/related`, { params }).then(res => res.json())
+    }
     if (res.error) throw Error(res.error.user_message)
     if (_.isEmpty(res.illusts)) throw Error('呃...没有数据(•ิ_•ิ)')
 

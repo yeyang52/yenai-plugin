@@ -200,7 +200,7 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 
 Q：某某功能群员不能用，怎么关闭撤回或设置撤回时间，怎么设置CD等
 
-A：请参考[此教程](https://docs.qq.com/doc/p/108e5d788607d988ac62e1512552c8bd2d870321)进行解决
+A：请参考[此教程](https://docs.qq.com/doc/p/31abcb4eddbc89e7ceb2da55605c9a14c272a55d)进行解决
 
 ## 特别鸣谢
 

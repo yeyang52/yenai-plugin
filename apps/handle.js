@@ -118,6 +118,7 @@ export class NewHandle extends plugin {
   /** 引用同意好友申请和群邀请 */
   async Handle (e) {
     if (!e.source) return false
+    if (e.source.user_id != Bot.uin) return false
     let yes = !!/同意/.test(e.msg)
     let source
     if (e.isGroup) {
@@ -126,21 +127,15 @@ export class NewHandle extends plugin {
       source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
     }
     if (!source) return e.reply('❎ 获取消息失败')
-    let sourceMsg = source.source?.message?.split('\n')
-    if (!sourceMsg) return e.reply('❎ 获取原消息失败，请使用同意xxx进行处理')
+    let sourceMsg = source.raw_message?.split('\n')
+    if (!sourceMsg) return e.reply('❎ 获取原消息失败，请使用"同意xxx"进行处理')
     if (e.isGroup) {
-      if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
-        return e.reply('❎ 该命令仅限管理员可用', true)
-      }
-      if (e.source.user_id != Bot.uin) return false
-      if (/入群申请/.test(sourceMsg[0])) return false
       if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply('你是坏人！')
-
       let source = (await e.group.getChatHistory(e.source.seq, 1)).pop()
       let yes = /同意/.test(e.msg)
       logger.mark(`${e.logFnc}${yes ? '同意' : '拒绝'}加群通知`)
       let userId = await redis.get(`yenai:groupAdd:${source.message_id}`)
-      if (!userId) userId = sourceMsg[1].match(/\d+/)[0]
+      if (!userId) return e.reply('找不到原消息了，手动同意叭~')
       let member = (await Bot.getSystemMsg())
         .find(item => item.request_type == 'group' && item.sub_type == 'add' && item.group_id == e.group_id && item.user_id == userId)
 

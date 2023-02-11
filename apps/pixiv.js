@@ -48,7 +48,7 @@ export class NewPixiv extends plugin {
         },
         {
           reg: '^#?(查看|获取)?热门(t|T)(a|A)(g|G)$',
-          fnc: 'trendTags'
+          fnc: 'PopularTags'
         },
         {
           reg: '^#?看?看?相关作品(\\d+)$',

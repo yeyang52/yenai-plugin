@@ -32,6 +32,11 @@ export default class PixivApi {
     }).then(res => res.json())
     if (error) throw Error(`Pixiv login Error Response: ${error}`)
     this.access_token = response.access_token
+    if (this.access_token) {
+      logger.info('Pixiv login success')
+    } else {
+      logger.warn('Pixiv login fail')
+    }
   }
 
   async request (target, options = {}) {

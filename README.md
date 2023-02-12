@@ -13,10 +13,9 @@ Yenai-Plugin是一个Yunzai-Bot的扩展插件，提供对Bot的一些便捷操�
 
  [![Star Trend](https://api.star-history.com/svg?repos=yeyang52/yenai-plugin&type=Timeline)](https://seladb.github.io/StarTrack-js/#/preload?r=yeyang52,yenai-plugin)
 
-<br>
-
 </div>
 
+---
 
 ## 安装教程
 **Tip：Yenai-Plugin仅适配Yunzai-BotV3!!!**
@@ -38,9 +37,6 @@ git clone --depth=1 https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai
 ```
 pnpm add systeminformation -w
 ```
-
-
----
 
 ## 功能介绍
 

@@ -1,6 +1,17 @@
+# 1.1.1 Beta
+
+* 增加`Pixiv token登录`**墙内需代理**
+* 增加`#pixiv登录信息`查询登录状态
+
 # 1.1.0
 
 * 增加`SauceNAO``Ascii2D`以图搜图ⁿᵉʷ
+* 增加`WhatAnime`以图搜番ⁿᵉʷ
+* 增加`#哔咔看[1~20]`搜索后快速查看指定作品ⁿᵉʷ
+* 分离哔咔id和作品信息方便复制id
+* 增加`pixiv``bika``搜图`更多配置项
+  * 请在**yenai-plugin/config/config/*.yaml**进行详情配置
+  * 如配置文件不是最新请复制**default_config**的文件到**config**进行配置
 * 优化目录结构
 * 修复已知BUG
 

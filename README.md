@@ -13,6 +13,8 @@ Yenai-Plugin是一个Yunzai-Bot的扩展插件，提供对Bot的一些便捷操�
 
 <br>
 
+ [![Star Trend](https://api.star-history.com/svg?repos=yeyang52/yenai-plugin&type=Timeline)](https://seladb.github.io/StarTrack-js/#/preload?r=yeyang52,yenai-plugin)
+
 </div>
 
 
@@ -239,10 +241,6 @@ A：请参考[此教程](https://docs.qq.com/doc/p/31abcb4eddbc89e7ceb2da55605c9
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 本段遵循 [all-contributors](https://github.com/all-contributors/all-contributors) 规范，欢迎任何形式的贡献！
-
-## Star History 
-
-[![Stargazers over time](https://starchart.cc/yeyang52/yenai-plugin.svg)](https://starchart.cc/yeyang52/yenai-plugin) 
 
 ## 免责声明
 

@@ -3,48 +3,69 @@ import moment from 'moment'
 import { Config } from '../../components/index.js'
 export default class PixivApi {
   constructor (refresh_token) {
-    this.access_token = null
     this.baseUrl = 'https://app-api.pixiv.net/'
     this.headers = {
       'User-Agent': 'PixivIOSApp/7.13.3 (iOS 14.6; iPhone13,2)',
       'Accept-Language': Config.pixiv.language,
       'App-OS': 'ios',
       'App-OS-Version': '14.6',
+      'Content-Type': 'application/x-www-form-urlencoded',
       Accept: '*/*',
       Connection: 'keep-alive'
     }
-    this.login(refresh_token)
+    this._once = false
+    this.refresh_token = refresh_token
+    this.access_token = null
+    this.auth = null
+    this.login()
   }
 
-  async login (refresh_token) {
-    if (!refresh_token) {
+  async login () {
+    if (!this.refresh_token) {
       throw Error('Pixiv 未配置refresh_token刷新令牌')
     }
-    const body = {
+    const data = {
       client_id: 'MOBrBDS8blbauoSck0ZfDbtuzpyT',
       client_secret: 'lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj',
       grant_type: 'refresh_token',
-      refresh_token
+      refresh_token: this.refresh_token
     }
     const { response, error } = await request.post('https://oauth.secure.pixiv.net/auth/token', {
-      body,
+      data,
       headers: this.headers
     }).then(res => res.json())
     if (error) throw Error(`Pixiv login Error Response: ${error}`)
     this.access_token = response.access_token
+    this.refresh_token = response.refresh_token
+    this.auth = response
     if (this.access_token) {
-      logger.info('Pixiv login success')
+      const { id, name, account } = this.auth.user
+      logger.info(`[Yenai] Pixiv login ${logger.yellow(`${name}(${id}) @${account}`)} ${logger.green('success')}`)
     } else {
-      logger.warn('Pixiv login fail')
+      logger.error(`[Yenai] Pixiv login ${logger.red('fail')}`)
     }
   }
 
   async request (target, options = {}) {
+    try {
+      return this._get(target, options)
+    } catch (error) {
+      if (this._once) {
+        this._once = false
+        throw error
+      }
+      await this.login()
+      this._once = true
+      return this._get(target, options)
+    }
+  }
+
+  async _get (target, options = {}) {
     const headers = {
       ...this.headers,
       Authorization: `Bearer ${this.access_token}`
     }
-    return request[options.data ? 'post' : 'get'](this.baseUrl + target, { headers, ...options }).then(res => res.json())
+    return request[options.data ? 'post' : 'get'](this.baseUrl + target, { headers, ...options, statusCode: 'json' })
   }
 
   async tags () {

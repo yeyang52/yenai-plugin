@@ -67,6 +67,11 @@ export class NewPixiv extends plugin {
           reg: '^#(p站|pixiv)(开启|关闭)直连$',
           fnc: 'directConnection',
           permission: 'master'
+        },
+        {
+          reg: '^#(p站|pixiv)登录信息$',
+          fnc: 'loginInfo',
+          permission: 'master'
         }
       ]
     })
@@ -207,9 +212,14 @@ export class NewPixiv extends plugin {
 
   /** 图片直连 */
   async directConnection (e) {
-    if (!e.isMaster) return false
     Config.modify('pixiv', 'pixivDirectConnection', /开启/.test(e.msg))
     e.reply(`✅ 已${/开启/.test(e.msg) ? '开启' : '关闭'}Pixiv直连`)
+  }
+
+  async loginInfo (e) {
+    await Pixiv.loginInfo()
+      .then(res => e.reply(res))
+      .catch(err => e.reply(err.message))
   }
 
   async Authentication (e, type) {

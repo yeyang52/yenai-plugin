@@ -12,14 +12,28 @@ export default new class Pixiv {
   constructor () {
     this.ranktype = rankType
     this.domain = 'http://api.liaobiao.top/api/pixiv'
-    this.PixivApi = null
-    this.login()
+    this.PixivClient = null
+    this.initClient()
   }
 
-  async login () {
+  async initClient () {
     if (Config.pixiv.refresh_token) {
-      this.PixivApi = new PixivApi(Config.pixiv.refresh_token)
+      this.PixivClient = new PixivApi(Config.pixiv.refresh_token)
     }
+  }
+
+  async loginInfo () {
+    if (!this.PixivClient.auth?.user) throw Error('未获取到登录信息')
+    const { profile_image_urls: { px_170x170 }, id, name, account, mail_address, is_premium, x_restrict } = this.PixivClient.auth.user
+    return [
+      await this.requestPixivImg(px_170x170),
+      `\nid：${id}\n`,
+      `name：${name}\n`,
+      `account：${account}\n`,
+      `mail_address：${mail_address}\n`,
+      `is_premium：${is_premium}\n`,
+      `x_restrict：${x_restrict}`
+    ]
   }
 
   get headers () {
@@ -51,8 +65,8 @@ export default new class Pixiv {
   async illust (ids, filter = false) {
     const params = { id: ids }
     let res = null
-    if (this.PixivApi) {
-      res = await this.PixivApi.illust(params)
+    if (this.PixivClient) {
+      res = await this.PixivClient.illust(params)
     } else {
       res = await request.get(`${this.domain}/illust`, { params }).then(res => res.json())
     }
@@ -119,8 +133,8 @@ export default new class Pixiv {
       date
     }
     let res = null
-    if (this.PixivApi) {
-      res = await this.PixivApi.rank(type, date, page)
+    if (this.PixivClient) {
+      res = await this.PixivClient.rank(params)
     } else {
       res = await request.get(`${this.domain}/rank`, { params }).then(res => res.json())
     }
@@ -213,8 +227,8 @@ export default new class Pixiv {
       order: 'popular_desc'
     }
     let res = null
-    if (this.PixivApi) {
-      res = await this.PixivApi.search(params)
+    if (this.PixivClient) {
+      res = await this.PixivClient.search(params)
     } else {
       res = await request.get(`${this.domain}/search`, { params }).then(res => res.json())
     }
@@ -254,8 +268,8 @@ export default new class Pixiv {
      */
   async PopularTags () {
     let res = null
-    if (this.PixivApi) {
-      res = await this.PixivApi.tags()
+    if (this.PixivClient) {
+      res = await this.PixivClient.tags()
     } else {
       res = await fetch(`${this.domain}/tags`).then(res => res.json())
     }
@@ -289,8 +303,8 @@ export default new class Pixiv {
     // 关键词搜索
     if (!/^\d+$/.test(keyword)) {
       let wordlist = null
-      if (this.PixivApi) {
-        wordlist = await this.PixivApi.search_user({ word: keyword })
+      if (this.PixivClient) {
+        wordlist = await this.PixivClient.search_user({ word: keyword })
       } else {
         wordlist = await request.get(`${this.domain}/search_user`, {
           params: {
@@ -306,8 +320,8 @@ export default new class Pixiv {
       page
     }
     let res = null
-    if (this.PixivApi) {
-      res = await this.PixivApi.member_illust(params)
+    if (this.PixivClient) {
+      res = await this.PixivClient.member_illust(params)
     } else {
       res = await request.get(`${this.domain}/member_illust`, { params }).then(res => res.json())
     }
@@ -361,8 +375,8 @@ export default new class Pixiv {
       size: 10
     }
     let user = null
-    if (this.PixivApi) {
-      user = await this.PixivApi.search_user(params)
+    if (this.PixivClient) {
+      user = await this.PixivClient.search_user(params)
     } else {
       user = await request.get(`${this.domain}/search_user`, { params }).then(res => res.json())
     }
@@ -421,8 +435,8 @@ export default new class Pixiv {
   async related (pid, isfilter = true) {
     let params = { id: pid }
     let res = null
-    if (this.PixivApi) {
-      res = await this.PixivApi.related(params)
+    if (this.PixivClient) {
+      res = await this.PixivClient.related(params)
     } else {
       res = await request.get(`${this.domain}/related`, { params }).then(res => res.json())
     }

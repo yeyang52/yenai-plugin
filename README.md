@@ -34,17 +34,17 @@ Yenai-Plugin是一个Yunzai-Bot的扩展插件，提供对Bot的一些便捷操�
 1. 推荐使用git进行安装，以方便后续升级。在Yunzai目录打开终端，运行
 
 ```
-// 使用gitee
-git clone --depth=1 https://gitee.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
-
 // 使用github
 git clone --depth=1 https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
+
+// 使用gitee(可能更新不及时)
+git clone --depth=1 https://gitee.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 ```
 
-2. 如需使用椰奶状态则需安装以下依赖：
+2. 安装依赖(可选：不安装依赖将无法使用一些功能)
 
 ```
-pnpm add systeminformation -w
+pnpm add systeminformation cheerio -w
 ```
 
 ## 功能介绍

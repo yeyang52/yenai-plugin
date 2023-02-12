@@ -222,6 +222,36 @@ export const helpList = [{
     }]
 },
 {
+  group: '搜图搜番',
+  list: [
+    {
+      title: '#搜图',
+      desc: '默认SauceNAO',
+      icon: 10
+    },
+    {
+      title: '#搜番',
+      desc: 'WhatAnime',
+      icon: 6
+    },
+    {
+      title: '#(SauceNAO|sn)搜图',
+      desc: 'SauceNAO',
+      icon: 1
+    },
+    {
+      title: '#(Ascii2D|ac)搜图',
+      desc: 'Ascii2D',
+      icon: 5
+    },
+    {
+      title: '#设置SauceNAOApiKey<key>',
+      desc: 'SauceNAOApiKey',
+      icon: 9
+    }
+  ]
+},
+{
   group: '设置，版本相关',
   auth: 'master',
   list: [{

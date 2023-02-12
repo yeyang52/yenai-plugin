@@ -21,7 +21,7 @@ export class NewPicSearch extends plugin {
           fnc: 'WhatAnime'
         },
         {
-          reg: /^#?SauceNAOapiKey.*$/i,
+          reg: /^#?设置SauceNAOApiKey.*$/i,
           fnc: 'UploadSauceNAOKey'
         },
         {

@@ -222,7 +222,7 @@ A：请参考[此教程](https://docs.qq.com/doc/p/31abcb4eddbc89e7ceb2da55605c9
 ### 贡献者 ✨
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 感谢这些了不起的人 ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
@@ -236,6 +236,7 @@ A：请参考[此教程](https://docs.qq.com/doc/p/31abcb4eddbc89e7ceb2da55605c9
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Saury-loser"><img src="https://avatars.githubusercontent.com/u/106982493?v=4?s=100" width="100px;" alt="花海里的秋刀鱼"/><br /><sub><b>花海里的秋刀鱼</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=Saury-loser" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Georgebillion"><img src="https://avatars.githubusercontent.com/u/40432824?v=4?s=100" width="100px;" alt="Georgebillion"/><br /><sub><b>Georgebillion</b></sub></a><br /><a href="#ideas-Georgebillion" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/xfdown"><img src="https://avatars.githubusercontent.com/u/42599406?v=4?s=100" width="100px;" alt="小飞"/><br /><sub><b>小飞</b></sub></a><br /><a href="#ideas-xfdown" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/liuzj288"><img src="https://avatars.githubusercontent.com/u/13833404?v=4?s=100" width="100px;" alt="liuzj288"/><br /><sub><b>liuzj288</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=liuzj288" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

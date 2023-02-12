@@ -48,7 +48,7 @@ export default class PixivApi {
 
   async request (target, options = {}) {
     try {
-      return this._get(target, options)
+      return await this._get(target, options)
     } catch (error) {
       if (this._once) {
         this._once = false
@@ -56,7 +56,7 @@ export default class PixivApi {
       }
       await this.login()
       this._once = true
-      return this._get(target, options)
+      return await this._get(target, options)
     }
   }
 

@@ -112,7 +112,7 @@ export class NewPixiv extends plugin {
   async searchTags (e) {
     let regRet = tagReg.exec(e.msg)
     if (!await this.Authentication(e, 'sese')) return
-    if (!await this.Authentication(e, 'sesepro') && regRet[1]) return
+    if (regRet[1] && !await this.Authentication(e, 'sesepro')) return
 
     e.reply(Pixiv.startMsg)
 
@@ -178,7 +178,7 @@ export class NewPixiv extends plugin {
   async pximg (e) {
     let ispro = /pro/.test(e.msg)
     if (!await this.Authentication(e, 'sese')) return
-    if (!await this.Authentication(e, 'sesepro') && ispro) return
+    if (ispro && !await this.Authentication(e, 'sesepro')) return
 
     await Pixiv.pximg(ispro)
       .then(res => ispro ? common.getRecallsendMsg(e, [res]) : common.recallsendMsg(e, res))

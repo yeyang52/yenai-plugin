@@ -25,7 +25,7 @@ export default async function doSearch (url) {
     const $ = cheerio.load(ret.data, { decodeEntities: false })
     logger.error('[error] ascii2d url:', colorURL)
     logger.debug(ret.data)
-    throw Error(`搜索失败，错误原因：${$('.container > .row > div:first-child > p').text().trim()}`)
+    throw Error(`Ascii2D搜索失败，错误原因：${$('.container > .row > div:first-child > p').text().trim()}`)
   }
   const bovwURL = colorURL.replace('/color/', '/bovw/')
   let bovwDetail = await (ascii2dUsePuppeteer ? getAscii2dWithPuppeteer(bovwURL) : request.cfGet(bovwURL))

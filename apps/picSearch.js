@@ -57,10 +57,7 @@ export class NewPicSearch extends plugin {
     if (!await this.Authentication(e)) return
     if (!await this.handelImg(e, 'Ascii2D')) return
     await PicSearch.Ascii2D(e.img[0])
-      .then(res => {
-        common.getRecallsendMsg(e, res.color, { isxmlMsg: false })
-        common.getRecallsendMsg(e, res.bovw, { isxmlMsg: false })
-      })
+      .then(res => common.getRecallsendMsg(e, [...res.color, ...res.bovw], { isxmlMsg: false }))
       .catch(err => e.reply(err.message))
   }
 

@@ -16,7 +16,7 @@ cfTLSVersion: TLSv1.1
 #是否使用 Puppeteer 请求 ascii2d 以绕过 cf js challenge
 ascii2dUsePuppeteer: false
 #ascii2d搜图返回结果的最大数量
-ascii2dResultMaxQuantity: 6
+ascii2dResultMaxQuantity: 3
 #隐藏所有搜索结果的缩略图
 hideImg: false
 #whatanime 得到 R18 结果时隐藏结果缩略图

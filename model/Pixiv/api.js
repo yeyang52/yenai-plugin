@@ -22,7 +22,7 @@ export default class PixivApi {
 
   async login () {
     if (!this.refresh_token) {
-      throw Error('Pixiv 未配置refresh_token刷新令牌')
+      throw Error('[Yenai][Pixiv] 未配置refresh_token刷新令牌')
     }
     const data = {
       client_id: 'MOBrBDS8blbauoSck0ZfDbtuzpyT',
@@ -34,15 +34,15 @@ export default class PixivApi {
       data,
       headers: this.headers
     }).then(res => res.json())
-    if (error) throw Error(`Pixiv login Error Response: ${error}`)
+    if (error) throw Error(`[Yenai][Pixiv]login Error Response: ${error}`)
     this.access_token = response.access_token
     this.refresh_token = response.refresh_token
     this.auth = response
     if (this.access_token) {
       const { id, name, account } = this.auth.user
-      logger.info(`[Yenai] Pixiv login ${logger.yellow(`${name}(${id}) @${account}`)} ${logger.green('success')}`)
+      logger.info(`[Yenai][Pixiv]login ${logger.yellow(`${name}(${id}) @${account}`)} ${logger.green('success')}`)
     } else {
-      logger.error(`[Yenai] Pixiv login ${logger.red('fail')}`)
+      logger.error(`[Yenai][Pixiv]login ${logger.red('fail')}`)
     }
   }
 

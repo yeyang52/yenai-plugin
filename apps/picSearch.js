@@ -21,7 +21,7 @@ export class NewPicSearch extends plugin {
           fnc: 'WhatAnime'
         },
         {
-          reg: /^#?设置SauceNAOApiKey.*$/i,
+          reg: /^#设置SauceNAOApiKey.*$/i,
           fnc: 'UploadSauceNAOKey'
         },
         {
@@ -79,7 +79,7 @@ export class NewPicSearch extends plugin {
   async UploadSauceNAOKey (e) {
     if (!e.isMaster) return false
     if (e.isGroup) return e.reply('请私聊进行添加')
-    let apiKey = e.msg.replace(/#?SauceNAOapiKey/i, '').trim()
+    let apiKey = e.msg.replace(/#设置SauceNAOapiKey/i, '').trim()
     if (!apiKey) return e.reply('❎ 请发送正确的apikey')
     Config.modify('picSearch', 'SauceNAOApiKey', apiKey)
     e.reply('OK')

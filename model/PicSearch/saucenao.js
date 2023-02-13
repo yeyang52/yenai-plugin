@@ -42,7 +42,7 @@ export default async function doSearch (url) {
 async function getSearchResult (imgURL, db = 999) {
   logger.debug(`saucenao [${imgURL}]}`)
   let api_key = Config.picSearch.SauceNAOApiKey
-  if (!api_key) return { error: '未配置SauceNAOApiKey，无法使用SauceNAO搜图，请在 https://saucenao.com/user.php?page=search-api 进行获取，请用指令：#SauceNAOapiKey <apikey> 进行添加' }
+  if (!api_key) return { error: '未配置SauceNAOApiKey，无法使用SauceNAO搜图，请在 https://saucenao.com/user.php?page=search-api 进行获取，请用指令：#设置SauceNAOapiKey <apikey> 进行添加' }
   return await request.get('https://saucenao.com/search.php', {
     params: {
       api_key,

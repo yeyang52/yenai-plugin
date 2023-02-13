@@ -1,12 +1,12 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import os from 'os'
 import { Config } from '../components/index.js'
-import { CPU, common, puppeteer } from '../model/index.js'
+import { State, common, puppeteer } from '../model/index.js'
 import moment from 'moment'
 import _ from 'lodash'
 
 let interval = false
-export class State extends plugin {
+export class NewState extends plugin {
   constructor () {
     super({
       name: '椰奶状态',
@@ -25,21 +25,21 @@ export class State extends plugin {
   async state (e) {
     if (!/椰奶/.test(e.msg) && !Config.Notice.state) return false
 
-    if (!CPU.si) return e.reply('❎ 没有检测到systeminformation依赖，请运行："pnpm add systeminformation -w"进行安装')
+    if (!State.si) return e.reply('❎ 没有检测到systeminformation依赖，请运行："pnpm add systeminformation -w"进行安装')
     // 防止多次触发
     if (interval) { return false } else interval = true
     // 系统
-    let osinfo = await CPU.si.osInfo()
+    let osinfo = await State.si.osInfo()
     // 可视化数据
     let visualData = _.compact([
       // CPU板块
-      await CPU.getCpuInfo(osinfo.arch),
+      await State.getCpuInfo(osinfo.arch),
       // 内存板块
-      await CPU.getMemUsage(),
+      await State.getMemUsage(),
       // GPU板块
-      await CPU.getGPU(),
+      await State.getGPU(),
       // Node板块
-      await CPU.getNodeInfo()
+      await State.getNodeInfo()
     ])
     // 渲染数据
     let data = {
@@ -70,15 +70,15 @@ export class State extends plugin {
       // 在线状态
       status: common.status[Bot.status],
       // 硬盘内存
-      HardDisk: await CPU.getfsSize(),
+      HardDisk: await State.getfsSize(),
       // FastFetch
-      FastFetch: await CPU.getFastFetch(e),
+      FastFetch: await State.getFastFetch(e),
       // 取插件
-      plugin: CPU.numberOfPlugIns,
+      plugin: State.numberOfPlugIns,
       // 硬盘速率
-      fsStats: CPU.DiskSpeed,
+      fsStats: State.DiskSpeed,
       // 网络
-      network: CPU.getnetwork,
+      network: State.getnetwork,
       // 可视化数据
       visualData,
       // 系统信息

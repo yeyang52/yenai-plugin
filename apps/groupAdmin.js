@@ -2,7 +2,8 @@ import plugin from '../../../lib/plugins/plugin.js'
 import { segment } from 'oicq'
 import _ from 'lodash'
 import { Config } from '../components/index.js'
-import { GroupAdmin as ga, common, QQApi, puppeteer, CronValidate } from '../model/index.js'
+import { GroupAdmin as ga, common, QQApi, puppeteer } from '../model/index.js'
+import cronValidate from '../tools/CronValidate.js'
 import moment from 'moment'
 
 // API请求错误文案
@@ -538,7 +539,7 @@ export class GroupAdmin extends plugin {
     } else {
       cron = RegRet[2]
       // 校验cron表达式
-      let Validate = CronValidate(cron.trim())
+      let Validate = cronValidate(cron.trim())
       if (Validate !== true) return e.reply(Validate)
     }
 

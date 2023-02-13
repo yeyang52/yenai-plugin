@@ -168,4 +168,8 @@ export default class PixivApi {
       }
     )
   }
+
+  async illustRecommended (params = {}) {
+    return await this.request('v1/illust/recommended', params)
+  }
 }

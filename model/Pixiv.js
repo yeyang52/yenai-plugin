@@ -446,7 +446,7 @@ export default new class Pixiv {
     let illusts = []
     let filter = 0
     for (let i of res.illusts) {
-      let { id, title, user, tags, total_bookmarks, image_urls, x_restrict } = this.format(i)
+      let { id, title, user, tags, total_bookmarks, image_urls, x_restrict } = await this.format(i)
       if (isfilter && x_restrict) {
         filter++
         continue
@@ -490,6 +490,23 @@ export default new class Pixiv {
     return msg
   }
 
+  async illustRecommended (num) {
+    if (!this.PixivClient) throw Error('请登录Pixiv后再使用此功能')
+    let list = await this.PixivClient.illustRecommended()
+    return Promise.all(_.take(list.illusts, num).map(async (item) => {
+      let { id, title, user, tags, total_bookmarks, image_urls } = this.format(item)
+      return [
+        `标题：${title}\n`,
+        `画师：${user.name}\n`,
+        `PID：${id}\n`,
+        `UID：${user.id}\n`,
+        `点赞：${total_bookmarks}\n`,
+        `Tag：${_.truncate(tags)}\n`,
+        await this.requestPixivImg(image_urls.large)
+      ]
+    }))
+  }
+
   /**
    * @description: 请求p站图片
    * @param {String} url
@@ -526,10 +543,6 @@ export default new class Pixiv {
     } else {
       url = meta_pages.map(item => item.image_urls.original)
     }
-    return {
-      ...illusts,
-      tags,
-      url
-    }
+    return { ...illusts, tags, url }
   }
 }()

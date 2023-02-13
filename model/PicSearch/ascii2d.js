@@ -42,8 +42,8 @@ export default async function doSearch (url) {
     Config.picSearch.hideImg ? '' : segment.image(item.image),
     `${item.info}\n`,
     `标题：${item.source?.text}\n`,
-    `作者:${item.author?.text}(${item.author?.link})\n`,
-    `来源:${item.source?.link}`
+    `作者：${item.author?.text}(${item.author?.link})\n`,
+    `来源：${item.source?.link}`
   ]
   let color = colorData.map(mapfun)
   let bovw = bovwData.map(mapfun)

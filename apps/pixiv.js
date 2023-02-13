@@ -55,6 +55,10 @@ export class NewPixiv extends plugin {
           fnc: 'related'
         },
         {
+          reg: '^#来(\\d+)?张推荐图$',
+          fnc: 'illustRecommended'
+        },
+        {
           reg: '^#?(P|p)ximg(pro)?$',
           fnc: 'pximg'
         },
@@ -191,6 +195,18 @@ export class NewPixiv extends plugin {
     await Pixiv.searchUser(regRet[1], page, !setu.getR18(e.group_id))
       .then(res => common.getRecallsendMsg(e, res))
       .catch(err => e.reply(err.message))
+  }
+
+  async illustRecommended (e) {
+    if (!await this.Authentication(e, 'sese')) return
+    e.reply(Pixiv.startMsg)
+    let num = e.msg.match(/\d+/) || 1
+    await Pixiv.illustRecommended(num).then(res => {
+      console.log(res)
+      res.length == 1
+        ? common.recallsendMsg(e, res[0], true)
+        : common.getRecallsendMsg(e, res)
+    }).catch(err => e.reply(err.message))
   }
 
   // 更换代理

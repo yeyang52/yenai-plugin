@@ -37,6 +37,7 @@ export class NewPicSearch extends plugin {
     if (!await this.handelImg(e, 'SauceNAO')) return
     await PicSearch.SauceNAO(e.img[0])
       .then(async res => {
+        if (res.message.length == 1)res.message = res.message[0]
         await (res.maxSimilarity > 80 || res.message.length == 1
           ? common.recallsendMsg(e, res.message, true)
           : common.getRecallsendMsg(e, res.message))

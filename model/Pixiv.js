@@ -1,10 +1,10 @@
-import fetch from 'node-fetch'
 import _ from 'lodash'
-import { segment } from 'oicq'
 import moment from 'moment'
-import { rankType, MSG } from '../tools/pixiv.js'
-import request from '../lib/request/request.js'
+import fetch from 'node-fetch'
+import { segment } from 'oicq'
 import { Config } from '../components/index.js'
+import request from '../lib/request/request.js'
+import { MSG, rankType } from '../tools/pixiv.js'
 import PixivApi from './Pixiv/api.js'
 /** API请求错误文案 */
 
@@ -23,7 +23,7 @@ export default new class Pixiv {
   }
 
   async loginInfo () {
-    if (!this.PixivClient.auth?.user) throw Error('未获取到登录信息')
+    if (!this.PixivClient?.auth?.user) throw Error('❎ 未获取到登录信息')
     const { profile_image_urls: { px_170x170 }, id, name, account, mail_address, is_premium, x_restrict } = this.PixivClient.auth.user
     return [
       await this.requestPixivImg(px_170x170),
@@ -514,7 +514,8 @@ export default new class Pixiv {
   async requestPixivImg (url) {
     url = url.replace('i.pximg.net', this.proxy)
     logger.debug(`pixiv getImg URL: ${url}`)
-    return request.proxyRequestImg(url, { headers: this.headers })
+    let headers = /s.pximg.net/.test(url) ? undefined : this.headers
+    return request.proxyRequestImg(url, { headers })
   }
 
   /**

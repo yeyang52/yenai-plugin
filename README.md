@@ -213,7 +213,7 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 - [HibiAPI](https://github.com/mixmoe/HibiAPI)
 - [SauceNAO](https://saucenao.com/)
 - [Ascii2D](https://ascii2d.net/)
--  [trace.moe](https://trace.moe) ([GitHub](https://github.com/soruly/trace.moe))
+- [trace.moe](https://trace.moe) ([GitHub](https://github.com/soruly/trace.moe))
 
 ### 贡献者 ✨
 

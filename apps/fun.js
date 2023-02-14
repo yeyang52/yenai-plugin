@@ -332,9 +332,11 @@ export class Fun extends plugin {
       return logger.error(`${e.logFnc}类型不正确`)
     }
 
-    let url = encodeURI(picObj.url || picObj)
+    let url = picObj.url || picObj
     // 数组随机取或指定
     if (Array.isArray(url)) url = _.sample(url)
+
+    url = encodeURI(url)
 
     if (picObj.type == 'text') {
       url = await fetch(url).then(res => res.text()).catch(err => console.log(err))

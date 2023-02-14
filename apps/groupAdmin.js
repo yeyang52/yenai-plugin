@@ -3,7 +3,7 @@ import { segment } from 'oicq'
 import _ from 'lodash'
 import { Config } from '../components/index.js'
 import { GroupAdmin as ga, common, QQApi, puppeteer } from '../model/index.js'
-import cronValidate from '../tools/CronValidate.js'
+import cronValidate from '../tools/cronValidate.js'
 import moment from 'moment'
 
 // API请求错误文案

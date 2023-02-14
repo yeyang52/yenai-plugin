@@ -203,7 +203,7 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 
 </details>
 
-常见问题可请移步[wiki](../../wiki)
+常见问题请移步[wiki](https://github.com/yeyang52/yenai-plugin/wiki)
 
 ## 特别鸣谢
 

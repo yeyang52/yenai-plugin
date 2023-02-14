@@ -501,7 +501,7 @@ export default new class Pixiv {
         `PID：${id}\n`,
         `UID：${user.id}\n`,
         `点赞：${total_bookmarks}\n`,
-        `Tag：${_.truncate(tags)}\n`,
+        `Tag：${_.truncate(tags)}`,
         await this.requestPixivImg(image_urls.large)
       ]
     }))

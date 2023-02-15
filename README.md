@@ -3,15 +3,16 @@
 <br>
 <h1>Yenai-Plugin</h1>
 
-Yenai-Plugin是一个Yunzai-Bot的扩展插件，提供对Bot的一些便捷操作。
+🐑 Yenai-Plugin是一个Yunzai-Bot的扩展插件，提供对Bot的一些便捷操作。
 <br>
 <br>
 <img src="https://count.getloli.com/get/@:yenai-plugin?theme=rule34" /> <br>
 
-![Nodejs](https://img.shields.io/badge/Node-v16+-green?style=flat-square&logo=node.js) 
-[![license](https://img.shields.io/github/license/yeyang52/yenai-plugin.svg?style=flat-square&logo=gnu)](https://github.com/yeyang52/yenai-plugin/blob/master/LICENSE) 
-[![YunzaiBot](https://img.shields.io/badge/Yunzai-v3.0.0-black?style=flat-square&logo=dependabot)](https://gitee.com/Le-niao/Yunzai-Bot) 
-[![Group](https://img.shields.io/badge/Group-254974507-red?style=flat-square&logo=GroupMe&logoColor=white)](https://jq.qq.com/?_wv=1027&k=o8FTig5Z) 
+![Nodejs](https://img.shields.io/badge/-Node.js-3C873A?style=flat&logo=Node.js&logoColor=white) 
+![JavaScript](https://img.shields.io/badge/-JavaScript-eed718?style=flat&logo=javascript&logoColor=ffffff)
+[![license](https://img.shields.io/github/license/yeyang52/yenai-plugin.svg?style=flat&logo=gnu)](https://github.com/yeyang52/yenai-plugin/blob/master/LICENSE) 
+[![YunzaiBot](https://img.shields.io/badge/Yunzai-V3.0.0-black?style=flat&logo=dependabot)](https://gitee.com/Le-niao/Yunzai-Bot) 
+[![Group](https://img.shields.io/badge/Group-254974507-red?style=flat&logo=GroupMe&logoColor=white)](https://jq.qq.com/?_wv=1027&k=o8FTig5Z) 
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/yeyang52/yenai-plugin)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/yeyang52/yenai-plugin)
@@ -20,6 +21,8 @@ Yenai-Plugin是一个Yunzai-Bot的扩展插件，提供对Bot的一些便捷操�
 [![GitHub forks](https://img.shields.io/github/forks/yeyang52/yenai-plugin)](https://github.com/yeyang52/yenai-plugin/network)
 [![GitHub issues](https://img.shields.io/github/issues/yeyang52/yenai-plugin)](https://github.com/yeyang52/yenai-plugin/issues)
 
+![Alt](https://repobeats.axiom.co/api/embed/42b5a7769074be124bd9ab02456897e37d1581f1.svg "Repobeats analytics image")
+
 [![Star Trend](https://api.star-history.com/svg?repos=yeyang52/yenai-plugin&type=Timeline)](https://seladb.github.io/StarTrack-js/#/preload?r=yeyang52,yenai-plugin)
 
 </div>
@@ -27,7 +30,6 @@ Yenai-Plugin是一个Yunzai-Bot的扩展插件，提供对Bot的一些便捷操�
 ---
 
 ## 安装教程
-**Tip：Yenai-Plugin仅适配Yunzai-BotV3!!!**
 
 请将Yenai-Plugin放置在Yunzai-Bot的plugins目录下，重启Yunzai-Bot后即可使用。
 

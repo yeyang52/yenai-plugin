@@ -37,14 +37,9 @@ export class NewPicSearch extends plugin {
     if (!await this.handelImg(e, 'SauceNAO')) return
     await PicSearch.SauceNAO(e.img[0])
       .then(async res => {
-        if (res.message.length == 1)res.message = res.message[0]
-        await (res.maxSimilarity > 80 || res.message.length == 1
-          ? common.recallsendMsg(e, res.message, true)
-          : common.getRecallsendMsg(e, res.message))
-        if (res.maxSimilarity < Config.picSearch.SauceNAOMinSim) {
-          e.reply(`SauceNAO 相似度 ${res.maxSimilarity}% 过低，使用Ascii2D进行搜索`)
-          await this.Ascii2D(e)
-        }
+        res.length == 1
+          ? common.recallsendMsg(e, res[0], true)
+          : common.getRecallsendMsg(e, res, { isxmlMsg: false })
       })
       .catch(async err => {
         await e.reply(err.message)

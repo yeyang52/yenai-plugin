@@ -202,6 +202,7 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
  <img src="resources/img/状态.png" alt="状态" width = "300" />
 
 </details>
+<br>
 
 常见问题请移步[wiki](https://github.com/yeyang52/yenai-plugin/wiki)
 
@@ -243,6 +244,11 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 本段遵循 [all-contributors](https://github.com/all-contributors/all-contributors) 规范，欢迎任何形式的贡献！
+
+## 友情链接
+
+- [Yunzai-Bot插件索引](https://gitee.com/Hikari666/Yunzai-Bot-plugins-index)
+- [码云镜像库](https://gitee.com/yeyang52/yenai-plugin)
 
 ## 免责声明
 

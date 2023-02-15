@@ -2,6 +2,7 @@ import _ from 'lodash'
 import { Config } from '../../components/index.js'
 import sagiri from '../../tools/sagiri.js'
 import request from '../../lib/request/request.js'
+import Ascii2D from './ascii2d.js'
 export default async function doSearch (url) {
   let res = await getSearchResult(url)
   logger.debug('SauceNAO result:', res)
@@ -22,21 +23,29 @@ export default async function doSearch (url) {
   if (!_.isEmpty(filterSimilarity)) {
     let filterPixiv = filterSimilarity.filter(item => item.site == 'Pixiv')
     if (!_.isEmpty(filterPixiv)) {
-      message = await msgMap(filterPixiv[0])
+      message.push(await msgMap(filterPixiv[0]))
     } else {
-      message = await msgMap(filterSimilarity[0])
+      message.push(await msgMap(filterSimilarity[0]))
     }
   } else {
     message = await Promise.all(format.map(msgMap))
   }
   let n = maxSimilarity > 80 ? '\n' : ''
   if (res.header.long_remaining < 30) {
-    message.push(`${n}SauceNAO 24h 内仅剩 ${res.header.long_remaining} 次使用次数`)
+    const msg = `${n}SauceNAO 24h 内仅剩 ${res.header.long_remaining} 次使用次数`
+    n ? message[0].push(msg) : message.push(msg)
   }
   if (res.header.short_remaining < 3) {
-    message.push(`${n}SauceNAO 30s 内仅剩 ${res.header.short_remaining} 次。`)
+    const msg = `${n}SauceNAO 30s 内仅剩 ${res.header.short_remaining} 次。`
+    n ? message[0].push(msg) : message.push(msg)
   }
-  return { message, maxSimilarity }
+  if (maxSimilarity < Config.picSearch.SauceNAOMinSim) {
+    message.push(`SauceNAO 相似度 ${maxSimilarity}% 过低，使用Ascii2D进行搜索`)
+    await Ascii2D(url)
+      .then(res => message.push(...res.color, ...res.bovw))
+      .catch(err => message.push(err.message))
+  }
+  return message
 }
 
 async function getSearchResult (imgURL, db = 999) {

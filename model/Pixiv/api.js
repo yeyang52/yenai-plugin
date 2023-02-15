@@ -1,6 +1,11 @@
 import request from '../../lib/request/request.js'
 import moment from 'moment'
 import { Config } from '../../components/index.js'
+import md5 from 'md5'
+
+const CLIENT_ID = 'MOBrBDS8blbauoSck0ZfDbtuzpyT'
+const CLIENT_SECRET = 'lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj'
+const HASH_SECRET = '28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c'
 export default class PixivApi {
   constructor (refresh_token) {
     this.baseUrl = 'https://app-api.pixiv.net/'
@@ -10,8 +15,8 @@ export default class PixivApi {
       'App-OS': 'ios',
       'App-OS-Version': '14.6',
       'Content-Type': 'application/x-www-form-urlencoded',
-      Accept: '*/*',
-      Connection: 'keep-alive'
+      'Accept': '*/*',
+      'Connection': 'Keep-Alive'
     }
     this._once = false
     this.refresh_token = refresh_token
@@ -24,15 +29,21 @@ export default class PixivApi {
     if (!this.refresh_token) {
       throw Error('[Yenai][Pixiv] 未配置refresh_token刷新令牌')
     }
+    const local_time = moment().format()
+    const headers = {
+      ...this.headers,
+      'X-Client-Time': local_time,
+      'X-Client-Hash': md5(`${local_time}${HASH_SECRET}`)
+    }
     const data = {
-      client_id: 'MOBrBDS8blbauoSck0ZfDbtuzpyT',
-      client_secret: 'lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj',
+      client_id: CLIENT_ID,
+      client_secret: CLIENT_SECRET,
       grant_type: 'refresh_token',
       refresh_token: this.refresh_token
     }
     const { response, error } = await request.post('https://oauth.secure.pixiv.net/auth/token', {
       data,
-      headers: this.headers
+      headers
     }).then(res => res.json())
     if (error) throw Error(`[Yenai][Pixiv]login Error Response: ${error}`)
     this.access_token = response.access_token

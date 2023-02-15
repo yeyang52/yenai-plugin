@@ -15,9 +15,10 @@ module.exports = {
     plugin: true
   },
   rules: {
-    eqeqeq: ['off'],
+    'eqeqeq': ['off'],
     'prefer-const': ['off'],
     'arrow-body-style': 'off',
-    camelcase: 'off'
+    'camelcase': 'off',
+    'quote-props': ['error', 'consistent-as-needed']
   }
 }

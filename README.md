@@ -21,8 +21,6 @@
 [![GitHub forks](https://img.shields.io/github/forks/yeyang52/yenai-plugin)](https://github.com/yeyang52/yenai-plugin/network)
 [![GitHub issues](https://img.shields.io/github/issues/yeyang52/yenai-plugin)](https://github.com/yeyang52/yenai-plugin/issues)
 
-![Alt](https://repobeats.axiom.co/api/embed/42b5a7769074be124bd9ab02456897e37d1581f1.svg "Repobeats analytics image")
-
 [![Star Trend](https://api.star-history.com/svg?repos=yeyang52/yenai-plugin&type=Timeline)](https://seladb.github.io/StarTrack-js/#/preload?r=yeyang52,yenai-plugin)
 
 </div>
@@ -259,3 +257,4 @@ QQ：746659424
 
 投喂：[爱发电](https://afdian.net/a/yeyang52)
 
+![Alt](https://repobeats.axiom.co/api/embed/42b5a7769074be124bd9ab02456897e37d1581f1.svg "Repobeats analytics image")

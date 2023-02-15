@@ -96,11 +96,11 @@ export default new class {
       smartresult: 'dict'
     }
     const headers = {
-      Host: 'fanyi.youdao.com',
+      'Host': 'fanyi.youdao.com',
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/98.0.4758.102',
-      Referer: 'https://fanyi.youdao.com/',
+      'Referer': 'https://fanyi.youdao.com/',
       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-      Cookie: 'OUTFOX_SEARCH_USER_ID_NCOO=133190305.98519628; OUTFOX_SEARCH_USER_ID="2081065877@10.169.0.102";'
+      'Cookie': 'OUTFOX_SEARCH_USER_ID_NCOO=133190305.98519628; OUTFOX_SEARCH_USER_ID="2081065877@10.169.0.102";'
     }
     const api = 'https://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule'
     const key = 'Ygy_4c=r#e#4EX^NUGUc5'
@@ -168,7 +168,7 @@ export default new class {
     const title = $('.article-content > p:nth-child(1)').text()
     const msg = imgs.map(item => segment.image(item, undefined, undefined,
       {
-        Referer: 'http://hs.heisiwu.com',
+        'Referer': 'http://hs.heisiwu.com',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.46'
       })
     )
@@ -189,6 +189,7 @@ export default new class {
     }
     const home = await request.get(url).then(res => res.text())
     const href = _.sample(_.map(load(home)('div.cover.mod_imgLight > a, li.wrap > div > a'), item => item.attribs.href))
+    if (!href) throw Error('未找到结果')
     const details = await request.get(domain + href).then(res => res.text())
     const $ = load(details)
     const imgs = _.map($('div.con > p > img'), item => item.attribs.src)
@@ -234,6 +235,7 @@ export default new class {
     const $ = cheerio.load(details)
     const imgs = _.map($('div.md-text.mb20.f-16 > p > img'), item => segment.image(item.attribs.src))
     const title = $('h1').text().trim()
-    return [title, ..._.take(imgs, 30)]
+    const number = `序号：${href.match(/(\d+).html/)[1]}`
+    return [title, number, ..._.take(imgs, 30)]
   }
 }()

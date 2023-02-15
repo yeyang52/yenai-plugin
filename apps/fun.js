@@ -82,7 +82,7 @@ export class Fun extends plugin {
           fnc: 'mengdui'
         },
         {
-          reg: '^#?acg.*$',
+          reg: '^#acg.*$',
           fnc: 'acg'
         }
 

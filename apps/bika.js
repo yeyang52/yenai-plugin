@@ -30,6 +30,10 @@ export class NewBika extends plugin {
           fnc: 'viewComicPage'
         },
         {
+          reg: `^#?${Prefix}下一页$`,
+          fnc: 'nextComicPage'
+        },
+        {
           reg: `^#?${Prefix}类别列表$`,
           fnc: 'categories'
         },
@@ -75,13 +79,17 @@ export class NewBika extends plugin {
 
   async viewComicPage (e) {
     if (!await this.Authentication(e)) return
-    if (!Bika.searchCaching) return e.reply('请先搜索后再使用此命令')
     let number = e.msg.match(/\d+/) - 1
-    let id = Bika.searchCaching[number]._id
-    if (!id) return e.reply('未获取到目标作品，请使用id进行查看')
-    await Bika.comicPage(id)
+    await Bika.viewComicPage(number)
       .then(res => common.getRecallsendMsg(e, res))
       .catch(err => { e.reply(err.message) })
+  }
+
+  async nextComicPage (e) {
+    if (!await this.Authentication(e)) return
+    await Bika.nextComicPage()
+      .then(res => common.getRecallsendMsg(e, res))
+      .catch(err => e.reply(err.message))
   }
 
   /** 类别列表 */

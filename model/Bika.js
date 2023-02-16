@@ -12,6 +12,7 @@ export default new (class {
       }
     }
     this.searchCaching = null
+    this.idNext = null
   }
 
   get imgproxy () {
@@ -87,6 +88,9 @@ export default new (class {
         throw Error(`bika comicPage Error，reason：${err.message.match(/reason:(.*)/)[1]}`)
       })
     if (res.error) throw Error(res.message)
+    this.idNext = {
+      id, page: page + 1, order
+    }
     let { docs, total, page: pg, pages } = res.data.pages
     let { _id, title } = res.data.ep
     return [
@@ -94,6 +98,19 @@ export default new (class {
       `共${total}张，当前为第${pg}页，共${pages}页，当前为第${order}话`,
       ...await Promise.all(docs.map(async item => await this.requestBikaImg(item.media.fileServer, item.media.path)))
     ]
+  }
+
+  async viewComicPage (num) {
+    if (!this.searchCaching) throw Error('请先搜索后再使用此命令')
+    let id = this.searchCaching[num]._id
+    if (!id) throw Error('未获取到目标作品，请使用id进行查看')
+    return this.comicPage(id)
+  }
+
+  async nextComicPage () {
+    if (!this.idNext) throw Error('未找到上一个id')
+    let { id, page, order } = this.idNext
+    return this.comicPage(id, page, order)
   }
 
   /** 类别列表 */

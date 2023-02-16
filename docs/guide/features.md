@@ -62,7 +62,7 @@ title: 功能
 - 同意/拒绝/查看加群申请
 
 ## 系统状态
-<img src="/img/状态.png" alt="状态" width = "300" />
+<img src="yenai-plugin/img/状态.png" alt="状态" width = "300" />
 
 ## Pixiv
 

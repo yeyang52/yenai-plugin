@@ -29,3 +29,12 @@ pnpm add systeminformation cheerio -w
   - trace.moe
 
 详细功能请到[功能](/features/)页面查看
+
+## 你发现了问题？
+
+- [Github issues](https://github.com/yeyang52/yenai-plugin/issues)
+- [QQ群](https://jq.qq.com/?_wv=1027&k=o8FTig5Z)
+
+## 投喂 ❤️
+
+- [爱发电](https://afdian.net/a/yeyang52)

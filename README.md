@@ -3,7 +3,7 @@
 <br>
 <h1>Yenai-Plugin</h1>
 
-🐑 Yenai-Plugin是一个Yunzai-Bot的扩展插件，提供对Bot的一些便捷操作。
+🐑 Yenai-Plugin是一个Yunzai-Bot的扩展插件，提供对Bot的一些便捷操作。<img src="https://media.giphy.com/media/mGcNjsfWAjY5AEZNw6/giphy.gif" width="50">
 <br>
 <br>
 <img src="https://count.getloli.com/get/@:yenai-plugin?theme=rule34" /> <br>
@@ -27,7 +27,7 @@
 
 ---
 
-## 安装教程
+## 安装教程 💡
 
 请将Yenai-Plugin放置在Yunzai-Bot的plugins目录下，重启Yunzai-Bot后即可使用。
 
@@ -47,7 +47,7 @@ git clone --depth=1 https://gitee.com/yeyang52/yenai-plugin.git ./plugins/yenai-
 pnpm add systeminformation cheerio -w
 ```
 
-## 功能介绍
+## 功能介绍 📖
 
 > Yenai-Plugin为您提供以下功能
 >
@@ -206,7 +206,7 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 
 常见问题请移步[wiki](https://github.com/yeyang52/yenai-plugin/wiki)
 
-## 特别鸣谢
+## 特别鸣谢 ❤️
 
 - [Yunzai-Bot](https://gitee.com/Le-niao/Yunzai-Bot)
 - [cq-picsearcher-bot](https://github.com/Tsuk1ko/cq-picsearcher-bot)
@@ -245,22 +245,22 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 
 本段遵循 [all-contributors](https://github.com/all-contributors/all-contributors) 规范，欢迎任何形式的贡献！
 
-## 友情链接
+## 友情链接 😊
 
 - [Yunzai-Bot插件索引](https://gitee.com/Hikari666/Yunzai-Bot-plugins-index)
 - [码云镜像库](https://gitee.com/yeyang52/yenai-plugin)
 
-## 免责声明
+## 免责声明 ❗
 
 1. 功能仅限内部交流与小范围使用，请勿将Yunzai-Bot及Yenai-Plugin用于任何以盈利为目的的场景.
 2. 图片与其他素材均来自于网络，仅供交流学习使用，如有侵权请联系，会立即删除.
 
-## 联系方式
+## <img src="https://media.giphy.com/media/VgCDAzcKvsR6OM0uWg/giphy.gif" width="50">联系方式
 
-QQ：746659424
+🐧：746659424
 
-群号：254974507(已锁)
+💬：254974507(已锁)
 
-投喂：[爱发电](https://afdian.net/a/yeyang52)
+❤️：[爱发电](https://afdian.net/a/yeyang52)
 
 ![Alt](https://repobeats.axiom.co/api/embed/42b5a7769074be124bd9ab02456897e37d1581f1.svg "Repobeats analytics image")

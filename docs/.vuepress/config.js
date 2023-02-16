@@ -2,15 +2,22 @@
 module.exports = {
   base: '/yenai-plugin/',
   title: 'Yenai-Plugin',
-  description: 'Just playing around',
+  description: 'Yunzai-Bot的一个扩展插件',
   themeConfig: {
-    sidebar: 'auto',
-    displayAllHeaders: true,
+    sidebar: {
+      '/features/': [
+        '',
+        'help',
+        'FAQ'
+      ],
+      '/': [
+        'about'
+      ]
+    },
     nav: [
       { text: '首页', link: '/' },
-      { text: '介绍', link: '/guide/' },
-      { text: '功能', link: '/guide/features' },
-      { text: 'GitHub', link: 'https://github.com/yeyang52/yenai-plugin' },
+      { text: '介绍', link: '/about' },
+      { text: '功能', link: '/features/' },
       { text: 'Gitee', link: 'https://gitee.com/yeyang52/yenai-plugin' },
     ],
     lastUpdated: '最后更新',
@@ -22,7 +29,7 @@ module.exports = {
     repo: 'yeyang52/yenai-plugin',
     // 自定义仓库链接文字。默认从 `themeConfig.repo` 中自动推断为
     // "GitHub"/"GitLab"/"Bitbucket" 其中之一，或是 "Source"。
-    repoLabel: '查看源码',
+    repoLabel: 'GitHub',
     // 假如文档不是放在仓库的根目录下：
     docsDir: 'docs',
     // 假如文档放在一个特定的分支下：

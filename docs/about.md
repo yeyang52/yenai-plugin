@@ -15,3 +15,14 @@ git clone --depth=1 https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai
 #安装依赖(可选)
 pnpm add systeminformation cheerio -w
 ```
+## 现有功能
+
+- QQ事件通知
+- 好友申请、群申请、加群申请处理
+- 更改Bot信息
+- 群管
+- Pixiv
+- 搜图搜番
+  - saucenao
+  - ascii2d
+  - trace.moe

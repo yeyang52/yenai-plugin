@@ -61,9 +61,6 @@ title: 功能
 - 同意/拒绝/查看群邀请
 - 同意/拒绝/查看加群申请
 
-## 系统状态
-<img src="yenai-plugin/img/状态.png" alt="状态" width = "300" />
-
 ## Pixiv
 
 - pid搜图
@@ -105,3 +102,6 @@ title: 功能
 - 群数据
 - 群发言榜单
 - 谁是龙王
+
+## 系统状态
+<img :src="$withBase('/img/状态.png')" alt="状态" width = "300" />

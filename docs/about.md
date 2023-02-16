@@ -26,3 +26,5 @@ pnpm add systeminformation cheerio -w
   - saucenao
   - ascii2d
   - trace.moe
+
+详细功能请到[功能](/features/)页面查看

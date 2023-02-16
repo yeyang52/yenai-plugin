@@ -1,5 +1,0 @@
-#代理绝大部分请求
-proxyAddress: http://127.0.0.1:7890
-#开启或关闭使用代理
-switchProxy: false
-

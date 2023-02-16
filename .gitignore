@@ -1,7 +1,1 @@
-node_modules/
-data/
-*_test.js
-test.*
-*.log
-.vscode/
-.eslintignore
+node_modules

@@ -1,28 +1,13 @@
 {
-  "name": "yenai-plguin",
+  "name": "yenai-help",
   "version": "1.0.0",
-  "description": "Yunzai-Bot插件扩展",
   "main": "index.js",
-  "type": "module",
-  "scripts": {
-    "contributors:add": "all-contributors add",
-    "contributors:generate": "all-contributors generate"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://gitee.com/yeyang52/yenai-plugin.git"
-  },
-  "keywords": [
-    "Yunzai-Bot",
-    "yenai-plguin"
-  ],
-  "author": "yeyang",
-  "license": "GPL-3.0",
-  "dependencies": {
-    "cheerio": "1.0.0-rc.12",
-    "systeminformation": "^5.17.1"
-  },
+  "license": "MIT",
   "devDependencies": {
-    "all-contributors-cli": "^6.24.0"
+    "vuepress": "^1.9.8"
+  },
+  "scripts": {
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
   }
 }

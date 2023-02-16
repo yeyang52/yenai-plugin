@@ -1,5 +1,6 @@
 ---
 title: 快速了解
+sidebar: auto
 ---
 
 ## 介绍

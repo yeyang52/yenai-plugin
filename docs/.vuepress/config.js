@@ -3,6 +3,9 @@ module.exports = {
   base: '/yenai-plugin/',
   title: 'Yenai-Plugin',
   description: 'Yunzai-Bot的一个扩展插件',
+  head: [
+    ['link', { rel: 'icon', href: '/favicon.ico' }],
+  ],
   themeConfig: {
     sidebar: {
       '/features/': [
@@ -10,10 +13,8 @@ module.exports = {
         'help',
         'FAQ'
       ],
-      '/': [
-        'about'
-      ]
     },
+    logo: '/img/logo.png',
     nav: [
       { text: '首页', link: '/' },
       { text: '介绍', link: '/about' },

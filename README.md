@@ -1,1 +1,1 @@
-# yenai-plugin-document
+# yenai-plugin-docs

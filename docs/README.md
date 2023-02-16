@@ -1,6 +1,6 @@
 ---
 home: true
-heroImage: /hero.png
+heroImage: /img/hero.png
 heroText: Yenai-plugin
 tagline: Yunzai-Bot的扩展插件，提供对Bot的一些便捷操作。
 actionText: 快速上手 →

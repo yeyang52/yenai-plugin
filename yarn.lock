@@ -1554,16 +1554,6 @@
     valine "^1.4.18"
     vssue "^1.4.6"
 
-"@vuepress-reco/vuepress-plugin-kan-ban-niang@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.npmmirror.com/@vuepress-reco/vuepress-plugin-kan-ban-niang/-/vuepress-plugin-kan-ban-niang-1.0.5.tgz#73b47094f1a07af05923fe9ae6c25a4c33586168"
-  integrity sha512-ufqpOw0zhLxv3PvoYlHTsjmG4CFiCaQ8dnf950Ov7JmajKgpAMarZ3ObB+xi5ex0sgetxU82YSf+CptQceXQIw==
-
-"@vuepress-reco/vuepress-plugin-loading-page@^1.6.13":
-  version "1.6.13"
-  resolved "https://registry.npmmirror.com/@vuepress-reco/vuepress-plugin-loading-page/-/vuepress-plugin-loading-page-1.6.13.tgz#f7c8da2e9ac94eb0ec350b2611bc3f141ac2c6fe"
-  integrity sha512-OuSqH3k2gaobJ71TTQvDq/rUNlNqC5Nsdte2Wv46MGKyQB7bzmy7SSneQPARlZbWbF57IpxLy3dQCB/vBsf+yA==
-
 "@vuepress-reco/vuepress-plugin-pagation@^1.6.13":
   version "1.6.13"
   resolved "https://registry.npmmirror.com/@vuepress-reco/vuepress-plugin-pagation/-/vuepress-plugin-pagation-1.6.13.tgz#d6f388d64a552d8ba95a7a9bfa7d307a63bb6718"
@@ -9394,6 +9384,11 @@ vuepress-plugin-ribbon@^1.1.6:
   integrity sha512-p/9eZeHLEN/NAQ/S7tVawr4dNZCdBz24jhC8clQ2GUtadPSSAwjohE97dnDn9UXgY11OyOvaImT26iBnQdjf7Q==
   dependencies:
     "@moefy-canvas/theme-ribbon" "^0.5.2"
+
+vuepress-plugin-sakura@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.npmmirror.com/vuepress-plugin-sakura/-/vuepress-plugin-sakura-1.2.1.tgz#4e69a41e49246a13c416d847586a3a7153c1289a"
+  integrity sha512-76q8SsTZngGIZB3+HQvZBUPn8DfgUreei2n6CINmsR0hc7zom5eOWbL0VbxVMnJc7axL1ED3etZuBd68TaBIxg==
 
 vuepress-plugin-sitemap@^2.3.1:
   version "2.3.1"

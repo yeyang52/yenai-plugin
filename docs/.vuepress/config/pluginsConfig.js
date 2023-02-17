@@ -33,9 +33,9 @@ module.exports = {
     },
     'vuepress-plugin-sponsor': {
         theme: 'simple',
-        alipay: '/sponsor-qrcode/qrcode-alipay.png',
-        wechat: '/sponsor-qrcode/qrcode-wechat.png',
-        qq: '/sponsor-qrcode/qrcode-qq.png',
+        alipay: '/yenai-plugin/sponsor-qrcode/qrcode-alipay.png',
+        wechat: '/yenai-plugin/sponsor-qrcode/qrcode-wechat.png',
+        qq: '/yenai-plugin/sponsor-qrcode/qrcode-qq.png',
         duration: 2000
     },
     //随机名言
@@ -48,4 +48,6 @@ module.exports = {
     "go-top": true,
     //关闭自带
     "@vuepress-reco/back-to-top": false,
+    //樱花
+    "sakura": {}
 }

@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@docs
+        uses: actions/checkout@master
 
       - name: vuepress-deploy
         uses: yeyang52/yenai-plugin@docs

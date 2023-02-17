@@ -5,10 +5,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@master
+        uses: actions/checkout@docs
 
       - name: vuepress-deploy
-        uses: yeyang52/yenai-plugin@master
+        uses: yeyang52/yenai-plugin@docs
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           TARGET_REPO: yeyang52/yenai-plugin

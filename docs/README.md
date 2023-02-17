@@ -12,7 +12,7 @@ features:
   details: 丰富的群管功能，让违规的人无处可逃
 - title: 娱乐
   details: 各种娱乐功能，让你欲罢不能
-footer: GPL-3.0 License | Yunzai-Bot 3.0.0 & Yenai-plugin
+footer: GPL-3.0 License | Copyright © 2023 yeyang | Yunzai-Bot 3.0.0 & Yenai-plugin
 ---
 
 ### 让生活多姿多彩

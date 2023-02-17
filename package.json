@@ -6,7 +6,8 @@
   "devDependencies": {
     "@vuepress/plugin-back-to-top": "^1.9.8",
     "moment": "^2.29.4",
-    "vuepress": "^1.9.8"
+    "vuepress": "^1.9.8",
+    "vuepress-plugin-auto-sidebar": "^2.3.2"
   },
   "scripts": {
     "docs:dev": "vuepress dev docs",

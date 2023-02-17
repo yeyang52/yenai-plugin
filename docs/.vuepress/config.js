@@ -1,33 +1,18 @@
-const moment = require('moment')
-moment.locale('zh-cn')
+const navConfig = require('./config/navConfig')
+const pluginsConfig = require('./config/pluginsConfig')
+const headConfig = require('./config/headConfig')
+const sidebarConfig = require('./config/sidebarConfig')
+
 module.exports = {
   base: '/yenai-plugin/',
   title: 'Yenai-Plugin',
   description: 'Yunzai-Bot的一个扩展插件',
-  head: [
-    ['link', { rel: 'icon', href: '/favicon.ico' }],
-  ],
-  plugins: {
-    '@vuepress/last-updated': {
-      transformer: (timestamp) => moment(timestamp).format('LLLL')
-    },
-    '@vuepress/back-to-top': true
-  },
+  head: headConfig,
+  plugins: pluginsConfig,
   themeConfig: {
-    sidebar: {
-      '/features/': [
-        '',
-        'help',
-        'FAQ'
-      ],
-    },
+    // sidebar:sidebarConfig ,
     logo: '/img/logo.png',
-    nav: [
-      { text: '首页', link: '/' },
-      { text: '介绍', link: '/about' },
-      { text: '功能', link: '/features/' },
-      { text: 'Gitee', link: 'https://gitee.com/yeyang52/yenai-plugin' },
-    ],
+    nav: navConfig,
     lastUpdated: '最后更新',
     // 默认值是 true 。设置为 false 来禁用所有页面的 下一篇 链接
     nextLinks: true,

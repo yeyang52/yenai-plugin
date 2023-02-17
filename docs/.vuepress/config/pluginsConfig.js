@@ -5,5 +5,6 @@ module.exports = {
         transformer: (timestamp) => moment(timestamp).format('LLLL')
     },
     '@vuepress/back-to-top': true,
-    "vuepress-plugin-auto-sidebar": {}
+    "vuepress-plugin-auto-sidebar": {},
+    '@vuepress/medium-zoom': true
 }

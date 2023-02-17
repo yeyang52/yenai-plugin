@@ -3,7 +3,7 @@ module.exports = [
     ['meta', { name: 'viewport', content: 'width=device-width,initial-scale=1,user-scalable=no' }],
     //pwa
     ['link', { rel: 'icon', href: '/logo.png' }],
-    ['link', { rel: 'icon', href: 'favicon.ico', type: 'image/x-icon' }],
+    ['link', { rel: 'icon', href: '/favicon.ico', type: 'image/x-icon' }],
     ['link', { rel: 'manifest', href: '/manifest.json' }],
     ['meta', { name: 'theme-color', content: '#222222' }],
     ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],

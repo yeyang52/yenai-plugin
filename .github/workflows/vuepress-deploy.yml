@@ -44,7 +44,7 @@ jobs:
       # 查看 workflow 的文档来获取更多信息
       # @see https://github.com/crazy-max/ghaction-github-pages
       - name: Deploy to GitHub Pages
-        uses: yeyang52/yenai-plugin@v2
+        uses: crazy-max/ghaction-github-pages@v2
         # 环境变量
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}

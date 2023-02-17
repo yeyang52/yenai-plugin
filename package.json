@@ -4,10 +4,13 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
+    "@vuepress/plugin-back-to-top": "^1.9.8",
+    "moment": "^2.29.4",
     "vuepress": "^1.9.8"
   },
   "scripts": {
     "docs:dev": "vuepress dev docs",
-    "docs:build": "vuepress build docs"
+    "docs:build": "vuepress build docs",
+    "deploy": "bash deploy.sh"
   }
 }

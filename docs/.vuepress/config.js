@@ -1,4 +1,5 @@
-
+const moment = require('moment')
+moment.locale('zh-cn')
 module.exports = {
   base: '/yenai-plugin/',
   title: 'Yenai-Plugin',
@@ -6,6 +7,12 @@ module.exports = {
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],
   ],
+  plugins: {
+    '@vuepress/last-updated': {
+      transformer: (timestamp) => moment(timestamp).format('LLLL')
+    },
+    '@vuepress/back-to-top': true
+  },
   themeConfig: {
     sidebar: {
       '/features/': [

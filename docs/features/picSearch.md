@@ -22,4 +22,4 @@ title: 搜图搜番
 2. 然后进入[这个网址](https://saucenao.com/user.php?page=search-api)获取你的api_key
 <img :src="$withBase('/img/SauceNAO.png')" alt="SauceNAO">
 
-1. 最后对你的鸡鸡人发送 #设置SauceNAOApiKey <api_key>
+3. 最后对你的鸡鸡人发送 #设置SauceNAOApiKey <api_key>

@@ -10,7 +10,6 @@ module.exports = {
     '@vuepress/last-updated': {
         transformer: (timestamp) => moment(timestamp).format('YYYY-MM-DD HH:mm:ss')
     },
-    "vuepress-plugin-auto-sidebar": true,
     '@vuepress/medium-zoom': {
         selector: 'img',
     },
@@ -38,6 +37,8 @@ module.exports = {
         qq: '/yenai-plugin/sponsor-qrcode/qrcode-qq.png',
         duration: 2000
     },
+    //自动生成侧边栏
+    "vuepress-plugin-auto-sidebar": true,
     //随机名言
     "vuepress-plugin-boxx": true,
     //点击特效
@@ -49,5 +50,9 @@ module.exports = {
     //关闭自带
     "@vuepress-reco/back-to-top": false,
     //樱花
-    "sakura": {}
+    "sakura": {},
+    //彩带
+    "vuepress-plugin-ribbon-animation": {
+        ribbonShow: false,
+    },
 }

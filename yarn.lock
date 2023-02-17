@@ -1086,15 +1086,6 @@
     "@moefy-canvas/utils" "^0.5.2"
     ts-debounce "^4.0.0"
 
-"@moefy-canvas/theme-ribbon@^0.5.2":
-  version "0.5.2"
-  resolved "https://registry.npmmirror.com/@moefy-canvas/theme-ribbon/-/theme-ribbon-0.5.2.tgz#2f25f26b54c477380a79d0c5e9fbfa0aa9bfabfc"
-  integrity sha512-kgHNpni3P4WdfOgwxP1BEjHwpvOW4qqWNaH02hxqnNve9ZnAopoBbvS/tLxnykS2gZ4OWQJmvjS2YGpDIMHoqQ==
-  dependencies:
-    "@moefy-canvas/core" "^0.5.2"
-    "@moefy-canvas/utils" "^0.5.2"
-    ts-debounce "^4.0.0"
-
 "@moefy-canvas/utils@^0.5.2":
   version "0.5.2"
   resolved "https://registry.npmmirror.com/@moefy-canvas/utils/-/utils-0.5.2.tgz#11c9ac56e9a81456678ccd10b2234754e2a20cfe"
@@ -2864,6 +2855,15 @@ cli-boxes@^2.2.0:
   resolved "https://registry.npmmirror.com/cli-boxes/-/cli-boxes-2.2.1.tgz#ddd5035d25094fce220e9cab40a45840a440318f"
   integrity sha512-y4coMcylgSCdVinjiDBuR8PCC2bLjyGTwEmPb9NHR/QaNU6EUOXcTY/s6VjGMD6ENSEaeQYHCY0GNGS5jfMwPw==
 
+clipboard@^2.0.4:
+  version "2.0.11"
+  resolved "https://registry.npmmirror.com/clipboard/-/clipboard-2.0.11.tgz#62180360b97dd668b6b3a84ec226975762a70be5"
+  integrity sha512-C+0bbOqkezLIsmWSvlsXS0Q0bmkugu7jcfMIACB+RDEntIzQIkdr148we28AfSloQLRdZlYL/QYyrq05j/3Faw==
+  dependencies:
+    good-listener "^1.2.2"
+    select "^1.1.2"
+    tiny-emitter "^2.0.0"
+
 cliui@^3.0.3:
   version "3.2.0"
   resolved "https://registry.npmmirror.com/cliui/-/cliui-3.2.0.tgz#120601537a916d29940f934da3b48d585a39213d"
@@ -3602,6 +3602,11 @@ delayed-stream@~1.0.0:
   version "1.0.0"
   resolved "https://registry.npmmirror.com/delayed-stream/-/delayed-stream-1.0.0.tgz#df3ae199acadfb7d440aaae0b29e2272b24ec619"
   integrity sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==
+
+delegate@^3.1.2:
+  version "3.2.0"
+  resolved "https://registry.npmmirror.com/delegate/-/delegate-3.2.0.tgz#b66b71c3158522e8ab5744f720d8ca0c2af59166"
+  integrity sha512-IofjkYBZaZivn0V8nnsMJGBr4jVLxHDheKSW88PyxS5QC4Vo9ZbZVvhzlSxY87fVq3STR6r+4cGepyHkcWOQSw==
 
 depd@2.0.0:
   version "2.0.0"
@@ -4750,6 +4755,13 @@ globby@^9.2.0:
     ignore "^4.0.3"
     pify "^4.0.1"
     slash "^2.0.0"
+
+good-listener@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.npmmirror.com/good-listener/-/good-listener-1.2.2.tgz#d53b30cdf9313dffb7dc9a0d477096aa6d145c50"
+  integrity sha512-goW1b+d9q/HIwbVYZzZ6SsTr4IgE+WA44A0GmPIQstuOrgsFcT7VEJ48nmr9GaRtNu0XTKacFLGnBPAM6Afouw==
+  dependencies:
+    delegate "^3.1.2"
 
 gopd@^1.0.1:
   version "1.0.1"
@@ -7985,6 +7997,11 @@ select-hose@^2.0.0:
   resolved "https://registry.npmmirror.com/select-hose/-/select-hose-2.0.0.tgz#625d8658f865af43ec962bfc376a37359a4994ca"
   integrity sha512-mEugaLK+YfkijB4fx0e6kImuJdCIt2LxCRcbEYPqRGCs4F2ogyfZU5IAZRdjCP8JPq2AtdNoC/Dux63d9Kiryg==
 
+select@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.npmmirror.com/select/-/select-1.1.2.tgz#0e7350acdec80b1108528786ec1d4418d11b396d"
+  integrity sha512-OwpTSOfy6xSs1+pwcNrv0RBMOzI39Lp3qQKUTPVVPRjCdNa5JH/oPRiqsesIskK8TVgmRiHwO4KXlV2Li9dANA==
+
 selfsigned@^1.10.8:
   version "1.10.14"
   resolved "https://registry.npmmirror.com/selfsigned/-/selfsigned-1.10.14.tgz#ee51d84d9dcecc61e07e4aba34f229ab525c1574"
@@ -8743,6 +8760,11 @@ timsort@^0.3.0:
   resolved "https://registry.npmmirror.com/timsort/-/timsort-0.3.0.tgz#405411a8e7e6339fe64db9a234de11dc31e02bd4"
   integrity sha512-qsdtZH+vMoCARQtyod4imc2nIJwg9Cc7lPRrw9CzF8ZKR0khdr8+2nX80PBhET3tcyTtJDxAffGh2rXH4tyU8A==
 
+tiny-emitter@^2.0.0:
+  version "2.1.0"
+  resolved "https://registry.npmmirror.com/tiny-emitter/-/tiny-emitter-2.1.0.tgz#1d1a56edfc51c43e863cbb5382a72330e3555423"
+  integrity sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==
+
 to-arraybuffer@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npmmirror.com/to-arraybuffer/-/to-arraybuffer-1.0.1.tgz#7d229b1fcc637e466ca081180836a7aabff83f43"
@@ -9378,12 +9400,17 @@ vuepress-plugin-mailchimp@^1.4.1:
     jsonp "^0.2.1"
     query-string "^6.9.0"
 
-vuepress-plugin-ribbon@^1.1.6:
-  version "1.1.6"
-  resolved "https://registry.npmmirror.com/vuepress-plugin-ribbon/-/vuepress-plugin-ribbon-1.1.6.tgz#5bab89bff24313336db674dbdee83b0f8f2909af"
-  integrity sha512-p/9eZeHLEN/NAQ/S7tVawr4dNZCdBz24jhC8clQ2GUtadPSSAwjohE97dnDn9UXgY11OyOvaImT26iBnQdjf7Q==
+vuepress-plugin-nuggets-style-copy@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.npmmirror.com/vuepress-plugin-nuggets-style-copy/-/vuepress-plugin-nuggets-style-copy-1.0.3.tgz#3a3bb57c04c7d9ec58afd93ff3db8b6102574bb8"
+  integrity sha512-0v+9i8ZkD0a87nxH/KGioJE6Szeh5ZMBQxRyjEyeUo3B/OSXuuED9ih6+JW2e3LKbsxkza1ZAv8dVXNurKXtFw==
   dependencies:
-    "@moefy-canvas/theme-ribbon" "^0.5.2"
+    clipboard "^2.0.4"
+
+vuepress-plugin-ribbon-animation@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.npmmirror.com/vuepress-plugin-ribbon-animation/-/vuepress-plugin-ribbon-animation-1.1.3.tgz#15dd84e0fe9bbff805ab8e05df7f50bcc774b5b6"
+  integrity sha512-cNYidQ/6cQZlEDMkpn3haclP4R7+BMAn2QknRiKnbhDq8g6xibZUAVxq9qqOZZDHC8PRjUqa2CfW7yJeYl861A==
 
 vuepress-plugin-sakura@^1.2.1:
   version "1.2.1"

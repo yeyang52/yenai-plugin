@@ -1,5 +1,9 @@
 ---
 title: 教程
+date: 2023-2-17
+categories:
+- help
+- 教程
 ---
 
 ::: tip

@@ -9,10 +9,26 @@ module.exports = {
   description: 'Yunzai-Bot的一个扩展插件',
   head: headConfig,
   plugins: pluginsConfig,
+  theme: 'reco',
   themeConfig: {
-    // sidebar:sidebarConfig ,
+    //评论
+    valineConfig: {
+      appId: 'xHmzBTN6lvuLAlBvZbGcQWWZ-gzGzoHsz',// your appId
+      appKey: 'DfYRscIDhbBP2Ka9pMWq9GyQ', // your appKey
+      placeholder: '善语结善缘，恶语伤人心',
+      avatar: 'wavatar',
+    },
+    // 项目开始时间
+    startYear: '2022',
+    //作者
+    author: '椰羊',
+    //自动形成侧边导航及其深度
+    subSidebar: 'auto',
+    // 导航栏左侧logo
     logo: '/img/logo.png',
+    //导航栏配置
     nav: navConfig,
+    //更新时间
     lastUpdated: '最后更新',
     // 默认值是 true 。设置为 false 来禁用所有页面的 下一篇 链接
     nextLinks: true,

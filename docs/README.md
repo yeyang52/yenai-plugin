@@ -1,9 +1,12 @@
 ---
 home: true
 heroImage: /img/hero.png
+heroImageStyle: {
+  maxWidth: '300px',
+}
 heroText: Yenai-plugin
 tagline: Yunzai-Bot的扩展插件，提供对Bot的一些便捷操作。
-actionText: 快速上手 →
+actionText: About →
 actionLink: /about
 features:
 - title: 方便
@@ -12,7 +15,7 @@ features:
   details: 丰富的群管功能，让违规的人无处可逃
 - title: 娱乐
   details: 各种娱乐功能，让你欲罢不能
-footer: GPL-3.0 License | Copyright © 2023 yeyang | Yunzai-Bot 3.0.0 & Yenai-plugin
+subSidebar: false
 ---
 
 ### 让生活多姿多彩
@@ -26,3 +29,5 @@ pnpm add systeminformation cheerio -w
 ::: tip
 Yenai-plugin仅适配[Yunzai-Bot V3](https://gitee.com/Le-niao/Yunzai-Bot)
 :::
+
+<Boxx/>

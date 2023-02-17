@@ -1,10 +1,51 @@
 const moment = require('moment')
-moment.locale('zh-cn')
 module.exports = {
-    '@vuepress/last-updated': {
-        transformer: (timestamp) => moment(timestamp).format('LLLL')
+    '@vuepress/pwa': {
+        serviceWorker: true,
+        updatePopup: {
+            message: '好像有更新诶！',
+            buttonText: '走！瞅瞅去！',
+        },
     },
-    '@vuepress/back-to-top': true,
-    "vuepress-plugin-auto-sidebar": {},
-    '@vuepress/medium-zoom': true
+    '@vuepress/last-updated': {
+        transformer: (timestamp) => moment(timestamp).format('YYYY-MM-DD HH:mm:ss')
+    },
+    "vuepress-plugin-auto-sidebar": true,
+    '@vuepress/medium-zoom': {
+        selector: 'img',
+    },
+    '@vuepress-reco/bgm-player': {
+        audios: [
+            {
+                name: '我再没见过 像你一般的星空',
+                artist: 'Seto',
+                url: 'https://assets.smallsunnyfox.com/music/2.mp3',
+                cover: 'https://assets.smallsunnyfox.com/music/2.jpg'
+            },
+            {
+                name: '萤火之森',
+                artist: 'CMJ',
+                url: 'https://assets.smallsunnyfox.com/music/3.mp3',
+                cover: 'https://assets.smallsunnyfox.com/music/3.jpg'
+            }
+        ],
+        autoplay: true
+    },
+    'vuepress-plugin-sponsor': {
+        theme: 'simple',
+        alipay: '/sponsor-qrcode/qrcode-alipay.png',
+        wechat: '/sponsor-qrcode/qrcode-wechat.png',
+        qq: '/sponsor-qrcode/qrcode-qq.png',
+        duration: 2000
+    },
+    //随机名言
+    "vuepress-plugin-boxx": true,
+    //点击特效
+    'cursor-effects': true,
+    //动态标题
+    "dynamic-title": true,
+    //悬挂小猫返回顶部
+    "go-top": true,
+    //关闭自带
+    "@vuepress-reco/back-to-top": false,
 }

@@ -3,16 +3,24 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
-  "devDependencies": {
-    "@vuepress/plugin-back-to-top": "^1.9.8",
-    "@vuepress/plugin-medium-zoom": "^1.9.8",
-    "moment": "^2.29.4",
-    "vuepress": "^1.9.8",
-    "vuepress-plugin-auto-sidebar": "^2.3.2"
-  },
   "scripts": {
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs",
     "deploy": "bash deploy.sh"
+  },
+  "dependencies": {
+    "@vuepress-reco/vuepress-plugin-bgm-player": "^1.1.4",
+    "@vuepress/plugin-medium-zoom": "^1.9.8",
+    "@vuepress/plugin-pwa": "^1.9.8",
+    "moment": "^2.29.4",
+    "vuepress": "^1.9.8",
+    "vuepress-plugin-auto-sidebar": "^2.3.2",
+    "vuepress-plugin-boxx": "0.0.7",
+    "vuepress-plugin-cursor-effects": "^1.1.6",
+    "vuepress-plugin-dynamic-title": "^1.0.0",
+    "vuepress-plugin-go-top": "^1.0.4",
+    "vuepress-plugin-ribbon": "^1.1.6",
+    "vuepress-plugin-sponsor": "^1.0.0",
+    "vuepress-theme-reco": "^1.6.16"
   }
 }

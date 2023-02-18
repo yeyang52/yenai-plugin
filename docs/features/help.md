@@ -1,9 +1,7 @@
 ---
 title: 教程
 date: 2023-2-17
-categories:
-- help
-- 教程
+autoSort: -1
 ---
 
 ::: tip
@@ -13,8 +11,13 @@ categories:
 :::
 
 ## 单独群开启功能
+::: tip
+首先你具备一定的yaml语法知识，如果你不知道什么是yaml请前往[yaml基本语法](https://blog.csdn.net/hejian_0534/article/details/100577740)
+:::
+
 打开`group`配置文件可以看到如下配置
 ```yaml
+#config/group.yaml
 123456:
   groupMessage: false #群消息
   grouptemporaryMessage: false #群临时消息
@@ -32,6 +35,12 @@ categories:
   grouptemporaryMessage: false #群临时消息
 ```
 将需要开启或关闭的通知的key值写到对应群`true`为开启`false`为关闭
+
+以下为单独开启一个群`群消息通知`的示例
+```yaml
+114514:
+  groupMessage: true #群消息
+```
 
 **支持单独开启或关闭的功能如下**
 

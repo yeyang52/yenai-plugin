@@ -11,7 +11,7 @@ module.exports = {
         transformer: (timestamp) => moment(timestamp).format('YYYY-MM-DD HH:mm:ss')
     },
     '@vuepress/medium-zoom': {
-        selector: 'img',
+        selector: '.content__default:not(.custom) img',
     },
     '@vuepress-reco/bgm-player': {
         audios: [

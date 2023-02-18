@@ -4,7 +4,7 @@ const headConfig = require('./config/headConfig')
 const sidebarConfig = require('./config/sidebarConfig')
 
 module.exports = {
-  base: '/yenai-plugin/',
+  // base: '/yenai-plugin/',
   title: 'Yenai-Plugin',
   description: 'Yunzai-Bot的一个扩展插件',
   head: headConfig,

@@ -32,9 +32,12 @@ module.exports = {
     },
     'vuepress-plugin-sponsor': {
         theme: 'simple',
-        alipay: '/yenai-plugin/sponsor-qrcode/qrcode-alipay.png',
-        wechat: '/yenai-plugin/sponsor-qrcode/qrcode-wechat.png',
-        qq: '/yenai-plugin/sponsor-qrcode/qrcode-qq.png',
+        alipay: '/sponsor-qrcode/qrcode-alipay.png',
+        // alipay: '/yenai-plugin/sponsor-qrcode/qrcode-alipay.png',
+        wechat: '/sponsor-qrcode/qrcode-wechat.png',
+        // wechat: '/yenai-plugin/sponsor-qrcode/qrcode-wechat.png',
+        qq: '/sponsor-qrcode/qrcode-qq.png',
+        // qq: '/yenai-plugin/sponsor-qrcode/qrcode-qq.png',
         duration: 2000
     },
     //自动生成侧边栏

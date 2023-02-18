@@ -18,7 +18,7 @@ features:
 subSidebar: false
 ---
 
-### 让生活多姿多彩
+### 让生活多姿多彩<img src="https://media.giphy.com/media/mGcNjsfWAjY5AEZNw6/giphy.gif" width="50">
 ```sh
 #在Yunzai-Bot根目录执行
 git clone --depth=1 https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin

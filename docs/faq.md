@@ -9,7 +9,7 @@ categories:
 ## 常见问题
 Q：某某功能群员不能用，怎么关闭撤回或设置撤回时间，怎么设置CD等
 
-A：请移步[此教程](https://docs.qq.com/doc/p/31abcb4eddbc89e7ceb2da55605c9a14c272a55d)进行设置
+A：请移步[Pixiv#设置](./features/Pixiv#设置)
 
 ## 错误排查
 

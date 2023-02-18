@@ -25,7 +25,7 @@ module.exports = {
     //自动形成侧边导航及其深度
     subSidebar: 'auto',
     // 导航栏左侧logo
-    logo: '/img/logo.png',
+    logo: '/logo.png',
     //导航栏配置
     nav: navConfig,
     //更新时间

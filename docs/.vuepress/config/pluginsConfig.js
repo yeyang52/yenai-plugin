@@ -46,9 +46,9 @@ module.exports = {
     //动态标题
     "dynamic-title": true,
     //悬挂小猫返回顶部
-    "go-top": true,
+    // "go-top": true,
     //关闭自带
-    "@vuepress-reco/back-to-top": false,
+    // "@vuepress-reco/back-to-top": false,
     //樱花
     "sakura": {},
     //彩带

@@ -1,6 +1,8 @@
 ---
 title: Pixiv
 date: 2023-2-17
+autoSort: -1
+autoNext: Bika
 ---
 
 <Boxx/> 

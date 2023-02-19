@@ -39,10 +39,6 @@ pnpm add systeminformation cheerio -w
 - [Github issues](https://github.com/yeyang52/yenai-plugin/issues)
 - [QQ群](https://jq.qq.com/?_wv=1027&k=o8FTig5Z)
 
-## 投喂 ❤️
-
-- [爱发电](https://afdian.net/a/yeyang52)
-
 ## 友情链接
 - [Earth-K-Plugin](https://tukuai.one)
 - [TRSS Script](https://trss.me/)

@@ -58,4 +58,38 @@ module.exports = {
     "vuepress-plugin-ribbon-animation": {
         ribbonShow: false,
     },
+    //公告
+    "@vuepress-reco/bulletin-popover": {
+        // width: '300px', // 默认 260px
+        title: '消息提示',
+        body: [
+            {
+                type: 'title',
+                content: '欢迎加入QQ交流群 🎉🎉🎉',
+            },
+            {
+                type: 'text',
+                content: 'QQ群：254974507',
+                style: 'text-align: center;'
+            },
+            {
+                type: 'text',
+                content: `如果你觉得插件还不错，可以为作者贡献一杯奶茶。
+          <ul>
+            <li><a href="https://github.com/yeyang52/yenai-plugin/issues">Issues<a/></li>
+          </ul>`,
+                style: 'font-size: 12px;'
+            },
+        ],
+        footer: [
+            {
+                type: 'button',
+                text: '打赏',
+                link: '/donate'
+            }
+        ]
+    },
+    "@vuepress/google-analytics": {
+        'ga': 'G-Q411MFD4XE' // UA-00000000-0
+    }
 }

@@ -82,7 +82,7 @@ autoSort: -1
 
 下面介绍第一个脚本的使用
 
-1. 先将这个[脚本](https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362)下载下来，分在任意一个你喜欢的目录
+1. 先将这个[脚本](https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362)下载下来，放在任意一个你喜欢的目录
 2. 安装python(请自行百度安装)
 3. 在你存放脚本的文件夹打卡cmd或者powerShell，运行命令：
    ```sh

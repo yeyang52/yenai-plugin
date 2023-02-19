@@ -1,10 +1,8 @@
 const navConfig = require('./config/navConfig')
 const pluginsConfig = require('./config/pluginsConfig')
 const headConfig = require('./config/headConfig')
-const sidebarConfig = require('./config/sidebarConfig')
 
 module.exports = {
-  // base: '/yenai-plugin/',
   title: 'Yenai-Plugin',
   description: 'Yunzai-Bot的一个扩展插件',
   head: headConfig,
@@ -21,7 +19,7 @@ module.exports = {
     // 项目开始时间
     startYear: '2022',
     //作者
-    author: '椰羊',
+    author: 'yeyang',
     //自动形成侧边导航及其深度
     subSidebar: 'auto',
     // 导航栏左侧logo

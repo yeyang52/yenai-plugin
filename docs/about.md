@@ -42,3 +42,7 @@ pnpm add systeminformation cheerio -w
 ## 投喂 ❤️
 
 - [爱发电](https://afdian.net/a/yeyang52)
+
+## 友情链接
+- [Earth-K-Plugin](https://tukuai.one)
+- [TRSS Script](https://trss.me/)

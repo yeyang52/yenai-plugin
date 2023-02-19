@@ -9,7 +9,7 @@ tagline: Yunzai-Bot的扩展插件，提供对Bot的一些便捷操作。
 actionText: About →
 actionLink: /about
 features:
-- title: 方便便捷
+- title: 方便快捷
   details: 不用登录Bot账号即可完成一系列操作
 - title: 群聊管理
   details: 丰富的群管功能，让违规的人无处可逃

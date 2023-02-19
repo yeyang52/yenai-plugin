@@ -89,7 +89,4 @@ module.exports = {
             }
         ]
     },
-    "@vuepress/google-analytics": {
-        'ga': 'G-Q411MFD4XE' // UA-00000000-0
-    }
 }

@@ -32,7 +32,7 @@ pnpm add systeminformation cheerio -w
   - ascii2d
   - trace.moe
 
-详细功能请到[功能](/features/)页面查看
+详细功能请到[功能](./features/Notice.md)页面查看
 
 ## 你发现了问题？
 

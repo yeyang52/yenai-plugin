@@ -204,7 +204,7 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 </details>
 <br>
 
-更多信息请移步[docs](https://yeyang52.github.io/yenai-plugin/)
+更多信息请移步[文档](https://www.yenai.ren)
 
 ## 特别鸣谢 ❤️
 

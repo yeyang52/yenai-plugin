@@ -38,3 +38,10 @@ write EPROTO 140031419692928:error:1416D044:SSL routines:tls_process_key_exchang
 
 或使用Puppeteer 绕过cf js challenge
   
+## SauceNAO
+### 错误信息
+- `
+The anonymous account type does not permit API usage.
+`
+
+apikey错误，请检查你的apikey是否正确

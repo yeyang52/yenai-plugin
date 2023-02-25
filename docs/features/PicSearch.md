@@ -14,4 +14,4 @@ date: 2023-2-19
 | SauceNAO |   指定SauceNAO搜索   | #\<SauceNAO\|sn>搜图 |
 | Ascii2D  |   指定Ascii2D搜索    | #\<Ascii2D\|ac>搜图
 |设置SauceNAOApiKey  ||#设置SauceNAOApiKey\<apiKey>|
-- 如何获取[SauceNAO Api Key](../help#获取saucenao-api-key)
+- [如何获取SauceNAO Api Key](../help#获取saucenao-api-key)

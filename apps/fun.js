@@ -57,10 +57,10 @@ export class Fun extends plugin {
           reg: 'github.com/[a-zA-Z0-9-]{1,39}/[a-zA-Z0-9_-]{1,100}',
           fnc: 'GH'
         },
-        {
-          reg: '^#?coser$',
-          fnc: 'coser'
-        },
+        // {
+        //   reg: '^#?coser$',
+        //   fnc: 'coser'
+        // },
         {
           reg: `#?来点(${Object.keys(heisiType).join('|')})$`,
           fnc: 'heisiwu'
@@ -208,32 +208,32 @@ export class Fun extends plugin {
   }
 
   // coser
-  async coser (e) {
-    let { sese, sesepro } = Config.getGroup(e.group_id)
-    if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
+  // async coser (e) {
+  //   let { sese, sesepro } = Config.getGroup(e.group_id)
+  //   if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
 
-    e.reply(START_EXECUTION)
+  //   e.reply(START_EXECUTION)
 
-    const api = 'http://ovooa.com/API/cosplay/api.php'
+  //   const api = 'http://ovooa.com/API/cosplay/api.php'
 
-    let res = await fetch(api).then((res) => res.json()).catch((err) => console.error(err))
+  //   let res = await fetch(api).then((res) => res.json()).catch((err) => console.error(err))
 
-    if (!res) return e.reply(API_ERROR)
+  //   if (!res) return e.reply(API_ERROR)
 
-    res = res.data
-    let item = 1
-    let msg = [res.Title]
-    for (let i of res.data) {
-      msg.push(segment.image(i))
-      if (item >= 20) {
-        break
-      } else {
-        item++
-      }
-    }
-    common.getRecallsendMsg(e, msg)
-    return true
-  }
+  //   res = res.data
+  //   let item = 1
+  //   let msg = [res.Title]
+  //   for (let i of res.data) {
+  //     msg.push(segment.image(i))
+  //     if (item >= 20) {
+  //       break
+  //     } else {
+  //       item++
+  //     }
+  //   }
+  //   common.getRecallsendMsg(e, msg)
+  //   return true
+  // }
 
   // cos/acg搜索
   async acg (e) {

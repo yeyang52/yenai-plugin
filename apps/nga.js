@@ -15,7 +15,7 @@ export class NGA extends plugin {
       priority: 500,
       rule: [
         {
-          reg: '^#*(.*)(收益曲线|参考面板)(帮助)?$',
+          reg: '^#?(更新)?(.*)(收益曲线|参考面板)(帮助)?$',
           fnc: 'NGA'
         }
       ]
@@ -32,15 +32,16 @@ export class NGA extends plugin {
 
   async NGA () {
     let role = {}
-    if (/#?(收益曲线|参考面板)帮助/.test(this.e.msg)) {
+    let regRet = this.e.msg.match('^#?(更新)?(.*)(收益曲线|参考面板)(帮助)?$')
+    if (regRet[4]) {
       role.name = '帮助'
     } else {
-      role = gsCfg.getRole(this.e.msg, '收益曲线|参考面板')
+      role = gsCfg.getRole(regRet[2])
     }
 
     if (!role) return logger.error(`${this.e.logFnc}未找到该角色`, role)
 
-    let type = /收益曲线/.test(this.e.msg) ? '收益曲线' : '参考面板'
+    let type = regRet[3]
     /** 主角特殊处理 */
     if (['10000005', '10000007', '20000000'].includes(String(role.roleId))) {
       if (!['风主', '岩主', '雷主', '草主'].includes(role.alias)) {
@@ -62,7 +63,7 @@ export class NGA extends plugin {
       imgPath = `${this.referencePanelPath}/${role.name}.png`
       url = `http://www.liaobiao.top/Referenc/${role.name}.png`
     }
-    if (!fs.existsSync(imgPath)) {
+    if (!fs.existsSync(imgPath) || regRet[1]) {
       this.initFolder(type)
       await this.getImg(url, imgPath)
     }

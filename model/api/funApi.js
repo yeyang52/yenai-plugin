@@ -188,7 +188,7 @@ export default new class {
       url = `${domain}/list-31-${_.random(1, 177)}.html`
     }
     const home = await request.get(url).then(res => res.text())
-    const href = _.sample(_.map(load(home)('div.cover.mod_imgLight > a, li.wrap > div > a'), item => item.attribs.href))
+    const href = _.sample(_.map(load(home)('div.cos-list.clearfix > ul > a, li.wrap > div > a'), item => item.attribs.href))
     if (!href) throw Error('未找到结果')
     const details = await request.get(domain + href).then(res => res.text())
     const $ = load(details)

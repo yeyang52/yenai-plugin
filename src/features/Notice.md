@@ -1,9 +1,10 @@
 ---
 title: 事件通知
 date: 2023-02-19
-autoSort: 1
+category:
+- 功能
 ---
-<Boxx/>
+
 
 ::: tip 提示
 将在触发以下事件给您通知

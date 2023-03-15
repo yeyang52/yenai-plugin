@@ -18,7 +18,6 @@ features:
   details: 丰富的群管功能，让违规的人无处可逃
 - title: 娱乐
   details: 各种娱乐功能，让你欲罢不能
-subSidebar: false
 ---
 
 ### 让生活多姿多彩<img src="https://media.giphy.com/media/mGcNjsfWAjY5AEZNw6/giphy.gif" width="50">
@@ -33,4 +32,3 @@ pnpm add systeminformation cheerio -w
 Yenai-plugin仅适配[Yunzai-Bot V3](https://gitee.com/Le-niao/Yunzai-Bot)
 :::
 
-<Boxx/>

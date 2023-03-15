@@ -1,11 +1,11 @@
 ---
 title: Pixiv
 date: 2023-02-17
-autoSort: -1
-autoNext: Bika
+category:
+- 功能
 ---
 
-<Boxx/> 
+ 
 
 ## 设置
 

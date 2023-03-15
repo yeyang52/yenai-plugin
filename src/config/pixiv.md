@@ -2,8 +2,7 @@
 title: pixiv
 date: 2023-03-14
 category:
-- pixiv
-- config
+- 配置
 ---
 
 ::: tip

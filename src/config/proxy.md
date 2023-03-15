@@ -2,8 +2,7 @@
 title: 代理
 date: 2023-03-14
 category:
-- proxy
-- config
+- 配置
 ---
 
 ::: tip

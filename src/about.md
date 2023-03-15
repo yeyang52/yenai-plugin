@@ -3,7 +3,7 @@ title: 快速了解
 date: 2023-02-17
 ---
 
-<Boxx/>
+
 
 ## 介绍
 Yenai-plugin是[Yunzai-Bot](https://gitee.com/Le-niao/Yunzai-Bot)的一个扩展插件，提供一些便捷功能和娱乐功能。

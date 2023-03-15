@@ -6,7 +6,7 @@ export default hopeTheme({
   hostname: "https://www.yenai.ren",
 
   author: {
-    name: "yeyang",
+    name: "椰羊",
     url: "https://github.com/yeyang52",
   },
 

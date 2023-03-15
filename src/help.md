@@ -1,7 +1,6 @@
 ---
 title: 教程
 date: 2023-02-17
-autoSort: -1
 ---
 
 ::: tip

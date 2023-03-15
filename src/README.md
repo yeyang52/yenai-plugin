@@ -8,8 +8,8 @@ actions:
   - text: 快速上手
     link: /about
     type: primary
-  - text: 功能列表
-    link: /features/Notice
+  - text: 项目简介
+    link: /about#介绍
     type: secondary
 features:
 - title: 方便快捷

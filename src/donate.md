@@ -1,6 +1,5 @@
 ---
 title: 打赏
-isShowComments: false
 ---
 
 ### 说明

@@ -11,13 +11,31 @@ Yenai-plugin是[Yunzai-Bot](https://gitee.com/Le-niao/Yunzai-Bot)的一个扩展
 你可以开箱即用这个插件，不强制安装任何依赖，但你可能会因此失去一些功能
 
 ## 安装
+克隆项目，在`Yunzai-Bot根目录`执行
 ```sh
-#在Yunzai-Bot根目录执行
 git clone --depth=1 https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
+```
+安装依赖(可选)
+::: code-tabs#language
 
-#安装依赖(可选)
+@tab npm
+
+```sh
+npm i systeminformation cheerio -w
+```
+
+@tab pnpm 
+
+```sh
 pnpm add systeminformation cheerio -w
 ```
+
+@tab yarn
+
+```sh
+yarn add systeminformation cheerio -w
+```
+:::
 ## 功能
 
 - QQ事件通知

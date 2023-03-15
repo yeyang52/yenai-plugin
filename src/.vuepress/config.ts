@@ -21,7 +21,7 @@ export default defineUserConfig({
   // },
 
   theme,
-  plugins
+  plugins,
   // Enable it with pwa
-  // shouldPrefetch: false,
+  shouldPrefetch: false,
 });

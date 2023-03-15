@@ -6,6 +6,7 @@ import _ from 'lodash'
 // 全局
 let temp = {}
 const ops = ['+', '-']
+const ROLE_ERROR = '我连管理员都木有，这种事怎么可能做到的辣！！！'
 export class NewGroupVerify extends plugin {
   constructor () {
     super({
@@ -41,7 +42,7 @@ export class NewGroupVerify extends plugin {
 
   // 重新验证
   async cmdReverify (e) {
-    if (!e.group.is_admin && !e.group.is_owner) return e.reply('做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ', true)
+    if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true)
 
     if (!this.verifycfg.openGroup.includes(e.group_id)) return e.reply('当前群未开启验证哦~', true)
 
@@ -65,7 +66,7 @@ export class NewGroupVerify extends plugin {
 
   // 绕过验证
   async cmdPass (e) {
-    if (!e.group.is_admin && !e.group.is_owner) return e.reply('做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ', true)
+    if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true)
 
     if (!this.verifycfg.openGroup.includes(e.group_id)) return e.reply('当前群未开启验证哦~', true)
 
@@ -101,7 +102,7 @@ export class NewGroupVerify extends plugin {
   // 开启验证
   async handelverify (e) {
     if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) return e.reply('❎ 该命令仅限管理员可用', true)
-    if (!e.group.is_admin && !e.group.is_owner) return e.reply('做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ', true)
+    if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true)
     let type = /开启/.test(e.msg) ? 'add' : 'del'
     let isopen = this.verifycfg.openGroup.includes(e.group_id)
     if (isopen && type == 'add') return e.reply('❎ 本群验证已处于开启状态')

@@ -9,7 +9,7 @@ import moment from 'moment'
 // API请求错误文案
 const API_ERROR = '❎ 出错辣，请稍后重试'
 // 无管理文案
-const ROLE_ERROR = '做不到，怎么想我都做不到吧ヽ(≧Д≦)ノ'
+const ROLE_ERROR = '我连管理员都木有，这种事怎么可能做到的辣！！！'
 // 权限不足文案
 const PERMISSION_ERROR = '❎ 该命令仅限管理员可用'
 // 正则

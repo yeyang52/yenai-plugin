@@ -21,6 +21,7 @@ module.exports = {
       appKey: 'DfYRscIDhbBP2Ka9pMWq9GyQ', // your appKey
       placeholder: '善语结善缘，恶语伤人心',
       avatar: 'wavatar',
+      showComment: false
     },
     // 项目开始时间
     startYear: '2022',

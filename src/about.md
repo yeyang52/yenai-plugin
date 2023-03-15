@@ -1,9 +1,6 @@
 ---
 title: 快速了解
-sidebar: auto
 date: 2023-02-17
-showSponsor: true
-isShowComments: true
 ---
 
 <Boxx/>

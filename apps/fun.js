@@ -138,8 +138,6 @@ export class Fun extends plugin {
     /** 点赞成功回复的图片 */
     let imgs = [
       'https://xiaobai.klizi.cn/API/ce/zan.php?qq=',
-      // "https://xiaobai.klizi.cn/API/ce/xin.php?qq=",
-      'http://ovooa.com/API/zan/api.php?QQ=',
       'http://api.caonm.net/api/bix/b.php?qq=',
       'http://api.caonm.net/api/kan/kan_3.php?qq='
     ]

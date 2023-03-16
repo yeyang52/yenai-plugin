@@ -42,21 +42,18 @@ date: 2023-02-17
 ```
 
 ::: details 支持单独开启或关闭的功能
-
-| key值                   | 说明         |
-| :---------------------- | ------------ |
-| groupMessage            | 群消息       |
-| grouptemporaryMessage   | 群临时消息   |
-| groupRecall             | 群撤回       |
-| groupInviteRequest      | 群邀请       |
-| groupAdminChange        | 群管理变动   |
-| groupNumberChange       | 群聊列表变动 |
-| groupMemberNumberChange | 群成员变动   |
-| addGroupApplication     | 加群通知     |
-| botBeenBanned           | 禁言         |
-| flashPhoto              | 闪照         |
-| sese                    | *            |
-| sesepro                 | *            |
+- groupMessage             <Badge text="群消息" />            
+- grouptemporaryMessage    <Badge text="群临时消息" />   
+- groupRecall              <Badge text="群撤回" />       
+- groupInviteRequest       <Badge text="群邀请"/>       
+- groupAdminChange         <Badge text="群管理变动" />   
+- groupNumberChange        <Badge text="群聊列表变动"/>
+- groupMemberNumberChange  <Badge text="群成员变动" />  
+- addGroupApplication      <Badge text="加群通知"/>    
+- botBeenBanned            <Badge text="禁言" />         
+- flashPhoto               <Badge text="闪照" />         
+- sese                               
+- sesepro                           
 :::
 ## 获取SauceNAO Api Key
 

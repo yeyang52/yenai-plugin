@@ -5,6 +5,7 @@ category:
   - 配置
 tag:
   - bika
+icon: relation
 ---
 ::: tip
 配置文件位置：`yenai-plugin/config/config/bika.yaml`

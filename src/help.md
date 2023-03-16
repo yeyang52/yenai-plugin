@@ -1,6 +1,8 @@
 ---
 title: 教程
 date: 2023-02-17
+icon: creative
+order: -2
 ---
 
 ::: tip

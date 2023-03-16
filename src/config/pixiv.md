@@ -5,6 +5,7 @@ category:
   - 配置
 tag:
   - pixiv
+icon: dart
 ---
 
 ::: tip

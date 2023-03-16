@@ -6,6 +6,7 @@ category:
 tag:
   - proxy
   - 代理
+icon: proxy
 ---
 
 ::: tip

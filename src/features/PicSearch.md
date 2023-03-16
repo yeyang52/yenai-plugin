@@ -9,6 +9,7 @@ tag:
   - SauceNAO
   - Ascii2D
   - WhatAnime
+icon: pic
 ---
 
 

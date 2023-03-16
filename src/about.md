@@ -1,6 +1,8 @@
 ---
 title: 快速了解
 date: 2023-02-17
+icon: creative
+order: 2
 ---
 
 
@@ -18,16 +20,16 @@ git clone --depth=1 https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai
 安装依赖(可选)
 ::: code-tabs#language
 
-@tab npm
-
-```sh
-npm i systeminformation cheerio -w
-```
-
-@tab pnpm 
+@tab pnpm
 
 ```sh
 pnpm add systeminformation cheerio -w
+```
+
+@tab npm 
+
+```sh
+npm install systeminformation cheerio -w
 ```
 
 @tab yarn

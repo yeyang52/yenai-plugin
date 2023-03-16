@@ -1,6 +1,7 @@
 ---
 title: 首页
 home: true
+icon: home
 heroImage: /img/hero.png
 heroText: Yenai-plugin
 tagline: Yunzai-Bot的扩展插件，提供对Bot的一些便捷操作。
@@ -24,6 +25,11 @@ features:
 ---
 
 ### 让生活多姿多彩<img src="https://media.giphy.com/media/mGcNjsfWAjY5AEZNw6/giphy.gif" width="50">
+
+::: code-tabs#language
+
+@tab pnpm
+
 ```sh
 #在Yunzai-Bot根目录执行
 git clone --depth=1 https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
@@ -31,7 +37,28 @@ git clone --depth=1 https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai
 #安装依赖
 pnpm add systeminformation cheerio -w
 ```
-::: tip
+
+@tab npm 
+
+```sh
+#在Yunzai-Bot根目录执行
+git clone --depth=1 https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
+
+#安装依赖
+npm install systeminformation cheerio -w
+```
+
+@tab yarn
+
+```sh
+#在Yunzai-Bot根目录执行
+git clone --depth=1 https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
+
+#安装依赖
+yarn add systeminformation cheerio -w
+```
+:::
+::: warning
 Yenai-plugin仅适配[Yunzai-Bot V3](https://gitee.com/Le-niao/Yunzai-Bot)
 :::
 

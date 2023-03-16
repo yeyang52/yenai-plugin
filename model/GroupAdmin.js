@@ -22,11 +22,23 @@ export default new class {
      * @param {Number} groupId 群号
      * @return {Array}
      */
-  async getMuteList (groupId) {
+  async getMuteList (groupId, info = false) {
     let list = await this.getMemberMap(groupId, true)
-    let mutelist = list.filter(item => Bot.pickGroup(groupId - 0).pickMember(item).mute_left != 0)
+    let groupObj = Bot.pickGroup(groupId - 0)
+    let mutelist = list.filter(item => groupObj.pickMember(item).mute_left != 0)
     if (_.isEmpty(mutelist)) return false
-    return mutelist
+    if (!info) return mutelist
+    return mutelist.map(item => {
+      let Member = groupObj.pickMember(item)
+      let { info } = Member
+      return [
+        segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${info.user_id}`),
+        `\n昵称：${info.card || info.nickname}\n`,
+        `QQ：${info.user_id}\n`,
+        `群身份：${common.ROLE_MAP[info.role]}\n`,
+        `禁言剩余时间：${common.getsecondformat(Member.mute_left)}`
+      ]
+    })
   }
 
   /**
@@ -37,11 +49,7 @@ export default new class {
   async releaseAllMute (groupId) {
     let mutelist = await this.getMuteList(groupId)
     if (!mutelist) return false
-    for (let i of mutelist) {
-      await Bot.pickGroup(groupId - 0).muteMember(i, 0)
-      await common.sleep(2000)
-    }
-    return true
+    return Promise.all(mutelist.map(item => Bot.pickGroup(groupId - 0).muteMember(item, 0)))
   }
 
   /**
@@ -87,7 +95,7 @@ export default new class {
     let list = await this.noactiveList(groupId, times, unit)
     if (!list) return false
     list = list.map(item => item.user_id)
-    return await this.BatchKickMember(groupId, list)
+    return this.BatchKickMember(groupId, list)
   }
 
   /**
@@ -333,6 +341,13 @@ export default new class {
     return time == 0 ? `✅ 已把「${Memberinfo.card || Memberinfo.nickname}」从小黑屋揪了出来(｡>∀<｡)` : `已把「${Memberinfo.card || Memberinfo.nickname}」扔进了小黑屋( ･_･)ﾉ⌒●~*`
   }
 
+  /**
+   * @description: 踢群成员
+   * @param {Number} groupId 群号
+   * @param {Number} userId 被踢人
+   * @param {Number} executor 执行人
+   * @return {*}
+   */
   async kickMember (groupId, userId, executor) {
     let group = null
     try { group = Bot.pickGroup(Number(groupId), true) } catch (err) { return err.message }

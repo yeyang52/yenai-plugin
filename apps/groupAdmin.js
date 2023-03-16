@@ -414,20 +414,8 @@ export class GroupAdmin extends plugin {
 
   // 获取禁言列表
   async Mutelist (e) {
-    let mutelist = await ga.getMuteList(e.group_id)
-    if (!mutelist) return e.reply('还没有人被禁言欸(O∆O)')
-    let msg = []
-    for (let i of mutelist) {
-      let Member = e.group.pickMember(i)
-      let { info } = Member
-      msg.push([
-        segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${info.user_id}`),
-        `\n昵称：${info.card || info.nickname}\n`,
-        `QQ：${info.user_id}\n`,
-        `群身份：${common.ROLE_MAP[info.role]}\n`,
-        `禁言剩余时间：${common.getsecondformat(Member.mute_left)}`
-      ])
-    }
+    let msg = await ga.getMuteList(e.group_id, true)
+    if (!msg) return e.reply('还没有人被禁言欸(O∆O)')
     common.getforwardMsg(e, msg)
   }
 
@@ -447,9 +435,10 @@ export class GroupAdmin extends plugin {
     Reg[2] = common.translateChinaNum(Reg[2] || 1)
     // 确认清理直接执行
     if (Reg[1] == '确认清理') {
-      if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true)
-      let msg = ga.clearNoactive(e.group_id, Reg[2], Reg[3])
-      return e.reply(msg)
+      if (!e.group.is_admin && !e.group.is_owner) {
+        return e.reply(ROLE_ERROR, true)
+      }
+      return e.reply(await ga.clearNoactive(e.group_id, Reg[2], Reg[3]))
     }
     // 查看和清理都会发送列表
     let page = common.translateChinaNum(Reg[5] || 1)
@@ -457,9 +446,14 @@ export class GroupAdmin extends plugin {
     if (msg?.error) return e.reply(msg.error)
     // 清理
     if (Reg[1] == '清理') {
-      if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true)
+      if (!e.group.is_admin && !e.group.is_owner) {
+        return e.reply(ROLE_ERROR, true)
+      }
       let list = await ga.noactiveList(e.group_id, Reg[2], Reg[3])
-      e.reply(`本次共需清理「${list.length}」人，防止误触发\n请发送：#确认清理${Reg[2]}${Reg[3]}没发言的人`)
+      e.reply([
+        `本次共需清理「${list.length}」人，防止误触发\n`,
+        `请发送：#确认清理${Reg[2]}${Reg[3]}没发言的人`
+      ])
     }
     common.getforwardMsg(e, msg)
   }
@@ -473,8 +467,8 @@ export class GroupAdmin extends plugin {
     if (/^#?确认清理/.test(e.msg)) {
       if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true)
       e.reply('我要开始清理了哦，这可能需要一点时间٩(๑•ㅂ•)۶')
-      let msg = await ga.BatchKickMember(e.group_id, list.map(item => item.user_id))
-      return e.reply(msg)
+      let arr = list.map(item => item.user_id)
+      return e.reply(await ga.BatchKickMember(e.group_id, arr))
     }
     // 清理
     if (/^#?清理/.test(e.msg)) {

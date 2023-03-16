@@ -34,6 +34,10 @@ export class NewBika extends plugin {
           fnc: 'nextComicPage'
         },
         {
+          reg: `^#?${Prefix}下一话$`,
+          fnc: 'nextChapter'
+        },
+        {
           reg: `^#?${Prefix}类别列表$`,
           fnc: 'categories'
         },
@@ -85,9 +89,18 @@ export class NewBika extends plugin {
       .catch(err => { e.reply(err.message) })
   }
 
+  /** 下一页 */
   async nextComicPage (e) {
     if (!await this.Authentication(e)) return
     await Bika.nextComicPage()
+      .then(res => common.getRecallsendMsg(e, res))
+      .catch(err => e.reply(err.message))
+  }
+
+  /** 下一话 */
+  async nextChapter (e) {
+    if (!await this.Authentication(e)) return
+    await Bika.nextChapter()
       .then(res => common.getRecallsendMsg(e, res))
       .catch(err => e.reply(err.message))
   }

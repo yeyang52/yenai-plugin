@@ -89,7 +89,7 @@ export default new (class {
       })
     if (res.error) throw Error(res.message)
     this.idNext = {
-      id, page: page + 1, order
+      id, page, order
     }
     let { docs, total, page: pg, pages } = res.data.pages
     let { _id, title } = res.data.ep
@@ -110,7 +110,15 @@ export default new (class {
   async nextComicPage () {
     if (!this.idNext) throw Error('未找到上一个id')
     let { id, page, order } = this.idNext
+    page++
     return this.comicPage(id, page, order)
+  }
+
+  async nextChapter () {
+    if (!this.idNext) throw Error('未找到上一个id')
+    let { id, order } = this.idNext
+    order++
+    return this.comicPage(id, 1, order)
   }
 
   /** 类别列表 */

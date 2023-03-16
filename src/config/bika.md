@@ -2,7 +2,9 @@
 title: bika
 date: 2023-03-14
 category:
-- 配置
+  - 配置
+tag:
+  - bika
 ---
 ::: tip
 配置文件位置：`yenai-plugin/config/config/bika.yaml`

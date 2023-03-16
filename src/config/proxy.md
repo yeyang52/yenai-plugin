@@ -2,7 +2,10 @@
 title: 代理
 date: 2023-03-14
 category:
-- 配置
+  - 配置
+tag:
+  - proxy
+  - 代理
 ---
 
 ::: tip

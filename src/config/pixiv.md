@@ -2,7 +2,9 @@
 title: pixiv
 date: 2023-03-14
 category:
-- 配置
+  - 配置
+tag:
+  - pixiv
 ---
 
 ::: tip

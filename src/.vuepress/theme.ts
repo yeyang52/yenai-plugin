@@ -6,8 +6,20 @@ export default hopeTheme({
   hostname: "https://www.yenai.ren",
 
   author: {
-    name: "椰羊",
+    name: "yeyang",
     url: "https://github.com/yeyang52",
+  },
+
+  //博客
+  blog: {
+    avatar: '/img/avatar.jpg',
+    name: '椰羊',
+    roundAvatar: true,
+    medias: {
+      "QQ": 'http://wpa.qq.com/msgrd?v=3&uin=746659424&site=qq&menu=yes',
+      "Qzone": "https://746659424.qzone.qq.com/",
+      "BiliBili": "https://b23.tv/hnc7YDg",
+    }
   },
 
   iconAssets: "iconfont",
@@ -17,8 +29,13 @@ export default hopeTheme({
   repo: "yeyang52/yenai-plugin",
 
   docsRepo: 'https://github.com/yeyang52/yenai-plugin',
+
   docsBranch: 'docs',
+
   docsDir: 'docs',
+
+  //文章信息
+  pageInfo: ["Author", "Original", "Date", "Category", "Tag", "ReadingTime", "Word", "PageView"],
 
   locales: {
     /**
@@ -50,6 +67,7 @@ export default hopeTheme({
   // },
 
   plugins: {
+    blog: true,
     comment: {
       provider: "Waline",
       serverURL: "https://waline.yenai.ren",

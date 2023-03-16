@@ -52,7 +52,7 @@ export default hopeTheme({
   plugins: {
     comment: {
       provider: "Waline",
-      serverURL: "https://yenai-waline.vercel.app"
+      serverURL: "https://waline.yenai.ren"
     },
 
     // all features are enabled for demo, only preserve features you need here

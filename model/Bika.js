@@ -121,7 +121,10 @@ export default new (class {
     } else {
       page++
     }
-    return this.comicPage(id, page, order)
+    return await this.comicPage(id, page, order).then(res => {
+      this.idNext = { id, page, order }
+      return res
+    })
   }
 
   async nextChapter () {

@@ -92,7 +92,7 @@ export class NewBika extends plugin {
   /** 下一页 */
   async nextComicPage (e) {
     if (!await this.Authentication(e)) return
-    await Bika.nextComicPage()
+    await Bika.next()
       .then(res => common.getRecallsendMsg(e, res))
       .catch(err => e.reply(err.message))
   }
@@ -100,7 +100,7 @@ export class NewBika extends plugin {
   /** 下一话 */
   async nextChapter (e) {
     if (!await this.Authentication(e)) return
-    await Bika.nextChapter()
+    await Bika.next('chapter')
       .then(res => common.getRecallsendMsg(e, res))
       .catch(err => e.reply(err.message))
   }

@@ -107,10 +107,20 @@ export default new (class {
     return this.comicPage(id)
   }
 
-  async nextComicPage () {
+  /**
+   * @description: 下一页或下一话
+   * @param {'comicPage'|'chapter'} type 类型
+   * @return {this.comicPage}
+   */
+  async next (type = 'comicPage') {
     if (!this.idNext) throw Error('未找到上一个id')
     let { id, page, order } = this.idNext
-    page++
+    if (type == 'chapter') {
+      order++
+      page = 1
+    } else {
+      page++
+    }
     return this.comicPage(id, page, order)
   }
 

@@ -42,17 +42,18 @@ export default hopeTheme({
     },
   },
 
-  encrypt: {
-    config: {
-      "/demo/encrypt.html": ["1234"],
-      "/zh/demo/encrypt.html": ["1234"],
-    },
-  },
+  // encrypt: {
+  //   config: {
+  //     "/demo/encrypt.html": ["1234"],
+  //     "/zh/demo/encrypt.html": ["1234"],
+  //   },
+  // },
 
   plugins: {
     comment: {
       provider: "Waline",
-      serverURL: "https://waline.yenai.ren"
+      serverURL: "https://waline.yenai.ren",
+      reaction: true
     },
 
     // all features are enabled for demo, only preserve features you need here

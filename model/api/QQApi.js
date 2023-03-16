@@ -3,7 +3,7 @@ import { common } from '../index.js'
 import _ from 'lodash'
 import moment from 'moment'
 import { core } from 'oicq'
-
+import request from '../../lib/request/request.js'
 /** 获取gtk */
 const gtk = function (t) {
   // eslint-disable-next-line no-var
@@ -17,7 +17,7 @@ export default new class {
   constructor () {
     this.headers = {
       'Content-type': 'application/json;charset=UTF-8',
-      Cookie: Bot.cookies['qun.qq.com'],
+      'Cookie': Bot.cookies['qun.qq.com'],
       'qname-service': '976321:131072',
       'qname-space': 'Production'
     }
@@ -206,8 +206,8 @@ export default new class {
     let url = `https://qqweb.qq.com/c/activedata/get_credit_level_info?bkn=${Bot.bkn}&uin=${Bot.uin}&gc=${group_id}`
     return await fetch(url, {
       headers: {
-        Cookie: Bot.cookies['qqweb.qq.com'],
-        Referer: `https://qqweb.qq.com/m/business/qunlevel/index.html?gc=${group_id}&from=0&_wv=1027`,
+        'Cookie': Bot.cookies['qqweb.qq.com'],
+        'Referer': `https://qqweb.qq.com/m/business/qunlevel/index.html?gc=${group_id}&from=0&_wv=1027`,
         'User-agent': 'Mozilla/5.0 (Linux; Android 12; M2012K11AC Build/SKQ1.220303.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/89.0.4389.72 MQQBrowser/6.2 TBS/046141 Mobile Safari/537.36 V1_AND_SQ_8.3.9_350_TIM_D QQ/3.5.0.3148 NetType/WIFI WebP/0.3.0 Pixel/1080 StatusBarHeight/81 SimpleUISwitch/0 QQTheme/1015712'
       }
     }).then(res => res.json()).catch(err => console.error(err))
@@ -235,7 +235,7 @@ export default new class {
         uint32_allow: type
       }),
       headers: {
-        Cookie: Bot.cookies['ti.qq.com'],
+        'Cookie': Bot.cookies['ti.qq.com'],
         'Content-type': 'application/json'
       }
     }).then(res => res.json()).catch(err => console.error(err))
@@ -261,7 +261,7 @@ export default new class {
         req: `{"at": ${type[at]},"q": "${q}","a": "${a}","l": [],"viaphone": 0}`
       }),
       headers: {
-        Cookie: Bot.cookies['ti.qq.com'],
+        'Cookie': Bot.cookies['ti.qq.com'],
         'Content-type': 'application/json'
       }
     }).then(res => res.json()).catch(err => console.error(err))
@@ -297,7 +297,7 @@ export default new class {
       }
       ),
       headers: {
-        Cookie: Bot.cookies['vip.qq.com'],
+        'Cookie': Bot.cookies['vip.qq.com'],
         'Content-type': 'application/json'
       }
     }).then(res => res.json()).catch(err => console.error(err))
@@ -447,5 +447,29 @@ export default new class {
     const payload = await Bot.sendUni('VisitorSvc.ReqFavorite', body)
     let result = core.jce.decodeWrapper(payload)[0]
     return { code: result[3], msg: result[4] }
+  }
+
+  /**
+   * @description: 批量踢人
+   * @param {Array} member 要踢的人的数组
+   * @param {Number} groupId 群号
+   * @return {*}
+   */
+  async deleteGroupMember (groupId, member) {
+    let data = {
+      gc: groupId,
+      ul: member.join('|'),
+      flag: 0,
+      bkn: Bot.bkn
+    }
+    let url = 'https://qun.qq.com/cgi-bin/qun_mgr/delete_group_member'
+    return request.post(url, {
+      headers: {
+        'Cookie': Bot.cookies['qun.qq.com'],
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+      },
+      data,
+      statusCode: 'json'
+    })
   }
 }()

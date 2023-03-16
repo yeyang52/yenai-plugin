@@ -3,7 +3,7 @@ import moment from 'moment'
 import { segment } from 'oicq'
 import loader from '../../../lib/plugins/loader.js'
 import { Config } from '../components/index.js'
-import { common } from './index.js'
+import { common, QQApi } from './index.js'
 
 // 无管理文案
 const ROLE_ERROR = '我连管理员都木有，这种事怎么可能做到的辣！！！'
@@ -13,7 +13,7 @@ export default new class {
   }
 
   async getMemberMap (groupId, iskey = false) {
-    let Map = await Bot.pickGroup(groupId - 0).getMemberMap()
+    let Map = await Bot.pickGroup(groupId - 0).getMemberMap(true)
     return Array.from(iskey ? Map.keys() : Map.values())
   }
 
@@ -156,31 +156,11 @@ export default new class {
      * @return {Object} 成功和失败的列表
      */
   async BatchKickMember (groupId, arr) {
-    let success = []; let fail = []
-    for (let i of arr) {
-      if (await Bot.pickGroup(groupId - 0).kickMember(i)) {
-        success.push(i)
-      } else {
-        fail.push(i)
-      }
-      await common.sleep(5000)
-    }
-    let msg = [
-      [`本次共清理${arr.length}人\n`,
-      `成功：${success.length}人\n`,
-      `失败：${fail.length}人`]
-    ]
-    if (!_.isEmpty(success)) {
-      success = success.map((item, index) => `\n${index + 1}、${item}`)
-      success.unshift('以下为清理成功的人员')
-      msg.push(success)
-    }
-    if (!_.isEmpty(fail)) {
-      fail = fail.map((item, index) => `\n${index + 1}、${item}`)
-      fail.unshift('以下为清理失败的人员')
-      msg.push(fail)
-    }
-    return msg
+    let res = await QQApi.deleteGroupMember(groupId, arr)
+    if (res.ec != 0) return `错误：${JSON.stringify(res)}`
+    return '成功清理如下人员\n}' + res.ul.map((item, index) =>
+      `${index + 1}、${item}`
+    ).join('\n')
   }
 
   /**

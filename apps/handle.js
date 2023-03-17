@@ -130,12 +130,14 @@ export class NewHandle extends plugin {
     let sourceMsg = source.raw_message?.split('\n')
     if (!sourceMsg) return e.reply('❎ 获取原消息失败，请使用"同意xxx"进行处理')
     if (e.isGroup) {
-      if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply('你是坏人！')
+      if (!common.Authentication(e, 'admin', 'admin')) return
+
       let source = (await e.group.getChatHistory(e.source.seq, 1)).pop()
       let yes = /同意/.test(e.msg)
       logger.mark(`${e.logFnc}${yes ? '同意' : '拒绝'}加群通知`)
       let userId = await redis.get(`yenai:groupAdd:${source.message_id}`)
       if (!userId) return e.reply('找不到原消息了，手动同意叭~')
+
       let member = (await Bot.getSystemMsg())
         .find(item => item.request_type == 'group' && item.sub_type == 'add' && item.group_id == e.group_id && item.user_id == userId)
 
@@ -289,9 +291,7 @@ export class NewHandle extends plugin {
       ]
       return common.getforwardMsg(e, msg)
     }
-    if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
-      return e.reply('❎ 该命令仅限管理员可用', true)
-    }
+    if (!common.Authentication(e, 'admin', 'admin')) return
     let yes = /同意/.test(e.msg)
 
     if (/全部/.test(e.msg)) {

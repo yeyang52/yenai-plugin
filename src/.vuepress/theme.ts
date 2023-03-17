@@ -12,7 +12,7 @@ export default hopeTheme({
 
   //博客
   blog: {
-    avatar: '/img/avatar.jpg',
+    avatar: 'https://q1.qlogo.cn/g?b=qq&s=0&nk=746659424',
     name: '椰羊',
     roundAvatar: true,
     medias: {

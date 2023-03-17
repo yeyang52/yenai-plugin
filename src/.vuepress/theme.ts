@@ -32,7 +32,7 @@ export default hopeTheme({
 
   docsBranch: 'docs',
 
-  docsDir: 'docs',
+  docsDir: 'src',
 
   //文章信息
   pageInfo: ["Author", "Original", "Date", "Category", "Tag", "ReadingTime", "Word", "PageView"],

@@ -58,7 +58,7 @@ export default new class {
      * @param {Number} times 时间数
      * @param {String} unit 单位 (天)
      * @param {Number} page 页数
-     * @return {Array}
+     * @return {Promise<String[]>}
      */
   async getNoactiveInfo (groupId, times, unit, page = 1) {
     let list = await this.noactiveList(groupId, times, unit)
@@ -89,7 +89,7 @@ export default new class {
      * @param {Number} groupId 群号
      * @param {Number} times 时间数
      * @param {String} unit 单位 (天)
-     * @return {Boolean}
+     * @return {Promise<Boolean>}
      */
   async clearNoactive (groupId, times, unit) {
     let list = await this.noactiveList(groupId, times, unit)
@@ -103,7 +103,7 @@ export default new class {
      * @param {Number} groupId 群号
      * @param {Number} times 时间数
      * @param {String} unit 单位 (天)
-     * @return {Array}
+     * @return {Promise<Number[]>}
      */
   async noactiveList (groupId, times = 1, unit = '月') {
     let nowtime = parseInt(Date.now() / 1000)
@@ -120,7 +120,7 @@ export default new class {
   /**
      * @description: 返回从未发言的人
      * @param {Number} geoupId 群号
-     * @return {Array}
+     * @return {Promise<Number[]>}
      */
   async getNeverSpeak (groupId) {
     let list = await this.getMemberMap(groupId)
@@ -132,7 +132,7 @@ export default new class {
   /**
      * @description: 返回从未发言的人信息
      * @param {Number} geoupId 群号
-     * @return {Array}
+     * @return {Promse<String[]>}
      */
   async getNeverSpeakInfo (groupId, page = 1) {
     let list = await this.getNeverSpeak(groupId)
@@ -175,7 +175,7 @@ export default new class {
      * @description: 返回不活跃排行榜
      * @param {Number} geoupId 群号
      * @param {Number} num 榜单数量
-     * @return {Array}
+     * @return {Promse<String[]>}
      */
   async InactiveRanking (groupId, num) {
     let list = await this.getMemberMap(groupId)
@@ -199,7 +199,7 @@ export default new class {
      * @description: 获取最近加群情况
      * @param {Number} geoupId 群号
      * @param {Number} num 获取的数量
-     * @return {Array}
+     * @return {Promse<String[]>}
      */
   async getRecentlyJoined (groupId, num) {
     let list = await this.getMemberMap(groupId)
@@ -310,7 +310,7 @@ export default new class {
    * @param {Number} executor 执行人QQ
    * @param {Number} time 时间倍数 0为解禁
    * @param {String} unit 时间单位
-   * @return {String} 回复消息
+   * @return {Promise<String>} 回复消息
    */
   async muteMember (groupId, userId, executor, time = 5, unit = '分') {
     unit = common.Time_unit[unit.toUpperCase()] ?? (/^\d+$/.test(unit) ? unit : 60)
@@ -346,7 +346,7 @@ export default new class {
    * @param {Number} groupId 群号
    * @param {Number} userId 被踢人
    * @param {Number} executor 执行人
-   * @return {*}
+   * @return {Promise<String>}
    */
   async kickMember (groupId, userId, executor) {
     let group = null

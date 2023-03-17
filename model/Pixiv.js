@@ -4,7 +4,8 @@ import fetch from 'node-fetch'
 import { segment } from 'oicq'
 import { Config } from '../components/index.js'
 import request from '../lib/request/request.js'
-import { MSG, rankType } from '../tools/pixiv.js'
+import { rankType } from '../tools/pixiv.js'
+import { pixivMsg } from '../tools/msg.js'
 import PixivApi from './Pixiv/api.js'
 /** API请求错误文案 */
 
@@ -54,7 +55,7 @@ export default new class Pixiv {
 
   /** 开始执行文案 */
   get startMsg () {
-    return _.sample(MSG.start)
+    return _.sample(pixivMsg.start)
   }
 
   /**

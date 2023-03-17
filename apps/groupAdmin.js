@@ -1,17 +1,13 @@
-import plugin from '../../../lib/plugins/plugin.js'
-import { segment } from 'oicq'
 import _ from 'lodash'
-import { Config } from '../components/index.js'
-import { GroupAdmin as ga, common, QQApi, puppeteer } from '../model/index.js'
-import cronValidate from '../tools/cronValidate.js'
 import moment from 'moment'
-
+import { segment } from 'oicq'
+import plugin from '../../../lib/plugins/plugin.js'
+import { Config } from '../components/index.js'
+import { common, GroupAdmin as ga, puppeteer, QQApi } from '../model/index.js'
+import cronValidate from '../tools/cronValidate.js'
+import { groupTitleMsg } from '../tools/msg.js'
 // API请求错误文案
 const API_ERROR = '❎ 出错辣，请稍后重试'
-// 无管理文案
-const ROLE_ERROR = '我连管理员都木有，这种事怎么可能做到的辣！！！'
-// 权限不足文案
-const PERMISSION_ERROR = '❎ 该命令仅限管理员可用'
 // 正则
 const Numreg = '[一壹二两三四五六七八九十百千万亿\\d]+'
 const TimeUnitReg = Object.keys(common.Time_unit).join('|')
@@ -155,36 +151,67 @@ export class GroupAdmin extends plugin {
     this.task = redisTask
   }
 
+  /**
+   * @description: 判断权限
+   * @param {*} e
+   * @param {'master'|'admin'|'owner'|'all'} permission 权限
+   * @param {'admin'|'owner'|'all'} role 需要的权限
+   * @return {Boolean}
+   */
+  Authentication (e, permission, role) {
+    if (role == 'owner' && !e.group.is_owner) {
+      e.reply('我连群主都木有，这种事怎么可能做到的辣！！！', true)
+      return false
+    } else if (role == 'admin' && !e.group.is_admin && !e.group.is_owner) {
+      e.reply('我连管理员都木有，这种事怎么可能做到的辣！！！', true)
+      return false
+    }
+    // 判断权限
+    if (e.isMaster) return true
+    if (permission == 'master' && !e.isMaster) {
+      e.reply('❎ 该命令仅限主人可用', true)
+      return false
+    } else if (permission == 'owner' && !e.member.is_owner) {
+      e.reply('❎ 该命令仅限群主可用', true)
+      return false
+    } else if (permission == 'admin' && !e.member.is_admin && !e.member.is_owner) {
+      e.reply('❎ 该命令仅限管理可用')
+      return false
+    }
+    return true
+  }
+
   /** 禁言 */
   async muteMember (e) {
-    // 判断权限
-    if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(PERMISSION_ERROR)
+    if (!this.Authentication(e, 'admin', 'admin')) return
     let qq = e.message.find(item => item.type == 'at')?.qq
-    let regRet = e.msg.match(new RegExp(`#禁言\\s?((\\d+)\\s)?(${Numreg})?(${TimeUnitReg})?`))
-    console.log(regRet)
-    let res = await ga.muteMember(e.group_id, qq ?? regRet[2], e.user_id, regRet[3], regRet[4])
-    e.reply(res)
+    let reg = `#禁言\\s?((\\d+)\\s)?(${Numreg})?(${TimeUnitReg})?`
+    let regRet = e.msg.match(new RegExp(reg))
+    e.reply(await ga.muteMember(
+      e.group_id,
+      qq ?? regRet[2],
+      e.user_id,
+      regRet[3],
+      regRet[4]
+    ))
   }
 
   /** 解禁 */
   async noMuteMember (e) {
-    // 判断权限
-    if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(PERMISSION_ERROR)
-    // 判断是否有管理
-    if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true)
+    if (!this.Authentication(e, 'admin', 'admin')) return
 
     let qq = e.message.find(item => item.type == 'at')?.qq
     let regRet = e.msg.match(/#解禁(\d+)/)
-    let res = await ga.muteMember(e.group_id, qq ?? regRet[1], e.user_id, 0)
-    e.reply(res)
+    e.reply(await ga.muteMember(
+      e.group_id,
+      qq ?? regRet[1],
+      e.user_id,
+      0))
   }
 
   /** 全体禁言 */
   async muteAll (e) {
-    // 判断权限
-    if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(PERMISSION_ERROR)
-    // 判断是否有管理
-    if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true)
+    if (!this.Authentication(e, 'admin', 'admin')) return
 
     let type = /全体禁言/.test(e.msg)
     let res = await e.group.muteAll(type)
@@ -194,10 +221,7 @@ export class GroupAdmin extends plugin {
 
   // 踢群员
   async kickMember (e) {
-    // 判断权限
-    if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(PERMISSION_ERROR)
-    // 判断是否有管理
-    if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true)
+    if (!this.Authentication(e, 'admin', 'admin')) return
 
     let qq = e.message.find(item => item.type == 'at')?.qq
     if (!qq) qq = e.msg.replace(/#|踢/g, '').trim()
@@ -225,10 +249,7 @@ export class GroupAdmin extends plugin {
 
   // 设置管理
   async SetAdmin (e) {
-    // 判断权限
-    if (!e.isMaster) return e.reply(PERMISSION_ERROR)
-    if (!e.group.is_owner) return e.reply(ROLE_ERROR, true)
-
+    if (!this.Authentication(e, 'master', 'owner')) return
     let qq = e.message.find(item => item.type == 'at')?.qq
     let type = /设置管理/.test(e.msg)
     if (!qq) qq = e.msg.replace(/#|(设置|取消)管理/g, '').trim()
@@ -246,10 +267,7 @@ export class GroupAdmin extends plugin {
 
   // 匿名
   async AllowAnony (e) {
-    // 判断权限
-    if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(PERMISSION_ERROR)
-    // 判断是否有管理
-    if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true)
+    if (!this.Authentication(e, 'admin', 'admin')) return
 
     let type = /(允许|开启)匿名/.test(e.msg)
     let res = await e.group.allowAnony(type)
@@ -259,12 +277,7 @@ export class GroupAdmin extends plugin {
 
   // 发群公告
   async AddAnnounce (e) {
-    // 判断权限
-    if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(PERMISSION_ERROR)
-    // 判断是否有管理
-    if (!e.group.is_admin && !e.group.is_owner) {
-      return e.reply(ROLE_ERROR, true)
-    }
+    if (!this.Authentication(e, 'admin', 'admin')) return
     // 获取发送的内容
     let msg = e.msg.replace(/#|发群公告/g, '').trim()
     if (!msg) return e.reply('❎ 公告不能为空')
@@ -286,12 +299,7 @@ export class GroupAdmin extends plugin {
 
   // 删群公告
   async DelAnnounce (e) {
-    // 判断权限
-    if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(PERMISSION_ERROR)
-    // 判断是否有管理
-    if (!e.group.is_admin && !e.group.is_owner) {
-      return e.reply(ROLE_ERROR, true)
-    }
+    if (!this.Authentication(e, 'admin', 'admin')) return
     let msg = e.msg.replace(/#|删群公告/, '').trim()
     if (!msg) return e.reply('❎ 序号不可为空')
 
@@ -307,17 +315,14 @@ export class GroupAdmin extends plugin {
 
   // 修改头衔
   async adminsetTitle (e) {
-    if (!e.isMaster) return e.reply(PERMISSION_ERROR)
+    if (!this.Authentication(e, 'master', 'owner')) return
 
-    if (e.message.length < 2) return
-
-    if (e.message[1].type != 'at') return
-
-    if (!e.group.is_owner) return e.reply(ROLE_ERROR, true)
-
-    let res = await e.group.setTitle(e.message[1].qq, e.message[2].text)
+    let qq = e.message.find(item => item.type == 'at')?.qq
+    if (qq) return e.reply('请艾特要修改的人哦~')
+    let text = e.msg.replace(/#|修改头衔/, '')
+    let res = await e.group.setTitle(qq, text)
     if (res) {
-      e.reply(`已经把这个小可爱的头衔设置为「${e.message[2].text}」辣`)
+      e.reply(`已经把这个小可爱的头衔设置为「${text}」辣`)
     } else {
       e.reply('额...没给上不知道发生了神魔')
     }
@@ -325,15 +330,7 @@ export class GroupAdmin extends plugin {
 
   // 申请头衔
   async SetGroupSpecialTitle (e) {
-    let msgs = [
-      '换上辣(´•ω•̥`)',
-      '嗯！不戳的头衔哦٩(๑•ㅂ•)۶',
-      '给你换上了哦（*＾ワ＾*）',
-      '又要换了吗，真是喜新厌旧呢( •̥́ ˍ •̀ू )',
-      '啾咪٩(๑•̀ω•́๑)۶',
-      '弃旧恋新了么笨蛋( 。ớ ₃ờ)ھ'
-    ]
-    if (!e.group.is_owner) return false
+    if (!this.Authentication(e, 'all', 'owner')) return
 
     let Title = e.msg.replace(/#|申请头衔/g, '')
     // 屏蔽词处理
@@ -353,7 +350,7 @@ export class GroupAdmin extends plugin {
 
     if (!Title) return e.reply('什么"(º Д º*)！没有头衔，哼把你的头衔吃掉！！！', true)
 
-    e.reply(_.sample(msgs), true)
+    e.reply(_.sample(groupTitleMsg), true)
   }
 
   // 字符列表
@@ -387,11 +384,7 @@ export class GroupAdmin extends plugin {
 
   // 替换幸运字符
   async qun_luckyuse (e) {
-    if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(PERMISSION_ERROR)
-    // 判断是否有管理
-    if (!e.group.is_admin && !e.group.is_owner) {
-      return e.reply(ROLE_ERROR, true)
-    }
+    if (!this.Authentication(e, 'admin', 'admin')) return
     let id = e.msg.replace(/#|替换(幸运)?字符/g, '')
     let res = await QQApi.equipLucky(e.group_id, id)
 
@@ -402,7 +395,7 @@ export class GroupAdmin extends plugin {
 
   // 开启或关闭群字符
   async qun_luckyset (e) {
-    if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(PERMISSION_ERROR)
+    if (!this.Authentication(e, 'admin', 'admin')) return
 
     let res = await QQApi.swichLucky(e.group_id, /开启/.test(e.msg))
     if (!res) return e.reply(API_ERROR)
@@ -421,38 +414,40 @@ export class GroupAdmin extends plugin {
 
   // 解除全部禁言
   async relieveAllMute (e) {
-    if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(PERMISSION_ERROR)
-    // 判断是否有管理
-    if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true)
+    if (!this.Authentication(e, 'admin', 'admin')) return
     let res = await ga.releaseAllMute(e.group_id)
     e.reply(res ? '已经把全部的禁言解除辣╮( •́ω•̀ )╭' : '都没有人被禁言我怎么解的辣＼(`Δ’)／')
   }
 
   // 查看和清理多久没发言的人
   async noactive (e) {
-    if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(PERMISSION_ERROR)
-    let Reg = noactivereg.exec(e.msg)
-    Reg[2] = common.translateChinaNum(Reg[2] || 1)
+    if (!this.Authentication(e, 'admin', 'admin')) return
+
+    let regRet = noactivereg.exec(e.msg)
+    regRet[2] = common.translateChinaNum(regRet[2] || 1)
     // 确认清理直接执行
-    if (Reg[1] == '确认清理') {
-      if (!e.group.is_admin && !e.group.is_owner) {
-        return e.reply(ROLE_ERROR, true)
-      }
-      return e.reply(await ga.clearNoactive(e.group_id, Reg[2], Reg[3]))
+    if (regRet[1] == '确认清理') {
+      return e.reply(await ga.clearNoactive(
+        e.group_id,
+        regRet[2],
+        regRet[3]
+      ))
     }
     // 查看和清理都会发送列表
-    let page = common.translateChinaNum(Reg[5] || 1)
-    let msg = await ga.getNoactiveInfo(e.group_id, Reg[2], Reg[3], page)
+    let page = common.translateChinaNum(regRet[5] || 1)
+    let msg = await ga.getNoactiveInfo(
+      e.group_id,
+      regRet[2],
+      regRet[3],
+      page
+    )
     if (msg?.error) return e.reply(msg.error)
     // 清理
-    if (Reg[1] == '清理') {
-      if (!e.group.is_admin && !e.group.is_owner) {
-        return e.reply(ROLE_ERROR, true)
-      }
-      let list = await ga.noactiveList(e.group_id, Reg[2], Reg[3])
+    if (regRet[1] == '清理') {
+      let list = await ga.noactiveList(e.group_id, regRet[2], regRet[3])
       e.reply([
         `本次共需清理「${list.length}」人，防止误触发\n`,
-        `请发送：#确认清理${Reg[2]}${Reg[3]}没发言的人`
+        `请发送：#确认清理${regRet[2]}${regRet[3]}没发言的人`
       ])
     }
     common.getforwardMsg(e, msg)
@@ -460,22 +455,21 @@ export class GroupAdmin extends plugin {
 
   // 查看和清理从未发言的人
   async neverspeak (e) {
-    if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(PERMISSION_ERROR)
+    if (!this.Authentication(e, 'admin', 'admin')) return
     let list = await ga.getNeverSpeak(e.group_id)
     if (!list) return e.reply('咋群全是好淫哦~全都发过言辣٩(๑•̀ω•́๑)۶')
     // 确认清理直接执行
     if (/^#?确认清理/.test(e.msg)) {
-      if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true)
       e.reply('我要开始清理了哦，这可能需要一点时间٩(๑•ㅂ•)۶')
       let arr = list.map(item => item.user_id)
       return e.reply(await ga.BatchKickMember(e.group_id, arr))
     }
     // 清理
     if (/^#?清理/.test(e.msg)) {
-      if (!e.group.is_admin && !e.group.is_owner) {
-        return e.reply(ROLE_ERROR, true)
-      }
-      e.reply(`本次共需清理「${list.length}」人，防止误触发\n请发送：#确认清理从未发言的人`)
+      e.reply([
+        `本次共需清理「${list.length}」人，防止误触发\n`,
+        '请发送：#确认清理从未发言的人'
+      ])
     }
     // 发送列表
     let page = e.msg.match(new RegExp(Numreg))
@@ -500,8 +494,7 @@ export class GroupAdmin extends plugin {
 
   // 发送通知
   async Send_notice (e) {
-    if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(PERMISSION_ERROR)
-    if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true)
+    if (!this.Authentication(e, 'admin', 'admin')) return
 
     e.message[0].text = e.message[0].text.replace('#发通知', '').trim()
     if (!e.message[0].text) e.message.shift()
@@ -512,7 +505,7 @@ export class GroupAdmin extends plugin {
 
   // 设置定时群禁言
   async timeMute (e) {
-    if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(PERMISSION_ERROR)
+    if (!this.Authentication(e, 'admin', 'admin')) return
     let type = /禁言/.test(e.msg)
     if (/任务/.test(e.msg)) {
       let task = ga.getMuteTask()
@@ -523,7 +516,6 @@ export class GroupAdmin extends plugin {
       ga.delMuteTask(e.group_id, type)
       return e.reply(`已取消本群定时${type ? '禁言' : '解禁'}`)
     }
-    if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true)
 
     let RegRet = e.msg.match(/定时(禁言|解禁)((\d{1,2})(:|：)(\d{1,2})|.*)/)
     if (!RegRet || !RegRet[2]) return e.reply(`格式不对\n示范：#定时${type ? '禁言' : '解禁'}00:00 或 #定时${type ? '禁言' : '解禁'} + cron表达式`)
@@ -588,7 +580,7 @@ export class GroupAdmin extends plugin {
 
   // 群发言榜单
   async SpeakRank (e) {
-    if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true)
+    if (!this.Authentication(e, 'all', 'admin')) return
 
     // 图片截图
     let screenshot = await puppeteer.Webpage({
@@ -655,7 +647,7 @@ export class GroupAdmin extends plugin {
 
   // 群数据
   async groupData (e) {
-    if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true)
+    if (!this.Authentication(e, 'all', 'admin')) return
 
     // 浏览器截图
     let screenshot = await puppeteer.Webpage({
@@ -698,9 +690,9 @@ export class GroupAdmin extends plugin {
     )
   }
 
+  /** 开启或关闭加群通知 */
   async handleGroupAdd (e) {
-    if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return e.reply(PERMISSION_ERROR)
-    if (!e.group.is_admin && !e.group.is_owner) return e.reply(ROLE_ERROR, true)
+    if (!this.Authentication(e, 'admin', 'admin')) return
     let type = /开启/.test(e.msg) ? 'add' : 'del'
     let isopen = Config.groupAdd.openGroup.includes(e.group_id)
     if (isopen && type == 'add') return e.reply('❎ 本群加群申请通知已处于开启状态')

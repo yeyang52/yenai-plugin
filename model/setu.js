@@ -1,7 +1,7 @@
 import { common, Pixiv } from './index.js'
 import { Data, Plugin_Path, Config } from '../components/index.js'
 import _ from 'lodash'
-import { MSG } from '../tools/setu.js'
+import { setuMsg } from '../tools/msg.js'
 import request from '../lib/request/request.js'
 export default new class setu {
   constructor () {
@@ -20,17 +20,17 @@ export default new class setu {
 
   /** 开始执行文案 */
   get startMsg () {
-    return _.sample(MSG.start)
+    return _.sample(setuMsg.start)
   }
 
   /** CD中文案 */
   get CDMsg () {
-    return _.sample(MSG.cd)
+    return _.sample(setuMsg.cd)
   }
 
   /** 发送图片文案 */
   get sendMsgs () {
-    return _.sample(MSG.send)
+    return _.sample(setuMsg.send)
   }
 
   /**

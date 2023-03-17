@@ -6,7 +6,8 @@
 🐑 Yenai-Plugin是一个Yunzai-Bot的扩展插件，提供对Bot的一些便捷操作。<img src="https://media.giphy.com/media/mGcNjsfWAjY5AEZNw6/giphy.gif" width="50">
 <br>
 <br>
-<img src="https://count.getloli.com/get/@:yenai-plugin?theme=rule34" /> <br>
+<!-- <img src="https://count.getloli.com/get/@:yenai-plugin?theme=rule34" /> <br> -->
+<img src="https://counter.seku.su/cmoe?name=yenai-plugin&theme=r34" /> <br>
 
 ![Nodejs](https://img.shields.io/badge/-Node.js-3C873A?style=flat&logo=Node.js&logoColor=white) 
 ![JavaScript](https://img.shields.io/badge/-JavaScript-eed718?style=flat&logo=javascript&logoColor=ffffff)

@@ -56,6 +56,7 @@ yarn add systeminformation cheerio -w
 
 - [Github issues](https://github.com/yeyang52/yenai-plugin/issues)
 - [QQ群](https://jq.qq.com/?_wv=1027&k=o8FTig5Z)
+- [QQ频道](https://pd.qq.com/s/dx3y9z1bv)
 
 ## 友情链接
 - [Earth-K-Plugin](https://tukuai.one)

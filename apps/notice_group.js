@@ -148,7 +148,7 @@ export class NoticeGroup extends plugin {
       }
       // 禁言 (这里仅处理机器人被禁言)
       case 'ban': {
-        let Forbiddentime = common.getsecondformat(e.duration)
+        const forbiddenTime = common.getsecondformat(e.duration)
 
         if (!Config.getGroup(e.group_id).botBeenBanned) return false
 
@@ -174,7 +174,7 @@ export class NoticeGroup extends plugin {
             '[通知 - 机器人被禁言]\n',
             `禁言人QQ：${e.operator_id}\n`,
             `禁言群号：${e.group_id}\n`,
-            `禁言时长：${Forbiddentime}`
+            `禁言时长：${forbiddenTime}`
           ]
         }
         break
@@ -212,28 +212,33 @@ export class NoticeGroup extends plugin {
         if (!res) return false
         // 不同消息处理
         let special = ''
-        if (res[0].type === 'flash') {
-          // 闪照处理
-          forwardMsg = await e.group.makeForwardMsg([
-            {
-              message: segment.image(res[0].url),
-              nickname: e.group.pickMember(e.user_id).card,
-              user_id: e.user_id
-            }
-          ])
-          special = '[闪照]'
-        } else if (res[0].type === 'record') {
-          // 语音
-          forwardMsg = segment.record(res[0].url)
-          special = '[语音]'
-        } else if (res[0].type === 'video') {
-          // 视频
-          forwardMsg = segment.video(res[0].file)
-          special = '[视频]'
-        } else if (res[0].type === 'xml') {
-          // 合并消息
-          forwardMsg = res
-          special = '[合并消息]'
+        let msgType = {
+          flash: {
+            msg: () => e.group.makeForwardMsg([
+              {
+                message: segment.image(res[0].url),
+                nickname: e.group.pickMember(e.user_id).card,
+                user_id: e.user_id
+              }
+            ]),
+            type: '[闪照]'
+          },
+          record: {
+            msg: () => segment.record(res[0].url),
+            type: '[语音]'
+          },
+          video: {
+            msg: () => segment.video(res[0].file),
+            type: '[视频]'
+          },
+          xml: {
+            msg: () => res,
+            type: '[合并消息]'
+          }
+        }
+        if (msgType[res[0].type]) {
+          forwardMsg = await msgType[res[0].type].msg()
+          special = msgType[res[0].type].type
         } else {
           // 正常处理
           forwardMsg = await Bot.pickFriend(Config.masterQQ[0]).makeForwardMsg([

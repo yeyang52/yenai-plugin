@@ -43,7 +43,7 @@ export class NoticeFriends extends plugin {
         if (!Config.Notice.PrivateRecall) return false
 
         if (e.user_id == Bot.uin) return false
-
+        // 主人撤回
         if (Config.masterQQ.includes(e.user_id)) return false
         logger.mark('[椰奶]好友撤回')
         // 读取
@@ -52,22 +52,27 @@ export class NoticeFriends extends plugin {
         )
         // 无数据 return
         if (!res) return false
-        // 撤回为闪照处理
-        if (res[0].type === 'flash') {
-          let url = res[0].url
-          res = ['[闪照]\n', '撤回闪照：', segment.image(url)]
-        } else if (res[0].type === 'record') {
-          // 语音
-          forwardMsg = segment.record(res[0].url)
-          res = '[语音]'
-        } else if (res[0].type === 'video') {
-          // 视频
-          forwardMsg = segment.video(res[0].file)
-          res = '[视频]'
-        } else if (res[0].type === 'xml') {
-          // 合并消息
-          forwardMsg = res
-          res = '[合并消息]'
+        const msgType = {
+          flash: {
+            msg: () => false,
+            type: ['[闪照]\n', '撤回闪照：', segment.image(res[0].url)]
+          },
+          record: {
+            msg: () => segment.record(res[0].url),
+            type: '[语音]'
+          },
+          video: {
+            msg: () => segment.video(res[0].file),
+            type: '[视频]'
+          },
+          xml: {
+            msg: () => res,
+            type: '[合并消息]'
+          }
+        }
+        if (msgType[res[0].type]) {
+          forwardMsg = msgType[res[0].type].msg()
+          res = msgType[res[0].type].type
         }
         // 消息
         msg = [

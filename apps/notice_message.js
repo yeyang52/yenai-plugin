@@ -14,38 +14,9 @@ export class NoticeMessage extends plugin {
 }
 
 Bot.on('message', async (e) => {
-  // 判断是否为机器人消息
-  if (e.user_id == Bot.uin) return false
-  // 判断是否主人消息
-  if (Config.masterQQ.includes(e.user_id)) return false
-  // 删除缓存时间
-  let deltime = Config.Notice.deltime
-  // 判断群聊还是私聊
-  if (e.isGroup) {
-    // 关闭撤回停止存储
-    if (Config.getGroup(e.group_id).groupRecall) {
-      // 写入
-      await redis.set(
-        `notice:messageGroup:${e.message_id}`,
-        JSON.stringify(e.message),
-        { EX: deltime }
-      )
-    }
-  } else if (e.isPrivate) {
-    // 关闭撤回停止存储
-    if (Config.Notice.PrivateRecall) {
-      // 写入
-      await redis.set(
-        `notice:messagePrivate:${e.message_id}`,
-        JSON.stringify(e.message),
-        { EX: deltime }
-      )
-    }
-  }
-
   // 消息通知
-  let msg = ''
-  let forwardMsg
+  let msg = null
+  let forwardMsg = null
   if (
     e.message[0].type == 'flash' &&
     e.message_type === 'group'
@@ -92,12 +63,11 @@ Bot.on('message', async (e) => {
   } else if (e.message_type === 'private' && e.sub_type === 'friend') {
     if (!Config.Notice.privateMessage) return false
 
-    let res = e.message
     // 特殊消息处理
-    let arr = getSpecial(e.message)
+    const arr = getMsgType(e.message)
     if (arr) {
       forwardMsg = arr.msg
-      res = arr.type
+      e.message = arr.type
     }
     logger.mark('[椰奶]好友消息')
     msg = [
@@ -106,10 +76,10 @@ Bot.on('message', async (e) => {
       `好友QQ：${e.user_id}\n`,
       `好友昵称：${e.sender.nickname}\n`,
       '消息内容：',
-      ...res
+      ...e.message
     ]
     // 添加提示消息
-    let key = `tz:privateMessage:${e.user_id}`
+    const key = `yenai:notice:privateMessage:${e.user_id}`
     if (!(await redis.get(key))) {
       await redis.set(key, '1', { EX: 600 })
       msg.push(
@@ -121,11 +91,10 @@ Bot.on('message', async (e) => {
   } else if (e.message_type === 'private' && e.sub_type === 'group') {
     if (!Config.getGroup(e.group_id).grouptemporaryMessage) return false
     // 特殊消息处理
-    let res = e.message
-    let arr = getSpecial(e.message)
+    const arr = getMsgType(e.message)
     if (arr) {
       forwardMsg = arr.msg
-      res = arr.type
+      e.message = arr.type
     }
     logger.mark('[椰奶]群临时消息')
     // 发送的消息
@@ -135,10 +104,10 @@ Bot.on('message', async (e) => {
       `来源群号：${e.sender.group_id}\n`,
       `发送人QQ：${e.user_id}\n`,
       '消息内容：',
-      ...res
+      ...e.message
     ]
     // 添加提示消息
-    let key = `tz:tempprivateMessage:${e.user_id}`
+    const key = `yenai:notice:tempprivateMessage:${e.user_id}`
     if (!(await redis.get(key))) {
       await redis.set(key, '1', { EX: 600 })
       msg.push(
@@ -149,11 +118,10 @@ Bot.on('message', async (e) => {
   } else if (e.message_type === 'group') {
     if (!Config.getGroup(e.group_id).groupMessage) return false
     // 特殊消息处理
-    let res = e.message
-    let arr = getSpecial(e.message)
+    const arr = getMsgType(e.message)
     if (arr) {
       forwardMsg = arr.msg
-      res = arr.type
+      e.message = arr.type
     }
     logger.mark('[椰奶]群聊消息')
     msg = [
@@ -164,7 +132,7 @@ Bot.on('message', async (e) => {
       `发送人QQ：${e.user_id}\n`,
       `发送人昵称：${e.sender.nickname}\n`,
       '消息内容：',
-      ...res
+      ...e.message
     ]
   } else if (e.message_type === 'discuss') {
     if (!Config.getGroup(e.group_id).groupMessage) return false
@@ -183,27 +151,57 @@ Bot.on('message', async (e) => {
   await common.sendMasterMsg(msg)
   if (forwardMsg) await common.sendMasterMsg(forwardMsg)
 })
-
 // 特殊消息处理
-function getSpecial (msg) {
-  let res = msg
-  if (res[0].type === 'record') {
-    // 语音
-    return {
-      msg: segment.record(res[0].url),
+function getMsgType (msg) {
+  const msgType = {
+    record: {
+      msg: segment.record(msg[0].url),
       type: '[语音]'
-    }
-  } else if (res[0].type === 'video') {
-    // 视频
-    return {
-      msg: segment.video(res[0].file),
+    },
+    video: {
+      msg: segment.video(msg[0].file),
       type: '[视频]'
-    }
-  } else if (res[0].type === 'xml') {
-    // 合并消息
-    return {
-      msg: res,
+    },
+    xml: {
+      msg,
       type: '[合并消息]'
     }
-  } else return false
+  }
+  return msgType[msg[0].type]
 }
+
+// 储存消息
+Bot.on('message', async (e) => {
+  logger.debug(`[椰奶]存储${e.group_id
+    ? `群${(e.group_id)}`
+    : `私聊(${e.user_id})`
+    }=> ${e.message_id}`)
+  // 判断是否为机器人消息
+  if (e.user_id == Bot.uin) return false
+  // 判断是否主人消息
+  if (Config.masterQQ.includes(e.user_id)) return false
+  // 删除缓存时间
+  const deltime = Config.Notice.deltime
+  // 判断群聊还是私聊
+  if (e.isGroup) {
+    // 关闭撤回停止存储
+    if (Config.getGroup(e.group_id).groupRecall) {
+      // 写入
+      await redis.set(
+        `notice:messageGroup:${e.message_id}`,
+        JSON.stringify(e.message),
+        { EX: deltime }
+      )
+    }
+  } else if (e.isPrivate) {
+    // 关闭撤回停止存储
+    if (Config.Notice.PrivateRecall) {
+      // 写入
+      await redis.set(
+        `notice:messagePrivate:${e.message_id}`,
+        JSON.stringify(e.message),
+        { EX: deltime }
+      )
+    }
+  }
+})

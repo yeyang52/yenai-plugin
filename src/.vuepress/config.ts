@@ -20,6 +20,17 @@ export default defineUserConfig({
   //   // },
   // },
 
+  head: [
+    ['script', {}, `
+  var _hmt = _hmt || [];
+  (function () {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?b6b4a725c3bf645078e151689f5e183e";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+  `],
+  ],
   theme,
   plugins,
   // Enable it with pwa

@@ -14,6 +14,36 @@ export class NoticeMessage extends plugin {
 }
 
 Bot.on('message', async (e) => {
+  // 判断是否为机器人消息
+  if (e.user_id == Bot.uin) return false
+  // 判断是否主人消息
+  if (Config.masterQQ.includes(e.user_id)) return false
+  // 删除缓存时间
+  const deltime = Config.Notice.deltime
+  // 判断群聊还是私聊
+  if (e.isGroup) {
+    // 关闭撤回停止存储
+    if (Config.getGroup(e.group_id).groupRecall) {
+      logger.debug(`[椰奶]存储群消息${(e.group_id)}}=> ${e.message_id}`)
+      // 写入
+      await redis.set(
+        `notice:messageGroup:${e.message_id}`,
+        JSON.stringify(e.message),
+        { EX: deltime }
+      )
+    }
+  } else if (e.isPrivate) {
+    // 关闭撤回停止存储
+    if (Config.Notice.PrivateRecall) {
+      logger.debug(`[椰奶]存储私聊消息(${e.user_id})=> ${e.message_id}`)
+      // 写入
+      await redis.set(
+        `notice:messagePrivate:${e.message_id}`,
+        JSON.stringify(e.message),
+        { EX: deltime }
+      )
+    }
+  }
   // 消息通知
   let msg = null
   let forwardMsg = null
@@ -169,39 +199,3 @@ function getMsgType (msg) {
   }
   return msgType[msg[0].type]
 }
-
-// 储存消息
-Bot.on('message', async (e) => {
-  logger.debug(`[椰奶]存储${e.group_id
-    ? `群${(e.group_id)}`
-    : `私聊(${e.user_id})`
-    }=> ${e.message_id}`)
-  // 判断是否为机器人消息
-  if (e.user_id == Bot.uin) return false
-  // 判断是否主人消息
-  if (Config.masterQQ.includes(e.user_id)) return false
-  // 删除缓存时间
-  const deltime = Config.Notice.deltime
-  // 判断群聊还是私聊
-  if (e.isGroup) {
-    // 关闭撤回停止存储
-    if (Config.getGroup(e.group_id).groupRecall) {
-      // 写入
-      await redis.set(
-        `notice:messageGroup:${e.message_id}`,
-        JSON.stringify(e.message),
-        { EX: deltime }
-      )
-    }
-  } else if (e.isPrivate) {
-    // 关闭撤回停止存储
-    if (Config.Notice.PrivateRecall) {
-      // 写入
-      await redis.set(
-        `notice:messagePrivate:${e.message_id}`,
-        JSON.stringify(e.message),
-        { EX: deltime }
-      )
-    }
-  }
-})

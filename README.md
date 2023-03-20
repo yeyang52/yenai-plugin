@@ -220,7 +220,7 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 ### 贡献者 ✨
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 感谢这些了不起的人 ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
@@ -236,6 +236,7 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/xfdown"><img src="https://avatars.githubusercontent.com/u/42599406?v=4?s=100" width="100px;" alt="小飞"/><br /><sub><b>小飞</b></sub></a><br /><a href="#ideas-xfdown" title="Ideas, Planning, & Feedback">🤔</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/liuzj288"><img src="https://avatars.githubusercontent.com/u/13833404?v=4?s=100" width="100px;" alt="liuzj288"/><br /><sub><b>liuzj288</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=liuzj288" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/OKKOM2020"><img src="https://avatars.githubusercontent.com/u/88592811?v=4?s=100" width="100px;" alt="OKKOM2020"/><br /><sub><b>OKKOM2020</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=OKKOM2020" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/kmiit"><img src="https://avatars.githubusercontent.com/u/61952405?v=4?s=100" width="100px;" alt="大可鸭"/><br /><sub><b>大可鸭</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=kmiit" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

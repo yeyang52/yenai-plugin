@@ -273,7 +273,92 @@ export function supportGuoba () {
             ],
             placeholder: '请选择图片质量'
           }
-        }
+        },
+        {
+          component: 'Divider',
+          label: '搜图设置'
+        },
+        {
+          field: 'picSearch.isMasterUse',
+          label: '搜图主人独享',
+          bottomHelpMessage: '搜图是否只有主人能用',
+          component: 'Switch'
+        },
+        {
+          field: 'picSearch.allowPM',
+          label: '搜图私聊使用',
+          bottomHelpMessage: '搜图是否允许私聊使用',
+          component: 'Switch'
+        },
+        {
+          field: 'picSearch.ascii2dUsePuppeteer',
+          label: 'Puppeteer绕cf',
+          bottomHelpMessage: '是否使用 Puppeteer 请求 ascii2d 以绕过 cf js challenge',
+          component: 'Switch'
+        },
+        {
+          field: 'picSearch.hideImg',
+          label: '隐藏结果缩略图',
+          bottomHelpMessage: '隐藏所有搜索结果的缩略图',
+          component: 'Switch'
+        },
+        {
+          field: 'picSearch.hideImgWhenWhatanimeR18',
+          label: 'whatanime R18 隐藏图',
+          bottomHelpMessage: 'whatanime 得到 R18 结果时隐藏结果缩略图',
+          component: 'Switch'
+        },
+        {
+          field: 'picSearch.whatanimeSendVideo',
+          label: 'whatanime预览视频',
+          bottomHelpMessage: 'whatanime 发送预览视频，R18 结果不会发送',
+          component: 'Switch'
+        },
+        {
+          field: 'picSearch.limit',
+          label: '搜图次数限制',
+          bottomHelpMessage: '每名用户每日次数限制（0 则无限制）',
+          component: 'InputNumber'
+        },
+        {
+          field: 'picSearch.SauceNAOApiKey',
+          label: 'SauceNAO搜图apikey',
+          bottomHelpMessage: 'SauceNAO搜图apikey 请在 https://saucenao.com/user.php?page=search-api 进行获取',
+          component: 'Input'
+        },
+        {
+          field: 'picSearch.SauceNAOMinSim',
+          label: 'SauceNAO相似度警戒值',
+          bottomHelpMessage: 'SauceNAO搜图相似度低于这个百分比将被认定为相似度过低',
+          component: 'InputNumber'
+        },
+        {
+          field: 'picSearch.hideImgWhenSaucenaoNSFW',
+          label: 'SauceNAO NSFW 隐藏缩略图',
+          bottomHelpMessage: '哔咔返回的图片质量',
+          component: 'Select',
+          componentProps: {
+            options: [
+              { label: '不隐藏', value: 0 },
+              { label: '隐藏明确为 NSFW 的缩略图', value: 1 },
+              { label: '隐藏明确和可能为 NSFW 的缩略图', value: 2 },
+              { label: '只显示明确为非 NSFW 的缩略图', value: 3 }
+            ],
+            placeholder: '请选择严格程度'
+          }
+        },
+        {
+          field: 'picSearch.cfTLSVersion',
+          label: 'TLS 版本',
+          bottomHelpMessage: '绕过 Cloudflare Challenge 所使用的 TLS 版本，建议可选值：["TLSv1.1", "TLSv1.2"]',
+          component: 'Input'
+        },
+        {
+          field: 'picSearch.ascii2dResultMaxQuantity',
+          label: 'ascii2d结果数量',
+          bottomHelpMessage: 'ascii2d搜图返回结果的最大数量',
+          component: 'InputNumber'
+        },
 
       ],
       // 获取配置数据方法（用于前端填充显示数据）
@@ -281,7 +366,8 @@ export function supportGuoba () {
         return {
           whole: Config.Notice,
           pixiv: Config.pixiv,
-          bika: Config.bika
+          bika: Config.bika,
+          picSearch: Config.picSearch,
         }
       },
 

@@ -68,6 +68,7 @@ order: -2
 1. 首先你需要拥有一个SauceNAO的账号，请在[这个网址](https://saucenao.com/user.php)进行注册
 
 2. 然后进入[这个网址](https://saucenao.com/user.php?page=search-api)获取你的api_key
+
 <img :src="$withBase('/img/SauceNAO.png')" alt="SauceNAO">
 
 3. 最后对你的鸡鸡人发送 #设置SauceNAOApiKey <api_key>
@@ -93,8 +94,10 @@ order: -2
 <img :src="$withBase('/pixiv-token/filter.png')" alt="SauceNAO">
 
 7. 登录你的Pixiv账号后，您应该会看到一个空白页面和请求，如下所示
-  <img :src="$withBase('/pixiv-token/request.png')" alt="SauceNAO">
+
+<img :src="$withBase('/pixiv-token/request.png')" alt="SauceNAO">
 
 8. 复制code字段后的参数，你需要尽快因为这可能存在时效性
 9. 回到你的控制台，将你刚才获得的`code`输入到控制台，按下你的`Enter`
 10. 如果您做的一切都正确，并且 Pixiv 没有更改其身份验证流，则应显示一对`auth_token`和`refresh_token`
+11. 最后将你的token填入配置文件`pixiv.yaml`的`refresh_token`字段即可

@@ -719,10 +719,15 @@ export class Assistant extends plugin {
         return logger.warn(`${e.logFnc}引用不是Bot消息`)
       }
     }
-    logger.info(`${e.logFnc}执行撤回`)
-    // 撤回消息
-    await target.recallMsg(source.message_id)
-
+    if (source.message[0].type === 'file' && e.isGroup) {
+      // 删除文件
+      logger.info(`${e.logFnc}执行删除文件`)
+      await Bot.acquireGfs(e.group_id).rm(source.message[0].fid)
+    } else {
+      // 撤回消息
+      logger.info(`${e.logFnc}执行撤回消息`)
+      await target.recallMsg(source.message_id)
+    }
     await common.sleep(300)
     let recallcheck = await Bot.getMsg(source.message_id)
     if (recallcheck && recallcheck.message_id == source.message_id) {

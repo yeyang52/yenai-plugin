@@ -142,8 +142,12 @@ export class NewBika extends plugin {
   /** 图片直连 */
   async directConnection (e) {
     if (!e.isMaster) return false
-    Config.modify('bika', 'bikaDirectConnection', /开启/.test(e.msg))
-    e.reply(`✅ 已${/开启/.test(e.msg) ? '开启' : '关闭'}哔咔直连`)
+    let now = Config.bika.bikaDirectConnection
+    let isSwitch = /开启/.test(e.msg)
+    if (now && isSwitch) return e.reply('❎ bika图片直连已处于开启状态')
+    if (!now && !isSwitch) return e.reply('❎ bika图片直连已处于关闭状态')
+    Config.modify('bika', 'bikaDirectConnection', isSwitch)
+    e.reply(`✅ 已${isSwitch ? '开启' : '关闭'}哔咔直连`)
   }
 
   async Authentication (e) {

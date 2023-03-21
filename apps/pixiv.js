@@ -228,8 +228,12 @@ export class NewPixiv extends plugin {
 
   /** 图片直连 */
   async directConnection (e) {
-    Config.modify('pixiv', 'pixivDirectConnection', /开启/.test(e.msg))
-    e.reply(`✅ 已${/开启/.test(e.msg) ? '开启' : '关闭'}Pixiv直连`)
+    let now = Config.pixiv.pixivDirectConnection
+    let isSwitch = /开启/.test(e.msg)
+    if (now && isSwitch) return e.reply('❎ Pixiv直连已处于开启状态')
+    if (!now && !isSwitch) return e.reply('❎ Pixiv直连已处于关闭状态')
+    Config.modify('pixiv', 'pixivDirectConnection', isSwitch)
+    e.reply(`✅ 已${isSwitch ? '开启' : '关闭'}Pixiv直连`)
   }
 
   async loginInfo (e) {

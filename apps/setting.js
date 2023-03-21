@@ -80,6 +80,11 @@ export class Setting extends plugin {
           reg: '^#椰奶(开启|关闭)代理$',
           fnc: 'switchProxy',
           permission: 'master'
+        },
+        {
+          reg: '^#(椰奶)?查看代理设置$',
+          fnc: 'seeProxy',
+          permission: 'master'
         }
       ]
     })
@@ -218,6 +223,19 @@ export class Setting extends plugin {
     let is = /开启/.test(e.msg)
     Config.modify('proxy', 'switchProxy', is)
     e.reply(`✅ 已${is ? '开启' : '关闭'}代理`)
+  }
+
+  async seeProxy (e) {
+    let { proxy, pixiv, bika } = Config
+    e.reply([
+      `代理地址：${proxy.proxyAddress}\n`,
+      `使用代理：${proxy.switchProxy}\n`,
+      `pixiv图片直连：${pixiv.pixivDirectConnection}\n`,
+      `bika图片直连：${bika.bikaDirectConnection}\n`,
+      `pixiv图片反代：${pixiv.pixivImageProxy}\n`,
+      `bika图片反代：${bika.bikaImageProxy}\n`,
+      'Tip：图片直连是指直接使用官方链接访问开启后图片反代将失效'
+    ])
   }
 
   // 增删查头衔屏蔽词

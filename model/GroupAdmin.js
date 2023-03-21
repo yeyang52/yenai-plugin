@@ -246,7 +246,7 @@ export default new class {
 
   /**
      * @description: 返回redis储存定时任务
-     * @return {Array} 定时任务数组
+     * @return {Promise<object>} 定时任务数组
      */
   async getRedisMuteTask () {
     return JSON.parse(await redis.get(this.MuteTaskKey))?.map(item => {

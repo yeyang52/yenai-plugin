@@ -1,4 +1,4 @@
-import request from '../../lib/request/request.js'
+import request, { qs } from '../../lib/request/request.js'
 import moment from 'moment'
 import { Config } from '../../components/index.js'
 import md5 from 'md5'
@@ -57,9 +57,9 @@ export default class PixivApi {
     }
   }
 
-  async request (target, options = {}) {
+  async request (target, options = {}, caching = false) {
     try {
-      return await this._get(target, options)
+      return await this._get(target, options, caching)
     } catch (error) {
       if (this._once) {
         this._once = false
@@ -67,16 +67,33 @@ export default class PixivApi {
       }
       await this.login()
       this._once = true
-      return await this._get(target, options)
+      return await this._get(target, options, caching)
     }
   }
 
-  async _get (target, options = {}) {
+  async _get (target, options = {}, cache) {
     const headers = {
       ...this.headers,
       Authorization: `Bearer ${this.access_token}`
     }
-    return request[options.data ? 'post' : 'get'](this.baseUrl + target, { headers, ...options, statusCode: 'json' })
+    // 读取缓存
+    const cacheUrl = options.params ? target + '?' + qs(options.params) : target
+    const cacheKey = `yenai:pixiv:cache:${cacheUrl}`
+    const cacheData = await redis.get(cacheKey)
+    if (cacheData) return JSON.parse(cacheData)
+    // 请求
+    let data = await request[options.data ? 'post' : 'get'](this.baseUrl + target, {
+      headers,
+      ...options,
+      statusCode: 'json'
+    })
+    // 写入缓存
+    if (cache) {
+      redis.set(cacheKey, JSON.stringify(data), {
+        EX: timeToSeconds(cache)
+      })
+    }
+    return data
   }
 
   async tags () {
@@ -95,7 +112,7 @@ export default class PixivApi {
         date,
         offset: (page - 1) * size
       }
-    })
+    }, getNoonTomorrow())
   }
 
   async illust ({ id }) {
@@ -183,4 +200,39 @@ export default class PixivApi {
   async illustRecommended (params = {}) {
     return await this.request('v1/illust/recommended', params)
   }
+}
+function timeToSeconds (time) {
+  let seconds = 0
+  let timeArray = time.split(' ')
+  for (let i = 0; i < timeArray.length; i++) {
+    let unit = timeArray[i].charAt(timeArray[i].length - 1)
+    let value = parseInt(timeArray[i].substring(0, timeArray[i].length - 1))
+    switch (unit) {
+      case 's':
+        seconds += value
+        break
+      case 'm':
+        seconds += value * 60
+        break
+      case 'h':
+        seconds += value * 60 * 60
+        break
+      case 'd':
+        seconds += value * 60 * 60 * 24
+        break
+      default:
+        break
+    }
+  }
+  return seconds
+}
+
+function getNoonTomorrow () {
+  const now = moment() // 获取当前时间
+  const noonToday = moment().startOf('day').add(12, 'hours') // 获取今天中午12点的时间
+  const noonTomorrow = moment().add(1, 'day').startOf('day').add(12, 'hours') // 获取明天中午12点的时间
+
+  return (now < noonToday
+    ? noonToday.diff(now, 'hours')
+    : noonTomorrow.diff(now, 'hours')) + 'h'
 }

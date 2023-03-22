@@ -26,7 +26,7 @@ export default new class Pixiv {
     if (!this.PixivClient?.auth?.user) throw Error('❎ 未获取到登录信息')
     const { profile_image_urls: { px_170x170 }, id, name, account, mail_address, is_premium, x_restrict } = this.PixivClient.auth.user
     return [
-      await this.requestPixivImg(px_170x170),
+      await this._requestPixivImg(px_170x170),
       `\nid：${id}\n`,
       `name：${name}\n`,
       `account：${account}\n`,
@@ -71,7 +71,7 @@ export default new class Pixiv {
       res = await request.get(`${this.domain}/illust`, { params }).then(res => res.json())
     }
     if (res.error) throw Error(res.error?.user_message || '无法获取数据')
-    let illust = this.format(res.illust)
+    let illust = this._format(res.illust)
     let { id, title, user, tags, total_bookmarks, total_view, url, create_date, x_restrict, illust_ai_type } = illust
     let msg = [
       `标题：${title}\n`,
@@ -95,7 +95,7 @@ export default new class Pixiv {
       }
       throw Error(linkmsg.join('\n'))
     }
-    let img = await Promise.all(url.map(async item => await this.requestPixivImg(item)))
+    let img = await Promise.all(url.map(async item => await this._requestPixivImg(item)))
     return { msg, img }
   }
 
@@ -142,7 +142,7 @@ export default new class Pixiv {
     if (_.isEmpty(res.illusts)) throw Error('暂无数据，请等待榜单更新哦(。-ω-)zzz')
 
     let illusts = await Promise.all(res.illusts.map(async (item, index) => {
-      let list = this.format(item)
+      let list = this._format(item)
       let { id, title, user, tags, total_bookmarks, image_urls } = list
       return [
         `标题：${title}\n`,
@@ -152,7 +152,7 @@ export default new class Pixiv {
         `点赞：${total_bookmarks}\n`,
         `排名：${(page - 1) * 30 + (index + 1)}\n`,
         `Tag：${_.truncate(tags)}\n`,
-        await this.requestPixivImg(image_urls.large)
+        await this._requestPixivImg(image_urls.large)
       ]
     }))
     let formatDate = res.next_url.match(/date=(\d{4}-\d{1,2}-\d{1,2})/)[1]
@@ -239,7 +239,7 @@ export default new class Pixiv {
     let filter = 0
     let NowNum = res.illusts.length
     for (let i of res.illusts) {
-      let { id, title, user, tags, total_bookmarks, image_urls, x_restrict } = this.format(i)
+      let { id, title, user, tags, total_bookmarks, image_urls, x_restrict } = this._format(i)
       if (isfilter && x_restrict) {
         filter++
         continue
@@ -251,7 +251,7 @@ export default new class Pixiv {
         `UID：${user.id}\n`,
         `点赞：${total_bookmarks}\n`,
         `Tag：${_.truncate(tags)}\n`,
-        await this.requestPixivImg(image_urls.large)
+        await this._requestPixivImg(image_urls.large)
       ])
     }
     if (_.isEmpty(illusts)) throw Error('该页全为涩涩内容已全部过滤(#／。＼#)')
@@ -285,7 +285,7 @@ export default new class Pixiv {
           `Tag：${tag}\n`,
           `Translated：${translated_name}\n`,
           `Pid：${i.illust.id}\n`,
-          await this.requestPixivImg(url)
+          await this._requestPixivImg(url)
         ]
       )
     }
@@ -334,7 +334,7 @@ export default new class Pixiv {
     let filter = 0
     let NowNum = res.illusts.length
     for (let i of res.illusts) {
-      let { id: pid, title, tags, total_bookmarks, total_view, url, x_restrict } = this.format(i)
+      let { id: pid, title, tags, total_bookmarks, total_view, url, x_restrict } = this._format(i)
       if (isfilter && x_restrict) {
         filter++
         continue
@@ -345,14 +345,14 @@ export default new class Pixiv {
         `点赞：${total_bookmarks}\n`,
         `访问：${total_view}\n`,
         `Tag：${_.truncate(tags)}\n`,
-        await this.requestPixivImg(url[0])
+        await this._requestPixivImg(url[0])
       ])
     }
     if (_.isEmpty(illusts)) throw Error('该页全为涩涩内容已全部过滤(#／。＼#)')
     let { id: uid, name, profile_image_urls } = res.user
     return [
       [
-        await this.requestPixivImg(profile_image_urls.medium),
+        await this._requestPixivImg(profile_image_urls.medium),
         `\nUid：${uid}\n`,
         `画师：${name}`
       ],
@@ -387,15 +387,15 @@ export default new class Pixiv {
       let { id, name, profile_image_urls } = item.user
       let ret = [
         `${(page - 1) * 10 + index + 1}、`,
-        await this.requestPixivImg(profile_image_urls),
+        await this._requestPixivImg(profile_image_urls),
         `\nid: ${id}\n`,
         `name: ${name}\n`,
         '作品:\n'
       ]
       for (let i of item.illusts) {
-        let { image_urls, x_restrict } = this.format(i)
+        let { image_urls, x_restrict } = this._format(i)
         if (isfilter && x_restrict) continue
-        ret.push(await this.requestPixivImg(image_urls.square_medium))
+        ret.push(await this._requestPixivImg(image_urls.square_medium))
       }
       return ret
     }))
@@ -421,7 +421,7 @@ export default new class Pixiv {
         `点赞: ${like_total}\n`,
         `插画ID：${picture_id}\n`,
         `Tag：${_.truncate(tags)}\n`,
-        await this.requestPixivImg(regular_url)
+        await this._requestPixivImg(regular_url)
       ])
     }
     return list
@@ -446,7 +446,7 @@ export default new class Pixiv {
     let illusts = []
     let filter = 0
     for (let i of res.illusts) {
-      let { id, title, user, tags, total_bookmarks, image_urls, x_restrict } = await this.format(i)
+      let { id, title, user, tags, total_bookmarks, image_urls, x_restrict } = await this._format(i)
       if (isfilter && x_restrict) {
         filter++
         continue
@@ -458,7 +458,7 @@ export default new class Pixiv {
         `UID：${user.id}\n`,
         `点赞：${total_bookmarks}\n`,
         `Tag：${_.truncate(tags)}\n`,
-        await this.requestPixivImg(image_urls.large)
+        await this._requestPixivImg(image_urls.large)
       ])
     }
     if (_.isEmpty(illusts)) throw Error('啊啊啊！！！居然全是瑟瑟哒不给你看(＊／ω＼＊)')
@@ -485,16 +485,21 @@ export default new class Pixiv {
       `标题：${title}\n`,
       `画师：${author}\n`,
       `Tag：${tags.join('，')}\n`,
-      await this.requestPixivImg(urls)
+      await this._requestPixivImg(urls)
     ]
     return msg
   }
 
+  /**
+   * @description: 推荐作品
+   * @param {Number} num 数量
+   * @return {Promise}
+   */
   async illustRecommended (num) {
     if (!this.PixivClient) throw Error('请登录Pixiv后再使用此功能')
     let list = await this.PixivClient.illustRecommended()
     return Promise.all(_.take(list.illusts, num).map(async (item) => {
-      let { id, title, user, tags, total_bookmarks, image_urls } = this.format(item)
+      let { id, title, user, tags, total_bookmarks, image_urls } = this._format(item)
       return [
         `标题：${title}\n`,
         `画师：${user.name}\n`,
@@ -502,7 +507,7 @@ export default new class Pixiv {
         `UID：${user.id}\n`,
         `点赞：${total_bookmarks}\n`,
         `Tag：${_.truncate(tags)}`,
-        await this.requestPixivImg(image_urls.large)
+        await this._requestPixivImg(image_urls.large)
       ]
     }))
   }
@@ -510,8 +515,9 @@ export default new class Pixiv {
   /**
    * @description: 请求p站图片
    * @param {String} url
+   * @return {Promise}
    */
-  async requestPixivImg (url) {
+  async _requestPixivImg (url) {
     url = url.replace('i.pximg.net', this.proxy)
     logger.debug(`pixiv getImg URL: ${url}`)
     let headers = /s.pximg.net/.test(url) ? undefined : this.headers
@@ -520,7 +526,7 @@ export default new class Pixiv {
 
   /**
      * @description: 格式化
-     * @param {Object} illusts 处理对象
+     * @param {Object} illusts 处format理对象
      * @return {Object}
      * title  标题
      * id  pid
@@ -535,7 +541,7 @@ export default new class Pixiv {
      * illust_ai_type  是否为AI作品
      * visible  是否为可见作品
      */
-  format (illusts) {
+  _format (illusts) {
     let url = []
     let { tags, meta_single_page, meta_pages } = illusts
     tags = _.uniq(_.compact(_.flattenDeep(tags?.map(item => Object.values(item)))))

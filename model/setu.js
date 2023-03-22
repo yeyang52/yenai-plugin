@@ -65,7 +65,7 @@ export default new class setu {
         `R18：${r18}\n`,
         `AI：${aiType ? aiType == 1 ? '是' : '否' : '未知'}\n`,
         `tag：${_.truncate(tags.join(','))}\n`,
-        await Pixiv.requestPixivImg(urls?.original || urls?.regular || urls?.small)
+        await Pixiv._requestPixivImg(urls?.original || urls?.regular || urls?.small)
       ]
     }))
   }

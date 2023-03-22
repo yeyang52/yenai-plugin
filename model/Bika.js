@@ -67,7 +67,7 @@ export default new (class {
           `喜欢：${likesCount}\n`,
           `完结：${finished}\n`,
           tags ? `tag：${_.truncate(tags.join(','))}\n` : '',
-          await this.requestBikaImg(thumb.fileServer, thumb.path)
+          await this._requestBikaImg(thumb.fileServer, thumb.path)
       ])
     }
     return msg
@@ -96,7 +96,7 @@ export default new (class {
     return [
       `id: ${_id}， ${title}`,
       `共${total}张，当前为第${pg}页，共${pages}页，当前为第${order}话`,
-      ...await Promise.all(docs.map(async item => await this.requestBikaImg(item.media.fileServer, item.media.path)))
+      ...await Promise.all(docs.map(async item => await this._requestBikaImg(item.media.fileServer, item.media.path)))
     ]
   }
 
@@ -127,13 +127,6 @@ export default new (class {
     })
   }
 
-  async nextChapter () {
-    if (!this.idNext) throw Error('未找到上一个id')
-    let { id, order } = this.idNext
-    order++
-    return this.comicPage(id, 1, order)
-  }
-
   /** 类别列表 */
   async categories () {
     let key = 'yenai:bika:categories'
@@ -154,7 +147,7 @@ export default new (class {
       return [
         `category: ${title}\n`,
         `描述:${description}\n`,
-        await this.requestBikaImg(thumb.fileServer, thumb.path)
+        await this._requestBikaImg(thumb.fileServer, thumb.path)
       ]
     }))
   }
@@ -189,11 +182,11 @@ export default new (class {
       `评论量：${totalComments}\n`,
       `分类：${categories.join('，')}\n`,
       `tag：${tags.join('，')}`,
-      await this.requestBikaImg(thumb.fileServer, thumb.path)
+      await this._requestBikaImg(thumb.fileServer, thumb.path)
     ]
   }
 
-  async requestBikaImg (fileServer, path) {
+  async _requestBikaImg (fileServer, path) {
     fileServer = /static/.test(fileServer) ? fileServer : fileServer + '/static/'
     let url = (/picacomic.com/.test(fileServer) && this.imgproxy ? this.imgproxy : fileServer) + path
     logger.debug(`Bika getImg URL: ${url}`)

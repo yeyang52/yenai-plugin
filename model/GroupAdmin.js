@@ -11,7 +11,7 @@ export default new class {
     this.MuteTaskKey = 'yenai:MuteTasks'
   }
 
-  async getMemberMap (groupId, iskey = false) {
+  async _getMemberMap (groupId, iskey = false) {
     let Map = await Bot.pickGroup(groupId - 0).getMemberMap(true)
     return Array.from(iskey ? Map.keys() : Map.values())
   }
@@ -19,10 +19,10 @@ export default new class {
   /**
      * @description: 获取禁言中的人数组
      * @param {Number} groupId 群号
-     * @return {Array}
+     * @return {Promise}
      */
   async getMuteList (groupId, info = false) {
-    let list = await this.getMemberMap(groupId, true)
+    let list = await this._getMemberMap(groupId, true)
     let groupObj = Bot.pickGroup(groupId - 0)
     let mutelist = list.filter(item => groupObj.pickMember(item).mute_left != 0)
     if (_.isEmpty(mutelist)) return false
@@ -109,7 +109,7 @@ export default new class {
     let timeUnit = common.Time_unit[unit]
 
     let time = nowtime - times * timeUnit
-    let list = await this.getMemberMap(groupId)
+    let list = await this._getMemberMap(groupId)
 
     list = list.filter(item => item.last_sent_time < time && item.role == 'member' && item.user_id != Bot.uin)
     if (_.isEmpty(list)) return false
@@ -122,7 +122,7 @@ export default new class {
      * @return {Promise<Number[]>}
      */
   async getNeverSpeak (groupId) {
-    let list = await this.getMemberMap(groupId)
+    let list = await this._getMemberMap(groupId)
     list = list.filter(item => item.join_time == item.last_sent_time && item.role == 'member' && item.user_id != Bot.uin)
     if (_.isEmpty(list)) return false
     return list
@@ -177,7 +177,7 @@ export default new class {
      * @return {Promse<String[]>}
      */
   async InactiveRanking (groupId, num) {
-    let list = await this.getMemberMap(groupId)
+    let list = await this._getMemberMap(groupId)
     list.sort((a, b) => {
       return a.last_sent_time - b.last_sent_time
     })
@@ -201,7 +201,7 @@ export default new class {
      * @return {Promse<String[]>}
      */
   async getRecentlyJoined (groupId, num) {
-    let list = await this.getMemberMap(groupId)
+    let list = await this._getMemberMap(groupId)
     list.sort((a, b) => {
       return b.join_time - a.join_time
     })

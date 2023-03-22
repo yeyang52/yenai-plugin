@@ -24,57 +24,57 @@ export class Assistant extends plugin {
       rule: [
         {
           reg: '^#改头像.*$',
-          fnc: 'Photo',
+          fnc: 'SetAvatar',
           permission: 'master'
         },
         {
           reg: '^#改昵称.*$',
-          fnc: 'Myname',
+          fnc: 'SetNickname',
           permission: 'master'
         },
         {
           reg: '^#改签名.*$',
-          fnc: 'Sign',
+          fnc: 'SetSignature',
           permission: 'master'
         },
         {
           reg: '^#改状态.*$',
-          fnc: 'State',
+          fnc: 'SetOnlineStatus',
           permission: 'master'
         },
         {
           reg: FriendsReg, // 发好友
-          fnc: 'Friends',
+          fnc: 'SendFriendMsg',
           permission: 'master'
         },
         {
           reg: GroupMsgReg, // 发群聊
-          fnc: 'Groupmsg',
+          fnc: 'SendGroupMsg',
           permission: 'master'
         },
         {
           reg: GroupListMsgReg, // 发群列表
-          fnc: 'Grouplistmsg',
+          fnc: 'SendGroupListMsg',
           permission: 'master'
         },
         {
           reg: '^#退群.*$',
-          fnc: 'Quit',
+          fnc: 'QuitGroup',
           permission: 'master'
         },
         {
           reg: '^#删好友.*$',
-          fnc: 'Deletes',
+          fnc: 'DeleteFriend',
           permission: 'master'
         },
         {
           reg: '^#改性别.*$',
-          fnc: 'Sex',
+          fnc: 'SetGender',
           permission: 'master'
         },
         {
           reg: '^#取直链.*$',
-          fnc: 'Pictures'
+          fnc: 'ImageLink'
         },
         {
           reg: '^#取face.*$',
@@ -97,44 +97,44 @@ export class Assistant extends plugin {
         },
         {
           reg: '^#(清空说说|清空留言)$',
-          fnc: 'QzoneEmpty',
+          fnc: 'QzonedelAll',
           permission: 'master'
         },
         {
           reg: '^#改群名片.*$',
-          fnc: 'MyGroupname',
+          fnc: 'SetGroupCard',
           permission: 'master'
         },
         {
           reg: '^#改群头像.*$',
-          fnc: 'GroupPhoto'
+          fnc: 'SetGroupAvatar'
         },
         {
           reg: '^#改群昵称.*$',
-          fnc: 'Groupname'
+          fnc: 'SetGroupName'
         },
         {
           reg: '^#获取(群|好友)列表$',
-          fnc: 'Grouplist',
+          fnc: 'GlOrFl',
           permission: 'master'
         },
         {
           reg: '^#(开启|关闭)戳一戳$',
-          fnc: 'cyc',
+          fnc: 'Cyc',
           permission: 'master'
         },
         {
           reg: '^#?撤回$',
-          fnc: 'recallMsgown'
+          fnc: 'RecallMsgown'
         },
         {
           reg: '^#(开启|关闭)好友添加$',
-          fnc: 'friend_switch',
+          fnc: 'FriendSwitch',
           permission: 'master'
         },
         {
           reg: friendTypeReg, // 更改好友申请方式
-          fnc: 'friend_type',
+          fnc: 'FriendType',
           permission: 'master'
         }
       ]
@@ -142,9 +142,9 @@ export class Assistant extends plugin {
   }
 
   /** 改头像 */
-  async Photo (e) {
+  async SetAvatar (e) {
     if (!e.img) {
-      this.setContext('Photos')
+      this.setContext('_avatarContext')
       e.reply('✅ 请发送图片')
       return
     }
@@ -157,15 +157,15 @@ export class Assistant extends plugin {
       })
   }
 
-  async Photos () {
+  async _avatarContext () {
     let img = this.e.img
     if (/取消/.test(this.e.msg)) {
-      this.finish('Photos')
+      this.finish('_avatarContext')
       await this.reply('✅ 已取消')
       return
     }
     if (!img) {
-      this.setContext('Photos')
+      this.setContext('_avatarContext')
       await this.reply('❎ 请发送图片或取消')
       return
     }
@@ -180,7 +180,7 @@ export class Assistant extends plugin {
   }
 
   /** 改昵称 */
-  async Myname (e) {
+  async SetNickname (e) {
     let name = e.msg.replace(/#|改昵称/g, '').trim()
 
     await Bot.setNickname(name)
@@ -192,7 +192,7 @@ export class Assistant extends plugin {
   }
 
   /** 改群名片 */
-  async MyGroupname (e) {
+  async SetGroupCard (e) {
     let group = ''
     let card = ''
 
@@ -222,7 +222,7 @@ export class Assistant extends plugin {
   }
 
   /** 改群头像 */
-  async GroupPhoto (e) {
+  async SetGroupAvatar (e) {
     if (e.isPrivate) {
       if (!e.isMaster) return logger.mark(`${e.logFnc}不为主人`)
       groupPhotoid = e.msg.replace(/#|改群头像/g, '').trim()
@@ -240,7 +240,7 @@ export class Assistant extends plugin {
 
     if (Bot.pickGroup(groupPhotoid).is_admin || Bot.pickGroup(groupPhotoid).is_owner) {
       if (!e.img) {
-        this.setContext('picture')
+        this.setContext('_GroupAvatarContext')
         e.reply('✅ 请发送图片')
         return
       }
@@ -256,15 +256,15 @@ export class Assistant extends plugin {
     }
   }
 
-  picture () {
+  _GroupAvatarContext () {
     let img = this.e.img
     if (/取消/.test(this.e.msg)) {
-      this.finish('picture')
+      this.finish('_GroupAvatarContext')
       this.e.reply('✅ 已取消')
       return
     }
     if (!img) {
-      this.setContext('picture')
+      this.setContext('_GroupAvatarContext')
       this.e.reply('❎ 请发送图片或取消')
       return
     }
@@ -275,11 +275,11 @@ export class Assistant extends plugin {
         console.log(err)
       })
 
-    this.finish('picture')
+    this.finish('_GroupAvatarContext')
   }
 
   /** 改群昵称 */
-  async Groupname (e) {
+  async SetGroupName (e) {
     let group = ''
     let card = ''
 
@@ -315,7 +315,7 @@ export class Assistant extends plugin {
   }
 
   /** 改签名 */
-  async Sign (e) {
+  async SetSignature (e) {
     let signs = e.msg.replace(/#|改签名/g, '').trim()
     await Bot.setSignature(signs)
       .then(() => e.reply('✅ 签名修改成功'))
@@ -326,7 +326,7 @@ export class Assistant extends plugin {
   }
 
   /** 改状态 */
-  async State (e) {
+  async SetOnlineStatus (e) {
     let signs = e.msg.replace(/#|改状态/g, '').trim()
 
     if (!signs) return e.reply('❎ 状态不为空，可选值：我在线上，离开，隐身，忙碌，Q我吧，请勿打扰')
@@ -344,7 +344,7 @@ export class Assistant extends plugin {
   }
 
   /** 发好友 */
-  async Friends (e) {
+  async SendFriendMsg (e) {
     let regRet = FriendsReg.exec(e.msg)
     let qq = regRet[1]
     e.message[0].text = regRet[2]
@@ -362,7 +362,7 @@ export class Assistant extends plugin {
   }
 
   /** 发群聊 */
-  async Groupmsg (e) {
+  async SendGroupMsg (e) {
     let regRet = GroupMsgReg.exec(e.msg)
 
     let gpid = regRet[1]
@@ -383,7 +383,7 @@ export class Assistant extends plugin {
   }
 
   // 发送群列表
-  async Grouplistmsg (e) {
+  async SendGroupListMsg (e) {
     // 获取参数
     let regRet = GroupListMsgReg.exec(e.msg)
     let gpid = regRet[1]
@@ -430,7 +430,7 @@ export class Assistant extends plugin {
   }
 
   /** 退群 */
-  async Quit (e) {
+  async QuitGroup (e) {
     let quits = e.msg.replace(/#|退群/g, '').trim()
 
     if (!quits) return e.reply('❎ 群号不能为空')
@@ -448,7 +448,7 @@ export class Assistant extends plugin {
   }
 
   /** 删好友 */
-  async Deletes (e) {
+  async DeleteFriend (e) {
     let quits = e.msg.replace(/#|删好友/g, '').trim()
 
     if (e.message[1]) {
@@ -469,7 +469,7 @@ export class Assistant extends plugin {
   }
 
   /** 改性别 */
-  async Sex (e) {
+  async SetGender (e) {
     let sex = e.msg.replace(/#|改性别/g, '').trim()
 
     if (!sex) return e.reply('❎ 性别不能为空 可选值：男，女，无\n（改为无，为无性别）')
@@ -490,7 +490,7 @@ export class Assistant extends plugin {
   }
 
   /** 取直链 */
-  async Pictures (e) {
+  async ImageLink (e) {
     let img = []
     if (e.source) {
       let source
@@ -509,7 +509,7 @@ export class Assistant extends plugin {
     }
 
     if (_.isEmpty(img)) {
-      this.setContext('imgs')
+      this.setContext('_ImageLinkContext')
       await this.reply('✅ 请发送图片')
       return
     }
@@ -527,20 +527,20 @@ export class Assistant extends plugin {
     return true
   }
 
-  async imgs () {
+  async _ImageLinkContext () {
     let img = this.e.img
     if (this.e.msg === '取消') {
-      this.finish('imgs')
+      this.finish('_ImageLinkContext')
       await this.reply('✅ 已取消')
       return
     }
     if (!img) {
-      this.setContext('imgs')
+      this.setContext('_ImageLinkContext')
       await this.reply('❎ 请发送图片或取消')
       return
     }
     await this.e.reply(img[0])
-    this.finish('imgs')
+    this.finish('_ImageLinkContext')
   }
 
   /** 取Face表情 */
@@ -635,22 +635,22 @@ export class Assistant extends plugin {
   }
 
   /** 清空说说和留言 */
-  async QzoneEmpty (e) {
+  async QzonedelAll (e) {
     if (/清空说说/.test(e.msg)) {
-      this.setContext('QzonedelAll')
+      this.setContext('_QzonedelAllContext')
       e.reply('✳️ 即将删除全部说说请发送：\n' + '------确认清空或取消------')
       Qzonedetermine = true
     } else if (/清空留言/.test(e.msg)) {
-      this.setContext('QzonedelAll')
+      this.setContext('_QzonedelAllContext')
       e.reply('✳️ 即将删除全部留言请发送：\n' + '------确认清空或取消------')
       Qzonedetermine = false
     }
   }
 
-  async QzonedelAll () {
+  async _QzonedelAllContext () {
     let msg = this.e.msg
     if (/#?确认清空/.test(msg)) {
-      this.finish('QzonedelAll')
+      this.finish('_QzonedelAllContext')
       let result
       if (Qzonedetermine) {
         result = await QQApi.delQzoneAll()
@@ -661,18 +661,18 @@ export class Assistant extends plugin {
       this.e.reply(result)
       return true
     } else if (/#?取消/.test(msg)) {
-      this.finish('QzonedelAll')
+      this.finish('_QzonedelAllContext')
       this.e.reply('✅ 已取消')
       return false
     } else {
-      this.setContext('QzonedelAll')
+      this.setContext('_QzonedelAllContext')
       this.e.reply('❎ 请输入:确认清空或取消')
       return false
     }
   }
 
   // 获取群|好友列表
-  async Grouplist (e) {
+  async GlOrFl (e) {
     let msg = []
     if (/群列表/.test(e.msg)) {
       // 获取群列表并转换为数组
@@ -697,7 +697,7 @@ export class Assistant extends plugin {
   }
 
   // 引用撤回
-  async recallMsgown (e) {
+  async RecallMsgown (e) {
     if (!e.source) return
     let source
     if (e.isGroup) {
@@ -746,14 +746,14 @@ export class Assistant extends plugin {
   }
 
   // 开关好友添加
-  async friend_switch (e) {
+  async FriendSwitch (e) {
     let res = await QQApi.addFriendSwitch(/开启/.test(e.msg) ? 1 : 2)
     if (!res) return e.reply(API_ERROR)
     e.reply(res.ActionStatus)
   }
 
   // 好友申请方式
-  async friend_type (e) {
+  async FriendType (e) {
     let regRet = friendTypeReg.exec(e.msg)
     if (regRet[1] == 0) return e.reply('1为允许所有人，2为需要验证，3为问答正确问答(需填问题和答案，格式为：#更改好友申请方式3 问题 答案)')
     // 单独处理
@@ -766,7 +766,7 @@ export class Assistant extends plugin {
   }
 
   /** 开关戳一戳 */
-  async cyc (e) {
+  async Cyc (e) {
     let result = await QQApi.setcyc(/开启/.test(e.msg) ? 0 : 1)
     if (!result) return e.reply(API_ERROR)
 

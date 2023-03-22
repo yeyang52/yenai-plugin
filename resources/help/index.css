@@ -7,7 +7,8 @@ body {
 .container {
   background: url(./main.png) right center no-repeat;
   background-size: cover;
-  width: 1100px;
+  padding: 20px 35px 10px 25px;
+  width: 1130px;
 }
 
 .head-box {
@@ -22,21 +23,23 @@ body {
 .cont-box {
   /* border-radius: 15px; */
   margin-top: 20px;
-  margin-bottom: 20px;
-  margin-right: 5px;
+  margin-bottom: 30px;
   overflow: hidden;
-  /* box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.15); */
   position: relative;
   font-size: 20px;
   background: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  /* box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); */
+  box-shadow: 30px 30px 30px -10px rgba(0, 0, 0, 0.15),
+    inset 15px 15px 10px rgba(255, 255, 255, 0.75),
+    -15px -15px 35px rgba(255, 255, 255, 0.55),
+    inset -1px -1px 10px rgba(0, 0, 0, 0.2);
   /* 毛玻璃 */
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  color: #8E54E9;
+  border-radius: 30px;
+  /* border: 1px solid rgba(255, 255, 255, 0.18); */
+  /* color: #8E54E9; */
 }
 
 .help-group {

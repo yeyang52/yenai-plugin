@@ -65,5 +65,6 @@ export const incomeCurve = {
   珐露珊: 'https://img.nga.178.com/attachments/mon_202302/07/i2Q180-cf75XuZ87T3cS1di-q9.png',
   流浪者: 'https://img.nga.178.com/attachments/mon_202302/07/i2Q180-71e3XtZ87T3cS1di-q9.png',
   艾尔海森: 'https://img.nga.178.com/attachments/mon_202302/07/i2Q180-4ntzXuZ8fT3cS1di-q9.png',
-  瑶瑶: 'https://img.nga.178.com/attachments/mon_202302/07/i2Q180-a6gvXtZ82T3cS1di-q9.png'
+  瑶瑶: 'https://img.nga.178.com/attachments/mon_202302/07/i2Q180-a6gvXtZ82T3cS1di-q9.png',
+  迪希雅: 'https://img.nga.178.com/attachments/mon_202303/05/i2Qjr7-iq98XtZ85T3cS1di-q9.png'
 }

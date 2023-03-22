@@ -358,7 +358,7 @@ export function supportGuoba () {
           label: 'ascii2d结果数量',
           bottomHelpMessage: 'ascii2d搜图返回结果的最大数量',
           component: 'InputNumber'
-        },
+        }
 
       ],
       // 获取配置数据方法（用于前端填充显示数据）
@@ -367,7 +367,7 @@ export function supportGuoba () {
           whole: Config.Notice,
           pixiv: Config.pixiv,
           bika: Config.bika,
-          picSearch: Config.picSearch,
+          picSearch: Config.picSearch
         }
       },
 

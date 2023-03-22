@@ -231,8 +231,9 @@ function getNoonTomorrow () {
   const now = moment() // 获取当前时间
   const noonToday = moment().startOf('day').add(12, 'hours') // 获取今天中午12点的时间
   const noonTomorrow = moment().add(1, 'day').startOf('day').add(12, 'hours') // 获取明天中午12点的时间
-
-  return (now < noonToday
+  let time = now < noonToday
     ? noonToday.diff(now, 'hours')
-    : noonTomorrow.diff(now, 'hours')) + 'h'
+    : noonTomorrow.diff(now, 'hours')
+  if (time > 12) time = 12
+  return time + 'h'
 }

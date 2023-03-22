@@ -9,13 +9,15 @@ import child_process from 'child_process'
 let errors = {}
 let core = null
 let Contactable = null
+
 try {
   Contactable = (await import('oicq')).default
   core = (await import('oicq')).core
-} catch (err) {
-  Contactable = (await import('icqq')).default
-  core = (await import('icqq')).core
+} catch (error) {
+  Contactable = (await import('icqq').catch(() => logger.error('未检测到icqq')))?.default
+  core = (await import('icqq').catch(() => {}))?.core
 }
+
 async function uploadRecord (record_url, seconds = 0, transcoding = true) {
   const result = await getPttBuffer(record_url, Bot.config.ffmpeg_path, transcoding)
   if (!result.buffer) {

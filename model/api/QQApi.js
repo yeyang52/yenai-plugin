@@ -11,12 +11,16 @@ const gtk = function (t) {
   }
   return 2147483647 & n
 }
+let _cookie = null
+try {
+  _cookie = Bot?.cookies['qun.qq.com']
+} catch {}
 /** QQ接口 */
 export default new class {
   constructor () {
     this.headers = {
       'Content-type': 'application/json;charset=UTF-8',
-      'Cookie': Bot?.cookies['qun.qq.com'],
+      'Cookie': _cookie,
       'qname-service': '976321:131072',
       'qname-space': 'Production'
     }

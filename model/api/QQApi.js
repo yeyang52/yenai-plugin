@@ -2,7 +2,6 @@ import fetch from 'node-fetch'
 import { common } from '../index.js'
 import _ from 'lodash'
 import moment from 'moment'
-import { core } from 'oicq'
 import request from '../../lib/request/request.js'
 /** 获取gtk */
 const gtk = function (t) {
@@ -426,6 +425,12 @@ export default new class {
      * @return {Object}
      */
   async thumbUp (uid, times = 1) {
+    let core = null
+    try {
+      core = (await import('oicq')).core
+    } catch (err) {
+      core = (await import('icqq')).core
+    }
     if (times > 20) { times = 20 }
     let ReqFavorite
     if (Bot.fl.get(uid)) {

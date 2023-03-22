@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import moment from 'moment'
-import { segment } from 'oicq'
 import loader from '../../../lib/plugins/loader.js'
 import { Config } from '../components/index.js'
 import { common, QQApi } from './index.js'

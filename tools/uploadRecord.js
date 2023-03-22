@@ -1,5 +1,4 @@
 /* eslint-disable no-void */
-import Contactable, { core } from 'oicq'
 import querystring from 'querystring'
 import fetch from 'node-fetch'
 import fs from 'fs'
@@ -8,7 +7,15 @@ import os from 'os'
 import crypto from 'crypto'
 import child_process from 'child_process'
 let errors = {}
-
+let core = null
+let Contactable = null
+try {
+  Contactable = (await import('oicq')).default
+  core = (await import('oicq')).core
+} catch (err) {
+  Contactable = (await import('icqq')).default
+  core = (await import('icqq')).core
+}
 async function uploadRecord (record_url, seconds = 0, transcoding = true) {
   const result = await getPttBuffer(record_url, Bot.config.ffmpeg_path, transcoding)
   if (!result.buffer) {

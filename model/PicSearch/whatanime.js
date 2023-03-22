@@ -1,6 +1,5 @@
 import request from '../../lib/request/request.js'
 import { Config, Plugin_Path } from '../../components/index.js'
-import { segment } from 'oicq'
 import common from '../../../../lib/common/common.js'
 import _ from 'lodash'
 export default async function doSearch (imgURL) {

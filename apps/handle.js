@@ -1,6 +1,5 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import _ from 'lodash'
-import { segment } from 'oicq'
 import { common } from '../model/index.js'
 import moment from 'moment'
 const ROLE_MAP = {

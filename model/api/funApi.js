@@ -2,7 +2,6 @@ import fetch from 'node-fetch'
 import md5 from 'md5'
 import _ from 'lodash'
 import request from '../../lib/request/request.js'
-import { segment } from 'oicq'
 const API_ERROR = '出了点小问题，待会再试试吧'
 
 export default new class {

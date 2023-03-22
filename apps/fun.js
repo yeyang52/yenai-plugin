@@ -1,6 +1,5 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import fetch from 'node-fetch'
-import { segment } from 'oicq'
 import _ from 'lodash'
 import { Config } from '../components/index.js'
 import { common, uploadRecord, QQApi, funApi } from '../model/index.js'

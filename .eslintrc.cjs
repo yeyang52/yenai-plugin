@@ -12,7 +12,8 @@ module.exports = {
     Bot: true,
     redis: true,
     logger: true,
-    plugin: true
+    plugin: true,
+    segment: true
   },
   rules: {
     'eqeqeq': ['off'],

@@ -1,5 +1,4 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import { segment } from 'oicq'
 import cfg from '../../../lib/config/config.js'
 import { common } from '../model/index.js'
 import { Config } from '../components/index.js'

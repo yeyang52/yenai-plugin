@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import moment from 'moment'
-import { segment } from 'oicq'
 import plugin from '../../../lib/plugins/plugin.js'
 import { Config } from '../components/index.js'
 import { common, GroupAdmin as ga, puppeteer, QQApi } from '../model/index.js'

@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import moment from 'moment'
 import fetch from 'node-fetch'
-import { segment } from 'oicq'
 import { Config } from '../components/index.js'
 import request from '../lib/request/request.js'
 import { rankType } from '../tools/pixiv.js'

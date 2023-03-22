@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
 import _ from 'lodash'
-import { segment } from 'oicq'
 import { puppeteer } from '../index.js'
 import request from '../../lib/request/request.js'
 import { Config } from '../../components/index.js'

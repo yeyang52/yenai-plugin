@@ -1,6 +1,5 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import gsCfg from '../../genshin/model/gsCfg.js'
-import { segment } from 'oicq'
 import fs from 'node:fs'
 import common from '../../../lib/common/common.js'
 import { Data, Plugin_Path } from '../components/index.js'

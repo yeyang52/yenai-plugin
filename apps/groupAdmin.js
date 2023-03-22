@@ -287,7 +287,7 @@ export class GroupAdmin extends plugin {
     if (!common.Authentication(e, 'master', 'owner')) return
     let qq = e.message.find(item => item.type == 'at')?.qq
     if (!qq) return e.reply('请艾特要修改的人哦~')
-    let text = e.msg.replace(/#|修改头衔/, '')
+    let text = e.msg.replace(/#|修改头衔/g, '')
     let res = await e.group.setTitle(qq, text)
     if (res) {
       e.reply(`已经把这个小可爱的头衔设置为「${text}」辣`)

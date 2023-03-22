@@ -60,7 +60,7 @@ export class NGA extends plugin {
     } else {
       // 参考面板
       imgPath = `${this.referencePanelPath}/${role.name}.png`
-      url = `http://www.liaobiao.top/Referenc/${role.name}.png`
+      url = `http://public.yenai.ren/Referenc/${role.name}.png`
     }
     if (!fs.existsSync(imgPath) || regRet[1]) {
       this.initFolder(type)

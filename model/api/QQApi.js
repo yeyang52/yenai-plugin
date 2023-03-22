@@ -16,7 +16,7 @@ export default new class {
   constructor () {
     this.headers = {
       'Content-type': 'application/json;charset=UTF-8',
-      'Cookie': Bot.cookies['qun.qq.com'],
+      'Cookie': Bot?.cookies['qun.qq.com'],
       'qname-service': '976321:131072',
       'qname-space': 'Production'
     }

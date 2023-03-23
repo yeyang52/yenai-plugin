@@ -1,0 +1,129 @@
+{{extend defaultLayout}}
+
+{{block 'css'}}
+
+<link rel="stylesheet" type="text/css" href="{{_res_path}}/admin/index.css" />
+<style>
+	.container {
+		background: url("{{_res_path}}/admin/imgs/bg/{{bg}}") #000144 top !important;
+		background-size: cover !important;
+		width: 800px;
+	}
+</style>
+{{/block}}
+{{block 'main'}}
+
+<div class="info_box">
+	<div class="head-box type{{bgType}}">
+		<div class="label">#椰奶涩涩设置</div>
+		<div class="title">椰奶管理面板</div>
+	</div>
+</div>
+<div class="cfg-box">
+	<div class="cfg-group">权限相关</div>
+	<ul class="cfg-ul">
+		<li class="cfg-li">
+			<div class="cfg-line">
+				sese
+				<span class="cfg-hint"> #椰奶设置sese + 开启/关闭</span>
+				{{@sese}}
+			</div>
+			<div class="cfg-desc">开放一些功能</div>
+		</li>
+		<li class="cfg-li">
+			<div class="cfg-line">
+				sesepro
+				<span class="cfg-hint"> #椰奶设置sesepro + 开启/关闭</span>
+				{{@sesepro}}
+			</div>
+			<div class="cfg-desc">开放全部功能</div>
+		</li>
+	</ul>
+</div>
+<div class="cfg-box">
+	<div class="cfg-group">限制相关</div>
+	<ul class="cfg-ul">
+		<li class="cfg-li">
+			<div class="cfg-line">
+				R18
+				<span class="cfg-hint"> #开启/关闭 涩涩</span>
+				{{@r18}}
+			</div>
+			<div class="cfg-desc">开启不适合所以年龄段设置</div>
+		</li>
+		<li class="cfg-li">
+			<div class="cfg-line">
+				CD
+				<span class="cfg-hint"> #群CD 30</span>
+				<div class="cfg-status">{{@cd}}</div>
+			</div>
+			<div class="cfg-desc">当前单位全局CD时间</div>
+		</li>
+		<li class="cfg-li">
+			<div class="cfg-line">
+				撤回间隔
+				<span class="cfg-hint"> #撤回间隔 30</span>
+				<div class="cfg-status">{{@recall}}</div>
+			</div>
+		</li>
+	</ul>
+</div>
+<div class="cfg-box">
+	<div class="cfg-group">代理相关</div>
+	<ul class="cfg-ul">
+		<li class="cfg-li">
+			<div class="cfg-line">
+				使用代理
+				<span class="cfg-hint">#椰奶设置代理 + 开启/关闭 </span>
+				{{@switchProxy}}
+			</div>
+			<div class="cfg-desc">代理绝大部分请求</div>
+		</li>
+		<li class="cfg-li">
+			<div class="cfg-line">
+				pixiv图片直连
+				<span class="cfg-hint">#pixiv 开启/关闭 直连</span>
+				{{@pixivDirectConnection}}
+			</div>
+			<div class="cfg-desc">开启pixiv图片直接连接，不使用图片反代</div>
+		</li>
+		<li class="cfg-li">
+			<div class="cfg-line">
+				bika图片直连
+				<span class="cfg-hint">#bika 开启/关闭 直连</span>
+				{{@bikaDirectConnection}}
+			</div>
+			<div class="cfg-desc">开启哔咔图片直接连接，不使用图片反代</div>
+		</li>
+		<li class="cfg-li">
+			<div class="cfg-line">
+				pixiv图片反代
+				<span class="cfg-hint">#pixiv更换代理 i.pixiv.re</span>
+				<div class="cfg-status">{{@pixivImageProxy}}</div>
+			</div>
+			<div class="cfg-desc">pixiv图片反向代理地址</div>
+		</li>
+		<li class="cfg-li">
+			<div class="cfg-line">
+				bika图片反代
+				<span class="cfg-hint">暂无指令</span>
+				<div class="cfg-status">{{@bikaImageProxy}}</div>
+			</div>
+			<div class="cfg-desc">bika图片反向代理地址</div>
+		</li>
+	</ul>
+</div>
+<div class="cfg-box">
+	<div class="cfg-group">其他设置</div>
+	<ul class="cfg-ul">
+		<li class="cfg-li">
+			<div class="cfg-line">
+				哔咔图片质量
+				<span class="cfg-hint">#bika修改图片质量 原图</span>
+				<div class="cfg-status">{{@imageQuality}}</div>
+			</div>
+			<div class="cfg-desc">可选值：低质量，中等质量，高质量，原图</div>
+		</li>
+	</ul>
+</div>
+{{/block}}

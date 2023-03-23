@@ -1,6 +1,6 @@
 import { Bika, common, Pixiv } from '../model/index.js'
 import { Config } from '../components/index.js'
-
+import { Setting } from './setting.js'
 // 文案
 const SWITCH_ERROR = '主人没有开放这个功能哦(＊／ω＼＊)'
 
@@ -137,7 +137,7 @@ export class NewBika extends plugin {
     if (!imageQualityType[quality] && !Object.values(imageQualityType).includes(quality)) return e.reply(`错误参数，支持的参数为${Object.keys(imageQualityType).join('，')}`)
     let type = imageQualityType[quality] ?? quality
     Config.modify('bika', 'imageQuality', type)
-    e.reply(`✅ 已将bika图片质量修改为${quality}(${type})`)
+    new Setting().SeSe_Settings(e)
   }
 
   /** 图片直连 */
@@ -148,7 +148,7 @@ export class NewBika extends plugin {
     if (now && isSwitch) return e.reply('❎ bika图片直连已处于开启状态')
     if (!now && !isSwitch) return e.reply('❎ bika图片直连已处于关闭状态')
     Config.modify('bika', 'bikaDirectConnection', isSwitch)
-    e.reply(`✅ 已${isSwitch ? '开启' : '关闭'}哔咔直连`)
+    new Setting().SeSe_Settings(e)
   }
 
   async _Authentication (e) {

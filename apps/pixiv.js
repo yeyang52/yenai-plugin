@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { Config } from '../components/index.js'
 import { Pixiv, common, setu } from '../model/index.js'
-
+import { Setting } from './setting.js'
 // 文案
 const SWITCH_ERROR = '主人没有开放这个功能哦(＊／ω＼＊)'
 // 汉字数字匹配正则
@@ -83,7 +83,7 @@ export class NewPixiv extends plugin {
 
   // pid搜图
   async searchPid (e) {
-    if (!await this.Authentication(e, 'sese')) return
+    if (!await this._Authentication(e, 'sese')) return
     e.reply(Pixiv.startMsg)
     let regRet = pidReg.exec(e.msg)
     await Pixiv.illust(regRet[1], !e.isMaster && !setu.getR18(e.group_id))
@@ -96,7 +96,7 @@ export class NewPixiv extends plugin {
 
   // p站排行榜
   async pixivRanking (e) {
-    if (!await this.Authentication(e, 'sese')) return
+    if (!await this._Authentication(e, 'sese')) return
     let regRet = rankingrReg.exec(e.msg)
     if ((regRet[4] && !setu.getR18(e.group_id)) && !e.isMaster) return e.reply(SWITCH_ERROR)
 
@@ -111,8 +111,8 @@ export class NewPixiv extends plugin {
   /** 关键词搜图 */
   async searchTags (e) {
     let regRet = tagReg.exec(e.msg)
-    if (!await this.Authentication(e, 'sese')) return
-    if (regRet[1] && !await this.Authentication(e, 'sesepro')) return
+    if (!await this._Authentication(e, 'sese')) return
+    if (regRet[1] && !await this._Authentication(e, 'sesepro')) return
 
     e.reply(Pixiv.startMsg)
 
@@ -124,7 +124,7 @@ export class NewPixiv extends plugin {
 
   /** 获取热门tag */
   async PopularTags (e) {
-    if (!await this.Authentication(e, 'sese')) return
+    if (!await this._Authentication(e, 'sese')) return
     e.reply(Pixiv.startMsg)
     await Pixiv.PopularTags()
       .then(res => common.getRecallsendMsg(e, res))
@@ -133,7 +133,7 @@ export class NewPixiv extends plugin {
 
   /** 以uid搜图**/
   async searchUid (e) {
-    if (!await this.Authentication(e, 'sese')) return
+    if (!await this._Authentication(e, 'sese')) return
 
     e.reply(Pixiv.startMsg)
 
@@ -147,7 +147,7 @@ export class NewPixiv extends plugin {
 
   // 随机原创插画
   async randomImg (e) {
-    if (!await this.Authentication(e, 'sese')) return
+    if (!await this._Authentication(e, 'sese')) return
     e.reply(Pixiv.startMsg)
     let regRet = randomImgReg.exec(e.msg)
 
@@ -164,7 +164,7 @@ export class NewPixiv extends plugin {
 
   // 相关作品
   async related (e) {
-    if (!await this.Authentication(e, 'sese')) return
+    if (!await this._Authentication(e, 'sese')) return
 
     e.reply(Pixiv.startMsg)
 
@@ -177,8 +177,8 @@ export class NewPixiv extends plugin {
   // p站单图
   async pximg (e) {
     let ispro = /pro/.test(e.msg)
-    if (!await this.Authentication(e, 'sese')) return
-    if (ispro && !await this.Authentication(e, 'sesepro')) return
+    if (!await this._Authentication(e, 'sese')) return
+    if (ispro && !await this._Authentication(e, 'sesepro')) return
 
     await Pixiv.pximg(ispro)
       .then(res => ispro ? common.getRecallsendMsg(e, [res]) : common.recallsendMsg(e, res))
@@ -187,7 +187,7 @@ export class NewPixiv extends plugin {
 
   /** 搜索用户 */
   async searchUser (e) {
-    if (!await this.Authentication(e, 'sese')) return
+    if (!await this._Authentication(e, 'sese')) return
 
     e.reply(Pixiv.startMsg)
     let regRet = e.msg.match(searchUser)
@@ -197,8 +197,9 @@ export class NewPixiv extends plugin {
       .catch(err => e.reply(err.message))
   }
 
+  /** 推荐作品 */
   async illustRecommended (e) {
-    if (!await this.Authentication(e, 'sese')) return
+    if (!await this._Authentication(e, 'sese')) return
     e.reply(Pixiv.startMsg)
     let num = e.msg.match(/\d+/) || 1
     await Pixiv.illustRecommended(num).then(res => {
@@ -223,26 +224,24 @@ export class NewPixiv extends plugin {
     if (!/([\w\d]+\.){2}[\w\d]+/.test(proxy)) return e.reply('请检查代理地址是否正确')
     logger.mark(`${e.logFnc}切换为${proxy}`)
     Config.modify('pixiv', 'pixivImageProxy', proxy)
-    e.reply(`✅ 已经切换代理为「${proxy}」`)
+    new Setting().SeSe_Settings(e)
   }
 
   /** 图片直连 */
   async directConnection (e) {
-    let now = Config.pixiv.pixivDirectConnection
     let isSwitch = /开启/.test(e.msg)
-    if (now && isSwitch) return e.reply('❎ Pixiv直连已处于开启状态')
-    if (!now && !isSwitch) return e.reply('❎ Pixiv直连已处于关闭状态')
     Config.modify('pixiv', 'pixivDirectConnection', isSwitch)
-    e.reply(`✅ 已${isSwitch ? '开启' : '关闭'}Pixiv直连`)
+    new Setting().SeSe_Settings(e)
   }
 
+  /** 登录信息 */
   async loginInfo (e) {
     await Pixiv.loginInfo()
       .then(res => e.reply(res))
       .catch(err => e.reply(err.message))
   }
 
-  async Authentication (e, type) {
+  async _Authentication (e, type) {
     if (e.isMaster) return true
     if (!Config.pixiv.allowPM && !e.isGroup) {
       e.reply('主人已禁用私聊该功能')

@@ -3,7 +3,7 @@ import fs from 'fs'
 import _ from 'lodash'
 import { Config } from '../components/index.js'
 import { setu, puppeteer } from '../model/index.js'
-const configs = {
+const cfgType = {
   好友消息: 'privateMessage',
   群消息: 'groupMessage',
   群临时消息: 'grouptemporaryMessage',
@@ -30,10 +30,12 @@ const configs = {
   涩涩pro: 'sesepro',
   陌生人点赞: 'Strangers_love',
   // 给有问题的用户关闭定时器
-  状态任务: 'statusTask'
+  状态任务: 'statusTask',
+
+  代理: 'switchProxy'
 }
 
-let managereg = new RegExp(`^#椰奶设置(${Object.keys(configs).join('|')})(开启|关闭)$`)
+let managereg = new RegExp(`^#椰奶设置(${Object.keys(cfgType).join('|')})(开启|关闭)$`)
 export class Setting extends plugin {
   constructor () {
     super({
@@ -43,17 +45,22 @@ export class Setting extends plugin {
       rule: [
         {
           reg: managereg,
-          fnc: 'Config_manage',
+          fnc: 'ConfigManage',
           permission: 'master'
         },
         {
-          reg: '^#椰奶设置删除缓存时间(\\d+)秒?$',
-          fnc: 'Config_deltime',
+          reg: '^#椰奶设置(删除缓存时间|渲染精度)(\\d+)秒?$',
+          fnc: 'ConfigNumber',
           permission: 'master'
         },
         {
           reg: '^#椰奶设置$',
-          fnc: 'yenaiset',
+          fnc: 'index_Settings',
+          permission: 'master'
+        },
+        {
+          reg: '^#椰奶(sese|涩涩)设置$',
+          fnc: 'SeSe_Settings',
           permission: 'master'
         },
         {
@@ -70,55 +77,54 @@ export class Setting extends plugin {
           reg: '^#切换头衔屏蔽词匹配(模式)?$',
           fnc: 'NoTitlepattern',
           permission: 'master'
-        },
-        {
-          reg: '^#查看(sese|涩涩)设置$',
-          fnc: 'View_Settings',
-          permission: 'master'
-        },
-        {
-          reg: '^#椰奶(开启|关闭)代理$',
-          fnc: 'switchProxy',
-          permission: 'master'
-        },
-        {
-          reg: '^#(椰奶)?查看代理设置$',
-          fnc: 'seeProxy',
-          permission: 'master'
         }
       ]
     })
   }
 
   // 更改配置
-  async Config_manage (e) {
+  async ConfigManage (e) {
     // 解析消息
     let regRet = managereg.exec(e.msg)
     let index = regRet[1]
     let yes = regRet[2] == '开启'
-    // 处理
-    Config.modify('whole', configs[index], yes)
+
     // 单独处理
     if (index == '涩涩pro' && yes) Config.modify('whole', 'sese', yes)
 
     if (index == '涩涩' && !yes) Config.modify('whole', 'sesepro', yes)
+    // 特殊处理
+    if (index == '代理') {
+      Config.modify('proxy', 'switchProxy', yes)
+    } else {
+      Config.modify('whole', cfgType[index], yes)
+    }
 
-    if (index == '涩涩' || index == '涩涩pro') return this.View_Settings(e)
-    this.yenaiset(e)
+    if (index == '涩涩' || index == '涩涩pro' || index == '代理') {
+      return this.SeSe_Settings(e)
+    }
+    // 处理
+
+    this.index_Settings(e)
     return true
   }
 
   // 设置删除缓存时间
-  async Config_deltime (e) {
-    let time = e.msg.match(/\d+/)[0]
+  async ConfigNumber (e) {
+    let number = e.msg.match(/\d+/)
+    number = Number(number[0])
+    let type = ''
+    if (/渲染精度/.test(e.msg)) {
+      if (number < 50) number = 50
+      if (number > 200) number = 200
+      type = 'renderScale'
+    } else {
+      if (number < 120) number = 120
+      type = 'deltime'
+    }
+    Config.modify('whole', type, number)
 
-    if (time < 120) return e.reply('❎ 时间不能小于两分钟')
-
-    Config.modify('whole', 'deltime', Number(time[0]))
-
-    this.yenaiset(e)
-
-    return true
+    this.index_Settings(e)
   }
 
   // 修改全部设置
@@ -142,100 +148,61 @@ export class Setting extends plugin {
       'botBeenBanned'
     ]
 
-    for (let i in configs) {
-      if (!type.includes(configs[i])) continue
-      Config.modify('whole', configs[i], yes)
+    for (let i in cfgType) {
+      if (!type.includes(cfgType[i])) continue
+      Config.modify('whole', cfgType[i], yes)
     }
 
-    this.yenaiset(e)
+    this.index_Settings(e)
     return true
   }
 
   // 渲染发送图片
-  async yenaiset (e) {
-    let config = await Config.Notice
-    let data = {
-      // 好友消息
-      privateMessage: getStatus(config.privateMessage),
-      // 群消息
-      groupMessage: getStatus(config.groupMessage),
-      // 群临时消息
-      grouptemporaryMessage: getStatus(config.grouptemporaryMessage),
-      // 群撤回
-      groupRecall: getStatus(config.groupRecall),
-      // 好友撤回
-      PrivateRecall: getStatus(config.PrivateRecall),
-      // 好友申请
-      friendRequest: getStatus(config.friendRequest),
-      // 群邀请
-      groupInviteRequest: getStatus(config.groupInviteRequest),
-      // 加群申请
-      addGroupApplication: getStatus(config.addGroupApplication),
-      // 群管理变动
-      groupAdminChange: getStatus(config.groupAdminChange),
-      // 好友列表变动
-      friendNumberChange: getStatus(config.friendNumberChange),
-      // 群聊列表变动
-      groupNumberChange: getStatus(config.groupNumberChange),
-      // 群成员变动
-      groupMemberNumberChange: getStatus(config.groupMemberNumberChange),
-      // 闪照
-      flashPhoto: getStatus(config.flashPhoto),
-      // 禁言
-      botBeenBanned: getStatus(config.botBeenBanned),
-      // 全部通知
-      notificationsAll: getStatus(config.notificationsAll),
-      // 陌生人点赞
-      Strangers_love: getStatus(config.Strangers_love),
-      // 删除缓存时间
-      deltime: Number(config.deltime),
-      // 默认状态
-      state: getStatus(config.state),
-      // 状态任务定时器
-      statusTask: getStatus(config.statusTask),
-
-      bg: await rodom() // 获取底图
+  async index_Settings (e) {
+    let data = {}
+    const special = ['deltime', 'renderScale']
+    for (let key in Config.Notice) {
+      if (special.includes(key)) {
+        data[key] = Number(Config.Notice[key])
+      } else {
+        data[key] = getStatus(Config.Notice[key])
+      }
     }
     // 渲染图像
     return await puppeteer.render('admin/index', {
-      ...data
+      ...data,
+      bg: await rodom()
     }, {
       e,
-      scale: 2.0
+      scale: 1.4
     })
   }
 
   // 查看涩涩设置
-  async View_Settings (e) {
+  async SeSe_Settings (e) {
     let set = setu.getSeSeConfig(e)
-    let { sese, sesepro } = Config.Notice
-    e.reply([
-      e.group_id ? `群${e.group_id}涩涩设置：\n` : '私聊涩涩设置：\n',
-            `sese：${sese ? '✅' : '❎'}\n`,
-            `sesepro：${sesepro ? '✅' : '❎'}\n`,
-            `R17.9 + 0.1：${set.r18 ? '✅' : '❎'}\n`,
-            `CD：${set.cd}s`,
-            set.recall ? `\n撤回：${set.recall}s` : ''
-    ])
-  }
-
-  async switchProxy (e) {
-    let is = /开启/.test(e.msg)
-    Config.modify('proxy', 'switchProxy', is)
-    e.reply(`✅ 已${is ? '开启' : '关闭'}代理`)
-  }
-
-  async seeProxy (e) {
-    let { proxy, pixiv, bika } = Config
-    e.reply([
-      `代理地址：${proxy.proxyAddress}\n`,
-      `使用代理：${proxy.switchProxy}\n`,
-      `pixiv图片直连：${pixiv.pixivDirectConnection}\n`,
-      `bika图片直连：${bika.bikaDirectConnection}\n`,
-      `pixiv图片反代：${pixiv.pixivImageProxy}\n`,
-      `bika图片反代：${bika.bikaImageProxy}\n`,
-      'Tip：图片直连是指直接使用官方链接访问开启后图片反代将失效'
-    ])
+    let { proxy, pixiv, bika, Notice: { sese, sesepro } } = Config
+    let data = {
+      sese: getStatus(sese),
+      sesepro: getStatus(sesepro),
+      r18: getStatus(set.r18),
+      cd: Number(set.cd),
+      recall: set.recall ? set.recall : '无',
+      switchProxy: getStatus(proxy.switchProxy),
+      pixivDirectConnection: getStatus(pixiv.pixivDirectConnection),
+      bikaDirectConnection: getStatus(bika.bikaDirectConnection),
+      pixivImageProxy: pixiv.pixivImageProxy,
+      bikaImageProxy: bika.bikaImageProxy,
+      imageQuality: bika.imageQuality
+    }
+    // 渲染图像
+    return await puppeteer.render('admin/sese', {
+      ...data,
+      bg: await rodom()
+    }, {
+      e,
+      scale: 1.4
+    })
   }
 
   // 增删查头衔屏蔽词

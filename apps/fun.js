@@ -56,10 +56,10 @@ export class Fun extends plugin {
           reg: 'github.com/[a-zA-Z0-9-]{1,39}/[a-zA-Z0-9_-]{1,100}',
           fnc: 'GH'
         },
-        // {
-        //   reg: '^#?coser$',
-        //   fnc: 'coser'
-        // },
+        {
+          reg: '^#?coser$',
+          fnc: 'coser'
+        },
         {
           reg: `#?来点(${Object.keys(heisiType).join('|')})$`,
           fnc: 'heisiwu'
@@ -135,17 +135,22 @@ export class Fun extends plugin {
     let likeByStrangers = Config.Notice.Strangers_love
     if (!isFriend && !likeByStrangers) return e.reply('不加好友不点🙄', true)
     /** 点赞成功回复的图片 */
-    let imgs = [
-      'https://xiaobai.klizi.cn/API/ce/zan.php?qq=',
+    let successImgs = [
+      'https://api.caonm.net/api/zan/z.php?qq=',
       'http://api.caonm.net/api/bix/b.php?qq=',
-      'http://api.caonm.net/api/kan/kan_3.php?qq='
+      'http://api.caonm.net/api/kan/kan_3.php?qq=',
+      'https://api.caonm.net/api/kan/kan.php?qq='
     ]
-    /** 一个随机数 */
-    let random = Math.floor(Math.random() * (imgs.length - 0))
-    let successImg = segment.image(imgs[random] + e.user_id)
+    let faildsImgs = [
+      'https://ovooa.caonm.net/API/pa/api.php?QQ=',
+      'https://api.caonm.net/api/ti/t.php?qq=',
+      'https://api.caonm.net/api/gun/index.php?qq=',
+      'https://api.caonm.net/api/gund/g.php?qq='
+    ]
+    let successImg = segment.image(_.sample(successImgs) + e.user_id)
 
     /** 点赞失败的图片 */
-    let faildsImg = segment.image(`https://xiaobai.klizi.cn/API/ce/paa.php?qq=${e.user_id}`)
+    let faildsImg = segment.image(_.sample(faildsImgs) + e.user_id)
 
     /** 执行点赞 */
     let n = 0
@@ -205,32 +210,32 @@ export class Fun extends plugin {
   }
 
   // coser
-  // async coser (e) {
-  //   let { sese, sesepro } = Config.getGroup(e.group_id)
-  //   if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
+  async coser (e) {
+    let { sese, sesepro } = Config.getGroup(e.group_id)
+    if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
 
-  //   e.reply(START_EXECUTION)
+    e.reply(START_EXECUTION)
 
-  //   const api = 'http://ovooa.com/API/cosplay/api.php'
+    const api = 'https://ovooa.caonm.net/API/cosplay/api.php'
 
-  //   let res = await fetch(api).then((res) => res.json()).catch((err) => console.error(err))
+    let res = await fetch(api).then((res) => res.json()).catch((err) => console.error(err))
 
-  //   if (!res) return e.reply(API_ERROR)
+    if (!res) return e.reply(API_ERROR)
 
-  //   res = res.data
-  //   let item = 1
-  //   let msg = [res.Title]
-  //   for (let i of res.data) {
-  //     msg.push(segment.image(i))
-  //     if (item >= 20) {
-  //       break
-  //     } else {
-  //       item++
-  //     }
-  //   }
-  //   common.getRecallsendMsg(e, msg)
-  //   return true
-  // }
+    res = res.data
+    let item = 1
+    let msg = [res.Title]
+    for (let i of res.data) {
+      msg.push(segment.image(i))
+      if (item >= 20) {
+        break
+      } else {
+        item++
+      }
+    }
+    common.getRecallsendMsg(e, msg)
+    return true
+  }
 
   // cos/acg搜索
   async acg (e) {

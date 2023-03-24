@@ -471,7 +471,7 @@ export default new class Pixiv {
 
   /** p站单图 */
   async pximg (type) {
-    let url = 'https://ovooa.com/API/Pximg/'
+    let url = 'https://ovooa.caonm.net/API/Pximg/'
     if (type) {
       url = 'https://xiaobapi.top/api/xb/api/setu.php'
     }

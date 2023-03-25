@@ -3,6 +3,13 @@ import fs from 'fs'
 import _ from 'lodash'
 import { Data } from '../components/index.js'
 import { puppeteer } from '../model/index.js'
+const helpType = {
+  群管: 'gpAdmin',
+  涩涩: 'sese'
+}
+const helpReg = new RegExp(
+  `^#?椰奶(插件)?(${Object.keys(helpType).join('|')})?(帮助|菜单|功能)$`
+)
 export class YenaiHelp extends plugin {
   constructor () {
     super({
@@ -11,7 +18,7 @@ export class YenaiHelp extends plugin {
       priority: 2000,
       rule: [
         {
-          reg: '^#?椰奶(插件)?(群管)?(帮助|菜单|功能)$',
+          reg: helpReg,
           fnc: 'message'
         }
       ]
@@ -25,15 +32,21 @@ export class YenaiHelp extends plugin {
 
 async function help (e) {
   let custom = {}
-  let help = {}
-  let { diyCfg, sysCfg } = await Data.importCfg('help')
+  // let help = {}
+  const special = e.msg.match(helpReg)[2]
 
-  if (/群管/.test(e.msg)) {
-    diyCfg = await (await Data.importCfg('gpadmin')).diyCfg
-    sysCfg = await (await Data.importCfg('gpadmin')).sysCfg
+  let diyCfg, sysCfg
+  if (special) {
+    let gpAdminHelp = await Data.importCfg(helpType[special])
+    diyCfg = gpAdminHelp.diyCfg
+    sysCfg = gpAdminHelp.sysCfg
+  } else {
+    let indexHelp = await Data.importCfg('help')
+    diyCfg = indexHelp.diyCfg
+    sysCfg = indexHelp.sysCfg
   }
 
-  custom = help
+  // custom = help
 
   let helpConfig = _.defaults(diyCfg.helpCfg || {}, custom.helpCfg, sysCfg.helpCfg)
   let helpList = diyCfg.helpList || custom.helpList || sysCfg.helpList
@@ -57,17 +70,15 @@ async function help (e) {
 
     helpGroup.push(group)
   })
-  let bg = await rodom()
-  let colCount = 3
   return await puppeteer.render('help/index', {
     helpCfg: helpConfig,
     helpGroup,
-    bg,
-    colCount,
+    bg: await rodom(),
+    colCount: 3,
     element: 'default'
   }, {
     e,
-    scale: 2.0
+    scale: 1.6
   })
 }
 

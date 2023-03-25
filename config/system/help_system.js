@@ -204,10 +204,6 @@ export const helpList = [{
       title: '#搜索菜单',
       desc: '各大引擎搜索'
     }, {
-      icon: 15,
-      title: '#coser',
-      desc: '养眼=-='
-    }, {
       icon: 1,
       title: '#半次元话题',
       desc: '=-='
@@ -215,10 +211,6 @@ export const helpList = [{
       icon: 7,
       title: '#铃声搜索',
       desc: '铃声多多'
-    }, {
-      title: '#acg刻晴',
-      desc: 'acgcos',
-      icon: 9
     }]
 },
 {

@@ -67,6 +67,9 @@ export default hopeTheme({
   // },
 
   plugins: {
+    prismjs: {
+      light: 'ateliersulphurpool-light'
+    },
     blog: true,
     comment: {
       provider: "Waline",

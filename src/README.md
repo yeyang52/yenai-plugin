@@ -13,15 +13,38 @@ actions:
     link: /about#介绍
     type: secondary
 features:
-- title: 方便快捷
-  details: 不用登录Bot账号即可完成一系列操作
+- title: 申请处理
+  details: 不需要登录Bot账号即可处理请求
   icon: any
+  link: /features/Assistant#事件处理
+- title: 修改信息
+  details: 不需要登录Bot账号即可修改Bot头像、网名等
+  icon: info
+  link: /features/Assistant#改-bot-信息
+- title: 发送消息
+  details: 远程使用Bot账号发送消息
+  icon: news
+  link: /features/Assistant#发送消息
+- title: 事件通知
+  details: 实时掌握Bot动态
+  icon: notice
+  link: /features/Notice
 - title: 群聊管理
   details: 丰富的群管功能，让违规的人无处可逃
   icon: group
-- title: 娱乐
-  details: 各种娱乐功能，让你欲罢不能
-  icon: like
+  link: /features/GroupAdmin
+- title: Pixiv
+  details: Pixiv功能，在QQ就能逛P站
+  icon: dart
+  link: /features/Pixiv
+- title: 以图搜图
+  details: 还在为找不到图片来源烦恼吗
+  icon: pic
+  link: /features/PicSearch
+- title: 哔咔漫画
+  details: 哔咔漫画功能，搜索应有尽有
+  icon: relation
+  link: /features/Bika
 ---
 
 ### 让生活多姿多彩<img src="https://media.giphy.com/media/mGcNjsfWAjY5AEZNw6/giphy.gif" width="50">

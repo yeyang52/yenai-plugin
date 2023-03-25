@@ -51,31 +51,35 @@ export class NGA extends plugin {
       }
     }
 
-    let imgPaths = []
+    let imgList = []
+
     if (type == '收益曲线') {
       // 收益曲线
-      if (!this.incomeCurveObj[role.name]) return this.e.reply('暂时无该角色收益曲线~>_<')
+      if (!this.incomeCurveObj[role.name]) {
+        return this.e.reply('暂时无该角色收益曲线~>_<')
+      }
       let urls = this.incomeCurveObj[role.name]
+
       if (Array.isArray(urls)) {
-        urls.forEach((item, index) => imgPaths.push({
+        urls.forEach((item, index) => imgList.push({
           url: item,
           imgPath: `${this.incomeCurvePath}/${role.name}_${index + 1}.png`
         }))
       } else {
-        imgPaths.push({
+        imgList.push({
           url: urls,
           imgPath: `${this.incomeCurvePath}/${role.name}.png`
         })
       }
     } else {
       // 参考面板
-      imgPaths.push({
+      imgList.push({
         url: `http://public.yenai.ren/Referenc/${role.name}.png`,
         imgPath: `${this.referencePanelPath}/${role.name}.png`
       })
     }
 
-    for (const item of imgPaths) {
+    for (const item of imgList) {
       // 检测图片并下载图片
       if (!fs.existsSync(item.imgPath) || regRet[1]) {
         this.initFolder(type)

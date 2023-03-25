@@ -3,6 +3,7 @@ import fetch from 'node-fetch'
 import _ from 'lodash'
 import { Config } from '../components/index.js'
 import { common, uploadRecord, QQApi, funApi } from '../model/index.js'
+import { xiurenTypeId } from '../model/api/funApi.js'
 const heisiType = {
   白丝: { type: 'baisi', page: 17 },
   黑丝: { type: 'heisi', page: 43 },
@@ -83,6 +84,10 @@ export class Fun extends plugin {
         {
           reg: '^#acg.*$',
           fnc: 'acg'
+        },
+        {
+          reg: `^#来点(${Object.keys(xiurenTypeId).join('|')})$`,
+          fnc: 'xiuren'
         }
 
       ]
@@ -268,6 +273,15 @@ export class Fun extends plugin {
     e.reply(START_EXECUTION)
     let regRet = e.msg.match(/#?来点神秘图(s)?(.*)/)
     await funApi.mengdui(regRet[2], regRet[1])
+      .then(res => common.getRecallsendMsg(e, res))
+      .catch(err => e.reply(err.message))
+  }
+
+  async xiuren (e) {
+    if (!Config.getGroup(e.group_id).sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
+    // 开始执行
+    e.reply(START_EXECUTION)
+    await funApi.xiuren(e.msg.replace(/#?来点/, ''))
       .then(res => common.getRecallsendMsg(e, res))
       .catch(err => e.reply(err.message))
   }

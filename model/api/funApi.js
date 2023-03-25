@@ -3,7 +3,12 @@ import md5 from 'md5'
 import _ from 'lodash'
 import request from '../../lib/request/request.js'
 const API_ERROR = '出了点小问题，待会再试试吧'
-
+export const xiurenTypeId = {
+  秀人: {
+    id: 117,
+    maxPage: 88
+  }
+}
 export default new class {
   constructor () {
     this.langtype = [{
@@ -236,5 +241,35 @@ export default new class {
     const title = $('h1').text().trim()
     const number = `序号：${href.match(/(\d+).html/)[1]}`
     return [title, number, ..._.take(imgs, 30)]
+  }
+
+  async xiuren (type) {
+    const cheerio = await import('cheerio').catch(() => {
+      throw Error(
+        '未检测到依赖cheerio，请安装后再使用该功能，安装命令：pnpm add cheerio -w 或 pnpm install -P'
+      )
+    })
+    // 可扩展
+    let handleType = xiurenTypeId[type]
+    let homeUrl = `https://www.lisiku1.com/forum-${handleType.id}-${_.random(1, handleType.maxPage)}.html`
+    let html = await request.get(homeUrl).then(res => res.text())
+    let $ = cheerio.load(html)
+    let href = _.sample(
+      _.map(
+        $('#moderate > div > div.kind_show > div > div:nth-child(1) > a'),
+        (item) => item.attribs.href
+      )
+    )
+    let imgPageUrl = 'https://www.lisiku1.com/' + href
+    let imgPage = await request.get(imgPageUrl).then((res) =>
+      res.text()
+    )
+    let $1 = cheerio.load(imgPage)
+    let imgList = _.map(
+      $1(
+        'td > img'
+      ), item => segment.image('https://www.lisiku1.com/' + item.attribs.src)
+    )
+    return imgList
   }
 }()

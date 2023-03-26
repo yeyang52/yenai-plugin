@@ -180,7 +180,7 @@ export default new class Pixiv {
      * @param {String} page 页数
      * @return {Array}
      */
-  async searchTags (tag, page = 1) {
+  async vilipixSearchTags (tag, page = 1) {
     const api = 'https://www.vilipix.com/api/v1/picture/public'
     const params = {
       limit: 30,
@@ -220,7 +220,7 @@ export default new class Pixiv {
      * @param {String} page 页数
      * @return {*}
      */
-  async searchTagspro (tag, page = 1, isfilter = true) {
+  async searchTags (tag, page = 1, isfilter = true) {
     const params = {
       word: tag,
       page,
@@ -405,26 +405,23 @@ export default new class Pixiv {
   }
 
   /**
-     * @description: 随机图片
+     * @description: vilipix随机图片
      * @return {Array}
      */
-  async randomImg (limit) {
+  async vilipixRandomImg (limit) {
     let api = `https://www.vilipix.com/api/v1/picture/recommand?limit=${limit}&offset=${_.random(1, 700)}`
     let res = await request.get(api).then(res => res.json())
     if (!res.data || !res.data.rows) throw Error('呜呜呜，没拿到瑟瑟的图片(˃ ⌑ ˂ഃ )')
-
-    let list = []
-    for (let i of res.data.rows) {
-      let { picture_id, title, regular_url, tags, like_total } = i
-      list.push([
+    return res.data.rows.map(item => {
+      let { picture_id, title, regular_url, tags, like_total } = item
+      return [
         `标题：${title}\n`,
         `点赞: ${like_total}\n`,
         `插画ID：${picture_id}\n`,
         `Tag：${_.truncate(tags)}\n`,
-        await this._requestPixivImg(regular_url)
-      ])
-    }
-    return list
+        segment.image(regular_url)
+      ]
+    })
   }
 
   /**
@@ -432,7 +429,7 @@ export default new class Pixiv {
      * @param {String} pid
      * @return {*}
      */
-  async related (pid, isfilter = true) {
+  async relatedIllust (pid, isfilter = true) {
     let params = { id: pid }
     let res = null
     if (this.PixivClient) {

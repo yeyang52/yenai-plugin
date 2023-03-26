@@ -81,3 +81,9 @@ export const rankType = {
     r18: false
   }
 }
+export const ImageRPSS = [
+  'i.pixiv.re',
+  'proxy.pixivel.moe',
+  'px2.rainchan.win',
+  'sex.nyan.xyz'
+]

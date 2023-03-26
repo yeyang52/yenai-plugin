@@ -2,6 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import { Config } from '../components/index.js'
 import { Pixiv, common, setu } from '../model/index.js'
 import { Setting } from './setting.js'
+import { ImageRPSS } from '../tools/pixiv.js'
 // 文案
 const SWITCH_ERROR = '主人没有开放这个功能哦(＊／ω＼＊)'
 // 汉字数字匹配正则
@@ -28,7 +29,7 @@ export class NewPixiv extends plugin {
         },
         {
           reg: rankingrReg,
-          fnc: 'pixivRanking'
+          fnc: 'pixivRank'
         },
         {
           reg: tagReg,
@@ -44,15 +45,15 @@ export class NewPixiv extends plugin {
         },
         {
           reg: randomImgReg,
-          fnc: 'randomImg'
+          fnc: 'vilipixRandomImg'
         },
         {
           reg: '^#?(查看|获取)?热门(t|T)(a|A)(g|G)$',
-          fnc: 'PopularTags'
+          fnc: 'popularTags'
         },
         {
           reg: '^#?看?看?相关作品(\\d+)$',
-          fnc: 'related'
+          fnc: 'relatedIllust'
         },
         {
           reg: '^#来(\\d+)?张推荐图$',
@@ -86,7 +87,8 @@ export class NewPixiv extends plugin {
     if (!await this._Authentication(e, 'sese')) return
     e.reply(Pixiv.startMsg)
     let regRet = pidReg.exec(e.msg)
-    await Pixiv.illust(regRet[1], !e.isMaster && !setu.getR18(e.group_id))
+    let filter = !e.isMaster && !setu.getR18(e.group_id)
+    await Pixiv.illust(regRet[1], filter)
       .then(async res => {
         await e.reply(res.msg)
         res.img.length == 1 ? common.recallsendMsg(e, res.img) : common.getRecallsendMsg(e, res.img, false)
@@ -95,10 +97,12 @@ export class NewPixiv extends plugin {
   }
 
   // p站排行榜
-  async pixivRanking (e) {
-    if (!await this._Authentication(e, 'sese')) return
+  async pixivRank (e) {
     let regRet = rankingrReg.exec(e.msg)
-    if ((regRet[4] && !setu.getR18(e.group_id)) && !e.isMaster) return e.reply(SWITCH_ERROR)
+    if (!await this._Authentication(e, 'sese')) return
+    if ((regRet[4] && !setu.getR18(e.group_id)) && !e.isMaster) {
+      return e.reply(SWITCH_ERROR)
+    }
 
     e.reply(Pixiv.startMsg)
 
@@ -117,13 +121,13 @@ export class NewPixiv extends plugin {
     e.reply(Pixiv.startMsg)
 
     let page = common.translateChinaNum(regRet[4])
-    await Pixiv[`searchTags${regRet[1] ? 'pro' : ''}`](regRet[2], page, !setu.getR18(e.group_id))
+    await Pixiv[`${regRet[1] ? 's' : 'vilipixS'}earchTags`](regRet[2], page, !setu.getR18(e.group_id))
       .then(res => common.getRecallsendMsg(e, res))
       .catch(err => e.reply(err.message))
   }
 
   /** 获取热门tag */
-  async PopularTags (e) {
+  async popularTags (e) {
     if (!await this._Authentication(e, 'sese')) return
     e.reply(Pixiv.startMsg)
     await Pixiv.PopularTags()
@@ -146,7 +150,7 @@ export class NewPixiv extends plugin {
   }
 
   // 随机原创插画
-  async randomImg (e) {
+  async vilipixRandomImg (e) {
     if (!await this._Authentication(e, 'sese')) return
     e.reply(Pixiv.startMsg)
     let regRet = randomImgReg.exec(e.msg)
@@ -157,19 +161,19 @@ export class NewPixiv extends plugin {
       num = 1
     }
     num = common.translateChinaNum(num)
-    await Pixiv.randomImg(num)
+    await Pixiv.vilipixRandomImg(num)
       .then(res => common.getRecallsendMsg(e, res))
       .catch(err => e.reply(err.message))
   }
 
   // 相关作品
-  async related (e) {
+  async relatedIllust (e) {
     if (!await this._Authentication(e, 'sese')) return
 
     e.reply(Pixiv.startMsg)
 
     let regRet = e.msg.match(/\d+/)
-    await Pixiv.related(regRet[0], !setu.getR18(e.group_id))
+    await Pixiv.relatedIllust(regRet[0], !setu.getR18(e.group_id))
       .then(res => common.getRecallsendMsg(e, res))
       .catch(err => e.reply(err.message))
   }
@@ -212,16 +216,14 @@ export class NewPixiv extends plugin {
 
   // 更换代理
   async setProxy (e) {
-    let proxydef = [
-      'i.pixiv.re',
-      'proxy.pixivel.moe',
-      'px2.rainchan.win',
-      'sex.nyan.xyz'
-    ]
     if (/查看/.test(e.msg)) return e.reply(await redis.get('yenai:proxy'))
     let proxy = e.msg.replace(/#|(p站|pixiv)更换代理/g, '').trim()
-    if (/^[1234]$/.test(proxy)) proxy = proxydef[proxy - 1]
-    if (!/([\w\d]+\.){2}[\w\d]+/.test(proxy)) return e.reply('请检查代理地址是否正确')
+    if (new RegExp(`^[1-${ImageRPSS.length}]$`).test(proxy)) {
+      proxy = ImageRPSS[proxy - 1]
+    }
+    if (!/([\w\d]+\.){2}[\w\d]+/.test(proxy)) {
+      return e.reply('请检查代理地址是否正确')
+    }
     logger.mark(`${e.logFnc}切换为${proxy}`)
     Config.modify('pixiv', 'pixivImageProxy', proxy)
     new Setting().SeSe_Settings(e)

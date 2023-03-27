@@ -19,13 +19,13 @@ export const incomeCurve = {
   班尼特: 'https://img.nga.178.com/attachments/mon_202303/05/i2Qjr7-ggrvXsZ7sT3cS1di-q9.png',
   重云: 'https://img.nga.178.com/attachments/mon_202208/19/i2Q2q-al2oXxZ9bT3cS1di-q9.png',
   优菈: 'https://img.nga.178.com/attachments/mon_202208/19/i2Q2q-ec2aXxZ98T3cS1di-q9.png',
-  神里绫华: 'https://img.nga.178.com/attachments/mon_202208/19/i2Q2q-jurwXxZ97T3cS1di-q9.png',
-  申鹤: 'https://img.nga.178.com/attachments/mon_202208/19/i2Q2q-2mawXxZ9bT3cS1di-q9.png',
+  神里绫华: 'https://img.nga.178.com/attachments/mon_202303/27/i2Q8sgk-k1u4XxZ99T3cS1di-q9.png',
+  申鹤: 'https://img.nga.178.com/attachments/mon_202303/27/i2Q8sgk-j2z6XtZ81T3cS1di-q9.png',
   七七: 'https://img.nga.178.com/attachments/mon_202208/19/i2Q2q-gbmkXxZ99T3cS1di-q9.png',
   罗莎莉亚: 'https://img.nga.178.com/attachments/mon_202208/19/i2Q2q-2tppXyZ9cT3cS1di-q9.png',
   凯亚: 'https://img.nga.178.com/attachments/mon_202208/19/i2Q2q-cpsdXxZ96T3cS1di-q9.png',
   甘雨: 'https://img.nga.178.com/attachments/mon_202208/19/i2Q2q-jh27XxZ96T3cS1di-q9.png',
-  迪奥娜: 'https://img.nga.178.com/attachments/mon_202208/19/i2Q2q-4pvvXxZ97T3cS1di-q9.png',
+  迪奥娜: 'https://img.nga.178.com/attachments/mon_202303/27/i2Q8sgk-9xe5XtZ80T3cS1di-q9.png',
   埃洛伊: 'https://img.nga.178.com/attachments/mon_202208/19/i2Q2q-a90bXwZ8yT3cS1di-q9.png',
   钟离: 'https://img.nga.178.com/attachments/mon_202208/19/i2Q2q-3ifiXwZ8zT3cS1di-q9.png',
   云堇: 'https://img.nga.178.com/attachments/mon_202208/19/i2Q2q-9yzvXxZ97T3cS1di-q9.png',
@@ -58,7 +58,7 @@ export const incomeCurve = {
   多莉: 'https://img.nga.178.com/attachments/mon_202209/09/i2Q181-45azXyZ9bT3cS1di-q9.png',
   柯莱: 'https://img.nga.178.com/attachments/mon_202303/05/i2Qjr7-a7huXsZ7wT3cS1di-q9.png',
   温迪: 'https://img.nga.178.com/attachments/mon_202208/24/i2Q8oyf-2s69XwZ8uT3cS1di-q9.png',
-  砂糖: 'https://img.nga.178.com/attachments/mon_202208/24/i2Q8oyf-95mbXwZ8vT3cS1di-q9.png',
+  砂糖: 'https://img.nga.178.com/attachments/mon_202303/27/i2Q8sgk-6rx4XtZ81T3cS1di-q9.png',
   风主: 'https://img.nga.178.com/attachments/mon_202208/24/i2Q8oyf-bplhXvZ8lT3cS1di-q9.png',
   坎蒂丝: 'https://img.nga.178.com/attachments/mon_202302/07/i2Q180-jknyXxZ98T3cS1di-q9.png',
   赛诺: 'https://img.nga.178.com/attachments/mon_202302/07/i2Q180-i3a5X10Z9vT3cS1di-q9.png',
@@ -69,5 +69,6 @@ export const incomeCurve = {
   流浪者: 'https://img.nga.178.com/attachments/mon_202302/07/i2Q180-71e3XtZ87T3cS1di-q9.png',
   艾尔海森: 'https://img.nga.178.com/attachments/mon_202302/07/i2Q180-4ntzXuZ8fT3cS1di-q9.png',
   瑶瑶: 'https://img.nga.178.com/attachments/mon_202302/07/i2Q180-a6gvXtZ82T3cS1di-q9.png',
-  迪希雅: 'https://img.nga.178.com/attachments/mon_202303/05/i2Qjr7-iq98XtZ85T3cS1di-q9.png'
+  迪希雅: 'https://img.nga.178.com/attachments/mon_202303/05/i2Qjr7-iq98XtZ85T3cS1di-q9.png',
+  米卡: 'https://img.nga.178.com/attachments/mon_202303/27/i2Q8sgk-5qquXtZ7zT3cS1di-q9.png'
 }

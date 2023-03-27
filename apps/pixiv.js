@@ -14,7 +14,7 @@ const rankingrReg = new RegExp(`^#?看看((\\d{4}-\\d{1,2}-\\d{1,2})的)?(${Obje
 const tagReg = new RegExp(`^#?tag(pro)?搜图(.*?)(第(${numReg})页)?$`, 'i')
 const uidReg = new RegExp(`^#?uid搜图(.*?)(第(${numReg})页)?$`, 'i')
 const searchUser = new RegExp(`^#?user搜索(.*?)(第(${numReg})页)?$`, 'i')
-const randomImgReg = new RegExp(`^#?来(${numReg})?张(好(康|看)(的|哒)|hkd|涩图)$|#有内鬼$`)
+const randomImgReg = new RegExp(`^#?来(${numReg})?张(好(康|看)(的|哒)|hkd|涩图)$|^#有内鬼$`)
 
 export class NewPixiv extends plugin {
   constructor () {
@@ -91,7 +91,7 @@ export class NewPixiv extends plugin {
     await Pixiv.illust(regRet[1], filter)
       .then(async res => {
         await e.reply(res.msg)
-        res.img.length == 1 ? common.recallsendMsg(e, res.img) : common.getRecallsendMsg(e, res.img, false)
+        res.img.length == 1 ? common.recallsendMsg(e, res.img) : common.recallSendForwardMsg(e, res.img, false)
       })
       .catch(err => e.reply(err.message))
   }
@@ -108,7 +108,7 @@ export class NewPixiv extends plugin {
 
     let page = common.translateChinaNum(regRet[6])
     await Pixiv.Rank(page, regRet[2], regRet[3], regRet[4])
-      .then(res => common.getRecallsendMsg(e, res))
+      .then(res => common.recallSendForwardMsg(e, res))
       .catch(err => e.reply(err.message))
   }
 
@@ -122,7 +122,7 @@ export class NewPixiv extends plugin {
 
     let page = common.translateChinaNum(regRet[4])
     await Pixiv[`${regRet[1] ? 's' : 'vilipixS'}earchTags`](regRet[2], page, !setu.getR18(e.group_id))
-      .then(res => common.getRecallsendMsg(e, res))
+      .then(res => common.recallSendForwardMsg(e, res))
       .catch(err => e.reply(err.message))
   }
 
@@ -131,7 +131,7 @@ export class NewPixiv extends plugin {
     if (!await this._Authentication(e, 'sese')) return
     e.reply(Pixiv.startMsg)
     await Pixiv.PopularTags()
-      .then(res => common.getRecallsendMsg(e, res))
+      .then(res => common.recallSendForwardMsg(e, res))
       .catch(err => e.reply(err.message))
   }
 
@@ -145,7 +145,7 @@ export class NewPixiv extends plugin {
     let page = common.translateChinaNum(regRet[3])
 
     await Pixiv.userIllust(regRet[1], page, !setu.getR18(e.group_id))
-      .then(res => common.getRecallsendMsg(e, res))
+      .then(res => common.recallSendForwardMsg(e, res))
       .catch(err => e.reply(err.message))
   }
 
@@ -162,7 +162,7 @@ export class NewPixiv extends plugin {
     }
     num = common.translateChinaNum(num)
     await Pixiv.vilipixRandomImg(num)
-      .then(res => common.getRecallsendMsg(e, res))
+      .then(res => common.recallSendForwardMsg(e, res))
       .catch(err => e.reply(err.message))
   }
 
@@ -174,7 +174,7 @@ export class NewPixiv extends plugin {
 
     let regRet = e.msg.match(/\d+/)
     await Pixiv.relatedIllust(regRet[0], !setu.getR18(e.group_id))
-      .then(res => common.getRecallsendMsg(e, res))
+      .then(res => common.recallSendForwardMsg(e, res))
       .catch(err => e.reply(err.message))
   }
 
@@ -185,7 +185,7 @@ export class NewPixiv extends plugin {
     if (ispro && !await this._Authentication(e, 'sesepro')) return
 
     await Pixiv.pximg(ispro)
-      .then(res => ispro ? common.getRecallsendMsg(e, [res]) : common.recallsendMsg(e, res))
+      .then(res => ispro ? common.recallSendForwardMsg(e, [res]) : common.recallsendMsg(e, res, false, { anony: true }))
       .catch(err => e.reply(err.message))
   }
 
@@ -197,7 +197,7 @@ export class NewPixiv extends plugin {
     let regRet = e.msg.match(searchUser)
     let page = common.translateChinaNum(regRet[3])
     await Pixiv.searchUser(regRet[1], page, !setu.getR18(e.group_id))
-      .then(res => common.getRecallsendMsg(e, res))
+      .then(res => common.recallSendForwardMsg(e, res))
       .catch(err => e.reply(err.message))
   }
 
@@ -210,7 +210,7 @@ export class NewPixiv extends plugin {
       console.log(res)
       res.length == 1
         ? common.recallsendMsg(e, res[0], true)
-        : common.getRecallsendMsg(e, res)
+        : common.recallSendForwardMsg(e, res)
     }).catch(err => e.reply(err.message))
   }
 

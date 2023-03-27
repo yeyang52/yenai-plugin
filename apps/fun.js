@@ -238,7 +238,7 @@ export class Fun extends plugin {
         item++
       }
     }
-    common.getRecallsendMsg(e, msg)
+    common.recallSendForwardMsg(e, msg)
     return true
   }
 
@@ -250,7 +250,7 @@ export class Fun extends plugin {
 
     let keywords = e.msg.replace(/#|acg/g, '').trim()
     await funApi.pandadiu(keywords)
-      .then(res => common.getRecallsendMsg(e, res))
+      .then(res => common.recallSendForwardMsg(e, res))
       .catch(err => e.reply(err.message))
   }
 
@@ -262,7 +262,7 @@ export class Fun extends plugin {
     // 获取类型
     const { type, page } = heisiType[e.msg.match(/#?来点(.*)/)[1]]
     await funApi.heisiwu(type, page)
-      .then(res => common.getRecallsendMsg(e, _.take(res, 20)))
+      .then(res => common.recallSendForwardMsg(e, _.take(res, 20)))
       .catch(err => e.reply(err.message))
   }
 
@@ -273,7 +273,7 @@ export class Fun extends plugin {
     e.reply(START_EXECUTION)
     let regRet = e.msg.match(/#?来点神秘图(s)?(.*)/)
     await funApi.mengdui(regRet[2], regRet[1])
-      .then(res => common.getRecallsendMsg(e, res))
+      .then(res => common.recallSendForwardMsg(e, res))
       .catch(err => e.reply(err.message))
   }
 
@@ -282,7 +282,7 @@ export class Fun extends plugin {
     // 开始执行
     e.reply(START_EXECUTION)
     await funApi.xiuren(e.msg.replace(/#?来点/, ''))
-      .then(res => common.getRecallsendMsg(e, res))
+      .then(res => common.recallSendForwardMsg(e, res))
       .catch(err => e.reply(err.message))
   }
 

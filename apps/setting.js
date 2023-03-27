@@ -22,12 +22,14 @@ const cfgType = {
   // 其他通知
   闪照: 'flashPhoto',
   禁言: 'botBeenBanned',
+  输入: 'input',
 
   全部通知: 'notificationsAll',
   删除缓存: 'deltime',
   涩涩: 'sese',
   状态: 'state',
   涩涩pro: 'sesepro',
+  匿名: 'anonymous',
   陌生人点赞: 'Strangers_love',
   // 给有问题的用户关闭定时器
   状态任务: 'statusTask',
@@ -99,8 +101,8 @@ export class Setting extends plugin {
     } else {
       Config.modify('whole', cfgType[index], yes)
     }
-
-    if (index == '涩涩' || index == '涩涩pro' || index == '代理') {
+    let specialSese = ['涩涩', '涩涩pro', '代理', '匿名']
+    if (specialSese.includes(index)) {
       return this.SeSe_Settings(e)
     }
     // 处理
@@ -145,7 +147,8 @@ export class Setting extends plugin {
       'groupNumberChange',
       'groupMemberNumberChange',
       'flashPhoto',
-      'botBeenBanned'
+      'botBeenBanned',
+      'input'
     ]
 
     for (let i in cfgType) {
@@ -181,10 +184,11 @@ export class Setting extends plugin {
   // 查看涩涩设置
   async SeSe_Settings (e) {
     let set = setu.getSeSeConfig(e)
-    let { proxy, pixiv, bika, Notice: { sese, sesepro } } = Config
+    let { proxy, pixiv, bika, Notice: { sese, sesepro, anonymous } } = Config
     let data = {
       sese: getStatus(sese),
       sesepro: getStatus(sesepro),
+      anonymous: getStatus(anonymous),
       r18: getStatus(set.r18),
       cd: Number(set.cd),
       recall: set.recall ? set.recall : '无',

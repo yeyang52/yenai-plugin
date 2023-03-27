@@ -11,6 +11,10 @@ import setu from './setu.js'
 import Ascii2D from './PicSearch/ascii2d.js'
 import SauceNAO from './PicSearch/saucenao.js'
 import WhatAnime from './PicSearch/whatanime.js'
+import listener from './listener/loader.js'
+// 加载监听事件
+listener.load()
+// 导出模块
 export const PicSearch = {
   Ascii2D,
   SauceNAO,

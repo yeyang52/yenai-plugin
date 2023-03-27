@@ -474,7 +474,7 @@ export default new class Pixiv {
     }
     let res = await request.get(url).then(res => res.json())
     let { pid, uid, title, author, tags, urls, r18 } = res.data[0] || res.data
-    urls = urls.original.replace(/i.der.ink|i.pixiv.re/, this.proxy)
+    urls = urls.original.replace(/i.piccache.top|i.pixiv.re/, this.proxy)
     let msg = [
       `Pid: ${pid}\n`,
       `Uid: ${uid}\n`,

@@ -12,9 +12,11 @@ privateMessage: false #好友消息
 PrivateRecall: false #好友撤回
 friendRequest: false #好友申请
 friendNumberChange: false #好友列表变动
-#其他设置
+#其他通知
 flashPhoto: false #闪照
 botBeenBanned: false #禁言
+input: false #对方正在输入
+#其他设置
 notificationsAll: false #全部通知
 Strangers_love: false #陌生人点赞
 sese: false #涩涩
@@ -23,3 +25,4 @@ deltime: 600 #删除缓存
 sesepro: false #涩涩增强
 statusTask: true #状态网速定时器
 renderScale: 100 #渲染精度
+anonymous: false #匿名

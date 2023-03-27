@@ -78,7 +78,7 @@ export default new class setu {
      */
   async sendMsgOrSetCd (e, msg) {
     // 发送消息
-    let res = await common.getRecallsendMsg(e, msg, false)
+    let res = await common.recallSendForwardMsg(e, msg, false)
     if (!res) return false
     // 设置CD
     if (!e.isMaster) this.setCdTime(e.user_id, e.group_id)

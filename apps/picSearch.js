@@ -39,7 +39,7 @@ export class NewPicSearch extends plugin {
       .then(async res => {
         res.length == 1
           ? common.recallsendMsg(e, res[0], true)
-          : common.getRecallsendMsg(e, res, { isxmlMsg: false })
+          : common.recallSendForwardMsg(e, res, { isxmlMsg: false })
       })
       .catch(async err => {
         await e.reply(err.message)
@@ -52,7 +52,7 @@ export class NewPicSearch extends plugin {
     if (!await this.Authentication(e)) return
     if (!await this.handelImg(e, 'Ascii2D')) return
     await PicSearch.Ascii2D(e.img[0])
-      .then(res => common.getRecallsendMsg(e, [...res.color, ...res.bovw], { isxmlMsg: false }))
+      .then(res => common.recallSendForwardMsg(e, [...res.color, ...res.bovw], { isxmlMsg: false }))
       .catch(err => e.reply(err.message))
   }
 

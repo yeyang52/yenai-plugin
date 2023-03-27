@@ -128,14 +128,14 @@ export class SeSe extends plugin {
     num = common.translateChinaNum(num[0])
     let type = /撤回间隔/.test(e.msg)
     setu.setGroupRecallTimeAndCd(e.group_id, num, type)
-    new Setting().View_Settings(e)
+    new Setting().SeSe_Settings(e)
   }
 
   // 开启r18
   async setsese (e) {
     let isopen = !!/开启/.test(e.msg)
     setu.setR18(e.group_id, isopen)
-    new Setting().View_Settings(e)
+    new Setting().SeSe_Settings(e)
   }
 
   // 艾特设置cd

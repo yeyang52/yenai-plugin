@@ -280,7 +280,7 @@ export default new class {
         '未检测到依赖cheerio，请安装后再使用该功能，安装命令：pnpm add cheerio -w 或 pnpm install -P'
       )
     })
-    let url = 'https://www.gstonegames.com/game/?&keyword=' + encodeURIComponent(keyword)
+    let url = 'https://www.gstonegames.com/game/?hot_sort=1&keyword=' + encodeURIComponent(keyword)
     const home = await request.get(url).then((res) => res.text())
     const $ = cheerio.load(home)
 
@@ -329,8 +329,7 @@ export default new class {
       return [
         '集石该游戏页面无BGG信息：',
         `搜索地址：${url}`,
-        '',
-        '以下是该游戏集石页面的截图：',
+        '\n以下是该游戏集石页面的截图：',
         screenshot
       ]
     }

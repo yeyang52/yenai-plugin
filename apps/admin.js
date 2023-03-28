@@ -167,7 +167,8 @@ export class Admin extends plugin {
   // 查看涩涩设置
   async SeSe_Settings (e) {
     let set = setu.getSeSeConfig(e)
-    let { proxy, pixiv, bika, Notice: { sese, sesepro, anonymous } } = Config
+    let { proxy, pixiv, bika } = Config
+    let { sese, sesepro, anonymous } = Config.getGroup(e.group_id)
     let data = {
       sese: getStatus(sese),
       sesepro: getStatus(sesepro),

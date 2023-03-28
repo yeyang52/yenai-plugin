@@ -211,6 +211,14 @@ export const helpList = [{
       icon: 7,
       title: '#铃声搜索',
       desc: '铃声多多'
+    }, {
+      icon: 1,
+      title: '#bgg搜索<关键词>',
+      desc: '桌游搜索'
+    }, {
+      icon: 19,
+      title: '#bgg排行',
+      desc: '桌游排行'
     }]
 },
 {

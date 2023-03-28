@@ -1,6 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import _ from 'lodash'
-import { puppeteer } from '../model/index.js'
+import { puppeteer, funApi } from '../model/index.js'
 
 const SEARCH_MAP = {
 
@@ -75,6 +75,14 @@ export class NewSearch extends plugin {
         {
           reg: '^#?搜索菜单$',
           fnc: 'help'
+        },
+        {
+          reg: '^#bgg搜索.*$',
+          fnc: 'bggSearch'
+        },
+        {
+          reg: '^#bgg排行$',
+          fnc: 'bggRank'
         }
       ]
 
@@ -92,6 +100,18 @@ export class NewSearch extends plugin {
     let regRet = searchReg.exec(e.msg)
     if (/(lp|ip)|(i|p|l)(地址|查询)/ig.test(regRet[2])) return e.reply('(;｀O´)o警告！！触发屏蔽词！！！', true)
     let url = SEARCH_MAP[regRet[1]] + encodeURIComponent(regRet[2])
+    e.reply([await puppeteer.Webpage({ url }), url])
+  }
+
+  async bggSearch (e) {
+    let keyword = e.msg.replace(/#?bgg搜索/, '')
+    funApi.bgg(keyword)
+      .then(res => e.reply(res))
+      .catch(err => e.reply(err.message))
+  }
+
+  async bggRank (e) {
+    let url = 'https://boardgamegeek.com/browse/boardgame'
     e.reply([await puppeteer.Webpage({ url }), url])
   }
 }

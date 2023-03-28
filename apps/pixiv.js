@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { Config } from '../components/index.js'
 import { Pixiv, common, setu } from '../model/index.js'
-import { Setting } from './setting.js'
+import { Admin } from './admin.js'
 import { ImageRPSS } from '../tools/pixiv.js'
 // 文案
 const SWITCH_ERROR = '主人没有开放这个功能哦(＊／ω＼＊)'
@@ -226,14 +226,14 @@ export class NewPixiv extends plugin {
     }
     logger.mark(`${e.logFnc}切换为${proxy}`)
     Config.modify('pixiv', 'pixivImageProxy', proxy)
-    new Setting().SeSe_Settings(e)
+    new Admin().SeSe_Settings(e)
   }
 
   /** 图片直连 */
   async directConnection (e) {
     let isSwitch = /开启/.test(e.msg)
     Config.modify('pixiv', 'pixivDirectConnection', isSwitch)
-    new Setting().SeSe_Settings(e)
+    new Admin().SeSe_Settings(e)
   }
 
   /** 登录信息 */

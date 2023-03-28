@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { Config } from '../components/index.js'
 import { setu, common } from '../model/index.js'
-import { Setting } from './setting.js'
+import { Admin } from './admin.js'
 const SWITCH_ERROR = '主人没有开放这个功能哦(＊／ω＼＊)'
 
 let NumReg = '[一壹二两三四五六七八九十百千万亿\\d]+'
@@ -128,14 +128,14 @@ export class SeSe extends plugin {
     num = common.translateChinaNum(num[0])
     let type = /撤回间隔/.test(e.msg)
     setu.setGroupRecallTimeAndCd(e.group_id, num, type)
-    new Setting().SeSe_Settings(e)
+    new Admin().SeSe_Settings(e)
   }
 
   // 开启r18
   async setsese (e) {
     let isopen = !!/开启/.test(e.msg)
     setu.setR18(e.group_id, isopen)
-    new Setting().SeSe_Settings(e)
+    new Admin().SeSe_Settings(e)
   }
 
   // 艾特设置cd

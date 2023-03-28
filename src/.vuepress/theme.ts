@@ -74,7 +74,8 @@ export default hopeTheme({
     comment: {
       provider: "Waline",
       serverURL: "https://waline.yenai.ren",
-      reaction: true
+      reaction: true,
+      login: 'force'
     },
 
     // all features are enabled for demo, only preserve features you need here

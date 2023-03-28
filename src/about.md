@@ -14,9 +14,21 @@ Yenai-plugin是[Yunzai-Bot](https://gitee.com/Le-niao/Yunzai-Bot)的一个扩展
 
 ## 安装 👾
 克隆项目，在`Yunzai-Bot根目录`执行
+::: code-tabs#language
+
+@tab github
+
 ```sh
 git clone --depth=1 https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 ```
+
+@tab gitee
+
+```sh
+git clone --depth=1 https://gitee.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
+```
+:::
+
 安装依赖(可选)
 ::: code-tabs#language
 

@@ -10,7 +10,7 @@ actions:
     link: /about
     type: primary
   - text: 项目简介 🪀
-    link: /about#介绍
+    link: /about#介绍-👀
     type: secondary
 features:
 - title: 申请处理

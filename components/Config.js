@@ -171,11 +171,12 @@ class Config {
    * @param {String} key 设置项
    * @param {unknown} value
    */
-  aloneModify (groupId, key, value) {
+  aloneModify (groupId, key, value, isDel) {
     let path = `${Plugin_Path}/config/config/group.yaml`
     let yaml = new YamlReader(path)
     let groupCfg = yaml.jsonData[groupId] ?? {}
-    groupCfg[key] = value
+    isDel ? delete groupCfg[key] : groupCfg[key] = value
+    console.log(isDel, groupCfg[key])
     yaml.set(groupId, groupCfg)
   }
 

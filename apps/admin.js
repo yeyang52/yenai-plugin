@@ -3,6 +3,8 @@ import fs from 'fs'
 import _ from 'lodash'
 import { Config } from '../components/index.js'
 import { setu, puppeteer } from '../model/index.js'
+
+/** 设置项 */
 const OtherCfgType = {
   全部通知: 'notificationsAll',
   状态: 'state',
@@ -40,6 +42,7 @@ const NoticeCfgType = {
   禁言: 'botBeenBanned',
   输入: 'input'
 }
+/** 分开开关和数字 */
 const SwitchCfgType = { ...NoticeCfgType, ...OtherCfgType, ...SeSeCfgType }
 const NumberCfgType = {
   渲染精度: {
@@ -52,9 +55,12 @@ const NumberCfgType = {
   }
 }
 
-const SwitchCfgReg = new RegExp(`^#椰奶设置(${Object.keys(SwitchCfgType).join('|')})(单独)?(开启|关闭)$`)
+/** 支持单独设置的项 */
+const aloneKeys = ['群消息', '群临时消息', '群撤回', '群邀请', '群管理变动', '群聊列表变动', '群成员变动', '加群通知', '禁言', '闪照', '匿名', '涩涩', '涩涩pro']
 
+const SwitchCfgReg = new RegExp(`^#椰奶设置(${Object.keys(SwitchCfgType).join('|')})(单独)?(开启|关闭|取消)$`)
 const NumberCfgReg = new RegExp(`^#椰奶设置(${Object.keys(NumberCfgType).join('|')})(\\d+)秒?$`)
+
 export class Admin extends plugin {
   constructor () {
     super({
@@ -100,27 +106,30 @@ export class Admin extends plugin {
   async ConfigSwitch (e) {
     // 解析消息
     let regRet = SwitchCfgReg.exec(e.msg)
+    let key = regRet[1]
+    let is = regRet[3] == '开启'
     if (!e.group_id && regRet[2]) {
       return e.reply('❎ 请在要单独设置的群聊发送单独设置命令')
     }
-    let key = regRet[1]
-    let is = regRet[3] == '开启'
-
-    // 单独处理
-    if (key == '涩涩pro' && is) Config.modify('whole', 'sese', is)
-
-    if (key == '涩涩' && !is) Config.modify('whole', 'sesepro', is)
+    if (!aloneKeys.includes(key) && regRet[2]) {
+      return e.reply('❎ 该设置项不支持单独设置')
+    }
 
     // 单独设置
     if (regRet[2]) {
-      Config.aloneModify(e.group_id, SwitchCfgType[key], is)
+      Config.aloneModify(e.group_id, SwitchCfgType[key], is, regRet[3] == '取消')
     } else {
       let _key = SwitchCfgType[key]
       Config.modify(_key?.name ?? 'whole', _key?.key ?? _key, is)
     }
+
+    // 单独处理
+    if (key == '涩涩pro' && is) Config.modify('whole', 'sese', is)
+    if (key == '涩涩' && !is) Config.modify('whole', 'sesepro', is)
     if (Object.keys(SeSeCfgType).includes(key)) {
       return this.SeSe_Settings(e)
     }
+
     // 渲染图片
     this.index_Settings(e)
   }
@@ -181,6 +190,7 @@ export class Admin extends plugin {
     let { proxy, pixiv, bika } = Config
     let { sese, sesepro, anonymous } = Config.getGroup(e.group_id)
     let { sese: _sese, sesepro: _sesepro, anonymous: _anonymous } = Config.getConfig('group')[e.group_id] ?? {}
+    console.log(_sese, _sesepro)
     let data = {
       sese: getStatus(sese, _sese),
       sesepro: getStatus(sesepro, _sesepro),

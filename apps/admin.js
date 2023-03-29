@@ -14,7 +14,10 @@ const SeSeCfgType = {
   涩涩: 'sese',
   涩涩pro: 'sesepro',
   匿名: 'anonymous',
-  代理: 'switchProxy'
+  代理: {
+    name: 'proxy',
+    key: 'switchProxy'
+  }
 }
 const NoticeCfgType = {
   好友消息: 'privateMessage',
@@ -97,26 +100,25 @@ export class Admin extends plugin {
   async ConfigSwitch (e) {
     // 解析消息
     let regRet = SwitchCfgReg.exec(e.msg)
-    let index = regRet[1]
-    let yes = regRet[3] == '开启'
+    if (!e.group_id && regRet[2]) {
+      return e.reply('❎ 请在要单独设置的群聊发送单独设置命令')
+    }
+    let key = regRet[1]
+    let is = regRet[3] == '开启'
 
     // 单独处理
-    if (index == '涩涩pro' && yes) Config.modify('whole', 'sese', yes)
+    if (key == '涩涩pro' && is) Config.modify('whole', 'sese', is)
 
-    if (index == '涩涩' && !yes) Config.modify('whole', 'sesepro', yes)
+    if (key == '涩涩' && !is) Config.modify('whole', 'sesepro', is)
 
+    // 单独设置
     if (regRet[2]) {
-      if (!e.group_id) return e.reply('❎ 请在要单独设置的群聊发送单独设置命令')
-      Config.aloneModify(e.group_id, SwitchCfgType[index], yes)
-      return e.reply('✅')
-    }
-    // 特殊处理
-    if (index == '代理') {
-      Config.modify('proxy', 'switchProxy', yes)
+      Config.aloneModify(e.group_id, SwitchCfgType[key], is)
     } else {
-      Config.modify('whole', SwitchCfgType[index], yes)
+      let _key = SwitchCfgType[key]
+      Config.modify(_key?.name ?? 'whole', _key?.key ?? _key, is)
     }
-    if (Object.keys(SeSeCfgType).includes(index)) {
+    if (Object.keys(SeSeCfgType).includes(key)) {
       return this.SeSe_Settings(e)
     }
     // 渲染图片
@@ -153,11 +155,14 @@ export class Admin extends plugin {
   async index_Settings (e) {
     let data = {}
     const special = ['deltime', 'renderScale']
-    for (let key in Config.Notice) {
+    let _cfg = Config.getGroup(e.group_id)
+    for (let key in _cfg) {
       if (special.includes(key)) {
         data[key] = Number(Config.Notice[key])
       } else {
-        data[key] = getStatus(Config.Notice[key])
+        let groupCfg = Config.getConfig('group')[e.group_id]
+        let isAlone = groupCfg ? groupCfg[key] : undefined
+        data[key] = getStatus(_cfg[key], isAlone)
       }
     }
     // 渲染图像
@@ -175,10 +180,11 @@ export class Admin extends plugin {
     let set = setu.getSeSeConfig(e)
     let { proxy, pixiv, bika } = Config
     let { sese, sesepro, anonymous } = Config.getGroup(e.group_id)
+    let { sese: _sese, sesepro: _sesepro, anonymous: _anonymous } = Config.getConfig('group')[e.group_id] ?? {}
     let data = {
-      sese: getStatus(sese),
-      sesepro: getStatus(sesepro),
-      anonymous: getStatus(anonymous),
+      sese: getStatus(sese, _sese),
+      sesepro: getStatus(sesepro, _sesepro),
+      anonymous: getStatus(anonymous, _anonymous),
       r18: getStatus(set.r18),
       cd: Number(set.cd),
       recall: set.recall ? set.recall : '无',
@@ -276,11 +282,12 @@ const rodom = async function () {
   return imgs
 }
 
-const getStatus = function (rote) {
+const getStatus = function (rote, alone) {
+  let badge = alone != undefined ? '<span class="badge";>群单独</span>' : ''
   if (rote) {
-    return '<div class="cfg-status" >已开启</div>'
+    return badge + '<div class="cfg-status" >已开启</div>'
   } else {
-    return '<div class="cfg-status status-off">已关闭</div>'
+    return badge + '<div class="cfg-status status-off">已关闭</div>'
   }
 }
 

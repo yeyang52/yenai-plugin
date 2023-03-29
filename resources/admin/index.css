@@ -91,3 +91,15 @@ body {
   color: white;
   margin: 5px 0 5px 20px;
 }
+
+.badge {
+  display: inline-block;
+  vertical-align: top;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 3px;
+  background: #f4cd00;
+  color: #fff;
+  font-size: 14px;
+  line-height: 18px;
+}

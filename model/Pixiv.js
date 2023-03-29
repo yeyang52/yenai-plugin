@@ -12,18 +12,14 @@ export default new class Pixiv {
   constructor () {
     this.ranktype = rankType
     this.domain = 'http://api.liaobiao.top/api/pixiv'
-    this.PixivClient = null
-    this.initClient()
-  }
-
-  async initClient () {
-    if (Config.pixiv.refresh_token) {
-      this.PixivClient = new PixivApi(Config.pixiv.refresh_token)
-    }
+    this.PixivClient = new PixivApi(Config.pixiv.refresh_token)
   }
 
   async loginInfo () {
-    if (!this.PixivClient?.auth?.user) throw Error('❎ 未获取到登录信息')
+    if (!this.PixivClient?.auth) {
+      await this.PixivClient.login()
+    }
+    if (!this.PixivClient.auth?.user) throw Error('❎ 未获取到登录信息')
     const { profile_image_urls: { px_170x170 }, id, name, account, mail_address, is_premium, x_restrict } = this.PixivClient.auth.user
     return [
       await this._requestPixivImg(px_170x170),
@@ -65,7 +61,7 @@ export default new class Pixiv {
   async illust (ids, filter = false) {
     const params = { id: ids }
     let res = null
-    if (this.PixivClient) {
+    if (this.PixivClient.auth) {
       res = await this.PixivClient.illust(params)
     } else {
       res = await request.get(`${this.domain}/illust`, { params }).then(res => res.json())
@@ -133,7 +129,7 @@ export default new class Pixiv {
       date
     }
     let res = null
-    if (this.PixivClient) {
+    if (this.PixivClient.auth) {
       res = await this.PixivClient.rank(params)
     } else {
       res = await request.get(`${this.domain}/rank`, { params }).then(res => res.json())
@@ -227,7 +223,7 @@ export default new class Pixiv {
       order: 'popular_desc'
     }
     let res = null
-    if (this.PixivClient) {
+    if (this.PixivClient.auth) {
       res = await this.PixivClient.search(params)
     } else {
       res = await request.get(`${this.domain}/search`, { params }).then(res => res.json())
@@ -268,7 +264,7 @@ export default new class Pixiv {
      */
   async PopularTags () {
     let res = null
-    if (this.PixivClient) {
+    if (this.PixivClient.auth) {
       res = await this.PixivClient.tags()
     } else {
       res = await fetch(`${this.domain}/tags`).then(res => res.json())
@@ -303,7 +299,7 @@ export default new class Pixiv {
     // 关键词搜索
     if (!/^\d+$/.test(keyword)) {
       let wordlist = null
-      if (this.PixivClient) {
+      if (this.PixivClient.auth) {
         wordlist = await this.PixivClient.search_user({ word: keyword })
       } else {
         wordlist = await request.get(`${this.domain}/search_user`, {
@@ -320,7 +316,7 @@ export default new class Pixiv {
       page
     }
     let res = null
-    if (this.PixivClient) {
+    if (this.PixivClient.auth) {
       res = await this.PixivClient.member_illust(params)
     } else {
       res = await request.get(`${this.domain}/member_illust`, { params }).then(res => res.json())
@@ -375,7 +371,7 @@ export default new class Pixiv {
       size: 10
     }
     let user = null
-    if (this.PixivClient) {
+    if (this.PixivClient.auth) {
       user = await this.PixivClient.search_user(params)
     } else {
       user = await request.get(`${this.domain}/search_user`, { params }).then(res => res.json())
@@ -432,7 +428,7 @@ export default new class Pixiv {
   async relatedIllust (pid, isfilter = true) {
     let params = { id: pid }
     let res = null
-    if (this.PixivClient) {
+    if (this.PixivClient.auth) {
       res = await this.PixivClient.related(params)
     } else {
       res = await request.get(`${this.domain}/related`, { params }).then(res => res.json())
@@ -493,7 +489,6 @@ export default new class Pixiv {
    * @return {Promise}
    */
   async illustRecommended (num) {
-    if (!this.PixivClient) throw Error('请登录Pixiv后再使用此功能')
     let list = await this.PixivClient.illustRecommended()
     return Promise.all(_.take(list.illusts, num).map(async (item) => {
       let { id, title, user, tags, total_bookmarks, image_urls } = this._format(item)

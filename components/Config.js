@@ -201,5 +201,11 @@ class Config {
       }
     })
   }
+
+  async change_pixiv () {
+    let pixiv = (await import('../model/index.js')).Pixiv
+    let PixivApi = (await import('../model/Pixiv/api.js')).default
+    pixiv.PixivClient = new PixivApi(this.pixiv.refresh_token)
+  }
 }
 export default new Config()

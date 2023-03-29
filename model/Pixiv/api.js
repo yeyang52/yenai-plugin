@@ -22,7 +22,6 @@ export default class PixivApi {
     this.refresh_token = refresh_token
     this.access_token = null
     this.auth = null
-    this.login()
   }
 
   async login () {
@@ -58,6 +57,7 @@ export default class PixivApi {
   }
 
   async request (target, options = {}, caching = false) {
+    if (!this.auth) await this.login()
     try {
       return await this._get(target, options, caching)
     } catch (error) {

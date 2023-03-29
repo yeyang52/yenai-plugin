@@ -56,7 +56,8 @@ order: -2
 - groupMemberNumberChange  <Badge text="群成员变动" />  
 - addGroupApplication      <Badge text="加群通知"/>    
 - botBeenBanned            <Badge text="禁言" />         
-- flashPhoto               <Badge text="闪照" />         
+- flashPhoto               <Badge text="闪照" />
+- anonymous                <Badge text="匿名" />
 - sese                               
 - sesepro                           
 :::

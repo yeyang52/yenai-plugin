@@ -13,6 +13,9 @@ order: -2
 
 ## 单独群开启功能
 ::: tip
+**2023-3-30**：新增`#椰奶设置xxx单独开启/关闭`指令可快速单独设置功能
+:::
+::: warning
 首先你具备一定的yaml语法知识，如果你不知道什么是yaml请前往[yaml基本语法](https://blog.csdn.net/hejian_0534/article/details/100577740)
 :::
 
@@ -57,6 +60,8 @@ order: -2
 - sese                               
 - sesepro                           
 :::
+
+
 ## 获取SauceNAO Api Key
 
 ### 需要准备的工具

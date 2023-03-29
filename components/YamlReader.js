@@ -51,7 +51,7 @@ export default class YamlReader {
 
   /* 修改某个key的值 */
   set (keyPath, value) {
-    this.document.setIn(keyPath.split('.'), value)
+    this.document.setIn([keyPath], value)
     this.save()
   }
 

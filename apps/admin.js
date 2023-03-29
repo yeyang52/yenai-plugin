@@ -49,7 +49,7 @@ const NumberCfgType = {
   }
 }
 
-const SwitchCfgReg = new RegExp(`^#椰奶设置(${Object.keys(SwitchCfgType).join('|')})(开启|关闭)$`)
+const SwitchCfgReg = new RegExp(`^#椰奶设置(${Object.keys(SwitchCfgType).join('|')})(单独)?(开启|关闭)$`)
 
 const NumberCfgReg = new RegExp(`^#椰奶设置(${Object.keys(NumberCfgType).join('|')})(\\d+)秒?$`)
 export class Admin extends plugin {
@@ -98,12 +98,18 @@ export class Admin extends plugin {
     // 解析消息
     let regRet = SwitchCfgReg.exec(e.msg)
     let index = regRet[1]
-    let yes = regRet[2] == '开启'
+    let yes = regRet[3] == '开启'
 
     // 单独处理
     if (index == '涩涩pro' && yes) Config.modify('whole', 'sese', yes)
 
     if (index == '涩涩' && !yes) Config.modify('whole', 'sesepro', yes)
+
+    if (regRet[2]) {
+      if (!e.group_id) return e.reply('❎ 请在要单独设置的群聊发送单独设置命令')
+      Config.aloneModify(e.group_id, SwitchCfgType[index], yes)
+      return e.reply('✅')
+    }
     // 特殊处理
     if (index == '代理') {
       Config.modify('proxy', 'switchProxy', yes)

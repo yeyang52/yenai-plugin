@@ -166,6 +166,20 @@ class Config {
   }
 
   /**
+   * @description: 群单独设置
+   * @param {String|Number} groupId 群号
+   * @param {String} key 设置项
+   * @param {unknown} value
+   */
+  aloneModify (groupId, key, value) {
+    let path = `${Plugin_Path}/config/config/group.yaml`
+    let yaml = new YamlReader(path)
+    let groupCfg = yaml.jsonData[groupId] ?? {}
+    groupCfg[key] = value
+    yaml.set(groupId, groupCfg)
+  }
+
+  /**
    * @description: 修改配置数组
    * @param {String} name 文件名
    * @param {String|Number} key key值

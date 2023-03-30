@@ -71,7 +71,11 @@
 {{/if}}
 
 {{@FastFetch}}
-
+{{if networkChart}}
+<div class="box">
+    {{@networkChart}}
+</div>
+{{/if}}
 <div class="box">
     <div class="speed">
         <p>系统</p>

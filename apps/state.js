@@ -41,8 +41,10 @@ export class NewState extends plugin {
       // Node板块
       await State.getNodeInfo()
     ])
+
     // 渲染数据
     let data = {
+      networkChart: await State.networkChart(),
       // 头像
       portrait: `https://q1.qlogo.cn/g?b=qq&s=0&nk=${Bot.uin}`,
       // 运行时间

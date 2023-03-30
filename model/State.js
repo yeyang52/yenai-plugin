@@ -2,15 +2,20 @@ import os from 'os'
 import _ from 'lodash'
 import fs from 'fs'
 import { common } from './index.js'
-import { Config } from '../components/index.js'
+import { Config, Data } from '../components/index.js'
 
 export default new class OSUtils {
   constructor () {
     this.cpuUsageMSDefault = 1000 // CPU 利用率默认时间段
     this.isGPU = false
-    this.now_network = null
+    this._now_network = null
     this.fsStats = null
     this.si = null
+    this.networkData = {
+      upload: [],
+      download: []
+    }
+    this.echarts_theme = null
     this.init()
   }
 
@@ -30,6 +35,23 @@ export default new class OSUtils {
         logger.error(decodeURI(error.stack))
       }
     }
+  }
+
+  set now_network (value) {
+    if (!value[0].tx_sec || !value[0].rx_sec) this._now_network = null
+    this._now_network = value
+    this.networkData.upload.push([Date.now(), value[0].tx_sec])
+    this.networkData.download.push([Date.now(), value[0].rx_sec])
+    if (this.networkData.upload.length > 50) {
+      this.networkData.upload.shift()
+    }
+    if (this.networkData.download.length > 50) {
+      this.networkData.download.shift()
+    }
+  }
+
+  get now_network () {
+    return this._now_network
   }
 
   async init () {
@@ -267,5 +289,99 @@ export default new class OSUtils {
       plugins: plugin?.length || 0,
       js: fs.readdirSync('./plugins/example')?.filter(item => item.includes('.js'))?.length || 0
     }
+  }
+
+  /**
+   * 生成网络图表的SVG字符串
+   * @async
+   * @function
+   * @returns {Promise<string|boolean>} - 网络图表的SVG字符串或者false，如果未检测到echarts模块则返回false
+   */
+  async networkChart () {
+    if (!this.now_network) return false
+    let echarts = {}
+    try {
+      echarts = await import('echarts')
+    } catch {
+      logger.warn('[椰奶][状态网速]未检测到echarts模块无法显示图表')
+      logger.warn(`如需使用请运行：${logger.red('pnpm add echarts -w')}`)
+      return false
+    }
+    if (!this.echarts_theme) this.echarts_theme = Data.readJSON('tools/echarts/theme_westeros.json')
+    echarts.registerTheme('westeros', this.echarts_theme)
+    const chart = echarts.init(null, 'westeros', {
+      renderer: 'svg',
+      ssr: true,
+      width: 508,
+      height: 300
+    })
+    const by = (value) => {
+      value = value?.value ?? value
+      let units = ['B', 'KB', 'MB', 'GB', 'TB'] // 定义单位数组
+      let unitIndex = 0
+      while (value >= 1024 && unitIndex < units.length - 1) {
+        value /= 1024
+        unitIndex++
+      }
+      return value.toFixed(0) + units[unitIndex] // 返回带有动态单位标签的字符串
+    }
+    chart.setOption({
+      animation: false,
+      textStyle: {
+        fontFamily: 'Number, "汉仪文黑-65W", YS, PingFangSC-Medium, "PingFang SC", sans-serif'
+      },
+      title: {
+        text: 'Network'
+      },
+      legend: {
+        data: ['上行', '下行']
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: [
+        {
+          type: 'time'
+        }
+      ],
+      yAxis: [
+        {
+          type: 'value',
+          axisLabel: {
+            formatter: by
+          }
+        }
+      ],
+      series: [
+        {
+          name: '上行',
+          type: 'line',
+          areaStyle: {},
+          markPoint: {
+            data: [
+              { type: 'max', name: 'Max', label: { formatter: by } },
+              { type: 'min', name: 'Min', label: { formatter: by } }
+            ]
+          },
+          data: this.networkData.upload
+        },
+        {
+          name: '下行',
+          type: 'line',
+          areaStyle: {},
+          markPoint: {
+            data: [
+              { type: 'max', name: 'Max', label: { formatter: by } },
+              { type: 'min', name: 'Min', label: { formatter: by } }
+            ]
+          },
+          data: this.networkData.download
+        }
+      ]
+    })
+    return chart.renderToSVGString()
   }
 }()

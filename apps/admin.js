@@ -117,7 +117,8 @@ export class Admin extends plugin {
 
     // 单独设置
     if (regRet[2]) {
-      Config.aloneModify(e.group_id, SwitchCfgType[key], is, regRet[3] == '取消')
+      let isdel = regRet[3] == '取消'
+      Config.aloneModify(e.group_id, SwitchCfgType[key], is, isdel)
     } else {
       let _key = SwitchCfgType[key]
       Config.modify(_key?.name ?? 'whole', _key?.key ?? _key, is)

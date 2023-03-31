@@ -9,11 +9,13 @@ export default new class OSUtils {
     this.cpuUsageMSDefault = 1000 // CPU 利用率默认时间段
     this.isGPU = false
     this._now_network = null
-    this.fsStats = null
+    this._fsStats = null
     this.si = null
-    this.networkData = {
+    this.chartData = {
       upload: [],
-      download: []
+      download: [],
+      readSpeed: [],
+      writeSpeed: []
     }
     this.echarts_theme = null
     this.init()
@@ -38,20 +40,38 @@ export default new class OSUtils {
   }
 
   set now_network (value) {
-    if (!value[0].tx_sec || !value[0].rx_sec) this._now_network = null
+    if (value[0].tx_sec == null || !value[0].rx_sec == null) return
+
     this._now_network = value
-    this.networkData.upload.push([Date.now(), value[0].tx_sec])
-    this.networkData.download.push([Date.now(), value[0].rx_sec])
-    if (this.networkData.upload.length > 50) {
-      this.networkData.upload.shift()
+    this.chartData.upload.push([Date.now(), value[0].tx_sec])
+    this.chartData.download.push([Date.now(), value[0].rx_sec])
+    if (this.chartData.upload.length > 50) {
+      this.chartData.upload.shift()
     }
-    if (this.networkData.download.length > 50) {
-      this.networkData.download.shift()
+    if (this.chartData.download.length > 50) {
+      this.chartData.download.shift()
     }
   }
 
   get now_network () {
     return this._now_network
+  }
+
+  set fsStats (value) {
+    if (value.rx_sec == null || value.wx_sec == null) return false
+    this._fsStats = value
+    this.chartData.writeSpeed.push([Date.now(), value.wx_sec])
+    this.chartData.readSpeed.push([Date.now(), value.rx_sec])
+    if (this.chartData.writeSpeed.length > 50) {
+      this.chartData.writeSpeed.shift()
+    }
+    if (this.chartData.readSpeed.length > 50) {
+      this.chartData.readSpeed.shift()
+    }
+  }
+
+  get fsStats () {
+    return this._fsStats
   }
 
   async init () {
@@ -79,7 +99,7 @@ export default new class OSUtils {
 
   /** 字节转换 */
   getfilesize (size, isbtye = true, issuffix = true) { // 把字节转换成正常文件大小
-    if (!size) return ''
+    if (size == null || size == undefined) return 0
     let num = 1024.00 // byte
     if (isbtye) {
       if (size < num) { return size.toFixed(2) + 'B' }
@@ -248,7 +268,7 @@ export default new class OSUtils {
 
   // 获取读取速率
   get DiskSpeed () {
-    if (!this.fsStats || !this.fsStats.rx_sec || !this.fsStats.wx_sec) return false
+    if (!this.fsStats || this.fsStats.rx_sec == null || this.fsStats.wx_sec == null) return false
     return {
       rx_sec: this.getfilesize(this.fsStats.rx_sec, false, false),
       wx_sec: this.getfilesize(this.fsStats.wx_sec, false, false)
@@ -331,10 +351,10 @@ export default new class OSUtils {
         fontFamily: 'Number, "汉仪文黑-65W", YS, PingFangSC-Medium, "PingFang SC", sans-serif'
       },
       title: {
-        text: 'Network'
+        text: 'Chart'
       },
       legend: {
-        data: ['上行', '下行']
+        data: ['上行', '下行', '读', '写']
       },
       grid: {
         left: '3%',
@@ -362,11 +382,10 @@ export default new class OSUtils {
           areaStyle: {},
           markPoint: {
             data: [
-              { type: 'max', name: 'Max', label: { formatter: by } },
-              { type: 'min', name: 'Min', label: { formatter: by } }
+              { type: 'max', name: 'Max', label: { formatter: by } }
             ]
           },
-          data: this.networkData.upload
+          data: this.chartData.upload
         },
         {
           name: '下行',
@@ -374,11 +393,32 @@ export default new class OSUtils {
           areaStyle: {},
           markPoint: {
             data: [
-              { type: 'max', name: 'Max', label: { formatter: by } },
-              { type: 'min', name: 'Min', label: { formatter: by } }
+              { type: 'max', name: 'Max', label: { formatter: by } }
             ]
           },
-          data: this.networkData.download
+          data: this.chartData.download
+        },
+        {
+          name: '读',
+          type: 'line',
+          areaStyle: {},
+          markPoint: {
+            data: [
+              { type: 'max', name: 'Max', label: { formatter: by } }
+            ]
+          },
+          data: this.chartData.readSpeed
+        },
+        {
+          name: '写',
+          type: 'line',
+          areaStyle: {},
+          markPoint: {
+            data: [
+              { type: 'max', name: 'Max', label: { formatter: by } }
+            ]
+          },
+          data: this.chartData.writeSpeed
         }
       ]
     })

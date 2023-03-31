@@ -194,7 +194,7 @@ Bot.on('notice.group.decrease', async (e) => {
 
   delete temp[e.user_id + e.group_id]
 
-  return e.reply(`「${e.user_id}」主动退群，验证流程结束`)
+  e.group.sendMsg(`「${e.user_id}」主动退群，验证流程结束`)
 })
 
 // 发送验证信息

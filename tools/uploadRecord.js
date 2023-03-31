@@ -19,6 +19,7 @@ try {
 }
 
 async function uploadRecord (record_url, seconds = 0, transcoding = true) {
+  if (!Contactable) return segment.record(record_url)
   const result = await getPttBuffer(record_url, Bot.config.ffmpeg_path, transcoding)
   if (!result.buffer) {
     return false

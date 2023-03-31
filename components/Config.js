@@ -177,7 +177,7 @@ class Config {
     let groupCfg = yaml.jsonData[groupId] ?? {}
     isDel ? delete groupCfg[key] : groupCfg[key] = value
     yaml.set(groupId, groupCfg)
-    delete this.config[`config.${groupId}`]
+    delete this.config['config.group']
   }
 
   /**

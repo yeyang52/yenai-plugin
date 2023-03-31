@@ -190,7 +190,6 @@ export class Admin extends plugin {
     let { proxy, pixiv, bika } = Config
     let { sese, sesepro, anonymous } = Config.getGroup(e.group_id)
     let { sese: _sese, sesepro: _sesepro, anonymous: _anonymous } = Config.getConfig('group')[e.group_id] ?? {}
-    console.log(_sese, _sesepro)
     let data = {
       sese: getStatus(sese, _sese),
       sesepro: getStatus(sesepro, _sesepro),

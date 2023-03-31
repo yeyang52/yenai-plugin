@@ -40,7 +40,8 @@ export default new class OSUtils {
   }
 
   set now_network (value) {
-    if (value[0].tx_sec == null || !value[0].rx_sec == null) return
+    if (!value[0]?.tx_sec && !_.isNumber(value[0]?.tx_sec)) return
+    if (!value[0]?.rx_sec && !_.isNumber(value[0]?.rx_sec)) return
 
     this._now_network = value
     this.chartData.upload.push([Date.now(), value[0].tx_sec])
@@ -58,7 +59,8 @@ export default new class OSUtils {
   }
 
   set fsStats (value) {
-    if (value.rx_sec == null || value.wx_sec == null) return false
+    if (!value?.wx_sec && !_.isNumber(value?.wx_sec)) return
+    if (!value?.rx_sec && !_.isNumber(value?.rx_sec)) return
     this._fsStats = value
     this.chartData.writeSpeed.push([Date.now(), value.wx_sec])
     this.chartData.readSpeed.push([Date.now(), value.rx_sec])

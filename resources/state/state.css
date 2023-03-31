@@ -202,7 +202,6 @@ hr {
     display: flex;
     height: 25px;
     line-height: 25px;
-    justify-content: space-between;
 }
 
 .speed p {
@@ -211,10 +210,17 @@ hr {
     white-space: nowrap;
 }
 
-.speed p:nth-child(1) {
+.speed p:first-child {
+    flex-grow: 1;
+    flex-shrink: 0;
     max-width: 50%;
+    text-align: left;
+    margin-right: 20px;
 }
 
-.speed p:nth-child(2) {
-    margin-left: 40px;
+.speed p:last-child {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin-left: 20px;
+    text-align: right;
 }

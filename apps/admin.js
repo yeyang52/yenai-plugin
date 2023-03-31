@@ -121,17 +121,17 @@ export class Admin extends plugin {
     } else {
       let _key = SwitchCfgType[key]
       Config.modify(_key?.name ?? 'whole', _key?.key ?? _key, is)
-    }
 
-    // 单独处理
-    if (key == '涩涩pro' && is) Config.modify('whole', 'sese', is)
-    if (key == '涩涩' && !is) Config.modify('whole', 'sesepro', is)
-    if (Object.keys(SeSeCfgType).includes(key)) {
-      return this.SeSe_Settings(e)
+      // 单独处理
+      if (key == '涩涩pro' && is) Config.modify('whole', 'sese', is)
+      if (key == '涩涩' && !is) Config.modify('whole', 'sesepro', is)
     }
-
     // 渲染图片
-    this.index_Settings(e)
+    if (Object.keys(SeSeCfgType).includes(key)) {
+      this.SeSe_Settings(e)
+    } else {
+      this.index_Settings(e)
+    }
   }
 
   // 修改数字设置

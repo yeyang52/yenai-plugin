@@ -465,20 +465,25 @@ export default new class {
    * @return {*}
    */
   async deleteGroupMember (groupId, member) {
-    let data = {
-      gc: groupId,
-      ul: member.join('|'),
-      flag: 0,
-      bkn: Bot.bkn
+    let res = []
+    for (let item of _.chunk(member, 20)) {
+      let data = {
+        gc: groupId,
+        ul: item.join('|'),
+        flag: 0,
+        bkn: Bot.bkn
+      }
+      let url = 'https://qun.qq.com/cgi-bin/qun_mgr/delete_group_member'
+      res.push(await request.post(url, {
+        headers: {
+          'Cookie': Bot.cookies['qun.qq.com'],
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+        },
+        data,
+        statusCode: 'json'
+      }))
+      await common.sleep(5000)
     }
-    let url = 'https://qun.qq.com/cgi-bin/qun_mgr/delete_group_member'
-    return request.post(url, {
-      headers: {
-        'Cookie': Bot.cookies['qun.qq.com'],
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-      },
-      data,
-      statusCode: 'json'
-    })
+    return res
   }
 }()

@@ -395,11 +395,12 @@ export class GroupAdmin extends plugin {
     regRet[2] = common.translateChinaNum(regRet[2] || 1)
     // 确认清理直接执行
     if (regRet[1] == '确认清理') {
-      return e.reply(await ga.clearNoactive(
+      let msg = await ga.clearNoactive(
         e.group_id,
         regRet[2],
         regRet[3]
-      ))
+      )
+      return common.getforwardMsg(e, msg)
     }
     // 查看和清理都会发送列表
     let page = common.translateChinaNum(regRet[5] || 1)
@@ -430,7 +431,8 @@ export class GroupAdmin extends plugin {
     if (/^#?确认清理/.test(e.msg)) {
       e.reply('我要开始清理了哦，这可能需要一点时间٩(๑•ㅂ•)۶')
       let arr = list.map(item => item.user_id)
-      return e.reply(await ga.BatchKickMember(e.group_id, arr))
+      let msg = await ga.BatchKickMember(e.group_id, arr)
+      return common.getforwardMsg(e, msg)
     }
     // 清理
     if (/^#?清理/.test(e.msg)) {

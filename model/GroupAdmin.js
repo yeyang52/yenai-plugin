@@ -164,10 +164,19 @@ export default new class {
      */
   async BatchKickMember (groupId, arr) {
     let res = await QQApi.deleteGroupMember(groupId, arr)
-    if (res.ec != 0) return `错误：${JSON.stringify(res)}`
-    return '成功清理如下人员\n}' + res.ul.map((item, index) =>
+    let msg = [
+      '以下为每次清理的结果'
+    ]
+    res.forEach(item => {
+      if (item.ec != 0) {
+        msg.push(`错误：${JSON.stringify(res)}`)
+      } else {
+        msg.push('成功清理如下人员\n}' + res.ul.map((item, index) =>
       `${index + 1}、${item}`
-    ).join('\n')
+        ).join('\n'))
+      }
+    })
+    return msg
   }
 
   /**

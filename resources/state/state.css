@@ -25,7 +25,6 @@ body {
     border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.18);
     font-weight: 700;
-    text-align: center
 }
 
 .tb {
@@ -223,4 +222,8 @@ hr {
     flex-shrink: 1;
     margin-left: 20px;
     text-align: right;
+}
+
+#Chart {
+    height: 300px;
 }

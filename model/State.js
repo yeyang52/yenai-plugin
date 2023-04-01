@@ -15,28 +15,10 @@ export default new class OSUtils {
       upload: [],
       download: [],
       readSpeed: [],
-      writeSpeed: []
+      writeSpeed: [],
+      echarts_theme: Data.readJSON('resources/state/theme_westeros.json')
     }
-    this.echarts_theme = null
     this.init()
-  }
-
-  async initDependence () {
-    try {
-      this.si = await import('systeminformation')
-      return this.si
-    } catch (error) {
-      if (error.stack?.includes('Cannot find package')) {
-        logger.warn('--------椰奶依赖缺失--------')
-        logger.warn(`yenai-plugin 缺少依赖将无法使用 ${logger.yellow('椰奶状态')}`)
-        logger.warn(`如需使用请运行：${logger.red('pnpm add systeminformation -w')}`)
-        logger.warn('---------------------------')
-        logger.debug(decodeURI(error.stack))
-      } else {
-        logger.error(`椰奶载入依赖错误：${logger.red('systeminformation')}`)
-        logger.error(decodeURI(error.stack))
-      }
-    }
   }
 
   set now_network (value) {
@@ -74,6 +56,24 @@ export default new class OSUtils {
 
   get fsStats () {
     return this._fsStats
+  }
+
+  async initDependence () {
+    try {
+      this.si = await import('systeminformation')
+      return this.si
+    } catch (error) {
+      if (error.stack?.includes('Cannot find package')) {
+        logger.warn('--------椰奶依赖缺失--------')
+        logger.warn(`yenai-plugin 缺少依赖将无法使用 ${logger.yellow('椰奶状态')}`)
+        logger.warn(`如需使用请运行：${logger.red('pnpm add systeminformation -w')}`)
+        logger.warn('---------------------------')
+        logger.debug(decodeURI(error.stack))
+      } else {
+        logger.error(`椰奶载入依赖错误：${logger.red('systeminformation')}`)
+        logger.error(decodeURI(error.stack))
+      }
+    }
   }
 
   async init () {
@@ -311,119 +311,5 @@ export default new class OSUtils {
       plugins: plugin?.length || 0,
       js: fs.readdirSync('./plugins/example')?.filter(item => item.includes('.js'))?.length || 0
     }
-  }
-
-  /**
-   * 生成网络图表的SVG字符串
-   * @async
-   * @function
-   * @returns {Promise<string|boolean>} - 网络图表的SVG字符串或者false，如果未检测到echarts模块则返回false
-   */
-  async networkChart () {
-    if (!this.now_network) return false
-    let echarts = {}
-    try {
-      echarts = await import('echarts')
-    } catch {
-      logger.warn('[椰奶][状态网速]未检测到echarts模块无法显示图表')
-      logger.warn(`如需使用请运行：${logger.red('pnpm add echarts -w')}`)
-      return false
-    }
-    if (!this.echarts_theme) this.echarts_theme = Data.readJSON('tools/echarts/theme_westeros.json')
-    echarts.registerTheme('westeros', this.echarts_theme)
-    const chart = echarts.init(null, 'westeros', {
-      renderer: 'svg',
-      ssr: true,
-      width: 508,
-      height: 300
-    })
-    const by = (value) => {
-      value = value?.value ?? value
-      let units = ['B', 'KB', 'MB', 'GB', 'TB'] // 定义单位数组
-      let unitIndex = 0
-      while (value >= 1024 && unitIndex < units.length - 1) {
-        value /= 1024
-        unitIndex++
-      }
-      return value.toFixed(0) + units[unitIndex] // 返回带有动态单位标签的字符串
-    }
-    chart.setOption({
-      animation: false,
-      textStyle: {
-        fontFamily: 'Number, "汉仪文黑-65W", YS, PingFangSC-Medium, "PingFang SC", sans-serif'
-      },
-      title: {
-        text: 'Chart'
-      },
-      legend: {
-        data: ['上行', '下行', '读', '写']
-      },
-      grid: {
-        left: '3%',
-        right: '4%',
-        bottom: '3%',
-        containLabel: true
-      },
-      xAxis: [
-        {
-          type: 'time'
-        }
-      ],
-      yAxis: [
-        {
-          type: 'value',
-          axisLabel: {
-            formatter: by
-          }
-        }
-      ],
-      series: [
-        {
-          name: '上行',
-          type: 'line',
-          areaStyle: {},
-          markPoint: {
-            data: [
-              { type: 'max', name: 'Max', label: { formatter: by } }
-            ]
-          },
-          data: this.chartData.upload
-        },
-        {
-          name: '下行',
-          type: 'line',
-          areaStyle: {},
-          markPoint: {
-            data: [
-              { type: 'max', name: 'Max', label: { formatter: by } }
-            ]
-          },
-          data: this.chartData.download
-        },
-        {
-          name: '读',
-          type: 'line',
-          areaStyle: {},
-          markPoint: {
-            data: [
-              { type: 'max', name: 'Max', label: { formatter: by } }
-            ]
-          },
-          data: this.chartData.readSpeed
-        },
-        {
-          name: '写',
-          type: 'line',
-          areaStyle: {},
-          markPoint: {
-            data: [
-              { type: 'max', name: 'Max', label: { formatter: by } }
-            ]
-          },
-          data: this.chartData.writeSpeed
-        }
-      ]
-    })
-    return chart.renderToSVGString()
   }
 }()

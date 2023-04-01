@@ -71,9 +71,105 @@
 {{/if}}
 
 {{@FastFetch}}
-{{if networkChart}}
+
+{{if chartData}}
 <div class="box">
-    {{@networkChart}}
+    <div id="Chart"></div>
+    <script src="{{_res_path}}state/echarts.min.js"></script>
+    <script>
+        let chartData = JSON.parse('{{@chartData}}')
+        echarts.registerTheme('westeros', chartData.echarts_theme)
+        const chart = echarts.init(document.getElementById('Chart'), 'westeros', {
+            renderer: 'svg'
+        })
+        const by = (value) => {
+            value = value?.value ?? value
+            let units = ['B', 'KB', 'MB', 'GB', 'TB'] // 定义单位数组
+            let unitIndex = 0
+            while (value >= 1024 && unitIndex < units.length - 1) {
+                value /= 1024
+                unitIndex++
+            }
+            return value.toFixed(0) + units[unitIndex] // 返回带有动态单位标签的字符串
+        }
+        chart.setOption({
+            animation: false,
+            textStyle: {
+                fontFamily: 'Number, "汉仪文黑-65W", YS, PingFangSC-Medium, "PingFang SC", sans-serif'
+            },
+            title: {
+                text: 'Chart'
+            },
+            legend: {
+                data: ['上行', '下行', '读', '写']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: [
+                {
+                    type: 'time'
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    axisLabel: {
+                        formatter: by
+                    }
+                }
+            ],
+            series: [
+                {
+                    name: '上行',
+                    type: 'line',
+                    areaStyle: {},
+                    markPoint: {
+                        data: [
+                            { type: 'max', name: 'Max', label: { formatter: by } }
+                        ]
+                    },
+                    data: chartData.upload
+                },
+                {
+                    name: '下行',
+                    type: 'line',
+                    areaStyle: {},
+                    markPoint: {
+                        data: [
+                            { type: 'max', name: 'Max', label: { formatter: by } }
+                        ]
+                    },
+                    data: chartData.download
+                },
+                {
+                    name: '读',
+                    type: 'line',
+                    areaStyle: {},
+                    markPoint: {
+                        data: [
+                            { type: 'max', name: 'Max', label: { formatter: by } }
+                        ]
+                    },
+                    data: chartData.readSpeed
+                },
+                {
+                    name: '写',
+                    type: 'line',
+                    areaStyle: {},
+                    markPoint: {
+                        data: [
+                            { type: 'max', name: 'Max', label: { formatter: by } }
+                        ]
+                    },
+                    data: chartData.writeSpeed
+                }
+            ]
+        })
+    </script>
 </div>
 {{/if}}
 <div class="box">

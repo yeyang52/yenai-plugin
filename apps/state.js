@@ -44,7 +44,7 @@ export class NewState extends plugin {
 
     // 渲染数据
     let data = {
-      networkChart: await State.networkChart(),
+      chartData: JSON.stringify(_.every(_.omit(State.chartData, 'echarts_theme'), _.isEmpty) ? undefined : State.chartData),
       // 头像
       portrait: `https://q1.qlogo.cn/g?b=qq&s=0&nk=${Bot.uin}`,
       // 运行时间

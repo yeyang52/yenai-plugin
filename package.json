@@ -20,7 +20,6 @@
   "license": "GPL-3.0",
   "dependencies": {
     "cheerio": "1.0.0-rc.12",
-    "echarts": "^5.4.2",
     "systeminformation": "^5.17.1"
   },
   "devDependencies": {

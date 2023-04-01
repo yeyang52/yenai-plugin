@@ -2,6 +2,7 @@ import fetch from 'node-fetch'
 import md5 from 'md5'
 import _ from 'lodash'
 import request from '../../lib/request/request.js'
+import { langType } from '../../constants/youdao.js'
 import { puppeteer } from '../index.js'
 const API_ERROR = '出了点小问题，待会再试试吧'
 export const xiurenTypeId = {
@@ -11,75 +12,11 @@ export const xiurenTypeId = {
   }
 }
 export default new class {
-  constructor () {
-    this.langtype = [{
-      code: 'ar',
-      label: '阿拉伯语',
-      alphabet: 'A'
-    }, {
-      code: 'de',
-      label: '德语',
-      alphabet: 'D'
-    }, {
-      code: 'ru',
-      label: '俄语',
-      alphabet: 'E'
-    }, {
-      code: 'fr',
-      label: '法语',
-      alphabet: 'F'
-    }, {
-      code: 'ko',
-      label: '韩语',
-      alphabet: 'H'
-    }, {
-      code: 'nl',
-      label: '荷兰语',
-      alphabet: 'H'
-    }, {
-      code: 'pt',
-      label: '葡萄牙语',
-      alphabet: 'P'
-    }, {
-      code: 'ja',
-      label: '日语',
-      alphabet: 'R'
-    }, {
-      code: 'th',
-      label: '泰语',
-      alphabet: 'T'
-    }, {
-      code: 'es',
-      label: '西班牙语',
-      alphabet: 'X'
-    }, {
-      code: 'en',
-      label: '英语',
-      alphabet: 'Y'
-    }, {
-      code: 'it',
-      label: '意大利语',
-      alphabet: 'Y'
-    }, {
-      code: 'vi',
-      label: '越南语',
-      alphabet: 'Y'
-    }, {
-      code: 'id',
-      label: '印度尼西亚语',
-      alphabet: 'Y'
-    }, {
-      code: 'zh-CHS',
-      label: '中文',
-      alphabet: 'Z'
-    }]
-  }
-
   /** 有道翻译 */
   async youdao (msg, to = 'auto', from = 'auto') {
-    if (to != 'auto') to = this.langtype.find(item => item.label == to)?.code
-    if (from != 'auto') from = this.langtype.find(item => item.label == from)?.code
-    if (!to || !from) return `未找到翻译的语种，支持的语言为：\n${this.langtype.map(item => item.label).join('，')}\n示例：#翻译你好 - 自动翻译\n#日语翻译你好 - 指定翻译为语种\n#中文-日语翻译你好 - 指定原语言翻译为指定语言`
+    if (to != 'auto') to = langType.find(item => item.label == to)?.code
+    if (from != 'auto') from = langType.find(item => item.label == from)?.code
+    if (!to || !from) return `未找到翻译的语种，支持的语言为：\n${langType.map(item => item.label).join('，')}\n示例：#翻译你好 - 自动翻译\n#日语翻译你好 - 指定翻译为语种\n#中文-日语翻译你好 - 指定原语言翻译为指定语言`
     // 翻译结果为空的提示
     const RESULT_ERROR = '找不到翻译结果'
     // API 请求错误提示

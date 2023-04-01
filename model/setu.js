@@ -1,7 +1,7 @@
 import { common, Pixiv } from './index.js'
 import { Data, Plugin_Path, Config } from '../components/index.js'
 import _ from 'lodash'
-import { setuMsg } from '../tools/msg.js'
+import { setuMsg } from '../constants/msg.js'
 import request from '../lib/request/request.js'
 export default new class setu {
   constructor () {
@@ -250,7 +250,7 @@ export default new class setu {
     * @return {String}
     */
   Secondformat (value) {
-    let time = common.getsecond(value)
+    let time = common.getSecond(value)
 
     let { second, minute, hour, day } = time
     // 处理返回消息

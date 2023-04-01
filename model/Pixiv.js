@@ -3,8 +3,8 @@ import moment from 'moment'
 import fetch from 'node-fetch'
 import { Config } from '../components/index.js'
 import request from '../lib/request/request.js'
-import { rankType } from '../tools/pixiv.js'
-import { pixivMsg } from '../tools/msg.js'
+import { rankType } from '../constants/pixiv.js'
+import { pixivMsg } from '../constants/msg.js'
 import PixivApi from './Pixiv/api.js'
 /** API请求错误文案 */
 

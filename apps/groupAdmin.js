@@ -4,7 +4,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import { Config } from '../components/index.js'
 import { common, GroupAdmin as ga, puppeteer, QQApi } from '../model/index.js'
 import cronValidate from '../tools/cronValidate.js'
-import { groupTitleMsg } from '../tools/msg.js'
+import { groupTitleMsg } from '../constants/msg.js'
 // API请求错误文案
 const API_ERROR = '❎ 出错辣，请稍后重试'
 // 正则

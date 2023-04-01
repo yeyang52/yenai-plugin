@@ -104,7 +104,7 @@ export class NewState extends plugin {
  * @return {String} 天:?时:分:秒
  */
 function Formatting (time, repair = true) {
-  let times = common.getsecond(time, repair)
+  let times = common.getSecond(time, repair)
 
   let { second, minute, hour, day } = times
 

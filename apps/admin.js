@@ -43,7 +43,9 @@ const NoticeCfgType = {
   输入: 'input'
 }
 /** 分开开关和数字 */
-const SwitchCfgType = { ...NoticeCfgType, ...OtherCfgType, ...SeSeCfgType }
+const SwitchCfgType = {
+  ...NoticeCfgType, ...OtherCfgType, ...SeSeCfgType
+}
 const NumberCfgType = {
   渲染精度: {
     key: 'renderScale',
@@ -56,7 +58,9 @@ const NumberCfgType = {
 }
 
 /** 支持单独设置的项 */
-const aloneKeys = ['群消息', '群临时消息', '群撤回', '群邀请', '群管理变动', '群聊列表变动', '群成员变动', '加群通知', '禁言', '闪照', '匿名', '涩涩', '涩涩pro']
+const aloneKeys = [
+  '群消息', '群临时消息', '群撤回', '群邀请', '群管理变动', '群聊列表变动', '群成员变动', '加群通知', '禁言', '闪照', '匿名', '涩涩', '涩涩pro'
+]
 
 const SwitchCfgReg = new RegExp(`^#椰奶设置(${Object.keys(SwitchCfgType).join('|')})(单独)?(开启|关闭|取消)$`)
 const NumberCfgReg = new RegExp(`^#椰奶设置(${Object.keys(NumberCfgType).join('|')})(\\d+)秒?$`)

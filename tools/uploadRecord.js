@@ -14,7 +14,7 @@ try {
   Contactable = (await import('oicq')).default
   core = (await import('oicq')).core
 } catch (error) {
-  Contactable = (await import('icqq').catch(() => logger.error('未检测到icqq')))?.default
+  Contactable = (await import('icqq').catch(() => {}))?.default
   core = (await import('icqq').catch(() => {}))?.core
 }
 

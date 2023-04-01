@@ -2,7 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import { Config } from '../components/index.js'
 import { Pixiv, common, setu } from '../model/index.js'
 import { Admin } from './admin.js'
-import { ImageRPSS } from '../tools/pixiv.js'
+import { ImageRPSS } from '../constants/pixiv.js'
 // 文案
 const SWITCH_ERROR = '主人没有开放这个功能哦(＊／ω＼＊)'
 // 汉字数字匹配正则

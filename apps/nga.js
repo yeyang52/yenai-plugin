@@ -3,7 +3,7 @@ import gsCfg from '../../genshin/model/gsCfg.js'
 import fs from 'node:fs'
 import common from '../../../lib/common/common.js'
 import { Data, Plugin_Path } from '../components/index.js'
-import { incomeCurve } from '../tools/nga.js'
+import { incomeCurve } from '../constants/nga.js'
 
 export class NGA extends plugin {
   constructor () {

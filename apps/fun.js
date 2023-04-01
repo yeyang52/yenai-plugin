@@ -4,14 +4,8 @@ import _ from 'lodash'
 import { Config } from '../components/index.js'
 import { common, uploadRecord, QQApi, funApi } from '../model/index.js'
 import { xiurenTypeId } from '../model/api/funApi.js'
-const heisiType = {
-  白丝: { type: 'baisi', page: 17 },
-  黑丝: { type: 'heisi', page: 43 },
-  巨乳: { type: 'juru', page: 8 },
-  jk: { type: 'jk', page: 6 },
-  网红: { type: 'mcn', page: 36 },
-  美足: { type: 'meizu', page: 9 }
-}
+import { successImgs, faildsImgs, heisiType } from '../constants/fun.js'
+
 /** API请求错误文案 */
 const API_ERROR = '❎ 出错辣，请稍后重试'
 /** 未启用文案 */
@@ -51,7 +45,7 @@ export class Fun extends plugin {
         },
         {
           reg: '^#?(我要|给我)?(资料卡)?(点赞|赞我)$',
-          fnc: 'zan'
+          fnc: 'thumbUp'
         },
         {
           reg: 'github.com/[a-zA-Z0-9-]{1,39}/[a-zA-Z0-9_-]{1,100}',
@@ -116,85 +110,59 @@ export class Fun extends plugin {
 
   /** 有道翻译 */
   async youdao (e) {
-    let msg = e.msg.match(/#(([\u4e00-\u9fa5]{2,6})-)?([\u4e00-\u9fa5]{2,6})?翻译(.*)/)
-    if (!msg) return
+    const msg = e.msg.match(/#(([\u4e00-\u9fa5]{2,6})-)?([\u4e00-\u9fa5]{2,6})?翻译(.*)/)
+    // 如果是在群聊中回复，则获取上一条消息作为翻译内容
     if (e.source) {
-      let source
-      if (e.isGroup) {
-        source = (await e.group.getChatHistory(e.source.seq, 1)).pop()
-      } else {
-        source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
-      }
-      msg[4] = source.message.filter(item => item.type == 'text').map(item => item.text).join('')
-    }
+      const source = e.isGroup
+        ? (await e.group.getChatHistory(e.source.seq, 1)).pop()
+        : (await e.friend.getChatHistory(e.source.time, 1)).pop()
 
-    let results = await funApi.youdao(msg[4], msg[3], msg[2])
-    return e.reply(results, true)
+      msg[4] = source.message
+        .filter(item => item.type === 'text')
+        .map(item => item.text).join('')
+    }
+    const results = await funApi.youdao(msg[4], msg[3], msg[2])
+    e.reply(results, true)
   }
 
   /** 点赞 */
-  async zan (e) {
+  async thumbUp (e) {
     if (Bot.config.platform == 3) return e.reply('❎ 手表协议暂不支持点赞请更换协议后重试')
     /** 判断是否为好友 */
     let isFriend = await Bot.fl.get(e.user_id)
-    let likeByStrangers = Config.Notice.Strangers_love
-    if (!isFriend && !likeByStrangers) return e.reply('不加好友不点🙄', true)
-    /** 点赞成功回复的图片 */
-    let successImgs = [
-      'https://api.caonm.net/api/zan/z.php?qq=',
-      'http://api.caonm.net/api/bix/b.php?qq=',
-      'http://api.caonm.net/api/kan/kan_3.php?qq=',
-      'https://api.caonm.net/api/kan/kan.php?qq='
-    ]
-    let faildsImgs = [
-      'https://ovooa.caonm.net/API/pa/api.php?QQ=',
-      'https://api.caonm.net/api/ti/t.php?qq=',
-      'https://api.caonm.net/api/gun/index.php?qq=',
-      'https://api.caonm.net/api/gund/g.php?qq='
-    ]
+    let allowLikeByStrangers = Config.Notice.Strangers_love
+    if (!isFriend && !allowLikeByStrangers) return e.reply('不加好友不点🙄', true)
+    /** 点赞成功的图片 */
     let successImg = segment.image(_.sample(successImgs) + e.user_id)
-
     /** 点赞失败的图片 */
     let faildsImg = segment.image(_.sample(faildsImgs) + e.user_id)
 
     /** 执行点赞 */
     let n = 0
-    let failsmsg = '今天已经点过了，还搁这讨赞呢！！！'
+    let failsMsg = '今天已经点过了，还搁这讨赞呢！！！'
     while (true) {
-      // 好友点赞
-      if (!likeByStrangers || isFriend) {
-        let res = await Bot.sendLike(e.user_id, 10)
-        logger.debug(`${e.logFnc}好友点赞`, res)
-        if (res) {
-          n += 10
-        } else break
-      } else {
-        // 陌生人点赞
-        let res = await QQApi.thumbUp(e.user_id, 10)
-        logger.debug(`${e.logFnc}陌生人点赞`, res)
-        if (res.code != 0) {
-          if (res.code == 1) {
-            failsmsg = '点赞失败，请检查是否开启陌生人点赞或添加好友'
-          } else {
-            failsmsg = res.msg
-          }
-          break
+      let res = await QQApi.thumbUp(e.user_id, 10)
+      logger.debug(`${e.logFnc}给${e.user_id}点赞`, res)
+      if (res.code != 0) {
+        if (res.code == 1) {
+          failsMsg = '点赞失败，请检查是否开启陌生人点赞或添加好友'
         } else {
-          n += 10
+          failsMsg = res.msg
         }
+        break
+      } else {
+        n += 10
       }
     }
-
+    let successMsg = `给你点了${n}下哦，记得回我~ ${isFriend ? '' : '(如点赞失败请添加好友)'}`
     /** 回复的消息 */
-    let successResult = ['\n', `给你点了${n}下哦，记得回我~${isFriend ? '' : '(如点赞失败请添加好友)'}`, successImg]
-    let faildsResult = ['\n', failsmsg, faildsImg]
+    let successResult = ['\n', successMsg, successImg]
+    let faildsResult = ['\n', failsMsg, faildsImg]
 
     /** 判断点赞是否成功 */
     let msg = n > 0 ? successResult : faildsResult
     /** 回复 */
-    await e.reply(msg, false, { at: true })
-
-    return true
+    e.reply(msg, false, { at: true })
   }
 
   // github
@@ -210,36 +178,31 @@ export class Fun extends plugin {
       const [user, repo] = [res[1], res[2].split('#')[0]]
       e.reply(segment.image(`${api}/${id}/${user}/${repo}`))
     }
-
-    return true
   }
 
   // coser
   async coser (e) {
-    let { sese, sesepro } = Config.getGroup(e.group_id)
-    if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
+    const { sese, sesepro } = Config.getGroup(e.group_id)
+    if (!sese && !sesepro && !e.isMaster) {
+      return e.reply(SWITCH_ERROR)
+    }
 
     e.reply(START_EXECUTION)
 
     const api = 'https://ovooa.caonm.net/API/cosplay/api.php'
 
-    let res = await fetch(api).then((res) => res.json()).catch((err) => console.error(err))
-
-    if (!res) return e.reply(API_ERROR)
-
-    res = res.data
-    let item = 1
-    let msg = [res.Title]
-    for (let i of res.data) {
-      msg.push(segment.image(i))
-      if (item >= 20) {
-        break
-      } else {
-        item++
-      }
+    let res
+    try {
+      res = await fetch(api).then((res) => res.json())
+    } catch (err) {
+      logger.error(err)
+      return e.reply(API_ERROR)
     }
+
+    const { Title, data } = res
+    const items = _.take(data, 20).map((i) => segment.image(i))
+    const msg = [Title, ...items]
     common.recallSendForwardMsg(e, msg)
-    return true
   }
 
   // cos/acg搜索

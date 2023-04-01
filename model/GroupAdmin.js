@@ -167,11 +167,11 @@ export default new class {
     let msg = [
       '以下为每次清理的结果'
     ]
-    res.forEach(item => {
-      if (item.ec != 0) {
+    res.forEach(i => {
+      if (i.ec != 0) {
         msg.push(`错误：${JSON.stringify(res)}`)
       } else {
-        msg.push('成功清理如下人员\n}' + res.ul.map((item, index) =>
+        msg.push('成功清理如下人员\n}' + i.ul.map((item, index) =>
       `${index + 1}、${item}`
         ).join('\n'))
       }

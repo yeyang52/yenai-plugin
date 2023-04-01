@@ -20,12 +20,13 @@ export default new (class {
   }
 
   /**
-   * @description: 搜索关键词
-   * @param {String} keyword 关键词
-   * @param {Number} page 页数
-   * @param {'dd'|'da'|'ld'|'vd'} sort dd : 最新发布 da : 最早发布 ld : 最多喜欢 vd : 最多浏览
-   * @param {String} type 搜索类型
-   * @return {Array}
+   * 关键词搜索作品
+   * @param {string} keyword - 搜索关键词
+   * @param {number} [page=1] - 页码，默认为1
+   * @param {'dd'|'da'|'ld'|'vd'} [sort='ld'] - 排序方式：dd（最新发布）、da（最早发布）、ld（最多喜欢）、vd（最多浏览），默认为'ld'
+   * @param {string} [type='advanced'] - 搜索类型：advanced（高级）、category（类别）、author（作者），默认为'advanced'
+   * @throws {Error} 当未找到作品时，会抛出异常
+   * @returns {Array<string>} 返回搜索结果信息数组
    */
   async search (keyword, page = 1, type = 'advanced', sort = 'ld') {
     let types = [
@@ -74,11 +75,13 @@ export default new (class {
   }
 
   /**
-   * @description:漫画页面
-   * @param {String} id 作品id
-   * @param {Number} page 页数
-   * @param {*} order ...
-   * @return {*}
+   * 获取漫画某一话某一页的信息及图片列表
+   * @async
+   * @param {string} id - 漫画id
+   * @param {number} [page=1] - 页码，默认为1
+   * @param {number} [order=1] - 话数，默认为1
+   * @returns {Promise<string[]>} - 返回一个数组，包含漫画某一话某一页的信息及图片列表
+   * @throws {Error} - 如果返回结果中包含error，则抛出异常
    */
   async comicPage (id, page = 1, order = 1) {
     let res = await request.get(`${this.domain}/comic_page?id=${id}&page=${page}&order=${order}`, this.hearder)
@@ -108,9 +111,11 @@ export default new (class {
   }
 
   /**
-   * @description: 下一页或下一话
-   * @param {'comicPage'|'chapter'} type 类型
-   * @return {this.comicPage}
+   * 获取下一个漫画页面或漫画章节的信息及图片列表
+   * @async
+   * @param {string} [type='comicPage'] - 请求的类型，可选值为'comicPage'或'chapter'，默认为'comicPage'
+   * @returns {Promise<string[]>} - 返回一个数组，包含下一个漫画页面或漫画章节的信息及图片列表
+   * @throws {Error} - 如果未找到上一个id，则抛出异常
    */
   async next (type = 'comicPage') {
     if (!this.idNext) throw Error('未找到上一个id')
@@ -153,9 +158,10 @@ export default new (class {
   }
 
   /**
-   * @description: 作品详情
-   * @param {String} id
-   * @return {*}
+   * 获取指定id的Bika漫画详细信息
+   * @async
+   * @param {string} id - 漫画的id
+   * @returns {Promise<string[]>} - 返回一个由字符串组成的数组，包含漫画的详细信息和封面图片
    */
   async comicDetail (id) {
     let res = await request.get(`${this.domain}/comic_detail?id=${id}`, this.hearder)
@@ -186,6 +192,13 @@ export default new (class {
     ]
   }
 
+  /**
+   * 请求Bika漫画网站的图片
+   * @async
+   * @param {string} fileServer - 图片所在的文件服务器
+   * @param {string} path - 图片的路径
+   * @returns {Promise<import('icqq').ImageElem>} - 返回构造图片消息
+   */
   async _requestBikaImg (fileServer, path) {
     fileServer = /static/.test(fileServer) ? fileServer : fileServer + '/static/'
     let url = (/picacomic.com/.test(fileServer) && this.imgproxy ? this.imgproxy : fileServer) + path

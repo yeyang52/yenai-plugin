@@ -156,13 +156,9 @@ export class GroupAdmin extends plugin {
     let qq = e.message.find(item => item.type == 'at')?.qq
     let reg = `#禁言\\s?((\\d+)\\s)?(${Numreg})?(${TimeUnitReg})?`
     let regRet = e.msg.match(new RegExp(reg))
-    e.reply(await ga.muteMember(
-      e.group_id,
-      qq ?? regRet[2],
-      e.user_id,
-      regRet[3],
-      regRet[4]
-    ))
+    ga.muteMember(
+      e.group_id, qq ?? regRet[2], e.user_id, regRet[3], regRet[4]
+    ).then(res => e.reply(res)).catch(err => e.reply(err.message))
   }
 
   /** 解禁 */
@@ -171,11 +167,10 @@ export class GroupAdmin extends plugin {
 
     let qq = e.message.find(item => item.type == 'at')?.qq
     let regRet = e.msg.match(/#解禁(\d+)/)
-    e.reply(await ga.muteMember(
-      e.group_id,
-      qq ?? regRet[1],
-      e.user_id,
-      0))
+    ga.muteMember(
+      e.group_id, qq ?? regRet[1], e.user_id, 0
+    ).then(res => e.reply(res))
+      .catch(err => e.reply(err.message))
   }
 
   /** 全体禁言 */
@@ -194,8 +189,9 @@ export class GroupAdmin extends plugin {
 
     let qq = e.message.find(item => item.type == 'at')?.qq
     if (!qq) qq = e.msg.replace(/#|踢/g, '').trim()
-    let res = await ga.kickMember(e.group_id, qq, e.user_id)
-    e.reply(res)
+    ga.kickMember(e.group_id, qq, e.user_id)
+      .then(res => e.reply(res))
+      .catch(err => e.reply(err.message))
   }
 
   // 我要自闭
@@ -375,16 +371,17 @@ export class GroupAdmin extends plugin {
 
   // 获取禁言列表
   async Mutelist (e) {
-    let msg = await ga.getMuteList(e.group_id, true)
-    if (!msg) return e.reply('还没有人被禁言欸(O∆O)')
-    common.getforwardMsg(e, msg)
+    ga.getMuteList(e.group_id, true)
+      .then(res => common.getforwardMsg(e, res))
+      .catch(err => e.reply(err.message))
   }
 
   // 解除全部禁言
   async relieveAllMute (e) {
     if (!common.Authentication(e, 'admin', 'admin')) return
-    let res = await ga.releaseAllMute(e.group_id)
-    e.reply(res ? '已经把全部的禁言解除辣╮( •́ω•̀ )╭' : '都没有人被禁言我怎么解的辣＼(`Δ’)／')
+    ga.releaseAllMute(e.group_id)
+      .then(() => e.reply('已经把全部的禁言解除辣╮( •́ω•̀)╭'))
+      .catch(err => err.reply(err.message))
   }
 
   // 查看和清理多久没发言的人
@@ -404,13 +401,14 @@ export class GroupAdmin extends plugin {
     }
     // 查看和清理都会发送列表
     let page = common.translateChinaNum(regRet[5] || 1)
-    let msg = await ga.getNoactiveInfo(
-      e.group_id,
-      regRet[2],
-      regRet[3],
-      page
-    )
-    if (msg?.error) return e.reply(msg.error)
+    let msg = null
+    try {
+      msg = await ga.getNoactiveInfo(
+        e.group_id, regRet[2], regRet[3], page
+      )
+    } catch (err) {
+      return e.reply(err.message)
+    }
     // 清理
     if (regRet[1] == '清理') {
       let list = await ga.noactiveList(e.group_id, regRet[2], regRet[3])
@@ -444,9 +442,9 @@ export class GroupAdmin extends plugin {
     // 发送列表
     let page = e.msg.match(new RegExp(Numreg))
     page = page ? common.translateChinaNum(page[0]) : 1
-    let listInfo = await ga.getNeverSpeakInfo(e.group_id, page)
-    if (listInfo.error) return e.reply(listInfo.error)
-    common.getforwardMsg(e, listInfo)
+    ga.getNeverSpeakInfo(e.group_id, page)
+      .then(res => common.getforwardMsg(e, res))
+      .catch(err => e.reply(err.message))
   }
 
   // 查看不活跃排行榜和入群记录

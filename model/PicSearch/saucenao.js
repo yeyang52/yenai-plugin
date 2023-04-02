@@ -39,7 +39,8 @@ export default async function doSearch (url) {
     const msg = `${n}SauceNAO 30s 内仅剩 ${res.header.short_remaining} 次。`
     n ? message[0].push(msg) : message.push(msg)
   }
-  if (maxSimilarity < Config.picSearch.SauceNAOMinSim) {
+  let { SauceNAOMinSim, useAscii2dWhenLowAcc } = Config.picSearch
+  if ((maxSimilarity < SauceNAOMinSim) && useAscii2dWhenLowAcc) {
     message.push(`SauceNAO 相似度 ${maxSimilarity}% 过低，使用Ascii2D进行搜索`)
     await Ascii2D(url)
       .then(res => message.push(...res.color, ...res.bovw))
@@ -61,7 +62,8 @@ async function getSearchResult (imgURL, db = 999) {
       url: imgURL,
       hide: Config.picSearch.hideImgWhenSaucenaoNSFW
     },
-    closeCheckStatus: true
+    closeCheckStatus: true,
+    timeout: 60000
   }).then(res => {
     if (res.status === 429) {
       throw Error('SauceNAO搜图 搜索次数已达单位时间上限，请稍候再试')

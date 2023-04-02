@@ -23,3 +23,7 @@ hideImg: false
 hideImgWhenWhatanimeR18: false
 #whatanime 发送预览视频，R18 结果不会发送
 whatanimeSendVideo: false
+# 是否在 saucenao 相似度过低时自动使用 ascii2d
+useAscii2dWhenLowAcc: true
+# 是否在 saucenao 搜索失败时自动使用 ascii2d
+useAscii2dWhenFailed: true

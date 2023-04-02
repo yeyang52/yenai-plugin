@@ -43,8 +43,10 @@ export class NewPicSearch extends plugin {
       })
       .catch(async err => {
         await e.reply(err.message)
-        await e.reply('SauceNAO搜图出错，自动使用Ascii2D进行搜索')
-        await this.Ascii2D(e)
+        if (Config.picSearch.useAscii2dWhenFailed) {
+          await e.reply('SauceNAO搜图出错，自动使用Ascii2D进行搜索')
+          await this.Ascii2D(e)
+        }
       })
   }
 

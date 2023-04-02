@@ -141,7 +141,13 @@ export class Fun extends plugin {
     let n = 0
     let failsMsg = '今天已经点过了，还搁这讨赞呢！！！'
     while (true) {
-      let res = await QQApi.thumbUp(e.user_id, 10)
+      let res = null
+      try {
+        res = await QQApi.thumbUp(e.user_id, 10)
+      } catch (error) {
+        logger.error(error)
+        return e.reply('❎ 未检测到oicq或icqq无法进行点赞')
+      }
       logger.debug(`${e.logFnc}给${e.user_id}点赞`, res)
       if (res.code != 0) {
         if (res.code == 1) {

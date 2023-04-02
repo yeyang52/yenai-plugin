@@ -4,9 +4,10 @@ import _ from 'lodash'
 import moment from 'moment'
 import request from '../../lib/request/request.js'
 /** 获取gtk */
-const gtk = function (t) {
+const gtk = function (data) {
+  let ck = common.getck(data)
   // eslint-disable-next-line no-var
-  for (var e = t || '', n = 5381, r = 0, o = e.length; r < o; ++r) {
+  for (var e = ck.p_skey || '', n = 5381, r = 0, o = e.length; r < o; ++r) {
     n += (n << 5) + e.charAt(r).charCodeAt(0)
   }
   return 2147483647 & n
@@ -308,7 +309,6 @@ export default new class {
 
   /** 今日打卡 */
   async signInToday (groupId) {
-    let ck = common.getck('qun.qq.com')
     let body = JSON.stringify({
       dayYmd: moment().format('YYYYMMDD'),
       offset: 0,
@@ -316,7 +316,7 @@ export default new class {
       uid: String(Bot.uin),
       groupId: String(groupId)
     })
-    let url = `https://qun.qq.com/v2/signin/trpc/GetDaySignedList?g_tk=${gtk(ck.p_skey)}`
+    let url = `https://qun.qq.com/v2/signin/trpc/GetDaySignedList?g_tk=${gtk('qun.qq.com')}`
     return await fetch(url, {
       method: 'POST',
       headers: this.headers,
@@ -432,7 +432,7 @@ export default new class {
     let core = null
     try {
       core = (await import('oicq')).core
-    } catch (err) {
+    } catch {
       core = (await import('icqq')).core
     }
     if (times > 20) { times = 20 }
@@ -485,5 +485,21 @@ export default new class {
       await common.sleep(5000)
     }
     return res
+  }
+
+  /**
+   * 获取QQ等级信息
+   *
+   * @param {string|number} userId QQ号码
+   * @returns {Promise<Object>} 包含QQ等级信息的Promise对象
+   */
+  async getQQLevel (userId) {
+    const url = `https://club.vip.qq.com/api/vip/getQQLevelInfo?g_tk=${gtk('vip.qq.com')}&requestBody=%7B%22sClientIp%22%3A%22127.0.0.1%22%2C%22sSessionKey%22%3A%22MfT8vw0UyE%22%2C%22iKeyType%22%3A1%2C%22iAppId%22%3A0%2C%22iUin%22%3A${userId}%7D`
+    return request.get(url, {
+      headers: {
+        cookie: Bot.cookies['vip.qq.com']
+      },
+      statusCode: 'json'
+    })
   }
 }()

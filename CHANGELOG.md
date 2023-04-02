@@ -3,6 +3,7 @@
 * 新增SauceNAO失败是否自动使用ascii2d配置项
 * 新增saucenao相似度过低是否自动使用ascii2d配置项
 * 修改SauceNAO超时时间防止timeOut 
+* `手表协议不支持点赞`不再发送，而是输出在控制台
 * 修复批量踢人报错
 * 优化部分代码
 

@@ -2,11 +2,10 @@ import plugin from '../../../lib/plugins/plugin.js'
 import { Config } from '../components/index.js'
 import { setu, common } from '../model/index.js'
 import { Admin } from './admin.js'
+
 const SWITCH_ERROR = '主人没有开放这个功能哦(＊／ω＼＊)'
 
-let NumReg = '[一壹二两三四五六七八九十百千万亿\\d]+'
-let seturdReg = new RegExp(`^#(setu|无内鬼)\\s?((${NumReg})张)?$`)
-let setcdReg = new RegExp(`^#?设置cd\\s?(\\d+)\\s(${NumReg})(s|秒)?$`, 'i')
+const NumReg = '[一壹二两三四五六七八九十百千万亿\\d]+'
 export class SeSe extends plugin {
   constructor () {
     super({
@@ -16,11 +15,11 @@ export class SeSe extends plugin {
       rule: [
         {
           reg: '^#椰奶tag(.*)$',
-          fnc: 'setutag'
+          fnc: 'setuTag'
         },
         {
-          reg: seturdReg, // 无内鬼
-          fnc: 'seturd'
+          reg: `^#(setu|无内鬼)\\s?((${NumReg})张)?$`, // 无内鬼
+          fnc: 'setuRandom'
         },
         {
           reg: `^#(撤回间隔|群(c|C)(d|D))(${NumReg})(s|秒)?$`,
@@ -30,17 +29,11 @@ export class SeSe extends plugin {
         },
         {
           reg: '^#(开启|关闭)(私聊)?涩涩$',
-          fnc: 'setsese',
+          fnc: 'setSeSe',
           permission: 'master'
         },
         {
-          reg: `^#?(c|C)(d|D)(${NumReg})(s|秒)?$`,
-          fnc: 'atSetCd',
-          event: 'message.group',
-          permission: 'master'
-        },
-        {
-          reg: setcdReg, // 设置cd
+          reg: `^#?设置cd\\s?((\\d+)\\s)?(${NumReg})(s|秒)?$`, // 设置cd
           fnc: 'setCd',
           permission: 'master'
         }
@@ -48,24 +41,24 @@ export class SeSe extends plugin {
     })
   }
 
-  async seturd (e) {
+  async setuRandom (e) {
     if (!await this.Authentication(e)) return
 
-    let iscd = setu.getRemainingCd(e.user_id, e.group_id)
+    const cdTime = setu.getRemainingCd(e.user_id, e.group_id)
 
-    if (iscd) return e.reply(` ${setu.CDMsg}你的CD还有${iscd}`, false, { at: true })
+    if (cdTime) return e.reply(` ${setu.CDMsg}你的CD还有${cdTime}`, false, { at: true })
 
-    let num = seturdReg.exec(e.msg)
+    let num = e.msg.match(new RegExp(NumReg))
 
-    num = num[3] ? common.translateChinaNum(num[3]) : 1
+    num = num ? common.translateChinaNum(num[0]) : 1
 
     if (num > 20) {
       return e.reply('❎ 最大张数不能大于20张')
     } else if (num > 6) {
       e.reply('你先等等，你冲的有点多~')
-    } else {
-      e.reply(setu.startMsg)
     }
+    // 开始执行
+    e.reply(setu.startMsg)
 
     await setu.setuApi(setu.getR18(e.group_id), num)
       .then(res => setu.sendMsgOrSetCd(e, res))
@@ -73,11 +66,11 @@ export class SeSe extends plugin {
   }
 
   // tag搜图
-  async setutag (e) {
+  async setuTag (e) {
     if (!await this.Authentication(e)) return
 
-    let iscd = setu.getRemainingCd(e.user_id, e.group_id)
-    if (iscd) return e.reply(` ${setu.CDMsg}你的CD还有${iscd}`, false, { at: true })
+    let cdTime = setu.getRemainingCd(e.user_id, e.group_id)
+    if (cdTime) return e.reply(` ${setu.CDMsg}你的CD还有${cdTime}`, false, { at: true })
 
     let tag = e.msg.replace(/#|椰奶tag/g, '').trim()
     let num = e.msg.match(new RegExp(`(${NumReg})张`))
@@ -132,32 +125,20 @@ export class SeSe extends plugin {
   }
 
   // 开启r18
-  async setsese (e) {
+  async setSeSe (e) {
     let isopen = !!/开启/.test(e.msg)
     setu.setR18(e.group_id, isopen)
     new Admin().SeSe_Settings(e)
   }
 
-  // 艾特设置cd
-  async atSetCd (e) {
-    let qq = e.message.find(item => item.type == 'at')?.qq
-
-    if (!qq) return false
-
-    let cd = e.msg.match(new RegExp(NumReg))
-
-    if (!cd) return e.reply('❎ CD为空，请检查', true)
-
-    cd = common.translateChinaNum(cd[0])
-
-    setu.setUserCd(e, qq, cd)
-  }
-
   // 指令设置
   async setCd (e) {
-    let cdreg = setcdReg.exec(e.msg)
-    let qq = cdreg[1]
-    let cd = common.translateChinaNum(cdreg[2])
-    setu.setUserCd(e, qq, cd)
+    let reg = `^#?设置cd\\s?((\\d+)\\s)?(${NumReg})(s|秒)?$`
+    let regRet = e.msg.match(new RegExp(reg))
+    let qq = e.message.find(item => item.type == 'at')?.qq ?? regRet[2]
+    let cd = common.translateChinaNum(regRet[3])
+    if (!qq) return e.reply('❎ 请输入要设置QQ', true)
+    if (!cd) return e.reply('❎ CD为空，请检查', true)
+    setu.setUserCd(e, qq ?? regRet[2], cd)
   }
 }

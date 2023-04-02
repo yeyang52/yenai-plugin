@@ -127,7 +127,9 @@ export class Fun extends plugin {
 
   /** 点赞 */
   async thumbUp (e) {
-    if (Bot.config.platform == 3) return e.reply('❎ 手表协议暂不支持点赞请更换协议后重试')
+    if (Bot.config.platform == 3) {
+      return logger.error(`${e.logFnc}手表协议暂不支持点赞请更换协议后重试`)
+    }
     /** 判断是否为好友 */
     let isFriend = await Bot.fl.get(e.user_id)
     let allowLikeByStrangers = Config.Notice.Strangers_love
@@ -145,8 +147,7 @@ export class Fun extends plugin {
       try {
         res = await QQApi.thumbUp(e.user_id, 10)
       } catch (error) {
-        logger.error(error)
-        return e.reply('❎ 未检测到oicq或icqq无法进行点赞')
+        return logger.error(`${e.logFnc}未检测到oicq或icqq无法进行点赞`)
       }
       logger.debug(`${e.logFnc}给${e.user_id}点赞`, res)
       if (res.code != 0) {

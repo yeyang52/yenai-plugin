@@ -74,7 +74,7 @@ export class NGA extends plugin {
     } else {
       // 参考面板
       imgList.push({
-        url: `http://public.yenai.ren/Referenc/${role.name}.png`,
+        url: `http://www.liaobiao.top/Referenc/${role.name}.png`,
         imgPath: `${this.referencePanelPath}/${role.name}.png`
       })
     }

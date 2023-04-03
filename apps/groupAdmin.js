@@ -10,7 +10,10 @@ const API_ERROR = '❎ 出错辣，请稍后重试'
 // 正则
 const Numreg = '[一壹二两三四五六七八九十百千万亿\\d]+'
 const TimeUnitReg = Object.keys(common.Time_unit).join('|')
+
+/** 清理多久没发言的人正则 */
 const noactivereg = new RegExp(`^#(查看|清理|确认清理|获取)(${Numreg})个?(${TimeUnitReg})没发言的人(第(${Numreg})页)?$`)
+/** 我要自闭正则 */
 const Autisticreg = new RegExp(`^#?我要(自闭|禅定)(${Numreg})?个?(${TimeUnitReg})?$`, 'i')
 // 获取定时任务
 const redisTask = await ga.getRedisMuteTask() || false

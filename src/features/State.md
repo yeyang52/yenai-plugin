@@ -6,8 +6,9 @@ category:
 icon: state
 order: -1
 ---
-::: tip
+::: warning
 使用此功能需安装[systeminformation](https://github.com/sebhildebrandt/systeminformation)模块
+
 如未安装请运行`pnpm add systeminformation -w`进行安装
 :::
 ## 功能

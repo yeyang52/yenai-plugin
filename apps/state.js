@@ -2,6 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import os from 'os'
 import { Config } from '../components/index.js'
 import { State, common, puppeteer } from '../model/index.js'
+import { platform, status } from '../constants/other.js'
 import moment from 'moment'
 import _ from 'lodash'
 
@@ -46,17 +47,17 @@ export class NewState extends plugin {
     let data = {
       chartData: JSON.stringify(_.every(_.omit(State.chartData, 'echarts_theme'), _.isEmpty) ? undefined : State.chartData),
       // 头像
-      portrait: `https://q1.qlogo.cn/g?b=qq&s=0&nk=${Bot.uin}`,
+      portrait: `https://q1.qlogo.cn/g?b=qq&s=0&nk=${(e.bot ?? Bot).uin}`,
       // 运行时间
-      runTime: Formatting(Date.now() / 1000 - Bot.stat.start_time),
+      runTime: Formatting(Date.now() / 1000 - (e.bot ?? Bot).stat.start_time),
       // 日历
       calendar: moment().format('YYYY-MM-DD HH:mm:ss'),
       // 昵称
-      nickname: Bot.nickname,
+      nickname: (e.bot ?? Bot).nickname,
       // 系统运行时间
       systime: Formatting(os.uptime()),
       // 收
-      recv: Bot.statistics.recv_msg_cnt,
+      recv: (e.bot ?? Bot).stat.recv_msg_cnt,
       // 发
       sent: await redis.get('Yz:count:sendMsg:total') || 0,
       // 图片
@@ -64,13 +65,13 @@ export class NewState extends plugin {
       // nodejs版本
       nodeversion: process.version,
       // 群数
-      group_quantity: Array.from(Bot.gl.values()).length,
+      group_quantity: Array.from((e.bot ?? Bot).gl.values()).length,
       // 好友数
-      friend_quantity: Array.from(Bot.fl.values()).length,
+      friend_quantity: Array.from((e.bot ?? Bot).fl.values()).length,
       // 登陆设备
-      platform: common.platform[Bot.config.platform],
+      platform: platform[(e.bot ?? Bot).config?.platform],
       // 在线状态
-      status: common.status[Bot.status],
+      status: status[(e.bot ?? Bot).status],
       // 硬盘内存
       HardDisk: await State.getfsSize(),
       // FastFetch

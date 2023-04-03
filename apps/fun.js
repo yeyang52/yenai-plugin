@@ -127,11 +127,11 @@ export class Fun extends plugin {
 
   /** 点赞 */
   async thumbUp (e) {
-    if (Bot.config.platform == 3) {
+    if ((e.bot ?? Bot).config.platform == 3) {
       return logger.error(`${e.logFnc}手表协议暂不支持点赞请更换协议后重试`)
     }
     /** 判断是否为好友 */
-    let isFriend = await Bot.fl.get(e.user_id)
+    let isFriend = await (e.bot ?? Bot).fl.get(e.user_id)
     let allowLikeByStrangers = Config.Notice.Strangers_love
     if (!isFriend && !allowLikeByStrangers) return e.reply('不加好友不点🙄', true)
     /** 点赞成功的图片 */

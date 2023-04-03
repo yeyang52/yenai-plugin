@@ -3,11 +3,14 @@ import moment from 'moment'
 import loader from '../../../lib/plugins/loader.js'
 import { Config } from '../components/index.js'
 import { common, QQApi } from './index.js'
+import { Time_unit, ROLE_MAP } from '../constants/other.js'
 
 // 无管理文案
 const ROLE_ERROR = '我连管理员都木有，这种事怎么可能做到的辣！！！'
-export default new class {
-  constructor () {
+export default class {
+  constructor (e) {
+    this.e = e
+    this.Bot = e.bot ?? Bot
     this.MuteTaskKey = 'yenai:MuteTasks'
   }
 
@@ -18,7 +21,7 @@ export default new class {
    * @returns {Promise<Array>} - 成员信息数组，或成员 QQ 号码数组（取决于 iskey 参数）
    */
   async _getMemberMap (groupId, iskey = false) {
-    let Map = await Bot.pickGroup(groupId - 0).getMemberMap(true)
+    let Map = await this.Bot.pickGroup(groupId - 0).getMemberMap(true)
     return Array.from(iskey ? Map.keys() : Map.values())
   }
 
@@ -33,7 +36,7 @@ export default new class {
    */
   async getMuteList (groupId, info = false) {
     let list = await this._getMemberMap(groupId, true)
-    let groupObj = Bot.pickGroup(groupId - 0)
+    let groupObj = this.Bot.pickGroup(groupId - 0)
     let mutelist = list.filter(item =>
       groupObj.pickMember(item).mute_left != 0
     )
@@ -46,7 +49,7 @@ export default new class {
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${info.user_id}`),
         `\n昵称：${info.card || info.nickname}\n`,
         `QQ：${info.user_id}\n`,
-        `群身份：${common.ROLE_MAP[info.role]}\n`,
+        `群身份：${ROLE_MAP[info.role]}\n`,
         `禁言剩余时间：${common.getsecondformat(Member.mute_left)}`
       ]
     })
@@ -59,7 +62,7 @@ export default new class {
    */
   async releaseAllMute (groupId) {
     let mutelist = await this.getMuteList(groupId)
-    return Promise.all(mutelist.map(item => Bot.pickGroup(groupId - 0).muteMember(item, 0)))
+    return Promise.all(mutelist.map(item => this.Bot.pickGroup(groupId - 0).muteMember(item, 0)))
   }
 
   /**
@@ -121,12 +124,12 @@ export default new class {
      */
   async noactiveList (groupId, times = 1, unit = '月') {
     let nowtime = parseInt(Date.now() / 1000)
-    let timeUnit = common.Time_unit[unit]
+    let timeUnit = Time_unit[unit]
 
     let time = nowtime - times * timeUnit
     let list = await this._getMemberMap(groupId)
 
-    list = list.filter(item => item.last_sent_time < time && item.role == 'member' && item.user_id != Bot.uin)
+    list = list.filter(item => item.last_sent_time < time && item.role == 'member' && item.user_id != this.Bot.uin)
     if (_.isEmpty(list)) return false
     return list
   }
@@ -138,7 +141,7 @@ export default new class {
      */
   async getNeverSpeak (groupId) {
     let list = await this._getMemberMap(groupId)
-    list = list.filter(item => item.join_time == item.last_sent_time && item.role == 'member' && item.user_id != Bot.uin)
+    list = list.filter(item => item.join_time == item.last_sent_time && item.role == 'member' && item.user_id != this.Bot.uin)
     if (_.isEmpty(list)) return false
     return list
   }
@@ -266,7 +269,7 @@ export default new class {
       cron,
       name,
       fnc: () => {
-        Bot.pickGroup(Number(group)).muteAll(type)
+        this.Bot.pickGroup(Number(group)).muteAll(type)
       }
     }
     loader.task.push(_.cloneDeep(task))
@@ -280,13 +283,13 @@ export default new class {
    * @description 从 Redis 中获取群禁言/解禁任务列表，并将其转换为定时任务列表
    * @returns {Promise<Array>} - 返回转换后的定时任务列表，列表中的每一项都包含 cron、name 和 fnc 三个属性。其中，cron 表示任务的执行时间；name 表示任务的名称；fnc 表示任务的执行函数。
   */
-  async getRedisMuteTask () {
+  static async getRedisMuteTask () {
     return JSON.parse(await redis.get(this.MuteTaskKey))?.map(item => {
       return {
         cron: item.cron,
         name: `椰奶群定时${item.type ? '禁言' : '解禁'}${item.group}`,
         fnc: () => {
-          Bot.pickGroup(Number(item.group)).muteAll(item.type)
+          this.Bot.pickGroup(Number(item.group)).muteAll(item.type)
         }
       }
     })
@@ -346,8 +349,8 @@ export default new class {
    * @throws {Error} - 如果缺少必要参数或参数格式不正确，则会抛出错误
    */
   async muteMember (groupId, userId, executor, time = 5, unit = '分') {
-    unit = common.Time_unit[unit.toUpperCase()] ?? (/^\d+$/.test(unit) ? unit : 60)
-    let group = Bot.pickGroup(Number(groupId), true)
+    unit = Time_unit[unit.toUpperCase()] ?? (/^\d+$/.test(unit) ? unit : 60)
+    let group = this.Bot.pickGroup(Number(groupId), true)
     // 判断是否有管理
     if (!group.is_admin && !group.is_owner) throw Error(ROLE_ERROR)
     if (!(/\d{5,}/.test(userId))) throw Error('❎ 请输入正确的QQ号')
@@ -382,7 +385,7 @@ export default new class {
    */
   async kickMember (groupId, userId, executor) {
     let group = null
-    group = Bot.pickGroup(Number(groupId), true)
+    group = this.Bot.pickGroup(Number(groupId), true)
 
     if (!userId || !(/^\d+$/.test(userId))) throw Error('❎ 请输入正确的QQ号')
     if (!groupId || !(/^\d+$/.test(groupId))) throw Error('❎ 请输入正确的群号')
@@ -403,4 +406,4 @@ export default new class {
     if (!res) throw Error('额...踢出失败哩，可能这个淫比较腻害>_<')
     return '已把这个坏淫踢掉惹！！！'
   }
-}()
+}

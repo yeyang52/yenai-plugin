@@ -30,7 +30,7 @@ Bot.on('notice.friend', async (e) => {
     case 'recall': {
       if (!Config.Notice.PrivateRecall) return false
 
-      if (e.user_id == Bot.uin) return false
+      if (e.user_id == (e.bot ?? Bot).uin) return false
       // 主人撤回
       if (Config.masterQQ.includes(e.user_id)) return false
       logger.mark('[椰奶]好友撤回')

@@ -3,7 +3,7 @@ import { Config } from '../../../components/index.js'
 
 Bot.on('message', async (e) => {
   // 判断是否为机器人消息
-  if (e.user_id == Bot.uin) return false
+  if (e.user_id == (e.bot ?? Bot).uin) return false
   // 判断是否主人消息
   if (Config.masterQQ.includes(e.user_id)) return false
   // 删除缓存时间

@@ -51,7 +51,7 @@ export class NewGroupVerify extends plugin {
 
     if (!(/\d{5,}/.test(qq))) return e.reply('❎ 请输入正确的QQ号')
     qq = Number(qq)
-    if (qq == Bot.uin) return
+    if (qq == (e.bot ?? Bot).uin) return
 
     if (Config.masterQQ.includes(qq)) return e.reply('❎ 该命令对机器人管理员无效')
 
@@ -71,7 +71,7 @@ export class NewGroupVerify extends plugin {
 
     if (!(/\d{5,}/.test(qq))) return e.reply('❎ 请输入正确的QQ号')
 
-    if (qq == Bot.uin) return
+    if (qq == (e.bot ?? Bot).uin) return
     qq = Number(qq)
     if (!temp[qq + e.group_id]) return e.reply('❎ 目标群成员当前无需验证')
 
@@ -131,7 +131,7 @@ Bot.on('notice.group.increase', async (e) => {
 
   if (!openGroup.includes(e.group_id)) return
   if (!e.group.is_admin && !e.group.is_owner) return
-  if (e.user_id == Bot.uin) return
+  if (e.user_id == (e.bot ?? Bot).uin) return
   if (Config.masterQQ.includes(e.user_id)) return
 
   await common.sleep(DelayTime * 1000)

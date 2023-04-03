@@ -2,7 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import { common, QQApi } from '../model/index.js'
 import _ from 'lodash'
 import moment from 'moment'
-
+import { status } from '../constants/other.js'
 /** API请求错误文案 */
 const API_ERROR = '❎ 出错辣，请稍后重试'
 
@@ -149,7 +149,7 @@ export class Assistant extends plugin {
       return
     }
 
-    await Bot.setAvatar(e.img[0])
+    await (e.bot ?? Bot).setAvatar(e.img[0])
       .then(() => { e.reply('✅ 头像修改成功') })
       .catch((err) => {
         e.reply('❎ 头像修改失败')
@@ -169,7 +169,7 @@ export class Assistant extends plugin {
       await this.reply('❎ 请发送图片或取消')
       return
     }
-    await Bot.setAvatar(img[0])
+    await (this.e.bot ?? Bot).setAvatar(img[0])
       .then(() => this.e.reply('✅ 头像修改成功'))
       .catch((err) => {
         this.e.reply('❎ 头像修改失败')
@@ -183,7 +183,7 @@ export class Assistant extends plugin {
   async SetNickname (e) {
     let name = e.msg.replace(/#|改昵称/g, '').trim()
 
-    await Bot.setNickname(name)
+    await (e.bot ?? Bot).setNickname(name)
       .then(() => e.reply('✅ 昵称修改成功'))
       .catch((err) => {
         e.reply('❎ 昵称修改失败')
@@ -205,15 +205,16 @@ export class Assistant extends plugin {
 
       if (!group) return e.reply('❎ 群号不能为空')
 
-      if (!Bot.gl.get(Number(msg[1]))) return e.reply('❎ 群聊列表查无此群')
+      if (!(e.bot ?? Bot).gl.get(Number(msg[1]))) return e.reply('❎ 群聊列表查无此群')
     } else {
       group = e.group_id
       card = e.msg.replace(/#|改群名片/g, '').trim()
     }
 
-    if (!card) return e.reply('❎ 名片不能为空')
-
-    Bot.pickGroup(group).setCard(Bot.uin, card)
+    if (!card) {
+      return e.reply('❎ 名片不能为空')
+    }
+    (e.bot ?? Bot).pickGroup(group).setCard((e.bot ?? Bot).uin, card)
       .then(() => e.reply('✅ 群名片修改成功'))
       .catch(err => {
         e.reply('✅ 群名片修改失败')
@@ -231,21 +232,21 @@ export class Assistant extends plugin {
 
       if (!(/^\d+$/.test(groupPhotoid))) return e.reply('❎ 您的群号不合法')
 
-      if (!Bot.gl.get(Number(groupPhotoid))) return e.reply('❎ 群聊列表查无此群')
+      if (!(e.bot ?? Bot).gl.get(Number(groupPhotoid))) return e.reply('❎ 群聊列表查无此群')
     } else {
       if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return logger.mark(`${e.logFnc}该群员权限不足`)
       groupPhotoid = e.group_id
     }
     groupPhotoid = Number(groupPhotoid)
 
-    if (Bot.pickGroup(groupPhotoid).is_admin || Bot.pickGroup(groupPhotoid).is_owner) {
+    if ((e.bot ?? Bot).pickGroup(groupPhotoid).is_admin || (e.bot ?? Bot).pickGroup(groupPhotoid).is_owner) {
       if (!e.img) {
         this.setContext('_GroupAvatarContext')
         e.reply('✅ 请发送图片')
         return
       }
 
-      Bot.pickGroup(groupPhotoid).setAvatar(e.img[0])
+      (e.bot ?? Bot).pickGroup(groupPhotoid).setAvatar(e.img[0])
         .then(() => e.reply('✅ 群头像修改成功'))
         .catch((err) => {
           e.reply('✅ 群头像修改失败')
@@ -268,7 +269,7 @@ export class Assistant extends plugin {
       this.e.reply('❎ 请发送图片或取消')
       return
     }
-    Bot.pickGroup(groupPhotoid).setAvatar(this.e.img[0])
+    (this.e.bot ?? Bot).pickGroup(groupPhotoid).setAvatar(this.e.img[0])
       .then(() => this.e.reply('✅ 群头像修改成功'))
       .catch((err) => {
         this.e.reply('✅ 群头像修改失败')
@@ -291,7 +292,7 @@ export class Assistant extends plugin {
       card = msg.slice(2).join(' ')
 
       if (!group) return e.reply('❎ 群号不能为空')
-      if (!Bot.gl.get(Number(msg[1]))) return e.reply('❎ 群聊列表查无此群')
+      if (!(e.bot ?? Bot).gl.get(Number(msg[1]))) return e.reply('❎ 群聊列表查无此群')
     } else {
       if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return logger.mark(`${e.logFnc}该群员权限不足`)
       group = e.group_id
@@ -302,8 +303,8 @@ export class Assistant extends plugin {
 
     group = Number(group)
 
-    if (Bot.pickGroup(group).is_admin || Bot.pickGroup(group).is_owner) {
-      Bot.pickGroup(group).setName(card)
+    if ((e.bot ?? Bot).pickGroup(group).is_admin || (e.bot ?? Bot).pickGroup(group).is_owner) {
+      (e.bot ?? Bot).pickGroup(group).setName(card)
         .then(() => e.reply('✅ 群昵称修改成功'))
         .catch(err => {
           e.reply('✅ 群昵称修改失败')
@@ -317,7 +318,7 @@ export class Assistant extends plugin {
   /** 改签名 */
   async SetSignature (e) {
     let signs = e.msg.replace(/#|改签名/g, '').trim()
-    await Bot.setSignature(signs)
+    await (e.bot ?? Bot).setSignature(signs)
       .then(() => e.reply('✅ 签名修改成功'))
       .catch((err) => {
         e.reply('❎ 签名修改失败')
@@ -331,11 +332,11 @@ export class Assistant extends plugin {
 
     if (!signs) return e.reply('❎ 状态不为空，可选值：我在线上，离开，隐身，忙碌，Q我吧，请勿打扰')
 
-    let status = common.status; let statusMirr = _.invert(status)
+    let statusMirr = _.invert(status)
     if (!(signs in statusMirr)) return e.reply('❎ 可选值：我在线上，离开，隐身，忙碌，Q我吧，请勿打扰')
 
-    await Bot.setOnlineStatus(statusMirr[signs])
-      .then(() => e.reply(`✅ 现在的在线状态为【${status[Bot.status]}】`))
+    await (e.bot ?? Bot).setOnlineStatus(statusMirr[signs])
+      .then(() => e.reply(`✅ 现在的在线状态为【${status[(e.bot ?? Bot).status]}】`))
       .catch(err => {
         e.reply('❎ 在线状态修改失败')
         console.log(err)
@@ -350,13 +351,13 @@ export class Assistant extends plugin {
     e.message[0].text = regRet[2]
     if (!/^\d+$/.test(qq)) return e.reply('❎ QQ号不正确，人家做不到的啦>_<~')
 
-    if (!Bot.fl.get(Number(qq))) return e.reply('❎ 好友列表查无此人')
+    if (!(e.bot ?? Bot).fl.get(Number(qq))) return e.reply('❎ 好友列表查无此人')
 
     if (!e.message[0].text) e.message.shift()
 
     if (e.message.length === 0) return e.reply('❎ 消息不能为空')
 
-    await Bot.pickFriend(qq).sendMsg(e.message)
+    await (e.bot ?? Bot).pickFriend(qq).sendMsg(e.message)
       .then(() => e.reply('✅ 私聊消息已送达'))
       .catch(err => e.reply(`❎ 发送失败\n错误信息为:${err.message}`))
   }
@@ -375,9 +376,9 @@ export class Assistant extends plugin {
 
     if (!/^\d+$/.test(gpid)) return e.reply('❎ 您输入的群号不合法')
 
-    if (!Bot.gl.get(Number(gpid))) return e.reply('❎ 群聊列表查无此群')
+    if (!(e.bot ?? Bot).gl.get(Number(gpid))) return e.reply('❎ 群聊列表查无此群')
 
-    await Bot.pickGroup(gpid).sendMsg(e.message)
+    await (e.bot ?? Bot).pickGroup(gpid).sendMsg(e.message)
       .then(() => e.reply('✅ 群聊消息已送达'))
       .catch((err) => e.reply(`❎ 发送失败\n错误信息为:${err.message}`))
   }
@@ -397,7 +398,7 @@ export class Assistant extends plugin {
     let sendList = []
 
     // 获取群列表
-    let listMap = Array.from(Bot.gl.values())
+    let listMap = Array.from((e.bot ?? Bot).gl.values())
 
     listMap.forEach((item) => {
       groupidList.push(item.group_id)
@@ -414,13 +415,13 @@ export class Assistant extends plugin {
     if (sendList.length > 3) return e.reply('❎ 不能同时发太多群聊，号寄概率增加！！！')
 
     if (sendList.length === 1) {
-      await Bot.pickGroup(sendList[0]).sendMsg(e.message)
+      await (e.bot ?? Bot).pickGroup(sendList[0]).sendMsg(e.message)
         .then(() => e.reply('✅ ' + sendList[0] + ' 群聊消息已送达'))
         .catch((err) => e.reply(`❎ ${sendList[0]} 发送失败\n错误信息为:${err.message}`))
     } else {
       e.reply('发送多个群聊，将每5秒发送一条消息！')
       for (let i of sendList) {
-        await Bot.pickGroup(i).sendMsg(e.message)
+        await (e.bot ?? Bot).pickGroup(i).sendMsg(e.message)
           .then(() => e.reply('✅ ' + i + ' 群聊消息已送达'))
           .catch((err) => e.reply(`❎ ${i} 发送失败\n错误信息为:${err.message}`))
         await common.sleep(5000)
@@ -437,9 +438,9 @@ export class Assistant extends plugin {
 
     if (!/^\d+$/.test(quits)) return e.reply('❎ 群号不合法')
 
-    if (!Bot.gl.get(Number(quits))) return e.reply('❎ 群聊列表查无此群')
+    if (!(e.bot ?? Bot).gl.get(Number(quits))) return e.reply('❎ 群聊列表查无此群')
 
-    await Bot.pickGroup(quits).quit()
+    await (e.bot ?? Bot).pickGroup(quits).quit()
       .then(() => e.reply('✅ 已退出群聊'))
       .catch((err) => {
         e.reply('❎ 退出失败')
@@ -458,9 +459,9 @@ export class Assistant extends plugin {
     }
     if (!quits) return e.reply('❎ 请输入正确的QQ号')
 
-    if (!Bot.fl.get(Number(quits))) return e.reply('❎ 好友列表查无此人')
+    if (!(e.bot ?? Bot).fl.get(Number(quits))) return e.reply('❎ 好友列表查无此人')
 
-    await Bot.pickFriend(quits).delete()
+    await (e.bot ?? Bot).pickFriend(quits).delete()
       .then(() => e.reply('✅ 已删除好友'))
       .catch((err) => {
         e.reply('❎ 删除失败')
@@ -481,7 +482,7 @@ export class Assistant extends plugin {
     }
     if (!(sex in res)) return e.reply('❎ 可选值：男，女，无(改为无，为无性别)')
 
-    await Bot.setGender(res[sex])
+    await (e.bot ?? Bot).setGender(res[sex])
       .then(() => e.reply('✅ 已修改性别'))
       .catch((err) => {
         e.reply('❎ 修改失败')
@@ -676,7 +677,7 @@ export class Assistant extends plugin {
     let msg = []
     if (/群列表/.test(e.msg)) {
       // 获取群列表并转换为数组
-      let listMap = Array.from(Bot.gl.values())
+      let listMap = Array.from((e.bot ?? Bot).gl.values())
       msg = [
         `群列表如下，共${listMap.length}个群`,
         listMap.map((item, index) => `${index + 1}、${item.group_name}(${item.group_id})`).join('\n'),
@@ -685,7 +686,7 @@ export class Assistant extends plugin {
       ]
     } else {
       // 获取好友列表并转换为数组
-      let listMap = Array.from(Bot.fl.values())
+      let listMap = Array.from((e.bot ?? Bot).fl.values())
       msg = [
         `好友列表如下，共${listMap.length}个好友`,
         listMap.map((item, index) => `${index + 1}、${item.nickname}(${item.user_id})`).join('\n'),
@@ -707,7 +708,7 @@ export class Assistant extends plugin {
     }
     let target = e.isGroup ? e.group : e.friend
 
-    if (source.sender.user_id != Bot.uin) {
+    if (source.sender.user_id != (e.bot ?? Bot).uin) {
       if (e.isGroup) {
         // 群聊判断权限
         if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) {
@@ -721,14 +722,14 @@ export class Assistant extends plugin {
     if (source.message[0].type === 'file' && e.isGroup) {
       // 删除文件
       logger.info(`${e.logFnc}执行删除文件`)
-      await Bot.acquireGfs(e.group_id).rm(source.message[0].fid)
+      await (e.bot ?? Bot).acquireGfs(e.group_id).rm(source.message[0].fid)
     } else {
       // 撤回消息
       logger.info(`${e.logFnc}执行撤回消息`)
       await target.recallMsg(source.message_id)
     }
     await common.sleep(300)
-    let recallcheck = await Bot.getMsg(source.message_id)
+    let recallcheck = await (e.bot ?? Bot).getMsg(source.message_id)
     if (recallcheck && recallcheck.message_id == source.message_id) {
       let msg
       if (e.isGroup) {

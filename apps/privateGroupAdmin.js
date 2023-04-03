@@ -1,9 +1,9 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import { GroupAdmin as ga, common } from '../model/index.js'
-
+import { GroupAdmin as ga } from '../model/index.js'
+import { Time_unit } from '../constants/other.js'
 // 正则
 const Numreg = '[一壹二两三四五六七八九十百千万亿\\d]+'
-const TimeUnitReg = Object.keys(common.Time_unit).join('|')
+const TimeUnitReg = Object.keys(Time_unit).join('|')
 const muteMemberReg = new RegExp(`^#禁言\\s?(\\d+)\\s(\\d+)\\s(${Numreg})?(${TimeUnitReg})?$`)
 export class PrivateGroupAdmin extends plugin {
   constructor () {
@@ -49,7 +49,7 @@ export class PrivateGroupAdmin extends plugin {
   async muteAll (e) {
     if (!e.isMaster) return false
     let regRet = e.msg.match(/全体(禁言|解禁)(\d+)/)
-    let group = Bot.pickGroup(Number(regRet[2]))
+    let group = (e.bot ?? Bot).pickGroup(Number(regRet[2]))
     group.muteAll(regRet[1] == '禁言')
     e.reply(`✅ 已将群「${group.name}(${group.group_id})」${regRet[1] == '禁言' ? '开启' : '解除'}全体禁言`)
   }

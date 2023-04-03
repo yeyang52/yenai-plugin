@@ -2,21 +2,22 @@ import _ from 'lodash'
 import moment from 'moment'
 import plugin from '../../../lib/plugins/plugin.js'
 import { Config } from '../components/index.js'
-import { common, GroupAdmin as ga, puppeteer, QQApi } from '../model/index.js'
+import { common, GroupAdmin as Ga, puppeteer, QQApi } from '../model/index.js'
 import cronValidate from '../tools/cronValidate.js'
 import { groupTitleMsg } from '../constants/msg.js'
+import { Time_unit } from '../constants/other.js'
 // API请求错误文案
 const API_ERROR = '❎ 出错辣，请稍后重试'
 // 正则
 const Numreg = '[一壹二两三四五六七八九十百千万亿\\d]+'
-const TimeUnitReg = Object.keys(common.Time_unit).join('|')
+const TimeUnitReg = Object.keys(Time_unit).join('|')
 
 /** 清理多久没发言的人正则 */
 const noactivereg = new RegExp(`^#(查看|清理|确认清理|获取)(${Numreg})个?(${TimeUnitReg})没发言的人(第(${Numreg})页)?$`)
 /** 我要自闭正则 */
 const Autisticreg = new RegExp(`^#?我要(自闭|禅定)(${Numreg})?个?(${TimeUnitReg})?$`, 'i')
 // 获取定时任务
-const redisTask = await ga.getRedisMuteTask() || false
+const redisTask = await Ga.getRedisMuteTask() || false
 export class GroupAdmin extends plugin {
   constructor () {
     super({
@@ -159,7 +160,7 @@ export class GroupAdmin extends plugin {
     let qq = e.message.find(item => item.type == 'at')?.qq
     let reg = `#禁言\\s?((\\d+)\\s)?(${Numreg})?(${TimeUnitReg})?`
     let regRet = e.msg.match(new RegExp(reg))
-    ga.muteMember(
+    new Ga(e).muteMember(
       e.group_id, qq ?? regRet[2], e.user_id, regRet[3], regRet[4]
     ).then(res => e.reply(res)).catch(err => e.reply(err.message))
   }
@@ -170,7 +171,7 @@ export class GroupAdmin extends plugin {
 
     let qq = e.message.find(item => item.type == 'at')?.qq
     let regRet = e.msg.match(/#解禁(\d+)/)
-    ga.muteMember(
+    new Ga(e).muteMember(
       e.group_id, qq ?? regRet[1], e.user_id, 0
     ).then(res => e.reply(res))
       .catch(err => e.reply(err.message))
@@ -192,7 +193,7 @@ export class GroupAdmin extends plugin {
 
     let qq = e.message.find(item => item.type == 'at')?.qq
     if (!qq) qq = e.msg.replace(/#|踢/g, '').trim()
-    ga.kickMember(e.group_id, qq, e.user_id)
+    new Ga(e).kickMember(e.group_id, qq, e.user_id)
       .then(res => e.reply(res))
       .catch(err => e.reply(err.message))
   }
@@ -209,7 +210,7 @@ export class GroupAdmin extends plugin {
     // 获取数字
     let TabooTime = common.translateChinaNum(regRet[2] || 5)
 
-    let Company = common.Time_unit[_.toUpper(regRet[3]) || '分']
+    let Company = Time_unit[_.toUpper(regRet[3]) || '分']
 
     await e.group.muteMember(e.user_id, TabooTime * Company)
     e.reply('那我就不手下留情了~', true)
@@ -374,7 +375,7 @@ export class GroupAdmin extends plugin {
 
   // 获取禁言列表
   async Mutelist (e) {
-    ga.getMuteList(e.group_id, true)
+    new Ga(e).getMuteList(e.group_id, true)
       .then(res => common.getforwardMsg(e, res))
       .catch(err => e.reply(err.message))
   }
@@ -382,7 +383,7 @@ export class GroupAdmin extends plugin {
   // 解除全部禁言
   async relieveAllMute (e) {
     if (!common.Authentication(e, 'admin', 'admin')) return
-    ga.releaseAllMute(e.group_id)
+    new Ga(e).releaseAllMute(e.group_id)
       .then(() => e.reply('已经把全部的禁言解除辣╮( •́ω•̀)╭'))
       .catch(err => err.reply(err.message))
   }
@@ -395,7 +396,7 @@ export class GroupAdmin extends plugin {
     regRet[2] = common.translateChinaNum(regRet[2] || 1)
     // 确认清理直接执行
     if (regRet[1] == '确认清理') {
-      let msg = await ga.clearNoactive(
+      let msg = await new Ga(e).clearNoactive(
         e.group_id,
         regRet[2],
         regRet[3]
@@ -406,7 +407,7 @@ export class GroupAdmin extends plugin {
     let page = common.translateChinaNum(regRet[5] || 1)
     let msg = null
     try {
-      msg = await ga.getNoactiveInfo(
+      msg = await new Ga(e).getNoactiveInfo(
         e.group_id, regRet[2], regRet[3], page
       )
     } catch (err) {
@@ -414,7 +415,7 @@ export class GroupAdmin extends plugin {
     }
     // 清理
     if (regRet[1] == '清理') {
-      let list = await ga.noactiveList(e.group_id, regRet[2], regRet[3])
+      let list = await new Ga(e).noactiveList(e.group_id, regRet[2], regRet[3])
       e.reply([
         `本次共需清理「${list.length}」人，防止误触发\n`,
         `请发送：#确认清理${regRet[2]}${regRet[3]}没发言的人`
@@ -426,13 +427,13 @@ export class GroupAdmin extends plugin {
   // 查看和清理从未发言的人
   async neverspeak (e) {
     if (!common.Authentication(e, 'admin', 'admin')) return
-    let list = await ga.getNeverSpeak(e.group_id)
+    let list = await new Ga(e).getNeverSpeak(e.group_id)
     if (!list) return e.reply('咋群全是好淫哦~全都发过言辣٩(๑•̀ω•́๑)۶')
     // 确认清理直接执行
     if (/^#?确认清理/.test(e.msg)) {
       e.reply('我要开始清理了哦，这可能需要一点时间٩(๑•ㅂ•)۶')
       let arr = list.map(item => item.user_id)
-      let msg = await ga.BatchKickMember(e.group_id, arr)
+      let msg = await new Ga(e).BatchKickMember(e.group_id, arr)
       return common.getforwardMsg(e, msg)
     }
     // 清理
@@ -445,7 +446,7 @@ export class GroupAdmin extends plugin {
     // 发送列表
     let page = e.msg.match(new RegExp(Numreg))
     page = page ? common.translateChinaNum(page[0]) : 1
-    ga.getNeverSpeakInfo(e.group_id, page)
+    new Ga(e).getNeverSpeakInfo(e.group_id, page)
       .then(res => common.getforwardMsg(e, res))
       .catch(err => e.reply(err.message))
   }
@@ -456,9 +457,9 @@ export class GroupAdmin extends plugin {
     num = num ? common.translateChinaNum(num[0]) : 10
     let msg = ''
     if (/(不活跃|潜水)/.test(e.msg)) {
-      msg = await ga.InactiveRanking(e.group_id, num)
+      msg = await new Ga(e).InactiveRanking(e.group_id, num)
     } else {
-      msg = await ga.getRecentlyJoined(e.group_id, num)
+      msg = await new Ga(e).getRecentlyJoined(e.group_id, num)
     }
     common.getforwardMsg(e, msg)
   }
@@ -479,12 +480,12 @@ export class GroupAdmin extends plugin {
     if (!common.Authentication(e, 'admin', 'admin')) return
     let type = /禁言/.test(e.msg)
     if (/任务/.test(e.msg)) {
-      let task = ga.getMuteTask()
+      let task = new Ga(e).getMuteTask()
       if (!task.length) return e.reply('目前还没有定时禁言任务')
       return common.getforwardMsg(e, task)
     }
     if (/取消/.test(e.msg)) {
-      ga.delMuteTask(e.group_id, type)
+      new Ga(e).delMuteTask(e.group_id, type)
       return e.reply(`已取消本群定时${type ? '禁言' : '解禁'}`)
     }
 
@@ -500,7 +501,7 @@ export class GroupAdmin extends plugin {
       if (Validate !== true) return e.reply(Validate)
     }
 
-    let res = await ga.setMuteTask(e.group_id, cron, type)
+    let res = await new Ga(e).setMuteTask(e.group_id, cron, type, e.self_id ?? Bot.uin)
 
     res
       ? e.reply('✅设置定时禁言成功，可发【#定时禁言任务】查看')
@@ -512,7 +513,7 @@ export class GroupAdmin extends plugin {
     // 浏览器截图
     let screenshot = await puppeteer.Webpage({
       url: `https://qun.qq.com/interactive/honorlist?gc=${e.group_id}&type=1&_wv=3&_wwv=129`,
-      headers: { Cookie: Bot.cookies['qun.qq.com'] },
+      headers: { Cookie: e.bot.cookies['qun.qq.com'] },
       font: true
     })
     if (screenshot) return e.reply(screenshot)
@@ -556,7 +557,7 @@ export class GroupAdmin extends plugin {
     // 图片截图
     let screenshot = await puppeteer.Webpage({
       url: `https://qun.qq.com/m/qun/activedata/speaking.html?gc=${e.group_id}&time=${/(7|七)天/.test(e.msg) ? 1 : 0}`,
-      headers: { Cookie: Bot.cookies['qun.qq.com'] },
+      headers: { Cookie: e.bot.cookies['qun.qq.com'] },
       font: true
     })
     if (screenshot) return e.reply(screenshot)

@@ -7,7 +7,7 @@ Bot.on('notice.group', async (e) => {
   let forwardMsg
   switch (e.sub_type) {
     case 'increase': {
-      if (e.user_id === Bot.uin) {
+      if (e.user_id === (e.bot ?? Bot).uin) {
         if (!Config.getGroup(e.group_id).groupNumberChange) return false
 
         logger.mark('[椰奶]新增群聊')
@@ -46,7 +46,10 @@ Bot.on('notice.group', async (e) => {
             `操作人QQ：${e.operator_id}\n`,
             `解散群号：${e.group_id}`
         ]
-      } else if (e.user_id === Bot.uin && e.operator_id !== Bot.uin) {
+      } else if (
+        e.user_id === (e.bot ?? Bot).uin &&
+        e.operator_id !== (e.bot ?? Bot).uin
+      ) {
         if (!Config.getGroup(e.group_id).groupNumberChange) return false
 
         logger.mark('[椰奶]机器人被踢')
@@ -59,7 +62,10 @@ Bot.on('notice.group', async (e) => {
             `操作人QQ：${e.operator_id}\n`,
             `被踢群号：${e.group_id}`
         ]
-      } else if (e.user_id === Bot.uin && e.operator_id === Bot.uin) {
+      } else if (
+        e.user_id === (e.bot ?? Bot).uin &&
+        e.operator_id === (e.bot ?? Bot).uin
+      ) {
         if (!Config.getGroup(e.group_id).groupNumberChange) return false
 
         logger.mark('[椰奶]机器人退群')
@@ -110,7 +116,7 @@ Bot.on('notice.group', async (e) => {
       if (!Config.getGroup(e.group_id).groupAdminChange) return false
 
       e.set ? logger.mark('[椰奶]机器人被设置管理') : logger.mark('[椰奶]机器人被取消管理')
-      if (e.user_id === Bot.uin) {
+      if (e.user_id === (e.bot ?? Bot).uin) {
         msg = [
           segment.image(
               `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
@@ -140,7 +146,7 @@ Bot.on('notice.group', async (e) => {
 
       if (!Config.getGroup(e.group_id).botBeenBanned) return false
 
-      if (e.user_id != Bot.uin) return false
+      if (e.user_id != (e.bot ?? Bot).uin) return false
 
       if (e.duration == 0) {
         logger.mark('[椰奶]机器人被解除禁言')
@@ -152,7 +158,7 @@ Bot.on('notice.group', async (e) => {
             `处理人QQ：${e.operator_id}\n`,
             `处理群号：${e.group_id}`
         ]
-      } else if (e.user_id === Bot.uin) {
+      } else if (e.user_id === (e.bot ?? Bot).uin) {
         logger.mark('[椰奶]机器人被禁言')
 
         msg = [
@@ -189,7 +195,7 @@ Bot.on('notice.group', async (e) => {
       // 开启或关闭
       if (!Config.getGroup(e.group_id).groupRecall) return false
       // 是否为机器人撤回
-      if (e.user_id == Bot.uin) return false
+      if (e.user_id == (e.bot ?? Bot).uin) return false
       // 是否为主人撤回
       if (Config.masterQQ.includes(e.user_id)) return false
       // 读取
@@ -229,7 +235,7 @@ Bot.on('notice.group', async (e) => {
         special = msgType[res[0].type].type
       } else {
         // 正常处理
-        forwardMsg = await Bot.pickFriend(Config.masterQQ[0]).makeForwardMsg([
+        forwardMsg = await (e.bot ?? Bot).pickFriend(Config.masterQQ[0]).makeForwardMsg([
           {
             message: res,
             nickname: e.group.pickMember(e.user_id).card,

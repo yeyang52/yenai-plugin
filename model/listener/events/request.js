@@ -41,7 +41,7 @@ Bot.on('request', async (e) => {
               `${e.comment}`
             ]
             if (e.inviter_id !== undefined) { msg.push(`邀请人：${e.inviter_id}`) }
-            let sendmsg = await Bot.pickGroup(e.group_id).sendMsg(msg)
+            let sendmsg = await (e.bot ?? Bot).pickGroup(e.group_id).sendMsg(msg)
             await redis.set(`yenai:groupAdd:${sendmsg.message_id}`, e.user_id, { EX: 3600 })
           }
           if (!Config.getGroup(e.group_id).addGroupApplication) return false

@@ -274,7 +274,7 @@ export default class {
     }
     loader.task.push(_.cloneDeep(task))
     loader.creatTask()
-    redisTask.push({ cron, group, type })
+    redisTask.push({ cron, group, type, botId: this.Bot.uin })
     redis.set(this.MuteTaskKey, JSON.stringify(redisTask))
     return true
   }
@@ -284,12 +284,12 @@ export default class {
    * @returns {Promise<Array>} - 返回转换后的定时任务列表，列表中的每一项都包含 cron、name 和 fnc 三个属性。其中，cron 表示任务的执行时间；name 表示任务的名称；fnc 表示任务的执行函数。
   */
   static async getRedisMuteTask () {
-    return JSON.parse(await redis.get(this.MuteTaskKey))?.map(item => {
+    return JSON.parse(await redis.get('yenai:MuteTasks'))?.map(item => {
       return {
         cron: item.cron,
         name: `椰奶群定时${item.type ? '禁言' : '解禁'}${item.group}`,
         fnc: () => {
-          this.Bot.pickGroup(Number(item.group)).muteAll(item.type)
+          (Bot[item.botId] ?? Bot).pickGroup(Number(item.group)).muteAll(item.type)
         }
       }
     })

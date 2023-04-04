@@ -253,7 +253,7 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 
 - [Yunzai-Bot插件索引](https://gitee.com/Hikari666/Yunzai-Bot-plugins-index)
 - [码云镜像库](https://gitee.com/yeyang52/yenai-plugin)
-- [Miao-Yunzai](https://gitee.com/yoimiya-kokomi/miao-plugin)
+- [Miao-Yunzai](https://gitee.com/yoimiya-kokomi/Miao-Yunzai)
 
 ## 免责声明 ❗
 

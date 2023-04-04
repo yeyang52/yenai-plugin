@@ -230,14 +230,14 @@ export default new class Pixiv {
     }
     if (res.error) throw Error(res.error.message)
     if (_.isEmpty(res.illusts)) throw Error('宝~没有数据了哦(๑＞︶＜)و')
-
+    let sortIllusts = _.orderBy(res.illusts, 'total_bookmarks', 'desc')
     let illusts = []
-    let filter = 0
+    let filterNum = 0
     let NowNum = res.illusts.length
-    for (let i of res.illusts) {
+    for (let i of sortIllusts) {
       let { id, title, user, tags, total_bookmarks, image_urls, x_restrict } = this._format(i)
       if (isfilter && x_restrict) {
-        filter++
+        filterNum++
         continue
       }
       illusts.push([
@@ -253,7 +253,7 @@ export default new class Pixiv {
     if (_.isEmpty(illusts)) throw Error('该页全为涩涩内容已全部过滤(#／。＼#)')
 
     return [
-      `本页共${NowNum}张${filter ? `，过滤${filter}张` : ''}\n可尝试使用 "#tagpro搜图${tag}第${page - 0 + 1}页" 翻页\n无数据则代表无下一页`,
+      `本页共${NowNum}张${filterNum ? `，过滤${filterNum}张` : ''}\n可尝试使用 "#tagpro搜图${tag}第${page - 0 + 1}页" 翻页\n无数据则代表无下一页`,
       ...illusts
     ]
   }

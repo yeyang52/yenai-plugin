@@ -396,12 +396,17 @@ export class GroupAdmin extends plugin {
     regRet[2] = common.translateChinaNum(regRet[2] || 1)
     // 确认清理直接执行
     if (regRet[1] == '确认清理') {
-      let msg = await new Ga(e).clearNoactive(
-        e.group_id,
-        regRet[2],
-        regRet[3]
-      )
-      return common.getforwardMsg(e, msg)
+      try {
+        return common.getforwardMsg(e,
+          await new Ga(e).clearNoactive(
+            e.group_id,
+            regRet[2],
+            regRet[3]
+          )
+        )
+      } catch (error) {
+        return e.reply(error.message)
+      }
     }
     // 查看和清理都会发送列表
     let page = common.translateChinaNum(regRet[5] || 1)
@@ -427,8 +432,13 @@ export class GroupAdmin extends plugin {
   // 查看和清理从未发言的人
   async neverspeak (e) {
     if (!common.Authentication(e, 'admin', 'admin')) return
-    let list = await new Ga(e).getNeverSpeak(e.group_id)
-    if (!list) return e.reply('咋群全是好淫哦~全都发过言辣٩(๑•̀ω•́๑)۶')
+    let list = null
+    try {
+      list = await new Ga(e).getNeverSpeak(e.group_id)
+    } catch (error) {
+      return e.reply(error.message)
+    }
+
     // 确认清理直接执行
     if (/^#?确认清理/.test(e.msg)) {
       e.reply('我要开始清理了哦，这可能需要一点时间٩(๑•ㅂ•)۶')

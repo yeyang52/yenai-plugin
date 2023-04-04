@@ -1,6 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { Config } from '../components/index.js'
-import { common, GroupAdmin as ga } from '../model/index.js'
+import { common, GroupAdmin as Ga } from '../model/index.js'
 import _ from 'lodash'
 // 全局
 let temp = {}
@@ -85,8 +85,12 @@ export class NewGroupVerify extends plugin {
   }
 
   async cmdReverifyNeverSpeak (e) {
-    let list = await ga.getNeverSpeak(e.group_id)
-    if (!list) return e.reply('咋群全是好淫哦~全都发过言辣٩(๑•̀ω•́๑)۶')
+    let list = null
+    try {
+      list = await new Ga(e).getNeverSpeak(e.group_id)
+    } catch (error) {
+      return e.reply(error.message)
+    }
     for (let item of list) {
       await verify(item.user_id, e.group_id, e)
       await common.sleep(2000)

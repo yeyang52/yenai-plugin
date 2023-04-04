@@ -1,5 +1,5 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import { GroupAdmin as ga } from '../model/index.js'
+import { GroupAdmin as Ga } from '../model/index.js'
 import { Time_unit } from '../constants/other.js'
 // 正则
 const Numreg = '[一壹二两三四五六七八九十百千万亿\\d]+'
@@ -35,14 +35,14 @@ export class PrivateGroupAdmin extends plugin {
   async muteMember (e) {
     if (!e.isMaster) return false
     let regRet = e.msg.match(muteMemberReg)
-    let res = await ga.muteMember(regRet[1], regRet[2], e.user_id, regRet[3], regRet[4])
+    let res = await new Ga(e).muteMember(regRet[1], regRet[2], e.user_id, regRet[3], regRet[4])
     e.reply(res)
   }
 
   async noMuteMember (e) {
     if (!e.isMaster) return false
     let regRet = e.msg.match(/^#解禁\s?(\d+)\s(\d+)$/)
-    let res = await ga.muteMember(regRet[1], regRet[2], e.user_id, 0)
+    let res = await new Ga(e).muteMember(regRet[1], regRet[2], e.user_id, 0)
     e.reply(res)
   }
 
@@ -57,7 +57,7 @@ export class PrivateGroupAdmin extends plugin {
   async kickMember (e) {
     if (!e.isMaster) return false
     let regRet = e.msg.match(/#踢\s?(\d+)\s(\d+)$/)
-    let res = await ga.kickMember(regRet[1], regRet[2], e.user_id)
+    let res = await Ga.kickMember(regRet[1], regRet[2], e.user_id)
     e.reply(res)
   }
 }

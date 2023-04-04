@@ -74,12 +74,11 @@ export default class {
    * @param {string} unit - 时间单位
    * @param {number} [page=1] - 需要获取的页码，默认为 1
    * @returns {Promise<Array<Array>>} - 由每个成员的信息组成的数组，包括成员的 QQ 号码、昵称、最后发言时间等信息
-   * @throws {Error} - 如果没有符合条件的成员，将抛出一个错误
-   * @throws {Error} - 如果指定的页码不存在，将抛出一个错误
+   * @throws {Error} 如果没有符合条件的成员，将抛出一个错误
+   * @throws {Error} 如果指定的页码不存在，将抛出一个错误
    */
   async getNoactiveInfo (groupId, times, unit, page = 1) {
     let list = await this.noactiveList(groupId, times, unit)
-    if (!list) throw Error(`暂时没有${times}${unit}没发言的淫哦╮( •́ω•̀ )╭`)
     list.sort((a, b) => a.last_sent_time - b.last_sent_time)
     let msg = list.map(item =>
       [
@@ -107,10 +106,10 @@ export default class {
      * @param {Number} times 时间数
      * @param {String} unit 单位 (天)
      * @return {Promise<Boolean>}
+     * @throws {Error} 如果没有符合条件的成员，将抛出一个错误
      */
   async clearNoactive (groupId, times, unit) {
     let list = await this.noactiveList(groupId, times, unit)
-    if (!list) return false
     list = list.map(item => item.user_id)
     return this.BatchKickMember(groupId, list)
   }
@@ -121,6 +120,7 @@ export default class {
      * @param {Number} times 时间数
      * @param {String} unit 单位 (天)
      * @return {Promise<Number[]>}
+     * @throws {Error} 如果没有符合条件的成员，将抛出一个错误
      */
   async noactiveList (groupId, times = 1, unit = '月') {
     let nowtime = parseInt(Date.now() / 1000)
@@ -130,7 +130,7 @@ export default class {
     let list = await this._getMemberMap(groupId)
 
     list = list.filter(item => item.last_sent_time < time && item.role == 'member' && item.user_id != this.Bot.uin)
-    if (_.isEmpty(list)) return false
+    if (_.isEmpty(list)) throw Error(`暂时没有${times}${unit}没发言的淫哦╮( •́ω•̀ )╭`)
     return list
   }
 
@@ -138,11 +138,16 @@ export default class {
      * @description: 返回从未发言的人
      * @param {Number} geoupId 群号
      * @return {Promise<Number[]>}
+     * @throws {Error} 如果没有符合条件的成员，将抛出一个错误
      */
   async getNeverSpeak (groupId) {
     let list = await this._getMemberMap(groupId)
-    list = list.filter(item => item.join_time == item.last_sent_time && item.role == 'member' && item.user_id != this.Bot.uin)
-    if (_.isEmpty(list)) return false
+    list = list.filter(item =>
+      item.join_time == item.last_sent_time &&
+      item.role == 'member' &&
+      item.user_id != this.Bot.uin
+    )
+    if (_.isEmpty(list)) throw Error('本群暂无从未发言的人哦~')
     return list
   }
 
@@ -153,12 +158,11 @@ export default class {
    * @param {string|number} groupId - 群号
    * @param {number} [page=1] - 分页页码，默认为第一页
    * @returns {Promise<Array<string>>} 包含从未发言成员信息的数组
-   * @throws {Error} 当获取不到群成员列表时抛出错误
+   * @throws {Error} 如果没有符合条件的成员，将抛出一个错误
    * @throws {Error} 当页码超出范围时抛出错误
    */
   async getNeverSpeakInfo (groupId, page = 1) {
     let list = await this.getNeverSpeak(groupId)
-    if (!list) throw Error('咋群全是好淫哦~全都发过言辣٩(๑•̀ω•́๑)۶')
     list.sort((a, b) => a.join_time - b.join_time)
     let msg = list.map(item => {
       return [

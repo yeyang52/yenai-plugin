@@ -207,7 +207,7 @@ export class Fun extends plugin {
       return e.reply(API_ERROR)
     }
 
-    const { Title, data } = res
+    const { Title, data } = res.data
     const items = _.take(data, 20).map((i) => segment.image(i))
     const msg = [Title, ...items]
     common.recallSendForwardMsg(e, msg)

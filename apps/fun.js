@@ -55,10 +55,10 @@ export class Fun extends plugin {
           reg: '^#?coser$',
           fnc: 'coser'
         },
-        {
-          reg: `^#?来点(${Object.keys(heisiType).join('|')})$`,
-          fnc: 'heisiwu'
-        },
+        // {
+        //   reg: `^#?来点(${Object.keys(heisiType).join('|')})$`,
+        //   fnc: 'heisiwu'
+        // },
         {
           reg: '^#?铃声搜索.*$',
           fnc: 'lingsheng'
@@ -71,10 +71,10 @@ export class Fun extends plugin {
           reg: apiReg,
           fnc: 'picture'
         },
-        {
-          reg: '^#?来点神秘图(\\d+|s.*)?$',
-          fnc: 'mengdui'
-        },
+        // {
+        //   reg: '^#?来点神秘图(\\d+|s.*)?$',
+        //   fnc: 'mengdui'
+        // },
         {
           reg: '^#acg.*$',
           fnc: 'acg'

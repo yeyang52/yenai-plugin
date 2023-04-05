@@ -145,7 +145,7 @@ export class Assistant extends plugin {
   async SetAvatar (e) {
     if (!e.img) {
       this.setContext('_avatarContext')
-      e.reply('✅ 请发送图片')
+      e.reply('⚠ 请发送图片')
       return
     }
 
@@ -166,7 +166,7 @@ export class Assistant extends plugin {
     }
     if (!img) {
       this.setContext('_avatarContext')
-      await this.reply('❎ 请发送图片或取消')
+      await this.reply('⚠ 请发送图片或取消')
       return
     }
     await (this.e.bot ?? Bot).setAvatar(img[0])
@@ -242,7 +242,7 @@ export class Assistant extends plugin {
     if ((e.bot ?? Bot).pickGroup(groupPhotoid).is_admin || (e.bot ?? Bot).pickGroup(groupPhotoid).is_owner) {
       if (!e.img) {
         this.setContext('_GroupAvatarContext')
-        e.reply('✅ 请发送图片')
+        e.reply('⚠ 请发送图片')
         return
       }
 
@@ -266,7 +266,7 @@ export class Assistant extends plugin {
     }
     if (!img) {
       this.setContext('_GroupAvatarContext')
-      this.e.reply('❎ 请发送图片或取消')
+      this.e.reply('⚠ 请发送图片或取消')
       return
     }
     (this.e.bot ?? Bot).pickGroup(groupPhotoid).setAvatar(this.e.img[0])
@@ -511,7 +511,7 @@ export class Assistant extends plugin {
 
     if (_.isEmpty(img)) {
       this.setContext('_ImageLinkContext')
-      await this.reply('✅ 请发送图片')
+      await this.reply('⚠ 请发送图片')
       return
     }
     await e.reply(`✅ 检测到${img.length}张图片`)
@@ -537,7 +537,7 @@ export class Assistant extends plugin {
     }
     if (!img) {
       this.setContext('_ImageLinkContext')
-      await this.reply('❎ 请发送图片或取消')
+      await this.reply('⚠ 请发送图片或取消')
       return
     }
     await this.e.reply(img[0])

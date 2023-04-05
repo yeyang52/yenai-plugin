@@ -110,7 +110,7 @@ export class NewPicSearch extends plugin {
     if (!_.isEmpty(e.img)) return true
     e.sourceFunName = funName
     this.setContext('MonitorImg')
-    e.reply('✅ 请发送图片')
+    e.reply('⚠ 请发送图片')
     return false
   }
 

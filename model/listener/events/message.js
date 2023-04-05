@@ -164,6 +164,8 @@ Bot.on('message', async (e) => {
       `发送人昵称：${e.sender.nickname}\n`,
       `消息内容：${e.raw_message}`
     ]
+  } else {
+    return false
   }
   // 发送消息
   await common.sendMasterMsg(msg)

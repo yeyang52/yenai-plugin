@@ -315,6 +315,18 @@ export function supportGuoba () {
           component: 'Switch'
         },
         {
+          field: 'picSearch.useAscii2dWhenLowAcc',
+          label: 'saucenao 相似度过低使用ascii2d',
+          bottomHelpMessage: '是否在 saucenao 相似度过低时自动使用 ascii2d',
+          component: 'Switch'
+        },
+        {
+          field: 'picSearch.useAscii2dWhenFailed',
+          label: 'saucenao 搜索失败使用ascii2d',
+          bottomHelpMessage: '是否在 saucenao 搜索失败时自动使用 ascii2d',
+          component: 'Switch'
+        },
+        {
           field: 'picSearch.limit',
           label: '搜图次数限制',
           bottomHelpMessage: '每名用户每日次数限制（0 则无限制）',

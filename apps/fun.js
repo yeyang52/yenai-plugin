@@ -56,7 +56,7 @@ export class Fun extends plugin {
           fnc: 'coser'
         },
         {
-          reg: `#?来点(${Object.keys(heisiType).join('|')})$`,
+          reg: `^#?来点(${Object.keys(heisiType).join('|')})$`,
           fnc: 'heisiwu'
         },
         {

@@ -4,13 +4,16 @@ home: true
 icon: home
 heroImage: /img/hero.png
 heroText: Yenai-plugin
-tagline: Yunzai-Bot的扩展插件，提供对Bot的一些便捷操作。
+tagline: 一个具有强大功能的 Yunzai-Bot 扩展插件🐏
 actions:
   - text: 快速上手 💡
     link: /about
     type: primary
-  - text: 项目简介 🪀
+  - text: 介绍 🪀
     link: /about#介绍-👀
+    type: secondary
+  - text: 配置 🛠
+    link: /config/
     type: secondary
 features:
 - title: 申请处理

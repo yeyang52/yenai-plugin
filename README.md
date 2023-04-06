@@ -266,6 +266,6 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 
 💬：254974507(已锁)
 
-❤️：[爱发电](https://afdian.net/a/yeyang52)
+❤️：[打赏](https://www.yenai.ren/donate.html)
 
 ![Alt](https://repobeats.axiom.co/api/embed/42b5a7769074be124bd9ab02456897e37d1581f1.svg "Repobeats analytics image")

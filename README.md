@@ -1,16 +1,19 @@
-<div align="center">
-<img src="resources/img/kbn.png" alt="看板娘" width = "350">
-<br>
-<h1>Yenai-Plugin</h1>
 
-🐑 Yenai-Plugin是一个Yunzai-Bot的扩展插件，提供对Bot的一些便捷操作。<img src="https://media.giphy.com/media/mGcNjsfWAjY5AEZNw6/giphy.gif" width="50">
-<br>
-<br>
+<img src="resources/img/logo.gif" alt="看板娘" width = "200" align="right">
+
+<div align="left">
+
+# Yenai-Plugin
+
+🐑 **Yenai-Plugin是一个Yunzai-Bot的扩展插件，提供对Bot的一些便捷操作。**<img src="https://media.giphy.com/media/mGcNjsfWAjY5AEZNw6/giphy.gif" width="50">
+
 <!-- <img src="https://count.getloli.com/get/@:yenai-plugin?theme=rule34" /> <br> -->
-<img src="https://counter.seku.su/cmoe?name=yenai-plugin&theme=r34" /> <br>
+
+<img src="https://counter.seku.su/cmoe?name=yenai-plugin&theme=r34" />
 
 ![Nodejs](https://img.shields.io/badge/-Node.js-3C873A?style=flat&logo=Node.js&logoColor=white) 
 ![JavaScript](https://img.shields.io/badge/-JavaScript-eed718?style=flat&logo=javascript&logoColor=ffffff)
+
 [![license](https://img.shields.io/github/license/yeyang52/yenai-plugin.svg?style=flat&logo=gnu)](https://github.com/yeyang52/yenai-plugin/blob/master/LICENSE) 
 [![YunzaiBot](https://img.shields.io/badge/Yunzai-V3.0.0-black?style=flat&logo=dependabot)](https://gitee.com/Le-niao/Yunzai-Bot) 
 [![Group](https://img.shields.io/badge/Group-254974507-red?style=flat&logo=GroupMe&logoColor=white)](https://jq.qq.com/?_wv=1027&k=o8FTig5Z) 
@@ -21,10 +24,11 @@
 [![GitHub stars](https://img.shields.io/github/stars/yeyang52/yenai-plugin)](https://github.com/yeyang52/yenai-plugin/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/yeyang52/yenai-plugin)](https://github.com/yeyang52/yenai-plugin/network)
 [![GitHub issues](https://img.shields.io/github/issues/yeyang52/yenai-plugin)](https://github.com/yeyang52/yenai-plugin/issues)
+</div>
 
 [![Star Trend](https://api.star-history.com/svg?repos=yeyang52/yenai-plugin&type=Timeline)](https://seladb.github.io/StarTrack-js/#/preload?r=yeyang52,yenai-plugin)
 
-</div>
+
 
 ---
 

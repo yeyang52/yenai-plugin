@@ -195,7 +195,7 @@ export default new class OSUtils {
 
     return {
       ...this.Circle(cpu_info / 100),
-      inner: parseInt(cpu_info),
+      inner: `${parseInt(cpu_info)}%`,
       title: 'CPU',
       info: [
         `${cpumodel} ${hx.length}核 ${arch}`,

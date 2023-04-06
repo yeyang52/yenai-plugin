@@ -11,12 +11,16 @@
 
 <!-- <img src="https://counter.seku.su/cmoe?name=yenai-plugin&theme=r34" /><br> -->
 
-[![YunzaiBot](https://img.shields.io/badge/Yunzai-V3.0.0-black?style=flat&logo=dependabot)](https://gitee.com/Le-niao/Yunzai-Bot) 
-[![Group](https://img.shields.io/badge/Group-254974507-red?style=flat&logo=GroupMe&logoColor=white)](https://jq.qq.com/?_wv=1027&k=o8FTig5Z) 
+
+[![deploy_docs](https://github.com/yeyang52/yenai-plugin/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/yeyang52/yenai-plugin/actions/workflows/deploy-docs.yml)
+[![Vercel](https://therealsujitk-vercel-badge.vercel.app/?app=yenai-plugin-eta)](https://vercel.com/yeyang52/yenai-plugin)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/fbae5073-1b4c-4c62-a818-6cc8e100d336/deploy-status)](https://app.netlify.com/sites/yenai-plugin/deploys)
 
 ![Nodejs](https://img.shields.io/badge/-Node.js-3C873A?style=flat&logo=Node.js&logoColor=white) 
 ![JavaScript](https://img.shields.io/badge/-JavaScript-eed718?style=flat&logo=javascript&logoColor=ffffff)
 [![license](https://img.shields.io/github/license/yeyang52/yenai-plugin.svg?style=flat&logo=gnu)](https://github.com/yeyang52/yenai-plugin/blob/master/LICENSE) 
+[![YunzaiBot](https://img.shields.io/badge/Yunzai-V3.0.0-black?style=flat&logo=dependabot)](https://gitee.com/Le-niao/Yunzai-Bot) 
+[![Group](https://img.shields.io/badge/Group-254974507-red?style=flat&logo=GroupMe&logoColor=white)](https://jq.qq.com/?_wv=1027&k=o8FTig5Z) 
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/yeyang52/yenai-plugin)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/yeyang52/yenai-plugin)

@@ -2,7 +2,7 @@
 title: 首页
 home: true
 icon: home
-heroImage: /img/hero.png
+heroImage: /img/logo.gif
 heroText: Yenai-plugin
 tagline: 一个具有强大功能的 Yunzai-Bot 扩展插件🐏
 actions:

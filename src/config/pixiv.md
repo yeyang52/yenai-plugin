@@ -23,16 +23,19 @@ icon: dart
 ### pixivDirectConnection
 - 类型：`boolean`
 - 默认：`false`
+  
 开启pixiv图片直连，国内需配合代理使用
 
 ### pixivImageProxy
 - 类型：`string`
 - 默认：`i.pixiv.re`
+
 pixiv图片反代，开启直连后反代服务则无效
 
 ### limit
 - 类型：`number`
 - 默认：`30`
+
 每名用户每日次数限制（0 则无限制）
 
 ### refresh_token

@@ -5,18 +5,18 @@
 
 # Yenai-Plugin
 
-🐑 **Yenai-Plugin是一个Yunzai-Bot的扩展插件，提供对Bot的一些便捷操作。**<img src="https://media.giphy.com/media/mGcNjsfWAjY5AEZNw6/giphy.gif" width="50">
+🐑 **_Yenai-Plugin是一个Yunzai-Bot的扩展插件，提供对Bot的一些便捷操作。_**<img src="https://media.giphy.com/media/mGcNjsfWAjY5AEZNw6/giphy.gif" width="50">
 
-<!-- <img src="https://count.getloli.com/get/@:yenai-plugin?theme=rule34" /> <br> -->
+<br><img src="https://count.getloli.com/get/@:yenai-plugin?theme=rule34" /><br>
 
-<img src="https://counter.seku.su/cmoe?name=yenai-plugin&theme=r34" />
+<!-- <img src="https://counter.seku.su/cmoe?name=yenai-plugin&theme=r34" /><br> -->
+
+[![YunzaiBot](https://img.shields.io/badge/Yunzai-V3.0.0-black?style=flat&logo=dependabot)](https://gitee.com/Le-niao/Yunzai-Bot) 
+[![Group](https://img.shields.io/badge/Group-254974507-red?style=flat&logo=GroupMe&logoColor=white)](https://jq.qq.com/?_wv=1027&k=o8FTig5Z) 
 
 ![Nodejs](https://img.shields.io/badge/-Node.js-3C873A?style=flat&logo=Node.js&logoColor=white) 
 ![JavaScript](https://img.shields.io/badge/-JavaScript-eed718?style=flat&logo=javascript&logoColor=ffffff)
-
 [![license](https://img.shields.io/github/license/yeyang52/yenai-plugin.svg?style=flat&logo=gnu)](https://github.com/yeyang52/yenai-plugin/blob/master/LICENSE) 
-[![YunzaiBot](https://img.shields.io/badge/Yunzai-V3.0.0-black?style=flat&logo=dependabot)](https://gitee.com/Le-niao/Yunzai-Bot) 
-[![Group](https://img.shields.io/badge/Group-254974507-red?style=flat&logo=GroupMe&logoColor=white)](https://jq.qq.com/?_wv=1027&k=o8FTig5Z) 
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/yeyang52/yenai-plugin)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/yeyang52/yenai-plugin)
@@ -26,9 +26,13 @@
 [![GitHub issues](https://img.shields.io/github/issues/yeyang52/yenai-plugin)](https://github.com/yeyang52/yenai-plugin/issues)
 </div>
 
+---
+
+<div align="center">
+
 [![Star Trend](https://api.star-history.com/svg?repos=yeyang52/yenai-plugin&type=Timeline)](https://seladb.github.io/StarTrack-js/#/preload?r=yeyang52,yenai-plugin)
 
-
+</div>
 
 ---
 

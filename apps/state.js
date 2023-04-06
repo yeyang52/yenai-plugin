@@ -92,7 +92,7 @@ export class NewState extends plugin {
       ...data
     }, {
       e,
-      scale: 2.0
+      scale: 1.4
     })
     interval = false
   }

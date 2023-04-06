@@ -47,6 +47,6 @@ async function versionInfo (e) {
       changelogs: Version.logs,
       elem: 'cryo'
     },
-    { e, scale: 2 }
+    { e, scale: 1.4 }
   )
 }

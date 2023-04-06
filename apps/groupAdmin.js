@@ -148,6 +148,10 @@ export class GroupAdmin extends plugin {
         {
           reg: '^#?(开启|关闭)加群通知$',
           fnc: 'handleGroupAdd'
+        },
+        {
+          reg: '^#?加精$',
+          fnc: 'setEssenceMessage'
         }
       ]
     })
@@ -681,5 +685,14 @@ export class GroupAdmin extends plugin {
     if (!isopen && type == 'del') return e.reply('❎ 本群暂未开启加群申请通知')
     Config.modifyarr('groupAdd', 'openGroup', e.group_id, type)
     e.reply(`✅ 已${type == 'add' ? '开启' : '关闭'}「${e.group_id}」的加群申请通知`)
+  }
+
+  /** 加精 */
+  async setEssenceMessage (e) {
+    if (!common.Authentication(e, 'admin', 'admin')) return
+    let source = (await e.group.getChatHistory(e.source.seq, 1)).pop()
+    if (!source) return e.reply('请对要加精的消息进行回复')
+    let res = await Bot.setEssenceMessage(source.message_id)
+    e.reply(res ?? '加精失败')
   }
 }

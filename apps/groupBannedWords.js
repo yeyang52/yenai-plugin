@@ -61,6 +61,11 @@ export class NewGroupBannedWords extends plugin {
       if (type.penaltyType == 2 || type.penaltyType == 5) {
         await e.member.mute(3600)
       }
+      e.reply([
+        `触发违禁词：${word}\n`,
+        `触发者：${e.user_id}\n`,
+        `执行：${GroupBannedWords.penaltyTypeMap[type.penaltyType]}`
+      ])
     }
   }
 

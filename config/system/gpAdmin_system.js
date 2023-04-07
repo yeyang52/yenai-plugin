@@ -242,6 +242,24 @@ export const helpList = [{
       icon: 17
     }]
 }, {
+  group: '违禁词',
+  list: [
+    {
+      title: '#新增(模糊|精确)?(踢|禁|撤|踢撤|禁撤)?违禁词.*',
+      desc: '前面为匹配模式后面为惩罚',
+      icon: 7
+    },
+    {
+      title: '#删除违禁词.*',
+      desc: '---',
+      icon: 3
+    },
+    {
+      title: '#查看违禁词.*',
+      desc: '---',
+      icon: 9
+    }]
+}, {
   group: 'Bot为群主可用',
   list: [
     {

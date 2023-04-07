@@ -17,6 +17,7 @@ export default new class {
     }
     this.dataCach = {}
     this.muteTimeCach = {}
+    this.groupTitleCach = {}
   }
 
   addBannedWords (
@@ -123,5 +124,39 @@ export default new class {
       delete this.dataCach[groupId]
       return false
     }
+  }
+
+  setTitleFilterModeChange (groupId) {
+    let data = Data.readJSON(`${groupId}.json`, this.root)
+    data.TitleFilterModeChange = data.TitleFilterModeChange ? 0 : 1
+    Data.writeJSON(`${groupId}.json`, data, this.root)
+    return data.TitleFilterModeChange
+  }
+
+  getTitleFilterModeChange (groupId) {
+    let data = Data.readJSON(`${groupId}.json`, this.root)
+    return data.TitleFilterModeChange ?? 0
+  }
+
+  addTitleBannedWords (groupId, arr) {
+    let data = Data.readJSON(`${groupId}.json`, this.root)
+    if (!data.TitleBannedWords)data.TitleBannedWords = []
+    data.TitleBannedWords.push(...arr)
+    Data.writeJSON(`${groupId}.json`, data, this.root)
+    delete this.groupTitleCach[groupId]
+  }
+
+  getTitleBannedWords (groupId) {
+    if (this.groupTitleCach[groupId]) return this.groupTitleCach[groupId]
+    let data = Data.readJSON(`${groupId}.json`, this.root).TitleBannedWords ?? []
+    this.groupTitleCach[groupId] = data
+    return data
+  }
+
+  delTitleBannedWords (groupId, arr) {
+    let data = Data.readJSON(`${groupId}.json`, this.root)
+    data.TitleBannedWords = _.differenceBy(data.TitleBannedWords, arr)
+    Data.writeJSON(`${groupId}.json`, data, this.root)
+    delete this.groupTitleCach[groupId]
   }
 }()

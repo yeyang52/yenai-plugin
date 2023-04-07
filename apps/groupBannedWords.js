@@ -32,6 +32,14 @@ export class NewGroupBannedWords extends plugin {
         {
           reg: '^#?设置违禁词禁言时间(\\d+)$',
           fnc: 'muteTime'
+        },
+        {
+          reg: '^#(增加|减少|查看)头衔屏蔽词.*$',
+          fnc: 'ProhibitedTitle'
+        },
+        {
+          reg: '^#切换头衔屏蔽词匹配(模式)?$',
+          fnc: 'ProhibitedTitlePattern'
         }
       ]
 
@@ -46,36 +54,40 @@ export class NewGroupBannedWords extends plugin {
     if (_.isEmpty(groupBannedWords)) {
       return false
     }
-    let keyWord = e.toString()
+    const KeyWord = e.toString()
       .replace(/#|＃/g, '')
       .replace(`{at:${Bot.uin}}`, '')
       .trim()
-    keyWord = this.trimAlias(keyWord)
-    const word = _.find(Object.keys(groupBannedWords), wrd => _.includes(keyWord, wrd))
-    if (!word) return false
+    const trimmedKeyWord = this.trimAlias(KeyWord)
+    const matchingWord = Object.keys(groupBannedWords).find((word) =>
+      _.includes(trimmedKeyWord, word)
+    )
+    if (!matchingWord) return false
 
-    const type = groupBannedWords[word]
-    const isAccurateModeOK = type.matchType == 1 && keyWord === word
-    const isVagueModeOK = type.matchType == 2 && _.includes(keyWord, word)
+    const type = groupBannedWords[matchingWord]
+    const isAccurateModeOK = type.matchType == 1 && trimmedKeyWord === matchingWord
+    const isVagueModeOK = type.matchType == 2 && _.includes(trimmedKeyWord, matchingWord)
     const isOK = isAccurateModeOK || isVagueModeOK
     const punishments = {
-      1: async () => await e.member.kick(),
-      2: async () => await e.member.mute(GroupBannedWords.getMuteTime(e.group_id)),
-      3: async () => await e.recall(),
-      4: async () => {
+      '1': async () => await e.member.kick(),
+      '2': async () => await e.member.mute(GroupBannedWords.getMuteTime(e.group_id)),
+      '3': async () => await e.recall(),
+      '4': async () => {
         await e.member.kick()
         await e.recall()
       },
-      5: async () => {
+      '5': async () => {
         await e.member.mute(GroupBannedWords.getMuteTime(e.group_id))
         await e.recall()
       }
     }
     if (isOK && punishments[type.penaltyType]) {
       await punishments[type.penaltyType]()
+      const keyWordTran = await GroupBannedWords.keyWordTran(matchingWord)
+      const senderCard = e.sender.card || e.sender.nickname
       e.reply([
-        `触发违禁词：${await GroupBannedWords.keyWordTran(word)}\n`,
-        `触发者：${e.sender.card || e.sender.nickname}(${e.user_id})\n`,
+        `触发违禁词：${keyWordTran}\n`,
+        `触发者：${senderCard}(${e.user_id})\n`,
         `执行：${GroupBannedWords.penaltyTypeMap[type.penaltyType]}`
       ])
     }
@@ -168,5 +180,66 @@ export class NewGroupBannedWords extends plugin {
     }
 
     return msg
+  }
+
+  // 增删查头衔屏蔽词
+  async ProhibitedTitle (e) {
+  // 获取现有的头衔屏蔽词
+    let shieldingWords = GroupBannedWords.getTitleBannedWords(e.group_id)
+    // 判断是否需要查看头衔屏蔽词
+    if (/查看/.test(e.msg)) {
+    // 返回已有的头衔屏蔽词列表
+      return e.reply(`现有的头衔屏蔽词如下：${shieldingWords.join('\n')}`)
+    }
+
+    // 获取用户输入的要增加或删除的屏蔽词
+    let message = e.msg.replace(/#|(增加|减少)头衔屏蔽词/g, '').trim().split(',')
+    // 判断用户是要增加还是删除屏蔽词
+    let isAddition = /增加/.test(e.msg)
+    let existingWords = []
+    let newWords = []
+
+    // 遍历用户输入的屏蔽词，区分已有和新的屏蔽词
+    for (let word of message) {
+      if (shieldingWords.includes(word)) {
+        existingWords.push(word)
+      } else {
+        newWords.push(word)
+      }
+    }
+
+    // 去重
+    existingWords = _.compact(_.uniq(existingWords))
+    newWords = _.compact(_.uniq(newWords))
+
+    // 判断是要增加还是删除屏蔽词
+    if (isAddition) {
+    // 添加新的屏蔽词
+      if (!_.isEmpty(newWords)) {
+        GroupBannedWords.addTitleBannedWords(e.group_id, newWords)
+        e.reply(`✅ 成功添加：${newWords.join(',')}`)
+      }
+      // 提示已有的屏蔽词
+      if (!_.isEmpty(existingWords)) {
+        e.reply(`❎ 以下词已存在：${existingWords.join(',')}`)
+      }
+    } else {
+    // 删除已有的屏蔽词
+      if (!_.isEmpty(existingWords)) {
+        GroupBannedWords.delTitleBannedWords(e.group_id, existingWords)
+        e.reply(`✅ 成功删除：${existingWords.join(',')}`)
+      }
+      // 提示不在屏蔽词中的词
+      if (!_.isEmpty(newWords)) {
+        e.reply(`❎ 以下词未在屏蔽词中：${newWords.join(',')}`)
+      }
+    }
+  }
+
+  // 修改头衔匹配模式
+  async ProhibitedTitlePattern (e) {
+    if (!common.Authentication(e, 'admin', 'admin')) return false
+    let res = GroupBannedWords.setTitleFilterModeChange(e.group_id)
+    e.reply(`✅ 已修改匹配模式为${res ? '精确' : '模糊'}匹配`)
   }
 }

@@ -91,16 +91,6 @@ export class Admin extends plugin {
           reg: '^#椰奶(启用|禁用)全部通知$',
           fnc: 'SetAllNotice',
           permission: 'master'
-        },
-        {
-          reg: '^#(增加|减少|查看)头衔屏蔽词.*$',
-          fnc: 'ProhibitedTitle',
-          permission: 'master'
-        },
-        {
-          reg: '^#切换头衔屏蔽词匹配(模式)?$',
-          fnc: 'ProhibitedTitlePattern',
-          permission: 'master'
         }
       ]
     })
@@ -217,71 +207,6 @@ export class Admin extends plugin {
       e,
       scale: 1.4
     })
-  }
-
-  // 增删查头衔屏蔽词
-  async ProhibitedTitle (e) {
-  // 获取现有的头衔屏蔽词
-    let shieldingWords = Config.groupTitle.Shielding_words
-    // 判断是否需要查看头衔屏蔽词
-    if (/查看/.test(e.msg)) {
-    // 返回已有的头衔屏蔽词列表
-      return e.reply(`现有的头衔屏蔽词如下：${shieldingWords.join('\n')}`)
-    }
-
-    // 获取用户输入的要增加或删除的屏蔽词
-    let message = e.msg.replace(/#|(增加|减少)头衔屏蔽词/g, '').trim().split(',')
-    // 判断用户是要增加还是删除屏蔽词
-    let isAddition = /增加/.test(e.msg)
-    let existingWords = []
-    let newWords = []
-
-    // 遍历用户输入的屏蔽词，区分已有和新的屏蔽词
-    for (let word of message) {
-      if (shieldingWords.includes(word)) {
-        existingWords.push(word)
-      } else {
-        newWords.push(word)
-      }
-    }
-
-    // 去重
-    existingWords = _.compact(_.uniq(existingWords))
-    newWords = _.compact(_.uniq(newWords))
-
-    // 判断是要增加还是删除屏蔽词
-    if (isAddition) {
-    // 添加新的屏蔽词
-      if (!_.isEmpty(newWords)) {
-        for (let word of newWords) {
-          Config.modifyarr('groupTitle', 'Shielding_words', word, 'add')
-        }
-        e.reply(`✅ 成功添加：${newWords.join(',')}`)
-      }
-      // 提示已有的屏蔽词
-      if (!_.isEmpty(existingWords)) {
-        e.reply(`❎ 以下词已存在：${existingWords.join(',')}`)
-      }
-    } else {
-    // 删除已有的屏蔽词
-      if (!_.isEmpty(existingWords)) {
-        for (let word of existingWords) {
-          Config.modifyarr('groupTitle', 'Shielding_words', word, 'del')
-        }
-        e.reply(`✅ 成功删除：${existingWords.join(',')}`)
-      }
-      // 提示不在屏蔽词中的词
-      if (!_.isEmpty(newWords)) {
-        e.reply(`❎ 以下词未在屏蔽词中：${newWords.join(',')}`)
-      }
-    }
-  }
-
-  // 修改头衔匹配模式
-  async ProhibitedTitlePattern (e) {
-    let data = Config.groupTitle.Match_pattern ? 0 : 1
-    Config.modify('groupTitle', 'Match_pattern', data)
-    e.reply(`✅ 已修改匹配模式为${data ? '精确' : '模糊'}匹配`)
   }
 }
 

@@ -2,7 +2,7 @@ import _ from 'lodash'
 import moment from 'moment'
 import plugin from '../../../lib/plugins/plugin.js'
 import { Config } from '../components/index.js'
-import { common, GroupAdmin as Ga, puppeteer, QQApi } from '../model/index.js'
+import { common, GroupAdmin as Ga, puppeteer, QQApi, GroupBannedWords } from '../model/index.js'
 import cronValidate from '../tools/cronValidate.js'
 import { groupTitleMsg } from '../constants/msg.js'
 import { Time_unit } from '../constants/other.js'
@@ -306,15 +306,15 @@ export class GroupAdmin extends plugin {
 
     let Title = e.msg.replace(/#|申请头衔/g, '')
     // 屏蔽词处理
-    let { Match_pattern, Shielding_words } = Config.groupTitle
-
-    Shielding_words = _.compact(Shielding_words)
-    if (!e.isMaster && !_.isEmpty(Shielding_words)) {
-      if (Match_pattern) {
-        let reg = new RegExp(Shielding_words.join('|'))
+    let TitleFilterModeChange = GroupBannedWords.getTitleFilterModeChange(e.group_id)
+    let TitleBannedWords = GroupBannedWords.getTitleBannedWords(e.group_id)
+    TitleBannedWords = _.compact(TitleBannedWords)
+    if (!e.isMaster && !_.isEmpty(TitleBannedWords)) {
+      if (TitleFilterModeChange) {
+        let reg = new RegExp(TitleBannedWords.join('|'))
         if (reg.test(Title)) return e.reply('这里面有不好的词汇哦~', true)
       } else {
-        if (Shielding_words.includes(Title)) return e.reply('这是有不好的词汇哦~', true)
+        if (TitleBannedWords.includes(Title)) return e.reply('这是有不好的词汇哦~', true)
       }
     }
     let res = await e.group.setTitle(e.user_id, Title)

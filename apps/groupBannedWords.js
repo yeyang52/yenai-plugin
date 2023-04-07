@@ -32,7 +32,7 @@ export class NewGroupBannedWords extends plugin {
 
   async monitor (e) {
     if (!e.message) return false
-    // if (e.isMaster || e.member.is_owner || e.member.is_admin) return false
+    if (e.isMaster || e.member.is_owner || e.member.is_admin) return false
     GroupBannedWords.initTextArr(e.group_id)
     let keyWord = e.toString()
       .replace(/#|＃/g, '')

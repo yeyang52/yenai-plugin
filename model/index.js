@@ -12,7 +12,7 @@ import Ascii2D from './PicSearch/ascii2d.js'
 import SauceNAO from './PicSearch/saucenao.js'
 import WhatAnime from './PicSearch/whatanime.js'
 import listener from './listener/loader.js'
-import GroupBannedWords from './GroupBannedWords.js'
+import GroupBannedWords from './GroupBannedWords.JS'
 // 加载监听事件
 listener.load()
 // 导出模块

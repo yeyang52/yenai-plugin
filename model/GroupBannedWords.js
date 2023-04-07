@@ -16,6 +16,7 @@ export default new class {
       2: '模糊'
     }
     this.dataCach = {}
+    this.muteTimeCach = {}
   }
 
   addBannedWords (
@@ -58,6 +59,21 @@ export default new class {
       matchType: this.matchTypeMap[matchType],
       penaltyType: this.penaltyTypeMap[penaltyType]
     }
+  }
+
+  setMuteTime (groupId, time) {
+    let data = Data.readJSON(`${groupId}.json`, this.root)
+    data.muteTime = Number(time)
+    Data.writeJSON(`${groupId}.json`, data, this.root)
+    delete this.muteTimeCach[groupId]
+    return true
+  }
+
+  getMuteTime (groupId) {
+    if (this.muteTimeCach[groupId]) return this.muteTimeCach[groupId]
+    let data = Data.readJSON(`${groupId}.json`, this.root)
+    this.muteTimeCach[groupId] = data.muteTime ?? 300
+    return this.muteTimeCach[groupId]
   }
 
   /** 关键词转换成可发送消息 */

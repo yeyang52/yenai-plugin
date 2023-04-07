@@ -258,6 +258,16 @@ export const helpList = [{
       title: '#查看违禁词.*',
       desc: '---',
       icon: 9
+    },
+    {
+      title: '#违禁词列表',
+      desc: '列表',
+      icon: 17
+    },
+    {
+      title: '#设置违禁词禁言时间400',
+      desc: '禁言时间',
+      icon: 11
     }]
 }, {
   group: 'Bot为群主可用',

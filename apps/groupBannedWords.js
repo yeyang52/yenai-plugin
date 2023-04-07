@@ -24,6 +24,14 @@ export class NewGroupBannedWords extends plugin {
           reg: '',
           fnc: 'monitor',
           log: false
+        },
+        {
+          reg: '^#?违禁词列表$',
+          fnc: 'list'
+        },
+        {
+          reg: '^#?设置违禁词禁言时间(\\d+)$',
+          fnc: 'muteTime'
         }
       ]
 
@@ -52,14 +60,14 @@ export class NewGroupBannedWords extends plugin {
     const isOK = isAccurateModeOK || isVagueModeOK
     const punishments = {
       1: async () => await e.member.kick(),
-      2: async () => await e.member.mute(3600),
+      2: async () => await e.member.mute(GroupBannedWords.getMuteTime(e.group_id)),
       3: async () => await e.recall(),
       4: async () => {
         await e.member.kick()
         await e.recall()
       },
       5: async () => {
-        await e.member.mute(3600)
+        await e.member.mute(GroupBannedWords.getMuteTime(e.group_id))
         await e.recall()
       }
     }
@@ -123,6 +131,27 @@ export class NewGroupBannedWords extends plugin {
     } catch (error) {
       e.reply(error.message)
     }
+  }
+
+  async list (e) {
+    const groupBannedWords = GroupBannedWords.initTextArr(e.group_id)
+    let msg = []
+    for (let i in groupBannedWords) {
+      let { matchType, penaltyType } = groupBannedWords[i]
+      msg.push([
+        '违禁词：',
+        await GroupBannedWords.keyWordTran(i),
+        `\n匹配模式：${GroupBannedWords.matchTypeMap[matchType]}\n`,
+        `处理方式：${GroupBannedWords.penaltyTypeMap[penaltyType]}`
+      ])
+    }
+    common.getforwardMsg(e, msg)
+  }
+
+  async muteTime (e) {
+    let time = e.msg.match(/\d+/)[0]
+    GroupBannedWords.setMuteTime(e.group_id, time)
+    e.reply(`✅ 群${e.group_id}违禁词禁言时间已设置为${time}s`)
   }
 
   /** 过滤别名 */

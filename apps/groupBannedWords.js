@@ -1,5 +1,6 @@
 import { common, GroupBannedWords } from '../model/index.js'
 import _ from 'lodash'
+
 export class NewGroupBannedWords extends plugin {
   constructor () {
     super({
@@ -18,10 +19,51 @@ export class NewGroupBannedWords extends plugin {
         {
           reg: '^#?查看违禁词.*$',
           fnc: 'query'
+        },
+        {
+          reg: '',
+          fnc: 'monitor',
+          log: true
         }
       ]
 
     })
+  }
+
+  async monitor (e) {
+    if (!e.message) return false
+    // if (e.isMaster || e.member.is_owner || e.member.is_admin) return false
+    GroupBannedWords.initTextArr(e.group_id)
+    let keyWord = e.toString()
+      .replace(/#|＃/g, '')
+      .replace(`{at:${Bot.uin}}`, '')
+      .trim()
+
+    keyWord = this.trimAlias(keyWord)
+    console.log('消息词：', keyWord)
+    console.log(GroupBannedWords.dataCach)
+    let is = GroupBannedWords.dataCach[e.group_id]
+    if (_.isEmpty(is)) return false
+    let arr = Object.keys(is)
+
+    const word = arr.find((word) => keyWord.includes(word))
+    if (!word) return false
+    let type = is[word]
+    const isAccurateModeOK = type.matchType == 1 && keyWord == word
+
+    const isVagueModeOK = type.matchType == 2 && keyWord.includes(word)
+    const isOK = isAccurateModeOK || isVagueModeOK
+    if (isOK) {
+      if (type.penaltyType == 3 || type.penaltyType == 4 || type.penaltyType == 5) {
+        await e.recall()
+      }
+      if (type.penaltyType == 1 || type.penaltyType == 4) {
+        await e.member.kick()
+      }
+      if (type.penaltyType == 2 || type.penaltyType == 5) {
+        await e.member.mute(3600)
+      }
+    }
   }
 
   async add (e) {
@@ -31,12 +73,13 @@ export class NewGroupBannedWords extends plugin {
     if (!word[3]) return e.reply('需要添加的屏蔽词为空')
     try {
       let res = GroupBannedWords.addBannedWords(
-        e.group_id, word[3], word[1], word[2]
+        e.group_id, word[3].trim(), word[1], word[2]
       )
       e.reply([
         '✅ 成功添加违禁词\n',
-        `违禁词：${res.words}\n`,
-        `匹配模式：${res.matchType}\n`,
+        '违禁词：',
+        await res.words,
+        `\n匹配模式：${res.matchType}\n`,
         `处理方式：${res.penaltyType}`
       ])
     } catch (error) {
@@ -47,9 +90,8 @@ export class NewGroupBannedWords extends plugin {
   async del (e) {
     if (!common.Authentication(e, 'admin', 'admin')) return false
     let word = this.trimAlias(e.toString())
-    word = word.replace(/#?删除违禁词/)
+    word = word.replace(/#?删除违禁词/, '').trim()
     if (!word) return e.reply('需要删除的屏蔽词为空')
-    word = this.trimAlias(word)
     try {
       let res = GroupBannedWords.delBannedWords(e.group_id, word)
       e.reply(res)
@@ -60,14 +102,15 @@ export class NewGroupBannedWords extends plugin {
 
   async query (e) {
     let word = this.trimAlias(e.toString())
-    word = word.replace(/#?删除违禁词/)
+    word = word.replace(/#?查看违禁词/, '').trim()
     if (!word) return e.reply('需要查询的屏蔽词为空')
     try {
       let res = GroupBannedWords.queryBannedWords(e.group_id, word)
       e.reply([
         '✅ 查询违禁词\n',
-        `违禁词：${res.words}\n`,
-        `匹配模式：${res.matchType}\n`,
+        '违禁词：',
+        await res.words,
+        `\n匹配模式：${res.matchType}\n`,
         `处理方式：${res.penaltyType}`
       ])
     } catch (error) {
@@ -91,6 +134,3 @@ export class NewGroupBannedWords extends plugin {
     return msg
   }
 }
-Bot.on('message.group', async (e) => {
-
-})

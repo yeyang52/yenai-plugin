@@ -23,7 +23,7 @@ export class NewGroupBannedWords extends plugin {
         {
           reg: '',
           fnc: 'monitor',
-          log: true
+          log: false
         }
       ]
 
@@ -40,8 +40,6 @@ export class NewGroupBannedWords extends plugin {
       .trim()
 
     keyWord = this.trimAlias(keyWord)
-    console.log('消息词：', keyWord)
-    console.log(GroupBannedWords.dataCach)
     let is = GroupBannedWords.dataCach[e.group_id]
     if (_.isEmpty(is)) return false
     let arr = Object.keys(is)

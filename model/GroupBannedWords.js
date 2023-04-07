@@ -46,7 +46,7 @@ export default new class {
     delete data.bannedWords[words]
     delete this.dataCach[groupId]
     Data.writeJSON(`${groupId}.json`, data, this.root)
-    return '✅ 成功删除' + words
+    return this.keyWordTran(words)
   }
 
   queryBannedWords (groupId, words) {

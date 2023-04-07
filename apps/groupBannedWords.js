@@ -31,8 +31,9 @@ export class NewGroupBannedWords extends plugin {
   }
 
   async monitor (e) {
-    if (!e.message) return false
-    if (e.isMaster || e.member.is_owner || e.member.is_admin) return false
+    if (!e.message || e.isMaster || e.member.is_owner || e.member.is_admin) {
+      return false
+    }
     GroupBannedWords.initTextArr(e.group_id)
     let keyWord = e.toString()
       .replace(/#|＃/g, '')
@@ -40,30 +41,35 @@ export class NewGroupBannedWords extends plugin {
       .trim()
 
     keyWord = this.trimAlias(keyWord)
-    let is = GroupBannedWords.dataCach[e.group_id]
-    if (_.isEmpty(is)) return false
-    let arr = Object.keys(is)
-
-    const word = arr.find((word) => keyWord.includes(word))
+    const groupBannedWords = GroupBannedWords.dataCach[e.group_id]
+    if (_.isEmpty(groupBannedWords)) {
+      return false
+    }
+    const word = _.find(Object.keys(groupBannedWords), wrd => _.includes(keyWord, wrd))
     if (!word) return false
-    let type = is[word]
-    const isAccurateModeOK = type.matchType == 1 && keyWord == word
 
-    const isVagueModeOK = type.matchType == 2 && keyWord.includes(word)
+    const type = groupBannedWords[word]
+    const isAccurateModeOK = type.matchType === 1 && keyWord === word
+    const isVagueModeOK = type.matchType === 2 && _.includes(keyWord, word)
     const isOK = isAccurateModeOK || isVagueModeOK
-    if (isOK) {
-      if (type.penaltyType == 3 || type.penaltyType == 4 || type.penaltyType == 5) {
+    const punishments = {
+      1: async () => await e.member.kick(),
+      2: async () => await e.member.mute(3600),
+      3: async () => await e.recall(),
+      4: async () => {
+        await e.member.kick()
+        await e.recall()
+      },
+      5: async () => {
+        await e.member.mute(3600)
         await e.recall()
       }
-      if (type.penaltyType == 1 || type.penaltyType == 4) {
-        await e.member.kick()
-      }
-      if (type.penaltyType == 2 || type.penaltyType == 5) {
-        await e.member.mute(3600)
-      }
+    }
+    if (isOK && punishments[type.penaltyType]) {
+      await punishments[type.penaltyType]()
       e.reply([
-        `触发违禁词：${word}\n`,
-        `触发者：${e.user_id}\n`,
+        `触发违禁词：${await GroupBannedWords.keyWordTran(word)}\n`,
+        `触发者：${e.sender.card || e.sender.nickname}(${e.user_id})\n`,
         `执行：${GroupBannedWords.penaltyTypeMap[type.penaltyType]}`
       ])
     }
@@ -96,8 +102,8 @@ export class NewGroupBannedWords extends plugin {
     word = word.replace(/#?删除违禁词/, '').trim()
     if (!word) return e.reply('需要删除的屏蔽词为空')
     try {
-      let res = GroupBannedWords.delBannedWords(e.group_id, word)
-      e.reply(res)
+      let msg = await GroupBannedWords.delBannedWords(e.group_id, word)
+      e.reply(['✅ 成功删除：', msg])
     } catch (error) {
       e.reply(error.message)
     }

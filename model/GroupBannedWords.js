@@ -96,10 +96,12 @@ export default new class {
 
   /** 初始化已添加内容 */
   initTextArr (groupId) {
-    if (this.dataCach[groupId]) return
+    if (this.dataCach[groupId]) return this.dataCach[groupId]
 
     try {
-      this.dataCach[groupId] = Data.readJSON(`${groupId}.json`, this.root)?.bannedWords
+      this.dataCach[groupId] =
+        Data.readJSON(`${groupId}.json`, this.root)?.bannedWords
+      return this.dataCach[groupId]
     } catch (error) {
       logger.error(`json格式错误：${this.root}/${groupId}.json`)
       delete this.dataCach[groupId]

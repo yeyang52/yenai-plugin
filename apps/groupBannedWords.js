@@ -34,23 +34,21 @@ export class NewGroupBannedWords extends plugin {
     if (!e.message || e.isMaster || e.member.is_owner || e.member.is_admin) {
       return false
     }
-    GroupBannedWords.initTextArr(e.group_id)
+    const groupBannedWords = GroupBannedWords.initTextArr(e.group_id)
+    if (_.isEmpty(groupBannedWords)) {
+      return false
+    }
     let keyWord = e.toString()
       .replace(/#|＃/g, '')
       .replace(`{at:${Bot.uin}}`, '')
       .trim()
-
     keyWord = this.trimAlias(keyWord)
-    const groupBannedWords = GroupBannedWords.dataCach[e.group_id]
-    if (_.isEmpty(groupBannedWords)) {
-      return false
-    }
     const word = _.find(Object.keys(groupBannedWords), wrd => _.includes(keyWord, wrd))
     if (!word) return false
 
     const type = groupBannedWords[word]
-    const isAccurateModeOK = type.matchType === 1 && keyWord === word
-    const isVagueModeOK = type.matchType === 2 && _.includes(keyWord, word)
+    const isAccurateModeOK = type.matchType == 1 && keyWord === word
+    const isVagueModeOK = type.matchType == 2 && _.includes(keyWord, word)
     const isOK = isAccurateModeOK || isVagueModeOK
     const punishments = {
       1: async () => await e.member.kick(),

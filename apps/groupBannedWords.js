@@ -85,9 +85,10 @@ export class NewGroupBannedWords extends plugin {
       await punishments[type.penaltyType]()
       const keyWordTran = await GroupBannedWords.keyWordTran(matchingWord)
       const senderCard = e.sender.card || e.sender.nickname
-      e.reply([
+      common.sendMasterMsg([
         `触发违禁词：${keyWordTran}\n`,
         `触发者：${senderCard}(${e.user_id})\n`,
+        `触发群：${e.group_name}(${e.group_id})\n`,
         `执行：${GroupBannedWords.penaltyTypeMap[type.penaltyType]}`
       ])
     }

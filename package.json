@@ -24,5 +24,9 @@
   },
   "devDependencies": {
     "all-contributors-cli": "^6.24.0"
+  },
+  "optionalDependencies": {
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
   }
 }

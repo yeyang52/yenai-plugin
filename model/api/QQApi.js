@@ -433,7 +433,11 @@ export default new class {
     try {
       core = (await import('oicq')).core
     } catch {
-      core = (await import('icqq')).core
+      try {
+        core = (await import('icqq')).core
+      } catch (error) {
+        throw Error('未检测到oicq或icqq无法进行点赞')
+      }
     }
     if (times > 20) { times = 20 }
     let ReqFavorite

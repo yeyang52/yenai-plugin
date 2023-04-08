@@ -1,0 +1,10 @@
+{
+  "name": "puppeteer",
+  "version": "1.0.0",
+  "main": "puppeteer.js",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer-extra": "^3.3.4",
+    "puppeteer-extra-plugin-stealth": "^2.11.1"
+  }
+}

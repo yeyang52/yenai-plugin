@@ -1,3 +1,8 @@
+# 1.2.2
+
+* 新增可选依赖项`puppeteer-extra``puppeteer-extra-plugin-stealth`
+* 更新Puppeteer 请求 ascii2d 绕过 cf js challenge
+
 # 1.2.1
 
 * 新增`#加精`

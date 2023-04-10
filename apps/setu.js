@@ -5,7 +5,7 @@ import { Admin } from './admin.js'
 
 const SWITCH_ERROR = '主人没有开放这个功能哦(＊／ω＼＊)'
 
-const NumReg = '[一壹二两三四五六七八九十百千万亿\\d]+'
+const NumReg = '[零一壹二两三四五六七八九十百千万亿\\d]+'
 export class SeSe extends plugin {
   constructor () {
     super({

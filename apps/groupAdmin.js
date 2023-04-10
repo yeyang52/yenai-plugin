@@ -9,7 +9,7 @@ import { Time_unit } from '../constants/other.js'
 // API请求错误文案
 const API_ERROR = '❎ 出错辣，请稍后重试'
 // 正则
-const Numreg = '[一壹二两三四五六七八九十百千万亿\\d]+'
+const Numreg = '[零一壹二两三四五六七八九十百千万亿\\d]+'
 const TimeUnitReg = Object.keys(Time_unit).join('|')
 
 /** 清理多久没发言的人正则 */
@@ -164,8 +164,9 @@ export class GroupAdmin extends plugin {
     let qq = e.message.find(item => item.type == 'at')?.qq
     let reg = `#禁言\\s?((\\d+)\\s)?(${Numreg})?(${TimeUnitReg})?`
     let regRet = e.msg.match(new RegExp(reg))
+    const time = common.translateChinaNum(regRet[3])
     new Ga(e).muteMember(
-      e.group_id, qq ?? regRet[2], e.user_id, regRet[3], regRet[4]
+      e.group_id, qq ?? regRet[2], e.user_id, time, regRet[4]
     ).then(res => e.reply(res)).catch(err => e.reply(err.message))
   }
 

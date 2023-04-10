@@ -1,5 +1,5 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import { GroupAdmin as Ga } from '../model/index.js'
+import { GroupAdmin as Ga, common } from '../model/index.js'
 import { Time_unit } from '../constants/other.js'
 // 正则
 const Numreg = '[一壹二两三四五六七八九十百千万亿\\d]+'
@@ -35,7 +35,8 @@ export class PrivateGroupAdmin extends plugin {
   async muteMember (e) {
     if (!e.isMaster) return false
     let regRet = e.msg.match(muteMemberReg)
-    let res = await new Ga(e).muteMember(regRet[1], regRet[2], e.user_id, regRet[3], regRet[4])
+    const time = common.translateChinaNum(regRet[3])
+    let res = await new Ga(e).muteMember(regRet[1], regRet[2], e.user_id, time, regRet[4])
     e.reply(res)
   }
 

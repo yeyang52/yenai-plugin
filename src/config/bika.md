@@ -7,6 +7,7 @@ tag:
   - bika
 icon: relation
 ---
+
 ::: tip
 配置文件位置：`yenai-plugin/config/config/bika.yaml`
 :::
@@ -40,13 +41,6 @@ icon: relation
 ### imageQuality
 - 类型：`string`
 - 默认：`medium`
+- 可选值：`low` `medium` `high` `original`
 
-哔咔图片质量
-
-可选值：
-- low
-- medium
-- high
-- original
-
-质量依次从低到高
+哔咔图片质量，质量依次从低到高

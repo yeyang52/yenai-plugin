@@ -39,7 +39,7 @@ icon: pic
 - 类型：`string`
 - 默认值：``
 
-SauceNAO搜图apikey 请在 _https://saucenao.com/user.php?page=search-api_ 进行获取
+SauceNAO搜图apikey 请在 https://saucenao.com/user.php?page=search-api 进行获取
 
 ### SauceNAOMinSim
 - 类型：`number`

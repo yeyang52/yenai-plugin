@@ -189,4 +189,3 @@ function getMsgType (msg) {
   }
   return msgType[msg[0].type]
 }
-logger.debug('监听消息事件')

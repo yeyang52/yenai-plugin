@@ -33,7 +33,6 @@ const appsPath = './plugins/yenai-plugin/apps'
 const jsFiles = Data.readDirRecursive(appsPath, 'js', 'events')
 
 let ret = jsFiles.map(file => {
-  console.log(`./apps/${file}`)
   return import(`./apps/${file}`)
 })
 

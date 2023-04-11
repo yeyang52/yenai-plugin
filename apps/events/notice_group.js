@@ -1,5 +1,5 @@
-import { common } from '../../../model/index.js'
-import { Config } from '../../../components/index.js'
+import { common } from '../../model/index.js'
+import { Config } from '../../components/index.js'
 import moment from 'moment'
 
 Bot.on('notice.group', async (e) => {

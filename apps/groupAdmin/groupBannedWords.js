@@ -1,4 +1,4 @@
-import { common, GroupBannedWords } from '../model/index.js'
+import { common, GroupBannedWords } from '../../model/index.js'
 import _ from 'lodash'
 
 export class NewGroupBannedWords extends plugin {

@@ -1,5 +1,5 @@
-import { common } from '../../index.js'
-import { Config } from '../../../components/index.js'
+import { common } from '../../model/index.js'
+import { Config } from '../../components/index.js'
 
 Bot.on('internal.input', async (e) => {
   if (!Config.Notice.input) return false

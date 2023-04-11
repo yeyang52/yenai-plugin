@@ -1,11 +1,10 @@
 import _ from 'lodash'
 import moment from 'moment'
-import plugin from '../../../lib/plugins/plugin.js'
-import { Config } from '../components/index.js'
-import { common, GroupAdmin as Ga, puppeteer, QQApi, GroupBannedWords } from '../model/index.js'
-import cronValidate from '../tools/cronValidate.js'
-import { groupTitleMsg } from '../constants/msg.js'
-import { Time_unit } from '../constants/other.js'
+import { Config } from '../../components/index.js'
+import { common, GroupAdmin as Ga, puppeteer, QQApi, GroupBannedWords } from '../../model/index.js'
+import cronValidate from '../../tools/cronValidate.js'
+import { groupTitleMsg } from '../../constants/msg.js'
+import { Time_unit } from '../../constants/other.js'
 // API请求错误文案
 const API_ERROR = '❎ 出错辣，请稍后重试'
 // 正则

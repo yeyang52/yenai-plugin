@@ -1,6 +1,5 @@
-import plugin from '../../../lib/plugins/plugin.js'
-import { GroupAdmin as Ga, common } from '../model/index.js'
-import { Time_unit } from '../constants/other.js'
+import { GroupAdmin as Ga, common } from '../../model/index.js'
+import { Time_unit } from '../../constants/other.js'
 // 正则
 const Numreg = '[一壹二两三四五六七八九十百千万亿\\d]+'
 const TimeUnitReg = Object.keys(Time_unit).join('|')

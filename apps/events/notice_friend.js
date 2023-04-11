@@ -1,5 +1,5 @@
-import { common } from '../../../model/index.js'
-import { Config } from '../../../components/index.js'
+import { common } from '../../model/index.js'
+import { Config } from '../../components/index.js'
 
 Bot.on('notice.friend', async (e) => {
   let msg

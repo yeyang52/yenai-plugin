@@ -1,6 +1,6 @@
-import cfg from '../../../../../lib/config/config.js'
-import { common } from '../../../model/index.js'
-import { Config } from '../../../components/index.js'
+import cfg from '../../../../lib/config/config.js'
+import { common } from '../../model/index.js'
+import { Config } from '../../components/index.js'
 const ROLE_MAP = {
   admin: '群管理',
   owner: '群主',

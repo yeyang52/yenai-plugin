@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import fs from 'fs'
+import path from 'path'
 
 const _path = process.cwd()
 const plugin = 'yenai-plugin'
@@ -220,6 +221,25 @@ let Data = {
       }
     }
     return false
+  },
+  /** 读取文件夹和子文件夹指定后缀文件名 */
+  readDirRecursive (directory, extension, excludeDir) {
+    let files = fs.readdirSync(directory)
+
+    let jsFiles = files.filter(file => path.extname(file) === `.${extension}`)
+
+    files.filter(file => fs.statSync(path.join(directory, file)).isDirectory())
+      .forEach(subdirectory => {
+        if (subdirectory === excludeDir) {
+          return
+        }
+
+        const subdirectoryPath = path.join(directory, subdirectory)
+        jsFiles.push(...Data.readDirRecursive(subdirectoryPath, extension, excludeDir)
+          .map(fileName => path.join(subdirectory, fileName)))
+      })
+
+    return jsFiles
   }
 }
 

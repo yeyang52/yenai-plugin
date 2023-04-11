@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import moment from 'moment'
 import { Data, Plugin_Path } from '../components/index.js'
 
 export default new class {
@@ -21,7 +22,7 @@ export default new class {
   }
 
   addBannedWords (
-    groupId, words, matchType = '精确', penaltyType = '禁'
+    groupId, words, matchType = '精确', penaltyType = '禁', addedBy
   ) {
     let data = Data.readJSON(`${groupId}.json`, this.root)
     if (!data.bannedWords) data.bannedWords = {}
@@ -30,8 +31,10 @@ export default new class {
     let matchTypeMapMirr = _.invert(this.matchTypeMap)
     let penaltyTypeMapMirr = _.invert(this.penaltyTypeMap)
     data.bannedWords[words] = {
-      matchType: matchTypeMapMirr[matchType],
-      penaltyType: penaltyTypeMapMirr[penaltyType]
+      matchType: Number(matchTypeMapMirr[matchType]),
+      penaltyType: Number(penaltyTypeMapMirr[penaltyType]),
+      date: moment().format('MMM Do YY'),
+      addedBy
     }
     Data.writeJSON(`${groupId}.json`, data, this.root)
     delete this.dataCach[groupId]
@@ -56,6 +59,7 @@ export default new class {
     if (!data.bannedWords[words]) throw Error(`❎ 违禁词${words}不存在`)
     let { matchType, penaltyType } = data.bannedWords[words]
     return {
+      ...data.bannedWords[words],
       words: this.keyWordTran(words),
       matchType: this.matchTypeMap[matchType],
       penaltyType: this.penaltyTypeMap[penaltyType]
@@ -116,10 +120,20 @@ export default new class {
     if (this.dataCach[groupId]) return this.dataCach[groupId]
 
     try {
-      this.dataCach[groupId] =
-        Data.readJSON(`${groupId}.json`, this.root)?.bannedWords
+      const data = Data.readJSON(`${groupId}.json`, this.root)?.bannedWords
+      this.dataCach[groupId] = {}
+      this.dataCach[groupId].data = data
+      this.dataCach[groupId].reg = []
+      for (const item in data) {
+        if (data[item].matchType == 2) {
+          this.dataCach[groupId].reg.push(item)
+        } else {
+          this.dataCach[groupId].reg.push(`^${item}$`)
+        }
+      }
       return this.dataCach[groupId]
     } catch (error) {
+      logger.error(error)
       logger.error(`json格式错误：${this.root}/${groupId}.json`)
       delete this.dataCach[groupId]
       return false

@@ -6,7 +6,7 @@ export class NewGroupBannedWords extends plugin {
     super({
       name: '椰奶群违禁词',
       event: 'message.group',
-      priority: 500,
+      priority: 1,
       rule: [
         {
           reg: '^#?新增(模糊|精确)?(踢|禁|撤|踢撤|禁撤)?违禁词.*$',
@@ -51,7 +51,7 @@ export class NewGroupBannedWords extends plugin {
       return false
     }
     const groupBannedWords = GroupBannedWords.initTextArr(e.group_id)
-    if (_.isEmpty(groupBannedWords)) {
+    if (_.isEmpty(groupBannedWords.reg)) {
       return false
     }
     const KeyWord = e.toString()
@@ -59,15 +59,13 @@ export class NewGroupBannedWords extends plugin {
       .replace(`{at:${Bot.uin}}`, '')
       .trim()
     const trimmedKeyWord = this.trimAlias(KeyWord)
-    const matchingWord = Object.keys(groupBannedWords).find((word) =>
-      _.includes(trimmedKeyWord, word)
+    const matchingWord = groupBannedWords.reg.find(item =>
+      new RegExp(item).test(trimmedKeyWord)
     )
     if (!matchingWord) return false
-
-    const type = groupBannedWords[matchingWord]
-    const isAccurateModeOK = type.matchType == 1 && trimmedKeyWord === matchingWord
-    const isVagueModeOK = type.matchType == 2 && _.includes(trimmedKeyWord, matchingWord)
-    const isOK = isAccurateModeOK || isVagueModeOK
+    // 获取原始违禁词，去除正则符号
+    const rawBannedWords = matchingWord.replace(/\^|\$/g, '')
+    const type = groupBannedWords.data[rawBannedWords]
     const punishments = {
       '1': async () => await e.member.kick(),
       '2': async () => await e.member.mute(GroupBannedWords.getMuteTime(e.group_id)),
@@ -81,9 +79,9 @@ export class NewGroupBannedWords extends plugin {
         await e.recall()
       }
     }
-    if (isOK && punishments[type.penaltyType]) {
+    if (punishments[type.penaltyType]) {
       await punishments[type.penaltyType]()
-      const keyWordTran = await GroupBannedWords.keyWordTran(matchingWord)
+      const keyWordTran = await GroupBannedWords.keyWordTran(rawBannedWords)
       const senderCard = e.sender.card || e.sender.nickname
       common.sendMasterMsg([
         `触发违禁词：${keyWordTran}\n`,
@@ -101,7 +99,7 @@ export class NewGroupBannedWords extends plugin {
     if (!word[3]) return e.reply('需要添加的屏蔽词为空')
     try {
       let res = GroupBannedWords.addBannedWords(
-        e.group_id, word[3].trim(), word[1], word[2]
+        e.group_id, word[3].trim(), word[1], word[2], e.user_id
       )
       e.reply([
         '✅ 成功添加违禁词\n',
@@ -133,13 +131,15 @@ export class NewGroupBannedWords extends plugin {
     word = word.replace(/#?查看违禁词/, '').trim()
     if (!word) return e.reply('需要查询的屏蔽词为空')
     try {
-      let res = GroupBannedWords.queryBannedWords(e.group_id, word)
+      const { words, matchType, penaltyType, addedBy, date } = GroupBannedWords.queryBannedWords(e.group_id, word)
       e.reply([
         '✅ 查询违禁词\n',
         '违禁词：',
-        await res.words,
-        `\n匹配模式：${res.matchType}\n`,
-        `处理方式：${res.penaltyType}`
+        await words,
+        `\n匹配模式：${matchType}\n`,
+        `处理方式：${penaltyType}\n`,
+        `添加人：${addedBy ?? '未知'}\n`,
+        `添加时间：${date ?? '未知'}`
       ])
     } catch (error) {
       e.reply(error.message)
@@ -147,15 +147,20 @@ export class NewGroupBannedWords extends plugin {
   }
 
   async list (e) {
-    const groupBannedWords = GroupBannedWords.initTextArr(e.group_id)
+    const groupBannedWords = GroupBannedWords.initTextArr(e.group_id).data
     let msg = []
-    for (let i in groupBannedWords) {
-      let { matchType, penaltyType } = groupBannedWords[i]
+    if (_.isEmpty(groupBannedWords)) {
+      return e.reply('❎ 没有违禁词')
+    }
+    for (const i in groupBannedWords) {
+      const { matchType, penaltyType, addedBy, date } = groupBannedWords[i]
       msg.push([
         '违禁词：',
         await GroupBannedWords.keyWordTran(i),
         `\n匹配模式：${GroupBannedWords.matchTypeMap[matchType]}\n`,
-        `处理方式：${GroupBannedWords.penaltyTypeMap[penaltyType]}`
+        `处理方式：${GroupBannedWords.penaltyTypeMap[penaltyType]}\n`,
+        `添加人：${addedBy ?? '未知'}\n`,
+        `添加时间：${date ?? '未知'}`
       ])
     }
     common.getforwardMsg(e, msg)

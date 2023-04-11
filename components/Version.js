@@ -10,7 +10,7 @@ const yunzai_ver = `v${cfg.package.version}`
 let logs = {}
 let changelogs = []
 let currentVersion
-let versionCount = 3
+let versionCount = 2
 
 const getLine = function (line) {
   line = line.replace(/(^\s*\*|\r)/g, '')

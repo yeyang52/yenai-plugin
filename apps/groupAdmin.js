@@ -334,7 +334,7 @@ export class GroupAdmin extends plugin {
 
     let msg = data.data.word_list.map((item, index) => {
       let { wording, word_id, word_desc } = item.word_info
-      return `${index + 1}:${wording}-${word_id}\n寓意:${word_desc}`
+      return `${word_id}:${wording}\n寓意:${word_desc}`
     }).join('\n')
     e.reply(msg)
   }

@@ -35,22 +35,22 @@ export default class {
    * @throws {Error} 如果没有被禁言的成员，抛出异常。
    */
   async getMuteList (groupId, info = false) {
-    let list = await this._getMemberMap(groupId, true)
-    let groupObj = this.Bot.pickGroup(groupId - 0)
-    let mutelist = list.filter(item =>
-      groupObj.pickMember(item).mute_left != 0
-    )
+    let list = await this._getMemberMap(groupId)
+    let mutelist = list.filter(item => {
+      let time = item.shut_up_timestamp ?? item.shutup_time
+      return time != 0 && (time - (Date.now() / 1000)) > 0
+    })
     if (_.isEmpty(mutelist)) throw Error('没有被禁言的人哦~')
     if (!info) return mutelist
     return mutelist.map(item => {
-      let Member = groupObj.pickMember(item)
-      let { info } = Member
+      let time = item.shut_up_timestamp ?? item.shutup_time
       return [
-        segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${info.user_id}`),
-        `\n昵称：${info.card || info.nickname}\n`,
-        `QQ：${info.user_id}\n`,
-        `群身份：${ROLE_MAP[info.role]}\n`,
-        `禁言剩余时间：${common.getsecondformat(Member.mute_left)}`
+        segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
+        `\n昵称：${item.card || item.nickname}\n`,
+        `QQ：${item.user_id}\n`,
+        `群身份：${ROLE_MAP[item.role]}\n`,
+        `禁言剩余时间：${common.getsecondformat(time - (Date.now() / 1000))}\n`,
+        `禁言到期时间：${new Date(time * 1000).toLocaleString()}`
       ]
     })
   }

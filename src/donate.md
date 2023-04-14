@@ -17,11 +17,10 @@ order: -1
 如果你觉得插件还不错，可以为作者贡献一杯奶茶。
 :::
 
-| WeChat                                                               | AliPay                                                               | QQ                                                               |
-| -------------------------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| <img style="width: 160px" src="/sponsor-qrcode/qrcode-wechat.png" /> | <img style="width: 160px" src="/sponsor-qrcode/qrcode-alipay.png" /> | <img style="width: 160px" src="/sponsor-qrcode/qrcode-qq.png" /> |
+| WeChat                                                       | AliPay                                                       | QQ                                                           | [爱发电](https://afdian.net/a/yeyang52)                      |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| <img style="width: 160px" src="/sponsor-qrcode/qrcode-wechat-zan.png" /> | <img style="width: 160px" src="/sponsor-qrcode/qrcode-alipay.png" /> | <img style="width: 160px" src="/sponsor-qrcode/qrcode-qq.png" /> | <img style="width: 160px" src="/sponsor-qrcode/qrcode-afdian.png" /> |
 
-- [爱发电](https://afdian.net/a/yeyang52)
 ### 打赏记录
 
 <hr/>
@@ -80,5 +79,4 @@ order: -1
 |            ミク            | 2022-10-18 | 7.77  |                                  |
 |            瑞霖            | 2022-10-17 |   5   |                                  |
 |          小泡泡糖          | 2022-10-17 |  30   |                                  |
-
 

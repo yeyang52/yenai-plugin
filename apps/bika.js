@@ -162,7 +162,7 @@ export class NewBika extends plugin {
       return false
     }
     if (!await common.limit(e.user_id, 'bika', Config.bika.limit)) {
-      e.reply('[bika]您已达今日次数上限', true, { at: true })
+      e.reply('您已达今日「bika」次数上限', true, { at: true })
       return false
     }
     return true

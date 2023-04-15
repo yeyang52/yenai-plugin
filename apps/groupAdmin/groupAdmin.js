@@ -3,7 +3,6 @@ import moment from 'moment'
 import { Config } from '../../components/index.js'
 import { common, GroupAdmin as Ga, puppeteer, QQApi, GroupBannedWords } from '../../model/index.js'
 import cronValidate from '../../tools/cronValidate.js'
-import { groupTitleMsg } from '../../constants/msg.js'
 import { Time_unit } from '../../constants/other.js'
 // API请求错误文案
 const API_ERROR = '❎ 出错辣，请稍后重试'
@@ -322,7 +321,7 @@ export class GroupAdmin extends plugin {
 
     if (!Title) return e.reply('什么"(º Д º*)！没有头衔，哼把你的头衔吃掉！！！', true)
 
-    e.reply(_.sample(groupTitleMsg), true)
+    e.reply(`已将你的头衔更换为「${Title}」`, true)
   }
 
   // 字符列表

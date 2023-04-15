@@ -9,25 +9,26 @@ export class NewPicSearch extends plugin {
       priority: 2000,
       rule: [
         {
-          reg: '^#?(椰奶)?(以图)?搜图.*$',
+          reg: '^#?(椰奶)?(以图)?搜图$',
           fnc: 'SauceNAO'
         },
         {
-          reg: /^#?(SauceNAO|sn)搜图.*$/i,
+          reg: /^#?(SauceNAO|sn)搜图$/i,
           fnc: 'SauceNAO'
         },
         {
-          reg: '^#?(椰奶)?(以图)?搜番.*$',
+          reg: /^#?(椰奶|WhatAnime|wa)?(以图)?搜番$/i,
           fnc: 'WhatAnime'
+        },
+        {
+          reg: /^#?(Ascii2D|ac)搜图$/i,
+          fnc: 'Ascii2D'
         },
         {
           reg: /^#设置SauceNAOApiKey.*$/i,
           fnc: 'UploadSauceNAOKey'
-        },
-        {
-          reg: /^#?(Ascii2D|ac)搜图.*$/i,
-          fnc: 'Ascii2D'
         }
+
       ]
     })
   }
@@ -91,7 +92,7 @@ export class NewPicSearch extends plugin {
       return false
     }
     if (!await common.limit(e.user_id, 'picSearch', limit)) {
-      e.reply('[PicSearch]您已达今日次数上限', true, { at: true })
+      e.reply('您已达今日「搜图搜番」次数上限', true, { at: true })
       return false
     }
     return true

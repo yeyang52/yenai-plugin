@@ -109,7 +109,7 @@ export class SeSe extends plugin {
       return false
     }
     if (!await common.limit(e.user_id, 'setu', Config.setu.limit)) {
-      e.reply('[setu]您已达今日次数上限', true, { at: true })
+      e.reply('您已达今日「setu」次数上限', true, { at: true })
       return false
     }
     return true

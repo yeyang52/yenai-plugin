@@ -255,7 +255,7 @@ export class NewPixiv extends plugin {
       return false
     }
     if (!await common.limit(e.user_id, 'pixiv', Config.pixiv.limit)) {
-      e.reply('[Pixiv]您已达今日次数上限', true, { at: true })
+      e.reply('您已达今日「Pixiv」次数上限', true, { at: true })
       return false
     }
     return true

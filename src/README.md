@@ -15,6 +15,9 @@ actions:
   - text: 配置 🛠
     link: /config/
     type: secondary
+  - text: 打赏 ❤️
+    link: /donate
+    type: secondary
 features:
 - title: 申请处理
   details: 不需要登录Bot账号即可处理请求

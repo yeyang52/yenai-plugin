@@ -64,7 +64,7 @@ features:
 git clone --depth=1 https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 
 #安装依赖
-pnpm add systeminformation cheerio -w
+pnpm install
 ```
 
 @tab npm 
@@ -74,7 +74,7 @@ pnpm add systeminformation cheerio -w
 git clone --depth=1 https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 
 #安装依赖
-npm install systeminformation cheerio -w
+npm install
 ```
 
 @tab yarn
@@ -84,7 +84,7 @@ npm install systeminformation cheerio -w
 git clone --depth=1 https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 
 #安装依赖
-yarn add systeminformation cheerio -w
+yarn install
 ```
 :::
 ::: warning

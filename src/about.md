@@ -35,19 +35,19 @@ git clone --depth=1 https://gitee.com/yeyang52/yenai-plugin.git ./plugins/yenai-
 @tab pnpm
 
 ```sh
-pnpm add systeminformation cheerio -w
+pnpm install
 ```
 
 @tab npm 
 
 ```sh
-npm install systeminformation cheerio -w
+npm install
 ```
 
 @tab yarn
 
 ```sh
-yarn add systeminformation cheerio -w
+yarn install
 ```
 :::
 ## 功能列表 🔧

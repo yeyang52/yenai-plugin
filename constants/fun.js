@@ -31,5 +31,9 @@ export const xiurenTypeId = {
   足控: {
     id: 229,
     maxPage: 8
+  },
+  雅拉伊: {
+    id: 306,
+    maxPage: 18
   }
 }

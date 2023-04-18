@@ -1,17 +1,18 @@
-import fetch from 'node-fetch'
-import md5 from 'md5'
 import _ from 'lodash'
-import request from '../../lib/request/request.js'
+import md5 from 'md5'
+import fetch from 'node-fetch'
 import { langType } from '../../constants/youdao.js'
+import request from '../../lib/request/request.js'
 import { puppeteer } from '../index.js'
+import { xiurenTypeId } from '../../constants/fun.js'
+
 const API_ERROR = '出了点小问题，待会再试试吧'
-export const xiurenTypeId = {
-  秀人: {
-    id: 117,
-    maxPage: 88
-  }
-}
+
 export default new class {
+  constructor () {
+    this.xiurenTypeId = xiurenTypeId
+  }
+
   /** 有道翻译 */
   async youdao (msg, to = 'auto', from = 'auto') {
     if (to != 'auto') to = langType.find(item => item.label == to)?.code
@@ -188,7 +189,7 @@ export default new class {
       )
     })
     // 可扩展
-    let handleType = xiurenTypeId[type]
+    let handleType = this.xiurenTypeId[type]
     let homeUrl = `https://www.lisiku1.com/forum-${handleType.id}-${_.random(1, handleType.maxPage)}.html`
     let html = await request.get(homeUrl).then(res => res.text())
     let $ = cheerio.load(html)

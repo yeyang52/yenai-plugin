@@ -68,14 +68,14 @@ export class NewGroupBannedWords extends plugin {
     const type = groupBannedWords.data[rawBannedWords]
     const muteTime = GroupBannedWords.getMuteTime(e.group_id)
     const punishments = {
-      '1': async () => await e.member.kick(),
-      '2': async () => await e.member.mute(muteTime),
-      '3': async () => await e.recall(),
-      '4': async () => {
+      1: async () => await e.member.kick(),
+      2: async () => await e.member.mute(muteTime),
+      3: async () => await e.recall(),
+      4: async () => {
         await e.member.kick()
         await e.recall()
       },
-      '5': async () => {
+      5: async () => {
         await e.member.mute(muteTime)
         await e.recall()
       }

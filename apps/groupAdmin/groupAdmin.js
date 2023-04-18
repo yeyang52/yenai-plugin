@@ -379,7 +379,10 @@ export class GroupAdmin extends plugin {
   // 获取禁言列表
   async Mutelist (e) {
     new Ga(e).getMuteList(e.group_id, true)
-      .then(res => common.getforwardMsg(e, res, { isxml: true }))
+      .then(res => common.getforwardMsg(e, res, {
+        isxml: true,
+        xmlTitle: '禁言列表'
+      }))
       .catch(err => e.reply(err.message))
   }
 
@@ -429,7 +432,10 @@ export class GroupAdmin extends plugin {
         `请发送：#确认清理${regRet[2]}${regRet[3]}没发言的人`
       ])
     }
-    common.getforwardMsg(e, msg, { isxml: true })
+    common.getforwardMsg(e, msg, {
+      isxml: true,
+      xmlTitle: e.msg.replace(/#|查看|清理/g, '')
+    })
   }
 
   // 查看和清理从未发言的人
@@ -460,7 +466,10 @@ export class GroupAdmin extends plugin {
     let page = e.msg.match(new RegExp(Numreg))
     page = page ? common.translateChinaNum(page[0]) : 1
     new Ga(e).getNeverSpeakInfo(e.group_id, page)
-      .then(res => common.getforwardMsg(e, res, { isxml: true }))
+      .then(res => common.getforwardMsg(e, res, {
+        isxml: true,
+        xmlTitle: e.msg.replace(/#|查看|清理/g, '')
+      }))
       .catch(err => e.reply(err.message))
   }
 

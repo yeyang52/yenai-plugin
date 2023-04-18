@@ -3,7 +3,6 @@ import fetch from 'node-fetch'
 import _ from 'lodash'
 import { Config } from '../components/index.js'
 import { common, uploadRecord, QQApi, funApi } from '../model/index.js'
-import { xiurenTypeId } from '../model/api/funApi.js'
 import { successImgs, faildsImgs, heisiType } from '../constants/fun.js'
 
 /** API请求错误文案 */
@@ -80,7 +79,7 @@ export class Fun extends plugin {
           fnc: 'acg'
         },
         {
-          reg: `^#来点(${Object.keys(xiurenTypeId).join('|')})$`,
+          reg: `^#来点(${Object.keys(funApi.xiurenTypeId).join('|')})$`,
           fnc: 'xiuren'
         }
 

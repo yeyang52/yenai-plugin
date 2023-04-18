@@ -22,3 +22,14 @@ export const heisiType = {
   网红: { type: 'mcn', page: 36 },
   美足: { type: 'meizu', page: 9 }
 }
+
+export const xiurenTypeId = {
+  秀人: {
+    id: 117,
+    maxPage: 88
+  },
+  足控: {
+    id: 229,
+    maxPage: 8
+  }
+}

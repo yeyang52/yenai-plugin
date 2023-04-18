@@ -7,7 +7,7 @@ Bot.on('notice.friend', async (e) => {
   switch (e.sub_type) {
     case 'increase': {
       if (!Config.Notice.friendNumberChange) return false
-      logger.mark('[椰奶]新增好友')
+      logger.mark('[yenai-plugin]新增好友')
       msg = [
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
         '[通知 - 新增好友]\n',
@@ -18,7 +18,7 @@ Bot.on('notice.friend', async (e) => {
     }
     case 'decrease': {
       if (!Config.Notice.friendNumberChange) return false
-      logger.mark('[椰奶]好友减少')
+      logger.mark('[yenai-plugin]好友减少')
       msg = [
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
         '[通知 - 好友减少]\n',
@@ -33,7 +33,7 @@ Bot.on('notice.friend', async (e) => {
       if (e.user_id == (e.bot ?? Bot).uin) return false
       // 主人撤回
       if (Config.masterQQ.includes(e.user_id)) return false
-      logger.mark('[椰奶]好友撤回')
+      logger.mark('[yenai-plugin]好友撤回')
       // 读取
       let res = JSON.parse(
         await redis.get(`notice:messagePrivate:${e.message_id}`)
@@ -75,7 +75,7 @@ Bot.on('notice.friend', async (e) => {
     }
     case 'poke': {
       if (!Config.Notice.privateMessage) return false
-      logger.mark('[椰奶]好友戳一戳')
+      logger.mark('[yenai-plugin]好友戳一戳')
       msg = [
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
         '[消息 - 戳一戳]\n',

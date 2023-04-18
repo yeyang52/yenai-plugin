@@ -66,28 +66,35 @@ export class NewGroupBannedWords extends plugin {
     // 获取原始违禁词，去除正则符号
     const rawBannedWords = matchingWord.replace(/\^|\$/g, '')
     const type = groupBannedWords.data[rawBannedWords]
+    const muteTime = GroupBannedWords.getMuteTime(e.group_id)
     const punishments = {
       '1': async () => await e.member.kick(),
-      '2': async () => await e.member.mute(GroupBannedWords.getMuteTime(e.group_id)),
+      '2': async () => await e.member.mute(muteTime),
       '3': async () => await e.recall(),
       '4': async () => {
         await e.member.kick()
         await e.recall()
       },
       '5': async () => {
-        await e.member.mute(GroupBannedWords.getMuteTime(e.group_id))
+        await e.member.mute(muteTime)
         await e.recall()
       }
+    }
+    const groupPenaltyAction = {
+      1: '踢出群聊',
+      2: `禁言${muteTime}秒`,
+      3: '撤回消息',
+      4: '踢出群聊并撤回消息',
+      5: `禁言${muteTime}秒并撤回消息`
     }
     if (punishments[type.penaltyType]) {
       await punishments[type.penaltyType]()
       const keyWordTran = await GroupBannedWords.keyWordTran(rawBannedWords)
       const senderCard = e.sender.card || e.sender.nickname
-      common.sendMasterMsg([
-        `触发违禁词：${keyWordTran}\n`,
+      e.reply([
+        `触发违禁词：${keyWordTran.charAt(0) + '*'.repeat(keyWordTran.length - 1)}\n`,
         `触发者：${senderCard}(${e.user_id})\n`,
-        `触发群：${e.group_name}(${e.group_id})\n`,
-        `执行：${GroupBannedWords.penaltyTypeMap[type.penaltyType]}`
+        `执行：${groupPenaltyAction[type.penaltyType]}`
       ])
     }
   }

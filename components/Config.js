@@ -202,7 +202,7 @@ class Config {
   async change_picApi () {
     let tmp = {}
 
-    logger.debug('[椰奶]api接口修改，重载fun.js')
+    logger.debug('[yenai-plugin]api接口修改，重载fun.js')
     tmp = await import(`../apps/fun.js?${moment().format('x')}`)
 
     _.forEach(tmp, (p) => {

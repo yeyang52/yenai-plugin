@@ -526,7 +526,7 @@ export class GroupAdmin extends plugin {
     // 浏览器截图
     let screenshot = await puppeteer.Webpage({
       url: `https://qun.qq.com/interactive/honorlist?gc=${e.group_id}&type=1&_wv=3&_wwv=129`,
-      headers: { Cookie: e.bot.cookies['qun.qq.com'] },
+      headers: { Cookie: (e.bot ?? Bot).cookies['qun.qq.com'] },
       font: true
     })
     if (screenshot) return e.reply(screenshot)
@@ -570,7 +570,7 @@ export class GroupAdmin extends plugin {
     // 图片截图
     let screenshot = await puppeteer.Webpage({
       url: `https://qun.qq.com/m/qun/activedata/speaking.html?gc=${e.group_id}&time=${/(7|七)天/.test(e.msg) ? 1 : 0}`,
-      headers: { Cookie: e.bot.cookies['qun.qq.com'] },
+      headers: { Cookie: (e.bot ?? Bot).cookies['qun.qq.com'] },
       font: true
     })
     if (screenshot) return e.reply(screenshot)

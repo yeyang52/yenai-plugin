@@ -55,7 +55,7 @@ git clone --depth=1 https://gitee.com/yeyang52/yenai-plugin.git ./plugins/yenai-
 2. 安装依赖(可选：不安装依赖将无法使用一些功能)
 
 ```
-pnpm add systeminformation cheerio -w
+pnpm install
 ```
 
 ## 功能介绍 📖

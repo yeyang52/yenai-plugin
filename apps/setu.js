@@ -49,14 +49,13 @@ export class SeSe extends plugin {
     if (cdTime) return e.reply(` ${setu.CDMsg}你的CD还有${cdTime}`, false, { at: true })
 
     let num = e.msg.match(new RegExp(NumReg))
-
     num = num ? common.translateChinaNum(num[0]) : 1
-
     if (num > 20) {
       return e.reply('❎ 最大张数不能大于20张')
     } else if (num > 6) {
       e.reply('你先等等，你冲的有点多~')
     }
+
     // 开始执行
     e.reply(setu.startMsg)
 

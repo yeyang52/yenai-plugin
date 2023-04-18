@@ -182,7 +182,7 @@ export class NewPixiv extends plugin {
   async pximg (e) {
     let ispro = /pro/.test(e.msg)
     if (!await this._Authentication(e, 'sese')) return
-    if (ispro && !await this._Authentication(e, 'sesepro')) return
+    if (ispro && !await this._Authentication(e, 'sesepro', false)) return
 
     await Pixiv.pximg(ispro)
       .then(res => ispro ? common.recallSendForwardMsg(e, [res]) : common.recallsendMsg(e, res, false, { anony: true }))
@@ -243,7 +243,7 @@ export class NewPixiv extends plugin {
       .catch(err => e.reply(err.message))
   }
 
-  async _Authentication (e, type) {
+  async _Authentication (e, type, limit = true) {
     if (e.isMaster) return true
     if (!Config.pixiv.allowPM && !e.isGroup) {
       e.reply('主人已禁用私聊该功能')
@@ -254,7 +254,7 @@ export class NewPixiv extends plugin {
       e.reply(SWITCH_ERROR)
       return false
     }
-    if (!await common.limit(e.user_id, 'pixiv', Config.pixiv.limit)) {
+    if (limit && !await common.limit(e.user_id, 'pixiv', Config.pixiv.limit)) {
       e.reply('您已达今日「Pixiv」次数上限', true, { at: true })
       return false
     }

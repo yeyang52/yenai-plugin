@@ -463,20 +463,23 @@ export default new class Pixiv {
   }
 
   /** p站单图 */
-  async pximg (type) {
-    let url = 'https://ovooa.caonm.net/API/Pximg/'
-    if (type) {
-      url = 'https://xiaobapi.top/api/xb/api/setu.php'
+  async pximg (pro) {
+    let url = 'https://image.anosu.top/pixiv/json'
+    const params = {
+      r18: pro ? 1 : 0,
+      proxy: this.proxy
     }
-    let res = await request.get(url).then(res => res.json())
-    let { pid, uid, title, author, tags, urls, r18 } = res.data[0] || res.data
-    urls = urls.original.replace(/i.piccache.top|i.pixiv.re/, this.proxy)
+    let res = await request.get(url, {
+      statusCode: 'json',
+      params
+    })
+    let { pid, uid, title, user, tags, url: urls, r18 } = res[0]
     let msg = [
       `Pid: ${pid}\n`,
       `Uid: ${uid}\n`,
-      r18 ? `R18: ${r18}\n` : '',
+      `R18: ${r18 ?? false}\n`,
       `标题：${title}\n`,
-      `画师：${author}\n`,
+      `画师：${user}\n`,
       `Tag：${tags.join('，')}\n`,
       await this._requestPixivImg(urls)
     ]

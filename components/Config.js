@@ -143,7 +143,7 @@ class Config {
     watcher.on('change', path => {
       delete this.config[key]
       if (typeof Bot == 'undefined') return
-      logger.mark(`[椰奶修改配置文件][${type}][${name}]`)
+      logger.mark(`[yenai-plugin][修改配置文件][${type}][${name}]`)
       if (this[`change_${name}`]) {
         this[`change_${name}`]()
       }

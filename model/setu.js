@@ -130,7 +130,7 @@ export default new class setu {
       over = (this.temp[userId] - present)
     }
     if (over <= 0) return false
-    return this.Secondformat(over)
+    return common.formatTime(over, 'default', false)
   }
 
   /**
@@ -222,10 +222,10 @@ export default new class setu {
       data.r18 = isopen ? 1 : 0
     }
     if (Data.writeJSON(`setu${groupID ? '' : '_s'}.json`, data, this.root)) {
-      logger.mark(`[椰奶R18][${groupID ? '群聊' : '私聊'}]已${isopen ? '开启' : '关闭'}${groupID}的涩涩模式`)
+      logger.mark(`[yenai-plugin][R18][${groupID ? '群聊' : '私聊'}]已${isopen ? '开启' : '关闭'}${groupID}的涩涩模式`)
       return true
     } else {
-      logger.mark(`[椰奶R18][${groupID ? '群聊' : '私聊'}]设置失败`)
+      logger.mark(`[yenai-plugin][R18][${groupID ? '群聊' : '私聊'}]设置失败`)
       return false
     }
   }
@@ -242,31 +242,5 @@ export default new class setu {
     set.recall = this.getRecallTime(e.group_id)
     if (!e.isGroup) delete set.recall
     return set
-  }
-
-  /**
-    * @description: 格式化秒
-    * @param {Number} value 秒
-    * @return {String}
-    */
-  Secondformat (value) {
-    let time = common.getSecond(value)
-
-    let { second, minute, hour, day } = time
-    // 处理返回消息
-    let result = ''
-    if (second != 0) {
-      result = parseInt(second) + '秒'
-    }
-    if (minute > 0) {
-      result = parseInt(minute) + '分' + result
-    }
-    if (hour > 0) {
-      result = parseInt(hour) + '小时' + result
-    }
-    if (day > 0) {
-      result = parseInt(day) + '天' + result
-    }
-    return result
   }
 }()

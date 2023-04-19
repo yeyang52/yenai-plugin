@@ -142,7 +142,7 @@ Bot.on('notice.group', async (e) => {
     }
     // 禁言 (这里仅处理机器人被禁言)
     case 'ban': {
-      const forbiddenTime = common.getsecondformat(e.duration)
+      const forbiddenTime = common.formatTime(e.duration, 'default')
 
       if (!Config.getGroup(e.group_id).botBeenBanned) return false
 

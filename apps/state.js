@@ -49,13 +49,13 @@ export class NewState extends plugin {
       // 头像
       portrait: `https://q1.qlogo.cn/g?b=qq&s=0&nk=${(e.bot ?? Bot).uin}`,
       // 运行时间
-      runTime: Formatting(Date.now() / 1000 - (e.bot ?? Bot).stat.start_time),
+      runTime: common.formatTime(Date.now() / 1000 - (e.bot ?? Bot).stat.start_time, 'dd天hh:mm:ss'),
       // 日历
       calendar: moment().format('YYYY-MM-DD HH:mm:ss'),
       // 昵称
       nickname: (e.bot ?? Bot).nickname,
       // 系统运行时间
-      systime: Formatting(os.uptime()),
+      systime: common.formatTime(os.uptime(), 'dd天hh:mm:ss'),
       // 收
       recv: (e.bot ?? Bot).stat.recv_msg_cnt,
       // 发
@@ -95,23 +95,5 @@ export class NewState extends plugin {
       scale: 1.4
     })
     interval = false
-  }
-}
-
-/**
- * @description: 格式化时间
- * @param {Number} time 秒数
- * @param {boolean} yes  是否补零
- * @return {String} 天:?时:分:秒
- */
-function Formatting (time, repair = true) {
-  let times = common.getSecond(time, repair)
-
-  let { second, minute, hour, day } = times
-
-  if (day > 0) {
-    return day + '天 ' + hour + ':' + minute + ':' + second
-  } else {
-    return hour + ':' + minute + ':' + second
   }
 }

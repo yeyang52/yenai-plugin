@@ -71,7 +71,7 @@ Bot.on('request', async (e) => {
           `附加信息：${e.comment || '无附加信息'}\n`
       ]
       if (cfg.other.autoFriend == 1) {
-        msg.push('已自动同意该好友申请')
+        msg.push('Tip：已被 Yunzai 自动处理')
       } else {
         msg.push(
             `-------------\n可回复：#同意好友申请${e.user_id} \n或引用该消息回复"同意"或"拒绝"`

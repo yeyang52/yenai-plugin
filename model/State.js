@@ -100,7 +100,7 @@ export default new class OSUtils {
         this.si.mem, memTimer
       )
       if (_.isNumber(active)) {
-        this.addData(this.chartData.ram, [Date.now(), active], 100)
+        this.addData(this.chartData.ram, [Date.now(), active])
       }
     }, 5000)
     const cpuTimer = setInterval(async () => {
@@ -108,7 +108,7 @@ export default new class OSUtils {
         this.si.currentLoad, cpuTimer
       )
       if (_.isNumber(currentLoad)) {
-        this.addData(this.chartData.cpu, [Date.now(), currentLoad], 200)
+        this.addData(this.chartData.cpu, [Date.now(), currentLoad])
       }
     }, 5000)
   }

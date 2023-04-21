@@ -50,7 +50,11 @@
 <div class="box">
     <div id="cpu" style="height: 300px;"></div>
     <script>
-        const cpuChart = echarts.init(document.getElementById('cpu'), 'westeros', {
+        let cpuElement = document.getElementById("cpu");
+        if (chartData.ram.length == 0) {
+            cpuElement.parentNode.parentNode.removeChild(cpuElement.parentNode);
+        }
+        const cpuChart = echarts.init(cpuElement, 'westeros', {
             renderer: 'svg'
         })
         cpuChart.setOption(publicOption)
@@ -83,9 +87,13 @@
     </script>
 </div>
 <div class="box">
-    <div id="RAM" style="height: 300px;"></div>
+    <div id="ram" style="height: 300px;"></div>
     <script>
-        const ramChart = echarts.init(document.getElementById('RAM'), 'westeros', {
+        let ramElement = document.getElementById("ram");
+        if (chartData.ram.length == 0) {
+            ramElement.parentNode.parentNode.removeChild(ramElement.parentNode);
+        }
+        const ramChart = echarts.init(ramElement, 'westeros', {
             renderer: 'svg'
         })
         ramChart.setOption(publicOption)
@@ -113,7 +121,12 @@
 <div class="box">
     <div id="network" style="height: 300px;"></div>
     <script>
-        const networkChart = echarts.init(document.getElementById('network'), 'westeros', {
+        let { upload, download } = chartData.network
+        let networkElement = document.getElementById("network");
+        if (upload.length == 0 && download.length == 0) {
+            networkElement.parentNode.parentNode.removeChild(networkElement.parentNode);
+        }
+        const networkChart = echarts.init(networkElement, 'westeros', {
             renderer: 'svg'
         })
         networkChart.setOption(publicOption)
@@ -134,7 +147,7 @@
                             { type: 'max', name: 'Max', label: { formatter: formatByte() } }
                         ]
                     },
-                    data: chartData.network.upload
+                    data: upload
                 },
                 {
                     name: '下行',
@@ -148,7 +161,7 @@
                     emphasis: {
                         focus: 'series'
                     },
-                    data: chartData.network.download
+                    data: download
                 },
             ]
         })
@@ -157,7 +170,12 @@
 <div class="box">
     <div id="fsStats" style="height: 300px;"></div>
     <script>
-        const fsStatsChart = echarts.init(document.getElementById('fsStats'), 'westeros', {
+        let { readSpeed, writeSpeed } = chartData.fsStats
+        let fsStatsElement = document.getElementById("fsStats");
+        if (readSpeed.length == 0 && writeSpeed.length == 0) {
+            fsStatsElement.parentNode.parentNode.removeChild(fsStatsElement.parentNode);
+        }
+        const fsStatsChart = echarts.init(fsStatsElement, 'westeros', {
             renderer: 'svg'
         })
         fsStatsChart.setOption(publicOption)
@@ -178,7 +196,7 @@
                             { type: 'max', name: 'Max', label: { formatter: formatByte() } }
                         ]
                     },
-                    data: chartData.fsStats.readSpeed
+                    data: readSpeed
                 },
                 {
                     name: '写',
@@ -198,7 +216,7 @@
                     emphasis: {
                         focus: 'series'
                     },
-                    data: chartData.fsStats.writeSpeed
+                    data: writeSpeed
                 },
             ]
         })

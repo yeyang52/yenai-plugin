@@ -8,10 +8,7 @@ export const successImgs = [
 
 /** 点赞失败回复的图片 */
 export const faildsImgs = [
-  'https://ovooa.caonm.net/API/pa/api.php?QQ=',
-  'https://api.caonm.net/api/ti/t.php?qq=',
-  'https://api.caonm.net/api/gun/index.php?qq=',
-  'https://api.caonm.net/api/gund/g.php?qq='
+  'https://ovooa.caonm.net/API/pa/api.php?QQ='
 ]
 
 export const heisiType = {
@@ -37,3 +34,65 @@ export const xiurenTypeId = {
     maxPage: 18
   }
 }
+
+export const youDaoLangType = [{
+  code: 'ar',
+  label: '阿拉伯语',
+  alphabet: 'A'
+}, {
+  code: 'de',
+  label: '德语',
+  alphabet: 'D'
+}, {
+  code: 'ru',
+  label: '俄语',
+  alphabet: 'E'
+}, {
+  code: 'fr',
+  label: '法语',
+  alphabet: 'F'
+}, {
+  code: 'ko',
+  label: '韩语',
+  alphabet: 'H'
+}, {
+  code: 'nl',
+  label: '荷兰语',
+  alphabet: 'H'
+}, {
+  code: 'pt',
+  label: '葡萄牙语',
+  alphabet: 'P'
+}, {
+  code: 'ja',
+  label: '日语',
+  alphabet: 'R'
+}, {
+  code: 'th',
+  label: '泰语',
+  alphabet: 'T'
+}, {
+  code: 'es',
+  label: '西班牙语',
+  alphabet: 'X'
+}, {
+  code: 'en',
+  label: '英语',
+  alphabet: 'Y'
+}, {
+  code: 'it',
+  label: '意大利语',
+  alphabet: 'Y'
+}, {
+  code: 'vi',
+  label: '越南语',
+  alphabet: 'Y'
+}, {
+  code: 'id',
+  label: '印度尼西亚语',
+  alphabet: 'Y'
+}, {
+  code: 'zh-CHS',
+  label: '中文',
+  alphabet: 'Z'
+}]

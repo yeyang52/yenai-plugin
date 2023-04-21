@@ -1,23 +1,31 @@
 import _ from 'lodash'
 import md5 from 'md5'
 import fetch from 'node-fetch'
-import { langType } from '../../constants/youdao.js'
 import request from '../../lib/request/request.js'
 import { puppeteer } from '../index.js'
-import { xiurenTypeId } from '../../constants/fun.js'
+import { xiurenTypeId, youDaoLangType } from '../../constants/fun.js'
 
 const API_ERROR = '出了点小问题，待会再试试吧'
 
+let cheerio = null
 export default new class {
   constructor () {
     this.xiurenTypeId = xiurenTypeId
   }
 
+  async _importDependency () {
+    if (cheerio) return cheerio
+    cheerio = await import('cheerio')
+      .catch(() => {
+        throw Error('未检测到依赖cheerio，请安装后再使用该功能，安装命令：pnpm add cheerio -w 或 pnpm install -P')
+      })
+  }
+
   /** 有道翻译 */
   async youdao (msg, to = 'auto', from = 'auto') {
-    if (to != 'auto') to = langType.find(item => item.label == to)?.code
-    if (from != 'auto') from = langType.find(item => item.label == from)?.code
-    if (!to || !from) return `未找到翻译的语种，支持的语言为：\n${langType.map(item => item.label).join('，')}\n示例：#翻译你好 - 自动翻译\n#日语翻译你好 - 指定翻译为语种\n#中文-日语翻译你好 - 指定原语言翻译为指定语言`
+    if (to != 'auto') to = youDaoLangType.find(item => item.label == to)?.code
+    if (from != 'auto') from = youDaoLangType.find(item => item.label == from)?.code
+    if (!to || !from) return `未找到翻译的语种，支持的语言为：\n${youDaoLangType.map(item => item.label).join('，')}\n示例：#翻译你好 - 自动翻译\n#日语翻译你好 - 指定翻译为语种\n#中文-日语翻译你好 - 指定原语言翻译为指定语言`
     // 翻译结果为空的提示
     const RESULT_ERROR = '找不到翻译结果'
     // API 请求错误提示
@@ -63,8 +71,8 @@ export default new class {
       translateResult = _.flattenDeep(translateResult)?.map(item => item.tgt).join('\n')
       if (!translateResult) return RESULT_ERROR
       return translateResult
-    } catch (e) {
-      console.log(e)
+    } catch (err) {
+      logger.error(err)
       return API_ERROR
     }
   }
@@ -96,16 +104,13 @@ export default new class {
    * @return {*}
    */
   async heisiwu (type, page) {
-    const { load } = await import('cheerio')
-      .catch(() => {
-        throw Error('未检测到依赖cheerio，请安装后再使用该功能，安装命令：pnpm add cheerio -w 或 pnpm install -P')
-      })
+    await this._importDependency()
     const url = `http://hs.heisiwu.com/${type}/page/${_.random(1, page)}`
     const home = await request.get(url).then(res => res.text())
-    const href = _.sample(_.map(load(home)('article > a'), (item) => item.attribs.href))
+    const href = _.sample(_.map(cheerio.load(home)('article > a'), (item) => item.attribs.href))
     if (_.isEmpty(href)) throw Error('获取页面失败')
     const details = await request.get(href).then(res => res.text())
-    const $ = load(details)
+    const $ = cheerio.load(details)
     const imgs = _.map($('.alignnone'), (item) => item.attribs.src)
     if (_.isEmpty(imgs)) throw Error('获取图片失败')
     const title = $('.article-content > p:nth-child(1)').text()
@@ -119,10 +124,7 @@ export default new class {
   }
 
   async pandadiu (keywords = '') {
-    const { load } = await import('cheerio')
-      .catch(() => {
-        throw Error('未检测到依赖cheerio，请安装后再使用该功能，安装命令：pnpm add cheerio -w 或 pnpm install -P')
-      })
+    await this._importDependency()
     let domain = 'https://www.pandadiu.com'
     let url = ''
     if (keywords) {
@@ -131,10 +133,10 @@ export default new class {
       url = `${domain}/list-31-${_.random(1, 177)}.html`
     }
     const home = await request.get(url).then(res => res.text())
-    const href = _.sample(_.map(load(home)('div.cos-list.clearfix > ul > a, li.wrap > div > a'), item => item.attribs.href))
+    const href = _.sample(_.map(cheerio.load(home)('div.cos-list.clearfix > ul > a, li.wrap > div > a'), item => item.attribs.href))
     if (!href) throw Error('未找到结果')
     const details = await request.get(domain + href).then(res => res.text())
-    const $ = load(details)
+    const $ = cheerio.load(details)
     const imgs = _.map($('div.con > p > img'), item => item.attribs.src)
     const title = $('div.title > h1').text()
     return [
@@ -146,10 +148,7 @@ export default new class {
   }
 
   async mengdui (keywords, isSearch) {
-    const cheerio = await import('cheerio')
-      .catch(() => {
-        throw Error('未检测到依赖cheerio，请安装后再使用该功能，安装命令：pnpm add cheerio -w 或 pnpm install -P')
-      })
+    await this._importDependency()
     const domain = 'https://b6u8.com'
     let href = ''
     if (isSearch) {
@@ -183,11 +182,7 @@ export default new class {
   }
 
   async xiuren (type) {
-    const cheerio = await import('cheerio').catch(() => {
-      throw Error(
-        '未检测到依赖cheerio，请安装后再使用该功能，安装命令：pnpm add cheerio -w 或 pnpm install -P'
-      )
-    })
+    await this._importDependency()
     // 可扩展
     let handleType = this.xiurenTypeId[type]
     let homeUrl = `https://www.lisiku1.com/forum-${handleType.id}-${_.random(1, handleType.maxPage)}.html`
@@ -213,11 +208,7 @@ export default new class {
   }
 
   async bgg (keyword) {
-    const cheerio = await import('cheerio').catch(() => {
-      throw Error(
-        '未检测到依赖cheerio，请安装后再使用该功能，安装命令：pnpm add cheerio -w 或 pnpm install -P'
-      )
-    })
+    await this._importDependency()
     let url = 'https://www.gstonegames.com/game/?hot_sort=1&keyword=' + encodeURIComponent(keyword)
     const home = await request.get(url).then((res) => res.text())
     const $ = cheerio.load(home)
@@ -236,7 +227,7 @@ export default new class {
     }
     // 拼出集石详情网址并访问
     let href = `https://www.gstonegames.com${firstGameLink}`
-    console.log(`集石详情网址：${href}`)
+    logger.info(`集石详情网址：${href}`)
 
     const detailshtml = await request.get(href).then((res) => res.text())
 
@@ -272,10 +263,10 @@ export default new class {
       ]
     }
     // 如果搜到了
-    console.log(bgglink)
+    logger.info(bgglink)
     // 扒集石的数据
     const gameName2 = details$('.details-title h2 a').text().trim()
-    console.log(`游戏中文名字:${gameName2}`)
+    logger.info(`游戏中文名字:${gameName2}`)
 
     // 访问bgg
     const bgghtml = await request.get(bgglink).then((res) => res.text())
@@ -306,7 +297,7 @@ export default new class {
       bgg$("script[type='application/ld+json']").text()
     ).image
 
-    console.log(`游戏英文名字:${gameName1}`)
+    logger.info(`游戏英文名字:${gameName1}`)
 
     // 回复
     return [

@@ -15,14 +15,18 @@ export default new class OSUtils {
     this._fsStats = null
 
     this.chartData = {
-      // 上行
-      upload: [],
-      // 下行
-      download: [],
-      // 读
-      readSpeed: [],
-      // 写
-      writeSpeed: [],
+      network: {
+        // 上行
+        upload: [],
+        // 下行
+        download: []
+      },
+      fsStats: {
+        // 读
+        readSpeed: [],
+        // 写
+        writeSpeed: []
+      },
       // cpu
       cpu: [],
       // 内存
@@ -39,8 +43,8 @@ export default new class OSUtils {
   set network (value) {
     if (_.isNumber(value[0]?.tx_sec) && _.isNumber(value[0]?.rx_sec)) {
       this._network = value
-      this.addData(this.chartData.upload, [Date.now(), value[0].tx_sec])
-      this.addData(this.chartData.download, [Date.now(), value[0].rx_sec])
+      this.addData(this.chartData.network.upload, [Date.now(), value[0].tx_sec])
+      this.addData(this.chartData.network.download, [Date.now(), value[0].rx_sec])
     }
   }
 
@@ -51,8 +55,8 @@ export default new class OSUtils {
   set fsStats (value) {
     if (_.isNumber(value?.wx_sec) && _.isNumber(value?.rx_sec)) {
       this._fsStats = value
-      this.addData(this.chartData.writeSpeed, [Date.now(), value.wx_sec])
-      this.addData(this.chartData.readSpeed, [Date.now(), value.rx_sec])
+      this.addData(this.chartData.fsStats.writeSpeed, [Date.now(), value.wx_sec])
+      this.addData(this.chartData.fsStats.readSpeed, [Date.now(), value.rx_sec])
     }
   }
 
@@ -161,18 +165,22 @@ export default new class OSUtils {
   * @param {boolean} [isSuffix=true] - 如果为 true，则在所得到的大小后面加上 kb、mb、gb、tb 等后缀.
   * @returns {string} 文件大小格式转换后的字符串.
   */
-  getFileSize (size = 0, isByte = true, isSuffix = true) {
-    if (typeof size !== 'number') return '无效参数'
-    const BYTE_SIZE = 1024
-    let i = -1
-    const units = ['B', 'KB', 'MB', 'GB', 'TB']
-    do {
-      size = size / BYTE_SIZE
-      i++
-    } while (size >= 1 && i < units.length - 1)
-
-    const csize = Math.max(size, 0.1).toFixed(2)
-    return `${csize}${isByte ? '' : ' '}${units[i]}${isSuffix ? ' ' + (isByte ? '' : 'B') : ''}`
+  getFileSize (size, isByte = true, isSuffix = true) { // 把字节转换成正常文件大小
+    if (size == null || size == undefined) return 0
+    let num = 1024.00 // byte
+    if (isByte && size < num) {
+      return size.toFixed(2) + 'B'
+    }
+    if (size < Math.pow(num, 2)) {
+      return (size / num).toFixed(2) + `K${isSuffix ? 'b' : ''}`
+    } // kb
+    if (size < Math.pow(num, 3)) {
+      return (size / Math.pow(num, 2)).toFixed(2) + `M${isSuffix ? 'b' : ''}`
+    } // M
+    if (size < Math.pow(num, 4)) {
+      return (size / Math.pow(num, 3)).toFixed(2) + 'G'
+    } // G
+    return (size / Math.pow(num, 4)).toFixed(2) + 'T' // T
   }
 
   /**

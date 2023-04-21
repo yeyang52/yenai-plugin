@@ -18,45 +18,82 @@
         }
         return value.toFixed(0) + units[unitIndex] // 返回带有动态单位标签的字符串
     }
+    var publicOption = {
+        animation: false,
+        textStyle: {
+            fontFamily: 'Number, "汉仪文黑-65W", YS, PingFangSC-Medium, "PingFang SC", sans-serif'
+        },
+        grid: {
+            left: '1%',
+            right: '1.5%',
+            bottom: '0',
+            containLabel: true
+        },
+        xAxis: [
+            {
+                type: 'time'
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                axisLabel: {
+                    formatter: by
+                }
+            }
+        ],
+    }
 </script>
 
 <div class="box">
-    <div id="Mem"></div>
+    <div id="cpu" style="height: 300px;"></div>
     <script>
-        const MemData = chartData.mem
-        const chart = echarts.init(document.getElementById('Mem'), 'westeros', {
+        const cpuChart = echarts.init(document.getElementById('cpu'), 'westeros', {
             renderer: 'svg'
         })
-        chart.setOption({
-            animation: false,
-            textStyle: {
-                fontFamily: 'Number, "汉仪文黑-65W", YS, PingFangSC-Medium, "PingFang SC", sans-serif'
-            },
+        cpuChart.setOption(publicOption)
+        cpuChart.setOption({
             title: {
-                text: 'Mem'
+                text: 'CPU'
             },
-            legend: {
-                data: ['主动使用', '缓冲区']
-            },
-            grid: {
-                left: '1%',
-                right: '1.5%',
-                bottom: '0',
-                containLabel: true
-            },
-            xAxis: [
-                {
-                    type: 'time'
-                }
-            ],
             yAxis: [
                 {
                     type: 'value',
                     axisLabel: {
-                        formatter: by
+                        formatter: (value) => parseInt(value) + '%'
                     }
                 }
             ],
+            series: [
+                {
+                    name: 'CPU',
+                    type: 'line',
+                    areaStyle: {},
+                    markPoint: {
+                        data: [
+                            { type: 'max', name: 'Max', label: { formatter: (value) => parseInt(value.value) + '%' } }
+                        ]
+                    },
+                    data: chartData.cpu
+                }
+            ]
+        })
+    </script>
+</div>
+<div class="box">
+    <div id="RAM" style="height: 300px;"></div>
+    <script>
+        const ramChart = echarts.init(document.getElementById('RAM'), 'westeros', {
+            renderer: 'svg'
+        })
+        ramChart.setOption(publicOption)
+        ramChart.setOption({
+            title: {
+                text: 'RAM'
+            },
+            legend: {
+                data: ['主动使用', '缓冲区']
+            },
             series: [
                 {
                     name: '主动使用',
@@ -68,7 +105,7 @@
                         ]
                     },
                     stacked: true,
-                    data: MemData.active
+                    data: chartData.mem.active
                 },
                 {
                     name: '缓冲区',
@@ -83,7 +120,95 @@
                         focus: 'series'
                     },
                     stacked: true,
-                    data: MemData.buffcache
+                    data: chartData.mem.buffcache
+                },
+            ]
+        })
+    </script>
+</div>
+<div class="box">
+    <div id="network" style="height: 300px;"></div>
+    <script>
+        const networkChart = echarts.init(document.getElementById('network'), 'westeros', {
+            renderer: 'svg'
+        })
+        networkChart.setOption(publicOption)
+        networkChart.setOption({
+            title: {
+                text: 'Network'
+            },
+            legend: {
+                data: ['上行', '下行']
+            },
+            series: [
+                {
+                    name: '上行',
+                    type: 'line',
+                    areaStyle: {},
+                    markPoint: {
+                        data: [
+                            { type: 'max', name: 'Max', label: { formatter: by } }
+                        ]
+                    },
+                    data: chartData.network.upload
+                },
+                {
+                    name: '下行',
+                    type: 'line',
+                    areaStyle: {},
+                    markPoint: {
+                        data: [
+                            { type: 'max', name: 'Max', label: { formatter: by } }
+                        ]
+                    },
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: chartData.network.download
+                },
+            ]
+        })
+    </script>
+</div>
+<div class="box">
+    <div id="fsStats" style="height: 300px;"></div>
+    <script>
+        const fsStatsChart = echarts.init(document.getElementById('fsStats'), 'westeros', {
+            renderer: 'svg'
+        })
+        fsStatsChart.setOption(publicOption)
+        fsStatsChart.setOption({
+            title: {
+                text: 'FsStats'
+            },
+            legend: {
+                data: ['读', '写']
+            },
+            series: [
+                {
+                    name: '读',
+                    type: 'line',
+                    areaStyle: {},
+                    markPoint: {
+                        data: [
+                            { type: 'max', name: 'Max', label: { formatter: by } }
+                        ]
+                    },
+                    data: chartData.fsStats.readSpeed
+                },
+                {
+                    name: '写',
+                    type: 'line',
+                    areaStyle: {},
+                    markPoint: {
+                        data: [
+                            { type: 'max', name: 'Max', label: { formatter: by } }
+                        ]
+                    },
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: chartData.fsStats.writeSpeed
                 },
             ]
         })

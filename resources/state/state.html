@@ -91,7 +91,7 @@
             }
             return value.toFixed(0) + units[unitIndex] // 返回带有动态单位标签的字符串
         }
-        chart.setOption({
+        let option = {
             animation: false,
             textStyle: {
                 fontFamily: 'Number, "汉仪文黑-65W", YS, PingFangSC-Medium, "PingFang SC", sans-serif'
@@ -131,7 +131,7 @@
                             { type: 'max', name: 'Max', label: { formatter: by } }
                         ]
                     },
-                    data: chartData.upload
+                    data: chartData.network.upload
                 },
                 {
                     name: '下行',
@@ -142,7 +142,7 @@
                             { type: 'max', name: 'Max', label: { formatter: by } }
                         ]
                     },
-                    data: chartData.download
+                    data: chartData.network.download
                 },
                 {
                     name: '读',
@@ -153,7 +153,7 @@
                             { type: 'max', name: 'Max', label: { formatter: by } }
                         ]
                     },
-                    data: chartData.readSpeed
+                    data: chartData.fsStats.readSpeed
                 },
                 {
                     name: '写',
@@ -164,10 +164,11 @@
                             { type: 'max', name: 'Max', label: { formatter: by } }
                         ]
                     },
-                    data: chartData.writeSpeed
+                    data: chartData.fsStats.writeSpeed
                 }
             ]
-        })
+        }
+        chart.setOption(option)
     </script>
 </div>
 {{/if}}

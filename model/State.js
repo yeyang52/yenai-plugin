@@ -30,10 +30,7 @@ export default new class OSUtils {
       // cpu
       cpu: [],
       // 内存
-      mem: {
-        active: [],
-        buffcache: []
-      },
+      ram: [],
       // 主题
       echarts_theme: Data.readJSON('resources/state/theme_westeros.json')
     }
@@ -99,17 +96,20 @@ export default new class OSUtils {
       this.fsStats = await this.fetchDataWithRetry(this.si.fsStats, fsStatsTimer)
     }, 5000)
     const memTimer = setInterval(async () => {
-      let { active, buffcache } = await this.fetchDataWithRetry(
+      let { active } = await this.fetchDataWithRetry(
         this.si.mem, memTimer
       )
-      this.addData(this.chartData.mem.active, [Date.now(), active])
-      this.addData(this.chartData.mem.buffcache, [Date.now(), buffcache])
+      if (_.isNumber(active)) {
+        this.addData(this.chartData.ram, [Date.now(), active], 100)
+      }
     }, 5000)
     const cpuTimer = setInterval(async () => {
       let { currentLoad } = await this.fetchDataWithRetry(
         this.si.currentLoad, cpuTimer
       )
-      this.addData(this.chartData.cpu, [Date.now(), currentLoad])
+      if (_.isNumber(currentLoad)) {
+        this.addData(this.chartData.cpu, [Date.now(), currentLoad], 200)
+      }
     }, 5000)
   }
 
@@ -122,7 +122,8 @@ export default new class OSUtils {
    * @returns {void}
    */
   addData (arr, data, maxLen = 50) {
-  // 如果数组长度超过允许的最大值，删除第一个元素
+    if (data === null || data === undefined) return
+    // 如果数组长度超过允许的最大值，删除第一个元素
     if (arr.length >= maxLen) {
       _.pullAt(arr, 0)
     }
@@ -148,7 +149,7 @@ export default new class OSUtils {
       }
       retryCount++
       if (retryCount > maxRetryCount && timerId) {
-        console.log('获取数据失败，停止定时器')
+        logger.debug(`获取${fetchFunc.name}数据失败，停止定时器`)
         clearInterval(timerId)
         break
       }

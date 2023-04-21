@@ -8,15 +8,17 @@
 <script>
     var chartData = JSON.parse('{{@chartData}}')
     echarts.registerTheme('westeros', chartData.echarts_theme)
-    var by = (value) => {
-        value = value?.value ?? value
-        let units = ['B', 'KB', 'MB', 'GB', 'TB'] // 定义单位数组
-        let unitIndex = 0
-        while (value >= 1024 && unitIndex < units.length - 1) {
-            value /= 1024
-            unitIndex++
+    var formatByte = (num = 0) => {
+        return (value) => {
+            value = value?.value ?? value
+            let units = ['B', 'KB', 'MB', 'GB', 'TB'] // 定义单位数组
+            let unitIndex = 0
+            while (value >= 1024 && unitIndex < units.length - 1) {
+                value /= 1024
+                unitIndex++
+            }
+            return value.toFixed(num) + units[unitIndex] // 返回带有动态单位标签的字符串
         }
-        return value.toFixed(0) + units[unitIndex] // 返回带有动态单位标签的字符串
     }
     var publicOption = {
         animation: false,
@@ -25,7 +27,7 @@
         },
         grid: {
             left: '1%',
-            right: '1.5%',
+            right: '1%',
             bottom: '0',
             containLabel: true
         },
@@ -38,7 +40,7 @@
             {
                 type: 'value',
                 axisLabel: {
-                    formatter: by
+                    formatter: formatByte(1)
                 }
             }
         ],
@@ -91,37 +93,19 @@
             title: {
                 text: 'RAM'
             },
-            legend: {
-                data: ['主动使用', '缓冲区']
-            },
             series: [
                 {
-                    name: '主动使用',
+                    name: 'RAM',
                     type: 'line',
                     areaStyle: {},
                     markPoint: {
                         data: [
-                            { type: 'max', name: 'Max', label: { formatter: by } }
+                            { type: 'max', name: 'Max', label: { formatter: formatByte() } }
                         ]
                     },
                     stack: 'total',
-                    data: chartData.mem.active
-                },
-                {
-                    name: '缓冲区',
-                    type: 'line',
-                    areaStyle: {},
-                    markPoint: {
-                        data: [
-                            { type: 'max', name: 'Max', label: { formatter: by } }
-                        ]
-                    },
-                    emphasis: {
-                        focus: 'series'
-                    },
-                    stack: 'total',
-                    data: chartData.mem.buffcache
-                },
+                    data: chartData.ram
+                }
             ]
         })
     </script>
@@ -147,7 +131,7 @@
                     areaStyle: {},
                     markPoint: {
                         data: [
-                            { type: 'max', name: 'Max', label: { formatter: by } }
+                            { type: 'max', name: 'Max', label: { formatter: formatByte() } }
                         ]
                     },
                     data: chartData.network.upload
@@ -158,7 +142,7 @@
                     areaStyle: {},
                     markPoint: {
                         data: [
-                            { type: 'max', name: 'Max', label: { formatter: by } }
+                            { type: 'max', name: 'Max', label: { formatter: formatByte() } }
                         ]
                     },
                     emphasis: {
@@ -191,7 +175,7 @@
                     areaStyle: {},
                     markPoint: {
                         data: [
-                            { type: 'max', name: 'Max', label: { formatter: by } }
+                            { type: 'max', name: 'Max', label: { formatter: formatByte() } }
                         ]
                     },
                     data: chartData.fsStats.readSpeed
@@ -202,7 +186,13 @@
                     areaStyle: {},
                     markPoint: {
                         data: [
-                            { type: 'max', name: 'Max', label: { formatter: by } }
+                            {
+                                type: 'max',
+                                name: 'Max',
+                                label: {
+                                    formatter: formatByte()
+                                }
+                            }
                         ]
                     },
                     emphasis: {

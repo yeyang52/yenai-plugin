@@ -15,7 +15,7 @@ export class NewState extends plugin {
       priority: 50,
       rule: [
         {
-          reg: '^#?(椰奶)?状态(pro)?$',
+          reg: '^#?(椰奶)?(状态|监控)(pro)?$',
           fnc: 'state'
         }
       ]
@@ -27,6 +27,17 @@ export class NewState extends plugin {
     if (!/椰奶/.test(e.msg) && !Config.Notice.state) return false
 
     if (!State.si) return e.reply('❎ 没有检测到systeminformation依赖，请运行："pnpm add systeminformation -w"进行安装')
+    if (e.msg.includes('监控')) {
+      let data = {
+        chartData: JSON.stringify(_.every(_.omit(State.chartData, 'echarts_theme'), _.isEmpty) ? undefined : State.chartData)
+      }
+      return await puppeteer.render('state/monitor', {
+        ...data
+      }, {
+        e,
+        scale: 1.4
+      })
+    }
     // 防止多次触发
     if (interval) { return false } else interval = true
     // 系统

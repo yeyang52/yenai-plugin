@@ -6,51 +6,53 @@ import { Config, Data } from '../components/index.js'
 
 export default new class OSUtils {
   constructor () {
-    this.cpuUsageMSDefault = 1000 // CPU 利用率默认时间段
-    this.isGPU = false
-    this._now_network = null
-    this._fsStats = null
     this.si = null
+    // 是否可以获取gpu
+    this.isGPU = false
+    // 网络
+    this._network = null
+    // 读写速率
+    this._fsStats = null
+
     this.chartData = {
+      // 上行
       upload: [],
+      // 下行
       download: [],
+      // 读
       readSpeed: [],
+      // 写
       writeSpeed: [],
+      // cpu
+      cpu: [],
+      // 内存
+      mem: {
+        active: [],
+        buffcache: []
+      },
+      // 主题
       echarts_theme: Data.readJSON('resources/state/theme_westeros.json')
     }
     this.init()
   }
 
-  set now_network (value) {
-    if (!value[0]?.tx_sec && !_.isNumber(value[0]?.tx_sec)) return
-    if (!value[0]?.rx_sec && !_.isNumber(value[0]?.rx_sec)) return
-
-    this._now_network = value
-    this.chartData.upload.push([Date.now(), value[0].tx_sec])
-    this.chartData.download.push([Date.now(), value[0].rx_sec])
-    if (this.chartData.upload.length > 50) {
-      this.chartData.upload.shift()
-    }
-    if (this.chartData.download.length > 50) {
-      this.chartData.download.shift()
+  set network (value) {
+    if (_.isNumber(value[0]?.tx_sec) && _.isNumber(value[0]?.rx_sec)) {
+      this._network = value
+      this.addData(this.chartData.upload, [Date.now(), value[0].tx_sec])
+      this.addData(this.chartData.download, [Date.now(), value[0].rx_sec])
     }
   }
 
-  get now_network () {
-    return this._now_network
+  get network () {
+    return this._network
   }
 
   set fsStats (value) {
-    if (!value?.wx_sec && !_.isNumber(value?.wx_sec)) return
-    if (!value?.rx_sec && !_.isNumber(value?.rx_sec)) return
-    this._fsStats = value
-    this.chartData.writeSpeed.push([Date.now(), value.wx_sec])
-    this.chartData.readSpeed.push([Date.now(), value.rx_sec])
-    if (this.chartData.writeSpeed.length > 50) {
-      this.chartData.writeSpeed.shift()
-    }
-    if (this.chartData.readSpeed.length > 50) {
-      this.chartData.readSpeed.shift()
+    if (_.isNumber(value?.wx_sec) && _.isNumber(value?.rx_sec)) {
+      this._fsStats = value
+      this.addData(this.chartData.writeSpeed, [Date.now(), value.wx_sec])
+      this.addData(this.chartData.readSpeed, [Date.now(), value.rx_sec])
     }
   }
 
@@ -85,31 +87,92 @@ export default new class OSUtils {
     // 给有问题的用户关闭定时器
     if (!Config.Notice.statusTask) return
     // 网速
-    let worktimer = setInterval(async () => {
-      this.now_network = await this.si.networkStats()
+    const networkTimer = setInterval(async () => {
+      this.network = await this.fetchDataWithRetry(this.si.networkStats, networkTimer)
     }, 5000)
     // 磁盘写入速度
-    let fsStatstimer = setInterval(async () => {
-      this.fsStats = await this.si.fsStats()
+    const fsStatsTimer = setInterval(async () => {
+      this.fsStats = await this.fetchDataWithRetry(this.si.fsStats, fsStatsTimer)
     }, 5000)
-    // 一分钟后检测是否能获取不能则销毁定时器
-    setTimeout(() => {
-      if (!this.now_network) clearTimeout(worktimer)
-      if (!this.fsStats) clearTimeout(fsStatstimer)
-    }, 60000)
+    const memTimer = setInterval(async () => {
+      let { active, buffcache } = await this.fetchDataWithRetry(
+        this.si.mem, memTimer
+      )
+      this.addData(this.chartData.mem.active, [Date.now(), active])
+      this.addData(this.chartData.mem.buffcache, [Date.now(), buffcache])
+    }, 5000)
+    const cpuTimer = setInterval(async () => {
+      let { currentLoad } = await this.fetchDataWithRetry(
+        this.si.currentLoad, cpuTimer
+      )
+      this.addData(this.chartData.cpu, [Date.now(), currentLoad])
+    }, 5000)
   }
 
-  /** 字节转换 */
-  getfilesize (size, isbtye = true, issuffix = true) { // 把字节转换成正常文件大小
-    if (size == null || size == undefined) return 0
-    let num = 1024.00 // byte
-    if (isbtye) {
-      if (size < num) { return size.toFixed(2) + 'B' }
+  /**
+   * 向数组中添加数据，如果数组长度超过允许的最大值，则删除最早添加的数据
+   *
+   * @param {Array} arr - 要添加数据的数组
+   * @param {*} data - 要添加的新数据
+   * @param {number} [maxLen=50] - 数组允许的最大长度，默认值为50
+   * @returns {void}
+   */
+  addData (arr, data, maxLen = 50) {
+  // 如果数组长度超过允许的最大值，删除第一个元素
+    if (arr.length >= maxLen) {
+      _.pullAt(arr, 0)
     }
-    if (size < Math.pow(num, 2)) { return (size / num).toFixed(2) + `K${issuffix ? 'b' : ''}` } // kb
-    if (size < Math.pow(num, 3)) { return (size / Math.pow(num, 2)).toFixed(2) + `M${issuffix ? 'b' : ''}` } // M
-    if (size < Math.pow(num, 4)) { return (size / Math.pow(num, 3)).toFixed(2) + 'G' } // G
-    return (size / Math.pow(num, 4)).toFixed(2) + 'T' // T
+    // 添加新数据
+    arr.push(data)
+  }
+
+  /**
+  * 重试获取数据，直到成功或达到最大重试次数。
+  * @param {Function} fetchFunc 获取数据的函数，返回一个Promise对象。
+  * @param {Number} [timerId] 定时器的id，用于在获取数据失败时停止定时器
+  * @param {Number} [maxRetryCount=3] 最大重试次数。
+  * @param {Number} [retryInterval=1000] 两次重试之间的等待时间，单位为毫秒。。
+  * @return {Promise} 获取到的数据。如果达到最大重试次数且获取失败，则返回null。
+  */
+  async fetchDataWithRetry (fetchFunc, timerId, maxRetryCount = 3, retryInterval = 1000) {
+    let retryCount = 0
+    let data = null
+    while (retryCount <= maxRetryCount) {
+      data = await fetchFunc()
+      if (!_.isEmpty(data)) {
+        break
+      }
+      retryCount++
+      if (retryCount > maxRetryCount && timerId) {
+        console.log('获取数据失败，停止定时器')
+        clearInterval(timerId)
+        break
+      }
+      await new Promise(resolve => setTimeout(resolve, retryInterval))
+    }
+    return data
+  }
+
+  /**
+  * 将文件大小从字节转化为可读性更好的格式，例如B、KB、MB、GB、TB。
+  *
+  * @param {number} size - 带转化的字节数。
+  * @param {boolean} [isByte=true] - 如果为 true，则最终的文件大小显示保留 B 的后缀.
+  * @param {boolean} [isSuffix=true] - 如果为 true，则在所得到的大小后面加上 kb、mb、gb、tb 等后缀.
+  * @returns {string} 文件大小格式转换后的字符串.
+  */
+  getFileSize (size = 0, isByte = true, isSuffix = true) {
+    if (typeof size !== 'number') return '无效参数'
+    const BYTE_SIZE = 1024
+    let i = -1
+    const units = ['B', 'KB', 'MB', 'GB', 'TB']
+    do {
+      size = size / BYTE_SIZE
+      i++
+    } while (size >= 1 && i < units.length - 1)
+
+    const csize = Math.max(size, 0.1).toFixed(2)
+    return `${csize}${isByte ? '' : ' '}${units[i]}${isSuffix ? ' ' + (isByte ? '' : 'B') : ''}`
   }
 
   /**
@@ -139,11 +202,11 @@ export default new class OSUtils {
   getNodeInfo () {
     let memory = process.memoryUsage()
     // 总共
-    let rss = this.getfilesize(memory.rss)
+    let rss = this.getFileSize(memory.rss)
     // 堆
-    let heapTotal = this.getfilesize(memory.heapTotal)
+    let heapTotal = this.getFileSize(memory.heapTotal)
     // 栈
-    let heapUsed = this.getfilesize(memory.heapUsed)
+    let heapUsed = this.getFileSize(memory.heapUsed)
     // 占用率
     let occupy = (memory.rss / (os.totalmem() - os.freemem())).toFixed(2)
     return {
@@ -163,11 +226,11 @@ export default new class OSUtils {
     // 内存使用率
     let MemUsage = (1 - os.freemem() / os.totalmem()).toFixed(2)
     // 空闲内存
-    let freemem = this.getfilesize(os.freemem())
+    let freemem = this.getFileSize(os.freemem())
     // 总共内存
-    let totalmem = this.getfilesize(os.totalmem())
+    let totalmem = this.getFileSize(os.totalmem())
     // 使用内存
-    let Usingmemory = this.getfilesize((os.totalmem() - os.freemem()))
+    let Usingmemory = this.getFileSize((os.totalmem() - os.freemem()))
 
     return {
       ...this.Circle(MemUsage),
@@ -244,8 +307,8 @@ export default new class OSUtils {
     if (_.isEmpty(HardDisk)) return false
     // 数值转换
     return HardDisk.map(item => {
-      item.used = this.getfilesize(item.used)
-      item.size = this.getfilesize(item.size)
+      item.used = this.getFileSize(item.used)
+      item.size = this.getFileSize(item.size)
       item.use = Math.ceil(item.use)
       item.color = '#90ee90'
       if (item.use >= 90) {
@@ -272,8 +335,8 @@ export default new class OSUtils {
   get DiskSpeed () {
     if (!this.fsStats || this.fsStats.rx_sec == null || this.fsStats.wx_sec == null) return false
     return {
-      rx_sec: this.getfilesize(this.fsStats.rx_sec, false, false),
-      wx_sec: this.getfilesize(this.fsStats.wx_sec, false, false)
+      rx_sec: this.getFileSize(this.fsStats.rx_sec, false, false),
+      wx_sec: this.getFileSize(this.fsStats.wx_sec, false, false)
     }
   }
 
@@ -283,10 +346,10 @@ export default new class OSUtils {
    */
   get getnetwork () {
     let network = {}
-    try { network = _.cloneDeep(this.now_network)[0] } catch { return false }
+    try { network = _.cloneDeep(this.network)[0] } catch { return false }
     if (network.rx_sec == null || network.tx_sec == null) return false
-    network.rx_sec = this.getfilesize(network.rx_sec, false, false)
-    network.tx_sec = this.getfilesize(network.tx_sec, false, false)
+    network.rx_sec = this.getFileSize(network.rx_sec, false, false)
+    network.tx_sec = this.getFileSize(network.tx_sec, false, false)
     return network
   }
 

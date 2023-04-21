@@ -1,0 +1,93 @@
+{{extend defaultLayout}}
+
+{{block 'css'}}
+<link rel="stylesheet" href="{{_res_path}}state/state.css">
+<script src="{{_res_path}}state/echarts.min.js"></script>
+{{/block}}
+{{block 'main'}}
+<script>
+    var chartData = JSON.parse('{{@chartData}}')
+    echarts.registerTheme('westeros', chartData.echarts_theme)
+    var by = (value) => {
+        value = value?.value ?? value
+        let units = ['B', 'KB', 'MB', 'GB', 'TB'] // 定义单位数组
+        let unitIndex = 0
+        while (value >= 1024 && unitIndex < units.length - 1) {
+            value /= 1024
+            unitIndex++
+        }
+        return value.toFixed(0) + units[unitIndex] // 返回带有动态单位标签的字符串
+    }
+</script>
+
+<div class="box">
+    <div id="Mem"></div>
+    <script>
+        const MemData = chartData.mem
+        const chart = echarts.init(document.getElementById('Mem'), 'westeros', {
+            renderer: 'svg'
+        })
+        chart.setOption({
+            animation: false,
+            textStyle: {
+                fontFamily: 'Number, "汉仪文黑-65W", YS, PingFangSC-Medium, "PingFang SC", sans-serif'
+            },
+            title: {
+                text: 'Mem'
+            },
+            legend: {
+                data: ['主动使用', '缓冲区']
+            },
+            grid: {
+                left: '1%',
+                right: '1.5%',
+                bottom: '0',
+                containLabel: true
+            },
+            xAxis: [
+                {
+                    type: 'time'
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    axisLabel: {
+                        formatter: by
+                    }
+                }
+            ],
+            series: [
+                {
+                    name: '主动使用',
+                    type: 'line',
+                    areaStyle: {},
+                    markPoint: {
+                        data: [
+                            { type: 'max', name: 'Max', label: { formatter: by } }
+                        ]
+                    },
+                    stacked: true,
+                    data: MemData.active
+                },
+                {
+                    name: '缓冲区',
+                    type: 'line',
+                    areaStyle: {},
+                    markPoint: {
+                        data: [
+                            { type: 'max', name: 'Max', label: { formatter: by } }
+                        ]
+                    },
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    stacked: true,
+                    data: MemData.buffcache
+                },
+            ]
+        })
+    </script>
+</div>
+
+{{/block}}

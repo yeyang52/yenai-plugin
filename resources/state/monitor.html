@@ -104,7 +104,7 @@
                             { type: 'max', name: 'Max', label: { formatter: by } }
                         ]
                     },
-                    stacked: true,
+                    stack: 'total',
                     data: chartData.mem.active
                 },
                 {
@@ -119,7 +119,7 @@
                     emphasis: {
                         focus: 'series'
                     },
-                    stacked: true,
+                    stack: 'total',
                     data: chartData.mem.buffcache
                 },
             ]

@@ -64,7 +64,7 @@ export class Fun extends plugin {
         },
         {
           reg: '^#?半次元话题$',
-          fnc: 'bcy_topic'
+          fnc: 'bcyTopic'
         },
         {
           reg: apiReg,
@@ -195,21 +195,9 @@ export class Fun extends plugin {
     }
 
     e.reply(START_EXECUTION)
-
-    const api = 'https://ovooa.caonm.net/API/cosplay/api.php'
-
-    let res
-    try {
-      res = await fetch(api).then((res) => res.json())
-    } catch (err) {
-      logger.error(err)
-      return e.reply(API_ERROR)
-    }
-
-    const { Title, data } = res.data
-    const items = _.take(data, 20).map((i) => segment.image(i))
-    const msg = [Title, ...items]
-    common.recallSendForwardMsg(e, msg)
+    await funApi.coser()
+      .then(res => common.recallSendForwardMsg(e, res))
+      .catch(err => e.reply(err.message))
   }
 
   // cos/acg搜索
@@ -272,7 +260,7 @@ export class Fun extends plugin {
   }
 
   /** 半次元话题 */
-  async bcy_topic (e) {
+  async bcyTopic (e) {
     let api = 'https://xiaobai.klizi.cn/API/other/bcy_topic.php'
     let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
     if (!res) return e.reply(API_ERROR)
@@ -284,7 +272,7 @@ export class Fun extends plugin {
       msg.push(i.title)
       msg.push(i.image.map(item => segment.image(item)))
     }
-    if (_.isEmpty(msg)) return this.bcy_topic(e)
+    if (_.isEmpty(msg)) return this.bcyTopic(e)
     common.getforwardMsg(e, msg)
   }
 

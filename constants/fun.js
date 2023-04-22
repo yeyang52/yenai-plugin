@@ -1,14 +1,12 @@
 /** 点赞成功回复的图片 */
 export const successImgs = [
-  'https://api.caonm.net/api/zan/z.php?qq=',
-  'http://api.caonm.net/api/bix/b.php?qq=',
-  'http://api.caonm.net/api/kan/kan_3.php?qq=',
-  'https://api.caonm.net/api/kan/kan.php?qq='
+  'https://xiaobai.klizi.cn/API/ce/xin.php?qq=',
+  'https://xiaobai.klizi.cn/API/ce/zan.php?qq='
 ]
 
 /** 点赞失败回复的图片 */
 export const faildsImgs = [
-  'https://ovooa.caonm.net/API/pa/api.php?QQ='
+  'https://xiaobai.klizi.cn/API/ce/paa.php?qq='
 ]
 
 export const heisiType = {

@@ -315,4 +315,28 @@ export default new class {
       segment.image(gameimg)
     ]
   }
+
+  async coser () {
+    await this._importDependency()
+    const domain = 'https://t2cy.com'
+    const homeUrl = `${domain}/acg/cos/index_${_.random(1, 30)}.html`
+    const home = await request.get(homeUrl).then(res => res.text())
+    const $ = cheerio.load(home)
+    const href = _.sample(
+      _.map(
+        $('body > div > div.content.hidden > ul.cy2-coslist.clr > li > div.showImg > a'),
+        (item) => item.attribs.href
+      )
+    )
+    if (!href) throw Error('未知错误')
+    const imgPage = await request.get(domain + href).then(res => res.text())
+    const $1 = cheerio.load(imgPage)
+    const imgList = _.map(
+      $1(
+        'body > div > div.content.pb20.clr > div.cy_cosCon > div.w.maxImg.tc > p > img'
+      ), item => segment.image(domain + item.attribs['data-loadsrc'] || item.attribs.src)
+    )
+    const title = $1('h1').text().trim()
+    return [title, ..._.take(imgList, 20)]
+  }
 }()

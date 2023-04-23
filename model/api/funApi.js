@@ -329,12 +329,13 @@ export default new class {
       )
     )
     if (!href) throw Error('未知错误')
+    logger.debug('[yenai-plugin][coser]图片详情页：' + domain + href)
     const imgPage = await request.get(domain + href).then(res => res.text())
     const $1 = cheerio.load(imgPage)
     const imgList = _.map(
       $1(
         'body > div > div.content.pb20.clr > div.cy_cosCon > div.w.maxImg.tc > p > img'
-      ), item => segment.image(domain + item.attribs['data-loadsrc'] || item.attribs.src)
+      ), item => segment.image(_.includes(item.attribs.src, 'http') ? item.attribs.src : domain + (item.attribs['data-loadsrc'] || item.attribs.src))
     )
     const title = $1('h1').text().trim()
     return [title, ..._.take(imgList, 20)]

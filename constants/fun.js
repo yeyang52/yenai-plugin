@@ -10,26 +10,49 @@ export const faildsImgs = [
 ]
 
 export const heisiType = {
-  白丝: { type: 'baisi', page: 17 },
-  黑丝: { type: 'heisi', page: 43 },
-  巨乳: { type: 'juru', page: 8 },
-  jk: { type: 'jk', page: 6 },
-  网红: { type: 'mcn', page: 36 },
-  美足: { type: 'meizu', page: 9 }
+  '白丝': { type: 'baisi', page: 17 },
+  '黑丝': { type: 'heisi', page: 43 },
+  '巨乳': { type: 'juru', page: 8 },
+  'jk': { type: 'jk', page: 6 },
+  '网红': { type: 'mcn', page: 36 },
+  '美足': { type: 'meizu', page: 9 }
 }
 
 export const xiurenTypeId = {
-  秀人: {
+  '秀人': {
     id: 117,
     maxPage: 88
   },
-  足控: {
+  '足控': {
     id: 229,
     maxPage: 8
   },
-  雅拉伊: {
+  '雅拉伊': {
     id: 306,
     maxPage: 18
+  }
+}
+
+export const pandadiuType = {
+  '制服': {
+    id: 66,
+    page: 8
+  },
+  '写真': {
+    id: 65,
+    page: 55
+  },
+  'cos': {
+    id: 30,
+    page: 210
+  },
+  '正片': {
+    id: 31,
+    page: 187
+  },
+  '场照': {
+    id: 75,
+    page: 23
   }
 }
 

@@ -3,7 +3,7 @@ import fetch from 'node-fetch'
 import _ from 'lodash'
 import { Config } from '../components/index.js'
 import { common, uploadRecord, QQApi, funApi } from '../model/index.js'
-import { successImgs, faildsImgs, heisiType } from '../constants/fun.js'
+import { successImgs, faildsImgs, heisiType, pandadiuType } from '../constants/fun.js'
 
 /** API请求错误文案 */
 const API_ERROR = '❎ 出错辣，请稍后重试'
@@ -75,7 +75,7 @@ export class Fun extends plugin {
         //   fnc: 'mengdui'
         // },
         {
-          reg: '^#acg.*$',
+          reg: `^#(${Object.keys(pandadiuType).join('|')})?acg.*$`,
           fnc: 'acg'
         },
         {
@@ -205,9 +205,8 @@ export class Fun extends plugin {
     let { sese, sesepro } = Config.getGroup(e.group_id)
     if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
     e.reply(START_EXECUTION)
-
-    let keywords = e.msg.replace(/#|acg/g, '').trim()
-    await funApi.pandadiu(keywords)
+    let type = e.msg.match(new RegExp(`^#(${Object.keys(pandadiuType).join('|')})?acg(.*)$`))
+    await funApi.pandadiu(type[1], type[2])
       .then(res => common.recallSendForwardMsg(e, res))
       .catch(err => e.reply(err.message))
   }

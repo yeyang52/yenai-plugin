@@ -3,7 +3,7 @@ import md5 from 'md5'
 import fetch from 'node-fetch'
 import request from '../../lib/request/request.js'
 import { puppeteer } from '../index.js'
-import { xiurenTypeId, youDaoLangType } from '../../constants/fun.js'
+import { xiurenTypeId, youDaoLangType, pandadiuType } from '../../constants/fun.js'
 
 const API_ERROR = '出了点小问题，待会再试试吧'
 
@@ -123,27 +123,30 @@ export default new class {
     return [title, ..._.take(msg, 30)]
   }
 
-  async pandadiu (keywords = '') {
+  async pandadiu (type = 'cos', keywords = '') {
     await this._importDependency()
     let domain = 'https://www.pandadiu.com'
-    let url = ''
+    const { id, page } = pandadiuType[type]
+    let homeUrl = `${domain}/list-${id}-${_.random(1, page)}.html`
     if (keywords) {
-      url = `${domain}/index.php?m=search&c=index&a=init&typeid=1&siteid=1&q=${keywords}`
-    } else {
-      url = `${domain}/list-31-${_.random(1, 177)}.html`
+      homeUrl = `${domain}/index.php?m=search&c=index&a=init&typeid=1&siteid=1&q=${keywords}`
     }
-    const home = await request.get(url).then(res => res.text())
-    const href = _.sample(_.map(cheerio.load(home)('div.cos-list.clearfix > ul > a, li.wrap > div > a'), item => item.attribs.href))
+    logger.debug('[yenai-plugin][acg]作品索引页：' + homeUrl)
+    const home = await request.get(homeUrl).then(res => res.text())
+    const href = _.sample(_.map(cheerio.load(home)('div.cos-list.clearfix > ul > a, div.cover.mod_imgLight > a'), item => item.attribs.href))
     if (!href) throw Error('未找到结果')
+    logger.debug('[yenai-plugin][acg]图片详情页：' + domain + href)
     const details = await request.get(domain + href).then(res => res.text())
     const $ = cheerio.load(details)
-    const imgs = _.map($('div.con > p > img'), item => item.attribs.src)
+    const imgs = _.map($('div.con > p > img'), item =>
+      segment.image(item.attribs.src.includes('http')
+        ? item.attribs.src
+        : domain + item.attribs.src
+      ))
     const title = $('div.title > h1').text()
     return [
       title,
-      ..._.take(imgs.map(item => {
-        return segment.image(new RegExp(domain).test(item) ? item : domain + item)
-      }), 30)
+      ..._.take(imgs, 30)
     ]
   }
 
@@ -320,6 +323,7 @@ export default new class {
     await this._importDependency()
     const domain = 'https://t2cy.com'
     const homeUrl = `${domain}/acg/cos/index_${_.random(1, 30)}.html`
+    logger.debug('[yenai-plugin][coser]作品索引页：' + homeUrl)
     const home = await request.get(homeUrl).then(res => res.text())
     const $ = cheerio.load(home)
     const href = _.sample(
@@ -329,12 +333,13 @@ export default new class {
       )
     )
     if (!href) throw Error('未知错误')
+    logger.debug('[yenai-plugin][coser]图片详情页：' + domain + href)
     const imgPage = await request.get(domain + href).then(res => res.text())
     const $1 = cheerio.load(imgPage)
     const imgList = _.map(
       $1(
         'body > div > div.content.pb20.clr > div.cy_cosCon > div.w.maxImg.tc > p > img'
-      ), item => segment.image(domain + item.attribs['data-loadsrc'] || item.attribs.src)
+      ), item => segment.image(_.includes(item.attribs.src, 'http') ? item.attribs.src : domain + (item.attribs['data-loadsrc'] || item.attribs.src))
     )
     const title = $1('h1').text().trim()
     return [title, ..._.take(imgList, 20)]

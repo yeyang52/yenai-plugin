@@ -59,13 +59,13 @@ export class NewState extends plugin {
       // 头像
       portrait: `https://q1.qlogo.cn/g?b=qq&s=0&nk=${(e.bot ?? Bot).uin}`,
       // 运行时间
-      runTime: common.formatTime(Date.now() / 1000 - (e.bot ?? Bot).stat.start_time, 'dd天hh:mm:ss'),
+      runTime: common.formatTime(Date.now() / 1000 - (e.bot ?? Bot).stat.start_time, 'dd天hh小时mm分ss秒', false),
       // 日历
       calendar: moment().format('YYYY-MM-DD HH:mm:ss'),
       // 昵称
       nickname: (e.bot ?? Bot).nickname,
       // 系统运行时间
-      systime: common.formatTime(os.uptime(), 'dd天hh:mm:ss'),
+      systime: common.formatTime(os.uptime(), 'dd天hh小时mm分ss秒', false),
       // 收
       recv: (e.bot ?? Bot).stat.recv_msg_cnt,
       // 发

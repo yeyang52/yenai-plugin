@@ -155,9 +155,9 @@ Bot.on('message.group', async (e) => {
 
   const { nums, operator } = temp[e.user_id + e.group_id]
 
-  const isAccurateModeOK = mode === '精确' && e.raw_message == verifyCode
+  const isAccurateModeOK = mode === '精确' && e.msg == verifyCode
 
-  const isVagueModeOK = mode === '模糊' && e.raw_message.includes(verifyCode)
+  const isVagueModeOK = mode === '模糊' && e.msg.includes(verifyCode)
 
   const isOK = isAccurateModeOK || isVagueModeOK
 

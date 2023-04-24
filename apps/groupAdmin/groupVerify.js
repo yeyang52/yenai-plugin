@@ -142,7 +142,9 @@ Bot.on('notice.group.increase', async (e) => {
 })
 
 // 答案监听
-Bot.on('message.group', async (e) => {
+Bot.on('message', async (e) => {
+  if (!e.isGroup) return false
+
   let { openGroup, mode, SuccessMsgs } = Config.groupverify
 
   if (!openGroup.includes(e.group_id)) return

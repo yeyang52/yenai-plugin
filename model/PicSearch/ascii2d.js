@@ -7,14 +7,17 @@ let cheerio = ''
 
 let domain = 'https://ascii2d.net/'
 
-export default async function doSearch (url) {
-  if (!cheerio) {
-    try {
-      cheerio = await import('cheerio')
-    } catch (e) {
-      throw Error('未检测到依赖cheerio，请安装后再使用Ascii2D搜图，安装命令：pnpm add cheerio -w 或 pnpm install -P')
-    }
+async function importCheerio () {
+  if (cheerio) return cheerio
+  try {
+    cheerio = await import('cheerio')
+  } catch (e) {
+    throw Error('未检测到依赖cheerio，请安装后再使用Ascii2D搜图，安装命令：pnpm add cheerio -w 或 pnpm install -P')
   }
+}
+
+export default async function doSearch (url) {
+  await importCheerio()
   const { ascii2dUsePuppeteer, ascii2dResultMaxQuantity } = Config.picSearch
   const callApi = ascii2dUsePuppeteer ? callAscii2dUrlApiWithPuppeteer : callAscii2dUrlApi
   let ret = await callApi(url)
@@ -59,7 +62,15 @@ const callAscii2dUrlApiWithPuppeteer = (imgUrl) => {
   return getAscii2dWithPuppeteer(`${domain}/search/url/${imgUrl}`)
 }
 const callAscii2dUrlApi = async (imgUrl) => {
-  let res = await request.cfGet(`${domain}/search/url/${imgUrl}`)
+  let res = await request.cfGet(`${domain}/search/url/${imgUrl}`).catch(
+    err => {
+      if (err.stack?.includes('legacy sigalg disallowed or unsupported')) {
+        throw Error(`Error Tls版本过低 请尝试将配置文件的‘cfTLSVersion’字段改为‘TLS1.2’\n详情请参考：https://www.yenai.ren/faq.html#openssl-%E9%94%99%E8%AF%AF\n错误信息：${err.message}`)
+      } else {
+        throw err
+      }
+    }
+  )
   return {
     url: res.url,
     data: await res.text()

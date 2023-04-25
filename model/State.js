@@ -87,6 +87,7 @@ export default new class OSUtils {
 
   async init () {
     if (!await this.initDependence()) return
+    if (process.platform == 'win32') this.si.powerShellStart()
     // 初始化GPU获取
     if ((await this.si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)) {
       this.isGPU = true

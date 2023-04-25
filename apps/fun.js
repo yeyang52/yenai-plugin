@@ -2,7 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import fetch from 'node-fetch'
 import _ from 'lodash'
 import { Config } from '../components/index.js'
-import { common, uploadRecord, QQApi, funApi } from '../model/index.js'
+import { common, uploadRecord, QQApi, funApi, memes } from '../model/index.js'
 import { successImgs, faildsImgs, heisiType, pandadiuType } from '../constants/fun.js'
 
 /** API请求错误文案 */
@@ -133,10 +133,11 @@ export class Fun extends plugin {
     let isFriend = await (e.bot ?? Bot).fl.get(e.user_id)
     let allowLikeByStrangers = Config.Notice.Strangers_love
     if (!isFriend && !allowLikeByStrangers) return e.reply('不加好友不点🙄', true)
+    const avatar = `https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`
     /** 点赞成功的图片 */
-    let successImg = segment.image(_.sample(successImgs) + e.user_id)
+    let successImg = segment.image((await memes.zan(avatar)) || _.sample(successImgs) + e.user_id)
     /** 点赞失败的图片 */
-    let faildsImg = segment.image(_.sample(faildsImgs) + e.user_id)
+    let faildsImg = segment.image((await memes.crawl(avatar)) || _.sample(faildsImgs) + e.user_id)
 
     /** 执行点赞 */
     let n = 0

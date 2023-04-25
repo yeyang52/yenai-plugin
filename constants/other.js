@@ -34,7 +34,8 @@ export const platform = {
   2: 'aPad',
   3: '安卓手表',
   4: 'MacOS',
-  5: 'iPad'
+  5: 'iPad',
+  6: '安卓手机8.8.88'
 }
 
 /** 在线状态 */

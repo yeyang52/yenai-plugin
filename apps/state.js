@@ -83,7 +83,7 @@ export class NewState extends plugin {
       // 在线状态
       status: status[(e.bot ?? Bot).status],
       // 硬盘内存
-      HardDisk: await State.getfsSize(),
+      HardDisk: await State.getFsSize(),
       // FastFetch
       FastFetch: await State.getFastFetch(e),
       // 取插件

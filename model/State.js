@@ -4,6 +4,12 @@ import fs from 'fs'
 import { common } from './index.js'
 import { Config, Data } from '../components/index.js'
 
+let valueObject = {
+  networkStats: 'rx_sec,tx_sec',
+  currentLoad: 'currentLoad',
+  mem: 'active',
+  fsStats: 'wx_sec,rx_sec'
+}
 export default new class OSUtils {
   constructor () {
     this.si = null
@@ -88,25 +94,21 @@ export default new class OSUtils {
     // 给有问题的用户关闭定时器
     if (!Config.Notice.statusTask) return
     // 网速
-    const networkTimer = setInterval(async () => {
-      this.network = await this.fetchDataWithRetry(this.si.networkStats, networkTimer)
-    }, 5000)
-    // 磁盘写入速度
-    const fsStatsTimer = setInterval(async () => {
-      this.fsStats = await this.fetchDataWithRetry(this.si.fsStats, fsStatsTimer)
-    }, 5000)
-    const memTimer = setInterval(async () => {
-      let { active } = await this.fetchDataWithRetry(
-        this.si.mem, memTimer
-      )
+    const Timer = setInterval(async () => {
+      let data = await this.si.get(valueObject)
+      _.forIn(data, (value, key) => {
+        if (_.isEmpty(value)) {
+          logger.debug(`获取${key}数据失败，停止获取对应数据`)
+          delete valueObject[key]
+        }
+      })
+      if (_.isEmpty(data)) clearInterval(Timer)
+      let { fsStats, networkStats, mem: { active }, currentLoad: { currentLoad } } = data
+      this.fsStats = fsStats
+      this.network = networkStats
       if (_.isNumber(active)) {
         this.addData(this.chartData.ram, [Date.now(), active])
       }
-    }, 5000)
-    const cpuTimer = setInterval(async () => {
-      let { currentLoad } = await this.fetchDataWithRetry(
-        this.si.currentLoad, cpuTimer
-      )
       if (_.isNumber(currentLoad)) {
         this.addData(this.chartData.cpu, [Date.now(), currentLoad])
       }
@@ -134,16 +136,17 @@ export default new class OSUtils {
   /**
   * 重试获取数据，直到成功或达到最大重试次数。
   * @param {Function} fetchFunc 获取数据的函数，返回一个Promise对象。
+  * @param {Array} [params=[]] 需要执行函数的参数数组
   * @param {Number} [timerId] 定时器的id，用于在获取数据失败时停止定时器
   * @param {Number} [maxRetryCount=3] 最大重试次数。
   * @param {Number} [retryInterval=1000] 两次重试之间的等待时间，单位为毫秒。。
   * @return {Promise} 获取到的数据。如果达到最大重试次数且获取失败，则返回null。
   */
-  async fetchDataWithRetry (fetchFunc, timerId, maxRetryCount = 3, retryInterval = 1000) {
+  async fetchDataWithRetry (fetchFunc, params = [], timerId, maxRetryCount = 3, retryInterval = 1000) {
     let retryCount = 0
     let data = null
     while (retryCount <= maxRetryCount) {
-      data = await fetchFunc()
+      data = await fetchFunc(...params)
       if (!_.isEmpty(data)) {
         break
       }
@@ -255,24 +258,23 @@ export default new class OSUtils {
 
   /** 获取CPU占用 */
   async getCpuInfo (arch) {
-    // cpu使用率
-    let cpu_info = (await this.si.currentLoad())?.currentLoad
-    if (cpu_info == null || cpu_info == undefined) return false
+    let { currentLoad: { currentLoad }, cpuCurrentSpeed } = await this.si.get({
+      currentLoad: 'currentLoad',
+      cpuCurrentSpeed: 'max,avg'
+    })
+    if (currentLoad == null || currentLoad == undefined) return false
     // 核心
-    let hx = os.cpus()
+    let cores = os.cpus()
     // cpu制造者
-    let cpumodel = hx[0]?.model.slice(0, hx[0]?.model.indexOf(' ')) || ''
-    // 最大MHZ
-    let maxspeed = await this.si.cpuCurrentSpeed()
-
+    let cpuModel = cores[0]?.model.slice(0, cores[0]?.model.indexOf(' ')) || ''
     return {
-      ...this.Circle(cpu_info / 100),
-      inner: `${parseInt(cpu_info)}%`,
+      ...this.Circle(currentLoad / 100),
+      inner: `${parseInt(currentLoad)}%`,
       title: 'CPU',
       info: [
-        `${cpumodel} ${hx.length}核 ${arch}`,
-        `平均${maxspeed.avg}GHz`,
-        `最大${maxspeed.max}GHz`
+        `${cpuModel} ${cores.length}核 ${arch}`,
+        `平均${cpuCurrentSpeed.avg}GHz`,
+        `最大${cpuCurrentSpeed.max}GHz`
       ]
 
     }
@@ -283,7 +285,10 @@ export default new class OSUtils {
     if (!this.isGPU) return false
     try {
       let graphics = (await this.si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)
-      let { vendor, temperatureGpu, utilizationGpu, memoryTotal, memoryUsed, powerDraw } = graphics
+      let {
+        vendor, temperatureGpu, utilizationGpu,
+        memoryTotal, memoryUsed, powerDraw
+      } = graphics
       temperatureGpu = temperatureGpu ? temperatureGpu + '℃' : ''
       powerDraw = powerDraw ? powerDraw + 'W' : ''
       return {
@@ -306,12 +311,13 @@ export default new class OSUtils {
    * @description: 获取硬盘
    * @return {*}
    */
-  async getfsSize () {
+  async getFsSize () {
     // 去重
     let HardDisk = _.uniqWith(await this.si.fsSize(),
-      (a, b) => a.used === b.used && a.size === b.size && a.use === b.use && a.available === b.available)
-    // 过滤
-    HardDisk = HardDisk.filter(item => item.size && item.used && item.available && item.use)
+      (a, b) =>
+        a.used === b.used && a.size === b.size && a.use === b.use && a.available === b.available
+    )
+      .filter(item => item.size && item.used && item.available && item.use)
     // 为空返回false
     if (_.isEmpty(HardDisk)) return false
     // 数值转换

@@ -99,9 +99,7 @@
             title: {
                 text: 'Chart'
             },
-            legend: {
-                data: ['上行', '下行', '读', '写']
-            },
+            legend: {},
             grid: {
                 left: '1%',
                 right: '1.5%',
@@ -172,6 +170,9 @@
                 }
             ]
         }
+        option.legend.data = option.series
+            .filter(item => item.data.length !== 0)
+            .map(item => item.name);
         chart.setOption(option)
     </script>
 </div>

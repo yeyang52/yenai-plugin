@@ -25,6 +25,7 @@
         textStyle: {
             fontFamily: 'Number, "汉仪文黑-65W", YS, PingFangSC-Medium, "PingFang SC", sans-serif'
         },
+        legend: {},
         grid: {
             left: '1%',
             right: '1%',
@@ -61,6 +62,9 @@
         cpuChart.setOption({
             title: {
                 text: 'CPU'
+            },
+            legend: {
+                show: false
             },
             yAxis: [
                 {
@@ -101,6 +105,9 @@
             title: {
                 text: 'RAM'
             },
+            legend: {
+                show: false
+            },
             series: [
                 {
                     name: 'RAM',
@@ -133,9 +140,6 @@
         networkChart.setOption({
             title: {
                 text: 'Network'
-            },
-            legend: {
-                data: ['上行', '下行']
             },
             series: [
                 {
@@ -184,9 +188,6 @@
         fsStatsChart.setOption({
             title: {
                 text: 'FsStats'
-            },
-            legend: {
-                data: ['读', '写']
             },
             series: [
                 {

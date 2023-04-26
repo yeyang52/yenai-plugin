@@ -133,11 +133,6 @@ export class Fun extends plugin {
     let isFriend = await (e.bot ?? Bot).fl.get(e.user_id)
     let allowLikeByStrangers = Config.Notice.Strangers_love
     if (!isFriend && !allowLikeByStrangers) return e.reply('不加好友不点🙄', true)
-    const avatar = `https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`
-    /** 点赞成功的图片 */
-    let successImg = segment.image((await memes.zan(avatar)) || _.sample(successImgs) + e.user_id)
-    /** 点赞失败的图片 */
-    let faildsImg = segment.image((await memes.crawl(avatar)) || _.sample(faildsImgs) + e.user_id)
 
     /** 执行点赞 */
     let n = 0
@@ -163,12 +158,22 @@ export class Fun extends plugin {
       }
     }
     let successMsg = `给你点了${n}下哦，记得回我~ ${isFriend ? '' : '(如点赞失败请添加好友)'}`
-    /** 回复的消息 */
-    let successResult = ['\n', successMsg, successImg]
-    let faildsResult = ['\n', failsMsg, faildsImg]
+    const avatar = `https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`
+    const successFn = _.sample(['ganyu', 'zan'])
 
     /** 判断点赞是否成功 */
-    let msg = n > 0 ? successResult : faildsResult
+    let msg = n > 0
+      ? [
+        `\n${successMsg}`,
+        segment.image((await memes[successFn](avatar)) ||
+          _.sample(successImgs) + e.user_id)
+        ]
+      : [
+        `\n${failsMsg}`,
+        segment.image((await memes.crawl(avatar)) ||
+          _.sample(faildsImgs) + e.user_id)
+        ]
+
     /** 回复 */
     e.reply(msg, false, { at: true })
   }

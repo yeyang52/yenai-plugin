@@ -698,9 +698,9 @@ export class GroupAdmin extends plugin {
   /** 加精 */
   async setEssenceMessage (e) {
     if (!common.Authentication(e, 'admin', 'admin')) return
+    if (!e.source) return e.reply('请对要加精的消息进行引用')
     let source = (await e.group.getChatHistory(e.source.seq, 1)).pop()
-    if (!source) return e.reply('请对要加精的消息进行回复')
     let res = await Bot.setEssenceMessage(source.message_id)
-    e.reply(res ?? '加精失败')
+    e.reply(res || '加精失败')
   }
 }

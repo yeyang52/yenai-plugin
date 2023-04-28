@@ -699,7 +699,7 @@ export class Assistant extends plugin {
 
   // 引用撤回
   async RecallMsgown (e) {
-    if (!e.source) return
+    if (!e.source) return false
     let source
     if (e.isGroup) {
       source = (await e.group.getChatHistory(e.source.seq, 1)).pop()

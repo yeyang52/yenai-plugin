@@ -514,8 +514,13 @@ export default new class {
     })
   }
 
-  /** 设置机型 */
-  async setModelShow (modelName, modelShow) {
+  /**
+   * 自定义机型
+   * @param {string} modelName
+   * @param {string} modelShow
+   * @returns
+   */
+  async setModel (modelName) {
     const url = 'https://proxy.vip.qq.com/cgi-bin/srfentry.fcgi'
     const data = {
       '13031': {
@@ -525,8 +530,8 @@ export default new class {
           iAppType: 0,
           sIMei: Bot.device.imei,
           bShowInfo: true,
-          sModelShow: encodeURIComponent(modelShow),
-          bRecoverDefault: false
+          sModelShow: encodeURIComponent(modelName),
+          bRecoverDefault: !modelName
         }
       }
     }

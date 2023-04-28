@@ -136,6 +136,11 @@ export class Assistant extends plugin {
           reg: friendTypeReg, // 更改好友申请方式
           fnc: 'FriendType',
           permission: 'master'
+        },
+        {
+          reg: '#设置机型.*', // 更改好友申请方式
+          fnc: 'setModel',
+          permission: 'master'
         }
       ]
     })
@@ -773,5 +778,11 @@ export class Assistant extends plugin {
 
     if (result.ret != 0) return e.reply('❎ 未知错误\n' + JSON.stringify(result))
     e.reply(`✅ 已${/开启/.test(e.msg) ? '开启' : '关闭'}戳一戳功能`)
+  }
+
+  async setModel (e) {
+    let model = e.msg.replace(/#|设置机型/g, '')
+    let res = await QQApi.setModel(model).catch(err => logger.error(err))
+    e.reply(_.get(res, ['13031', 'data', 'rsp', 'iRet']) == 0 ? '设置成功' : '设置失败')
   }
 }

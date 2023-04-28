@@ -222,10 +222,10 @@ export default new class setu {
       data.r18 = isopen ? 1 : 0
     }
     if (Data.writeJSON(`setu${groupID ? '' : '_s'}.json`, data, this.root)) {
-      logger.mark(`[yenai-plugin][R18][${groupID ? '群聊' : '私聊'}]已${isopen ? '开启' : '关闭'}${groupID}的涩涩模式`)
+      logger.mark(`[Yenai-Plugin][R18][${groupID ? '群聊' : '私聊'}]已${isopen ? '开启' : '关闭'}${groupID}的涩涩模式`)
       return true
     } else {
-      logger.mark(`[yenai-plugin][R18][${groupID ? '群聊' : '私聊'}]设置失败`)
+      logger.mark(`[Yenai-Plugin][R18][${groupID ? '群聊' : '私聊'}]设置失败`)
       return false
     }
   }

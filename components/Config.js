@@ -143,7 +143,7 @@ class Config {
     watcher.on('change', path => {
       delete this.config[key]
       if (typeof Bot == 'undefined') return
-      logger.mark(`[yenai-plugin][修改配置文件][${type}][${name}]`)
+      logger.mark(`[Yenai-Plugin][修改配置文件][${type}][${name}]`)
       if (this[`change_${name}`]) {
         this[`change_${name}`]()
       }
@@ -202,7 +202,7 @@ class Config {
   async change_picApi () {
     let tmp = {}
 
-    logger.debug('[yenai-plugin]api接口修改，重载fun.js')
+    logger.debug('[Yenai-Plugin]api接口修改，重载fun.js')
     tmp = await import(`../apps/fun.js?${moment().format('x')}`)
 
     _.forEach(tmp, (p) => {

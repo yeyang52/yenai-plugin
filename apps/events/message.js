@@ -12,7 +12,7 @@ Bot.on('message', async (e) => {
   if (e.isGroup) {
     // 关闭撤回停止存储
     if (Config.getGroup(e.group_id).groupRecall) {
-      logger.debug(`[yenai-plugin]存储群消息${(e.group_id)}}=> ${e.message_id}`)
+      logger.debug(`[Yenai-Plugin]存储群消息${(e.group_id)}}=> ${e.message_id}`)
       // 写入
       await redis.set(
         `notice:messageGroup:${e.message_id}`,
@@ -23,7 +23,7 @@ Bot.on('message', async (e) => {
   } else if (e.isPrivate) {
     // 关闭撤回停止存储
     if (Config.Notice.PrivateRecall) {
-      logger.debug(`[yenai-plugin]存储私聊消息(${e.user_id})=> ${e.message_id}`)
+      logger.debug(`[Yenai-Plugin]存储私聊消息(${e.user_id})=> ${e.message_id}`)
       // 写入
       await redis.set(
         `notice:messagePrivate:${e.message_id}`,
@@ -40,7 +40,7 @@ Bot.on('message', async (e) => {
     e.message_type === 'group'
   ) {
     if (!Config.getGroup(e.group_id).flashPhoto) return false
-    logger.mark('[yenai-plugin]群聊闪照')
+    logger.mark('[Yenai-Plugin]群聊闪照')
     msg = [
       segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`),
       '[消息 - 闪照消息]\n',
@@ -55,7 +55,7 @@ Bot.on('message', async (e) => {
     e.message_type === 'discuss' &&
     Config.Notice.flashPhoto
   ) {
-    logger.mark('[yenai-plugin]讨论组闪照')
+    logger.mark('[Yenai-Plugin]讨论组闪照')
     msg = [
       segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
       '[消息 - 闪照消息]\n',
@@ -70,7 +70,7 @@ Bot.on('message', async (e) => {
     e.message_type === 'private' &&
     Config.Notice.flashPhoto
   ) {
-    logger.mark('[yenai-plugin]好友闪照')
+    logger.mark('[Yenai-Plugin]好友闪照')
     msg = [
       segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
       '[消息 - 闪照消息]\n',
@@ -87,7 +87,7 @@ Bot.on('message', async (e) => {
       forwardMsg = arr.msg
       e.message = arr.type
     }
-    logger.mark('[yenai-plugin]好友消息')
+    logger.mark('[Yenai-Plugin]好友消息')
     msg = [
       segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
       '[消息 - 好友消息]\n',
@@ -114,7 +114,7 @@ Bot.on('message', async (e) => {
       forwardMsg = arr.msg
       e.message = arr.type
     }
-    logger.mark('[yenai-plugin]群临时消息')
+    logger.mark('[Yenai-Plugin]群临时消息')
     // 发送的消息
     msg = [
       segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
@@ -141,7 +141,7 @@ Bot.on('message', async (e) => {
       forwardMsg = arr.msg
       e.message = arr.type
     }
-    logger.mark('[yenai-plugin]群聊消息')
+    logger.mark('[Yenai-Plugin]群聊消息')
     msg = [
       segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`),
       '[消息 - 群聊消息]\n',
@@ -154,7 +154,7 @@ Bot.on('message', async (e) => {
     ]
   } else if (e.message_type === 'discuss') {
     if (!Config.getGroup(e.group_id).groupMessage) return false
-    logger.mark('[yenai-plugin]讨论组消息')
+    logger.mark('[Yenai-Plugin]讨论组消息')
     msg = [
       segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
       '[消息 - 群聊消息]\n',

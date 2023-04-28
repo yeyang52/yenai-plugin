@@ -4,7 +4,7 @@ import _ from 'lodash'
 import moment from 'moment'
 import request from '../../lib/request/request.js'
 /** 获取gtk */
-const gtk = function (data) {
+const getGtk = function (data) {
   let ck = common.getck(data)
   // eslint-disable-next-line no-var
   for (var e = ck.p_skey || '', n = 5381, r = 0, o = e.length; r < o; ++r) {
@@ -12,16 +12,12 @@ const gtk = function (data) {
   }
   return 2147483647 & n
 }
-let _cookie = null
-try {
-  _cookie = Bot?.cookies['qun.qq.com']
-} catch {}
 /** QQ接口 */
 export default new class {
   constructor () {
     this.headers = {
       'Content-type': 'application/json;charset=UTF-8',
-      'Cookie': _cookie,
+      'Cookie': Bot?.cookies?.['qun.qq.com'],
       'qname-service': '976321:131072',
       'qname-space': 'Production'
     }
@@ -316,7 +312,7 @@ export default new class {
       uid: String(Bot.uin),
       groupId: String(groupId)
     })
-    let url = `https://qun.qq.com/v2/signin/trpc/GetDaySignedList?g_tk=${gtk('qun.qq.com')}`
+    let url = `https://qun.qq.com/v2/signin/trpc/GetDaySignedList?g_tk=${getGtk('qun.qq.com')}`
     return await fetch(url, {
       method: 'POST',
       headers: this.headers,
@@ -498,8 +494,50 @@ export default new class {
    * @returns {Promise<Object>} 包含QQ等级信息的Promise对象
    */
   async getQQLevel (userId) {
-    const url = `https://club.vip.qq.com/api/vip/getQQLevelInfo?g_tk=${gtk('vip.qq.com')}&requestBody=%7B%22sClientIp%22%3A%22127.0.0.1%22%2C%22sSessionKey%22%3A%22MfT8vw0UyE%22%2C%22iKeyType%22%3A1%2C%22iAppId%22%3A0%2C%22iUin%22%3A${userId}%7D`
+    const url = 'https://club.vip.qq.com/api/vip/getQQLevelInfo'
+    const params = {
+      requestBody: JSON.stringify({
+        'sClientIp': '127.0.0.1',
+        'sSessionKey': 'MfT8vw0UyE',
+        'iKeyType': 1,
+        'iAppId': 0,
+        'iUin': userId
+      }),
+      g_tk: getGtk('vip.qq.com')
+    }
     return request.get(url, {
+      params,
+      headers: {
+        cookie: Bot.cookies['vip.qq.com']
+      },
+      statusCode: 'json'
+    })
+  }
+
+  /** 设置机型 */
+  async setModelShow (modelName, modelShow) {
+    const url = 'https://proxy.vip.qq.com/cgi-bin/srfentry.fcgi'
+    const data = {
+      '13031': {
+        req: {
+          lUin: Bot.uin,
+          sModel: encodeURIComponent(modelName),
+          iAppType: 0,
+          sIMei: Bot.device.imei,
+          bShowInfo: true,
+          sModelShow: encodeURIComponent(modelShow),
+          bRecoverDefault: false
+        }
+      }
+    }
+    const params = {
+      ts: Date.now(),
+      g_tk: getGtk('vip.qq.com'),
+      data: JSON.stringify(data),
+      daid: 18
+    }
+    return request.get(url, {
+      params,
       headers: {
         cookie: Bot.cookies['vip.qq.com']
       },

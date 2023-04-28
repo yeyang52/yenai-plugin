@@ -20,7 +20,7 @@ export default new class {
     const buff = await background.getBufferAsync(Jimp.MIME_JPEG)
     // debug
     let kb = (buff.length / 1024).toFixed(2) + 'kb'
-    logger.debug(`[yenai-plugin][memes]生成zan ${kb}`)
+    logger.debug(`[Yenai-Plugin][memes]生成zan ${kb}`)
     return buff
   }
 
@@ -34,7 +34,7 @@ export default new class {
     const buff = await background.getBufferAsync(Jimp.MIME_JPEG)
     // debug
     let kb = (buff.length / 1024).toFixed(2) + 'kb'
-    logger.debug(`[yenai-plugin][memes]生成crawl ${kb}`)
+    logger.debug(`[Yenai-Plugin][memes]生成crawl ${kb}`)
     return buff
   }
 
@@ -49,7 +49,7 @@ export default new class {
     const buff = await images.getBufferAsync(Jimp.MIME_JPEG)
     // debug
     let kb = (buff.length / 1024).toFixed(2) + 'kb'
-    logger.debug(`[yenai-plugin][memes]生成ganyu ${kb}`)
+    logger.debug(`[Yenai-Plugin][memes]生成ganyu ${kb}`)
     return buff
   }
 

@@ -129,7 +129,7 @@ export class NewGroupVerify extends plugin {
 
 // 进群监听
 Bot.on('notice.group.increase', async (e) => {
-  logger.mark(`[yenai-plugin][进群验证]收到${e.user_id}的进群事件`)
+  logger.mark(`[Yenai-Plugin][进群验证]收到${e.user_id}的进群事件`)
   let { openGroup, DelayTime } = Config.groupverify
 
   if (!openGroup.includes(e.group_id)) return
@@ -207,7 +207,7 @@ async function verify (user_id, group_id, e) {
   if (!e.group.is_admin && !e.group.is_owner) return
   user_id = Number(user_id)
   group_id = Number(group_id)
-  logger.mark(`[yenai-plugin][进群验证]进行${user_id}的验证`)
+  logger.mark(`[Yenai-Plugin][进群验证]进行${user_id}的验证`)
 
   const { times, range, time, remindAtLastMinute } = Config.groupverify
   const operator = ops[_.random(0, 1)]
@@ -220,7 +220,7 @@ async function verify (user_id, group_id, e) {
   [m, n] = [m >= n ? m : n, m >= n ? n : m]
 
   const verifyCode = String(operator === '-' ? m - n : m + n)
-  logger.mark(`[yenai-plugin][进群验证]答案：${verifyCode}`)
+  logger.mark(`[Yenai-Plugin][进群验证]答案：${verifyCode}`)
   const kickTimer = setTimeout(async () => {
     e.reply([segment.at(user_id), ' 验证超时，移出群聊，请重新申请'])
 

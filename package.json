@@ -21,8 +21,6 @@
   "dependencies": {
     "cheerio": "1.0.0-rc.12",
     "jimp": "^0.22.7",
-    "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2",
     "systeminformation": "^5.17.1"
   },
   "devDependencies": {

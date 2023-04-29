@@ -51,7 +51,6 @@ export class NewGroupBannedWords extends plugin {
       return false
     }
     const groupBannedWords = GroupBannedWords.initTextArr(e.group_id)
-    console.log(groupBannedWords)
     if (_.isEmpty(groupBannedWords)) {
       return false
     }
@@ -164,16 +163,16 @@ export class NewGroupBannedWords extends plugin {
   }
 
   async list (e) {
-    const groupBannedWords = GroupBannedWords.initTextArr(e.group_id).data
-    let msg = []
+    const groupBannedWords = GroupBannedWords.initTextArr(e.group_id)
     if (_.isEmpty(groupBannedWords)) {
       return e.reply('❎ 没有违禁词')
     }
-    for (const i in groupBannedWords) {
-      const { matchType, penaltyType, addedBy, date } = groupBannedWords[i]
+    const msg = []
+    for (const [, v] of groupBannedWords) {
+      const { matchType, penaltyType, addedBy, date, rawItem } = v
       msg.push([
         '违禁词：',
-        await GroupBannedWords.keyWordTran(i),
+        await GroupBannedWords.keyWordTran(rawItem),
         `\n匹配模式：${GroupBannedWords.matchTypeMap[matchType]}\n`,
         `处理方式：${GroupBannedWords.penaltyTypeMap[penaltyType]}\n`,
         `添加人：${addedBy ?? '未知'}\n`,

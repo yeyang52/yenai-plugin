@@ -9,7 +9,7 @@ export class NewGroupBannedWords extends plugin {
       priority: 1,
       rule: [
         {
-          reg: '^#?新增(模糊|精确)?(踢|禁|撤|踢撤|禁撤)?违禁词.*$',
+          reg: '^#?新增(模糊|精确|正则)?(踢|禁|撤|踢撤|禁撤)?违禁词.*$',
           fnc: 'add'
         },
         {
@@ -51,7 +51,7 @@ export class NewGroupBannedWords extends plugin {
       return false
     }
     const groupBannedWords = GroupBannedWords.initTextArr(e.group_id)
-    if (_.isEmpty(groupBannedWords.reg)) {
+    if (_.isEmpty(groupBannedWords)) {
       return false
     }
     const KeyWord = e.toString()
@@ -59,13 +59,14 @@ export class NewGroupBannedWords extends plugin {
       .replace(`{at:${Bot.uin}}`, '')
       .trim()
     const trimmedKeyWord = this.trimAlias(KeyWord)
-    const matchingWord = groupBannedWords.reg.find(item =>
-      new RegExp(item).test(trimmedKeyWord)
-    )
-    if (!matchingWord) return false
-    // 获取原始违禁词，去除正则符号
-    const rawBannedWords = matchingWord.replace(/\^|\$/g, '')
-    const type = groupBannedWords.data[rawBannedWords]
+    let data = null
+    for (const [k, v] of groupBannedWords) {
+      if (k.test(trimmedKeyWord)) {
+        data = v
+        break
+      }
+    }
+    if (!data) return false
     const muteTime = GroupBannedWords.getMuteTime(e.group_id)
     const punishments = {
       1: async () => await e.member.kick(),
@@ -87,14 +88,14 @@ export class NewGroupBannedWords extends plugin {
       4: '踢出群聊并撤回消息',
       5: `禁言${muteTime}秒并撤回消息`
     }
-    if (punishments[type.penaltyType]) {
-      await punishments[type.penaltyType]()
-      const keyWordTran = await GroupBannedWords.keyWordTran(rawBannedWords)
+    if (punishments[data.penaltyType]) {
+      await punishments[data.penaltyType]()
+      const keyWordTran = await GroupBannedWords.keyWordTran(data.rawItem)
       const senderCard = e.sender.card || e.sender.nickname
       e.reply([
-        `触发违禁词：${keyWordTran.charAt(0) + '*'.repeat(keyWordTran.length - 1)}\n`,
+        `触发违禁词：${keyWordTran.charAt(1) + '*'.repeat(keyWordTran.length - 2)}\n`,
         `触发者：${senderCard}(${e.user_id})\n`,
-        `执行：${groupPenaltyAction[type.penaltyType]}`
+        `执行：${groupPenaltyAction[data.penaltyType]}`
       ])
     }
   }
@@ -102,8 +103,16 @@ export class NewGroupBannedWords extends plugin {
   async add (e) {
     if (!common.Authentication(e, 'admin', 'admin')) return false
     let word = this.trimAlias(e.toString())
-    word = word.match(/^#?新增(模糊|精确)?(踢|禁|撤|踢撤|禁撤)?违禁词(.*)$/)
+    word = word.match(/^#?新增(模糊|精确|正则)?(踢|禁|撤|踢撤|禁撤)?违禁词(.*)$/)
     if (!word[3]) return e.reply('需要添加的屏蔽词为空')
+    // 校验正则
+    if (word[1] === '正则') {
+      try {
+        global.eval(word[3])
+      } catch {
+        return e.reply('正则表达式错误')
+      }
+    }
     try {
       let res = GroupBannedWords.addBannedWords(
         e.group_id, word[3].trim(), word[1], word[2], e.user_id
@@ -154,16 +163,16 @@ export class NewGroupBannedWords extends plugin {
   }
 
   async list (e) {
-    const groupBannedWords = GroupBannedWords.initTextArr(e.group_id).data
-    let msg = []
+    const groupBannedWords = GroupBannedWords.initTextArr(e.group_id)
     if (_.isEmpty(groupBannedWords)) {
       return e.reply('❎ 没有违禁词')
     }
-    for (const i in groupBannedWords) {
-      const { matchType, penaltyType, addedBy, date } = groupBannedWords[i]
+    const msg = []
+    for (const [, v] of groupBannedWords) {
+      const { matchType, penaltyType, addedBy, date, rawItem } = v
       msg.push([
         '违禁词：',
-        await GroupBannedWords.keyWordTran(i),
+        await GroupBannedWords.keyWordTran(rawItem),
         `\n匹配模式：${GroupBannedWords.matchTypeMap[matchType]}\n`,
         `处理方式：${GroupBannedWords.penaltyTypeMap[penaltyType]}\n`,
         `添加人：${addedBy ?? '未知'}\n`,

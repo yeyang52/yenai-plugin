@@ -68,7 +68,7 @@ saucanao 得到 NSFW 结果时隐藏缩略图，可选 0~3，严格程度依次�
 
 是否使用 Puppeteer 请求 ascii2d 以绕过 cf js challenge 
 ::: tip
-**2023-4-8**：该功能更新需要安装 `puppeteer-extra` 和 `puppeteer-extra-plugin-stealth` 依赖
+**2023-4-29**：该功能使用Puppeteer新无头模式，请升级**Puppeteer**或**Chrome** 具体可参考[new in chrome](https://developer.chrome.com/articles/new-headless/)
 :::
 
 ### ascii2dResultMaxQuantity

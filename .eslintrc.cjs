@@ -20,6 +20,7 @@ module.exports = {
     'prefer-const': ['off'],
     'arrow-body-style': 'off',
     'camelcase': 'off',
-    'quote-props': ['error', 'consistent']
+    'quote-props': ['error', 'consistent'],
+    'no-eval': ['error', { 'allowIndirect': true }]
   }
 }

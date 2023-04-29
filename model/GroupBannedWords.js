@@ -14,11 +14,12 @@ export default new class {
     }
     this.matchTypeMap = {
       1: '精确',
-      2: '模糊'
+      2: '模糊',
+      3: '正则'
     }
-    this.dataCach = {}
-    this.muteTimeCach = {}
-    this.groupTitleCach = {}
+    this.dataCach = new Map()
+    this.muteTimeCach = new Map()
+    this.groupTitleCach = new Map()
   }
 
   addBannedWords (
@@ -37,7 +38,7 @@ export default new class {
       addedBy
     }
     Data.writeJSON(`${groupId}.json`, data, this.root)
-    delete this.dataCach[groupId]
+    this.dataCach.delete(groupId)
     return {
       words: this.keyWordTran(words),
       matchType,
@@ -49,7 +50,7 @@ export default new class {
     let data = Data.readJSON(`${groupId}.json`, this.root)
     if (!data.bannedWords[words]) throw Error(`❎ 违禁词${words}不存在`)
     delete data.bannedWords[words]
-    delete this.dataCach[groupId]
+    this.dataCach.delete(groupId)
     Data.writeJSON(`${groupId}.json`, data, this.root)
     return this.keyWordTran(words)
   }
@@ -70,15 +71,15 @@ export default new class {
     let data = Data.readJSON(`${groupId}.json`, this.root)
     data.muteTime = Number(time)
     Data.writeJSON(`${groupId}.json`, data, this.root)
-    delete this.muteTimeCach[groupId]
+    this.muteTimeCach.delete(groupId)
     return true
   }
 
   getMuteTime (groupId) {
-    if (this.muteTimeCach[groupId]) return this.muteTimeCach[groupId]
+    if (this.muteTimeCach.get(groupId)) return this.muteTimeCach.get(groupId)
     let data = Data.readJSON(`${groupId}.json`, this.root)
-    this.muteTimeCach[groupId] = data.muteTime ?? 300
-    return this.muteTimeCach[groupId]
+    this.muteTimeCach.set(groupId, data.muteTime ?? 300)
+    return data.muteTime ?? 300
   }
 
   /** 关键词转换成可发送消息 */
@@ -117,21 +118,23 @@ export default new class {
 
   /** 初始化已添加内容 */
   initTextArr (groupId) {
-    if (this.dataCach[groupId]) return this.dataCach[groupId]
+    if (this.dataCach.get(groupId)) return this.dataCach.get(groupId)
 
     try {
       const data = Data.readJSON(`${groupId}.json`, this.root)?.bannedWords
-      this.dataCach[groupId] = {}
-      this.dataCach[groupId].data = data
-      this.dataCach[groupId].reg = []
+      const _data = new Map()
       for (const item in data) {
+        data[item].rawItem = item
         if (data[item].matchType == 2) {
-          this.dataCach[groupId].reg.push(item)
+          _data.set(new RegExp(item), data[item])
+        } else if (data[item].matchType == 3) {
+          _data.set(global.eval(item), data[item])
         } else {
-          this.dataCach[groupId].reg.push(`^${item}$`)
+          _data.set(new RegExp(`^${item}$`), data[item])
         }
       }
-      return this.dataCach[groupId]
+      this.dataCach.set(groupId, _data)
+      return _data
     } catch (error) {
       logger.error(error)
       logger.error(`json格式错误：${this.root}/${groupId}.json`)
@@ -157,13 +160,13 @@ export default new class {
     if (!data.TitleBannedWords)data.TitleBannedWords = []
     data.TitleBannedWords.push(...arr)
     Data.writeJSON(`${groupId}.json`, data, this.root)
-    delete this.groupTitleCach[groupId]
+    this.groupTitleCach.delete(groupId)
   }
 
   getTitleBannedWords (groupId) {
-    if (this.groupTitleCach[groupId]) return this.groupTitleCach[groupId]
+    if (this.groupTitleCach.get(groupId)) return this.groupTitleCach.get(groupId)
     let data = Data.readJSON(`${groupId}.json`, this.root).TitleBannedWords ?? []
-    this.groupTitleCach[groupId] = data
+    this.groupTitleCach.set(groupId, data)
     return data
   }
 
@@ -171,6 +174,6 @@ export default new class {
     let data = Data.readJSON(`${groupId}.json`, this.root)
     data.TitleBannedWords = _.differenceBy(data.TitleBannedWords, arr)
     Data.writeJSON(`${groupId}.json`, data, this.root)
-    delete this.groupTitleCach[groupId]
+    this.groupTitleCach.delete(groupId)
   }
 }()

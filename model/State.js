@@ -200,11 +200,11 @@ export default new class OSUtils {
   */
   Circle (res) {
     let num = (res * 360).toFixed(0)
-    let color = '#90ee90'
+    let color = 'var(--low-color)'
     if (res >= 0.9) {
-      color = '#d73403'
+      color = 'var(--high-color)'
     } else if (res >= 0.8) {
-      color = '#ffa500'
+      color = 'var(--medium-color)'
     }
     let leftCircle = `style="transform:rotate(-180deg);background:${color};"`
     let rightCircle = `style="transform:rotate(360deg);background:${color};"`
@@ -331,11 +331,11 @@ export default new class OSUtils {
       item.used = this.getFileSize(item.used)
       item.size = this.getFileSize(item.size)
       item.use = Math.ceil(item.use)
-      item.color = '#90ee90'
+      item.color = 'var(--low-color)'
       if (item.use >= 90) {
-        item.color = '#d73403'
+        item.color = 'var(--high-color)'
       } else if (item.use >= 70) {
-        item.color = '#ffa500'
+        item.color = 'var(--medium-color)'
       }
       return item
     })

@@ -1,3 +1,10 @@
+:root {
+  --gradient-text-color: linear-gradient(180deg, #d51a2f, #0cacaa);
+  ;
+
+}
+
+
 body {
   transform: scale(1);
   width: 1100px;
@@ -48,7 +55,7 @@ body {
   padding: 15px 15px 10px 20px;
   /* 渐变文字 */
   display: inline-block;
-  background-image: linear-gradient(to top, #4776E6, #8E54E9);
+  background-image: var(--gradient-text-color);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -62,7 +69,7 @@ body {
   display: table;
   overflow: hidden;
   width: 100%;
-  color: #e95346;
+  color: #d63d2f;
 }
 
 .help-table .tr {
@@ -104,10 +111,9 @@ body {
 
 .help-title {
   display: inline-block;
-  /* color: #0059ff; */
-  font-size: 19px;
+  font-size: 22px;
   line-height: 24px;
-  background-image: linear-gradient(to top, #4776E6, #8E54E9);
+  background-image: var(--gradient-text-color);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -115,7 +121,7 @@ body {
 
 .help-desc {
   display: block;
-  font-size: 16px;
+  font-size: 19px;
   line-height: 18px;
 }
 

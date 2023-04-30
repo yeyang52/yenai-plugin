@@ -5,7 +5,7 @@ import { common } from './index.js'
 import { Config, Data } from '../components/index.js'
 
 let valueObject = {
-  networkStats: 'rx_sec,tx_sec',
+  networkStats: 'rx_sec,tx_sec,iface',
   currentLoad: 'currentLoad',
   mem: 'active',
   fsStats: 'wx_sec,rx_sec'
@@ -288,7 +288,6 @@ export default new class OSUtils {
 
   /** 获取GPU占用 */
   async getGPU () {
-    console.log(this.isGPU)
     if (!this.isGPU) return false
     try {
       let graphics = (await this.si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)

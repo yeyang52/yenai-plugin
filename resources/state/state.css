@@ -1,5 +1,5 @@
 .container {
-    background: url("https://api.ghser.com/random/pe.php") white center top no-repeat;
+    background: url("https://sex.nyan.xyz/api/v2/img") white center top no-repeat;
     background-size: cover;
 }
 
@@ -64,6 +64,16 @@ hr {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    display: inline-block;
+    background-image: linear-gradient(271.14deg,
+            #001BFF 0.98%,
+            #00F0FF 25.79%,
+            #FCE84A 47.33%,
+            #F34628 65.77%,
+            #B275FF 91.4%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
 }
 
 .info {

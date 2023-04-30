@@ -87,15 +87,17 @@ export default new class OSUtils {
 
   async init () {
     if (!await this.initDependence()) return
-    try {
-      if (process.platform == 'win32') this.si.powerShellStart()
-    } catch {}
     // 初始化GPU获取
     if ((await this.si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)) {
       this.isGPU = true
     }
     // 给有问题的用户关闭定时器
     if (!Config.Notice.statusTask) return
+
+    try {
+      if (process.platform == 'win32') this.si.powerShellStart()
+    } catch {}
+
     // 网速
     const Timer = setInterval(async () => {
       let data = await this.si.get(valueObject)
@@ -105,6 +107,7 @@ export default new class OSUtils {
           delete valueObject[key]
         }
       })
+
       if (_.isEmpty(data)) clearInterval(Timer)
       let { fsStats, networkStats, mem: { active }, currentLoad: { currentLoad } } = data
       this.fsStats = fsStats
@@ -285,6 +288,7 @@ export default new class OSUtils {
 
   /** 获取GPU占用 */
   async getGPU () {
+    console.log(this.isGPU)
     if (!this.isGPU) return false
     try {
       let graphics = (await this.si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)

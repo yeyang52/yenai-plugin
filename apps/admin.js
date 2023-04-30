@@ -162,7 +162,7 @@ export class Admin extends plugin {
     let _cfg = Config.getGroup(e.group_id)
     for (let key in _cfg) {
       if (special.includes(key)) {
-        data[key] = Number(Config.Notice[key])
+        data[key] = Number(Config.whole[key])
       } else {
         let groupCfg = Config.getConfig('group')[e.group_id]
         let isAlone = groupCfg ? groupCfg[key] : undefined

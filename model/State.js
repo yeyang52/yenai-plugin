@@ -92,9 +92,9 @@ export default new class OSUtils {
       this.isGPU = true
     }
     // 给有问题的用户关闭定时器
-    if (!Config.Notice.statusTask) return
+    if (!Config.whole.statusTask) return
 
-    if (Config.Notice.statusPowerShellStart) this.si.powerShellStart()
+    if (Config.whole.statusPowerShellStart) this.si.powerShellStart()
 
     // 网速
     const Timer = setInterval(async () => {

@@ -376,7 +376,7 @@ export function supportGuoba () {
       // 获取配置数据方法（用于前端填充显示数据）
       getConfigData () {
         return {
-          whole: Config.Notice,
+          whole: Config.whole,
           pixiv: Config.pixiv,
           bika: Config.bika,
           picSearch: Config.picSearch

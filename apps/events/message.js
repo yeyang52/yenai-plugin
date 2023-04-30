@@ -7,7 +7,7 @@ Bot.on('message', async (e) => {
   // 判断是否主人消息
   if (Config.masterQQ.includes(e.user_id)) return false
   // 删除缓存时间
-  const deltime = Config.Notice.deltime
+  const deltime = Config.whole.deltime
   // 判断群聊还是私聊
   if (e.isGroup) {
     // 关闭撤回停止存储
@@ -22,7 +22,7 @@ Bot.on('message', async (e) => {
     }
   } else if (e.isPrivate) {
     // 关闭撤回停止存储
-    if (Config.Notice.PrivateRecall) {
+    if (Config.whole.PrivateRecall) {
       logger.debug(`[Yenai-Plugin]存储私聊消息(${e.user_id})=> ${e.message_id}`)
       // 写入
       await redis.set(
@@ -53,7 +53,7 @@ Bot.on('message', async (e) => {
   } else if (
     e.message[0].type == 'flash' &&
     e.message_type === 'discuss' &&
-    Config.Notice.flashPhoto
+    Config.whole.flashPhoto
   ) {
     logger.mark('[Yenai-Plugin]讨论组闪照')
     msg = [
@@ -68,7 +68,7 @@ Bot.on('message', async (e) => {
   } else if (
     e.message[0].type == 'flash' &&
     e.message_type === 'private' &&
-    Config.Notice.flashPhoto
+    Config.whole.flashPhoto
   ) {
     logger.mark('[Yenai-Plugin]好友闪照')
     msg = [
@@ -79,7 +79,7 @@ Bot.on('message', async (e) => {
       `闪照链接:${e.message[0].url}`
     ]
   } else if (e.message_type === 'private' && e.sub_type === 'friend') {
-    if (!Config.Notice.privateMessage) return false
+    if (!Config.whole.privateMessage) return false
 
     // 特殊消息处理
     const arr = getMsgType(e.message)

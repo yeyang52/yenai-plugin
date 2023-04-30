@@ -131,7 +131,7 @@ export class Fun extends plugin {
     }
     /** 判断是否为好友 */
     let isFriend = await (e.bot ?? Bot).fl.get(e.user_id)
-    let allowLikeByStrangers = Config.Notice.Strangers_love
+    let allowLikeByStrangers = Config.whole.Strangers_love
     if (!isFriend && !allowLikeByStrangers) return e.reply('不加好友不点🙄', true)
 
     /** 执行点赞 */

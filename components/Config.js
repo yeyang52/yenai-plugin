@@ -52,7 +52,7 @@ class Config {
   }
 
   /** 获取全局设置 */
-  get Notice () {
+  get whole () {
     return this.getDefOrConfig('whole')
   }
 

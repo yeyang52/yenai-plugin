@@ -94,9 +94,7 @@ export default new class OSUtils {
     // 给有问题的用户关闭定时器
     if (!Config.Notice.statusTask) return
 
-    try {
-      if (process.platform == 'win32') this.si.powerShellStart()
-    } catch {}
+    if (Config.Notice.statusPowerShellStart) this.si.powerShellStart()
 
     // 网速
     const Timer = setInterval(async () => {

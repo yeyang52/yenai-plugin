@@ -21,7 +21,7 @@
   "dependencies": {
     "cheerio": "1.0.0-rc.12",
     "jimp": "^0.22.7",
-    "systeminformation": "^5.17.1"
+    "systeminformation": "^5.17.12"
   },
   "devDependencies": {
     "all-contributors-cli": "^6.24.0"

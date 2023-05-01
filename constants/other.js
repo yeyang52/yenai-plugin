@@ -30,12 +30,12 @@ export const Time_unit = {
 
 /** 登录设备 */
 export const platform = {
-  1: '安卓手机',
-  2: 'aPad',
-  3: '安卓手表',
+  1: 'Android_Phone',
+  2: 'APad',
+  3: 'Android_Watch',
   4: 'MacOS',
-  5: 'iPad',
-  6: 'old_Android'
+  5: 'IPad',
+  6: 'Old_Android'
 }
 
 /** 在线状态 */

@@ -41,8 +41,8 @@ body {
     -15px -15px 35px rgba(255, 255, 255, 0.55),
     inset -1px -1px 10px rgba(0, 0, 0, 0.2);
   /* 毛玻璃 */
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 
   border-radius: 30px;
   /* border: 1px solid rgba(255, 255, 255, 0.18); */

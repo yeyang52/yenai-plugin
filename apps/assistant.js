@@ -181,7 +181,7 @@ export class Assistant extends plugin {
         console.log(err)
       })
 
-    this.finish('Photos')
+    this.finish('_avatarContext')
   }
 
   /** 改昵称 */

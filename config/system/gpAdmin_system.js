@@ -156,8 +156,8 @@ export const helpList = [{
   group: '定时禁言',
   list: [
     {
-      title: '#定时(禁言|解禁)(00:00 | cron)',
-      desc: '设置定时禁言或解禁可用cron表达式设置',
+      title: '#定时(禁言|解禁)00:00',
+      desc: '设置定时可用cron表达式设置',
       icon: 12
     }, {
       title: '#定时禁言任务',
@@ -245,8 +245,8 @@ export const helpList = [{
   group: '违禁词',
   list: [
     {
-      title: '#新增(模糊|精确)?<惩罚>?违禁词.*',
-      desc: '惩罚包括踢、禁、撤、踢撤、禁撤',
+      title: '#新增违禁词.*',
+      desc: '文档查看具体用法',
       icon: 7
     },
     {

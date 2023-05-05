@@ -49,7 +49,7 @@ export default class {
         `\n昵称：${item.card || item.nickname}\n`,
         `QQ：${item.user_id}\n`,
         `群身份：${ROLE_MAP[item.role]}\n`,
-        `禁言剩余时间：${common.formatTime(time - (Date.now() / 1000, 'default'))}\n`,
+        `禁言剩余时间：${common.formatTime(time - Date.now() / 1000, 'default')}\n`,
         `禁言到期时间：${new Date(time * 1000).toLocaleString()}`
       ]
     })

@@ -4,13 +4,8 @@
 }
 
 @font-face {
-  font-family: '方正筑紫A圆体B';
-  src: url("./font/方正筑紫A圆体B.ttf") format('truetype')
-}
-
-@font-face {
-  font-family: '方正筑紫A圆体E';
-  src: url("./font/方正筑紫A圆体E.ttf") format('truetype')
+  font-family: 'FZB';
+  src: url("./font/FZB.ttf") format('truetype')
 }
 
 @font-face {
@@ -42,7 +37,7 @@
 body {
   font-size: 18px;
   color: #1e1f20;
-  font-family: '方正筑紫A圆体B', '方正筑紫A圆体E', Number, "汉仪文黑-65W", YS, PingFangSC-Medium, "PingFang SC", sans-serif;
+  font-family: 'FZB', Number, "汉仪文黑-65W", YS, PingFangSC-Medium, "PingFang SC", sans-serif;
   transform: scale(1.4);
   transform-origin: 0 0;
   width: 600px;

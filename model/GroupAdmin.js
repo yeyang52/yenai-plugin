@@ -58,11 +58,13 @@ export default class {
   /**
    * 解除指定群中所有成员的禁言状态
    * @param {number} groupId - 群号码
-   * @returns {Promise<Array>} - 由所有解禁操作的 Promise 对象组成的数组
+   * @returns {Promise<void>} - 由所有解禁操作的 Promise 对象组成的数组
    */
-  async releaseAllMute (groupId) {
-    let mutelist = await this.getMuteList(groupId)
-    return Promise.all(mutelist.map(item => this.Bot.pickGroup(groupId - 0).muteMember(item, 0)))
+  async releaseAllMute () {
+    let mutelist = await this.getMuteList(this.e.group_id)
+    for (let i of mutelist) {
+      this.e.group.muteMember(i.user_id, 0)
+    }
   }
 
   /**

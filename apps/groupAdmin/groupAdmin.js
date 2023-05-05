@@ -389,7 +389,7 @@ export class GroupAdmin extends plugin {
   // 解除全部禁言
   async relieveAllMute (e) {
     if (!common.Authentication(e, 'admin', 'admin')) return
-    new Ga(e).releaseAllMute(e.group_id)
+    new Ga(e).releaseAllMute()
       .then(() => e.reply('已经把全部的禁言解除辣╮( •́ω•̀)╭'))
       .catch(err => err.reply(err.message))
   }

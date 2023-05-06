@@ -186,6 +186,7 @@ export class NewGroupBannedWords extends plugin {
   }
 
   async muteTime (e) {
+    if (!common.Authentication(e, 'admin', 'admin')) return false
     let time = e.msg.match(/\d+/)[0]
     GroupBannedWords.setMuteTime(e.group_id, time)
     e.reply(`✅ 群${e.group_id}违禁词禁言时间已设置为${time}s`)
@@ -216,7 +217,7 @@ export class NewGroupBannedWords extends plugin {
     // 返回已有的头衔屏蔽词列表
       return e.reply(`现有的头衔屏蔽词如下：${shieldingWords.join('\n')}`)
     }
-
+    if (!common.Authentication(e, 'admin', 'admin')) return false
     // 获取用户输入的要增加或删除的屏蔽词
     let message = e.msg.replace(/#|(增加|减少)头衔屏蔽词/g, '').trim().split(',')
     // 判断用户是要增加还是删除屏蔽词

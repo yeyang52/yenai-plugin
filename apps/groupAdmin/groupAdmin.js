@@ -156,6 +156,10 @@ export class GroupAdmin extends plugin {
     this.task = redisTask
   }
 
+  get Bot () {
+    return this.e.bot ?? Bot
+  }
+
   /** 禁言 */
   async muteMember (e) {
     if (!common.Authentication(e, 'admin', 'admin')) return
@@ -535,7 +539,7 @@ export class GroupAdmin extends plugin {
     // 浏览器截图
     let screenshot = await puppeteer.Webpage({
       url: `https://qun.qq.com/interactive/honorlist?gc=${e.group_id}&type=1&_wv=3&_wwv=129`,
-      headers: { Cookie: (e.bot ?? Bot).cookies['qun.qq.com'] },
+      headers: { Cookie: this.Bot.cookies['qun.qq.com'] },
       font: true
     })
     if (screenshot) return e.reply(screenshot)
@@ -553,7 +557,7 @@ export class GroupAdmin extends plugin {
   async Group_xj (e) {
     let screenshot = await puppeteer.Webpage({
       url: `https://qqweb.qq.com/m/business/qunlevel/index.html?gc=${e.group_id}&from=0&_wv=1027`,
-      cookie: common.getck('qqweb.qq.com', true),
+      cookie: common.getck('qun.qq.com', this.Bot, true),
       emulate: 'QQTheme',
       font: true
     })
@@ -579,7 +583,7 @@ export class GroupAdmin extends plugin {
     // 图片截图
     let screenshot = await puppeteer.Webpage({
       url: `https://qun.qq.com/m/qun/activedata/speaking.html?gc=${e.group_id}&time=${/(7|七)天/.test(e.msg) ? 1 : 0}`,
-      headers: { Cookie: (e.bot ?? Bot).cookies['qun.qq.com'] },
+      headers: { Cookie: this.Bot.cookies['qun.qq.com'] },
       font: true
     })
     if (screenshot) return e.reply(screenshot)
@@ -599,7 +603,7 @@ export class GroupAdmin extends plugin {
     let screenshot = await puppeteer.Webpage({
       url: `https://qun.qq.com/v2/signin/list?gc=${e.group_id}`,
       emulate: 'iPhone 6',
-      cookie: common.getck('qun.qq.com', true),
+      cookie: common.getck('qun.qq.com', this.Bot, true),
       font: true
     })
     if (screenshot) return e.reply(screenshot)
@@ -632,7 +636,7 @@ export class GroupAdmin extends plugin {
     e.reply(
       await puppeteer.Webpage({
         url: `https://qun.qq.com/qqweb/m/qun/calendar/detail.html?_wv=1031&_bid=2340&src=3&gc=${e.group_id}&type=2&date=${date}`,
-        cookie: common.getck('qun.qq.com', true),
+        cookie: common.getck('qun.qq.com', this.Bot, true),
         emulate: 'iPhone 6',
         font: true
       })
@@ -646,7 +650,7 @@ export class GroupAdmin extends plugin {
     // 浏览器截图
     let screenshot = await puppeteer.Webpage({
       url: `https://qun.qq.com/m/qun/activedata/active.html?_wv=3&_wwv=128&gc=${e.group_id}&src=2`,
-      cookie: common.getck('qun.qq.com', true),
+      cookie: common.getck('qun.qq.com', this.Bot, true),
       click: /(7|七)天/.test(e.msg)
         ? [
             {

@@ -3,15 +3,6 @@ import { common } from '../index.js'
 import _ from 'lodash'
 import moment from 'moment'
 import request from '../../lib/request/request.js'
-/** 获取gtk */
-const getGtk = function (data) {
-  let ck = common.getck(data)
-  // eslint-disable-next-line no-var
-  for (var e = ck.p_skey || '', n = 5381, r = 0, o = e.length; r < o; ++r) {
-    n += (n << 5) + e.charAt(r).charCodeAt(0)
-  }
-  return 2147483647 & n
-}
 /** QQ接口 */
 export default class {
   constructor (e) {
@@ -23,6 +14,15 @@ export default class {
       'qname-service': '976321:131072',
       'qname-space': 'Production'
     }
+  }
+
+  getGtk (data) {
+    let ck = common.getck(data, this.Bot)
+    // eslint-disable-next-line no-var
+    for (var e = ck.p_skey || '', n = 5381, r = 0, o = e.length; r < o; ++r) {
+      n += (n << 5) + e.charAt(r).charCodeAt(0)
+    }
+    return 2147483647 & n
   }
 
   /**
@@ -60,7 +60,7 @@ export default class {
 
   /** 删除全部说说 */
   async delQzoneAll () {
-    let ck = common.getck('qzone.qq.com')
+    let ck = common.getck('qzone.qq.com', this.Bot)
     return await fetch(`http://xiaobai.klizi.cn/API/qqgn/ss_empty.php?data=&uin=${this.Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}`).then(res => res.text()).catch(err => logger.error(err))
     // let num = 0
     // while (true) {
@@ -76,7 +76,7 @@ export default class {
 
   /** 发送说说 */
   async setQzone (con, img) {
-    let ck = common.getck('qzone.qq.com')
+    let ck = common.getck('qzone.qq.com', this.Bot)
 
     if (img) {
       let url = `http://xiaobai.klizi.cn/API/qqgn/ss_sendimg.php?uin=${this.Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&url=${img[0]}&msg=${con}`
@@ -127,7 +127,7 @@ export default class {
 
   /** 删除全部留言 */
   async delQzoneMsgbAll () {
-    let ck = common.getck('qzone.qq.com')
+    let ck = common.getck('qzone.qq.com', this.Bot)
     return await fetch(`http://xiaobai.klizi.cn/API/qqgn/qzone_emptymsgb.php?data=&uin=${this.Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}`).then(res => res.text()).catch(err => logger.error(err))
     // let num = 0
     // while (true) {
@@ -314,7 +314,7 @@ export default class {
       uid: String(this.Bot.uin),
       groupId: String(groupId)
     })
-    let url = `https://qun.qq.com/v2/signin/trpc/GetDaySignedList?g_tk=${getGtk('qun.qq.com')}`
+    let url = `https://qun.qq.com/v2/signin/trpc/GetDaySignedList?g_tk=${this.getGtk('qun.qq.com', this.Bot)}`
     return await fetch(url, {
       method: 'POST',
       headers: this.headers,
@@ -505,7 +505,7 @@ export default class {
         'iAppId': 0,
         'iUin': userId
       }),
-      g_tk: getGtk('vip.qq.com')
+      g_tk: this.getGtk('vip.qq.com')
     }
     return request.get(url, {
       params,
@@ -539,7 +539,7 @@ export default class {
     }
     const params = {
       ts: Date.now(),
-      g_tk: getGtk('vip.qq.com'),
+      g_tk: this.getGtk('vip.qq.com'),
       data: JSON.stringify(data),
       daid: 18
     }

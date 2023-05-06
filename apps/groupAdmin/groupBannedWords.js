@@ -92,8 +92,11 @@ export class NewGroupBannedWords extends plugin {
       await punishments[data.penaltyType]()
       const keyWordTran = await GroupBannedWords.keyWordTran(data.rawItem)
       const senderCard = e.sender.card || e.sender.nickname
+      const wordNum = keyWordTran.length - 2
+      const replaceWord = '*'.repeat(wordNum < 0 ? 0 : wordNum)
+      const bannedWord = keyWordTran.substr(0, 2) + replaceWord
       e.reply([
-        `触发违禁词：${keyWordTran.substr(0, 2) + '*'.repeat(keyWordTran.length - 2)}\n`,
+        `触发违禁词：${bannedWord}\n`,
         `触发者：${senderCard}(${e.user_id})\n`,
         `执行：${groupPenaltyAction[data.penaltyType]}`
       ])

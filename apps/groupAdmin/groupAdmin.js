@@ -254,7 +254,7 @@ export class GroupAdmin extends plugin {
     let msg = e.msg.replace(/#|发群公告/g, '').trim()
     if (!msg) return e.reply('❎ 公告不能为空')
 
-    let result = await QQApi.setAnnounce(e.group_id, msg)
+    let result = await new QQApi(e).setAnnounce(e.group_id, msg)
 
     if (!result) return e.reply(API_ERROR)
     if (result.ec != 0) {
@@ -264,7 +264,7 @@ export class GroupAdmin extends plugin {
 
   // 查群公告
   async GetAnnounce (e) {
-    let res = await QQApi.getAnnouncelist(e.group_id)
+    let res = await new QQApi(e).getAnnouncelist(e.group_id)
     if (!res) return e.reply(API_ERROR)
     return e.reply(res)
   }
@@ -275,7 +275,7 @@ export class GroupAdmin extends plugin {
     let msg = e.msg.replace(/#|删群公告/, '').trim()
     if (!msg) return e.reply('❎ 序号不可为空')
 
-    let result = await QQApi.delAnnounce(e.group_id, msg)
+    let result = await new QQApi(e).delAnnounce(e.group_id, msg)
     if (!result) return e.reply(API_ERROR)
 
     if (result.ec == 0) {
@@ -326,7 +326,7 @@ export class GroupAdmin extends plugin {
 
   // 字符列表
   async qun_luckylist (e) {
-    let data = await QQApi.luckylist(e.group_id)
+    let data = await new QQApi(e).luckylist(e.group_id)
     if (!data) return e.reply(API_ERROR)
     if (data.retcode != 0) return e.reply('❎ 获取数据失败\n' + JSON.stringify(data))
 
@@ -339,7 +339,7 @@ export class GroupAdmin extends plugin {
 
   // 抽幸运字符
   async qun_lucky (e) {
-    let res = await QQApi.drawLucky(e.group_id)
+    let res = await new QQApi(e).drawLucky(e.group_id)
 
     if (!res) return e.reply(API_ERROR)
     if (res.retcode == 11004) return e.reply('今天已经抽过辣，明天再来抽取吧')
@@ -357,7 +357,7 @@ export class GroupAdmin extends plugin {
   async qun_luckyuse (e) {
     if (!common.Authentication(e, 'admin', 'admin')) return
     let id = e.msg.replace(/#|替换(幸运)?字符/g, '')
-    let res = await QQApi.equipLucky(e.group_id, id)
+    let res = await new QQApi(e).equipLucky(e.group_id, id)
 
     if (!res) return e.reply(API_ERROR)
     if (res.retcode != 0) return e.reply('❎替换失败\n' + JSON.stringify(res))
@@ -368,7 +368,7 @@ export class GroupAdmin extends plugin {
   async qun_luckyset (e) {
     if (!common.Authentication(e, 'admin', 'admin')) return
 
-    let res = await QQApi.swichLucky(e.group_id, /开启/.test(e.msg))
+    let res = await new QQApi(e).swichLucky(e.group_id, /开启/.test(e.msg))
     if (!res) return e.reply(API_ERROR)
 
     if (res.retcode == 11111) return e.reply('❎ 重复开启或关闭')
@@ -540,7 +540,7 @@ export class GroupAdmin extends plugin {
     })
     if (screenshot) return e.reply(screenshot)
     // 数据版
-    let res = await QQApi.dragon(e.group_id)
+    let res = await new QQApi(e).dragon(e.group_id)
     if (!res) return e.reply(API_ERROR)
     e.reply([
       `本群龙王：${res.nick}`,
@@ -559,7 +559,7 @@ export class GroupAdmin extends plugin {
     })
     if (screenshot) return e.reply(screenshot)
     // 出错后发送数据
-    let result = await QQApi.getCreditLevelInfo(e.group_id)
+    let result = await new QQApi(e).getCreditLevelInfo(e.group_id)
     if (!result) return e.reply(API_ERROR)
     if (result.ec != 0) return e.reply('❎ 查询错误\n' + JSON.stringify(result))
     let { uiGroupLevel, group_name, group_uin } = result.info
@@ -584,7 +584,7 @@ export class GroupAdmin extends plugin {
     })
     if (screenshot) return e.reply(screenshot)
     // 出错后发送文字数据
-    let res = await QQApi.SpeakRank(e.group_id, /(7|七)天/.test(e.msg))
+    let res = await new QQApi(e).SpeakRank(e.group_id, /(7|七)天/.test(e.msg))
     if (!res) return e.reply(API_ERROR)
     if (res.retcode != 0) return e.reply('❎ 未知错误\n' + JSON.stringify(res))
     let msg = _.take(res.data.speakRank.map((item, index) =>
@@ -604,7 +604,7 @@ export class GroupAdmin extends plugin {
     })
     if (screenshot) return e.reply(screenshot)
     // 出错后使用接口
-    let res = await QQApi.signInToday(e.group_id)
+    let res = await new QQApi(e).signInToday(e.group_id)
     if (!res) return e.reply(API_ERROR)
     if (res.retCode != 0) return e.reply('❎ 未知错误\n' + JSON.stringify(res))
 
@@ -663,7 +663,7 @@ export class GroupAdmin extends plugin {
     })
     if (screenshot) return e.reply(screenshot)
     // 数据
-    let res = await QQApi.groupData(e.group_id, /(7|七)天/.test(e.msg))
+    let res = await new QQApi(e).groupData(e.group_id, /(7|七)天/.test(e.msg))
     if (!res) return e.reply(API_ERROR)
     if (res.retcode != 0) return e.reply(res.msg || JSON.stringify(res))
     let { groupInfo, activeData, msgInfo, joinData, exitData, applyData } = res.data

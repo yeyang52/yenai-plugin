@@ -92,7 +92,7 @@ export default new class {
         audioUrl: decodeURIComponent(audioUrl)
       }
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return { error: API_ERROR }
     }
   }

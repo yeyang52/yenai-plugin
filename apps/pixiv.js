@@ -207,7 +207,6 @@ export class NewPixiv extends plugin {
     e.reply(Pixiv.startMsg)
     let num = e.msg.match(/\d+/) || 1
     await Pixiv.illustRecommended(num).then(res => {
-      console.log(res)
       res.length == 1
         ? common.recallsendMsg(e, res[0], true)
         : common.recallSendForwardMsg(e, res)

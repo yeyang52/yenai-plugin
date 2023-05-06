@@ -28,8 +28,8 @@ export {
   Bika,
   uploadRecord,
   GroupAdmin,
-  GroupBannedWords,
   QQApi,
+  GroupBannedWords,
   funApi,
   memes
 }

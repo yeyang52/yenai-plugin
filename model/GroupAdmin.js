@@ -194,7 +194,7 @@ export default class {
    * @returns {Promise<Array<string>>} - 包含清理结果的数组，其中清理结果可能是成功的踢出列表，也可能是错误消息
    */
   async BatchKickMember (groupId, arr) {
-    let res = await QQApi.deleteGroupMember(groupId, arr)
+    let res = await new QQApi(this.e).deleteGroupMember(groupId, arr)
     let msg = [
       '以下为每次清理的结果'
     ]

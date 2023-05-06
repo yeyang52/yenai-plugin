@@ -240,7 +240,7 @@ const Kemono = {
         return `https://dlsite.com/home/work/=/${data.data.id}`
       default:
         // throw new errors_1.SagiriClientError(999, `Unknown service type for Kemono: ${data.data.service}`)
-        console.error(999, `Unknown service type for Kemono: ${data.data.service}`)
+        logger.error(999, `Unknown service type for Kemono: ${data.data.service}`)
     }
   },
   authorData: (data) => {
@@ -277,7 +277,7 @@ const Kemono = {
         }
       default:
         // throw new errors_1.SagiriClientError(999, `Unknown service type for Kemono: ${data.service}`)
-        console.error(999, `Unknown service type for Kemono: ${data.service}`)
+        logger.error(999, `Unknown service type for Kemono: ${data.service}`)
     }
   }
 }

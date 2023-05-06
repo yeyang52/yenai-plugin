@@ -140,7 +140,7 @@ export class Fun extends plugin {
     while (true) {
       let res = null
       try {
-        res = await QQApi.thumbUp(e.user_id, 10)
+        res = await new QQApi(e).thumbUp(e.user_id, 10)
       } catch (error) {
         logger.error(error)
         return e.reply(error.message)
@@ -253,7 +253,7 @@ export class Fun extends plugin {
   async lingsheng (e) {
     let msg = e.msg.replace(/#|铃声搜索/g, '')
     let api = `https://xiaobai.klizi.cn/API/music/lingsheng.php?msg=${msg}&n=1`
-    let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
+    let res = await fetch(api).then(res => res.json()).catch(err => logger.error(err))
     if (!res) return e.reply(API_ERROR)
     if (res.title == null && res.author == null) return e.reply('❎ 没有找到相关的歌曲哦~', true)
 
@@ -267,7 +267,7 @@ export class Fun extends plugin {
   /** 半次元话题 */
   async bcyTopic (e) {
     let api = 'https://xiaobai.klizi.cn/API/other/bcy_topic.php'
-    let res = await fetch(api).then(res => res.json()).catch(err => console.log(err))
+    let res = await fetch(api).then(res => res.json()).catch(err => logger.error(err))
     if (!res) return e.reply(API_ERROR)
     if (res.code != 200) return e.reply('❎ 出错辣' + JSON.stringify(res))
     if (_.isEmpty(res.data)) return e.reply('请求错误！无数据，请稍后再试')
@@ -318,10 +318,10 @@ export class Fun extends plugin {
     url = encodeURI(url)
 
     if (picObj.type == 'text') {
-      url = await fetch(url).then(res => res.text()).catch(err => console.log(err))
+      url = await fetch(url).then(res => res.text()).catch(err => logger.error(err))
     } else if (picObj.type == 'json') {
       if (!picObj.path) return logger.error(`${e.logFnc}json未指定路径`)
-      let res = await fetch(url).then(res => res.json()).catch(err => console.log(err))
+      let res = await fetch(url).then(res => res.json()).catch(err => logger.error(err))
       url = _.get(res, picObj.path)
     }
     if (!url) return logger.error(`${e.logFnc}未获取到图片链接`)

@@ -306,7 +306,7 @@ export default new class OSUtils {
         ]
       }
     } catch (e) {
-      console.log(e)
+      logger.error(e)
       return false
     }
   }

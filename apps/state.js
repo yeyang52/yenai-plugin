@@ -23,6 +23,10 @@ export class NewState extends plugin {
     })
   }
 
+  get Bot () {
+    return this.e.bot ?? Bot
+  }
+
   async state (e) {
     if (e.msg.includes('监控')) {
       return await puppeteer.render('state/monitor', {
@@ -57,17 +61,17 @@ export class NewState extends plugin {
     let data = {
       chartData: JSON.stringify(_.every(_.omit(State.chartData, 'echarts_theme'), _.isEmpty) ? undefined : State.chartData),
       // 头像
-      portrait: e.bot?.avatar ?? `https://q1.qlogo.cn/g?b=qq&s=0&nk=${(e.bot ?? Bot).uin}`,
+      portrait: e.bot?.avatar ?? `https://q1.qlogo.cn/g?b=qq&s=0&nk=${this.Bot.uin}`,
       // 运行时间
-      runTime: common.formatTime(Date.now() / 1000 - (e.bot ?? Bot).stat.start_time, 'dd天hh小时mm分', false),
+      runTime: common.formatTime(Date.now() / 1000 - this.Bot.stat.start_time, 'dd天hh小时mm分', false),
       // 日历
       calendar: moment().format('YYYY-MM-DD HH:mm:ss'),
       // 昵称
-      nickname: (e.bot ?? Bot).nickname,
+      nickname: this.Bot.nickname,
       // 系统运行时间
       systime: common.formatTime(os.uptime(), 'dd天hh小时mm分', false),
       // 收
-      recv: (e.bot ?? Bot).stat.recv_msg_cnt,
+      recv: this.Bot.stat.recv_msg_cnt,
       // 发
       sent: await redis.get('Yz:count:sendMsg:total') || 0,
       // 图片
@@ -75,13 +79,13 @@ export class NewState extends plugin {
       // nodejs版本
       nodeversion: process.version,
       // 群数
-      group_quantity: Array.from((e.bot ?? Bot).gl.values()).length,
+      group_quantity: Array.from(this.Bot.gl.values()).length,
       // 好友数
-      friend_quantity: Array.from((e.bot ?? Bot).fl.values()).length,
+      friend_quantity: Array.from(this.Bot.fl.values()).length,
       // 登陆设备
-      platform: platform[(e.bot ?? Bot).config?.platform],
+      platform: platform[this.Bot.config?.platform],
       // 在线状态
-      status: status[(e.bot ?? Bot).status],
+      status: status[this.Bot.status],
       // 硬盘内存
       HardDisk: await State.getFsSize(),
       // FastFetch

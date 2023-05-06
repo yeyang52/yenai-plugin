@@ -19,7 +19,7 @@ export default class {
     this.Bot = e.bot ?? this.Bot
     this.headers = {
       'Content-type': 'application/json;charset=UTF-8',
-      'Cookie': this.this.Bot?.cookies?.['qun.qq.com'],
+      'Cookie': this.Bot?.cookies?.['qun.qq.com'],
       'qname-service': '976321:131072',
       'qname-space': 'Production'
     }

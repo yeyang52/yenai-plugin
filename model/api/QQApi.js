@@ -7,7 +7,7 @@ import request from '../../lib/request/request.js'
 export default class {
   constructor (e) {
     this.e = e
-    this.Bot = e.bot ?? this.Bot
+    this.Bot = e.bot ?? Bot
     this.headers = {
       'Content-type': 'application/json;charset=UTF-8',
       'Cookie': this.Bot?.cookies?.['qun.qq.com'],

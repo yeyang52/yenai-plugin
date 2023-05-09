@@ -182,14 +182,16 @@ export class Fun extends plugin {
   async GH (e) {
     const api = 'https://opengraph.githubassets.com'
 
-    let reg = /github.com\/[a-zA-Z0-9-]{1,39}\/[a-zA-Z0-9_-]{1,100}/
+    let reg = /github.com\/[a-zA-Z0-9-]{1,39}\/[a-zA-Z0-9_-]{1,100}(?:\/(?:pull|issue)\/\d+)?/
     const isMatched = e.msg.match(reg)
 
     const id = 'Yenai'
     if (isMatched) {
-      const res = isMatched[0].split('/')
-      const [user, repo] = [res[1], res[2].split('#')[0]]
-      e.reply(segment.image(`${api}/${id}/${user}/${repo}`))
+      // const res = isMatched[0].split('/')
+      let path = isMatched[0].replace('github.com/', '')
+      e.reply(segment.image(`${api}/${id}/${path}`))
+      // const [user, repo] = [res[1], res[2].split('#')[0]]
+      // e.reply(segment.image(`${api}/${id}/${user}/${repo}`))
     }
   }
 

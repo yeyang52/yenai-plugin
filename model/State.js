@@ -87,8 +87,11 @@ export default new class OSUtils {
 
   async init () {
     if (!await this.initDependence()) return
+    const { controllers } = await this.si.graphics()
     // 初始化GPU获取
-    if ((await this.si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)) {
+    if (controllers?.find(item =>
+      item.memoryUsed && item.memoryFree && item.utilizationGpu)
+    ) {
       this.isGPU = true
     }
     // 给有问题的用户关闭定时器
@@ -288,13 +291,16 @@ export default new class OSUtils {
   async getGPU () {
     if (!this.isGPU) return false
     try {
-      let graphics = (await this.si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)
+      const { controllers } = await this.si.graphics()
+      let graphics = controllers.find(item =>
+        item.memoryUsed && item.memoryFree && item.utilizationGpu
+      )
       let {
         vendor, temperatureGpu, utilizationGpu,
         memoryTotal, memoryUsed, powerDraw
       } = graphics
-      temperatureGpu = temperatureGpu ? temperatureGpu + '℃' : ''
-      powerDraw = powerDraw ? powerDraw + 'W' : ''
+      temperatureGpu &&= temperatureGpu + '℃'
+      powerDraw &&= powerDraw + 'W'
       return {
         ...this.Circle(utilizationGpu / 100),
         inner: parseInt(utilizationGpu) + '%',

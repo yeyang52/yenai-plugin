@@ -129,7 +129,7 @@ export class NewHandle extends plugin {
     let sourceMsg = source.raw_message?.split('\n')
     if (!sourceMsg) return e.reply('❎ 获取原消息失败，请使用"同意xxx"进行处理')
     if (e.isGroup) {
-      if (!common.Authentication(e, 'admin', 'admin')) return
+      if (!common.checkPermission(e, 'admin', 'admin')) return
 
       let source = (await e.group.getChatHistory(e.source.seq, 1)).pop()
       let yes = /同意/.test(e.msg)
@@ -291,7 +291,7 @@ export class NewHandle extends plugin {
       ]
       return common.getforwardMsg(e, msg)
     }
-    if (!common.Authentication(e, 'admin', 'admin')) return
+    if (!common.checkPermission(e, 'admin', 'admin')) return
     let yes = /同意/.test(e.msg)
 
     if (/全部/.test(e.msg)) {

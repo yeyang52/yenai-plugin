@@ -34,7 +34,7 @@ export class NewPicSearch extends plugin {
   }
 
   async SauceNAO (e) {
-    if (!await this.Authentication(e)) return
+    if (!await this._Authentication(e)) return
     if (!await this.handelImg(e, 'SauceNAO')) return
     await PicSearch.SauceNAO(e.img[0])
       .then(async res => {
@@ -52,7 +52,7 @@ export class NewPicSearch extends plugin {
   }
 
   async Ascii2D (e) {
-    if (!await this.Authentication(e)) return
+    if (!await this._Authentication(e)) return
     if (!await this.handelImg(e, 'Ascii2D')) return
     await PicSearch.Ascii2D(e.img[0])
       .then(res => common.recallSendForwardMsg(e, [...res.color, ...res.bovw], { xmlTitle: false }))
@@ -60,7 +60,7 @@ export class NewPicSearch extends plugin {
   }
 
   async WhatAnime (e) {
-    if (!await this.Authentication(e)) return
+    if (!await this._Authentication(e)) return
     if (!await this.handelImg(e, 'WhatAnime')) return
     await PicSearch.WhatAnime(e.img[0].replace('/c2cpicdw.qpic.cn/offpic_new/', '/gchat.qpic.cn/gchatpic_new/'))
       .then(async res => {
@@ -80,7 +80,7 @@ export class NewPicSearch extends plugin {
     e.reply('OK')
   }
 
-  async Authentication (e) {
+  async _Authentication (e) {
     if (e.isMaster) return true
     const { allowPM, limit, isMasterUse } = Config.picSearch
     if (isMasterUse) {

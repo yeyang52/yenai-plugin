@@ -39,7 +39,7 @@ export class NewGroupVerify extends plugin {
 
   // 重新验证
   async cmdReverify (e) {
-    if (!common.Authentication(e, 'admin', 'admin')) return
+    if (!common.checkPermission(e, 'admin', 'admin')) return
 
     if (!this.verifycfg.openGroup.includes(e.group_id)) return e.reply('当前群未开启验证哦~', true)
 
@@ -61,7 +61,7 @@ export class NewGroupVerify extends plugin {
 
   // 绕过验证
   async cmdPass (e) {
-    if (!common.Authentication(e, 'admin', 'admin')) return
+    if (!common.checkPermission(e, 'admin', 'admin')) return
 
     if (!this.verifycfg.openGroup.includes(e.group_id)) return e.reply('当前群未开启验证哦~', true)
 
@@ -98,7 +98,7 @@ export class NewGroupVerify extends plugin {
 
   // 开启验证
   async handelverify (e) {
-    if (!common.Authentication(e, 'admin', 'admin')) return
+    if (!common.checkPermission(e, 'admin', 'admin')) return
     let type = /开启/.test(e.msg) ? 'add' : 'del'
     let isopen = this.verifycfg.openGroup.includes(e.group_id)
     if (isopen && type == 'add') return e.reply('❎ 本群验证已处于开启状态')
@@ -109,7 +109,7 @@ export class NewGroupVerify extends plugin {
 
   // 切换验证模式
   async setmode (e) {
-    if (!common.Authentication(e, 'master')) return
+    if (!common.checkPermission(e, 'master')) return
     let value = this.verifycfg.mode == '模糊' ? '精确' : '模糊'
     Config.modify('groupverify', 'mode', value)
     e.reply(`✅ 已切换验证模式为${value}验证`)
@@ -117,7 +117,7 @@ export class NewGroupVerify extends plugin {
 
   // 设置验证超时时间
   async setovertime (e) {
-    if (!common.Authentication(e, 'master')) return
+    if (!common.checkPermission(e, 'master')) return
     let overtime = e.msg.match(/\d+/g)
     Config.modify('groupverify', 'time', Number(overtime))
     e.reply(`✅ 已将验证超时时间设置为${overtime}秒`)

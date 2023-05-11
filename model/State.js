@@ -13,7 +13,7 @@ export default new class {
     this._network = null
     // 读写速率
     this._fsStats = null
-
+    // 记录60条数据一分钟记录一次
     this.chartData = {
       network: {
         // 上行
@@ -121,7 +121,7 @@ export default new class {
       if (_.isNumber(currentLoad)) {
         this.addData(this.chartData.cpu, [Date.now(), currentLoad])
       }
-    }, 5000)
+    }, 60000)
   }
 
   /**
@@ -129,10 +129,10 @@ export default new class {
    *
    * @param {Array} arr - 要添加数据的数组
    * @param {*} data - 要添加的新数据
-   * @param {number} [maxLen=50] - 数组允许的最大长度，默认值为50
+   * @param {number} [maxLen=60] - 数组允许的最大长度，默认值为60
    * @returns {void}
    */
-  addData (arr, data, maxLen = 50) {
+  addData (arr, data, maxLen = 60) {
     if (data === null || data === undefined) return
     // 如果数组长度超过允许的最大值，删除第一个元素
     if (arr.length >= maxLen) {

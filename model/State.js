@@ -4,13 +4,7 @@ import fs from 'fs'
 import { common } from './index.js'
 import { Config, Data } from '../components/index.js'
 
-let valueObject = {
-  networkStats: 'rx_sec,tx_sec,iface',
-  currentLoad: 'currentLoad',
-  mem: 'active',
-  fsStats: 'wx_sec,rx_sec'
-}
-export default new class OSUtils {
+export default new class {
   constructor () {
     this.si = null
     // 是否可以获取gpu
@@ -40,6 +34,14 @@ export default new class OSUtils {
       // 主题
       echarts_theme: Data.readJSON('resources/state/theme_westeros.json')
     }
+
+    this.valueObject = {
+      networkStats: 'rx_sec,tx_sec,iface',
+      currentLoad: 'currentLoad',
+      mem: 'active',
+      fsStats: 'wx_sec,rx_sec'
+    }
+
     this.init()
   }
 
@@ -101,11 +103,11 @@ export default new class OSUtils {
 
     // 网速
     const Timer = setInterval(async () => {
-      let data = await this.si.get(valueObject)
+      let data = await this.si.get(this.valueObject)
       _.forIn(data, (value, key) => {
         if (_.isEmpty(value)) {
           logger.debug(`获取${key}数据失败，停止获取对应数据`)
-          delete valueObject[key]
+          delete this.valueObject[key]
         }
       })
 

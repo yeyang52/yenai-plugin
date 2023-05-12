@@ -232,7 +232,7 @@ export default new class {
     let occupy = (memory.rss / (os.totalmem() - os.freemem())).toFixed(2)
     return {
       ...this.Circle(occupy),
-      inner: parseInt(occupy * 100) + '%',
+      inner: Math.ceil(occupy * 100) + '%',
       title: 'Node',
       info: [
         `总 ${rss}`,
@@ -255,7 +255,7 @@ export default new class {
 
     return {
       ...this.Circle(MemUsage),
-      inner: parseInt(MemUsage * 100) + '%',
+      inner: Math.ceil(MemUsage * 100) + '%',
       title: 'RAM',
       info: [
         `总共 ${totalmem}`,
@@ -278,7 +278,7 @@ export default new class {
     let cpuModel = cores[0]?.model.slice(0, cores[0]?.model.indexOf(' ')) || ''
     return {
       ...this.Circle(currentLoad / 100),
-      inner: `${parseInt(currentLoad)}%`,
+      inner: Math.ceil(currentLoad) + '%',
       title: 'CPU',
       info: [
         `${cpuModel} ${cores.length}核 ${arch}`,
@@ -305,7 +305,7 @@ export default new class {
       powerDraw &&= powerDraw + 'W'
       return {
         ...this.Circle(utilizationGpu / 100),
-        inner: parseInt(utilizationGpu) + '%',
+        inner: Math.ceil(utilizationGpu) + '%',
         title: 'GPU',
         info: [
           `${vendor} ${temperatureGpu} ${powerDraw}`,
@@ -360,7 +360,12 @@ export default new class {
 
   // 获取读取速率
   get DiskSpeed () {
-    if (!this.fsStats || this.fsStats.rx_sec == null || this.fsStats.wx_sec == null) return false
+    if (!this.fsStats ||
+      this.fsStats.rx_sec == null ||
+      this.fsStats.wx_sec == null
+    ) {
+      return false
+    }
     return {
       rx_sec: this.getFileSize(this.fsStats.rx_sec, false, false),
       wx_sec: this.getFileSize(this.fsStats.wx_sec, false, false)
@@ -369,12 +374,13 @@ export default new class {
 
   /**
    * @description: 获取网速
-   * @return {*}
+   * @return {object}
    */
   get getnetwork () {
-    let network = {}
-    try { network = _.cloneDeep(this.network)[0] } catch { return false }
-    if (network.rx_sec == null || network.tx_sec == null) return false
+    let network = _.cloneDeep(this.network)?.[0]
+    if (!network || network.rx_sec == null || network.tx_sec == null) {
+      return false
+    }
     network.rx_sec = this.getFileSize(network.rx_sec, false, false)
     network.tx_sec = this.getFileSize(network.tx_sec, false, false)
     return network

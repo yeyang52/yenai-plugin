@@ -19,8 +19,8 @@ export class NGA extends plugin {
         }
       ]
     })
-    this.incomeCurvePath = `${Plugin_Path}/data/incomeCurve`
-    this.referencePanelPath = `${Plugin_Path}/data/referencPanel`
+    this.incomeCurvePath = `${Plugin_Path}/temp/incomeCurve`
+    this.referencePanelPath = `${Plugin_Path}/temp/referencPanel`
     this.incomeCurveObj = incomeCurve
   }
 

@@ -232,7 +232,7 @@ export default new class {
     let occupy = (memory.rss / (os.totalmem() - os.freemem())).toFixed(2)
     return {
       ...this.Circle(occupy),
-      inner: Math.ceil(occupy * 100) + '%',
+      inner: Math.round(occupy * 100) + '%',
       title: 'Node',
       info: [
         `总 ${rss}`,
@@ -255,7 +255,7 @@ export default new class {
 
     return {
       ...this.Circle(MemUsage),
-      inner: Math.ceil(MemUsage * 100) + '%',
+      inner: Math.round(MemUsage * 100) + '%',
       title: 'RAM',
       info: [
         `总共 ${totalmem}`,
@@ -278,7 +278,7 @@ export default new class {
     let cpuModel = cores[0]?.model.slice(0, cores[0]?.model.indexOf(' ')) || ''
     return {
       ...this.Circle(currentLoad / 100),
-      inner: Math.ceil(currentLoad) + '%',
+      inner: Math.round(currentLoad) + '%',
       title: 'CPU',
       info: [
         `${cpuModel} ${cores.length}核 ${arch}`,
@@ -294,9 +294,11 @@ export default new class {
     if (!this.isGPU) return false
     try {
       const { controllers } = await this.si.graphics()
-      let graphics = controllers.find(item =>
+      logger.debug(controllers)
+      let graphics = controllers?.find(item =>
         item.memoryUsed && item.memoryFree && item.utilizationGpu
       )
+      if (!graphics) return false
       let {
         vendor, temperatureGpu, utilizationGpu,
         memoryTotal, memoryUsed, powerDraw
@@ -305,7 +307,7 @@ export default new class {
       powerDraw &&= powerDraw + 'W'
       return {
         ...this.Circle(utilizationGpu / 100),
-        inner: Math.ceil(utilizationGpu) + '%',
+        inner: Math.round(utilizationGpu) + '%',
         title: 'GPU',
         info: [
           `${vendor} ${temperatureGpu} ${powerDraw}`,
@@ -314,7 +316,7 @@ export default new class {
         ]
       }
     } catch (e) {
-      logger.error(e)
+      logger.warn('[Yenai-Plugin][State] 获取GPU失败')
       return false
     }
   }
@@ -336,7 +338,7 @@ export default new class {
     return HardDisk.map(item => {
       item.used = this.getFileSize(item.used)
       item.size = this.getFileSize(item.size)
-      item.use = Math.ceil(item.use)
+      item.use = Math.round(item.use)
       item.color = 'var(--low-color)'
       if (item.use >= 90) {
         item.color = 'var(--high-color)'

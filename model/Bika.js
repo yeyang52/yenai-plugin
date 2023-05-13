@@ -7,8 +7,7 @@ export default new (class {
     this.domain = 'https://api.obfs.dev/api/bika'
     this.hearder = {
       headers: {
-        'x-image-quality': Config.bika.imageQuality,
-        'User-Agent': 'Yenai-Plugin-bika'
+        'x-image-quality': Config.bika.imageQuality
       }
     }
     this.searchCaching = null
@@ -202,7 +201,6 @@ export default new (class {
   async _requestBikaImg (fileServer, path) {
     fileServer = /static/.test(fileServer) ? fileServer : fileServer + '/static/'
     let url = (/picacomic.com/.test(fileServer) && this.imgproxy ? this.imgproxy : fileServer) + path
-    logger.debug(`Bika getImg URL: ${url}`)
     return request.proxyRequestImg(url)
   }
 })()

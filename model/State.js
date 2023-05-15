@@ -4,13 +4,7 @@ import fs from 'fs'
 import { common } from './index.js'
 import { Config, Data } from '../components/index.js'
 
-let valueObject = {
-  networkStats: 'rx_sec,tx_sec,iface',
-  currentLoad: 'currentLoad',
-  mem: 'active',
-  fsStats: 'wx_sec,rx_sec'
-}
-export default new class OSUtils {
+export default new class {
   constructor () {
     this.si = null
     // 是否可以获取gpu
@@ -19,7 +13,7 @@ export default new class OSUtils {
     this._network = null
     // 读写速率
     this._fsStats = null
-
+    // 记录60条数据一分钟记录一次
     this.chartData = {
       network: {
         // 上行
@@ -40,6 +34,14 @@ export default new class OSUtils {
       // 主题
       echarts_theme: Data.readJSON('resources/state/theme_westeros.json')
     }
+
+    this.valueObject = {
+      networkStats: 'rx_sec,tx_sec,iface',
+      currentLoad: 'currentLoad',
+      mem: 'active',
+      fsStats: 'wx_sec,rx_sec'
+    }
+
     this.init()
   }
 
@@ -87,8 +89,11 @@ export default new class OSUtils {
 
   async init () {
     if (!await this.initDependence()) return
+    const { controllers } = await this.si.graphics()
     // 初始化GPU获取
-    if ((await this.si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)) {
+    if (controllers?.find(item =>
+      item.memoryUsed && item.memoryFree && item.utilizationGpu)
+    ) {
       this.isGPU = true
     }
     // 给有问题的用户关闭定时器
@@ -98,11 +103,11 @@ export default new class OSUtils {
 
     // 网速
     const Timer = setInterval(async () => {
-      let data = await this.si.get(valueObject)
+      let data = await this.si.get(this.valueObject)
       _.forIn(data, (value, key) => {
         if (_.isEmpty(value)) {
           logger.debug(`获取${key}数据失败，停止获取对应数据`)
-          delete valueObject[key]
+          delete this.valueObject[key]
         }
       })
 
@@ -116,7 +121,7 @@ export default new class OSUtils {
       if (_.isNumber(currentLoad)) {
         this.addData(this.chartData.cpu, [Date.now(), currentLoad])
       }
-    }, 5000)
+    }, 60000)
   }
 
   /**
@@ -124,10 +129,10 @@ export default new class OSUtils {
    *
    * @param {Array} arr - 要添加数据的数组
    * @param {*} data - 要添加的新数据
-   * @param {number} [maxLen=50] - 数组允许的最大长度，默认值为50
+   * @param {number} [maxLen=60] - 数组允许的最大长度，默认值为60
    * @returns {void}
    */
-  addData (arr, data, maxLen = 50) {
+  addData (arr, data, maxLen = 60) {
     if (data === null || data === undefined) return
     // 如果数组长度超过允许的最大值，删除第一个元素
     if (arr.length >= maxLen) {
@@ -227,7 +232,7 @@ export default new class OSUtils {
     let occupy = (memory.rss / (os.totalmem() - os.freemem())).toFixed(2)
     return {
       ...this.Circle(occupy),
-      inner: parseInt(occupy * 100) + '%',
+      inner: Math.round(occupy * 100) + '%',
       title: 'Node',
       info: [
         `总 ${rss}`,
@@ -250,7 +255,7 @@ export default new class OSUtils {
 
     return {
       ...this.Circle(MemUsage),
-      inner: parseInt(MemUsage * 100) + '%',
+      inner: Math.round(MemUsage * 100) + '%',
       title: 'RAM',
       info: [
         `总共 ${totalmem}`,
@@ -273,7 +278,7 @@ export default new class OSUtils {
     let cpuModel = cores[0]?.model.slice(0, cores[0]?.model.indexOf(' ')) || ''
     return {
       ...this.Circle(currentLoad / 100),
-      inner: `${parseInt(currentLoad)}%`,
+      inner: Math.round(currentLoad) + '%',
       title: 'CPU',
       info: [
         `${cpuModel} ${cores.length}核 ${arch}`,
@@ -288,16 +293,21 @@ export default new class OSUtils {
   async getGPU () {
     if (!this.isGPU) return false
     try {
-      let graphics = (await this.si.graphics()).controllers.find(item => item.memoryUsed && item.memoryFree && item.utilizationGpu)
+      const { controllers } = await this.si.graphics()
+      logger.debug(controllers)
+      let graphics = controllers?.find(item =>
+        item.memoryUsed && item.memoryFree && item.utilizationGpu
+      )
+      if (!graphics) return false
       let {
         vendor, temperatureGpu, utilizationGpu,
         memoryTotal, memoryUsed, powerDraw
       } = graphics
-      temperatureGpu = temperatureGpu ? temperatureGpu + '℃' : ''
-      powerDraw = powerDraw ? powerDraw + 'W' : ''
+      temperatureGpu &&= temperatureGpu + '℃'
+      powerDraw &&= powerDraw + 'W'
       return {
         ...this.Circle(utilizationGpu / 100),
-        inner: parseInt(utilizationGpu) + '%',
+        inner: Math.round(utilizationGpu) + '%',
         title: 'GPU',
         info: [
           `${vendor} ${temperatureGpu} ${powerDraw}`,
@@ -306,7 +316,7 @@ export default new class OSUtils {
         ]
       }
     } catch (e) {
-      logger.error(e)
+      logger.warn('[Yenai-Plugin][State] 获取GPU失败')
       return false
     }
   }
@@ -328,7 +338,7 @@ export default new class OSUtils {
     return HardDisk.map(item => {
       item.used = this.getFileSize(item.used)
       item.size = this.getFileSize(item.size)
-      item.use = Math.ceil(item.use)
+      item.use = Math.round(item.use)
       item.color = 'var(--low-color)'
       if (item.use >= 90) {
         item.color = 'var(--high-color)'
@@ -352,7 +362,12 @@ export default new class OSUtils {
 
   // 获取读取速率
   get DiskSpeed () {
-    if (!this.fsStats || this.fsStats.rx_sec == null || this.fsStats.wx_sec == null) return false
+    if (!this.fsStats ||
+      this.fsStats.rx_sec == null ||
+      this.fsStats.wx_sec == null
+    ) {
+      return false
+    }
     return {
       rx_sec: this.getFileSize(this.fsStats.rx_sec, false, false),
       wx_sec: this.getFileSize(this.fsStats.wx_sec, false, false)
@@ -361,12 +376,13 @@ export default new class OSUtils {
 
   /**
    * @description: 获取网速
-   * @return {*}
+   * @return {object}
    */
   get getnetwork () {
-    let network = {}
-    try { network = _.cloneDeep(this.network)[0] } catch { return false }
-    if (network.rx_sec == null || network.tx_sec == null) return false
+    let network = _.cloneDeep(this.network)?.[0]
+    if (!network || network.rx_sec == null || network.tx_sec == null) {
+      return false
+    }
     network.rx_sec = this.getFileSize(network.rx_sec, false, false)
     network.tx_sec = this.getFileSize(network.tx_sec, false, false)
     return network

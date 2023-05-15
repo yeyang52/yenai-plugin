@@ -58,7 +58,7 @@ export class NewGroupBannedWords extends plugin {
       .replace(/#|＃/g, '')
       .replace(`{at:${Bot.uin}}`, '')
       .trim()
-    const trimmedKeyWord = this.trimAlias(KeyWord)
+    const trimmedKeyWord = this.#trimAlias(KeyWord)
     let data = null
     for (const [k, v] of groupBannedWords) {
       if (k.test(trimmedKeyWord)) {
@@ -69,16 +69,16 @@ export class NewGroupBannedWords extends plugin {
     if (!data) return false
     const muteTime = GroupBannedWords.getMuteTime(e.group_id)
     const punishments = {
-      1: async () => await e.member.kick(),
-      2: async () => await e.member.mute(muteTime),
-      3: async () => await e.recall(),
-      4: async () => {
-        await e.member.kick()
-        await e.recall()
+      1: () => e.member.kick(),
+      2: () => this.#mute(muteTime),
+      3: () => e.recall(),
+      4: () => {
+        e.member.kick()
+        e.recall()
       },
-      5: async () => {
-        await e.member.mute(muteTime)
-        await e.recall()
+      5: () => {
+        this.#mute(muteTime)
+        e.recall()
       }
     }
     const groupPenaltyAction = {
@@ -89,7 +89,7 @@ export class NewGroupBannedWords extends plugin {
       5: `禁言${muteTime}秒并撤回消息`
     }
     if (punishments[data.penaltyType]) {
-      await punishments[data.penaltyType]()
+      punishments[data.penaltyType]()
       const keyWordTran = await GroupBannedWords.keyWordTran(data.rawItem)
       const senderCard = e.sender.card || e.sender.nickname
       const wordNum = keyWordTran.length - 2
@@ -103,9 +103,35 @@ export class NewGroupBannedWords extends plugin {
     }
   }
 
+  /** 禁言 */
+  #mute (time) {
+    const e = this.e
+    if (e.anonymous) {
+      e.group.muteAnony(e.anonymous.flag, time)
+    } else {
+      e.member.mute(time)
+    }
+  }
+
+  /** 过滤别名 */
+  #trimAlias (msg) {
+    let groupCfg = this.e.runtime.cfg.getGroup(this.group_id)
+    let alias = groupCfg.botAlias
+    if (!Array.isArray(alias)) {
+      alias = [alias]
+    }
+    for (let name of alias) {
+      if (msg.startsWith(name)) {
+        msg = _.trimStart(msg, name).trim()
+      }
+    }
+
+    return msg
+  }
+
   async add (e) {
-    if (!common.Authentication(e, 'admin', 'admin')) return false
-    let word = this.trimAlias(e.toString())
+    if (!common.checkPermission(e, 'admin', 'admin')) return false
+    let word = this.#trimAlias(e.toString())
     word = word.match(/^#?新增(模糊|精确|正则)?(踢|禁|撤|踢撤|禁撤)?违禁词(.*)$/)
     if (!word[3]) return e.reply('需要添加的屏蔽词为空')
     // 校验正则
@@ -133,8 +159,8 @@ export class NewGroupBannedWords extends plugin {
   }
 
   async del (e) {
-    if (!common.Authentication(e, 'admin', 'admin')) return false
-    let word = this.trimAlias(e.toString())
+    if (!common.checkPermission(e, 'admin', 'admin')) return false
+    let word = this.#trimAlias(e.toString())
     word = word.replace(/#?删除违禁词/, '').trim()
     if (!word) return e.reply('需要删除的屏蔽词为空')
     try {
@@ -146,7 +172,7 @@ export class NewGroupBannedWords extends plugin {
   }
 
   async query (e) {
-    let word = this.trimAlias(e.toString())
+    let word = this.#trimAlias(e.toString())
     word = word.replace(/#?查看违禁词/, '').trim()
     if (!word) return e.reply('需要查询的屏蔽词为空')
     try {
@@ -186,26 +212,10 @@ export class NewGroupBannedWords extends plugin {
   }
 
   async muteTime (e) {
-    if (!common.Authentication(e, 'admin', 'admin')) return false
+    if (!common.checkPermission(e, 'admin', 'admin')) return false
     let time = e.msg.match(/\d+/)[0]
     GroupBannedWords.setMuteTime(e.group_id, time)
     e.reply(`✅ 群${e.group_id}违禁词禁言时间已设置为${time}s`)
-  }
-
-  /** 过滤别名 */
-  trimAlias (msg) {
-    let groupCfg = this.e.runtime.cfg.getGroup(this.group_id)
-    let alias = groupCfg.botAlias
-    if (!Array.isArray(alias)) {
-      alias = [alias]
-    }
-    for (let name of alias) {
-      if (msg.startsWith(name)) {
-        msg = _.trimStart(msg, name).trim()
-      }
-    }
-
-    return msg
   }
 
   // 增删查头衔屏蔽词
@@ -217,7 +227,7 @@ export class NewGroupBannedWords extends plugin {
     // 返回已有的头衔屏蔽词列表
       return e.reply(`现有的头衔屏蔽词如下：${shieldingWords.join('\n')}`)
     }
-    if (!common.Authentication(e, 'admin', 'admin')) return false
+    if (!common.checkPermission(e, 'admin', 'admin')) return false
     // 获取用户输入的要增加或删除的屏蔽词
     let message = e.msg.replace(/#|(增加|减少)头衔屏蔽词/g, '').trim().split(',')
     // 判断用户是要增加还是删除屏蔽词
@@ -264,7 +274,7 @@ export class NewGroupBannedWords extends plugin {
 
   // 修改头衔匹配模式
   async ProhibitedTitlePattern (e) {
-    if (!common.Authentication(e, 'admin', 'admin')) return false
+    if (!common.checkPermission(e, 'admin', 'admin')) return false
     let res = GroupBannedWords.setTitleFilterModeChange(e.group_id)
     e.reply(`✅ 已修改匹配模式为${res ? '精确' : '模糊'}匹配`)
   }

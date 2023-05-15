@@ -162,7 +162,7 @@ export class GroupAdmin extends plugin {
 
   /** 禁言 */
   async muteMember (e) {
-    if (!common.Authentication(e, 'admin', 'admin')) return
+    if (!common.checkPermission(e, 'admin', 'admin')) return
     let qq = e.message.find(item => item.type == 'at')?.qq
     let reg = `#禁言\\s?((\\d+)\\s)?(${Numreg})?(${TimeUnitReg})?`
     let regRet = e.msg.match(new RegExp(reg))
@@ -174,7 +174,7 @@ export class GroupAdmin extends plugin {
 
   /** 解禁 */
   async noMuteMember (e) {
-    if (!common.Authentication(e, 'admin', 'admin')) return
+    if (!common.checkPermission(e, 'admin', 'admin')) return
 
     let qq = e.message.find(item => item.type == 'at')?.qq
     let regRet = e.msg.match(/#解禁(\d+)/)
@@ -186,7 +186,7 @@ export class GroupAdmin extends plugin {
 
   /** 全体禁言 */
   async muteAll (e) {
-    if (!common.Authentication(e, 'admin', 'admin')) return
+    if (!common.checkPermission(e, 'admin', 'admin')) return
 
     let type = /全体禁言/.test(e.msg)
     let res = await e.group.muteAll(type)
@@ -196,7 +196,7 @@ export class GroupAdmin extends plugin {
 
   // 踢群员
   async kickMember (e) {
-    if (!common.Authentication(e, 'admin', 'admin')) return
+    if (!common.checkPermission(e, 'admin', 'admin')) return
 
     let qq = e.message.find(item => item.type == 'at')?.qq
     if (!qq) qq = e.msg.replace(/#|踢/g, '').trim()
@@ -225,7 +225,7 @@ export class GroupAdmin extends plugin {
 
   // 设置管理
   async SetAdmin (e) {
-    if (!common.Authentication(e, 'master', 'owner')) return
+    if (!common.checkPermission(e, 'master', 'owner')) return
     let qq = e.message.find(item => item.type == 'at')?.qq
     let type = /设置管理/.test(e.msg)
     if (!qq) qq = e.msg.replace(/#|(设置|取消)管理/g, '').trim()
@@ -243,7 +243,7 @@ export class GroupAdmin extends plugin {
 
   // 匿名
   async AllowAnony (e) {
-    if (!common.Authentication(e, 'admin', 'admin')) return
+    if (!common.checkPermission(e, 'admin', 'admin')) return
 
     let type = /(允许|开启)匿名/.test(e.msg)
     let res = await e.group.allowAnony(type)
@@ -253,7 +253,7 @@ export class GroupAdmin extends plugin {
 
   // 发群公告
   async AddAnnounce (e) {
-    if (!common.Authentication(e, 'admin', 'admin')) return
+    if (!common.checkPermission(e, 'admin', 'admin')) return
     // 获取发送的内容
     let msg = e.msg.replace(/#|发群公告/g, '').trim()
     if (!msg) return e.reply('❎ 公告不能为空')
@@ -275,7 +275,7 @@ export class GroupAdmin extends plugin {
 
   // 删群公告
   async DelAnnounce (e) {
-    if (!common.Authentication(e, 'admin', 'admin')) return
+    if (!common.checkPermission(e, 'admin', 'admin')) return
     let msg = e.msg.replace(/#|删群公告/, '').trim()
     if (!msg) return e.reply('❎ 序号不可为空')
 
@@ -291,7 +291,7 @@ export class GroupAdmin extends plugin {
 
   // 修改头衔
   async adminsetTitle (e) {
-    if (!common.Authentication(e, 'master', 'owner')) return
+    if (!common.checkPermission(e, 'master', 'owner')) return
     let qq = e.message.find(item => item.type == 'at')?.qq
     if (!qq) return e.reply('请艾特要修改的人哦~')
     let text = e.msg.replace(/#?修改头衔/g, '')
@@ -305,7 +305,7 @@ export class GroupAdmin extends plugin {
 
   // 申请头衔
   async SetGroupSpecialTitle (e) {
-    if (!common.Authentication(e, 'all', 'owner')) return
+    if (!common.checkPermission(e, 'all', 'owner')) return
 
     let Title = e.msg.replace(/#|申请头衔/g, '')
     // 屏蔽词处理
@@ -359,7 +359,7 @@ export class GroupAdmin extends plugin {
 
   // 替换幸运字符
   async qun_luckyuse (e) {
-    if (!common.Authentication(e, 'admin', 'admin')) return
+    if (!common.checkPermission(e, 'admin', 'admin')) return
     let id = e.msg.replace(/#|替换(幸运)?字符/g, '')
     let res = await new QQApi(e).equipLucky(e.group_id, id)
 
@@ -370,7 +370,7 @@ export class GroupAdmin extends plugin {
 
   // 开启或关闭群字符
   async qun_luckyset (e) {
-    if (!common.Authentication(e, 'admin', 'admin')) return
+    if (!common.checkPermission(e, 'admin', 'admin')) return
 
     let res = await new QQApi(e).swichLucky(e.group_id, /开启/.test(e.msg))
     if (!res) return e.reply(API_ERROR)
@@ -392,7 +392,7 @@ export class GroupAdmin extends plugin {
 
   // 解除全部禁言
   async relieveAllMute (e) {
-    if (!common.Authentication(e, 'admin', 'admin')) return
+    if (!common.checkPermission(e, 'admin', 'admin')) return
     new Ga(e).releaseAllMute()
       .then(() => e.reply('已经把全部的禁言解除辣╮( •́ω•̀)╭'))
       .catch(err => err.reply(err.message))
@@ -400,7 +400,7 @@ export class GroupAdmin extends plugin {
 
   // 查看和清理多久没发言的人
   async noactive (e) {
-    if (!common.Authentication(e, 'admin', 'admin')) return
+    if (!common.checkPermission(e, 'admin', 'admin')) return
 
     let regRet = noactivereg.exec(e.msg)
     regRet[2] = common.translateChinaNum(regRet[2] || 1)
@@ -444,7 +444,7 @@ export class GroupAdmin extends plugin {
 
   // 查看和清理从未发言的人
   async neverspeak (e) {
-    if (!common.Authentication(e, 'admin', 'admin')) return
+    if (!common.checkPermission(e, 'admin', 'admin')) return
     let list = null
     try {
       list = await new Ga(e).getNeverSpeak(e.group_id)
@@ -492,7 +492,7 @@ export class GroupAdmin extends plugin {
 
   // 发送通知
   async Send_notice (e) {
-    if (!common.Authentication(e, 'admin', 'admin')) return
+    if (!common.checkPermission(e, 'admin', 'admin')) return
 
     e.message[0].text = e.message[0].text.replace('#发通知', '').trim()
     if (!e.message[0].text) e.message.shift()
@@ -503,7 +503,7 @@ export class GroupAdmin extends plugin {
 
   // 设置定时群禁言
   async timeMute (e) {
-    if (!common.Authentication(e, 'admin', 'admin')) return
+    if (!common.checkPermission(e, 'admin', 'admin')) return
     let type = /禁言/.test(e.msg)
     if (/任务/.test(e.msg)) {
       let task = new Ga(e).getMuteTask()
@@ -578,7 +578,7 @@ export class GroupAdmin extends plugin {
 
   // 群发言榜单
   async SpeakRank (e) {
-    if (!common.Authentication(e, 'all', 'admin')) return
+    if (!common.checkPermission(e, 'all', 'admin')) return
 
     // 图片截图
     let screenshot = await puppeteer.Webpage({
@@ -645,7 +645,7 @@ export class GroupAdmin extends plugin {
 
   // 群数据
   async groupData (e) {
-    if (!common.Authentication(e, 'all', 'admin')) return
+    if (!common.checkPermission(e, 'all', 'admin')) return
 
     // 浏览器截图
     let screenshot = await puppeteer.Webpage({
@@ -690,7 +690,7 @@ export class GroupAdmin extends plugin {
 
   /** 开启或关闭加群通知 */
   async handleGroupAdd (e) {
-    if (!common.Authentication(e, 'admin', 'admin')) return
+    if (!common.checkPermission(e, 'admin', 'admin')) return
     let type = /开启/.test(e.msg) ? 'add' : 'del'
     let isopen = Config.groupAdd.openGroup.includes(e.group_id)
     if (isopen && type == 'add') return e.reply('❎ 本群加群申请通知已处于开启状态')
@@ -701,7 +701,7 @@ export class GroupAdmin extends plugin {
 
   /** 加精 */
   async setEssenceMessage (e) {
-    if (!common.Authentication(e, 'admin', 'admin')) return
+    if (!common.checkPermission(e, 'admin', 'admin')) return
     if (!e.source) return e.reply('请对要加精的消息进行引用')
     let source = (await e.group.getChatHistory(e.source.seq, 1)).pop()
     let res = await Bot.setEssenceMessage(source.message_id)

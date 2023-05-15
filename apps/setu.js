@@ -42,7 +42,7 @@ export class SeSe extends plugin {
   }
 
   async setuRandom (e) {
-    if (!await this.Authentication(e)) return
+    if (!await this._Authentication(e)) return
 
     const cdTime = setu.getRemainingCd(e.user_id, e.group_id)
 
@@ -66,7 +66,7 @@ export class SeSe extends plugin {
 
   // tag搜图
   async setuTag (e) {
-    if (!await this.Authentication(e)) return
+    if (!await this._Authentication(e)) return
 
     let cdTime = setu.getRemainingCd(e.user_id, e.group_id)
     if (cdTime) return e.reply(` ${setu.CDMsg}你的CD还有${cdTime}`, false, { at: true })
@@ -97,7 +97,7 @@ export class SeSe extends plugin {
       .catch(err => e.reply(err.message))
   }
 
-  async Authentication (e) {
+  async _Authentication (e) {
     if (e.isMaster) return true
     if (!Config.setu.allowPM && !e.isGroup) {
       e.reply('主人已禁用私聊该功能')

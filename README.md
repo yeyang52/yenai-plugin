@@ -231,7 +231,7 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 ### 贡献者 ✨
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 感谢这些了不起的人 ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
@@ -251,6 +251,7 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/SmallK111407"><img src="https://avatars.githubusercontent.com/u/108290923?v=4?s=100" width="100px;" alt="SunRyK"/><br /><sub><b>SunRyK</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=SmallK111407" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ikechan8370"><img src="https://avatars.githubusercontent.com/u/21212372?v=4?s=100" width="100px;" alt="ikechan8370"/><br /><sub><b>ikechan8370</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=ikechan8370" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

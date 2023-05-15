@@ -4,11 +4,10 @@ import { Config } from '../components/index.js'
 
 export default new (class {
   constructor () {
-    this.domain = 'http://api.liaobiao.top/api/bika'
+    this.domain = 'https://api.obfs.dev/api/bika'
     this.hearder = {
       headers: {
-        'x-image-quality': Config.bika.imageQuality,
-        'User-Agent': 'Yenai-Plugin-bika'
+        'x-image-quality': Config.bika.imageQuality
       }
     }
     this.searchCaching = null
@@ -48,7 +47,7 @@ export default new (class {
       .then(res => res.json())
       .catch(err => {
         logger.error(err)
-        throw Error(`bika search Error，reason：${err.message.match(/reason:(.*)/)[1]}`)
+        throw Error(`bika search Error，${err.message.match(/reason:(.*)/i) || err.message}`)
       })
     let { docs, total, page: pg, pages } = res.data.comics
     if (total == 0) throw Error(`未找到作品，换个${type.alias[0]}试试吧`)
@@ -88,7 +87,7 @@ export default new (class {
       .then((res) => res.json())
       .catch(err => {
         logger.error(err)
-        throw Error(`bika comicPage Error，reason：${err.message.match(/reason:(.*)/)[1]}`)
+        throw Error(`bika comicPage Error，${err.message.match(/reason:(.*)/i) || err.message}`)
       })
     if (res.error) throw Error(res.message)
     this.idNext = {
@@ -141,7 +140,7 @@ export default new (class {
         .then((res) => res.json())
         .catch(err => {
           logger.error(err)
-          throw Error(`bika categories Error，reason：${err.message.match(/reason:(.*)/)[1]}`)
+          throw Error(`bika categories Error，${err.message.match(/reason:(.*)/i) || err.message}`)
         })
       if (res.error) throw Error(res.message)
       res = res.data.categories.filter(item => !item.isWeb)
@@ -168,7 +167,7 @@ export default new (class {
       .then((res) => res.json())
       .catch(err => {
         logger.error(err)
-        throw Error(`bika comicDetail Error，reason：${err.message.match(/reason:(.*)/)[1]}`)
+        throw Error(`bika comicDetail Error，${err.message.match(/reason:(.*)/i) || err.message}`)
       })
     if (res.error) throw Error(res.message)
     let {
@@ -202,7 +201,6 @@ export default new (class {
   async _requestBikaImg (fileServer, path) {
     fileServer = /static/.test(fileServer) ? fileServer : fileServer + '/static/'
     let url = (/picacomic.com/.test(fileServer) && this.imgproxy ? this.imgproxy : fileServer) + path
-    logger.debug(`Bika getImg URL: ${url}`)
     return request.proxyRequestImg(url)
   }
 })()

@@ -87,9 +87,20 @@ try {
   }
 } catch (err) { }
 
+let yunzaiName = cfg.package.name
+if (yunzaiName == 'miao-yunzai') {
+  yunzaiName = 'Miao-Yunzai'
+} else if (yunzaiName == 'yunzai') {
+  yunzaiName = 'Yunzai-Bot'
+} else {
+  yunzaiName = _.capitalize(yunzaiName)
+}
 let Version = {
   get ver () {
     return currentVersion
+  },
+  get name () {
+    return yunzaiName
   },
   get yunzai () {
     return yunzai_ver

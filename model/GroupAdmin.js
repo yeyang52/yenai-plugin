@@ -354,7 +354,7 @@ export default class {
    * @returns {Promise<string>} - 返回操作结果
    * @throws {Error} - 如果缺少必要参数或参数格式不正确，则会抛出错误
    */
-  async muteMember (groupId, userId, executor, time = 5, unit = '分') {
+  async muteMember (groupId, userId, executor, time = 300, unit = '秒') {
     unit = Time_unit[unit.toUpperCase()] ?? (/^\d+$/.test(unit) ? unit : 60)
     let group = this.Bot.pickGroup(Number(groupId), true)
     // 判断是否有管理

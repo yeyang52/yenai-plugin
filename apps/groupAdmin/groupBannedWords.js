@@ -99,7 +99,7 @@ export class NewGroupBannedWords extends plugin {
         `触发违禁词：${bannedWord}\n`,
         `触发者：${senderCard}(${e.user_id})\n`,
         `执行：${groupPenaltyAction[data.penaltyType]}`
-      ])
+      ], false, { recallMsg: 30 })
     }
   }
 

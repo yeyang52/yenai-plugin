@@ -58,7 +58,7 @@ export class NewState extends plugin {
     ])
     // 渲染数据
     let data = {
-      chartData: JSON.stringify(common.checkIfEmpty(State.chartData, 'echarts_theme') ? undefined : State.chartData),
+      chartData: JSON.stringify(common.checkIfEmpty(State.chartData, ['echarts_theme', 'cpu', 'ram']) ? undefined : State.chartData),
       // 头像
       portrait: e.bot?.avatar ?? `https://q1.qlogo.cn/g?b=qq&s=0&nk=${this.Bot.uin}`,
       // 运行时间

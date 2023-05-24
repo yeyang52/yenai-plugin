@@ -244,7 +244,7 @@ export class Assistant extends plugin {
       return logger.mark(`${e.logFnc}该群员权限不足`)
     }
     let groupObj = this.Bot.pickGroup(e.group_id)
-    if (groupObj.is_admin && groupObj.is_owner) {
+    if (!groupObj.is_admin && !groupObj.is_owner) {
       return e.reply('❎ 没有管理员人家做不到啦~>_<')
     }
     if (!e.img) {

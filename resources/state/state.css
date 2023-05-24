@@ -1,264 +1,239 @@
 :root {
-    --high-color: #d73403;
-    --medium-color: #ffa500;
-    --low-color: #90ee90;
+  --high-color: #d73403;
+  --medium-color: #ffa500;
+  --low-color: #90ee90;
 }
 
 .container {
-    background: url("https://api.ghser.com/random/pe.php") white center top no-repeat;
-    background-size: cover;
+  background-image: url("https://api.ghser.com/random/pe.php");
+  background-color: white;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 li {
-    list-style: none;
+  list-style: none;
 }
 
 body {
-    display: flex;
-    height: 100%;
-    /* width: 500px !important; */
-    flex-direction: column;
-    justify-content: space-around;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
 .box {
-    margin: 20px;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.45);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    font-weight: 700;
+  margin: 20px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  font-weight: 700;
 }
 
 .tb {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-
 .tb .avatar {
-    position: relative;
-    height: 100px;
-    width: 100px;
-    border-radius: 50%;
-    margin-right: 20px;
-    /* box-shadow: 1px 1px 3px 0 #000; */
+  position: relative;
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  margin-right: 20px;
 }
-
 .tb .avatar img {
-    width: 100%;
-    border-radius: 50%;
+  width: 100%;
+  border-radius: 50%;
 }
-
 .tb .avatar::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    z-index: -1;
-    margin: -3px;
-    border-radius: 50%;
-    box-shadow: 1px 1px 3px 0 #000;
-    background: linear-gradient(135deg, #fff1eb, #ace0f9);
-    /* background-size: 120%; */
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: -1;
+  margin: -3px;
+  border-radius: 50%;
+  box-shadow: 1px 1px 3px 0 #000;
+  background: linear-gradient(135deg, #fff1eb, #ace0f9);
 }
 
 hr {
-    border: 0;
-    height: 2px;
-    background-image: linear-gradient(135deg, #bdc3c7 10%, #2c3e50);
-    border-radius: 10px;
+  border: 0;
+  height: 2px;
+  background-image: linear-gradient(135deg, #bdc3c7 10%, #2c3e50);
+  border-radius: 10px;
 }
 
 .header {
-    max-width: 100%;
-    overflow: hidden;
+  max-width: 100%;
+  overflow: hidden;
 }
-
 .header hr {
-    margin: 5px 0px;
+  margin: 5px 0px;
 }
-
 .header p {
-    font-size: 12px;
-    color: #2f4f4f;
+  font-size: 12px;
+  color: #2f4f4f;
 }
-
 .header h1 {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    display: inline-block;
-    background-image: linear-gradient(271.14deg,
-            #001BFF 0.98%,
-            #00F0FF 25.79%,
-            #FCE84A 47.33%,
-            #F34628 65.77%,
-            #B275FF 91.4%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  background-image: linear-gradient(271.14deg, #001bff 0.98%, #00f0ff 25.79%, #fce84a 47.33%, #f34628 65.77%, #b275ff 91.4%);
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
 }
 
 .info {
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-    font-weight: 700;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  font-weight: 700;
+}
+.info .li article {
+  width: 100px;
+  text-align: center;
+}
+.info .li article summary {
+  font-size: 20px;
+  margin-top: 5px;
+}
+.info .li article p {
+  font-size: 12px;
+  color: #2f4f4f;
+  white-space: nowrap;
 }
 
 .cpu {
-    width: 100px;
-    height: 100px;
-    background: #eee;
-    position: relative;
-    border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  background: #eee;
+  position: relative;
+  border-radius: 50%;
 }
 
 .left,
 .right {
-    width: 50px;
-    height: 100px;
-    position: absolute;
-    /* background: black; */
-    overflow: hidden;
+  width: 50px;
+  height: 100px;
+  position: absolute;
+  overflow: hidden;
 }
 
 .right {
-    right: 0;
+  right: 0;
+}
+.right .right-circle {
+  border-top-right-radius: 100px;
+  border-bottom-right-radius: 100px;
+  transform: rotate(180deg);
+  transform-origin: left center;
 }
 
 .left .left-circle,
 .right .right-circle {
-    width: 50px;
-    height: 100px;
-    background: #90ee90;
+  width: 50px;
+  height: 100px;
+  background: #90ee90;
 }
 
 .left .left-circle {
-    border-top-left-radius: 100px;
-    border-bottom-left-radius: 100px;
-    transform: rotate(-180deg);
-    transform-origin: right center;
-}
-
-.right .right-circle {
-    border-top-right-radius: 100px;
-    border-bottom-right-radius: 100px;
-    transform: rotate(180deg);
-    transform-origin: left center;
+  border-top-left-radius: 100px;
+  border-bottom-left-radius: 100px;
+  transform: rotate(-180deg);
+  transform-origin: right center;
 }
 
 .inner {
-    width: 75px;
-    height: 75px;
-    border-radius: 50%;
-    text-align: center;
-    line-height: 75px;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    color: #999;
-    font-size: 20px;
-    background: white;
-}
-
-.info .li article {
-    width: 100px;
-    text-align: center;
-
-}
-
-.info .li article summary {
-    font-size: 20px;
-    margin-top: 5px;
-}
-
-.info .li article p {
-    font-size: 12px;
-    color: #2f4f4f;
-    white-space: nowrap;
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 75px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: #999;
+  font-size: 20px;
+  background: white;
 }
 
 .memory li {
-    margin: 10px;
-    display: flex;
+  margin: 10px;
+  display: flex;
 }
-
 .memory hr {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
-
 .memory .progress {
-    flex: 1;
-    /* width: 100%; */
-    height: 25px;
-    background: #c1c1c1;
-    margin: 0 5px;
-    position: relative;
-    border-radius: 5px;
+  flex: 1;
+  height: 25px;
+  background: #c1c1c1;
+  margin: 0 5px;
+  position: relative;
+  border-radius: 5px;
 }
 
 .progress .current {
-    background: #90ee90;
-    height: 25px;
-    border-radius: 5px;
+  background: #90ee90;
+  height: 25px;
+  border-radius: 5px;
 }
-
 .progress .word {
-    position: absolute;
-    line-height: 25px;
-    left: 50%;
-    transform: translate(-50%, 0);
-    white-space: nowrap;
+  position: absolute;
+  line-height: 25px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  white-space: nowrap;
 }
 
 .HardDisk_li .mount {
-    min-width: 15px;
-    max-width: 3em;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    line-height: 25px;
-    text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 15px;
+  max-width: 3em;
+  line-height: 25px;
+  text-align: left;
 }
-
 .HardDisk_li .percentage {
-    min-width: 2em;
-    line-height: 25px;
-    text-align: center;
+  min-width: 2em;
+  line-height: 25px;
+  text-align: center;
 }
 
 .speed {
-    width: 100%;
-    display: flex;
-    height: 25px;
-    line-height: 25px;
+  width: 100%;
+  display: flex;
+  height: 25px;
+  line-height: 25px;
 }
-
 .speed p {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-
 .speed p:first-child {
-    flex-grow: 1;
-    flex-shrink: 0;
-    max-width: 50%;
-    text-align: left;
-    margin-right: 20px;
+  flex-grow: 1;
+  flex-shrink: 0;
+  max-width: 50%;
+  text-align: left;
+  margin-right: 20px;
 }
-
 .speed p:last-child {
-    flex-grow: 1;
-    flex-shrink: 1;
-    margin-left: 20px;
-    text-align: right;
-}
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin-left: 20px;
+  text-align: right;
+}/*# sourceMappingURL=state.css.map */

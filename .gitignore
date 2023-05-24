@@ -6,3 +6,4 @@ test.*
 .vscode/
 .eslintignore
 temp/
+*.css.map

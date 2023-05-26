@@ -1,9 +1,9 @@
-:root {
-  --gradient-text-color: linear-gradient(180deg, #d51a2f, #0cacaa);
-  ;
-
+.help-title, .help-group {
+  background-image: linear-gradient(180deg, #d51a2f, #0cacaa);
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
 }
-
 
 body {
   transform: scale(1);
@@ -12,7 +12,9 @@ body {
 }
 
 .container {
-  background: url(./main.png) right center no-repeat;
+  background-image: url(./main.png);
+  background-position: right center;
+  background-repeat: no-repeat;
   background-size: cover;
   padding: 20px 35px 10px 25px;
   width: 1130px;
@@ -22,43 +24,28 @@ body {
   margin: 60px 0 0 0;
   padding-bottom: 0;
 }
-
 .head-box .title {
   font-size: 50px;
 }
 
 .cont-box {
-  /* border-radius: 15px; */
   margin-top: 20px;
   margin-bottom: 30px;
   overflow: hidden;
   position: relative;
   font-size: 20px;
   background: rgba(255, 255, 255, 0.3);
-  /* box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); */
-  box-shadow: 30px 30px 30px -10px rgba(0, 0, 0, 0.15),
-    inset 15px 15px 10px rgba(255, 255, 255, 0.75),
-    -15px -15px 35px rgba(255, 255, 255, 0.55),
-    inset -1px -1px 10px rgba(0, 0, 0, 0.2);
-  /* 毛玻璃 */
-  backdrop-filter: blur(10px);
+  box-shadow: 30px 30px 30px -10px rgba(0, 0, 0, 0.15), inset 15px 15px 10px rgba(255, 255, 255, 0.75), -15px -15px 35px rgba(255, 255, 255, 0.55), inset -1px -1px 10px rgba(0, 0, 0, 0.2);
   -webkit-backdrop-filter: blur(10px);
-
+          backdrop-filter: blur(10px);
   border-radius: 30px;
-  /* border: 1px solid rgba(255, 255, 255, 0.18); */
-  /* color: #8E54E9; */
 }
 
 .help-group {
   font-size: 20px;
   font-weight: bold;
   padding: 15px 15px 10px 20px;
-  /* 渐变文字 */
   display: inline-block;
-  background-image: var(--gradient-text-color);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
 }
 
 .help-table {
@@ -71,9 +58,14 @@ body {
   width: 100%;
   color: #d63d2f;
 }
-
 .help-table .tr {
   display: table-row;
+}
+.help-table .tr:last-child .td {
+  padding-bottom: 12px;
+}
+.help-table .th {
+  background: rgba(34, 41, 51, 0.5);
 }
 
 .help-table .td,
@@ -86,14 +78,6 @@ body {
   position: relative;
   text-align: left;
   width: 33%;
-}
-
-.help-table .tr:last-child .td {
-  padding-bottom: 12px;
-}
-
-.help-table .th {
-  background: rgba(34, 41, 51, 0.5);
 }
 
 .help-icon {
@@ -113,16 +97,10 @@ body {
   display: inline-block;
   font-size: 22px;
   line-height: 24px;
-  background-image: var(--gradient-text-color);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
 }
 
 .help-desc {
   display: block;
   font-size: 19px;
   line-height: 18px;
-}
-
-/*# sourceMappingURL=index.css.map */
+}/*# sourceMappingURL=index.css.map */

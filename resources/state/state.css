@@ -1,3 +1,9 @@
+.speed p, .HardDisk_li .mount, .header h1 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 :root {
   --high-color: #d73403;
   --medium-color: #ffa500;
@@ -54,10 +60,7 @@ body {
 .tb .avatar::before {
   content: "";
   position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
+  inset: 0;
   z-index: -1;
   margin: -3px;
   border-radius: 50%;
@@ -84,9 +87,6 @@ hr {
   color: #2f4f4f;
 }
 .header h1 {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   display: inline-block;
   background-image: linear-gradient(271.14deg, #001bff 0.98%, #00f0ff 25.79%, #fce84a 47.33%, #f34628 65.77%, #b275ff 91.4%);
   -webkit-background-clip: text;
@@ -184,13 +184,12 @@ hr {
   position: relative;
   border-radius: 5px;
 }
-
-.progress .current {
+.memory .progress .current {
   background: #90ee90;
   height: 25px;
   border-radius: 5px;
 }
-.progress .word {
+.memory .progress .word {
   position: absolute;
   line-height: 25px;
   left: 50%;
@@ -199,9 +198,6 @@ hr {
 }
 
 .HardDisk_li .mount {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   min-width: 15px;
   max-width: 3em;
   line-height: 25px;
@@ -218,11 +214,6 @@ hr {
   display: flex;
   height: 25px;
   line-height: 25px;
-}
-.speed p {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 .speed p:first-child {
   flex-grow: 1;

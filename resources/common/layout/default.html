@@ -14,7 +14,7 @@
   {{/block}}
 </head>
 
-<body class="elem-{{element||elem||`hydro`}} {{displayMode || mode || `default`}}-mode  {{bodyClass}}" {{sys.scale}}>
+<body class="elem-{{element||elem||`hydro`}} {{displayMode || mode || `default`}}-mode  {{bodyClass}}" {{@sys.scale}}>
   <div class="container" id="container">
     {{block 'main'}}{{/block}}
     <div class="copyright">{{@sys.copyright}}</div>

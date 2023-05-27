@@ -303,8 +303,8 @@ export default new class {
         vendor, temperatureGpu, utilizationGpu,
         memoryTotal, memoryUsed, powerDraw
       } = graphics
-      temperatureGpu &&= temperatureGpu + '℃'
-      powerDraw &&= powerDraw + 'W'
+      temperatureGpu && (temperatureGpu = temperatureGpu + '℃')
+      powerDraw && (powerDraw = powerDraw + 'W')
       return {
         ...this.Circle(utilizationGpu / 100),
         inner: Math.round(utilizationGpu) + '%',

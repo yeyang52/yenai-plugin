@@ -1,7 +1,7 @@
 .help-title, .help-group {
   background-image: linear-gradient(180deg, #d51a2f, #0cacaa);
   -webkit-background-clip: text;
-          background-clip: text;
+dd          background-clip: text;
   color: transparent;
 }
 
@@ -16,7 +16,7 @@ body {
   background-position: right center;
   background-repeat: no-repeat;
   background-size: cover;
-  padding: 20px 35px 10px 25px;
+  padding: 20px 25px 10px 25px;
   width: 1130px;
 }
 

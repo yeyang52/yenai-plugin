@@ -8,9 +8,7 @@ import { setu, puppeteer } from '../model/index.js'
 const OtherCfgType = {
   全部通知: 'notificationsAll',
   状态: 'state',
-  陌生人点赞: 'Strangers_love',
-  // 给有问题的用户关闭定时器
-  状态任务: 'statusTask'
+  陌生人点赞: 'Strangers_love'
 }
 const SeSeCfgType = {
   涩涩: 'sese',

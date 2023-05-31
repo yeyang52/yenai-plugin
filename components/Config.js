@@ -96,6 +96,11 @@ class Config {
     return this.getDefOrConfig('setu')
   }
 
+  /** 状态 */
+  get state () {
+    return this.getDefOrConfig('state')
+  }
+
   /** 默认配置和用户配置 */
   getDefOrConfig (name) {
     let def = this.getdefSet(name)

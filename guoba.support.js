@@ -153,13 +153,6 @@ export function supportGuoba () {
           component: 'Switch'
         },
         {
-          field: 'whole.statusTask',
-          label: '状态任务',
-          helpMessage: '关闭后不再读取网速和硬盘速率',
-          bottomHelpMessage: '如果出现许多cmd进程占用或控制台输出乱码可尝试关闭此选项',
-          component: 'Switch'
-        },
-        {
           field: 'whole.notificationsAll',
           label: '通知全部管理',
           bottomHelpMessage: '开启后通知将会发送给所有主人',

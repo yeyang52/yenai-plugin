@@ -23,8 +23,5 @@ sese: false #涩涩
 state: false #状态
 deltime: 600 #删除缓存
 sesepro: false #涩涩增强
-statusTask: true #状态网速定时器
 renderScale: 100 #渲染精度
 anonymous: false #匿名
-#如果出现内存异常的情况可将此配置项开启，如果打开后报错请将状态定时器关闭
-statusPowerShellStart: false

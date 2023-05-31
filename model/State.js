@@ -3,10 +3,12 @@ import _ from 'lodash'
 import fs from 'fs'
 import { common } from './index.js'
 import { Config, Data } from '../components/index.js'
+import request from '../lib/request/request.js'
 
 export default new class {
   constructor () {
     this.si = null
+    this.osInfo = null
     // 是否可以获取gpu
     this.isGPU = false
     // 网络
@@ -72,6 +74,7 @@ export default new class {
   async initDependence () {
     try {
       this.si = await import('systeminformation')
+      this.osInfo = await this.si.osInfo()
       return this.si
     } catch (error) {
       if (error.stack?.includes('Cannot find package')) {
@@ -97,31 +100,40 @@ export default new class {
       this.isGPU = true
     }
     // 给有问题的用户关闭定时器
-    if (!Config.whole.statusTask) return
+    if (!Config.state.statusTask) return
 
-    if (Config.whole.statusPowerShellStart) this.si.powerShellStart()
-
+    if (Config.state.statusPowerShellStart) this.si.powerShellStart()
+    this.getData()
     // 网速
     const Timer = setInterval(async () => {
-      let data = await this.si.get(this.valueObject)
-      _.forIn(data, (value, key) => {
-        if (_.isEmpty(value)) {
-          logger.debug(`获取${key}数据失败，停止获取对应数据`)
-          delete this.valueObject[key]
-        }
-      })
-
+      let data = await this.getData()
       if (_.isEmpty(data)) clearInterval(Timer)
-      let { fsStats, networkStats, mem: { active }, currentLoad: { currentLoad } } = data
-      this.fsStats = fsStats
-      this.network = networkStats
-      if (_.isNumber(active)) {
-        this.addData(this.chartData.ram, [Date.now(), active])
-      }
-      if (_.isNumber(currentLoad)) {
-        this.addData(this.chartData.cpu, [Date.now(), currentLoad])
-      }
     }, 60000)
+  }
+
+  async getData () {
+    let data = await this.si.get(this.valueObject)
+    _.forIn(data, (value, key) => {
+      if (_.isEmpty(value)) {
+        logger.debug(`获取${key}数据失败，停止获取对应数据`)
+        delete this.valueObject[key]
+      }
+    })
+    let {
+      fsStats,
+      networkStats,
+      mem: { active },
+      currentLoad: { currentLoad }
+    } = data
+    this.fsStats = fsStats
+    this.network = networkStats
+    if (_.isNumber(active)) {
+      this.addData(this.chartData.ram, [Date.now(), active])
+    }
+    if (_.isNumber(currentLoad)) {
+      this.addData(this.chartData.cpu, [Date.now(), currentLoad])
+    }
+    return data
   }
 
   /**
@@ -266,7 +278,7 @@ export default new class {
   }
 
   /** 获取CPU占用 */
-  async getCpuInfo (arch) {
+  async getCpuInfo () {
     let { currentLoad: { currentLoad }, cpuCurrentSpeed } = await this.si.get({
       currentLoad: 'currentLoad',
       cpuCurrentSpeed: 'max,avg'
@@ -281,7 +293,7 @@ export default new class {
       inner: Math.round(currentLoad) + '%',
       title: 'CPU',
       info: [
-        `${cpuModel} ${cores.length}核 ${arch}`,
+        `${cpuModel} ${cores.length}核 ${this.osInfo?.arch}`,
         `平均${cpuCurrentSpeed.avg}GHz`,
         `最大${cpuCurrentSpeed.max}GHz`
       ]
@@ -294,11 +306,13 @@ export default new class {
     if (!this.isGPU) return false
     try {
       const { controllers } = await this.si.graphics()
-      logger.debug(controllers)
       let graphics = controllers?.find(item =>
         item.memoryUsed && item.memoryFree && item.utilizationGpu
       )
-      if (!graphics) return false
+      if (!graphics) {
+        logger.warn('[Yenai-plugin][state]状态GPU数据异常：\n', controllers)
+        return false
+      }
       let {
         vendor, temperatureGpu, utilizationGpu,
         memoryTotal, memoryUsed, powerDraw
@@ -385,14 +399,18 @@ export default new class {
     }
     network.rx_sec = this.getFileSize(network.rx_sec, false, false)
     network.tx_sec = this.getFileSize(network.tx_sec, false, false)
-    return network
+    // return network
+    return {
+      first: network.iface,
+      tail: `↑${network.tx_sec}/s | ↓${network.rx_sec}/s`
+    }
   }
 
   /**
  * @description: 取插件包
  * @return {*} 插件包数量
  */
-  get numberOfPlugIns () {
+  get getPluginNum () {
     let str = './plugins'
     let arr = fs.readdirSync(str)
     let plugin = []
@@ -404,10 +422,54 @@ export default new class {
     })
     let del = ['example', 'genshin', 'other', 'system', 'bin']
     plugin = plugin.filter(item => !del.includes(item))
-
+    const plugins = plugin?.length || 0
+    const js = fs.readdirSync('./plugins/example')?.filter(item => item.includes('.js'))?.length || 0
+    // return {
+    //   plugins: plugin?.length || 0,
+    //   js: fs.readdirSync('./plugins/example')?.filter(item => item.includes('.js'))?.length || 0
+    // }
     return {
-      plugins: plugin?.length || 0,
-      js: fs.readdirSync('./plugins/example')?.filter(item => item.includes('.js'))?.length || 0
+      first: '插件',
+      tail: `${plugins} plugin | ${js} js`
+    }
+  }
+
+  async getNetworkLatency (url, timeoutTime = 5000) {
+    const AbortController = globalThis.AbortController || await import('abort-controller')
+
+    const controller = new AbortController()
+    const timeout = setTimeout(() => {
+      controller.abort()
+    }, timeoutTime)
+    try {
+      const startTime = Date.now()
+      let { status } = await request.get(url, { signal: controller.signal })
+      const endTime = Date.now()
+      let delay = endTime - startTime
+      let color = ''; let statusColor = ''
+      if (delay > 2000) {
+        color = '#F44336'
+      } else if (delay > 500) {
+        color = '#d68100'
+      } else {
+        color = '#188038'
+      }
+      if (status >= 500) {
+        statusColor = '#9C27B0'
+      } else if (status >= 400) {
+        statusColor = '#F44336'
+      } else if (status >= 300) {
+        statusColor = '#FF9800'
+      } else if (status >= 200) {
+        statusColor = '#188038'
+      } else if (status >= 100) {
+        statusColor = '#03A9F4'
+      }
+      return `<span style='color:${statusColor}'>${status}</span> | <span style='color:${color}'>${delay}ms</span>`
+    } catch {
+      return "<span style='color:#F44336'>timeout</span>"
+    } finally {
+      clearTimeout(timeout)
     }
   }
 }()

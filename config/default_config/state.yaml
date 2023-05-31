@@ -1,0 +1,18 @@
+#网址测试超时时间
+psTestTimeout: 5000
+
+# 测试访问的网址列表（可空）
+# name: 显示名称
+# url: 要访问的网址
+psTestSites: false
+# psTestSites:
+#   - name: Baidu
+#     url: https://baidu.com
+#   - name: Google
+#     url: https://google.com
+
+#监控任务
+statusTask: true
+
+#如果出现内存异常的情况可将此配置项开启，如果打开后报错请将监控任务关闭
+statusPowerShellStart: false

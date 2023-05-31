@@ -44,18 +44,42 @@ export class NewState extends plugin {
     // 防止多次触发
     if (interval) { return false } else interval = true
     // 系统
-    let osinfo = await State.si.osInfo()
+    let FastFetch; let HardDisk
+    let otherInfo = []
+    // 其他信息
+    otherInfo.push({
+      first: '系统',
+      tail: State.osInfo?.distro
+    })
+    // 网络
+    otherInfo.push(State.getnetwork)
+    // 插件数量
+    otherInfo.push(State.getPluginNum)
+    let promiseTaskList = [
+      State.getFastFetch(e).then(res => { FastFetch = res }),
+      State.getFsSize().then(res => { HardDisk = res })
+    ]
+
+    // 网络测试
+    let psTest = []
+    let { psTestSites, psTestTimeout } = Config.state
+    psTestSites && promiseTaskList.push(...psTestSites?.map(i => State.getNetworkLatency(i.url, psTestTimeout).then(res => psTest.push({
+      first: i.name,
+      tail: res
+    }))))
+    // 执行promise任务
+    await Promise.all(promiseTaskList)
     // 可视化数据
-    let visualData = _.compact([
+    let visualData = _.compact(await Promise.all([
       // CPU板块
-      await State.getCpuInfo(osinfo.arch),
+      State.getCpuInfo(),
       // 内存板块
-      await State.getMemUsage(),
+      State.getMemUsage(),
       // GPU板块
-      await State.getGPU(),
+      State.getGPU(),
       // Node板块
-      await State.getNodeInfo()
-    ])
+      State.getNodeInfo()
+    ]))
     // 渲染数据
     let data = {
       chartData: JSON.stringify(common.checkIfEmpty(State.chartData, ['echarts_theme', 'cpu', 'ram']) ? undefined : State.chartData),
@@ -76,30 +100,30 @@ export class NewState extends plugin {
       // 图片
       screenshot: await redis.get('Yz:count:screenshot:total') || 0,
       // nodejs版本
-      nodeversion: process.version,
+      nodeVersion: process.version,
       // 群数
-      group_quantity: Array.from(this.Bot.gl.values()).length,
+      groupQuantity: Array.from(this.Bot.gl.values()).length,
       // 好友数
-      friend_quantity: Array.from(this.Bot.fl.values()).length,
+      friendQuantity: Array.from(this.Bot.fl.values()).length,
       // 登陆设备
       platform: platform[this.Bot.config?.platform],
       // 在线状态
       status: status[this.Bot.status],
       // 硬盘内存
-      HardDisk: await State.getFsSize(),
+      HardDisk,
       // FastFetch
-      FastFetch: await State.getFastFetch(e),
-      // 取插件
-      plugin: State.numberOfPlugIns,
+      FastFetch,
       // 硬盘速率
       fsStats: State.DiskSpeed,
-      // 网络
-      network: State.getnetwork,
       // 可视化数据
       visualData,
-      // 系统信息
-      osinfo
+      // 系统平台
+      osPlatform: State.osInfo?.platform,
+      // 其他数据
+      otherInfo: _.compact(otherInfo),
+      psTest: _.isEmpty(psTest) ? false : psTest
     }
+
     // 渲染图片
     await puppeteer.render('state/state', {
       ...data
@@ -107,6 +131,7 @@ export class NewState extends plugin {
       e,
       scale: 1.4
     })
+
     interval = false
   }
 }

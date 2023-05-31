@@ -14,11 +14,11 @@
         <div class="header">
             <h1>{{nickname}}</h1>
             <hr noshade>
-            <p>{{status}}({{platform}}) | 收{{recv}} | 发{{sent}} | 图片{{screenshot}} | 好友{{friend_quantity}} |
-                群{{group_quantity}}
+            <p>{{status}}({{platform}}) | 收{{recv}} | 发{{sent}} | 图片{{screenshot}} | 好友{{friendQuantity}} |
+                群{{groupQuantity}}
             </p>
             <p>Yunzai-Bot 已运行 {{runTime}} | 系统运行 {{systime}}</p>
-            <p>{{calendar}} | Nodejs {{nodeversion}} | {{osinfo.platform}}</p>
+            <p>{{calendar}} | Nodejs {{nodeVersion}} | {{osPlatform}}</p>
         </div>
     </div>
 
@@ -179,22 +179,30 @@
         chart.setOption(option)
     </script>
 </div>
+
 {{/if}}
+{{if otherInfo}}
 <div class="box">
+    {{each otherInfo}}
     <div class="speed">
-        <p>系统</p>
-        <p>{{osinfo.distro}}</p>
+        <p>{{$value.first}}</p>
+        <p>{{@$value.tail}}</p>
     </div>
-    {{if network}}
-    <div class="speed">
-        <p>{{network.iface}}</p>
-        <p>↑{{network.tx_sec}}/s | ↓{{network.rx_sec}}/s</p>
-    </div>
-    {{/if}}
-    <div class="speed">
-        <p>插件</p>
-        <p>{{plugin.plugins}} plugin | {{plugin.js}} js</p>
-    </div>
+    {{/each}}
 </div>
+{{/if}}
+
+{{if psTest}}
+<div class="box">
+    {{each psTest}}
+    <div class="speed">
+        <p>{{$value.first}}</p>
+        <p>{{@$value.tail}}</p>
+    </div>
+    {{/each}}
+</div>
+{{/if}}
+
 {{@FastFetch}}
+
 {{/block}}

@@ -1,3 +1,11 @@
+# 1.2.8
+
+* 增加状态配置文件`config/state.yaml`
+* 增加网址测试超时时间配置
+* 增加网址测试配置
+* 将`whole.yaml`状态相关配置移入`state.yaml`
+* 优化状态异步任务使用`Promise.all`
+
 # 1.2.7
 
 * 删除依赖`puppeteer-extra``puppeteer-extra-plugin-stealth`

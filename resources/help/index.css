@@ -1,7 +1,7 @@
 .help-title, .help-group {
   background-image: linear-gradient(180deg, #d51a2f, #0cacaa);
   -webkit-background-clip: text;
-dd          background-clip: text;
+          background-clip: text;
   color: transparent;
 }
 

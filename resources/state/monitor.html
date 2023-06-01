@@ -8,7 +8,7 @@
 <script>
     var chartData = JSON.parse('{{@chartData}}')
     echarts.registerTheme('westeros', chartData.echarts_theme)
-    var formatByte = (num = 0) => {
+    var formatByte = (num = 1) => {
         return (value) => {
             value = value?.value ?? value
             let units = ['B', 'KB', 'MB', 'GB', 'TB'] // 定义单位数组
@@ -41,7 +41,7 @@
             {
                 type: 'value',
                 axisLabel: {
-                    formatter: formatByte(1)
+                    formatter: formatByte()
                 }
             }
         ],
@@ -70,7 +70,7 @@
                 {
                     type: 'value',
                     axisLabel: {
-                        formatter: (value) => parseInt(value) + '%'
+                        formatter: (value) => value.toFixed(1) + '%'
                     }
                 }
             ],
@@ -81,7 +81,7 @@
                     areaStyle: {},
                     markPoint: {
                         data: [
-                            { type: 'max', name: 'Max', label: { formatter: (value) => parseInt(value.value) + '%' } }
+                            { type: 'max', name: 'Max', label: { formatter: (value) => value.value.toFixed(1) + '%' } }
                         ]
                     },
                     data: chartData.cpu

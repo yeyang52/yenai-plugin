@@ -1,21 +1,9 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  user-select: none;
-}
-body {
-  font-size: 18px;
-  color: #1e1f20;
-  transform: scale(1.3);
-  transform-origin: 0 0;
-  width: 520px;
-}
 .container {
   width: 520px;
   padding: 10px 0 10px 0;
   background-size: 100% 100%;
 }
+
 .log-cont {
   background-size: cover;
   margin: 5px 15px 5px 10px;
@@ -64,5 +52,4 @@ body {
   transform-origin: 0 0;
   color: #d3bc8e;
   white-space: nowrap;
-}
-/*# sourceMappingURL=version-info.css.map */
+}/*# sourceMappingURL=version-info.css.map */

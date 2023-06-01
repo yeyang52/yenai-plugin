@@ -4,9 +4,9 @@ body {
 }
 
 .container {
-  background: url("./imgs/bg.png") #000144 left top no-repeat;
+  background: url("imgs/bg.png") #000144 left top no-repeat;
   background-size: 520px auto;
-  width:520px;
+  width: 520px;
 }
 
 .head-box {
@@ -19,22 +19,23 @@ body {
   margin-bottom: 20px;
   padding: 5px 15px;
   overflow: hidden;
-  background: #f5f5f5;
-  box-shadow: 0 5px 10px 0 rgb(0 0 0 / 15%);
+  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.15);
   position: relative;
-  background: rgba(35, 38, 57, .8);
+  background: rgba(35, 38, 57, 0.8);
+  backdrop-filter: blur(7px);
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 26px;
+  box-shadow: 30px 30px 30px -10px rgba(0, 0, 0, 0.15),
+    inset 15px 15px 10px rgba(255, 255, 255, 0.75),
+    -15px -15px 35px rgba(255, 255, 255, 0.55),
+    inset -1px -1px 10px rgba(0, 0, 0, 0.2);
 }
 
-
 .cfg-group {
-  color: #ceb78b;
+  color: #e7f1ff;
   font-size: 22px;
   font-weight: bold;
   padding: 10px 20px;
-}
-
-.cfg-ul {
-
 }
 
 .cfg-li {
@@ -53,7 +54,8 @@ body {
   font-weight: bold;
   border-radius: 16px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-  background: url("./imgs/cfg-right.jpg") right top #cbc4be no-repeat;
+  /* background: url("imgs/cfg-right.jpg") right top #cbc4be no-repeat; */
+  background-image: linear-gradient(90deg, #e7f1ffb5 65%, #acb6e5);
   background-size: auto 36px;
 }
 
@@ -76,14 +78,26 @@ body {
   color: #495366;
   font-weight: bold;
   border-radius: 0 16px 16px 0;
-}
 
-.cfg-status.status-off {
-  color: #a95151;
+  &.status-off {
+    color: #a95151;
+  }
 }
 
 .cfg-desc {
   font-size: 16px;
-  color: #cbc4be;
+  color: white;
   margin: 5px 0 5px 20px;
+}
+
+.badge {
+  display: inline-block;
+  vertical-align: top;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 3px;
+  background: #f4cd00;
+  color: #fff;
+  font-size: 14px;
+  line-height: 18px;
 }

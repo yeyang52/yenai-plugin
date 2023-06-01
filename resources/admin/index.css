@@ -22,14 +22,11 @@ body {
   box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.15);
   position: relative;
   background: rgba(35, 38, 57, 0.8);
-
-  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+          backdrop-filter: blur(7px);
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 26px;
-  box-shadow: 30px 30px 30px -10px rgba(0, 0, 0, 0.15),
-    inset 15px 15px 10px rgba(255, 255, 255, 0.75),
-    -15px -15px 35px rgba(255, 255, 255, 0.55),
-    inset -1px -1px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 30px 30px 30px -10px rgba(0, 0, 0, 0.15), inset 15px 15px 10px rgba(255, 255, 255, 0.75), -15px -15px 35px rgba(255, 255, 255, 0.55), inset -1px -1px 10px rgba(0, 0, 0, 0.2);
 }
 
 .cfg-group {
@@ -38,7 +35,6 @@ body {
   font-weight: bold;
   padding: 10px 20px;
 }
-
 
 .cfg-li {
   border-radius: 18px;
@@ -57,7 +53,7 @@ body {
   border-radius: 16px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
   /* background: url("imgs/cfg-right.jpg") right top #cbc4be no-repeat; */
-  background-image: linear-gradient(90deg, #e7f1ffb5 65%, #acb6e5);
+  background-image: linear-gradient(90deg, rgba(231, 241, 255, 0.7098039216) 65%, #acb6e5);
   background-size: auto 36px;
 }
 
@@ -81,7 +77,6 @@ body {
   font-weight: bold;
   border-radius: 0 16px 16px 0;
 }
-
 .cfg-status.status-off {
   color: #a95151;
 }
@@ -102,4 +97,4 @@ body {
   color: #fff;
   font-size: 14px;
   line-height: 18px;
-}
+}/*# sourceMappingURL=index.css.map */

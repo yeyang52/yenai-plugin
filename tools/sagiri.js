@@ -334,10 +334,11 @@ const sites = {
   44: Skeb
 }
 const resolveResult = item => {
-  let _a
   const { data, header } = item
   const id = header.index_id
-  if (!sites[id]) { throw new Error(`Cannot resolve data for unknown index ${id}`) }
+  if (!sites[id]) {
+    throw new Error(`Cannot resolve data for unknown index ${id}`)
+  }
   const { name, urlMatcher, backupUrl, authorData } = sites[id]
   let url
   if (data.ext_urls && data.ext_urls.length > 1) {
@@ -346,11 +347,13 @@ const resolveResult = item => {
     url = data.ext_urls
   }
   if (!url) url = backupUrl(item)
-  return Object.assign({
-    id,
-    url,
-    name
-  }, ((_a = authorData === null || authorData === void 0 ? void 0 : authorData(item.data)) !== null && _a !== void 0 ? _a : { authorName: null, authorUrl: null }))
+  const author = authorData?.(item.data) ?? { authorName: null, authorUrl: null }
+  return { id, url, name, ...author }
+  // return Object.assign({
+  //   id,
+  //   url,
+  //   name
+  // }, ((_a = authorData === null || authorData === void 0 ? void 0 : authorData(item.data)) !== null && _a !== void 0 ? _a : { authorName: null, authorUrl: null }))
 }
 
 const sagiri = (response) => {

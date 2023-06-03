@@ -3,9 +3,8 @@ import { Config } from '../components/index.js'
 import { setu, common } from '../model/index.js'
 import { Admin } from './admin.js'
 
-const SWITCH_ERROR = '主人没有开放这个功能哦(＊／ω＼＊)'
-
 const NumReg = '[零一壹二两三四五六七八九十百千万亿\\d]+'
+
 export class SeSe extends plugin {
   constructor () {
     super({
@@ -99,15 +98,13 @@ export class SeSe extends plugin {
 
   async _Authentication (e) {
     if (e.isMaster) return true
-    if (!Config.setu.allowPM && !e.isGroup) {
+    const { allowPM, limit } = Config.setu
+    if (!allowPM && !e.isGroup) {
       e.reply('主人已禁用私聊该功能')
       return false
     }
-    if (!Config.getGroup(e.group_id).sesepro) {
-      e.reply(SWITCH_ERROR)
-      return false
-    }
-    if (!await common.limit(e.user_id, 'setu', Config.setu.limit)) {
+    if (!common.checkSeSePermission(e, 'sesepro')) return false
+    if (!await common.limit(e.user_id, 'setu', limit)) {
       e.reply('您已达今日「setu」次数上限', true, { at: true })
       return false
     }

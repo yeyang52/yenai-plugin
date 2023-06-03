@@ -242,17 +242,13 @@ export class NewPixiv extends plugin {
       .catch(err => e.reply(err.message))
   }
 
-  async _Authentication (e, type, limit = true) {
+  async _Authentication (e, type = 'sese', limit = true) {
     if (e.isMaster) return true
     if (!Config.pixiv.allowPM && !e.isGroup) {
       e.reply('主人已禁用私聊该功能')
       return false
     }
-    const { sese, sesepro } = Config.getGroup(e.group_id)
-    if ((type == 'sese' && !sese && !sesepro) || (type == 'sesepro' && !sesepro)) {
-      e.reply(SWITCH_ERROR)
-      return false
-    }
+    if (!common.checkSeSePermission(e, type)) return false
     if (limit && !await common.limit(e.user_id, 'pixiv', Config.pixiv.limit)) {
       e.reply('您已达今日「Pixiv」次数上限', true, { at: true })
       return false

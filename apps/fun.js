@@ -1,22 +1,22 @@
-import plugin from '../../../lib/plugins/plugin.js'
-import fetch from 'node-fetch'
 import _ from 'lodash'
+import fetch from 'node-fetch'
+import plugin from '../../../lib/plugins/plugin.js'
 import { Config } from '../components/index.js'
-import { common, uploadRecord, QQApi, funApi, memes } from '../model/index.js'
-import { successImgs, faildsImgs, heisiType, pandadiuType } from '../constants/fun.js'
+import { faildsImgs, heisiType, pandadiuType, successImgs } from '../constants/fun.js'
+import { QQApi, common, funApi, memes, uploadRecord } from '../model/index.js'
 
 /** API请求错误文案 */
 const API_ERROR = '❎ 出错辣，请稍后重试'
-/** 未启用文案 */
-const SWITCH_ERROR = '主人没有开放这个功能哦(＊／ω＼＊)'
+
 /** 开始执行文案 */
 const START_EXECUTION = '椰奶产出中......'
 
-const picapis = Config.getConfig('picApi')
+const picApis = Config.getConfig('picApi')
 /** 解析匹配模式 */
-let picApiKeys = []
-_.forIn(picapis, (values, key) => {
-  let mode = values.mode !== undefined ? values.mode : picapis.mode
+const picApiKeys = []
+
+_.forIn(picApis, (values, key) => {
+  let mode = values.mode !== undefined ? values.mode : picApis.mode
   key = key.split('|').map(item => mode ? '^' + item + '$' : item).join('|')
   picApiKeys.push(key)
 })
@@ -197,10 +197,7 @@ export class Fun extends plugin {
 
   // coser
   async coser (e) {
-    const { sese, sesepro } = Config.getGroup(e.group_id)
-    if (!sese && !sesepro && !e.isMaster) {
-      return e.reply(SWITCH_ERROR)
-    }
+    if (!common.checkSeSePermission(e)) return false
 
     e.reply(START_EXECUTION)
     await funApi.coser()
@@ -210,10 +207,10 @@ export class Fun extends plugin {
 
   // cos/acg搜索
   async acg (e) {
-    let { sese, sesepro } = Config.getGroup(e.group_id)
-    if (!sese && !sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
+    if (!common.checkSeSePermission(e)) return false
     e.reply(START_EXECUTION)
-    let type = e.msg.match(new RegExp(`^#(${Object.keys(pandadiuType).join('|')})?acg(.*)$`))
+    const reg = new RegExp(`^#(${Object.keys(pandadiuType).join('|')})?acg(.*)$`)
+    const type = e.msg.match(reg)
     await funApi.pandadiu(type[1], type[2])
       .then(res => common.recallSendForwardMsg(e, res))
       .catch(err => e.reply(err.message))
@@ -221,7 +218,7 @@ export class Fun extends plugin {
 
   // 黑丝
   async heisiwu (e) {
-    if (!Config.getGroup(e.group_id).sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
+    if (!common.checkSeSePermission(e, 'sesepro')) return false
 
     e.reply(START_EXECUTION)
     // 获取类型
@@ -233,7 +230,7 @@ export class Fun extends plugin {
 
   // 萌堆
   async mengdui (e) {
-    if (!Config.getGroup(e.group_id).sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
+    if (!common.checkSeSePermission(e, 'sesepro')) return false
     // 开始执行
     e.reply(START_EXECUTION)
     let regRet = e.msg.match(/#?来点神秘图(s)?(.*)/)
@@ -243,7 +240,7 @@ export class Fun extends plugin {
   }
 
   async xiuren (e) {
-    if (!Config.getGroup(e.group_id).sesepro && !e.isMaster) return e.reply(SWITCH_ERROR)
+    if (!common.checkSeSePermission(e, 'pro')) return false
     // 开始执行
     e.reply(START_EXECUTION)
     await funApi.xiuren(e.msg.replace(/#?来点/, ''))
@@ -292,9 +289,9 @@ export class Fun extends plugin {
 
     if (/jktj|接口统计/.test(e.msg)) {
       let msg = ['现接口数量如下']
-      for (let i in picapis) {
+      for (let i in picApis) {
         if (i == 'mode') continue
-        let urls = picapis[i].url || picapis[i]
+        let urls = picApis[i].url || picApis[i]
         msg.push(`\n♡ ${i} => ${Array.isArray(urls) ? urls.length : 1}`)
       }
       return e.reply(msg)
@@ -302,7 +299,7 @@ export class Fun extends plugin {
     // 解析消息中的类型
     let regRet = apiReg.exec(e.msg)
     if (regRet[1] == 'mode') return false
-    let picObj = picapis[_.sample(Object.keys(picapis).filter(item => new RegExp(item).test(regRet[1])))]
+    let picObj = picApis[_.sample(Object.keys(picApis).filter(item => new RegExp(item).test(regRet[1])))]
     if (Array.isArray(picObj)) picObj = _.sample(picObj)
     let urlReg = /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i
     if (!picObj.url && !urlReg.test(encodeURI(picObj)) && !Array.isArray(picObj)) {

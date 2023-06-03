@@ -1,8 +1,6 @@
 import { Bika, common, Pixiv } from '../model/index.js'
 import { Config } from '../components/index.js'
 import { Admin } from './admin.js'
-// 文案
-const SWITCH_ERROR = '主人没有开放这个功能哦(＊／ω＼＊)'
 
 // 汉字数字匹配正则
 const numReg = '[零一壹二两三四五六七八九十百千万亿\\d]+'
@@ -153,10 +151,7 @@ export class NewBika extends plugin {
 
   async _Authentication (e) {
     if (e.isMaster) return true
-    if (!Config.getGroup(e.group_id).sesepro) {
-      e.reply(SWITCH_ERROR)
-      return false
-    }
+    if (!common.checkSeSePermission(e, 'sesepro')) return false
     if (!Config.bika.allowPM && !e.isGroup) {
       e.reply('主人已禁用私聊该功能')
       return false

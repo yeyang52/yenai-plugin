@@ -148,8 +148,8 @@ export class GroupAdmin extends plugin {
           fnc: 'handleGroupAdd'
         },
         {
-          reg: '^#?加精$',
-          fnc: 'setEssenceMessage'
+          reg: '^#?(加|移)精$',
+          fnc: 'essenceMessage'
         }
       ]
     })
@@ -700,11 +700,17 @@ export class GroupAdmin extends plugin {
   }
 
   /** 加精 */
-  async setEssenceMessage (e) {
+  async essenceMessage (e) {
     if (!common.checkPermission(e, 'admin', 'admin')) return
     if (!e.source) return e.reply('请对要加精的消息进行引用')
     let source = (await e.group.getChatHistory(e.source.seq, 1)).pop()
-    let res = await Bot.setEssenceMessage(source.message_id)
-    e.reply(res || '加精失败')
+    let isAdd = e.msg.match(/加|移/)?.[0]
+    let res
+    if (isAdd == '加') {
+      res = await this.Bot.setEssenceMessage(source.message_id)
+    } else {
+      res = await this.Bot.removeEssenceMessage(source.message_id)
+    }
+    e.reply(res || `${isAdd}精失败`)
   }
 }

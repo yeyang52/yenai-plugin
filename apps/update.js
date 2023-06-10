@@ -68,7 +68,7 @@ export class Update extends plugin {
     const _path = './plugins/yenai-plugin/'
     let command = `git -C ${_path} pull --no-rebase`
     if (isForce) {
-      command = `git -C ${_path} reset --hard HEAD && ${command}`
+      command = `git -C ${_path} reset --hard origin && ${command}`
       this.e.reply('正在执行强制更新操作，请稍等')
     } else {
       this.e.reply('正在执行更新操作，请稍等')

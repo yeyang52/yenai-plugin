@@ -78,7 +78,7 @@ async function help (e) {
     element: 'default'
   }, {
     e,
-    scale: 1.6
+    scale: 1.2
   })
 }
 

@@ -2,7 +2,7 @@ import { common } from '../../model/index.js'
 import { Config } from '../../components/index.js'
 import moment from 'moment'
 
-Bot.on('notice.group', async (e) => {
+Bot.on?.('notice.group', async (e) => {
   let msg
   let forwardMsg
   switch (e.sub_type) {

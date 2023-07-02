@@ -128,7 +128,7 @@ export class NewGroupVerify extends plugin {
 }
 
 // 进群监听
-Bot.on('notice.group.increase', async (e) => {
+Bot.on?.('notice.group.increase', async (e) => {
   logger.mark(`[Yenai-Plugin][进群验证]收到${e.user_id}的进群事件`)
   let { openGroup, DelayTime } = Config.groupverify
 
@@ -142,7 +142,7 @@ Bot.on('notice.group.increase', async (e) => {
 })
 
 // 答案监听
-Bot.on('message', async (e) => {
+Bot.on?.('message', async (e) => {
   if (!e.isGroup) return false
 
   let { openGroup, mode, SuccessMsgs } = Config.groupverify
@@ -188,7 +188,7 @@ Bot.on('message', async (e) => {
 })
 
 // 主动退群
-Bot.on('notice.group.decrease', async (e) => {
+Bot.on?.('notice.group.decrease', async (e) => {
   if (!e.group.is_admin && !e.group.is_owner) return
 
   if (!temp[e.user_id + e.group_id]) return

@@ -7,7 +7,7 @@ const ROLE_MAP = {
   member: '群员'
 }
 
-Bot.on('request', async (e) => {
+Bot.on?.('request', async (e) => {
   let msg = ''
   switch (e.request_type) {
     case 'group':

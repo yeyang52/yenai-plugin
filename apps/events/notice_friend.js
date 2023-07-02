@@ -1,7 +1,7 @@
 import { common } from '../../model/index.js'
 import { Config } from '../../components/index.js'
 
-Bot.on('notice.friend', async (e) => {
+Bot.on?.('notice.friend', async (e) => {
   let msg
   let forwardMsg
   switch (e.sub_type) {

@@ -2,6 +2,8 @@ import { common } from '../../model/index.js'
 import { Config } from '../../components/index.js'
 
 Bot.on?.('message', async (e) => {
+  // 判断是否存在消息
+  if (!e?.message?.length) return false
   // 判断是否为机器人消息
   if (e.user_id == (e.bot ?? Bot).uin) return false
   // 判断是否主人消息

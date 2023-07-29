@@ -86,7 +86,7 @@ export class NewState extends plugin {
       // 头像
       portrait: e.bot?.avatar ?? `https://q1.qlogo.cn/g?b=qq&s=0&nk=${this.Bot.uin}`,
       // 运行时间
-      runTime: common.formatTime(Date.now() / 1000 - this.Bot.stat.start_time, 'dd天hh小时mm分', false),
+      runTime: common.formatTime(Date.now() / 1000 - this.Bot.stat?.start_time, 'dd天hh小时mm分', false),
       // 日历
       calendar: moment().format('YYYY-MM-DD HH:mm:ss'),
       // 昵称
@@ -94,7 +94,7 @@ export class NewState extends plugin {
       // 系统运行时间
       systime: common.formatTime(os.uptime(), 'dd天hh小时mm分', false),
       // 收
-      recv: this.Bot.stat.recv_msg_cnt,
+      recv: this.Bot.stat?.recv_msg_cnt,
       // 发
       sent: await redis.get('Yz:count:sendMsg:total') || 0,
       // 图片

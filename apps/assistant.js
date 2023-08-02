@@ -363,7 +363,7 @@ export class Assistant extends plugin {
 
     await this.Bot.pickFriend(qq).sendMsg(e.message)
       .then(() => e.reply('✅ 私聊消息已送达'))
-      .catch(err => e.reply(`❎ 发送失败\n错误信息为:${err.message}`))
+      .catch(err => e.reply(`❎ 发送失败\n错误信息为:${err.stack}`))
   }
 
   /** 发群聊 */
@@ -384,7 +384,7 @@ export class Assistant extends plugin {
 
     await this.Bot.pickGroup(gpid).sendMsg(e.message)
       .then(() => e.reply('✅ 群聊消息已送达'))
-      .catch((err) => e.reply(`❎ 发送失败\n错误信息为:${err.message}`))
+      .catch((err) => e.reply(`❎ 发送失败\n错误信息为:${err.stack}`))
   }
 
   // 发送群列表
@@ -421,13 +421,13 @@ export class Assistant extends plugin {
     if (sendList.length === 1) {
       await this.Bot.pickGroup(sendList[0]).sendMsg(e.message)
         .then(() => e.reply('✅ ' + sendList[0] + ' 群聊消息已送达'))
-        .catch((err) => e.reply(`❎ ${sendList[0]} 发送失败\n错误信息为:${err.message}`))
+        .catch((err) => e.reply(`❎ ${sendList[0]} 发送失败\n错误信息为:${err.stack}`))
     } else {
       e.reply('发送多个群聊，将每5秒发送一条消息！')
       for (let i of sendList) {
         await this.Bot.pickGroup(i).sendMsg(e.message)
           .then(() => e.reply('✅ ' + i + ' 群聊消息已送达'))
-          .catch((err) => e.reply(`❎ ${i} 发送失败\n错误信息为:${err.message}`))
+          .catch((err) => e.reply(`❎ ${i} 发送失败\n错误信息为:${err.stack}`))
         await common.sleep(5000)
       }
     }

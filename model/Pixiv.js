@@ -134,7 +134,7 @@ export default new class Pixiv {
     } else {
       res = await request.get(`${this.domain}/rank`, { params }).then(res => res.json())
     }
-    if (res.error) throw Error(res.error.message)
+    if (res.error) throw Error(res.error.stack)
     if (_.isEmpty(res.illusts)) throw Error('暂无数据，请等待榜单更新哦(。-ω-)zzz')
 
     let illusts = await Promise.all(res.illusts.map(async (item, index) => {
@@ -228,7 +228,7 @@ export default new class Pixiv {
     } else {
       res = await request.get(`${this.domain}/search`, { params }).then(res => res.json())
     }
-    if (res.error) throw Error(res.error.message)
+    if (res.error) throw Error(res.error.stack)
     if (_.isEmpty(res.illusts)) throw Error('宝~没有数据了哦(๑＞︶＜)و')
     let sortIllusts = _.orderBy(res.illusts, 'total_bookmarks', 'desc')
     let illusts = []
@@ -322,7 +322,7 @@ export default new class Pixiv {
       res = await request.get(`${this.domain}/member_illust`, { params }).then(res => res.json())
     }
 
-    if (res.error) throw Error(res.error.message)
+    if (res.error) throw Error(res.error.stack)
     // 没有作品直接返回信息
     if (_.isEmpty(res.illusts)) throw Error(page >= 2 ? '这一页没有作品辣（＞人＜；）' : 'Σ(っ °Д °;)っ这个淫居然没有作品')
 
@@ -376,7 +376,7 @@ export default new class Pixiv {
     } else {
       user = await request.get(`${this.domain}/search_user`, { params }).then(res => res.json())
     }
-    if (user.error) throw Error(user.error.message)
+    if (user.error) throw Error(user.error.stack)
     if (_.isEmpty(user.user_previews)) throw Error('呜呜呜，人家没有找到这个淫d(ŐдŐ๑)')
 
     let msg = await Promise.all(user.user_previews.slice(0, 10).map(async (item, index) => {

@@ -143,7 +143,7 @@ export class Fun extends plugin {
         res = await new QQApi(e).thumbUp(e.user_id, 10)
       } catch (error) {
         logger.error(error)
-        return e.reply(error.message)
+        return e.reply(error.stack)
       }
       logger.debug(`${e.logFnc}给${e.user_id}点赞`, res)
       if (res.code != 0) {
@@ -202,7 +202,7 @@ export class Fun extends plugin {
     e.reply(START_EXECUTION)
     await funApi.coser()
       .then(res => common.recallSendForwardMsg(e, res))
-      .catch(err => e.reply(err.message))
+      .catch(err => e.reply(err.stack))
   }
 
   // cos/acg搜索
@@ -213,7 +213,7 @@ export class Fun extends plugin {
     const type = e.msg.match(reg)
     await funApi.pandadiu(type[1], type[2])
       .then(res => common.recallSendForwardMsg(e, res))
-      .catch(err => e.reply(err.message))
+      .catch(err => e.reply(err.stack))
   }
 
   // 黑丝
@@ -225,7 +225,7 @@ export class Fun extends plugin {
     const { type, page } = heisiType[e.msg.match(/#?来点(.*)/)[1]]
     await funApi.heisiwu(type, page)
       .then(res => common.recallSendForwardMsg(e, _.take(res, 20)))
-      .catch(err => e.reply(err.message))
+      .catch(err => e.reply(err.stack))
   }
 
   // 萌堆
@@ -236,7 +236,7 @@ export class Fun extends plugin {
     let regRet = e.msg.match(/#?来点神秘图(s)?(.*)/)
     await funApi.mengdui(regRet[2], regRet[1])
       .then(res => common.recallSendForwardMsg(e, res))
-      .catch(err => e.reply(err.message))
+      .catch(err => e.reply(err.stack))
   }
 
   async xiuren (e) {
@@ -245,7 +245,7 @@ export class Fun extends plugin {
     e.reply(START_EXECUTION)
     await funApi.xiuren(e.msg.replace(/#?来点/, ''))
       .then(res => common.recallSendForwardMsg(e, res))
-      .catch(err => e.reply(err.message))
+      .catch(err => e.reply(err.stack))
   }
 
   // 铃声多多

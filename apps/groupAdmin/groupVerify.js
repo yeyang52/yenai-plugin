@@ -88,7 +88,7 @@ export class NewGroupVerify extends plugin {
     try {
       list = await new Ga(e).getNeverSpeak(e.group_id)
     } catch (error) {
-      return e.reply(error.message)
+      return e.reply(error.stack)
     }
     for (let item of list) {
       await verify(item.user_id, e.group_id, e)

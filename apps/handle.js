@@ -235,7 +235,7 @@ export class NewHandle extends plugin {
       logger.mark(`${e.logFnc}回复临时消息`)
       return (e.bot ?? Bot).sendTempMsg(group, qq, e.message)
         .then(() => { e.reply('✅ 已把消息发给它了哦~') })
-        .catch((err) => e.reply(`❎ 发送失败\n错误信息为:${err.message}`))
+        .catch((err) => e.reply(`❎ 发送失败\n错误信息为:${err.stack}`))
     }
 
     if (!/^\d+$/.test(qq)) return e.reply('❎ QQ号不正确，人家做不到的啦>_<~')
@@ -247,7 +247,7 @@ export class NewHandle extends plugin {
     (e.bot ?? Bot).pickFriend(qq)
       .sendMsg(e.message)
       .then(() => { e.reply('✅ 已把消息发给它了哦~') })
-      .catch((err) => e.reply(`❎ 发送失败\n错误信息为:${err.message}`))
+      .catch((err) => e.reply(`❎ 发送失败\n错误信息为:${err.stack}`))
   }
 
   // 加群员为好友

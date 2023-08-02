@@ -169,7 +169,7 @@ export class GroupAdmin extends plugin {
     const time = common.translateChinaNum(regRet[3])
     new Ga(e).muteMember(
       e.group_id, qq ?? regRet[2], e.user_id, time, regRet[4]
-    ).then(res => e.reply(res)).catch(err => e.reply(err.message))
+    ).then(res => e.reply(res)).catch(err => e.reply(err.stack))
   }
 
   /** 解禁 */
@@ -181,7 +181,7 @@ export class GroupAdmin extends plugin {
     new Ga(e).muteMember(
       e.group_id, qq ?? regRet[1], e.user_id, 0
     ).then(res => e.reply(res))
-      .catch(err => e.reply(err.message))
+      .catch(err => e.reply(err.stack))
   }
 
   /** 全体禁言 */
@@ -202,7 +202,7 @@ export class GroupAdmin extends plugin {
     if (!qq) qq = e.msg.replace(/#|踢/g, '').trim()
     new Ga(e).kickMember(e.group_id, qq, e.user_id)
       .then(res => e.reply(res))
-      .catch(err => e.reply(err.message))
+      .catch(err => e.reply(err.stack))
   }
 
   // 我要自闭
@@ -387,7 +387,7 @@ export class GroupAdmin extends plugin {
         isxml: true,
         xmlTitle: '禁言列表'
       }))
-      .catch(err => e.reply(err.message))
+      .catch(err => e.reply(err.stack))
   }
 
   // 解除全部禁言
@@ -395,7 +395,7 @@ export class GroupAdmin extends plugin {
     if (!common.checkPermission(e, 'admin', 'admin')) return
     new Ga(e).releaseAllMute()
       .then(() => e.reply('已经把全部的禁言解除辣╮( •́ω•̀)╭'))
-      .catch(err => err.reply(err.message))
+      .catch(err => err.reply(err.stack))
   }
 
   // 查看和清理多久没发言的人
@@ -415,7 +415,7 @@ export class GroupAdmin extends plugin {
           )
         )
       } catch (error) {
-        return e.reply(error.message)
+        return e.reply(error.stack)
       }
     }
     // 查看和清理都会发送列表
@@ -426,7 +426,7 @@ export class GroupAdmin extends plugin {
         e.group_id, regRet[2], regRet[3], page
       )
     } catch (err) {
-      return e.reply(err.message)
+      return e.reply(err.stack)
     }
     // 清理
     if (regRet[1] == '清理') {
@@ -449,7 +449,7 @@ export class GroupAdmin extends plugin {
     try {
       list = await new Ga(e).getNeverSpeak(e.group_id)
     } catch (error) {
-      return e.reply(error.message)
+      return e.reply(error.stack)
     }
 
     // 确认清理直接执行
@@ -474,7 +474,7 @@ export class GroupAdmin extends plugin {
         isxml: true,
         xmlTitle: e.msg.replace(/#|查看|清理/g, '')
       }))
-      .catch(err => e.reply(err.message))
+      .catch(err => e.reply(err.stack))
   }
 
   // 查看不活跃排行榜和入群记录

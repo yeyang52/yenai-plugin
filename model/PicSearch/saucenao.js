@@ -44,7 +44,7 @@ export default async function doSearch (url) {
     message.push(`SauceNAO 相似度 ${maxSimilarity}% 过低，使用Ascii2D进行搜索`)
     await Ascii2D(url)
       .then(res => message.push(...res.color, ...res.bovw))
-      .catch(err => message.push(err.message))
+      .catch(err => message.push(err.stack))
   }
   return message
 }

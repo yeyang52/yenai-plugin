@@ -50,7 +50,7 @@ export class NewSearch extends plugin {
     let keyword = e.msg.replace(/#?bgg搜索/, '')
     funApi.bgg(keyword)
       .then(res => e.reply(res))
-      .catch(err => e.reply(err.message))
+      .catch(err => e.reply(err.stack))
   }
 
   async bggRank (e) {

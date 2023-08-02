@@ -202,7 +202,7 @@ export default class {
       if (i.ec != 0) {
         msg.push(`错误：${JSON.stringify(res)}`)
       } else {
-        msg.push('成功清理如下人员\n}' + i.ul.map((item, index) =>
+        msg.push('成功清理如下人员\n' + i.ul.map((item, index) =>
       `${index + 1}、${item}`
         ).join('\n'))
       }

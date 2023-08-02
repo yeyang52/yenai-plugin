@@ -1,6 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import os from 'os'
-import { Config } from '../components/index.js'
+import { Config, Version } from '../components/index.js'
 import { State, common, puppeteer } from '../model/index.js'
 import { platform, status } from '../constants/other.js'
 import moment from 'moment'
@@ -85,6 +85,8 @@ export class NewState extends plugin {
       chartData: JSON.stringify(common.checkIfEmpty(State.chartData, ['echarts_theme', 'cpu', 'ram']) ? undefined : State.chartData),
       // 头像
       portrait: e.bot?.avatar ?? `https://q1.qlogo.cn/g?b=qq&s=0&nk=${this.Bot.uin}`,
+      // 机器人名称
+      BotName: Version.name,
       // 运行时间
       runTime: common.formatTime(Date.now() / 1000 - this.Bot.stat?.start_time, 'dd天hh小时mm分', false),
       // 日历

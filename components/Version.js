@@ -1,4 +1,3 @@
-
 import fs from 'fs'
 import _ from 'lodash'
 import cfg from '../../../lib/config/config.js'
@@ -92,6 +91,8 @@ if (yunzaiName == 'miao-yunzai') {
   yunzaiName = 'Miao-Yunzai'
 } else if (yunzaiName == 'yunzai') {
   yunzaiName = 'Yunzai-Bot'
+} else if (yunzaiName == 'trss-yunzai') {
+  yunzaiName = 'TRSS-Yunzai'
 } else {
   yunzaiName = _.capitalize(yunzaiName)
 }

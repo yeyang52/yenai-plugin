@@ -35,7 +35,7 @@ export const platform = {
   3: 'android_Watch',
   4: 'macOS',
   5: 'iPad',
-  6: 'old_Android'
+  6: 'Tim'
 }
 
 /** 在线状态 */

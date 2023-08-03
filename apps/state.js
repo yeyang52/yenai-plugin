@@ -1,10 +1,12 @@
-import plugin from '../../../lib/plugins/plugin.js'
-import os from 'os'
-import { Config, Version } from '../components/index.js'
-import { State, common, puppeteer } from '../model/index.js'
-import { platform, status } from '../constants/other.js'
-import moment from 'moment'
 import _ from 'lodash'
+import { createRequire } from 'module'
+import moment from 'moment'
+import os from 'os'
+import plugin from '../../../lib/plugins/plugin.js'
+import { Config, Version } from '../components/index.js'
+import { platform, status } from '../constants/other.js'
+import { State, common, puppeteer } from '../model/index.js'
+const require = createRequire(import.meta.url)
 
 let interval = false
 export class NewState extends plugin {
@@ -103,6 +105,8 @@ export class NewState extends plugin {
       screenshot: await redis.get('Yz:count:screenshot:total') || 0,
       // nodejs版本
       nodeVersion: process.version,
+      // icqq版本
+      icqqVersion: require('icqq/package.json').version,
       // 群数
       groupQuantity: Array.from(this.Bot.gl.values()).length,
       // 好友数
@@ -119,8 +123,6 @@ export class NewState extends plugin {
       fsStats: State.DiskSpeed,
       // 可视化数据
       visualData,
-      // 系统平台
-      osPlatform: State.osInfo?.platform,
       // 其他数据
       otherInfo: _.compact(otherInfo),
       psTest: _.isEmpty(psTest) ? false : psTest

@@ -126,7 +126,7 @@ export class Fun extends plugin {
 
   /** 点赞 */
   async thumbUp (e) {
-    if ((e.bot ?? Bot).config.platform == 3) {
+    if ((e.bot ?? Bot).config?.platform == 3) {
       return logger.error(`${e.logFnc}手表协议暂不支持点赞请更换协议后重试`)
     }
     /** 判断是否为好友 */

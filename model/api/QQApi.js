@@ -427,15 +427,11 @@ export default class {
      * @return {Object}
      */
   async thumbUp (uid, times = 1) {
-    let core = null
-    try {
-      core = (await import('oicq')).core
-    } catch {
-      try {
-        core = (await import('icqq')).core
-      } catch (error) {
-        throw Error('未检测到oicq或icqq无法进行点赞')
-      }
+    let core = this.Bot.core
+    if (!core) try {
+      core = (await import('icqq')).core
+    } catch (error) {
+      throw Error('非icqq无法进行点赞')
     }
     if (times > 20) { times = 20 }
     let ReqFavorite

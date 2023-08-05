@@ -105,8 +105,8 @@ export class NewState extends plugin {
       screenshot: await redis.get('Yz:count:screenshot:total') || 0,
       // nodejs版本
       nodeVersion: process.version,
-      // icqq版本
-      icqqVersion: require('icqq/package.json').version,
+      // Bot版本
+      botVersion: this.Bot.version ? `${this.Bot.version.name}(${this.Bot.version.id}) ${this.Bot.version.version}` : `ICQQ(QQ) v${require('icqq/package.json').version}`,
       // 群数
       groupQuantity: Array.from(this.Bot.gl.values()).length,
       // 好友数

@@ -43,7 +43,7 @@ export class Fun extends plugin {
           fnc: 'youdao'
         },
         {
-          reg: '^#?(我要|给我)?(资料卡)?(点赞|赞我)$',
+          reg: '^#?(我要|给我)?(资料卡)?(点赞|赞我)|赞(他|她|它|TA|ta|Ta)?$',
           fnc: 'thumbUp'
         },
         {
@@ -129,53 +129,108 @@ export class Fun extends plugin {
     if ((e.bot ?? Bot).config?.platform == 3) {
       return logger.error(`${e.logFnc}手表协议暂不支持点赞请更换协议后重试`)
     }
-    /** 判断是否为好友 */
-    let isFriend = await (e.bot ?? Bot).fl.get(e.user_id)
-    let allowLikeByStrangers = Config.whole.Strangers_love
-    if (!isFriend && !allowLikeByStrangers) return e.reply('不加好友不点🙄', true)
-
-    /** 执行点赞 */
-    let n = 0
-    let failsMsg = '今天已经点过了，还搁这讨赞呢！！！'
-    while (true) {
-      let res = null
-      try {
-        res = await new QQApi(e).thumbUp(e.user_id, 10)
-      } catch (error) {
-        logger.error(error)
-        return e.reply(error.stack)
-      }
-      logger.debug(`${e.logFnc}给${e.user_id}点赞`, res)
-      if (res.code != 0) {
-        if (res.code == 1) {
-          failsMsg = '点赞失败，请检查是否开启陌生人点赞或添加好友'
-        } else {
-          failsMsg = res.msg
+    /** 判断是赞自己还是赞别人 */
+    if (e.at) {
+      /** 读名字 */
+      let member = await Bot.getGroupMemberInfo(e.group_id, e.at);
+      let name = member.card ? member.card : member.nickname ? member.nickname : member.user_id
+      /** 判断是否为好友 */
+      let isFriend = await (e.bot ?? Bot).fl.get(e.at)
+      let allowLikeByStrangers = Config.whole.Strangers_love
+      if (!isFriend && !allowLikeByStrangers) return e.reply('不加好友不点🙄', true)
+      /** 执行点赞 */
+      let n = 0
+      let failsMsg = '今天已经点过了，还搁这讨赞呢！！！'
+      while (true) {
+        let res = null
+        try {
+          res = await new QQApi(e).thumbUp(e.at, 10)
+        } catch (error) {
+          logger.error(error)
+          return e.reply(error.stack)
         }
-        break
-      } else {
-        n += 10
+        logger.debug(`${e.logFnc}给${e.at}点赞`, res)
+        if (res.code != 0) {
+          if (res.code == 1) {
+            failsMsg = '点赞失败，请检查是否开启陌生人点赞或添加好友'
+          } else {
+            failsMsg = res.msg
+          }
+          break
+        } else {
+          n += 10
+        }
       }
+      let successMsg = `给${name}点了${n}下哦，记得回我~ ${isFriend ? '' : '(如点赞失败请添加好友)'}`
+      const avatar = `https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.at}`
+      const successFn = _.sample(['ganyu', 'zan'])
+
+      /** 判断点赞是否成功 */
+      let msg = n > 0
+        ? [
+          `\n${successMsg}`,
+          segment.image((await memes[successFn](avatar)) ||
+            _.sample(successImgs) + e.user_id)
+        ]
+        : [
+          `\n${failsMsg}`,
+          segment.image((await memes.crawl(avatar)) ||
+            _.sample(faildsImgs) + e.user_id)
+        ]
+
+      /** 回复 */
+      e.reply(msg, false, { at: true })
+    } else {
+      /** 判断是否命中正则 */
+      if (!e.msg.includes('我', '赞', '点')) { return true };
+      /** 判断是否为好友 */
+      let isFriend = await (e.bot ?? Bot).fl.get(e.user_id)
+      let allowLikeByStrangers = Config.whole.Strangers_love
+      if (!isFriend && !allowLikeByStrangers) return e.reply('不加好友不点🙄', true)
+
+      /** 执行点赞 */
+      let n = 0
+      let failsMsg = '今天已经点过了，还搁这讨赞呢！！！'
+      while (true) {
+        let res = null
+        try {
+          res = await new QQApi(e).thumbUp(e.user_id, 10)
+        } catch (error) {
+          logger.error(error)
+          return e.reply(error.stack)
+        }
+        logger.debug(`${e.logFnc}给${e.user_id}点赞`, res)
+        if (res.code != 0) {
+          if (res.code == 1) {
+            failsMsg = '点赞失败，请检查是否开启陌生人点赞或添加好友'
+          } else {
+            failsMsg = res.msg
+          }
+          break
+        } else {
+          n += 10
+        }
+      }
+      let successMsg = `给你点了${n}下哦，记得回我~ ${isFriend ? '' : '(如点赞失败请添加好友)'}`
+      const avatar = `https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`
+      const successFn = _.sample(['ganyu', 'zan'])
+
+      /** 判断点赞是否成功 */
+      let msg = n > 0
+        ? [
+          `\n${successMsg}`,
+          segment.image((await memes[successFn](avatar)) ||
+            _.sample(successImgs) + e.user_id)
+        ]
+        : [
+          `\n${failsMsg}`,
+          segment.image((await memes.crawl(avatar)) ||
+            _.sample(faildsImgs) + e.user_id)
+        ]
+
+      /** 回复 */
+      e.reply(msg, false, { at: true })
     }
-    let successMsg = `给你点了${n}下哦，记得回我~ ${isFriend ? '' : '(如点赞失败请添加好友)'}`
-    const avatar = `https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`
-    const successFn = _.sample(['ganyu', 'zan'])
-
-    /** 判断点赞是否成功 */
-    let msg = n > 0
-      ? [
-        `\n${successMsg}`,
-        segment.image((await memes[successFn](avatar)) ||
-          _.sample(successImgs) + e.user_id)
-        ]
-      : [
-        `\n${failsMsg}`,
-        segment.image((await memes.crawl(avatar)) ||
-          _.sample(faildsImgs) + e.user_id)
-        ]
-
-    /** 回复 */
-    e.reply(msg, false, { at: true })
   }
 
   // github

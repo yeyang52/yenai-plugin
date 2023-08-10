@@ -2,6 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import _ from 'lodash'
 import { puppeteer, funApi } from '../model/index.js'
 import { SEARCH_MAP } from '../constants/search.js'
+import common from '../lib/common/common.js'
 const searchReg = new RegExp(`^#?(${_.keys(SEARCH_MAP).join('|')})搜索(.*)`)
 
 export class NewSearch extends plugin {
@@ -50,7 +51,7 @@ export class NewSearch extends plugin {
     let keyword = e.msg.replace(/#?bgg搜索/, '')
     funApi.bgg(keyword)
       .then(res => e.reply(res))
-      .catch(err => e.reply(err.stack))
+      .catch(err => common.handleException(e, err))
   }
 
   async bggRank (e) {

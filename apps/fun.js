@@ -132,7 +132,7 @@ export class Fun extends plugin {
     /** 判断是赞自己还是赞别人 */
     if (e.at) {
       /** 读名字 */
-      let member = await Bot.getGroupMemberInfo(e.group_id, e.at);
+      let member = await Bot.getGroupMemberInfo(e.group_id, e.at)
       let name = member.card ? member.card : member.nickname ? member.nickname : member.user_id
       /** 判断是否为好友 */
       let isFriend = await (e.bot ?? Bot).fl.get(e.at)
@@ -147,7 +147,7 @@ export class Fun extends plugin {
           res = await new QQApi(e).thumbUp(e.at, 10)
         } catch (error) {
           logger.error(error)
-          return e.reply(error.stack)
+          return common.handleException(e, error)
         }
         logger.debug(`${e.logFnc}给${e.at}点赞`, res)
         if (res.code != 0) {
@@ -171,12 +171,12 @@ export class Fun extends plugin {
           `\n${successMsg}`,
           segment.image((await memes[successFn](avatar)) ||
             _.sample(successImgs) + e.user_id)
-        ]
+          ]
         : [
           `\n${failsMsg}`,
           segment.image((await memes.crawl(avatar)) ||
             _.sample(faildsImgs) + e.user_id)
-        ]
+          ]
 
       /** 回复 */
       e.reply(msg, false, { at: true })
@@ -197,7 +197,7 @@ export class Fun extends plugin {
           res = await new QQApi(e).thumbUp(e.user_id, 10)
         } catch (error) {
           logger.error(error)
-          return e.reply(error.stack)
+          return common.handleException(e, error)
         }
         logger.debug(`${e.logFnc}给${e.user_id}点赞`, res)
         if (res.code != 0) {
@@ -221,12 +221,12 @@ export class Fun extends plugin {
           `\n${successMsg}`,
           segment.image((await memes[successFn](avatar)) ||
             _.sample(successImgs) + e.user_id)
-        ]
+          ]
         : [
           `\n${failsMsg}`,
           segment.image((await memes.crawl(avatar)) ||
             _.sample(faildsImgs) + e.user_id)
-        ]
+          ]
 
       /** 回复 */
       e.reply(msg, false, { at: true })
@@ -257,7 +257,7 @@ export class Fun extends plugin {
     e.reply(START_EXECUTION)
     await funApi.coser()
       .then(res => common.recallSendForwardMsg(e, res))
-      .catch(err => e.reply(err.stack))
+      .catch(err => common.handleException(e, err))
   }
 
   // cos/acg搜索
@@ -268,7 +268,7 @@ export class Fun extends plugin {
     const type = e.msg.match(reg)
     await funApi.pandadiu(type[1], type[2])
       .then(res => common.recallSendForwardMsg(e, res))
-      .catch(err => e.reply(err.stack))
+      .catch(err => common.handleException(e, err))
   }
 
   // 黑丝
@@ -280,7 +280,7 @@ export class Fun extends plugin {
     const { type, page } = heisiType[e.msg.match(/#?来点(.*)/)[1]]
     await funApi.heisiwu(type, page)
       .then(res => common.recallSendForwardMsg(e, _.take(res, 20)))
-      .catch(err => e.reply(err.stack))
+      .catch(err => common.handleException(e, err))
   }
 
   // 萌堆
@@ -291,7 +291,7 @@ export class Fun extends plugin {
     let regRet = e.msg.match(/#?来点神秘图(s)?(.*)/)
     await funApi.mengdui(regRet[2], regRet[1])
       .then(res => common.recallSendForwardMsg(e, res))
-      .catch(err => e.reply(err.stack))
+      .catch(err => common.handleException(e, err))
   }
 
   async xiuren (e) {
@@ -300,7 +300,7 @@ export class Fun extends plugin {
     e.reply(START_EXECUTION)
     await funApi.xiuren(e.msg.replace(/#?来点/, ''))
       .then(res => common.recallSendForwardMsg(e, res))
-      .catch(err => e.reply(err.stack))
+      .catch(err => common.handleException(e, err))
   }
 
   // 铃声多多

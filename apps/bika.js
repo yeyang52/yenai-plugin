@@ -64,7 +64,7 @@ export class NewBika extends plugin {
     let page = common.translateChinaNum(regRet[5])
     await Bika.search(regRet[3], page, regRet[2])
       .then(res => common.recallSendForwardMsg(e, res))
-      .catch(err => { e.reply(err.stack) })
+      .catch(err => common.handleException(e, err))
   }
 
   /** 漫画页面 */
@@ -76,7 +76,7 @@ export class NewBika extends plugin {
     let order = common.translateChinaNum(regRet[6])
     await Bika.comicPage(regRet[2], page, order)
       .then(res => common.recallSendForwardMsg(e, res))
-      .catch(err => { e.reply(err.stack) })
+      .catch(err => common.handleException(e, err))
   }
 
   /** 快速查看 */
@@ -85,7 +85,7 @@ export class NewBika extends plugin {
     let number = e.msg.match(/\d+/) - 1
     await Bika.viewComicPage(number)
       .then(res => common.recallSendForwardMsg(e, res))
-      .catch(err => { e.reply(err.stack) })
+      .catch(err => common.handleException(e, err))
   }
 
   /** 下一页 */
@@ -93,7 +93,7 @@ export class NewBika extends plugin {
     if (!await this._Authentication(e)) return
     await Bika.next()
       .then(res => common.recallSendForwardMsg(e, res))
-      .catch(err => e.reply(err.stack))
+      .catch(err => common.handleException(e, err))
   }
 
   /** 下一话 */
@@ -101,7 +101,7 @@ export class NewBika extends plugin {
     if (!await this._Authentication(e)) return
     await Bika.next('chapter')
       .then(res => common.recallSendForwardMsg(e, res))
-      .catch(err => e.reply(err.stack))
+      .catch(err => common.handleException(e, err))
   }
 
   /** 类别列表 */
@@ -110,7 +110,7 @@ export class NewBika extends plugin {
     e.reply(Pixiv.startMsg)
     await Bika.categories()
       .then(res => common.recallSendForwardMsg(e, res))
-      .catch(err => { e.reply(err.stack) })
+      .catch(err => common.handleException(e, err))
   }
 
   /** 漫画细节 */
@@ -120,7 +120,7 @@ export class NewBika extends plugin {
     let id = e.msg.match(new RegExp(`#?${Prefix}(详情|细节)(.*)`))[3]
     await Bika.comicDetail(id)
       .then(res => common.recallSendForwardMsg(e, res, { oneMsg: true }))
-      .catch(err => { e.reply(err.stack) })
+      .catch(err => common.handleException(e, err))
   }
 
   /** 图片质量 */

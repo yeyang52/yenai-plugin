@@ -60,7 +60,7 @@ export class SeSe extends plugin {
 
     await setu.setuApi(setu.getR18(e.group_id), num)
       .then(res => setu.sendMsgOrSetCd(e, res))
-      .catch(err => e.reply(err.stack))
+      .catch(err => common.handleException(e, err))
   }
 
   // tag搜图
@@ -93,7 +93,7 @@ export class SeSe extends plugin {
 
     await setu.setuApi(setu.getR18(e.group_id), num, tag)
       .then(res => setu.sendMsgOrSetCd(e, res))
-      .catch(err => e.reply(err.stack))
+      .catch(err => common.handleException(e, err))
   }
 
   async _Authentication (e) {

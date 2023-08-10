@@ -43,7 +43,7 @@ export class NewPicSearch extends plugin {
           : common.recallSendForwardMsg(e, res, { xmlTitle: false })
       })
       .catch(async err => {
-        await e.reply(err.stack)
+        await common.handleException(e, err)
         if (Config.picSearch.useAscii2dWhenFailed) {
           await e.reply('SauceNAO搜图出错，自动使用Ascii2D进行搜索')
           await this.Ascii2D(e)
@@ -56,7 +56,7 @@ export class NewPicSearch extends plugin {
     if (!await this.handelImg(e, 'Ascii2D')) return
     await PicSearch.Ascii2D(e.img[0])
       .then(res => common.recallSendForwardMsg(e, [...res.color, ...res.bovw], { xmlTitle: false }))
-      .catch(err => e.reply(err.stack))
+      .catch(err => common.handleException(e, err))
   }
 
   async WhatAnime (e) {
@@ -68,7 +68,7 @@ export class NewPicSearch extends plugin {
           await e.reply(i)
         }
       })
-      .catch(err => e.reply(err.stack))
+      .catch(err => common.handleException(e, err))
   }
 
   async UploadSauceNAOKey (e) {

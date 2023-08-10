@@ -154,7 +154,7 @@ export class NewGroupBannedWords extends plugin {
         `处理方式：${res.penaltyType}`
       ])
     } catch (error) {
-      e.reply(error.stack)
+      common.handleException(e, error)
     }
   }
 
@@ -167,7 +167,7 @@ export class NewGroupBannedWords extends plugin {
       let msg = await GroupBannedWords.delBannedWords(e.group_id, word)
       e.reply(['✅ 成功删除：', msg])
     } catch (error) {
-      e.reply(error.stack)
+      common.handleException(e, error)
     }
   }
 
@@ -187,7 +187,7 @@ export class NewGroupBannedWords extends plugin {
         `添加时间：${date ?? '未知'}`
       ])
     } catch (error) {
-      e.reply(error.stack)
+      common.handleException(e, error)
     }
   }
 

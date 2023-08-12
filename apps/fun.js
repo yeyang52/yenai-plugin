@@ -131,9 +131,6 @@ export class Fun extends plugin {
     }
     /** 判断是赞自己还是赞别人 */
     if (e.at) {
-      /** 读名字 */
-      let member = await Bot.getGroupMemberInfo(e.group_id, e.at)
-      let name = member.card ? member.card : member.nickname ? member.nickname : member.user_id
       /** 判断是否为好友 */
       let isFriend = await (e.bot ?? Bot).fl.get(e.at)
       let allowLikeByStrangers = Config.whole.Strangers_love
@@ -161,7 +158,7 @@ export class Fun extends plugin {
           n += 10
         }
       }
-      let successMsg = `给${name}点了${n}下哦，记得回我~ ${isFriend ? '' : '(如点赞失败请添加好友)'}`
+      let successMsg = `给${e.at}点了${n}下哦，记得回我~ ${isFriend ? '' : '(如点赞失败请添加好友)'}`
       const avatar = `https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.at}`
       const successFn = _.sample(['ganyu', 'zan'])
 
@@ -179,7 +176,7 @@ export class Fun extends plugin {
           ]
 
       /** 回复 */
-      e.reply(msg, false, { at: true })
+      e.reply(msg, true, { at: e.at })
     } else {
       /** 判断是否命中正则 */
       if (!e.msg.includes('我', '赞', '点')) { return true };
@@ -229,7 +226,7 @@ export class Fun extends plugin {
           ]
 
       /** 回复 */
-      e.reply(msg, false, { at: true })
+      e.reply(msg, true, { at: true })
     }
   }
 

@@ -4,7 +4,7 @@ import moment from 'moment'
 import os from 'os'
 import plugin from '../../../lib/plugins/plugin.js'
 import { Config, Version } from '../components/index.js'
-import { platform, status } from '../constants/other.js'
+import { status } from '../constants/other.js'
 import { State, common, puppeteer } from '../model/index.js'
 const require = createRequire(import.meta.url)
 
@@ -106,15 +106,15 @@ export class NewState extends plugin {
       // nodejs版本
       nodeVersion: process.version,
       // Bot版本
-      botVersion: this.Bot.version ? `${this.Bot.version.name}(${this.Bot.version.id}) ${this.Bot.version.version}` : `ICQQ(QQ) v${require('icqq/package.json').version}`,
+      botVersion: this.Bot.version ? `${this.Bot.version.name}(${this.Bot.version.id})${this.Bot.apk ? ` ${this.Bot.version.version}` : ""}` : `ICQQ(QQ) v${require('icqq/package.json').version}`,
       // 群数
       groupQuantity: Array.from(this.Bot.gl.values()).length,
       // 好友数
       friendQuantity: Array.from(this.Bot.fl.values()).length,
-      // 登陆设备
-      platform: platform[this.Bot.config?.platform],
+      // 登录平台版本
+      platform: this.Bot.apk ? `${this.Bot.apk.display} v${this.Bot.apk.version}` : this.Bot.version.version,
       // 在线状态
-      status: status[this.Bot.status],
+      status: status[this.Bot.status] || "在线",
       // 硬盘内存
       HardDisk,
       // FastFetch

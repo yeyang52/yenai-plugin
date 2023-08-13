@@ -176,12 +176,12 @@ Bot.on?.('message', async (e) => {
     if (remainTimes > 0) {
       await e.recall()
 
-      const msg = `❎ 验证失败，你还有「${remainTimes}」次机会，请发送「${nums[0]} ${operator} ${nums[1]}」的运算结果`
+      const msg = `\n❎ 验证失败\n你还有「${remainTimes}」次机会\n请发送「${nums[0]} ${operator} ${nums[1]}」的运算结果`
       return await e.reply([segment.at(e.user_id), msg])
     }
     clearTimeout(kickTimer)
     clearTimeout(remindTimer)
-    await e.reply([segment.at(e.user_id), '验证失败，请重新申请'])
+    await e.reply([segment.at(e.user_id), '/n验证失败，请重新申请'])
     delete temp[e.user_id + e.group_id]
     return await e.group.kickMember(e.user_id)
   }
@@ -222,7 +222,7 @@ async function verify (user_id, group_id, e) {
   const verifyCode = String(operator === '-' ? m - n : m + n)
   logger.mark(`[Yenai-Plugin][进群验证]答案：${verifyCode}`)
   const kickTimer = setTimeout(async () => {
-    e.reply([segment.at(user_id), ' 验证超时，移出群聊，请重新申请'])
+    e.reply([segment.at(user_id), '/n验证超时，移出群聊，请重新申请'])
 
     delete temp[user_id + group_id]
 
@@ -235,14 +235,14 @@ async function verify (user_id, group_id, e) {
 
   const remindTimer = setTimeout(async () => {
     if (shouldRemind && temp[user_id + group_id].remindTimer) {
-      const msg = ` 验证仅剩最后一分钟，请发送「${m} ${operator} ${n}」的运算结果，否则将会被移出群聊`
+      const msg = ` /n验证仅剩最后一分钟/n请发送/n「${m} ${operator} ${n}」的运算结果/n否则将会被移出群聊`
 
       await e.reply([segment.at(user_id), msg])
     }
     clearTimeout(remindTimer)
   }, Math.abs(time * 1000 - 60000))
 
-  const msg = ` 欢迎，请在「${time}」秒内发送「${m} ${operator} ${n}」的运算结果，否则将会被移出群聊`
+  const msg = ` 欢迎！/n请在「${time}」秒内发送/n「${m} ${operator} ${n}」的运算结果/n否则将会被移出群聊`
 
   // 消息发送成功才写入
   if (await e.reply([segment.at(user_id), msg])) {

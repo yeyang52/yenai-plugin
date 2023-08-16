@@ -303,7 +303,9 @@ export class Fun extends plugin {
   // 铃声多多
   async lingsheng (e) {
     let msg = e.msg.replace(/#|铃声搜索/g, '')
-    let api = `https://xiaobai.klizi.cn/API/music/lingsheng.php?msg=${msg}&n=1`
+    let num = Math.ceil(Math.random() * 15)
+    if (num == 0) num = 1
+    let api = `http://xiaobai.klizi.cn/API/music/lingsheng.php?msg=${msg}&n=${num}`
     let res = await fetch(api).then(res => res.json()).catch(err => logger.error(err))
     if (!res) return e.reply(API_ERROR)
     if (res.title == null && res.author == null) return e.reply('❎ 没有找到相关的歌曲哦~', true)

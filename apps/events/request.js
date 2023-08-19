@@ -15,7 +15,7 @@ Bot.on?.('request', async (e) => {
         case 'invite':
           if (!Config.whole.groupInviteRequest) return false
           if (cfg.masterQQ.includes(e.user_id)) return false
-          logger.mark('[Yenai-Plugin]邀请机器人进群')
+          logger.info('[Yenai-Plugin]邀请机器人进群')
           msg = [
             segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/0`),
             `[通知(${e.self_id}) - 邀请机器人进群]\n`,
@@ -45,7 +45,7 @@ Bot.on?.('request', async (e) => {
             await redis.set(`yenai:groupAdd:${sendmsg.message_id}`, e.user_id, { EX: 3600 })
           }
           if (!Config.getGroup(e.group_id).addGroupApplication) return false
-          logger.mark('[Yenai-Plugin]加群申请')
+          logger.info('[Yenai-Plugin]加群申请')
           msg = [
             segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/0`),
             `[通知(${e.self_id}) - 加群申请]\n`,
@@ -61,7 +61,7 @@ Bot.on?.('request', async (e) => {
       break
     case 'friend':
       if (!Config.whole.friendRequest) return false
-      logger.mark('[Yenai-Plugin]好友申请')
+      logger.info('[Yenai-Plugin]好友申请')
       msg = [
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
         `[通知(${e.self_id}) - 添加好友申请]\n`,

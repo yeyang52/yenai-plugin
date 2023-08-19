@@ -8,7 +8,7 @@ Bot.on?.('internal.input', async (e) => {
   let msg = [
     segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
     `[事件 - 对方${e.end ? '输入完毕' : '正在输入'}]\n`,
-    `好友QQ：${e.user_id}`
+    `好友账号：${e.user_id}`
   ]
   await common.sendMasterMsg(msg)
 })

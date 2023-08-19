@@ -10,8 +10,8 @@ Bot.on?.('notice.friend', async (e) => {
       logger.mark('[Yenai-Plugin]新增好友')
       msg = [
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
-        '[通知 - 新增好友]\n',
-          `好友QQ：${e.user_id}\n`,
+        `[通知(${e.self_id}) - 新增好友]\n`,
+          `好友账号：${e.user_id}\n`,
           `好友昵称：${e.nickname}`
       ]
       break
@@ -21,8 +21,8 @@ Bot.on?.('notice.friend', async (e) => {
       logger.mark('[Yenai-Plugin]好友减少')
       msg = [
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
-        '[通知 - 好友减少]\n',
-          `好友QQ：${e.user_id}\n`,
+        `[通知(${e.self_id}) - 好友减少]\n`,
+          `好友账号：${e.user_id}\n`,
           `好友昵称：${e.nickname}`
       ]
       break
@@ -65,8 +65,8 @@ Bot.on?.('notice.friend', async (e) => {
       // 消息
       msg = [
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
-        '[消息 - 好友撤回消息]\n',
-          `好友QQ：${e.user_id}\n`,
+        `[消息(${e.self_id}) - 好友撤回消息]\n`,
+          `好友账号：${e.user_id}\n`,
           `撤回时间：${formatDate(e.time)}\n`,
           '撤回消息：',
           ...res
@@ -78,8 +78,8 @@ Bot.on?.('notice.friend', async (e) => {
       logger.mark('[Yenai-Plugin]好友戳一戳')
       msg = [
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
-        '[消息 - 戳一戳]\n',
-          `来源QQ：${e.user_id}`
+        `[消息(${e.self_id}) - 戳一戳]\n`,
+          `来源账号：${e.user_id}`
       ]
       break
     }

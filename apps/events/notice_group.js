@@ -14,7 +14,7 @@ Bot.on?.('notice.group', async (e) => {
 
         msg = [
           segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`),
-          '[通知 - 新增群聊]\n',
+          `[通知(${e.self_id}) - 新增群聊]\n`,
             `新增群号：${e.group_id}`
         ]
       } else {
@@ -24,9 +24,9 @@ Bot.on?.('notice.group', async (e) => {
 
         msg = [
           segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`),
-          '[通知 - 新增群员]\n',
+          `[通知(${e.self_id}) - 新增群员]\n`,
             `群号：${e.group_id}\n`,
-            `新成员QQ：${e.user_id}\n`,
+            `新成员账号：${e.user_id}\n`,
             `新成员昵称：${e.nickname}`
         ]
       }
@@ -42,8 +42,8 @@ Bot.on?.('notice.group', async (e) => {
           segment.image(
               `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
           ),
-          '[通知 - 群聊被解散]\n',
-            `操作人QQ：${e.operator_id}\n`,
+          `[通知(${e.self_id}) - 群聊被解散]\n`,
+            `操作人账号：${e.operator_id}\n`,
             `解散群号：${e.group_id}`
         ]
       } else if (
@@ -58,8 +58,8 @@ Bot.on?.('notice.group', async (e) => {
           segment.image(
               `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
           ),
-          '[通知 - 机器人被踢]\n',
-            `操作人QQ：${e.operator_id}\n`,
+          `[通知(${e.self_id}) - 机器人被踢]\n`,
+            `操作人账号：${e.operator_id}\n`,
             `被踢群号：${e.group_id}`
         ]
       } else if (
@@ -74,7 +74,7 @@ Bot.on?.('notice.group', async (e) => {
           segment.image(
               `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
           ),
-          '[通知 - 机器人退群]\n',
+          `[通知(${e.self_id}) - 机器人退群]\n`,
             `退出群号：${e.group_id}`
         ]
       } else if (e.operator_id === e.user_id) {
@@ -86,8 +86,8 @@ Bot.on?.('notice.group', async (e) => {
           segment.image(
               `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
           ),
-          '[通知 - 群员退群]\n',
-            `退群人QQ：${e.user_id}\n`,
+          `[通知(${e.self_id}) - 群员退群]\n`,
+            `退群人账号：${e.user_id}\n`,
             `退群人昵称：${e.member.nickname}\n`,
             `退群人群名片：${e.member.card}\n`,
             `退出群号：${e.group_id}`
@@ -101,9 +101,9 @@ Bot.on?.('notice.group', async (e) => {
           segment.image(
               `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
           ),
-          '[通知 - 群员被踢]\n',
-            `操作人QQ：${e.operator_id}\n`,
-            `被踢人QQ：${e.user_id}\n`,
+          `[通知(${e.self_id}) - 群员被踢]\n`,
+            `操作人账号：${e.operator_id}\n`,
+            `被踢人账号：${e.user_id}\n`,
             `被踢人昵称：${e.member.nickname}\n`,
             `被踢人群名片：${e.member.card}\n`,
             `被踢群号：${e.group_id}`
@@ -122,8 +122,8 @@ Bot.on?.('notice.group', async (e) => {
               `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
           ),
           e.set
-            ? '[通知 - 机器人被设置管理]:\n'
-            : '[通知 - 机器人被取消管理]:\n',
+            ? `[通知(${e.self_id}) - 机器人被设置管理]:\n`
+            : `[通知(${e.self_id}) - 机器人被取消管理]:\n`,
             `被操作群号：${e.group_id}`
         ]
       } else {
@@ -133,8 +133,8 @@ Bot.on?.('notice.group', async (e) => {
           segment.image(
               `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
           ),
-          e.set ? '[通知 - 新增群管理员]:\n' : '[通知 - 取消群管理员]:\n',
-            `被操作QQ：${e.user_id}\n`,
+          e.set ? `[通知(${e.self_id}) - 新增群管理员]:\n` : `[通知(${e.self_id}) - 取消群管理员]:\n`,
+            `被操作账号：${e.user_id}\n`,
             `被操作群号：${e.group_id}`
         ]
       }
@@ -154,8 +154,8 @@ Bot.on?.('notice.group', async (e) => {
           segment.image(
               `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
           ),
-          '[通知 - 机器人被解除禁言]\n',
-            `处理人QQ：${e.operator_id}\n`,
+          `[通知(${e.self_id}) - 机器人被解除禁言]\n`,
+            `处理人账号：${e.operator_id}\n`,
             `处理群号：${e.group_id}`
         ]
       } else if (e.user_id === (e.bot ?? Bot).uin) {
@@ -165,8 +165,8 @@ Bot.on?.('notice.group', async (e) => {
           segment.image(
               `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
           ),
-          '[通知 - 机器人被禁言]\n',
-            `禁言人QQ：${e.operator_id}\n`,
+          `[通知(${e.self_id}) - 机器人被禁言]\n`,
+            `禁言人账号：${e.operator_id}\n`,
             `禁言群号：${e.group_id}\n`,
             `禁言时长：${forbiddenTime}`
         ]
@@ -183,7 +183,7 @@ Bot.on?.('notice.group', async (e) => {
         segment.image(
             `https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`
         ),
-        '[通知 - 群聊转让]\n',
+        `[通知(${e.self_id}) - 群聊转让]\n`,
           `转让群号：${e.group_id}\n`,
           `旧群主：${e.operator_id}\n`,
           `新群主：${e.user_id}`
@@ -253,7 +253,7 @@ Bot.on?.('notice.group', async (e) => {
       // 发送的消息
       msg = [
         segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`),
-          `[通知 - 群聊${isManage ? '管理' : ''}撤回]\n`,
+          `[通知(${e.self_id}) - 群聊${isManage ? '管理' : ''}撤回]\n`,
           `撤回群名：${e.group_name}\n`,
           `撤回群号：${e.group_id}\n`,
           isManage,

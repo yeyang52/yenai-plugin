@@ -4,25 +4,7 @@
 <link rel="stylesheet" href="{{_res_path}}state/state.css">
 {{/block}}
 {{block 'main'}}
-<div class="box">
-    <div class="tb">
-        <div class="avatar">
-            <img src="{{portrait}}"
-                onerror="this.src= '{{_res_path}}state/img/default_avatar.png'; this.onerror = null;">
-        </div>
-
-        <div class="header">
-            <h1>{{nickname}}</h1>
-            <hr noshade>
-            <p>{{status}}({{platform}}) | 收{{recv}} | 发{{sent}} | 图片{{screenshot}} | 好友{{friendQuantity}} |
-                群{{groupQuantity}}
-            </p>
-            <p>{{BotName}} 已运行 {{runTime}} | 系统运行 {{systime}}</p>
-            <p>{{calendar}} | Nodejs {{nodeVersion}} | {{botVersion}}</p>
-        </div>
-    </div>
-
-</div>
+{{@BotStatus}}
 <div class="box">
     <ul class="info">
         {{each visualData group}}

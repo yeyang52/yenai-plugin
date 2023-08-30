@@ -142,9 +142,7 @@ Bot.on?.('notice.group.increase', async (e) => {
 })
 
 // 答案监听
-Bot.on?.('message', async (e) => {
-  if (!e.isGroup) return false
-
+Bot.on?.('message.group', async (e) => {
   let { openGroup, mode, SuccessMsgs } = Config.groupverify
 
   if (!openGroup.includes(e.group_id)) return
@@ -157,9 +155,9 @@ Bot.on?.('message', async (e) => {
 
   const { nums, operator } = temp[e.user_id + e.group_id]
 
-  const isAccurateModeOK = mode === '精确' && e.msg == verifyCode
+  const isAccurateModeOK = mode === '精确' && e.raw_message == verifyCode
 
-  const isVagueModeOK = mode === '模糊' && e.msg.includes(verifyCode)
+  const isVagueModeOK = mode === '模糊' && e.raw_message?.includes(verifyCode)
 
   const isOK = isAccurateModeOK || isVagueModeOK
 

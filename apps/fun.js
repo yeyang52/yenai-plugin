@@ -186,7 +186,7 @@ export class Fun extends plugin {
 
       /** 回复 */
       e.reply(msg, true, { at: e.at })
-    } else {
+    } else if (!e.msg.includes(`他`, `她`, `它`, `TA`, `ta`, `Ta`)) {
       /** 判断是否为好友 */
       let isFriend = await (e.bot ?? Bot).fl.get(e.user_id)
       let allowLikeByStrangers = Config.whole.Strangers_love

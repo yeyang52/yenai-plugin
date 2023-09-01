@@ -803,14 +803,17 @@ export class Assistant extends plugin {
   async BlockOne() {
     if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     const configPath = process.cwd().replace(/\\/g, '/') + '/config/config/other.yaml'
+    /** 判断at */
     if (this.e.at) {
       try {
         const yamlContentBuffer = await fs.promises.readFile(configPath)
+        /** 转字符串 */
         const yamlContent = yamlContentBuffer.toString('utf-8')
         const data = yaml.parse(yamlContent)
         if (!data.blackQQ.includes(this.e.at)) {
           data.blackQQ.push(this.e.at)
           const updatedYaml = yaml.stringify(data, { quote: false })
+          /** 删除引号 */
           const resultYaml = updatedYaml.replace(/"/g, '')
           await fs.promises.writeFile(configPath, resultYaml, 'utf-8')
           await this.e.reply(`✅ 已成功拉黑${this.e.at}`)
@@ -818,20 +821,26 @@ export class Assistant extends plugin {
           await this.e.reply(`❎ 拉黑失败，黑名单中已存在`)
         }
       } catch (error) {
-        await this.e.reply(`❎ 拉黑失败，请前往控制台查看报错`)
+        await this.e.reply(`❎ 拉黑失败，发生了未知的错误`)
         logger.error(error)
       }
     } else {
+      /** 非TRSS-Yunzai仅匹配5-10位非0开头数字 */
       if (!Version.name == `TRSS-Yunzai`) {
-        const regex = /^#?拉黑(群|群聊)?(\d{5,10})$/
+        const regex = /^#?拉黑(群|群聊)?[1-9]\d{4,9}$/
         const match = this.e.msg.match(regex)
         if (match) {
           const extractedQQ = match[2]
           const blackId = extractedQQ.match(/\d+/)[0]
-          this.blackResult = blackId
+          if (/^\d+$/.test(blackId)) {
+            this.blackResult = blackId
+          } else {
+            await this.e.reply(`❎ 拉黑失败，QQ或群号不合法`)
+          }
         }
       } else {
-        let blackId = this.e.msg.replace(/#|拉黑|群|群聊/g, '').trim()
+        /** TRSS-Yunzai匹配所有字符 */
+        const blackId = this.e.msg.replace(/#|拉黑|群|群聊/g, '').trim()
         this.blackResult = blackId
       }
       try {
@@ -846,7 +855,7 @@ export class Assistant extends plugin {
             await fs.promises.writeFile(configPath, resultYaml, 'utf-8')
             await this.e.reply(`✅ 已成功拉黑${this.blackResult}`)
           } else {
-            await this.e.reply(`❎ 拉黑失败，黑名单中已存在`)
+            await this.e.reply(`❎ 拉黑失败，${this.blackResult}在黑名单中已存在`)
           }
         } else {
           if (!data.blackGroup.includes(this.blackResult)) {
@@ -856,11 +865,11 @@ export class Assistant extends plugin {
             await fs.promises.writeFile(configPath, resultYaml, 'utf-8')
             await this.e.reply(`✅ 已成功拉黑群聊${this.blackResult}`)
           } else {
-            await this.e.reply(`❎ 拉黑失败，黑名单中已存在`)
+            await this.e.reply(`❎ 拉黑失败，${this.blackResult}在黑名单中已存在`)
           }
         }
       } catch (error) {
-        await this.e.reply(`❎ 拉黑失败，请前往控制台查看报错`)
+        await this.e.reply(`❎ 拉黑失败，发生了未知的错误`)
         logger.error(error)
       }
     }
@@ -880,23 +889,27 @@ export class Assistant extends plugin {
           await fs.promises.writeFile(configPath, updatedYaml, 'utf-8')
           await this.e.reply(`✅ 已成功取消拉黑${this.e.at}`)
         } else {
-          await this.e.reply(`❎ 找不到要拉黑的对象`)
+          await this.e.reply(`❎ 找不到要取消拉黑的对象`)
         }
       } catch (error) {
-        await this.e.reply(`❎ 取消拉黑失败，请前往控制台查看报错`)
+        await this.e.reply(`❎ 取消拉黑失败，发生了未知的错误`)
         logger.error(error)
       }
     } else {
       if (!Version.name == `TRSS-Yunzai`) {
-        const regex = /^#?(取消|删除|移除)拉黑(群|群聊)?(\d{5,10})$/
+        const regex = /^#?(取消|删除|移除)拉黑(群|群聊)?[1-9]\d{4,9}$/
         const match = this.e.msg.match(regex)
         if (match) {
           const extractedQQ = match[2]
           const blackId = extractedQQ.match(/\d+/)[0]
-          this.blackResult = blackId
+          if (/^\d+$/.test(blackId)) {
+            this.blackResult = blackId
+          } else {
+            await this.e.reply(`❎ 取消拉黑失败，QQ或群号不合法`)
+          }
         }
       } else {
-        let blackId = this.e.msg.replace(/#|取消|删除|移除|拉黑|群|群聊/g, '').trim()
+        const blackId = this.e.msg.replace(/#|取消|删除|移除|拉黑|群|群聊/g, '').trim()
         this.blackResult = blackId
       }
       try {
@@ -925,7 +938,7 @@ export class Assistant extends plugin {
           }
         }
       } catch (error) {
-        await this.e.reply(`❎ 取消拉黑失败，请前往控制台查看报错`)
+        await this.e.reply(`❎ 取消拉黑失败，发生了未知的错误`)
         logger.error(error)
       }
     }

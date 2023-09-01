@@ -826,7 +826,7 @@ export class Assistant extends plugin {
         const regex = /^#?拉黑(群|群聊)?(\d{5,10})$/
         const match = this.e.msg.match(regex)
         if (match) {
-          const extractedQQ = match[1]
+          const extractedQQ = match[2]
           const blackId = extractedQQ.match(/\d+/)[0]
           this.blackResult = blackId
         }
@@ -891,7 +891,7 @@ export class Assistant extends plugin {
         const regex = /^#?(取消|删除|移除)拉黑(群|群聊)?(\d{5,10})$/
         const match = this.e.msg.match(regex)
         if (match) {
-          const extractedQQ = match[1]
+          const extractedQQ = match[2]
           const blackId = extractedQQ.match(/\d+/)[0]
           this.blackResult = blackId
         }

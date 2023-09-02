@@ -816,7 +816,7 @@ export class Assistant extends plugin {
           /** 删除引号 */
           const resultYaml = updatedYaml.replace(/"/g, '')
           await fs.promises.writeFile(configPath, resultYaml, 'utf-8')
-          await this.e.reply(`✅ 已成功拉黑${this.e.at}`)
+          await this.e.reply(`✅ 已拉黑${this.e.at}`)
         } else {
           await this.e.reply(`❎ 拉黑失败，黑名单中已存在`)
         }
@@ -841,7 +841,7 @@ export class Assistant extends plugin {
         /** TRSS-Yunzai匹配所有字符 */
         const blackId = this.e.msg.replace(/#|拉黑|群|群聊/g, '').trim()
         if (blackId == "") {
-          await this.e.reply(`❎ 取消拉黑失败，没有键入QQ或群号`)
+          await this.e.reply(`❎ 拉黑失败，没有键入QQ或群号`)
           return true
         }
         this.blackResult = blackId
@@ -856,7 +856,7 @@ export class Assistant extends plugin {
             const updatedYaml = yaml.stringify(data, { quote: false })
             const resultYaml = updatedYaml.replace(/"/g, '')
             await fs.promises.writeFile(configPath, resultYaml, 'utf-8')
-            await this.e.reply(`✅ 已成功拉黑${this.blackResult}`)
+            await this.e.reply(`✅ 已拉黑${this.blackResult}`)
           } else {
             await this.e.reply(`❎ 拉黑失败，${this.blackResult}在黑名单中已存在`)
           }
@@ -866,7 +866,7 @@ export class Assistant extends plugin {
             const updatedYaml = yaml.stringify(data, { quote: false })
             const resultYaml = updatedYaml.replace(/"/g, '')
             await fs.promises.writeFile(configPath, resultYaml, 'utf-8')
-            await this.e.reply(`✅ 已成功拉黑群聊${this.blackResult}`)
+            await this.e.reply(`✅ 已拉黑群聊${this.blackResult}`)
           } else {
             await this.e.reply(`❎ 拉黑失败，${this.blackResult}在黑名单中已存在`)
           }
@@ -890,7 +890,7 @@ export class Assistant extends plugin {
           data.blackQQ = data.blackQQ.filter(item => item.toString() !== itemToRemove)
           const updatedYaml = yaml.stringify(data)
           await fs.promises.writeFile(configPath, updatedYaml, 'utf-8')
-          await this.e.reply(`✅ 已成功取消拉黑${this.e.at}`)
+          await this.e.reply(`✅ 已取消拉黑${this.e.at}`)
         } else {
           await this.e.reply(`❎ 找不到要取消拉黑的对象`)
         }
@@ -928,7 +928,7 @@ export class Assistant extends plugin {
             data.blackQQ = data.blackQQ.filter(item => item.toString() !== itemToRemove)
             const updatedYaml = yaml.stringify(data)
             await fs.promises.writeFile(configPath, updatedYaml, 'utf-8')
-            await this.e.reply(`✅ 已成功取消拉黑${this.blackResult}`)
+            await this.e.reply(`✅ 已取消拉黑${this.blackResult}`)
           } else {
             await this.e.reply(`❎ 找不到要取消拉黑的对象`)
           }
@@ -938,7 +938,7 @@ export class Assistant extends plugin {
             data.blackGroup = data.blackGroup.filter(item => item.toString() !== itemToRemove)
             const updatedYaml = yaml.stringify(data)
             await fs.promises.writeFile(configPath, updatedYaml, 'utf-8')
-            await this.e.reply(`✅ 已成功取消拉黑群聊${this.blackResult}`)
+            await this.e.reply(`✅ 已取消拉黑群聊${this.blackResult}`)
           } else {
             await this.e.reply(`❎ 找不到要取消拉黑的对象`)
           }

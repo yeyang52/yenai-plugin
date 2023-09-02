@@ -841,6 +841,7 @@ export class Assistant extends plugin {
         /** TRSS-Yunzai匹配所有字符 */
         const blackId = this.e.msg.replace(/#|拉黑|群|群聊/g, '').trim()
         if (blackId == "") {
+          await this.e.reply(`❎ 取消拉黑失败，没有键入QQ或群号`)
           return true
         }
         this.blackResult = blackId
@@ -912,6 +913,7 @@ export class Assistant extends plugin {
       } else {
         const blackId = this.e.msg.replace(/#|取消|删除|移除|拉黑|群|群聊/g, '').trim()
         if (blackId == "") {
+          await this.e.reply(`❎ 取消拉黑失败，没有键入QQ或群号`)
           return true
         }
         this.blackResult = blackId

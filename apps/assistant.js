@@ -830,8 +830,7 @@ export class Assistant extends plugin {
         const regex = /^#?拉黑(群|群聊)?[1-9]\d{4,9}$/
         const match = this.e.msg.match(regex)
         if (match) {
-          const extractedQQ = match[2]
-          const blackId = extractedQQ.match(/\d+/)[0]
+          const blackId = match[3]
           if (/^\d+$/.test(blackId)) {
             this.blackResult = blackId
           } else {
@@ -841,6 +840,9 @@ export class Assistant extends plugin {
       } else {
         /** TRSS-Yunzai匹配所有字符 */
         const blackId = this.e.msg.replace(/#|拉黑|群|群聊/g, '').trim()
+        if (blackId == "") {
+          return true
+        }
         this.blackResult = blackId
       }
       try {
@@ -900,8 +902,7 @@ export class Assistant extends plugin {
         const regex = /^#?(取消|删除|移除)拉黑(群|群聊)?[1-9]\d{4,9}$/
         const match = this.e.msg.match(regex)
         if (match) {
-          const extractedQQ = match[2]
-          const blackId = extractedQQ.match(/\d+/)[0]
+          const blackId = match[3]
           if (/^\d+$/.test(blackId)) {
             this.blackResult = blackId
           } else {
@@ -910,6 +911,9 @@ export class Assistant extends plugin {
         }
       } else {
         const blackId = this.e.msg.replace(/#|取消|删除|移除|拉黑|群|群聊/g, '').trim()
+        if (blackId == "") {
+          return true
+        }
         this.blackResult = blackId
       }
       try {

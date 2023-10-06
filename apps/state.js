@@ -60,7 +60,8 @@ export class NewState extends plugin {
 
     // 网络测试
     let psTest = []
-    let { psTestSites, psTestTimeout } = Config.state
+    let { psTestSites, psTestTimeout, backdrop } = Config.state
+    State.chartData.backdrop = backdrop
     psTestSites && promiseTaskList.push(...psTestSites?.map(i => State.getNetworkLatency(i.url, psTestTimeout).then(res => psTest.push({
       first: i.name,
       tail: res

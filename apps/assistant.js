@@ -23,19 +23,19 @@ export class Assistant extends plugin {
       priority: 2000,
       rule: [
         {
-          reg: '^#改头像.*$',
+          reg: '^#改头像',
           fnc: 'SetAvatar'
         },
         {
-          reg: '^#改昵称.*$',
+          reg: '^#改昵称',
           fnc: 'SetNickname'
         },
         {
-          reg: '^#改签名.*$',
+          reg: '^#改签名',
           fnc: 'SetSignature'
         },
         {
-          reg: '^#改状态.*$',
+          reg: '^#改状态',
           fnc: 'SetOnlineStatus'
         },
         {
@@ -51,23 +51,23 @@ export class Assistant extends plugin {
           fnc: 'SendGroupListMsg'
         },
         {
-          reg: '^#退群.*$',
+          reg: '^#退群',
           fnc: 'QuitGroup'
         },
         {
-          reg: '^#删好友.*$',
+          reg: '^#删好友',
           fnc: 'DeleteFriend'
         },
         {
-          reg: '^#改性别.*$',
+          reg: '^#改性别',
           fnc: 'SetGender'
         },
         {
-          reg: '^#取直链.*$',
+          reg: '^#取直链',
           fnc: 'ImageLink'
         },
         {
-          reg: '^#取face.*$',
+          reg: '^#取face',
           fnc: 'Face'
         },
         {
@@ -79,7 +79,7 @@ export class Assistant extends plugin {
           fnc: 'Qzonedel'
         },
         {
-          reg: '^#发说说.*$',
+          reg: '^#发说说',
           fnc: 'Qzonesay'
         },
         {
@@ -87,15 +87,15 @@ export class Assistant extends plugin {
           fnc: 'QzonedelAll'
         },
         {
-          reg: '^#改群名片.*$',
+          reg: '^#改群名片',
           fnc: 'SetGroupCard'
         },
         {
-          reg: '^#改群头像.*$',
+          reg: '^#改群头像',
           fnc: 'SetGroupAvatar'
         },
         {
-          reg: '^#改群昵称.*$',
+          reg: '^#改群昵称',
           fnc: 'SetGroupName'
         },
         {
@@ -123,11 +123,11 @@ export class Assistant extends plugin {
           fnc: 'setModel'
         },
         {
-          reg: '^#?拉黑(群|群聊)?.*$',
+          reg: '^#?拉黑(群|群聊)?',
           fnc: 'BlockOne'
         },
         {
-          reg: '^#?(取消|删除|移除)(群|群聊)?拉黑(群|群聊)?.*$',
+          reg: '^#?(取消|删除|移除)(群|群聊)?拉黑(群|群聊)?',
           fnc: 'CancelBlockOne'
         }
       ]

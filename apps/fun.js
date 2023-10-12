@@ -35,7 +35,7 @@ export class Fun extends plugin {
           fnc: 'Sing'
         },
         {
-          reg: '^#支付宝到账.*$',
+          reg: '^#支付宝到账',
           fnc: 'ZFB'
         },
         {
@@ -59,7 +59,7 @@ export class Fun extends plugin {
         //   fnc: 'heisiwu'
         // },
         {
-          reg: '^#?铃声搜索.*$',
+          reg: '^#?铃声搜索',
           fnc: 'lingsheng'
         },
         {
@@ -75,7 +75,7 @@ export class Fun extends plugin {
         //   fnc: 'mengdui'
         // },
         {
-          reg: `^#(${Object.keys(pandadiuType).join('|')})?acg.*$`,
+          reg: `^#(${Object.keys(pandadiuType).join('|')})?acg`,
           fnc: 'acg'
         },
         {

@@ -48,7 +48,7 @@ export class GroupAdmin extends plugin {
           fnc: 'AllowAnony'
         },
         {
-          reg: '^#发群公告.*$',
+          reg: '^#发群公告',
           fnc: 'AddAnnounce'
         },
         {
@@ -60,11 +60,11 @@ export class GroupAdmin extends plugin {
           fnc: 'GetAnnounce'
         },
         {
-          reg: '^#修改头衔.*$',
+          reg: '^#修改头衔',
           fnc: 'adminsetTitle'
         },
         {
-          reg: '^#申请头衔.*$',
+          reg: '^#申请头衔',
           fnc: 'SetGroupSpecialTitle'
         },
         {
@@ -108,7 +108,7 @@ export class GroupAdmin extends plugin {
           fnc: 'noactive'
         },
         {
-          reg: '^#发通知.*$',
+          reg: '^#发通知',
           fnc: 'Send_notice'
         },
         {

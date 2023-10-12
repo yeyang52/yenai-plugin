@@ -19,7 +19,7 @@ export class NewHandle extends plugin {
           fnc: 'Handle'
         },
         {
-          reg: '^#?回复.*$',
+          reg: '^#?回复',
           fnc: 'Replys',
           event: 'message.private'
         },

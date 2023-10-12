@@ -9,15 +9,15 @@ export class NewGroupBannedWords extends plugin {
       priority: 1,
       rule: [
         {
-          reg: '^#?新增(模糊|精确|正则)?(踢|禁|撤|踢撤|禁撤)?违禁词.*$',
+          reg: '^#?新增(模糊|精确|正则)?(踢|禁|撤|踢撤|禁撤)?违禁词',
           fnc: 'add'
         },
         {
-          reg: '^#?删除违禁词.*$',
+          reg: '^#?删除违禁词',
           fnc: 'del'
         },
         {
-          reg: '^#?查看违禁词.*$',
+          reg: '^#?查看违禁词',
           fnc: 'query'
         },
         {
@@ -34,7 +34,7 @@ export class NewGroupBannedWords extends plugin {
           fnc: 'muteTime'
         },
         {
-          reg: '^#(增加|减少|查看)头衔屏蔽词.*$',
+          reg: '^#(增加|减少|查看)头衔屏蔽词',
           fnc: 'ProhibitedTitle'
         },
         {

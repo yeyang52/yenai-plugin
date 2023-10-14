@@ -93,7 +93,7 @@ export class NewState extends plugin {
     // nodejs版本
     const nodeVersion = process.version
     let BotStatus = ""
-    for (const i of e.msg.includes('pro') && Array.isArray(Bot.uin) ? Bot.uin : (Bot?.adapter ? Bot.adapter : [e.self_id])) {
+    for (const i of e.msg.includes('pro') && Array.isArray(Bot.uin) ? Bot.uin : (Bot?.adapter?.[Bot.uin] ? Bot.adapter : [e.self_id])) {
       const bot = Bot[i]
       if (!bot?.uin) continue
       // 头像

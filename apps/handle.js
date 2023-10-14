@@ -19,7 +19,7 @@ export class NewHandle extends plugin {
           fnc: 'Handle'
         },
         {
-          reg: '^#?回复.*$',
+          reg: '^#?回复',
           fnc: 'Replys',
           event: 'message.private'
         },
@@ -54,8 +54,11 @@ export class NewHandle extends plugin {
     if (!e.isMaster) return false
     let yes = !!/同意/.test(e.msg)
 
-    let FriendAdd = (await (e.bot ?? Bot).getSystemMsg())
-      .filter(item => item.request_type == 'friend' && item.sub_type == 'add')
+    const systemMsg = (await (e.bot ?? Bot).getSystemMsg());
+    const FriendAdd = systemMsg.filter(
+      item => item.request_type == 'friend' &&
+      (item.sub_type === 'add' || item.sub_type === 'single')
+    );
 
     if (_.isEmpty(FriendAdd)) return e.reply('暂无好友申请(。-ω-)zzz', true)
 
@@ -208,7 +211,7 @@ export class NewHandle extends plugin {
       } catch {
         return e.reply('❎ 消息可能已过期')
       }
-      if (/好友消息/.test(res[0]) && /好友QQ/.test(res[1])) {
+      if (/好友消息/.test(res[0]) && /好友账号/.test(res[1])) {
         qq = res[1].match(/[1-9]\d*/g)
       } else if (/群临时消息/.test(res[0])) {
         qq = res[2].match(/[1-9]\d*/g)

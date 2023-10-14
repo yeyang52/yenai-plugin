@@ -21,7 +21,7 @@ export class NewSearch extends plugin {
           fnc: 'help'
         },
         {
-          reg: '^#bgg搜索.*$',
+          reg: '^#bgg搜索',
           fnc: 'bggSearch'
         },
         {

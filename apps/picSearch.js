@@ -25,7 +25,7 @@ export class NewPicSearch extends plugin {
           fnc: 'Ascii2D'
         },
         {
-          reg: /^#设置SauceNAOApiKey.*$/i,
+          reg: /^#设置SauceNAOApiKey/i,
           fnc: 'UploadSauceNAOKey'
         }
 

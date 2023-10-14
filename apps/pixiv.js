@@ -64,7 +64,7 @@ export class NewPixiv extends plugin {
           fnc: 'pximg'
         },
         {
-          reg: '^#(p站|pixiv)(查看|更换)代理.*$',
+          reg: '^#(p站|pixiv)(查看|更换)代理',
           fnc: 'setProxy',
           permission: 'master'
         },

@@ -93,7 +93,19 @@ export class NewState extends plugin {
     // nodejs版本
     const nodeVersion = process.version
     let BotStatus = ""
-    for (const i of e.msg.includes('pro') && Array.isArray(Bot.uin) ? Bot.uin : (Bot?.adapter?.[Bot?.uin] ? Bot.adapter : [e.self_id])) {
+
+    /** bot列表 */
+    let BotList = [e.self_id]
+    /** TRSS */
+    if (e.msg.includes("pro") && Array.isArray(Bot?.uin)) {
+      BotList = Bot.uin
+    }
+    /** ws、qg、wx等多bot */
+    else if (!Array.isArray(Bot?.uin) && Bot?.adapter && Bot.adapter.includes(Bot.uin)) {
+      BotList = Bot.adapter
+    }
+
+    for (const i of BotList) {
       const bot = Bot[i]
       if (!bot?.uin) continue
       // 头像

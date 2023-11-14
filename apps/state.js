@@ -100,8 +100,8 @@ export class NewState extends plugin {
     if (e.msg.includes("pro") && Array.isArray(Bot?.uin)) {
       BotList = Bot.uin
     }
-    /** ws、qg、wx等多bot */
-    else if (!Array.isArray(Bot?.uin) && Bot?.adapter && Bot.adapter.includes(Bot.uin)) {
+    /** ws-plugin、Lain-plugin多bot */
+    else if (e.msg.includes("pro") && !Array.isArray(Bot?.uin) && Bot?.adapter.includes(e.self_id)) {
       BotList = Bot.adapter
     }
 

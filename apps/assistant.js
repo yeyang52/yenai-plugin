@@ -10,9 +10,9 @@ import fs from 'node:fs'
 const API_ERROR = '❎ 出错辣，请稍后重试'
 
 // 命令正则
-let FriendsReg = /^#发好友\s?(\d+)\s?(.*)$/
-let GroupMsgReg = /^#发群聊\s?(\d+)\s?(.*)$/
-let GroupListMsgReg = /^#发群列表\s?(\d+(,\d+){0,})\s?(.*)$/
+let FriendsReg = /^#发好友\s?(\d+)\s?([^]*)$/
+let GroupMsgReg = /^#发群聊\s?(\d+)\s?([^]*)$/
+let GroupListMsgReg = /^#发群列表\s?(\d+(,\d+){0,})\s?([^]*)$/
 let friendTypeReg = /^#更改好友申请方式([0123])((.*)\s(.*))?$/
 
 export class Assistant extends plugin {

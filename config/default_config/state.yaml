@@ -17,5 +17,5 @@ statusTask: true
 #如果出现内存异常的情况可将此配置项开启，如果打开后报错请将监控任务关闭
 statusPowerShellStart: false
 
-#背景图片api 默认https://api.ghser.com/random/pe.php
-backdrop: "https://api.ghser.com/random/pe.php"
+#背景图片api 默认https://api.suyanw.cn/api/comic2
+backdrop: "https://api.suyanw.cn/api/comic2"

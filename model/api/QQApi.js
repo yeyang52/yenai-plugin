@@ -427,7 +427,7 @@ export default class {
      * @return {Object}
      */
   async thumbUp (uid, times = 1) {
-    let core = this.Bot.core
+    let core = this.Bot.icqq?.core
     if (!core) try {
       core = (await import('icqq')).core
     } catch (error) {

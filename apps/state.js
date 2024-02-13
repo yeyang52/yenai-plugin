@@ -87,7 +87,6 @@ export class NewState extends plugin {
     // 日历
     const calendar = moment().format('YYYY-MM-DD HH:mm:ss')
     // nodejs版本
-    const nodeVersion = process.version
     let BotStatus = ""
 
     /** bot列表 */
@@ -139,10 +138,10 @@ export class NewState extends plugin {
         <div class="header">
             <h1>${nickname}</h1>
             <hr noshade>
-            <p>${onlineStatus}(${platform}) | 收${recv} | 发${sent} | 图片${screenshot} | 好友${friendQuantity} | 群${groupQuantity} | 群员${groupMemberQuantity}
-            </p>
+            <p>${onlineStatus}(${platform}) | ${botVersion}</p>
+            <p>收${recv} | 发${sent} | 图片${screenshot} | 好友${friendQuantity} | 群${groupQuantity} | 群员${groupMemberQuantity}</p>
             <p>${BotName} 已运行 ${runTime} | 系统运行 ${systime}</p>
-            <p>${calendar} | Nodejs ${nodeVersion} | ${botVersion}</p>
+            <p>${calendar} | Node.js ${process.version} | ${process.platform} ${process.arch}</p>
         </div>
     </div>
 </div>

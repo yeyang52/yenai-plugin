@@ -119,9 +119,13 @@ export class NewState extends plugin {
       // 图片
       const screenshot = await redis.get(`Yz:count:send:image:bot:${bot.uin}:total`) || await redis.get('Yz:count:screenshot:total') || 0
       // 好友数
-      const friendQuantity = Array.from(bot.fl.values()).length
+      const friendQuantity = Array.from(bot.fl?.keys()).length
       // 群数
-      const groupQuantity = Array.from(bot.gl.values()).length
+      const groupQuantity = Array.from(bot.gl?.keys()).length
+      // 群员数
+      let groupMemberQuantity = 0
+      for (const i of bot.gml?.values() || [])
+        groupMemberQuantity += Array.from(i.keys()).length
       // 运行时间
       const runTime = common.formatTime(Date.now() / 1000 - bot.stat?.start_time, 'dd天hh小时mm分', false)
       // Bot版本
@@ -135,8 +139,7 @@ export class NewState extends plugin {
         <div class="header">
             <h1>${nickname}</h1>
             <hr noshade>
-            <p>${onlineStatus}(${platform}) | 收${recv} | 发${sent} | 图片${screenshot} | 好友${friendQuantity} |
-                群${groupQuantity}
+            <p>${onlineStatus}(${platform}) | 收${recv} | 发${sent} | 图片${screenshot} | 好友${friendQuantity} | 群${groupQuantity} | 群员${groupMemberQuantity}
             </p>
             <p>${BotName} 已运行 ${runTime} | 系统运行 ${systime}</p>
             <p>${calendar} | Nodejs ${nodeVersion} | ${botVersion}</p>

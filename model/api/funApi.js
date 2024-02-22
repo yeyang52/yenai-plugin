@@ -293,12 +293,16 @@ export default new class {
     } = scriptdata.item
     let avgweight = scriptdata.item.stats.avgweight.substring(0, 4)
     let OverallRank = scriptdata.item.rankinfo[0].rank
-    const gameName1 = JSON.parse(
-      bgg$("script[type='application/ld+json']").text()
-    ).name
-    const gameimg = JSON.parse(
-      bgg$("script[type='application/ld+json']").text()
-    ).image
+
+
+// 获取游戏英文名字
+const gameName1 = bgg$(`meta[property='og:title']`).attr('content');
+
+// 获取游戏图片URL
+const gameimgLink = bgg$(`link[rel='preload'][as='image']:eq(1)`).attr('href');
+
+// 游戏图片URL可能有多条，这里取第一条
+const gameimg = gameimgLink ? gameimgLink : null;
 
     logger.info(`游戏英文名字:${gameName1}`)
 

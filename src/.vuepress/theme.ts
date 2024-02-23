@@ -73,7 +73,7 @@ export default hopeTheme({
     blog: true,
     comment: {
       provider: "Waline",
-      serverURL: "https://waline.yenai.ren",
+      serverURL: "https://yenai-waline.vercel.app",
       reaction: true,
       login: 'force'
     },

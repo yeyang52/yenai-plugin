@@ -140,7 +140,7 @@ export class Assistant extends plugin {
 
   /** 改头像 */
   async SetAvatar(e) {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return
     if (!e.img) {
       this.setContext('_avatarContext')
       e.reply('⚠ 请发送图片')
@@ -179,7 +179,7 @@ export class Assistant extends plugin {
 
   /** 改昵称 */
   async SetNickname(e) {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return
     let name = e.msg.replace(/#|改昵称/g, '').trim()
 
     await this.Bot.setNickname(name)
@@ -192,7 +192,7 @@ export class Assistant extends plugin {
 
   /** 改群名片 */
   async SetGroupCard(e) {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return
     let group = ''
     let card = ''
 
@@ -279,7 +279,7 @@ export class Assistant extends plugin {
 
   /** 改群昵称 */
   async SetGroupName(e) {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return
     let group = ''
     let card = ''
 
@@ -316,7 +316,7 @@ export class Assistant extends plugin {
 
   /** 改签名 */
   async SetSignature(e) {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return
     let signs = e.msg.replace(/#|改签名/g, '').trim()
     await this.Bot.setSignature(signs)
       .then(() => e.reply('✅ 签名修改成功'))
@@ -328,7 +328,7 @@ export class Assistant extends plugin {
 
   /** 改状态 */
   async SetOnlineStatus(e) {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return
     let signs = e.msg.replace(/#|改状态/g, '').trim()
 
     if (!signs) return e.reply('❎ 状态不为空，可选值：我在线上，离开，隐身，忙碌，Q我吧，请勿打扰')
@@ -347,7 +347,7 @@ export class Assistant extends plugin {
 
   /** 发好友 */
   async SendFriendMsg(e) {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return
     let regRet = FriendsReg.exec(e.msg)
     let qq = regRet[1]
     e.message[0].text = regRet[2]
@@ -366,7 +366,7 @@ export class Assistant extends plugin {
 
   /** 发群聊 */
   async SendGroupMsg(e) {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return
     let regRet = GroupMsgReg.exec(e.msg)
 
     let gpid = regRet[1]
@@ -388,7 +388,7 @@ export class Assistant extends plugin {
 
   // 发送群列表
   async SendGroupListMsg(e) {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return
     // 获取参数
     let regRet = GroupListMsgReg.exec(e.msg)
     let gpid = regRet[1]
@@ -439,7 +439,7 @@ export class Assistant extends plugin {
 
   /** 退群 */
   async QuitGroup(e) {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return
     let quits = e.msg.replace(/#|退群/g, '').trim()
 
     if (!quits) return e.reply('❎ 群号不能为空')
@@ -458,7 +458,7 @@ export class Assistant extends plugin {
 
   /** 删好友 */
   async DeleteFriend(e) {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return
     let quits = e.msg.replace(/#|删好友/g, '').trim()
 
     if (e.message[1]) {
@@ -480,7 +480,7 @@ export class Assistant extends plugin {
 
   /** 改性别 */
   async SetGender(e) {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return
     let sex = e.msg.replace(/#|改性别/g, '').trim()
 
     if (!sex) return e.reply('❎ 性别不能为空 可选值：男，女，无\n（改为无，为无性别）')
@@ -584,7 +584,7 @@ export class Assistant extends plugin {
 
   /** QQ空间 说说列表 */
   async Qzonelist(e) {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return
     let page = e.msg.replace(/#|获?取说说列表/g, '').trim()
     if (!page) {
       page = 0
@@ -610,7 +610,7 @@ export class Assistant extends plugin {
 
   /** 删除说说 */
   async Qzonedel(e) {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return
     let pos = e.msg.match(/\d+/)
     // 获取说说列表
     let list = await new QQApi(e).getQzone(1, pos - 1)
@@ -633,7 +633,7 @@ export class Assistant extends plugin {
 
   /** 发说说 */
   async Qzonesay(e) {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return
     let con = e.msg.replace(/#|发说说/g, '').trim()
     let result = await new QQApi(e).setQzone(con, e.img)
     if (!result) return e.reply(API_ERROR)
@@ -650,7 +650,7 @@ export class Assistant extends plugin {
 
   /** 清空说说和留言 */
   async QzonedelAll(e) {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return
     if (/清空说说/.test(e.msg)) {
       this.setContext('_QzonedelAllContext')
       e.reply('✳️ 即将删除全部说说请发送：\n' + '------确认清空或取消------')
@@ -688,7 +688,7 @@ export class Assistant extends plugin {
 
   // 获取群|好友列表
   async GlOrFl(e) {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return
     let msg = []
     if (/群列表/.test(e.msg)) {
       // 获取群列表并转换为数组
@@ -761,7 +761,7 @@ export class Assistant extends plugin {
 
   // 开关好友添加
   async FriendSwitch(e) {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return
     let res = await new QQApi(e).addFriendSwitch(/开启/.test(e.msg) ? 1 : 2)
     if (!res) return e.reply(API_ERROR)
     e.reply(res.ActionStatus)
@@ -769,7 +769,7 @@ export class Assistant extends plugin {
 
   // 好友申请方式
   async FriendType(e) {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return
     let regRet = friendTypeReg.exec(e.msg)
     if (regRet[1] == 0) return e.reply('1为允许所有人，2为需要验证，3为问答正确问答(需填问题和答案，格式为：#更改好友申请方式3 问题 答案)')
     // 单独处理
@@ -783,7 +783,7 @@ export class Assistant extends plugin {
 
   /** 开关戳一戳 */
   async Cyc(e) {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return
     let result = await new QQApi(e).setcyc(/开启/.test(e.msg) ? 0 : 1)
     if (!result) return e.reply(API_ERROR)
 
@@ -792,14 +792,14 @@ export class Assistant extends plugin {
   }
 
   async setModel(e) {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return
     let model = e.msg.replace(/#|设置机型/g, '')
     let res = await new QQApi(e).setModel(model).catch(err => logger.error(err))
     e.reply(_.get(res, ['13031', 'data', 'rsp', 'iRet']) == 0 ? '设置成功' : '设置失败')
   }
 
   async BlockOne() {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return
     const configPath = process.cwd().replace(/\\/g, '/') + '/config/config/other.yaml'
     /** 判断at */
     if (this.e.at) {
@@ -876,7 +876,7 @@ export class Assistant extends plugin {
     }
   }
   async CancelBlockOne() {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return
     const configPath = process.cwd().replace(/\\/g, '/') + '/config/config/other.yaml'
     if (this.e.at) {
       try {

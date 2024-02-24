@@ -33,7 +33,7 @@ export class Update extends plugin {
    * @returns
    */
   async update () {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+if (!common.checkPermission(e, 'master')) return true
 
     /** 检查是否正在更新中 */
     if (uping) {

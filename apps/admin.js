@@ -1,8 +1,8 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import fs from 'fs'
 import _ from 'lodash'
-import { common, Config } from '../components/index.js'
-import { setu, puppeteer } from '../model/index.js'
+import { Config } from '../components/index.js'
+import { common, setu, puppeteer } from '../model/index.js'
 
 /** 设置项 */
 const OtherCfgType = {

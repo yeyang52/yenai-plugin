@@ -32,7 +32,7 @@ export class Update extends plugin {
    * rule - 更新椰奶插件
    * @returns
    */
-  async update () {
+  async update (e) {
 if (!common.checkPermission(e, 'master')) return true
 
     /** 检查是否正在更新中 */

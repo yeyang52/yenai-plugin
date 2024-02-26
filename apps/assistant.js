@@ -279,7 +279,7 @@ if (!common.checkPermission(e, 'master')) return
 
   /** 改群昵称 */
   async SetGroupName(e) {
-if (!common.checkPermission(e, 'master')) return
+if (!common.checkPermission(e, 'admin', 'admin')) return
     let group = ''
     let card = ''
 

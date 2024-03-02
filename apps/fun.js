@@ -206,7 +206,7 @@ export class Fun extends plugin {
             failsMsg = `${this.do}失败，请检查是否开启陌生人点赞或添加好友`
           } else {
             if (this.do == `超`) {
-              failsMsg = res.msg.replace(/给/g, '超').replace(/点/g, '').replace(/个赞/g, '下')
+              failsMsg = res.msg.replace(/点赞/g, '超').replace('给', '超').replace('点', '').replace('个赞', '下')
             } else {
               failsMsg = res.msg
             }

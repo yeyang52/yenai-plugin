@@ -131,9 +131,6 @@ export class Fun extends plugin {
     } else {
       this.do = `赞`
     }
-    if ((e.bot ?? Bot).config?.platform == 3) {
-      return logger.error(`${e.logFnc}手表协议暂不支持点赞请更换协议后重试`)
-    }
     /** 判断是赞自己还是赞别人 */
     if (e.at && e.msg.includes(`他`, `她`, `它`, `TA`, `ta`, `Ta`)) {
       /** 判断是否为好友 */
@@ -143,7 +140,7 @@ export class Fun extends plugin {
       /** 执行点赞 */
       let n = 0
       let failsMsg = `今天已经${this.do}过了，还搁这讨${this.do}呢！！！`
-      while (true) {
+      for (let i = 0; i < 10; i++) {
         let res = null
         try {
           res = await new QQApi(e).thumbUp(e.at, 10)
@@ -152,7 +149,7 @@ export class Fun extends plugin {
           return common.handleException(e, error)
         }
         logger.debug(`${e.logFnc}给${e.at}点赞`, res)
-        if (res.code != 0) {
+        if (res?.code && res.code != 0) {
           if (res.code == 1) {
             failsMsg = `${this.do}失败，请检查是否开启陌生人点赞或添加好友`
           } else {
@@ -195,7 +192,7 @@ export class Fun extends plugin {
       /** 执行点赞 */
       let n = 0
       let failsMsg = `今天已经${this.do}过了，还搁这讨${this.do}呢！！！`
-      while (true) {
+      for (let i = 0; i < 10; i++) {
         let res = null
         try {
           res = await new QQApi(e).thumbUp(e.user_id, 10)
@@ -204,7 +201,7 @@ export class Fun extends plugin {
           return common.handleException(e, error)
         }
         logger.debug(`${e.logFnc}给${e.user_id}点赞`, res)
-        if (res.code != 0) {
+        if (res?.code && res.code != 0) {
           if (res.code == 1) {
             failsMsg = `${this.do}失败，请检查是否开启陌生人点赞或添加好友`
           } else {

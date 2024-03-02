@@ -432,8 +432,13 @@ export default class {
       core = (await import('icqq')).core
     } catch (error) {
       const thumbUp = this.Bot.pickFriend(uid).thumbUp
-      if (thumbUp) return thumbUp(times)
-      throw Error('当前协议端不支持点赞，详情查看\nhttps://gitee.com/TimeRainStarSky/Yunzai')
+      if (!thumbUp) throw Error('当前协议端不支持点赞，详情查看\nhttps://gitee.com/TimeRainStarSky/Yunzai')
+      const res = { ...await thumbUp(times) }
+      if (res.retcode && !res.code)
+        res.code = res.retcode
+      if (res.message && !res.msg)
+        res.msg = res.message
+      return res
     }
     if (times > 20) { times = 20 }
     let ReqFavorite

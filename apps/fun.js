@@ -149,7 +149,7 @@ export class Fun extends plugin {
           return common.handleException(e, error)
         }
         logger.debug(`${e.logFnc}给${e.at}点赞`, res)
-        if (res?.code && res.code != 0) {
+        if (res.code) {
           if (res.code == 1) {
             failsMsg = `${this.do}失败，请检查是否开启陌生人点赞或添加好友`
           } else {
@@ -201,7 +201,7 @@ export class Fun extends plugin {
           return common.handleException(e, error)
         }
         logger.debug(`${e.logFnc}给${e.user_id}点赞`, res)
-        if (res?.code && res.code != 0) {
+        if (res.code) {
           if (res.code == 1) {
             failsMsg = `${this.do}失败，请检查是否开启陌生人点赞或添加好友`
           } else {

@@ -875,7 +875,7 @@ if (!common.checkPermission(e, 'master')) return
       }
     }
   }
-  async CancelBlockOne() {
+  async CancelBlockOne(e) {
 if (!common.checkPermission(e, 'master')) return
     const configPath = process.cwd().replace(/\\/g, '/') + '/config/config/other.yaml'
     if (this.e.at) {

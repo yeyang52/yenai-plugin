@@ -798,7 +798,7 @@ if (!common.checkPermission(e, 'master')) return
     e.reply(_.get(res, ['13031', 'data', 'rsp', 'iRet']) == 0 ? '设置成功' : '设置失败')
   }
 
-  async BlockOne() {
+  async BlockOne(e) {
 if (!common.checkPermission(e, 'master')) return
     const configPath = process.cwd().replace(/\\/g, '/') + '/config/config/other.yaml'
     /** 判断at */

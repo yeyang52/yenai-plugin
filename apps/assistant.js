@@ -123,11 +123,11 @@ export class Assistant extends plugin {
           fnc: 'setModel'
         },
         {
-          reg: '^#?拉黑(群|群聊)?',
+          reg: '^#拉黑(群|群聊)?',
           fnc: 'BlockOne'
         },
         {
-          reg: '^#?(取消|删除|移除)(群|群聊)?拉黑(群|群聊)?',
+          reg: '^#(取消|删除|移除)(群|群聊)?拉黑(群|群聊)?',
           fnc: 'CancelBlockOne'
         }
       ]

@@ -447,7 +447,12 @@ if (!common.checkPermission(e, 'master')) return
     if (!/^\d+$/.test(quits)) return e.reply('❎ 群号不合法')
 
     if (!this.Bot.gl.get(Number(quits))) return e.reply('❎ 群聊列表查无此群')
-
+    
+    if (quits == e.group_id) {
+        e.reply('✅ 3秒后退出本群聊')
+        await common.sleep(3000)
+    }
+    
     await this.Bot.pickGroup(quits).quit()
       .then(() => e.reply('✅ 已退出群聊'))
       .catch((err) => {

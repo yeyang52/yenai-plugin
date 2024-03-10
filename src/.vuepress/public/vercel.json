@@ -4,7 +4,7 @@
   },
   "git": {
     "deploymentEnabled": {
-      "main": false
+      "master": false
     }
   }
 }

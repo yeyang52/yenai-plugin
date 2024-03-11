@@ -47,7 +47,7 @@ export class NewGroupBannedWords extends plugin {
   }
 
   async monitor (e) {
-    if (!e.message || e.isMaster || e.member.is_owner || e.member.is_admin) {
+    if (!e.message || e.isMaster || e.member?.is_owner || e.member?.is_admin) {
       return false
     }
     const groupBannedWords = GroupBannedWords.initTextArr(e.group_id)

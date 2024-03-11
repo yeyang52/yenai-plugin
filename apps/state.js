@@ -25,15 +25,17 @@ export class NewState extends plugin {
     })
   }
 
+  async monitor (e) {
+    await puppeteer.render('state/monitor', {
+      chartData: JSON.stringify(State.chartData)
+    }, {
+      e,
+      scale: 1.4
+    })
+  }
+
   async state (e) {
-    if (e.msg.includes('监控')) {
-      return await puppeteer.render('state/monitor', {
-        chartData: JSON.stringify(State.chartData)
-      }, {
-        e,
-        scale: 1.4
-      })
-    }
+    if (e.msg.includes('监控')) return this.monitor(e)
 
     if (!/椰奶/.test(e.msg) && !Config.whole.state) return false
 
@@ -90,7 +92,6 @@ export class NewState extends plugin {
         BotList = Bot.adapter
       }
     }
-
     // 渲染数据
     let data = {
       BotStatus: await getBotState(BotList),
@@ -132,7 +133,7 @@ const getBotState = async (botList) => {
     const avatar = bot.avatar || (Number(bot.uin) ? `https://q1.qlogo.cn/g?b=qq&s=0&nk=${bot.uin}` : defaultAvatar)
     const nickname = bot.nickname || '未知'
     const onlineStatus = status[bot.status] || '在线'
-    const platform = bot.apk ? `${bot.apk.display} v${bot.apk.version}` : bot.version.version || '未知'
+    const platform = bot.apk ? `${bot.apk.display} v${bot.apk.version}` : bot.version?.version || '未知'
 
     const [sent, recv, screenshot] = await Promise.all([
       redis.get(`Yz:count:send:msg:bot:${bot.uin}:total`),

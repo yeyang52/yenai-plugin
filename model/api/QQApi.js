@@ -426,20 +426,9 @@ export default class {
      * @param {Number} times 数量
      * @return {Object}
      */
-  async thumbUp (uid, times = 1) {
+  async thumbUp (uid, times = 1) { try {
     let core = this.Bot.icqq?.core
-    if (!core) {
-      try {
-        core = (await import('icqq')).core
-      } catch (error) {
-        const thumbUp = this.Bot.pickFriend(uid).thumbUp
-        if (!thumbUp) throw Error('当前协议端不支持点赞，详情查看\nhttps://gitee.com/TimeRainStarSky/Yunzai')
-        const res = { ...await thumbUp(times) }
-        if (res.retcode && !res.code) { res.code = res.retcode }
-        if (res.message && !res.msg) { res.msg = res.message }
-        return res
-      }
-    }
+    if (!core) core = (await import('icqq')).core
     if (times > 20) { times = 20 }
     let ReqFavorite
     if (this.Bot.fl.get(uid)) {
@@ -461,6 +450,19 @@ export default class {
     const payload = await this.Bot.sendUni('VisitorSvc.ReqFavorite', body)
     let result = core.jce.decodeWrapper(payload)[0]
     return { code: result[3], msg: result[4] }
+  } catch (error) {
+    return this._thumbUp(uid, times)
+  }}
+
+  async _thumbUp (uid, times) {
+    const friend = this.Bot.pickFriend(uid)
+    if (!friend?.thumbUp) throw Error('当前协议端不支持点赞，详情查看\nhttps://gitee.com/TimeRainStarSky/Yunzai')
+    const res = { ...await friend.thumbUp(times) }
+    if (res.retcode && !res.code)
+      res.code = res.retcode
+    if (res.message && !res.msg)
+      res.msg = res.message
+    return res
   }
 
   /**

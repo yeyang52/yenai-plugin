@@ -123,11 +123,11 @@ export class Assistant extends plugin {
           fnc: 'setModel'
         },
         {
-          reg: '^#拉黑(群|群聊)?',
+          reg: '^#拉[黑白](群聊?)?',
           fnc: 'BlockOne'
         },
         {
-          reg: '^#(取消|删除|移除)(群|群聊)?拉黑(群|群聊)?',
+          reg: '^#(取消|(删|移)除)拉[黑白](群聊?)?',
           fnc: 'CancelBlockOne'
         }
       ]
@@ -805,151 +805,125 @@ if (!common.checkPermission(e, 'master')) return
 
   async BlockOne(e) {
 if (!common.checkPermission(e, 'master')) return
-    const configPath = process.cwd().replace(/\\/g, '/') + '/config/config/other.yaml'
+    let type = ""
+    let name = "拉"
+    if (/^#拉白(群聊?)?/.test(this.e.msg)) {
+      type += "white"
+      name += "白"
+    } else {
+      type += "black"
+      name += "黑"
+    }
+    if (/^#拉[黑白](群聊?)/.test(this.e.msg)) {
+      type += "Group"
+      name += "群"
+    } else {
+      type += Version.name == "TRSS-Yunzai" ? "User" : "QQ"
+    }
+    const configPath = 'config/config/other.yaml'
     /** 判断at */
     if (this.e.at) {
-      try {
-        const yamlContentBuffer = await fs.promises.readFile(configPath)
-        /** 转字符串 */
-        const yamlContent = yamlContentBuffer.toString('utf-8')
-        const data = yaml.parse(yamlContent)
-        if (!data.blackQQ.includes(this.e.at)) {
-          data.blackQQ.push(this.e.at)
-          const updatedYaml = yaml.stringify(data, { quote: false })
-          /** 删除引号 */
-          const resultYaml = updatedYaml.replace(/"/g, '')
-          await fs.promises.writeFile(configPath, resultYaml, 'utf-8')
-          await this.e.reply(`✅ 已拉黑${this.e.at}`)
-        } else {
-          await this.e.reply(`❎ 拉黑失败，黑名单中已存在`)
-        }
-      } catch (error) {
-        await this.e.reply(`❎ 拉黑失败，发生了未知的错误`)
-        logger.error(error)
-      }
+      this.blackResult = this.e.at
     } else {
-      /** 非TRSS-Yunzai仅匹配5-10位非0开头数字 */
-      if (!Version.name == `TRSS-Yunzai`) {
-        const regex = /^#?拉黑(群|群聊)?[1-9]\d{4,9}$/
+      if (Version.name == "TRSS-Yunzai") {
+        /** TRSS-Yunzai匹配所有字符 */
+        const blackId = this.e.msg.replace(/^#拉[黑白](群聊?)?/, '').trim()
+        if (blackId == "") {
+          await this.e.reply(`❎ ${name}失败，没有键入QQ或群号`)
+          return true
+        }
+        this.blackResult = Number(blackId) || String(blackId)
+      } else {
+        const regex = /^#拉[黑白](群聊?)?[1-9]\d{4,9}$/
         const match = this.e.msg.match(regex)
         if (match) {
           const blackId = match[3]
           if (/^\d+$/.test(blackId)) {
-            this.blackResult = blackId
+            this.blackResult = Number(blackId) || String(blackId)
           } else {
-            await this.e.reply(`❎ 拉黑失败，QQ或群号不合法`)
+            await this.e.reply(`❎ ${name}失败，QQ或群号不合法`)
           }
         }
-      } else {
-        /** TRSS-Yunzai匹配所有字符 */
-        const blackId = this.e.msg.replace(/#|拉黑|群|群聊/g, '').trim()
-        if (blackId == "") {
-          await this.e.reply(`❎ 拉黑失败，没有键入QQ或群号`)
-          return true
-        }
-        this.blackResult = blackId
-      }
-      try {
-        const yamlContentBuffer = await fs.promises.readFile(configPath)
-        const yamlContent = yamlContentBuffer.toString('utf-8')
-        const data = yaml.parse(yamlContent)
-        if (!this.e.msg.includes(`群`)) {
-          if (!data.blackQQ.includes(this.blackResult)) {
-            data.blackQQ.push(this.blackResult)
-            const updatedYaml = yaml.stringify(data, { quote: false })
-            const resultYaml = updatedYaml.replace(/"/g, '')
-            await fs.promises.writeFile(configPath, resultYaml, 'utf-8')
-            await this.e.reply(`✅ 已拉黑${this.blackResult}`)
-          } else {
-            await this.e.reply(`❎ 拉黑失败，${this.blackResult}在黑名单中已存在`)
-          }
-        } else {
-          if (!data.blackGroup.includes(this.blackResult)) {
-            data.blackGroup.push(this.blackResult)
-            const updatedYaml = yaml.stringify(data, { quote: false })
-            const resultYaml = updatedYaml.replace(/"/g, '')
-            await fs.promises.writeFile(configPath, resultYaml, 'utf-8')
-            await this.e.reply(`✅ 已拉黑群聊${this.blackResult}`)
-          } else {
-            await this.e.reply(`❎ 拉黑失败，${this.blackResult}在黑名单中已存在`)
-          }
-        }
-      } catch (error) {
-        await this.e.reply(`❎ 拉黑失败，发生了未知的错误`)
-        logger.error(error)
       }
     }
+    try {
+      const yamlContentBuffer = await fs.promises.readFile(configPath)
+      const yamlContent = yamlContentBuffer.toString('utf-8')
+      const data = yaml.parse(yamlContent)
+      if (!Array.isArray(data[type]))
+        data[type] = []
+      if (!data[type].includes(this.blackResult)) {
+        data[type].push(this.blackResult)
+        const updatedYaml = yaml.stringify(data, { quote: false })
+        const resultYaml = updatedYaml.replace(/"/g, '')
+        await fs.promises.writeFile(configPath, resultYaml, 'utf-8')
+        await this.e.reply(`✅ 已把这个坏淫${name}掉惹！！！`)
+      } else {
+        await this.e.reply(`❎ 已把这个坏淫${name}过辣`)
+      }
+    } catch (error) {
+      await this.e.reply(`❎ 额...${name}失败哩，可能这个淫比较腻害>_<`)
+      logger.error(error)
+    }
   }
+
   async CancelBlockOne(e) {
 if (!common.checkPermission(e, 'master')) return
-    const configPath = process.cwd().replace(/\\/g, '/') + '/config/config/other.yaml'
-    if (this.e.at) {
-      try {
-        const yamlContentBuffer = await fs.promises.readFile(configPath)
-        const yamlContent = yamlContentBuffer.toString('utf-8')
-        const data = yaml.parse(yamlContent)
-        if (data && data.blackQQ && Array.isArray(data.blackQQ)) {
-          const itemToRemove = this.e.at.toString()
-          data.blackQQ = data.blackQQ.filter(item => item.toString() !== itemToRemove)
-          const updatedYaml = yaml.stringify(data)
-          await fs.promises.writeFile(configPath, updatedYaml, 'utf-8')
-          await this.e.reply(`✅ 已取消拉黑${this.e.at}`)
-        } else {
-          await this.e.reply(`❎ 找不到要取消拉黑的对象`)
-        }
-      } catch (error) {
-        await this.e.reply(`❎ 取消拉黑失败，发生了未知的错误`)
-        logger.error(error)
-      }
+    let type = ""
+    let name = "取消拉"
+    if (/^#(取消|删除|移除)(群聊?)?拉白(群聊?)?/.test(this.e.msg)) {
+      type += "white"
+      name += "白"
     } else {
-      if (!Version.name == `TRSS-Yunzai`) {
-        const regex = /^#?(取消|删除|移除)拉黑(群|群聊)?[1-9]\d{4,9}$/
+      type += "black"
+      name += "黑"
+    }
+    if (/^#(取消|删除|移除)拉[黑白](群聊?)/.test(this.e.msg)) {
+      type += "Group"
+      name += "群"
+    } else {
+      type += Version.name == "TRSS-Yunzai" ? "User" : "QQ"
+    }
+    const configPath = 'config/config/other.yaml'
+    if (this.e.at) {
+      this.blackResult = this.e.at
+    } else {
+      if (Version.name == "TRSS-Yunzai") {
+        const blackId = this.e.msg.replace(/^#(取消|(删|移)除)拉[黑白](群聊?)?/, '').trim()
+        if (blackId == "") {
+          await this.e.reply(`❎ ${name}失败，没有键入用户或群号`)
+          return true
+        }
+        this.blackResult = Number(blackId) || String(blackId)
+      } else {
+        const regex = /^#(取消|(删|移)除)拉[黑白](群聊?)?[1-9]\d{4,9}$/
         const match = this.e.msg.match(regex)
         if (match) {
           const blackId = match[3]
           if (/^\d+$/.test(blackId)) {
-            this.blackResult = blackId
+            this.blackResult = Number(blackId) || String(blackId)
           } else {
-            await this.e.reply(`❎ 取消拉黑失败，QQ或群号不合法`)
+            await this.e.reply(`❎ ${name}失败，QQ或群号不合法`)
           }
         }
+      }
+    }
+    try {
+      const yamlContentBuffer = await fs.promises.readFile(configPath)
+      const yamlContent = yamlContentBuffer.toString('utf-8')
+      const data = yaml.parse(yamlContent)
+      if (Array.isArray(data[type]) && data[type].includes(this.blackResult)) {
+        const itemToRemove = this.blackResult.toString()
+        data[type] = data[type].filter(item => item.toString() !== itemToRemove)
+        const updatedYaml = yaml.stringify(data)
+        await fs.promises.writeFile(configPath, updatedYaml, 'utf-8')
+        await this.e.reply(`✅ 已把这个坏淫${name}掉惹！！！`)
       } else {
-        const blackId = this.e.msg.replace(/#|取消|删除|移除|拉黑|群|群聊/g, '').trim()
-        if (blackId == "") {
-          await this.e.reply(`❎ 取消拉黑失败，没有键入QQ或群号`)
-          return true
-        }
-        this.blackResult = blackId
+        await this.e.reply(`❎ ${name}失败，找不到辣>_<`)
       }
-      try {
-        const yamlContentBuffer = await fs.promises.readFile(configPath)
-        const yamlContent = yamlContentBuffer.toString('utf-8')
-        const data = yaml.parse(yamlContent)
-        if (!this.e.msg.includes(`群`)) {
-          if (data && data.blackQQ && Array.isArray(data.blackQQ)) {
-            const itemToRemove = this.blackResult.toString()
-            data.blackQQ = data.blackQQ.filter(item => item.toString() !== itemToRemove)
-            const updatedYaml = yaml.stringify(data)
-            await fs.promises.writeFile(configPath, updatedYaml, 'utf-8')
-            await this.e.reply(`✅ 已取消拉黑${this.blackResult}`)
-          } else {
-            await this.e.reply(`❎ 找不到要取消拉黑的对象`)
-          }
-        } else {
-          if (data && data.blackGroup && Array.isArray(data.blackGroup)) {
-            const itemToRemove = this.blackResult.toString()
-            data.blackGroup = data.blackGroup.filter(item => item.toString() !== itemToRemove)
-            const updatedYaml = yaml.stringify(data)
-            await fs.promises.writeFile(configPath, updatedYaml, 'utf-8')
-            await this.e.reply(`✅ 已取消拉黑群聊${this.blackResult}`)
-          } else {
-            await this.e.reply(`❎ 找不到要取消拉黑的对象`)
-          }
-        }
-      } catch (error) {
-        await this.e.reply(`❎ 取消拉黑失败，发生了未知的错误`)
-        logger.error(error)
-      }
+    } catch (error) {
+      await this.e.reply(`❎ 额...${name}失败哩，可能这个淫比较腻害>_<`)
+      logger.error(error)
     }
   }
 }

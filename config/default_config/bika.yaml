@@ -5,6 +5,6 @@ limit: 30
 #哔咔图片直连，直接使用哔咔原图发送不使用图片反代，国内则需使用代理
 bikaDirectConnection: false
 #哔咔图片反代
-bikaImageProxy: p.sesepic.top/static
+bikaImageProxy: s3.go2778.com/static
 #哔咔图片质量，可选值 ['low', 'medium', 'high', 'original'] 质量依次从低到高
 imageQuality: medium

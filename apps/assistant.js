@@ -828,24 +828,15 @@ if (!common.checkPermission(e, 'master')) return
       if (Version.name == "TRSS-Yunzai") {
         /** TRSS-Yunzai匹配所有字符 */
         const blackId = this.e.msg.replace(/^#拉[黑白](群聊?)?/, '').trim()
-        if (blackId == "") {
-          await this.e.reply(`❎ ${name}失败，没有键入QQ或群号`)
-          return true
-        }
         this.blackResult = Number(blackId) || String(blackId)
       } else {
-        const regex = /^#拉[黑白](群聊?)?[1-9]\d{4,9}$/
-        const match = this.e.msg.match(regex)
-        if (match) {
-          const blackId = match[3]
-          if (/^\d+$/.test(blackId)) {
-            this.blackResult = Number(blackId) || String(blackId)
-          } else {
-            await this.e.reply(`❎ ${name}失败，QQ或群号不合法`)
-          }
-        }
+        const match = this.e.msg.match(/\d+/)
+        if (match?.[0])
+          this.blackResult = Number(match[0]) || String(match[0])
       }
     }
+    if (!this.blackResult)
+      return this.e.reply(`❎ ${name}失败，没有键入用户或群号`)
     try {
       const yamlContentBuffer = await fs.promises.readFile(configPath)
       const yamlContent = yamlContentBuffer.toString('utf-8')
@@ -890,24 +881,15 @@ if (!common.checkPermission(e, 'master')) return
     } else {
       if (Version.name == "TRSS-Yunzai") {
         const blackId = this.e.msg.replace(/^#(取消|(删|移)除)拉[黑白](群聊?)?/, '').trim()
-        if (blackId == "") {
-          await this.e.reply(`❎ ${name}失败，没有键入用户或群号`)
-          return true
-        }
         this.blackResult = Number(blackId) || String(blackId)
       } else {
-        const regex = /^#(取消|(删|移)除)拉[黑白](群聊?)?[1-9]\d{4,9}$/
-        const match = this.e.msg.match(regex)
-        if (match) {
-          const blackId = match[3]
-          if (/^\d+$/.test(blackId)) {
-            this.blackResult = Number(blackId) || String(blackId)
-          } else {
-            await this.e.reply(`❎ ${name}失败，QQ或群号不合法`)
-          }
-        }
+        const match = this.e.msg.match(/\d+/)
+        if (match?.[0])
+          this.blackResult = Number(match[0]) || String(match[0])
       }
     }
+    if (!this.blackResult)
+      return this.e.reply(`❎ ${name}失败，没有键入用户或群号`)
     try {
       const yamlContentBuffer = await fs.promises.readFile(configPath)
       const yamlContent = yamlContentBuffer.toString('utf-8')

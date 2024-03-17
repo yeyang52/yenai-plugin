@@ -1,9 +1,13 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import gsCfg from '../../genshin/model/gsCfg.js'
 import fs from 'node:fs'
 import common from '../../../lib/common/common.js'
 import { Data, Plugin_Path } from '../components/index.js'
 import { incomeCurve } from '../constants/nga.js'
+
+let gsCfg
+try {
+  gsCfg = (await import('../../genshin/model/gsCfg.js')).default
+} catch (err) {}
 
 export class NGA extends plugin {
   constructor () {
@@ -35,6 +39,7 @@ export class NGA extends plugin {
     if (regRet[4]) {
       role.name = '帮助'
     } else {
+      if (!gsCfg) return false
       role = gsCfg.getRole(regRet[2])
     }
 

@@ -378,7 +378,7 @@ export default class {
         
     if (Memberinfo.role === 'admin') {
       if (!group.is_owner) throw Error('人家又不是群主这种事做不到的辣！')
-      if (!isMaster && !user.is_owner) throw Error('这个淫系管理员辣，只有主淫和群主才可以干ta')
+      if (!isMaster) throw Error('这个淫系管理员辣，只有主淫才可以干ta')
     }
 
     await group.muteMember(userId, time * unit)
@@ -413,7 +413,7 @@ export default class {
    
     if (Memberinfo.role === 'admin') {
         if (!group.is_owner) throw Error('人家又不是群主这种事做不到的辣！')
-        if (!isMaster && !user.is_owner) throw Error('这个淫系管理员辣，只有主淫和群主才可以干ta')
+        if (!isMaster) throw Error('这个淫系管理员辣，只有主淫才可以干ta')
     }
     
     let res = await group.kickMember(Number(userId))

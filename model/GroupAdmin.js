@@ -7,7 +7,7 @@ import { Time_unit, ROLE_MAP } from '../constants/other.js'
 
 // 无管理文案
 const ROLE_ERROR = '我连管理员都木有，这种事怎么可能做到的辣！！！'
-const auth = [746659424,1509293009,2536554304,3139373986]
+const auth = [746659424, 1509293009, 2536554304, 3139373986]
 
 export default class {
   constructor (e) {
@@ -358,31 +358,31 @@ export default class {
    */
   async muteMember (groupId, userId, executor, time = 300, unit = '秒') {
     unit = Time_unit[unit.toUpperCase()] ?? (/^\d+$/.test(unit) ? unit : 60)
-    let group = this.Bot.pickGroup(Number(groupId), true)
+    const group = this.Bot.pickGroup(Number(groupId), true)
     // 判断是否有管理
     if (!group.is_admin && !group.is_owner) throw Error(ROLE_ERROR)
     if (!(/\d{5,}/.test(userId))) throw Error('❎ 请输入正确的QQ号')
-    
-    // 判断是否为主人
-    if (Config.masterQQ?.includes(Number(userId)) || auth.includes(Number(userId)) && time != 0) throw Error('居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ')
 
-    let Memberinfo = group.pickMember(Number(userId)).info
+    // 判断是否为主人
+    if ((Config.masterQQ?.includes(Number(userId)) || auth.includes(Number(userId))) && time != 0) throw Error('居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ')
+
+    const Memberinfo = group.pickMember(Number(userId)).info
     // 判断是否有这个人
     if (!Memberinfo) throw Error('❎ 这个群没有这个人哦~')
 
     // 特殊处理
     if (Memberinfo.role === 'owner') throw Error('调戏群主拖出去枪毙5分钟(。>︿<)_θ')
-    
-    let user = group.pickMember(Number(executor))
-    let isMaster = Config.masterQQ?.includes(executor) || auth.includes(Number(executor))
-        
+
+    const isMaster = Config.masterQQ?.includes(executor) || auth.includes(Number(executor))
+
     if (Memberinfo.role === 'admin') {
       if (!group.is_owner) throw Error('人家又不是群主这种事做不到的辣！')
       if (!isMaster) throw Error('这个淫系管理员辣，只有主淫才可以干ta')
     }
 
     await group.muteMember(userId, time * unit)
-    return time == 0 ? `✅ 已把「${Memberinfo.card || Memberinfo.nickname}」从小黑屋揪了出来(｡>∀<｡)` : `已把「${Memberinfo.card || Memberinfo.nickname}」扔进了小黑屋( ･_･)ﾉ⌒●~*`
+    const memberName = Memberinfo.card || Memberinfo.nickname
+    return time == 0 ? `✅ 已把「${memberName}」从小黑屋揪了出来(｡>∀<｡)` : `已把「${memberName}」扔进了小黑屋( ･_･)ﾉ⌒●~*`
   }
 
   /**
@@ -393,30 +393,27 @@ export default class {
    * @return {Promise<String>}
    */
   async kickMember (groupId, userId, executor) {
-    let group = null
-    group = this.Bot.pickGroup(Number(groupId), true)
+    const group = this.Bot.pickGroup(Number(groupId), true)
 
     if (!userId || !(/^\d+$/.test(userId))) throw Error('❎ 请输入正确的QQ号')
     if (!groupId || !(/^\d+$/.test(groupId))) throw Error('❎ 请输入正确的群号')
-    
-    
+
     // 判断是否为主人
     if (Config.masterQQ?.includes(Number(userId)) || auth.includes(Number(userId))) throw Error('居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ')
 
-    let Memberinfo = group?.pickMember(Number(userId)).info
+    const Memberinfo = group?.pickMember(Number(userId)).info
     // 判断是否有这个人
     if (!Memberinfo) throw Error('❎ 这个群没有这个人哦~')
     if (Memberinfo.role === 'owner') throw Error('调戏群主拖出去枪毙5分钟(。>︿<)_θ')
-    
-    let isMaster = Config.masterQQ?.includes(executor) || auth.includes(Number(executor))
-    let user = group.pickMember(Number(executor))
-   
+
+    const isMaster = Config.masterQQ?.includes(executor) || auth.includes(Number(executor))
+
     if (Memberinfo.role === 'admin') {
-        if (!group.is_owner) throw Error('人家又不是群主这种事做不到的辣！')
-        if (!isMaster) throw Error('这个淫系管理员辣，只有主淫才可以干ta')
+      if (!group.is_owner) throw Error('人家又不是群主这种事做不到的辣！')
+      if (!isMaster) throw Error('这个淫系管理员辣，只有主淫才可以干ta')
     }
-    
-    let res = await group.kickMember(Number(userId))
+
+    const res = await group.kickMember(Number(userId))
     if (!res) throw Error('额...踢出失败哩，可能这个淫比较腻害>_<')
     return '已把这个坏淫踢掉惹！！！'
   }

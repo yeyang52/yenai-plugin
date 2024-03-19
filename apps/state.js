@@ -135,11 +135,9 @@ const getBotState = async (botList) => {
     const onlineStatus = status[bot.status] || '在线'
     const platform = bot.apk ? `${bot.apk.display} v${bot.apk.version}` : bot.version?.version || '未知'
 
-    const [sent, recv, screenshot] = await Promise.all([
-      redis.get(`Yz:count:send:msg:bot:${bot.uin}:total`),
-      redis.get(`Yz:count:receive:msg:bot:${bot.uin}:total`) || bot.stat?.recv_msg_cnt || '未知',
-      redis.get(`Yz:count:send:image:bot:${bot.uin}:total`)
-    ])
+    const sent = await redis.get(`Yz:count:send:msg:bot:${bot.uin}:total`) || await redis.get('Yz:count:sendMsg:total')
+    const recv = await redis.get(`Yz:count:receive:msg:bot:${bot.uin}:total`) || bot.stat?.recv_msg_cnt
+    const screenshot = await redis.get(`Yz:count:send:image:bot:${bot.uin}:total`) || await redis.get('Yz:count:screenshot:total')
 
     const friendQuantity = bot.fl?.size || 0
     const groupQuantity = bot.gl?.size || 0
@@ -157,7 +155,7 @@ const getBotState = async (botList) => {
               <h1>${nickname}</h1>
               <hr noshade>
               <p>${onlineStatus}(${platform}) | ${botVersion}</p>
-              <p>收${recv} | 发${sent || 0} | 图片${screenshot || 0} | 好友${friendQuantity} | 群${groupQuantity} | 群员${groupMemberQuantity}</p>
+              <p>收${recv || 0} | 发${sent || 0} | 图片${screenshot || 0} | 好友${friendQuantity} | 群${groupQuantity} | 群员${groupMemberQuantity}</p>
               <p>${BotName} 已运行 ${runTime} | 系统运行 ${systime}</p>
               <p>${calendar} | Node.js ${process.version} | ${process.platform} ${process.arch}</p>
           </div>

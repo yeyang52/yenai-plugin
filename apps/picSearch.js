@@ -72,7 +72,7 @@ export class NewPicSearch extends plugin {
   }
 
   async UploadSauceNAOKey (e) {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+    if (!this.e.isMaster) { return true }
     if (e.isGroup) return e.reply('请私聊进行添加')
     let apiKey = e.msg.replace(/#设置SauceNAOapiKey/i, '').trim()
     if (!apiKey) return e.reply('❎ 请发送正确的apikey')
@@ -81,7 +81,7 @@ export class NewPicSearch extends plugin {
   }
 
   async _Authentication (e) {
-    if (!(this.e.isMaster || this.e.user_id == 1509293009 || this.e.user_id == 2536554304)) { return true }
+    if (!this.e.isMaster) { return true }
     const { allowPM, limit, isMasterUse } = Config.picSearch
     if (isMasterUse) {
       e.reply('主人没有开放这个功能哦(＊／ω＼＊)')

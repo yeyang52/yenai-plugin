@@ -21,7 +21,7 @@ _.forIn(picApis, (values, key) => {
 const apiReg = new RegExp(`(${picApiKeys.join('|')}|^jktj$|^接口统计$)`)
 
 export class Fun extends plugin {
-  constructor () {
+  constructor(e) {
     super({
       name: '椰奶娱乐',
       event: 'message',
@@ -75,9 +75,10 @@ export class Fun extends plugin {
           reg: `^#来点(${Object.keys(xiurenTypeId).join('|')})$`,
           fnc: 'xiuren'
         }
-
       ]
     })
+    if (e?.message?.[0]?.text == "#全部赞我")
+      this.thumbUp(e)
   }
 
   /** 随机唱鸭 */

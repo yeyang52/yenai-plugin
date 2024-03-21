@@ -11,10 +11,10 @@ Bot.on?.('message', async (e) => {
   // 删除缓存时间
   const deltime = Config.whole.deltime
   // 判断群聊还是私聊
-  if (e.isGroup) {
+  if (e.message_type == 'group') {
     // 关闭撤回停止存储
     if (Config.getGroup(e.group_id).groupRecall) {
-      logger.debug(`[Yenai-Plugin]存储群消息${(e.group_id)}}=> ${e.message_id}`)
+      // logger.debug(`[Yenai-Plugin]存储群消息${e.group_id}=>${e.message_id}`)
       // 写入
       await redis.set(
         `notice:messageGroup:${e.message_id}`,
@@ -22,10 +22,10 @@ Bot.on?.('message', async (e) => {
         { EX: deltime }
       )
     }
-  } else if (e.isPrivate) {
+  } else if (e.message_type == 'private') {
     // 关闭撤回停止存储
     if (Config.whole.PrivateRecall) {
-      logger.debug(`[Yenai-Plugin]存储私聊消息(${e.user_id})=> ${e.message_id}`)
+      // logger.debug(`[Yenai-Plugin]存储私聊消息${e.user_id}=>${e.message_id}`)
       // 写入
       await redis.set(
         `notice:messagePrivate:${e.message_id}`,

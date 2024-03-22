@@ -74,6 +74,10 @@ export class Fun extends plugin {
         {
           reg: `^#来点(${Object.keys(xiurenTypeId).join('|')})$`,
           fnc: 'xiuren'
+        },
+        {
+          reg: '^#?查?看头像',
+          fnc: 'LookAvatar'
         }
       ]
     })
@@ -258,5 +262,18 @@ export class Fun extends plugin {
     logger.debug(`${e.logFnc}使用接口:${url}`)
     common.recallsendMsg(e, segment.image(url))
     redis.set(key, 'cd', { EX: 2 })
+  }
+  
+  async LookAvatar() {
+    const id = this.e.msg.replace(/^#?查?看头像/, '').trim() || this.e.at ||
+      this.e.message.find(item => item.type == 'at')?.qq || this.e.user_id
+    try {
+      const url = await (this.e.group?.pickMember ? this.e.group.pickMember : this.e.bot.pickFriend)(id).getAvatarUrl()
+      if (url) return await this.reply(segment.image(url), true)
+    } catch (error) {
+      logger.error('获取头像错误', error)
+    }
+    await this.reply('❎ 获取头像错误', true)
+    return false
   }
 }

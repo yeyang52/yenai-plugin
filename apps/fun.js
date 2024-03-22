@@ -21,7 +21,7 @@ _.forIn(picApis, (values, key) => {
 const apiReg = new RegExp(`(${picApiKeys.join('|')}|^jktj$|^接口统计$)`)
 
 export class Fun extends plugin {
-  constructor(e) {
+  constructor (e) {
     super({
       name: '椰奶娱乐',
       event: 'message',
@@ -81,8 +81,7 @@ export class Fun extends plugin {
         }
       ]
     })
-    if (e?.message?.[0]?.text == "#全部赞我")
-      this.thumbUp(e)
+    if (e?.message?.[0]?.text == '#全部赞我') { this.thumbUp(e) }
   }
 
   /** 随机唱鸭 */
@@ -263,8 +262,8 @@ export class Fun extends plugin {
     common.recallsendMsg(e, segment.image(url))
     redis.set(key, 'cd', { EX: 2 })
   }
-  
-  async LookAvatar() {
+
+  async LookAvatar () {
     const id = this.e.msg.replace(/^#?查?看头像/, '').trim() || this.e.at ||
       this.e.message.find(item => item.type == 'at')?.qq || this.e.user_id
     try {

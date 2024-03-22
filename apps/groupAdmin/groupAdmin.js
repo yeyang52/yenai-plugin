@@ -439,7 +439,7 @@ export class GroupAdmin extends plugin {
 
   // 查看和清理从未发言的人
   async neverspeak (e) {
-        if (!common.checkPermission(e, 'admin', 'admin')) { return true }
+    if (!common.checkPermission(e, 'admin', 'admin')) { return true }
     let list = null
     try {
       list = await new Ga(e).getNeverSpeak(e.group_id)

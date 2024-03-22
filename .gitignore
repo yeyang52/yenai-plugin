@@ -4,6 +4,5 @@ data/
 test.*
 *.log
 .vscode/
-.eslintignore
 temp/
 *.css.map

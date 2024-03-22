@@ -33,7 +33,7 @@ export class Update extends plugin {
    * @returns
    */
   async update (e) {
-if (!common.checkPermission(e, 'master')) return true
+    if (!common.checkPermission(e, 'master')) return true
 
     /** 检查是否正在更新中 */
     if (uping) {

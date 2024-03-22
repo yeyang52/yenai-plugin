@@ -92,7 +92,7 @@ export class Admin extends plugin {
 
   // 更改配置
   async ConfigSwitch (e) {
-if (!common.checkPermission(e, 'master')) return
+    if (!common.checkPermission(e, 'master')) return
     // 解析消息
     let regRet = SwitchCfgReg.exec(e.msg)
     let key = regRet[1]
@@ -126,7 +126,7 @@ if (!common.checkPermission(e, 'master')) return
 
   // 修改数字设置
   async ConfigNumber (e) {
-if (!common.checkPermission(e, 'master')) return
+    if (!common.checkPermission(e, 'master')) return
     let regRet = e.msg.match(NumberCfgReg)
     let type = NumberCfgType[regRet[1]]
     let number = checkNumberValue(regRet[2], type.limit)
@@ -136,7 +136,7 @@ if (!common.checkPermission(e, 'master')) return
 
   // 修改全部通知设置
   async SetAllNotice (e) {
-if (!common.checkPermission(e, 'master')) return
+    if (!common.checkPermission(e, 'master')) return
     let yes = /启用/.test(e.msg)
     for (let i in NoticeCfgType) {
       Config.modify('whole', NoticeCfgType[i], yes)
@@ -145,7 +145,7 @@ if (!common.checkPermission(e, 'master')) return
   }
 
   async Settings (e) {
-if (!common.checkPermission(e, 'master')) return
+    if (!common.checkPermission(e, 'master')) return
     if (/sese|涩涩/.test(e.msg)) {
       this.SeSe_Settings(e)
     } else {

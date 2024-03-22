@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "contributors:add": "all-contributors add",
-    "contributors:generate": "all-contributors generate"
+    "contributors:generate": "all-contributors generate",
+    "lint": "lint-staged --allow-empty",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -24,6 +26,18 @@
     "systeminformation": "^5.17.12"
   },
   "devDependencies": {
-    "all-contributors-cli": "^6.24.0"
+    "all-contributors-cli": "^6.24.0",
+    "eslint": "^8.57.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^16.6.2",
+    "eslint-plugin-promise": "^6.1.1",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint ./ --fix"
+    ]
   }
 }

@@ -22,5 +22,6 @@ module.exports = {
     'camelcase': 'off',
     'quote-props': ['error', 'consistent'],
     'no-eval': ['error', { 'allowIndirect': true }]
-  }
+  },
+  ignorePatterns: ['resources/state/echarts.min.js']
 }

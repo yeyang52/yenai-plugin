@@ -54,11 +54,11 @@ export class NewHandle extends plugin {
     if (!e.isMaster) return false
     let yes = !!/同意/.test(e.msg)
 
-    const systemMsg = (await (e.bot ?? Bot).getSystemMsg());
-    const FriendAdd = systemMsg.filter(
+    const systemMsg = (await (e.bot ?? Bot).getSystemMsg())
+    let FriendAdd = systemMsg.filter(
       item => item.request_type == 'friend' &&
       (item.sub_type === 'add' || item.sub_type === 'single')
-    );
+    )
 
     if (_.isEmpty(FriendAdd)) return e.reply('暂无好友申请(。-ω-)zzz', true)
 

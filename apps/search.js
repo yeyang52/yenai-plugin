@@ -55,7 +55,7 @@ export class NewSearch extends plugin {
   }
 
   async bggRank (e) {
-            let url = `https://boardgamegeek.com/browse/boardgame`;
-    e.reply([await puppeteer.Webpage({ url }), "目前BGG桌游排行榜如图，访问链接："+url])
+    let url = 'https://boardgamegeek.com/browse/boardgame'
+    e.reply([await puppeteer.Webpage({ url }), '目前BGG桌游排行榜如图，访问链接：' + url])
   }
 }

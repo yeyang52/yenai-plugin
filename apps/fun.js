@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import fetch from 'node-fetch'
-import plugin from '../../../lib/plugins/plugin.js'
 import { Config } from '../components/index.js'
 import { heisiType, pandadiuType, xiurenTypeId } from '../constants/fun.js'
 import { common, funApi, uploadRecord } from '../model/index.js'
@@ -51,14 +50,10 @@ export class Fun extends plugin {
           reg: '^#?coser$',
           fnc: 'coser'
         },
-        {
-          reg: '^#?铃声搜索',
-          fnc: 'lingsheng'
-        },
-        {
-          reg: '^#?半次元话题$',
-          fnc: 'bcyTopic'
-        },
+        // {
+        //  reg: '^#?铃声搜索',
+        //  fnc: 'lingsheng'
+        // },
         {
           reg: apiReg,
           fnc: 'picture'
@@ -84,7 +79,10 @@ export class Fun extends plugin {
     if (e?.message?.[0]?.text == '#全部赞我') { this.thumbUp(e) }
   }
 
-  /** 随机唱鸭 */
+  /**
+   * 随机唱鸭
+   * @param e
+   */
   async Sing (e) {
     let data = await funApi.randomSinging()
     if (data.error) return e.reply(data.error)
@@ -92,7 +90,10 @@ export class Fun extends plugin {
     await e.reply(data.lyrics)
   }
 
-  /** 支付宝语音 */
+  /**
+   * 支付宝语音
+   * @param e
+   */
   async ZFB (e) {
     let amount = parseFloat(e.msg.replace(/#|支付宝到账|元|圆/g, '').trim())
 
@@ -104,7 +105,10 @@ export class Fun extends plugin {
     e.reply([segment.record(`https://mm.cqu.cc/share/zhifubaodaozhang/mp3/${amount}.mp3`)])
   }
 
-  /** 有道翻译 */
+  /**
+   * 有道翻译
+   * @param e
+   */
   async youdao (e) {
     const msg = e.msg.match(/#(([\u4e00-\u9fa5]{2,6})-)?([\u4e00-\u9fa5]{2,6})?翻译(.*)/)
     // 如果是在群聊中回复，则获取上一条消息作为翻译内容
@@ -121,7 +125,10 @@ export class Fun extends plugin {
     e.reply(results, true)
   }
 
-  /** 点赞 */
+  /**
+   * 点赞
+   * @param e
+   */
   async thumbUp (e) {
     await funApi.thumbUp(e)
   }
@@ -263,11 +270,13 @@ export class Fun extends plugin {
     redis.set(key, 'cd', { EX: 2 })
   }
 
+  // 查看头像
   async LookAvatar () {
     const id = this.e.msg.replace(/^#?查?看头像/, '').trim() || this.e.at ||
       this.e.message.find(item => item.type == 'at')?.qq || this.e.user_id
     try {
-      const url = await (this.e.group?.pickMember ? this.e.group.pickMember : this.e.bot.pickFriend)(id).getAvatarUrl()
+      let url = await this.e.group?.pickMember(id)?.getAvatarUrl()
+      if (!url) url = await this.e.bot.pickFriend(id).getAvatarUrl()
       if (url) return await this.reply(segment.image(url), true)
     } catch (error) {
       logger.error('获取头像错误', error)

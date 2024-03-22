@@ -264,6 +264,7 @@ export class Fun extends plugin {
     redis.set(key, 'cd', { EX: 2 })
   }
   
+  // 查看头像
   async LookAvatar() {
     const id = this.e.msg.replace(/^#?查?看头像/, '').trim() || this.e.at ||
       this.e.message.find(item => item.type == 'at')?.qq || this.e.user_id

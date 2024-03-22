@@ -36,8 +36,8 @@
     "lint-staged": "^15.2.2"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint ./ --fix"
+    "*.js": [
+      "eslint --fix"
     ]
   }
 }

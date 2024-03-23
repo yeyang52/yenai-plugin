@@ -3,12 +3,12 @@ module.exports = {
     es2021: true,
     node: true
   },
-  extends: ['standard', 'plugin:jsdoc/recommended'],
+  extends: ['standard', 'plugin:jsdoc/recommended', 'plugin:import/recommended', 'plugin:promise/recommended'],
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module'
   },
-  plugins: ['import', 'n', 'promise', 'jsdoc'],
+  plugins: ['import', 'promise', 'jsdoc'],
   globals: {
     Bot: true,
     redis: true,

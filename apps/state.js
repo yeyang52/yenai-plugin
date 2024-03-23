@@ -44,7 +44,6 @@ export class NewState extends plugin {
     // 防止多次触发
     if (interval) { return false } else interval = true
     // 系统
-    let FastFetch; let HardDisk
     let otherInfo = []
     // 其他信息
     otherInfo.push({
@@ -56,8 +55,8 @@ export class NewState extends plugin {
     // 插件数量
     otherInfo.push(State.getPluginNum)
     let promiseTaskList = [
-      State.getFastFetch(e).then(res => { FastFetch = res }),
-      State.getFsSize().then(res => { HardDisk = res })
+      State.getFastFetch(e),
+      State.getFsSize()
     ]
 
     // 网络测试
@@ -69,7 +68,7 @@ export class NewState extends plugin {
       tail: res
     }))))
     // 执行promise任务
-    await Promise.all(promiseTaskList)
+    let [FastFetch, HardDisk] = await Promise.all(promiseTaskList)
     // 可视化数据
     let visualData = _.compact(await Promise.all([
       // CPU板块

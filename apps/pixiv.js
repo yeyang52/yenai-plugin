@@ -91,7 +91,7 @@ export class NewPixiv extends plugin {
     await Pixiv.illust(regRet[1], filter)
       .then(async res => {
         await e.reply(res.msg)
-        res.img.length == 1 ? common.recallsendMsg(e, res.img) : common.recallSendForwardMsg(e, res.img, false)
+        return res.img.length == 1 ? common.recallsendMsg(e, res.img) : common.recallSendForwardMsg(e, res.img, false)
       })
       .catch(err => common.handleException(e, err))
   }
@@ -221,11 +221,10 @@ export class NewPixiv extends plugin {
     if (!await this._Authentication(e, 'sese')) return
     e.reply(Pixiv.startMsg)
     let num = e.msg.match(/\d+/) || 1
-    await Pixiv.illustRecommended(num).then(res => {
-      res.length == 1
-        ? common.recallsendMsg(e, res[0], true)
-        : common.recallSendForwardMsg(e, res)
-    }).catch(err => common.handleException(e, err))
+    await Pixiv.illustRecommended(num).then(res => res.length == 1
+      ? common.recallsendMsg(e, res[0], true)
+      : common.recallSendForwardMsg(e, res)
+    ).catch(err => common.handleException(e, err))
   }
 
   // 更换代理

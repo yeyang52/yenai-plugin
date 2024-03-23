@@ -243,7 +243,7 @@ export class NewHandle extends plugin {
     if (group) {
       logger.mark(`${e.logFnc}回复临时消息`)
       return (e.bot ?? Bot).sendTempMsg(group, qq, e.message)
-        .then(() => { e.reply('✅ 已把消息发给它了哦~') })
+        .then(() => e.reply('✅ 已把消息发给它了哦~'))
         .catch((err) => common.handleException(e, err, { MsgTemplate: '❎ 发送失败\n错误信息为:{error}' }))
     }
 
@@ -255,7 +255,7 @@ export class NewHandle extends plugin {
 
     (e.bot ?? Bot).pickFriend(qq)
       .sendMsg(e.message)
-      .then(() => { e.reply('✅ 已把消息发给它了哦~') })
+      .then(() => e.reply('✅ 已把消息发给它了哦~'))
       .catch((err) => common.handleException(e, err, { MsgTemplate: '❎ 发送失败\n错误信息为:{error}' }))
   }
 

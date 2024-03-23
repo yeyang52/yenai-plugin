@@ -10,7 +10,10 @@ export default new class {
     this.folderPath = `${Plugin_Path}/resources/memes`
   }
 
-  /** 比心/赞 */
+  /**
+   * 比心/赞
+   * @param image
+   */
   async zan (image) {
     if (!Jimp) return false
     let background = await Jimp.read(this.getRandomImagePath(`${this.folderPath}/bixin`))
@@ -24,7 +27,10 @@ export default new class {
     return buff
   }
 
-  /** 爬 */
+  /**
+   * 爬
+   * @param image
+   */
   async crawl (image) {
     if (!Jimp) return false
     let background = await Jimp.read(this.getRandomImagePath(`${this.folderPath}/crawl`))

@@ -84,7 +84,10 @@ export class Fun extends plugin {
     if (e?.message?.[0]?.text == '#全部赞我') { this.thumbUp(e) }
   }
 
-  /** 随机唱鸭 */
+  /**
+   * 随机唱鸭
+   * @param e
+   */
   async Sing (e) {
     let data = await funApi.randomSinging()
     if (data.error) return e.reply(data.error)
@@ -92,7 +95,10 @@ export class Fun extends plugin {
     await e.reply(data.lyrics)
   }
 
-  /** 支付宝语音 */
+  /**
+   * 支付宝语音
+   * @param e
+   */
   async ZFB (e) {
     let amount = parseFloat(e.msg.replace(/#|支付宝到账|元|圆/g, '').trim())
 
@@ -104,7 +110,10 @@ export class Fun extends plugin {
     e.reply([segment.record(`https://mm.cqu.cc/share/zhifubaodaozhang/mp3/${amount}.mp3`)])
   }
 
-  /** 有道翻译 */
+  /**
+   * 有道翻译
+   * @param e
+   */
   async youdao (e) {
     const msg = e.msg.match(/#(([\u4e00-\u9fa5]{2,6})-)?([\u4e00-\u9fa5]{2,6})?翻译(.*)/)
     // 如果是在群聊中回复，则获取上一条消息作为翻译内容
@@ -121,7 +130,10 @@ export class Fun extends plugin {
     e.reply(results, true)
   }
 
-  /** 点赞 */
+  /**
+   * 点赞
+   * @param e
+   */
   async thumbUp (e) {
     await funApi.thumbUp(e)
   }

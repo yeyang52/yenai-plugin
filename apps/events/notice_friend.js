@@ -91,7 +91,10 @@ Bot.on?.('notice.friend', async (e) => {
 }
 )
 
-/** 时间转换 */
+/**
+ * 时间转换
+ * @param time
+ */
 function formatDate (time) {
   let now = new Date(parseFloat(time) * 1000)
   // 月

@@ -26,12 +26,11 @@ export default class {
   }
 
   /**
-     * @description: 取说说列表
-     * @param {*} e oicq
-     * @param {Number} num 数量
-     * @param {Number} pos 偏移量
-     * @return {Object} QQ空间数据
-     */
+   * 取说说列表
+   * @param {number} num 数量
+   * @param {number} pos 偏移量
+   * @returns {object} QQ空间数据
+   */
   async getQzone (num = 20, pos = 0) {
     let url = `https://user.qzone.qq.com/proxy/domain/taotao.qq.com/cgi-bin/emotion_cgi_msglist_v6?uin=${this.Bot.uin}&ftype=0&sort=0&pos=${pos}&num=${num}&replynum=100&g_tk=${this.Bot.bkn}&code_version=1&format=json&need_private_comment=1`
     return await fetch(url, {
@@ -42,10 +41,10 @@ export default class {
   }
 
   /**
-     * @description: 删除说说
-     * @param {String} tid tid参数
-     * @param {String} t1_source t1_source参数
-     */
+   * 删除说说
+   * @param {string} tid tid参数
+   * @param {string} t1_source t1_source参数
+   */
   async delQzone (tid, t1_source) {
     let url = `https://user.qzone.qq.com/proxy/domain/taotao.qzone.qq.com/cgi-bin/emotion_cgi_delete_v6?&g_tk=${this.Bot.bkn}`
     // 发送请求
@@ -74,7 +73,11 @@ export default class {
     // }
   }
 
-  /** 发送说说 */
+  /**
+   * 发送说说
+   * @param con
+   * @param img
+   */
   async setQzone (con, img) {
     let ck = common.getck('qzone.qq.com', this.Bot)
 
@@ -94,11 +97,11 @@ export default class {
   }
 
   /**
-     * @description: 获取留言
-     * @param {Number} num 数量为0时返回为全部
-     * @param {Number} start 偏移量/开始的位置
-     * @return {*}
-     */
+   * 获取留言
+   * @param {number} num 数量为0时返回为全部
+   * @param {number} start 偏移量/开始的位置
+   * @returns {*}
+   */
   async getQzoneMsgb (num = 0, start = 0) {
     let url = `https://user.qzone.qq.com/proxy/domain/m.qzone.qq.com/cgi-bin/new/get_msgb?uin=${this.Bot.uin}&hostUin=${this.Bot.uin}&start=${start}&s=0.45779069937151884&format=json&num=${num}&inCharset=utf-8&outCharset=utf-8&g_tk=${this.Bot.bkn}`
     return await fetch(url, {
@@ -109,11 +112,11 @@ export default class {
   }
 
   /**
-     * @description: 删除留言
-     * @param {*} id 留言id
-     * @param {*} uinId
-     * @return {*}
-     */
+   * 删除留言
+   * @param {*} id 留言id
+   * @param {*} uinId
+   * @returns {*}
+   */
   async delQzoneMsgb (id, uinId) {
     let delurl = `https://h5.qzone.qq.com/proxy/domain/m.qzone.qq.com/cgi-bin/new/del_msgb?&g_tk=${this.Bot.bkn}`
     return await fetch(delurl, {
@@ -144,11 +147,11 @@ export default class {
 
   // ----------------------------------------------------公告---------------------------------------------
   /**
-    * @description: 获取群公告
-    * @param {String} group 群号
-    * @param {String} item 序号
-    * @return {Object}
-    */
+   * 获取群公告
+   * @param group_id
+   * @param s
+   * @returns {object}
+   */
   async getAnnouncelist (group_id, s = 0) {
     let n = s ? 1 : 20
     let url = `https://web.qun.qq.com/cgi-bin/announce/get_t_list?bkn=${this.Bot.bkn}&qid=${group_id}&ft=23&s=${s - 1}&n=${n}`
@@ -165,10 +168,10 @@ export default class {
   }
 
   /**
-     * @description: 发送群公告
-     * @param {Number} group_id 发送群号
-     * @param {String} msg 发送内容
-     */
+   * 发送群公告
+   * @param {number} group_id 发送群号
+   * @param {string} msg 发送内容
+   */
   async setAnnounce (group_id, msg) {
     let url = `https://web.qun.qq.com/cgi-bin/announce/add_qun_notice?bkn=${this.Bot.bkn}`
     return await fetch(url, {
@@ -181,10 +184,10 @@ export default class {
   }
 
   /**
-     * @description: 删群公告
-     * @param {Number} group_id 群号
-     * @param {Number} num 序号
-     */
+   * 删群公告
+   * @param {number} group_id 群号
+   * @param {number} num 序号
+   */
   async delAnnounce (group_id, num) {
     let fid = await this.getAnnouncelist(group_id, num)
     if (!fid) return false
@@ -203,7 +206,10 @@ export default class {
     }
   }
 
-  /** 群星级 */
+  /**
+   * 群星级
+   * @param group_id
+   */
   async getCreditLevelInfo (group_id) {
     let url = `https://qqweb.qq.com/c/activedata/get_credit_level_info?bkn=${this.Bot.bkn}&uin=${this.Bot.uin}&gc=${group_id}`
     return await fetch(url, {
@@ -215,7 +221,10 @@ export default class {
     }).then(res => res.json()).catch(err => logger.error(err))
   }
 
-  /** 查看本群龙王 */
+  /**
+   * 查看本群龙王
+   * @param group_id
+   */
   async dragon (group_id) {
     let url = `https://qun.qq.com/interactive/honorlist?gc=${group_id}&type=1&_wv=3&_wwv=129`
     let res = await fetch(url, { headers: { Cookie: this.Bot.cookies['qun.qq.com'] } })
@@ -226,9 +235,9 @@ export default class {
   }
 
   /**
-     * @description: 开关好友添加
-     * @param {Number} type 1关闭2开启
-     */
+   * 开关好友添加
+   * @param {number} type 1关闭2开启
+   */
   async addFriendSwitch (type) {
     let url = `https://ti.qq.com/proxy/domain/oidb.tim.qq.com/v3/oidbinterface/oidb_0x587_75?sdkappid=39998&actype=2&bkn=${this.Bot.bkn}`
     return await fetch(url, {
@@ -244,12 +253,12 @@ export default class {
   }
 
   /**
-     * @description: 更改好友申请方式
-     * @param {*} at 类型1
-     * @param {*} q
-     * @param {*} a
-     * @return {*}
-     */
+   * 更改好友申请方式
+   * @param {*} at 类型1
+   * @param {*} q
+   * @param {*} a
+   * @returns {*}
+   */
   async setFriendType (at, q = '', a = '') {
     const type = {
       1: '0',
@@ -270,10 +279,10 @@ export default class {
   }
 
   /**
-     * @description: 设置戳一戳开关
-     * @param {Number} is 0为开启1为关闭
-     */
-  async setcyc (is) {
+   * 设置戳一戳开关
+   * @param {number} isclose 0为开启1为关闭
+   */
+  async setcyc (isclose) {
     let url = `https://zb.vip.qq.com/srf/QC_UniBusinessLogicServer_UniBusinessLogicObj/uniSet?g_tk=${this.Bot.bkn}`
     return await fetch(url, {
       method: 'POST',
@@ -292,7 +301,7 @@ export default class {
         },
         stNudge: {
           ischangeswitch: 1,
-          isclose: is,
+          isclose,
           ischangecustomtext: 1,
           customtext: ''
         }
@@ -305,7 +314,10 @@ export default class {
     }).then(res => res.json()).catch(err => logger.error(err))
   }
 
-  /** 今日打卡 */
+  /**
+   * 今日打卡
+   * @param groupId
+   */
   async signInToday (groupId) {
     let body = JSON.stringify({
       dayYmd: moment().format('YYYYMMDD'),
@@ -323,10 +335,10 @@ export default class {
   }
 
   /**
-     * @description: 群发言榜单
-     * @param {Number} groupId 群号
-     * @param {Strng} time true为7天false为昨天
-     */
+   * 群发言榜单
+   * @param {number} groupId 群号
+   * @param {string} time true为7天false为昨天
+   */
   async SpeakRank (groupId, time = false) {
     let url = `https://qun.qq.com/m/qun/activedata/proxy/domain/qun.qq.com/cgi-bin/manager/report/list?bkn=${this.Bot.bkn}&gc=${groupId}&type=0&start=0&time=${time ? 1 : 0}`
     return await fetch(url, {
@@ -335,10 +347,10 @@ export default class {
   }
 
   /**
-     * @description: 群数据
-     * @param {String} groupId 群号
-     * @param {Strng} time true为7天false为昨天
-     */
+   * 群数据
+   * @param {string} groupId 群号
+   * @param {string} time true为7天false为昨天
+   */
   async groupData (groupId, time = false) {
     let url = `https://qun.qq.com/m/qun/activedata/proxy/domain/qun.qq.com/cgi-bin/manager/report/index?gc=${groupId}&time=${time ? 1 : 0}&bkn=${this.Bot.bkn}`
     return await fetch(url, {
@@ -349,9 +361,12 @@ export default class {
   // ---------------------------------字符---------------------------------------------
 
   /**
-     * @description: 字符列表
-     * @return {*}
-     */
+   * @param groupId
+   * @param start
+   * @param limit
+   * 字符列表
+   * @returns {*}
+   */
   async luckylist (groupId, start = 0, limit = 10) {
     let body = JSON.stringify({
       group_code: groupId,
@@ -368,10 +383,10 @@ export default class {
   }
 
   /**
-     * @description: 更换字符
-     * @param {String} group_id 群号
-     * @param {String} id 字符id
-     */
+   * 更换字符
+   * @param {string} group_id 群号
+   * @param {string} id 字符id
+   */
   async equipLucky (group_id, id) {
     let body = JSON.stringify({
       group_code: group_id,
@@ -386,10 +401,10 @@ export default class {
   }
 
   /**
-     * @description: 抽取幸运字符
-     * @param {String} group_id 群号
-     * @return {*}
-     */
+   * 抽取幸运字符
+   * @param {string} group_id 群号
+   * @returns {*}
+   */
   async drawLucky (group_id) {
     let body = JSON.stringify({
       group_code: group_id
@@ -403,10 +418,10 @@ export default class {
   }
 
   /**
-     * @description: 开关幸运字符
-     * @param {Number} groupId 群号
-     * @param {Boolean} type
-     */
+   * 开关幸运字符
+   * @param {number} groupId 群号
+   * @param {boolean} type
+   */
   async swichLucky (groupId, type) {
     let body = JSON.stringify({
       group_code: groupId,
@@ -421,10 +436,10 @@ export default class {
   }
 
   /**
-   * @description: 批量踢人
+   * 批量踢人
+   * @param {number} groupId 群号
    * @param {Array} member 要踢的人的数组
-   * @param {Number} groupId 群号
-   * @return {*}
+   * @returns {*}
    */
   async deleteGroupMember (groupId, member) {
     let res = []
@@ -451,9 +466,8 @@ export default class {
 
   /**
    * 获取QQ等级信息
-   *
    * @param {string|number} userId QQ号码
-   * @returns {Promise<Object>} 包含QQ等级信息的Promise对象
+   * @returns {Promise<object>} 包含QQ等级信息的Promise对象
    */
   async getQQLevel (userId) {
     const url = 'https://club.vip.qq.com/api/vip/getQQLevelInfo'
@@ -479,8 +493,7 @@ export default class {
   /**
    * 自定义机型
    * @param {string} modelName
-   * @param {string} modelShow
-   * @returns
+   * @returns {Promise<Response|*>}
    */
   async setModel (modelName) {
     const url = 'https://proxy.vip.qq.com/cgi-bin/srfentry.fcgi'

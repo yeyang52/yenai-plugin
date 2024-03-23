@@ -56,7 +56,10 @@ export class NewBika extends plugin {
     })
   }
 
-  /** 搜索 */
+  /**
+   * 搜索
+   * @param e
+   */
   async search (e) {
     if (!await this._Authentication(e)) return
     e.reply(Pixiv.startMsg)
@@ -67,7 +70,10 @@ export class NewBika extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  /** 漫画页面 */
+  /**
+   * 漫画页面
+   * @param e
+   */
   async comicPage (e) {
     if (!await this._Authentication(e)) return
     e.reply(Pixiv.startMsg)
@@ -79,7 +85,10 @@ export class NewBika extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  /** 快速查看 */
+  /**
+   * 快速查看
+   * @param e
+   */
   async viewComicPage (e) {
     if (!await this._Authentication(e)) return
     let number = e.msg.match(/\d+/) - 1
@@ -88,7 +97,10 @@ export class NewBika extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  /** 下一页 */
+  /**
+   * 下一页
+   * @param e
+   */
   async nextComicPage (e) {
     if (!await this._Authentication(e)) return
     await Bika.next()
@@ -96,7 +108,10 @@ export class NewBika extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  /** 下一话 */
+  /**
+   * 下一话
+   * @param e
+   */
   async nextChapter (e) {
     if (!await this._Authentication(e)) return
     await Bika.next('chapter')
@@ -104,7 +119,10 @@ export class NewBika extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  /** 类别列表 */
+  /**
+   * 类别列表
+   * @param e
+   */
   async categories (e) {
     if (!await this._Authentication(e)) return
     e.reply(Pixiv.startMsg)
@@ -113,7 +131,10 @@ export class NewBika extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  /** 漫画细节 */
+  /**
+   * 漫画细节
+   * @param e
+   */
   async comicDetail (e) {
     if (!await this._Authentication(e)) return
     e.reply(Pixiv.startMsg)
@@ -123,7 +144,10 @@ export class NewBika extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  /** 图片质量 */
+  /**
+   * 图片质量
+   * @param e
+   */
   async imageQuality (e) {
     let quality = e.msg.match(new RegExp(`#?${Prefix}修改图片质量(.*)`))[2]
     let imageQualityType = {
@@ -138,7 +162,10 @@ export class NewBika extends plugin {
     new Admin().SeSe_Settings(e)
   }
 
-  /** 图片直连 */
+  /**
+   * 图片直连
+   * @param e
+   */
   async directConnection (e) {
     if (!this.e.isMaster) { return true }
     let now = Config.bika.bikaDirectConnection

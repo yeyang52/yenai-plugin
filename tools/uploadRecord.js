@@ -18,6 +18,12 @@ try {
   core = (await import('icqq').catch(() => {}))?.core
 }
 
+/**
+ *
+ * @param record_url
+ * @param seconds
+ * @param transcoding
+ */
 async function uploadRecord (record_url, seconds = 0, transcoding = true) {
   if (!Contactable) return segment.record(record_url)
   const result = await getPttBuffer(record_url, Bot.config.ffmpeg_path, transcoding)
@@ -95,6 +101,12 @@ async function uploadRecord (record_url, seconds = 0, transcoding = true) {
 
 export default uploadRecord
 
+/**
+ *
+ * @param file
+ * @param ffmpeg
+ * @param transcoding
+ */
 async function getPttBuffer (file, ffmpeg = 'ffmpeg', transcoding = true) {
   let buffer
   let time
@@ -158,6 +170,11 @@ async function getPttBuffer (file, ffmpeg = 'ffmpeg', transcoding = true) {
   return { buffer, time }
 }
 
+/**
+ *
+ * @param file
+ * @param ffmpeg
+ */
 async function getAudioTime (file, ffmpeg = 'ffmpeg') {
   return new Promise((resolve, _reject) => {
     (0, child_process.exec)(`${ffmpeg} -i "${file}"`, async (_error, _stdout, stderr) => {
@@ -186,6 +203,11 @@ async function getAudioTime (file, ffmpeg = 'ffmpeg') {
   })
 }
 
+/**
+ *
+ * @param file
+ * @param ffmpeg
+ */
 async function audioTrans (file, ffmpeg = 'ffmpeg') {
   return new Promise((resolve, reject) => {
     const tmpfile = path.join(TMP_DIR, (0, uuid)());
@@ -202,6 +224,10 @@ async function audioTrans (file, ffmpeg = 'ffmpeg') {
   })
 }
 
+/**
+ *
+ * @param file
+ */
 async function read7Bytes (file) {
   const fd = await fs.promises.open(file, 'r')
   const buf = (await fd.read(Buffer.alloc(7), 0, 7, 0)).buffer
@@ -209,11 +235,18 @@ async function read7Bytes (file) {
   return buf
 }
 
+/**
+ *
+ */
 function uuid () {
   let hex = crypto.randomBytes(16).toString('hex')
   return hex.substr(0, 8) + '-' + hex.substr(8, 4) + '-' + hex.substr(12, 4) + '-' + hex.substr(16, 4) + '-' + hex.substr(20)
 }
 
+/**
+ *
+ * @param ip
+ */
 function int32ip2str (ip) {
   if (typeof ip === 'string') { return ip }
   ip = ip & 0xffffffff
@@ -232,7 +265,10 @@ const TMP_DIR = os.tmpdir()
 /** no operation */
 const NOOP = () => { }
 
-/** md5 hash */
+/**
+ * md5 hash
+ * @param data
+ */
 const md5 = (data) => (0, crypto.createHash)('md5').update(data).digest()
 
 errors.LoginErrorCode = errors.drop = errors.ErrorCode = void 0
@@ -284,6 +320,11 @@ const ErrorMessage = {
   120: '在该群被禁言',
   121: 'AT全体剩余次数不足'
 }
+/**
+ *
+ * @param code
+ * @param message
+ */
 function drop (code, message) {
   if (!message || !message.length) { message = ErrorMessage[code] }
   throw new core.ApiRejection(code, message)

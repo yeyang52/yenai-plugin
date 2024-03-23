@@ -201,6 +201,10 @@ export default class PixivApi {
     return await this.request('v1/illust/recommended', params)
   }
 }
+/**
+ *
+ * @param time
+ */
 function timeToSeconds (time) {
   let seconds = 0
   let timeArray = time.split(' ')
@@ -227,6 +231,9 @@ function timeToSeconds (time) {
   return seconds
 }
 
+/**
+ *
+ */
 function getNoonTomorrow () {
   const now = moment() // 获取当前时间
   const noonToday = moment().startOf('day').add(12, 'hours') // 获取今天中午12点的时间

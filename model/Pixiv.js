@@ -54,10 +54,11 @@ export default new class Pixiv {
   }
 
   /**
-     * @description: 获取插画信息
-     * @param {String} ids 插画ID
-     * @return {Object}
-     */
+   * 获取插画信息
+   * @param {string} ids 插画ID
+   * @param filter
+   * @returns {object}
+   */
   async illust (ids, filter = false) {
     const params = { id: ids }
     let res = null
@@ -96,13 +97,13 @@ export default new class Pixiv {
   }
 
   /**
-     * @description: 获取Pixiv榜单
-     * @param {Number} page 页数
-     * @param {Date} date 时间YYYY-MM-DD
-     * @param {String} mode 榜单类型
-     * @param {Boolean} r18 是否为R18榜单
-     * @return {Array}
-     */
+   * 获取Pixiv榜单
+   * @param {number} page 页数
+   * @param {Date} date 时间YYYY-MM-DD
+   * @param {string} mode 榜单类型
+   * @param {boolean} r18 是否为R18榜单
+   * @returns {Array}
+   */
   async Rank (page = 1, date = '', mode = '周', r18 = false) {
     // 转为大写
     mode = _.toUpper(mode)
@@ -171,11 +172,11 @@ export default new class Pixiv {
   }
 
   /**
-     * @description: 根据关键词搜图
-     * @param {String} tag 关键词
-     * @param {String} page 页数
-     * @return {Array}
-     */
+   * 根据关键词搜图
+   * @param {string} tag 关键词
+   * @param {string} page 页数
+   * @returns {Array}
+   */
   async vilipixSearchTags (tag, page = 1) {
     const api = 'https://www.vilipix.com/api/v1/picture/public'
     const params = {
@@ -211,11 +212,12 @@ export default new class Pixiv {
   }
 
   /**
-     * @description: tag搜图pro
-     * @param {String} tag 关键词
-     * @param {String} page 页数
-     * @return {*}
-     */
+   * tag搜图pro
+   * @param {string} tag 关键词
+   * @param {string} page 页数
+   * @param isfilter
+   * @returns {*}
+   */
   async searchTags (tag, page = 1, isfilter = true) {
     const params = {
       word: tag,
@@ -259,9 +261,9 @@ export default new class Pixiv {
   }
 
   /**
-     * @description: 获取热门tag
-     * @return {Array}
-     */
+   * 获取热门tag
+   * @returns {Array}
+   */
   async PopularTags () {
     let res = null
     if (this.PixivClient.auth) {
@@ -289,12 +291,12 @@ export default new class Pixiv {
   }
 
   /**
-     * @description: 搜索用户插画
-     * @param {Number|String} keyword 用户uid或名称
-     * @param {Number|String} page 页数
-     * @param {Boolean} isfilter 是否过滤敏感内容
-     * @return {Array}
-     */
+   * 搜索用户插画
+   * @param {number | string} keyword 用户uid或名称
+   * @param {number | string} page 页数
+   * @param {boolean} isfilter 是否过滤敏感内容
+   * @returns {Array}
+   */
   async userIllust (keyword, page = 1, isfilter = true) {
     // 关键词搜索
     if (!/^\d+$/.test(keyword)) {
@@ -358,11 +360,11 @@ export default new class Pixiv {
   }
 
   /**
-   * @description:搜索用户
-   * @param {String} word 用户name
-   * @param {Number} page 页数
-   * @param {Boolean} isfilter 是否过滤敏感内容
-   * @return {Array} 可直接发送的消息数组
+   * 搜索用户
+   * @param {string} word 用户name
+   * @param {number} page 页数
+   * @param {boolean} isfilter 是否过滤敏感内容
+   * @returns {Array} 可直接发送的消息数组
    */
   async searchUser (word, page = 1, isfilter = true) {
     let params = {
@@ -401,9 +403,10 @@ export default new class Pixiv {
   }
 
   /**
-     * @description: vilipix随机图片
-     * @return {Array}
-     */
+   * @param limit
+   * vilipix随机图片
+   * @returns {Array}
+   */
   async vilipixRandomImg (limit) {
     let api = `https://www.vilipix.com/api/v1/picture/recommand?limit=${limit}&offset=${_.random(1, 700)}`
     let res = await request.get(api).then(res => res.json())
@@ -421,10 +424,11 @@ export default new class Pixiv {
   }
 
   /**
-     * @description: 相关作品
-     * @param {String} pid
-     * @return {*}
-     */
+   * 相关作品
+   * @param {string} pid
+   * @param isfilter
+   * @returns {*}
+   */
   async relatedIllust (pid, isfilter = true) {
     let params = { id: pid }
     let res = null
@@ -462,7 +466,10 @@ export default new class Pixiv {
     ]
   }
 
-  /** p站单图 */
+  /**
+   * p站单图
+   * @param pro
+   */
   async pximg (pro) {
     let url = 'https://image.anosu.top/pixiv/json'
     const params = {
@@ -487,9 +494,9 @@ export default new class Pixiv {
   }
 
   /**
-   * @description: 推荐作品
-   * @param {Number} num 数量
-   * @return {Promise}
+   * 推荐作品
+   * @param {number} num 数量
+   * @returns {Promise}
    */
   async illustRecommended (num) {
     let list = await this.PixivClient.illustRecommended()
@@ -508,9 +515,9 @@ export default new class Pixiv {
   }
 
   /**
-   * @description: 请求p站图片
-   * @param {String} url
-   * @return {Promise}
+   * 请求p站图片
+   * @param {string} url
+   * @returns {Promise}
    */
   async _requestPixivImg (url) {
     url = url.replace('i.pximg.net', this.proxy)
@@ -520,22 +527,22 @@ export default new class Pixiv {
   }
 
   /**
-     * @description: 格式化
-     * @param {Object} illusts 处format理对象
-     * @return {Object}
-     * title  标题
-     * id  pid
-     * total_bookmarks  点赞
-     * total_view  访问量
-     * tags  标签
-     * url  图片链接
-     * user  作者信息
-     * image_urls  单张图片
-     * x_restrict  是否为全年龄
-     * create_date  发布时间
-     * illust_ai_type  是否为AI作品
-     * visible  是否为可见作品
-     */
+   * 格式化
+   * @param {object} illusts 处format理对象
+   * @returns {object}
+   * title  标题
+   * id  pid
+   * total_bookmarks  点赞
+   * total_view  访问量
+   * tags  标签
+   * url  图片链接
+   * user  作者信息
+   * image_urls  单张图片
+   * x_restrict  是否为全年龄
+   * create_date  发布时间
+   * illust_ai_type  是否为AI作品
+   * visible  是否为可见作品
+   */
   _format (illusts) {
     let url = []
     let { tags, meta_single_page, meta_pages } = illusts

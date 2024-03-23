@@ -3,7 +3,12 @@ import md5 from 'md5'
 import { API_ERROR } from './utils.js'
 import _ from 'lodash'
 
-/** 有道翻译 */
+/**
+ * 有道翻译
+ * @param msg
+ * @param to
+ * @param from
+ */
 export default async function youdao (msg, to = 'auto', from = 'auto') {
   if (to != 'auto') to = youDaoLangType.find(item => item.label == to)?.code
   if (from != 'auto') from = youDaoLangType.find(item => item.label == from)?.code

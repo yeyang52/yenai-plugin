@@ -174,6 +174,10 @@ Bot.on?.('message', async (e) => {
   if (forwardMsg) await common.sendMasterMsg(forwardMsg)
 })
 // 特殊消息处理
+/**
+ *
+ * @param msg
+ */
 function getMsgType (msg) {
   const msgType = {
     record: {

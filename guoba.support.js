@@ -8,6 +8,9 @@ import { Config } from './components/index.js'
 const Path = process.cwd()
 const Plugin_Path = `${Path}/plugins/yenai-plugin`
 
+/**
+ *
+ */
 export function supportGuoba () {
   return {
     pluginInfo: {

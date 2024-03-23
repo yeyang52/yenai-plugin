@@ -30,6 +30,10 @@ export class YenaiHelp extends plugin {
   }
 }
 
+/**
+ *
+ * @param e
+ */
 async function help (e) {
   let custom = {}
   // let help = {}

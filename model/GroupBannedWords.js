@@ -82,7 +82,10 @@ export default new class {
     return data.muteTime ?? 300
   }
 
-  /** 关键词转换成可发送消息 */
+  /**
+   * 关键词转换成可发送消息
+   * @param msg
+   */
   async keyWordTran (msg) {
     /** 图片 */
     if (msg.includes('{image')) {
@@ -116,7 +119,10 @@ export default new class {
     return msg
   }
 
-  /** 初始化已添加内容 */
+  /**
+   * 初始化已添加内容
+   * @param groupId
+   */
   initTextArr (groupId) {
     if (this.dataCach.get(groupId)) return this.dataCach.get(groupId)
 

@@ -7,6 +7,9 @@ let cheerio = ''
 
 let domain = 'https://ascii2d.net/'
 
+/**
+ *
+ */
 async function importCheerio () {
   if (cheerio) return cheerio
   try {
@@ -16,6 +19,10 @@ async function importCheerio () {
   }
 }
 
+/**
+ *
+ * @param url
+ */
 export default async function doSearch (url) {
   await importCheerio()
   const { ascii2dUsePuppeteer, ascii2dResultMaxQuantity } = Config.picSearch
@@ -76,9 +83,17 @@ const callAscii2dUrlApi = async (imgUrl) => {
     data: await res.text()
   }
 }
+/**
+ *
+ * @param url
+ */
 async function getAscii2dWithPuppeteer (url) {
   return await puppeteer.get(url, 'body > .container')
 }
+/**
+ *
+ * @param body
+ */
 async function parse (body) {
   const $ = cheerio.load(body, { decodeEntities: true })
   return _.map($('.item-box'), (item) => {

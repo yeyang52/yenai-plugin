@@ -7,6 +7,10 @@ cron表达式为秒，分，时，日，月，周，年
 */
 // 返回错误信息用
 let message = ''
+/**
+ *
+ * @param cronExpression
+ */
 export default function cronValidate (cronExpression) {
   // 先将cron表达式进行分割
   let cronParams = cronExpression.split(' ')
@@ -68,21 +72,37 @@ export default function cronValidate (cronExpression) {
 }
 
 // 检查秒的函数方法
+/**
+ *
+ * @param secondsField
+ */
 function checkSecondsField (secondsField) {
   return checkField(secondsField, 0, 59, '秒')
 }
 
 // 检查分的函数方法
+/**
+ *
+ * @param minutesField
+ */
 function checkMinutesField (minutesField) {
   return checkField(minutesField, 0, 59, '分')
 }
 
 // 检查小时的函数方法
+/**
+ *
+ * @param hoursField
+ */
 function checkHoursField (hoursField) {
   return checkField(hoursField, 0, 23, '时')
 }
 
 // 检查日期的函数方法
+/**
+ *
+ * @param dayOfMonthField
+ */
 function checkDayOfMonthField (dayOfMonthField) {
   if (dayOfMonthField == '?') {
     return true
@@ -98,6 +118,10 @@ function checkDayOfMonthField (dayOfMonthField) {
 }
 
 // 检查月份的函数方法
+/**
+ *
+ * @param monthsField
+ */
 function checkMonthsField (monthsField) {
   // 月份简写处理
   if (monthsField != '*') {
@@ -120,6 +144,10 @@ function checkMonthsField (monthsField) {
 }
 
 // 星期验证
+/**
+ *
+ * @param dayOfWeekField
+ */
 function checkDayOfWeekField (dayOfWeekField) {
   dayOfWeekField = dayOfWeekField.replace('SUN', '1')
   dayOfWeekField = dayOfWeekField.replace('MON', '2')
@@ -143,11 +171,22 @@ function checkDayOfWeekField (dayOfWeekField) {
 }
 
 // 检查年份的函数方法
+/**
+ *
+ * @param yearField
+ */
 function checkYearField (yearField) {
   return checkField(yearField, 1970, 2099, '年的')
 }
 
 // 通用的检查值的大小范围的方法( - , / *)
+/**
+ *
+ * @param value
+ * @param minimal
+ * @param maximal
+ * @param attribute
+ */
 function checkField (value, minimal, maximal, attribute) {
   // 校验值中是否有“-”，如果有“-”的话，下标会>0
   if (value.indexOf('-') > -1) {
@@ -168,6 +207,14 @@ function checkField (value, minimal, maximal, attribute) {
 }
 
 // 检测是否是整数以及是否在范围内,参数：检测的值，下限，上限，是否检查端点，检查的属性
+/**
+ *
+ * @param value
+ * @param minimal
+ * @param maximal
+ * @param checkExtremity
+ * @param attribute
+ */
 function checkIntValue (value, minimal, maximal, checkExtremity, attribute) {
   try {
     // 用10进制犯法来进行整数转换
@@ -187,6 +234,13 @@ function checkIntValue (value, minimal, maximal, checkExtremity, attribute) {
   }
 }
 // 检验枚举类型的参数是否正确
+/**
+ *
+ * @param value
+ * @param minimal
+ * @param maximal
+ * @param attribute
+ */
 function checkListField (value, minimal, maximal, attribute) {
   let st = value.split(',')
   let values = new Array(st.length)
@@ -232,6 +286,13 @@ function checkListField (value, minimal, maximal, attribute) {
 }
 
 // 检验循环
+/**
+ *
+ * @param value
+ * @param minimal
+ * @param maximal
+ * @param attribute
+ */
 function checkIncrementField (value, minimal, maximal, attribute) {
   if (value.split('/').length > 2) {
     return (attribute + "中的参数只能有一个'/'")
@@ -257,6 +318,13 @@ function checkIncrementField (value, minimal, maximal, attribute) {
 }
 
 // 检验范围
+/**
+ *
+ * @param params
+ * @param minimal
+ * @param maximal
+ * @param attribute
+ */
 function checkRangeAndCycle (params, minimal, maximal, attribute) {
   // 校验“-”符号是否只有一个
   if (params.split('-').length > 2) {
@@ -310,6 +378,14 @@ function checkRangeAndCycle (params, minimal, maximal, attribute) {
 }
 
 // 检查日中的特殊字符
+/**
+ *
+ * @param value
+ * @param letter
+ * @param minimalBefore
+ * @param maximalBefore
+ * @param attribute
+ */
 function checkFieldWithLetter (value, letter, minimalBefore, maximalBefore, attribute) {
   // 判断是否只有一个字母
   for (let i = 0; i < value.length; i++) {
@@ -367,6 +443,14 @@ function checkFieldWithLetter (value, letter, minimalBefore, maximalBefore, attr
 }
 
 // 检查星期中的特殊字符
+/**
+ *
+ * @param value
+ * @param letter
+ * @param minimalBefore
+ * @param maximalBefore
+ * @param attribute
+ */
 function checkFieldWithLetterWeek (value, letter, minimalBefore, maximalBefore, attribute) {
   // 判断是否只有一个字母
   for (let i = 0; i < value.length; i++) {

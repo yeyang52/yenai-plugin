@@ -30,7 +30,7 @@ export class Update extends plugin {
 
   /**
    * rule - 更新椰奶插件
-   * @returns
+   * @param e
    */
   async update (e) {
     if (!common.checkPermission(e, 'master')) return true
@@ -63,7 +63,6 @@ export class Update extends plugin {
   /**
    * 椰奶插件更新函数
    * @param {boolean} isForce 是否为强制更新
-   * @returns
    */
   async runUpdate (isForce) {
     const _path = './plugins/yenai-plugin/'
@@ -107,7 +106,6 @@ export class Update extends plugin {
   /**
    * 获取椰奶插件的更新日志
    * @param {string} plugin 插件名称
-   * @returns
    */
   async getLog (plugin = '') {
     let cm = `cd ./plugins/${plugin}/ && git log  -20 --oneline --pretty=format:"%h||[%cd]  %s" --date=format:"%m-%d %H:%M"`
@@ -152,7 +150,6 @@ export class Update extends plugin {
   /**
    * 获取上次提交的commitId
    * @param {string} plugin 插件名称
-   * @returns
    */
   async getcommitId (plugin = '') {
     let cm = `git -C ./plugins/${plugin}/ rev-parse --short HEAD`
@@ -166,7 +163,6 @@ export class Update extends plugin {
   /**
    * 获取本次更新插件的最后一次提交时间
    * @param {string} plugin 插件名称
-   * @returns
    */
   async getTime (plugin = '') {
     let cm = `cd ./plugins/${plugin}/ && git log -1 --oneline --pretty=format:"%cd" --date=format:"%m-%d %H:%M"`
@@ -186,7 +182,6 @@ export class Update extends plugin {
    * 处理更新失败的相关函数
    * @param {string} err
    * @param {string} stdout
-   * @returns
    */
   async gitErr (err, stdout) {
     let msg = '更新失败！'
@@ -230,7 +225,6 @@ export class Update extends plugin {
   /**
    * 异步执行git相关命令
    * @param {string} cmd git命令
-   * @returns
    */
   async execSync (cmd) {
     return new Promise((resolve, reject) => {
@@ -242,7 +236,6 @@ export class Update extends plugin {
 
   /**
    * 检查git是否安装
-   * @returns
    */
   async checkGit () {
     let ret = await execSync('git --version', { encoding: 'utf-8' })

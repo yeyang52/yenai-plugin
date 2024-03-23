@@ -2,6 +2,9 @@ export const API_ERROR = '出了点小问题，待会再试试吧'
 
 let cheerio = null
 
+/**
+ *
+ */
 export async function _importDependency () {
   if (cheerio) return cheerio
   cheerio = await import('cheerio')

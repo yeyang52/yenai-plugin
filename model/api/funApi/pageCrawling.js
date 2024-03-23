@@ -3,6 +3,11 @@ import _ from 'lodash'
 import { _importDependency } from './utils.js'
 import request from '../../../lib/request/request.js'
 
+/**
+ *
+ * @param type
+ * @param keywords
+ */
 export async function pandadiu (type = 'cos', keywords = '') {
   let cheerio = await _importDependency()
   let domain = 'https://www.pandadiu.com'
@@ -29,6 +34,11 @@ export async function pandadiu (type = 'cos', keywords = '') {
     ..._.take(imgs, 30)
   ]
 }
+/**
+ *
+ * @param keywords
+ * @param isSearch
+ */
 export async function mengdui (keywords, isSearch) {
   let cheerio = await _importDependency()
   const domain = 'https://b6u8.com'
@@ -63,6 +73,10 @@ export async function mengdui (keywords, isSearch) {
   return [title, number, ..._.take(imgs, 30)]
 }
 
+/**
+ *
+ * @param type
+ */
 export async function xiuren (type) {
   let cheerio = await _importDependency()
   // 可扩展
@@ -89,6 +103,9 @@ export async function xiuren (type) {
   return imgList
 }
 
+/**
+ *
+ */
 export async function coser () {
   let cheerio = await _importDependency()
   const domain = 'https://t2cy.com'

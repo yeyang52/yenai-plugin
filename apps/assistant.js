@@ -138,7 +138,10 @@ export class Assistant extends plugin {
     return this.e.bot ?? Bot
   }
 
-  /** 改头像 */
+  /**
+   * 改头像
+   * @param e
+   */
   async SetAvatar (e) {
     if (!common.checkPermission(e, 'master')) return
     if (!e.img) {
@@ -177,7 +180,10 @@ export class Assistant extends plugin {
     this.finish('_avatarContext')
   }
 
-  /** 改昵称 */
+  /**
+   * 改昵称
+   * @param e
+   */
   async SetNickname (e) {
     if (!common.checkPermission(e, 'master')) return
     let name = e.msg.replace(/#|改昵称/g, '').trim()
@@ -190,7 +196,10 @@ export class Assistant extends plugin {
       })
   }
 
-  /** 改群名片 */
+  /**
+   * 改群名片
+   * @param e
+   */
   async SetGroupCard (e) {
     if (!common.checkPermission(e, 'master')) return
     let group = ''
@@ -222,7 +231,10 @@ export class Assistant extends plugin {
       })
   }
 
-  /** 改群头像 */
+  /**
+   * 改群头像
+   * @param e
+   */
   async SetGroupAvatar (e) {
     if (e.isPrivate) {
       if (!e.isMaster) return logger.mark(`${e.logFnc}不为主人`)
@@ -277,7 +289,10 @@ export class Assistant extends plugin {
     this.finish('_GroupAvatarContext')
   }
 
-  /** 改群昵称 */
+  /**
+   * 改群昵称
+   * @param e
+   */
   async SetGroupName (e) {
     if (!common.checkPermission(e, 'admin', 'admin')) return
     let group = ''
@@ -314,7 +329,10 @@ export class Assistant extends plugin {
     }
   }
 
-  /** 改签名 */
+  /**
+   * 改签名
+   * @param e
+   */
   async SetSignature (e) {
     if (!common.checkPermission(e, 'master')) return
     let signs = e.msg.replace(/#|改签名/g, '').trim()
@@ -326,7 +344,10 @@ export class Assistant extends plugin {
       })
   }
 
-  /** 改状态 */
+  /**
+   * 改状态
+   * @param e
+   */
   async SetOnlineStatus (e) {
     if (!common.checkPermission(e, 'master')) return
     let signs = e.msg.replace(/#|改状态/g, '').trim()
@@ -345,7 +366,10 @@ export class Assistant extends plugin {
     return true
   }
 
-  /** 发好友 */
+  /**
+   * 发好友
+   * @param e
+   */
   async SendFriendMsg (e) {
     if (!common.checkPermission(e, 'master')) return
     let regRet = FriendsReg.exec(e.msg)
@@ -364,7 +388,10 @@ export class Assistant extends plugin {
       .catch(err => common.handleException(e, err, { MsgTemplate: '❎ 发送失败\n错误信息为:{error}' }))
   }
 
-  /** 发群聊 */
+  /**
+   * 发群聊
+   * @param e
+   */
   async SendGroupMsg (e) {
     if (!common.checkPermission(e, 'master')) return
     let regRet = GroupMsgReg.exec(e.msg)
@@ -437,7 +464,10 @@ export class Assistant extends plugin {
     return false
   }
 
-  /** 退群 */
+  /**
+   * 退群
+   * @param e
+   */
   async QuitGroup (e) {
     if (!common.checkPermission(e, 'master')) return
     let quits = e.msg.replace(/#|退群/g, '').trim()
@@ -461,7 +491,10 @@ export class Assistant extends plugin {
       })
   }
 
-  /** 删好友 */
+  /**
+   * 删好友
+   * @param e
+   */
   async DeleteFriend (e) {
     if (!common.checkPermission(e, 'master')) return
     let quits = e.msg.replace(/#|删好友/g, '').trim()
@@ -483,7 +516,10 @@ export class Assistant extends plugin {
       })
   }
 
-  /** 改性别 */
+  /**
+   * 改性别
+   * @param e
+   */
   async SetGender (e) {
     if (!common.checkPermission(e, 'master')) return
     let sex = e.msg.replace(/#|改性别/g, '').trim()
@@ -505,7 +541,10 @@ export class Assistant extends plugin {
       })
   }
 
-  /** 取直链 */
+  /**
+   * 取直链
+   * @param e
+   */
   async ImageLink (e) {
     let img = []
     if (e.source) {
@@ -559,7 +598,10 @@ export class Assistant extends plugin {
     this.finish('_ImageLinkContext')
   }
 
-  /** 取Face表情 */
+  /**
+   * 取Face表情
+   * @param e
+   */
   async Face (e) {
     let face = []
     for (let m of e.message) {
@@ -587,7 +629,10 @@ export class Assistant extends plugin {
     }
   }
 
-  /** QQ空间 说说列表 */
+  /**
+   * QQ空间 说说列表
+   * @param e
+   */
   async Qzonelist (e) {
     if (!common.checkPermission(e, 'master')) return
     let page = e.msg.replace(/#|获?取说说列表/g, '').trim()
@@ -613,7 +658,10 @@ export class Assistant extends plugin {
     e.reply(msg)
   }
 
-  /** 删除说说 */
+  /**
+   * 删除说说
+   * @param e
+   */
   async Qzonedel (e) {
     if (!common.checkPermission(e, 'master')) return
     let pos = e.msg.match(/\d+/)
@@ -636,7 +684,10 @@ export class Assistant extends plugin {
     e.reply(`✅ 删除说说成功：\n ${pos}.${_.truncate(domain.content, { length: 15 })} \n - [${domain.secret ? '私密' : '公开'}] | ${moment(domain.created_time * 1000).format('MM/DD HH:mm')} | ${domain.commentlist?.length || 0} 条评论`)
   }
 
-  /** 发说说 */
+  /**
+   * 发说说
+   * @param e
+   */
   async Qzonesay (e) {
     if (!common.checkPermission(e, 'master')) return
     let con = e.msg.replace(/#|发说说/g, '').trim()
@@ -653,7 +704,10 @@ export class Assistant extends plugin {
     e.reply(msg)
   }
 
-  /** 清空说说和留言 */
+  /**
+   * 清空说说和留言
+   * @param e
+   */
   async QzonedelAll (e) {
     if (!common.checkPermission(e, 'master')) return
     if (/清空说说/.test(e.msg)) {
@@ -784,7 +838,10 @@ export class Assistant extends plugin {
     e.reply(res.msg)
   }
 
-  /** 开关戳一戳 */
+  /**
+   * 开关戳一戳
+   * @param e
+   */
   async Cyc (e) {
     if (!common.checkPermission(e, 'master')) return
     let result = await new QQApi(e).setcyc(/开启/.test(e.msg) ? 0 : 1)

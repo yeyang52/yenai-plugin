@@ -35,7 +35,11 @@ let Data = {
     })
   },
 
-  /** 读取json */
+  /**
+   * 读取json
+   * @param file
+   * @param root
+   */
   readJSON (file = '', root = '') {
     root = getRoot(root)
     if (fs.existsSync(`${root}/${file}`)) {
@@ -48,7 +52,13 @@ let Data = {
     return {}
   },
 
-  /** 写JSON */
+  /**
+   * 写JSON
+   * @param file
+   * @param data
+   * @param root
+   * @param space
+   */
   writeJSON (file, data, root = '', space = '\t') {
     // 检查并创建目录
     Data.createDir(file, root, true)
@@ -222,7 +232,12 @@ let Data = {
     }
     return false
   },
-  /** 读取文件夹和子文件夹指定后缀文件名 */
+  /**
+   * 读取文件夹和子文件夹指定后缀文件名
+   * @param directory
+   * @param extension
+   * @param excludeDir
+   */
   readDirRecursive (directory, extension, excludeDir) {
     let files = fs.readdirSync(directory)
 

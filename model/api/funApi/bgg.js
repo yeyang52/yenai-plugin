@@ -2,6 +2,10 @@ import { _importDependency } from './utils.js'
 import request from '../../../lib/request/request.js'
 import { puppeteer } from '../../index.js'
 
+/**
+ *
+ * @param keyword
+ */
 export default async function bgg (keyword) {
   let cheerio = await _importDependency()
   let url = 'https://www.gstonegames.com/game/?hot_sort=1&keyword=' + encodeURIComponent(keyword)

@@ -160,7 +160,10 @@ export class GroupAdmin extends plugin {
     return this.e.bot ?? Bot
   }
 
-  /** 禁言 */
+  /**
+   * 禁言
+   * @param e
+   */
   async muteMember (e) {
     if (!common.checkPermission(e, 'admin', 'admin')) { return true }
     let qq = e.message.find(item => item.type == 'at')?.qq
@@ -173,7 +176,10 @@ export class GroupAdmin extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  /** 解禁 */
+  /**
+   * 解禁
+   * @param e
+   */
   async noMuteMember (e) {
     if (!common.checkPermission(e, 'admin', 'admin')) { return true }
     let qq = e.message.find(item => item.type == 'at')?.qq
@@ -184,7 +190,10 @@ export class GroupAdmin extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  /** 全体禁言 */
+  /**
+   * 全体禁言
+   * @param e
+   */
   async muteAll (e) {
     if (!common.checkPermission(e, 'admin', 'admin')) { return true }
     let type = /全体禁言/.test(e.msg)
@@ -548,7 +557,10 @@ export class GroupAdmin extends plugin {
     ])
   }
 
-  /** 群星级 */
+  /**
+   * 群星级
+   * @param e
+   */
   async Group_xj (e) {
     let screenshot = await puppeteer.Webpage({
       url: `https://qqweb.qq.com/m/business/qunlevel/index.html?gc=${e.group_id}&from=0&_wv=1027`,
@@ -683,7 +695,10 @@ export class GroupAdmin extends plugin {
     )
   }
 
-  /** 开启或关闭加群通知 */
+  /**
+   * 开启或关闭加群通知
+   * @param e
+   */
   async handleGroupAdd (e) {
     if (!common.checkPermission(e, 'admin', 'admin')) return
     let type = /开启/.test(e.msg) ? 'add' : 'del'
@@ -694,7 +709,10 @@ export class GroupAdmin extends plugin {
     e.reply(`✅ 已${type == 'add' ? '开启' : '关闭'}「${e.group_id}」的加群申请通知`)
   }
 
-  /** 加精 */
+  /**
+   * 加精
+   * @param e
+   */
   async essenceMessage (e) {
     if (!common.checkPermission(e, 'admin', 'admin')) return
     if (!e.source) return e.reply('请对要加精的消息进行引用')

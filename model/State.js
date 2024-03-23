@@ -138,10 +138,9 @@ export default new class {
 
   /**
    * 向数组中添加数据，如果数组长度超过允许的最大值，则删除最早添加的数据
-   *
    * @param {Array} arr - 要添加数据的数组
    * @param {*} data - 要添加的新数据
-   * @param {number} [maxLen=60] - 数组允许的最大长度，默认值为60
+   * @param {number} [maxLen] - 数组允许的最大长度，默认值为60
    * @returns {void}
    */
   addData (arr, data, maxLen = 60) {
@@ -155,14 +154,14 @@ export default new class {
   }
 
   /**
-  * 重试获取数据，直到成功或达到最大重试次数。
-  * @param {Function} fetchFunc 获取数据的函数，返回一个Promise对象。
-  * @param {Array} [params=[]] 需要执行函数的参数数组
-  * @param {Number} [timerId] 定时器的id，用于在获取数据失败时停止定时器
-  * @param {Number} [maxRetryCount=3] 最大重试次数。
-  * @param {Number} [retryInterval=1000] 两次重试之间的等待时间，单位为毫秒。。
-  * @return {Promise} 获取到的数据。如果达到最大重试次数且获取失败，则返回null。
-  */
+   * 重试获取数据，直到成功或达到最大重试次数。
+   * @param {Function} fetchFunc 获取数据的函数，返回一个Promise对象。
+   * @param {Array} [params] 需要执行函数的参数数组
+   * @param {number} [timerId] 定时器的id，用于在获取数据失败时停止定时器
+   * @param {number} [maxRetryCount] 最大重试次数。
+   * @param {number} [retryInterval] 两次重试之间的等待时间，单位为毫秒。。
+   * @returns {Promise} 获取到的数据。如果达到最大重试次数且获取失败，则返回null。
+   */
   async fetchDataWithRetry (fetchFunc, params = [], timerId, maxRetryCount = 3, retryInterval = 1000) {
     let retryCount = 0
     let data = null
@@ -183,13 +182,12 @@ export default new class {
   }
 
   /**
-  * 将文件大小从字节转化为可读性更好的格式，例如B、KB、MB、GB、TB。
-  *
-  * @param {number} size - 带转化的字节数。
-  * @param {boolean} [isByte=true] - 如果为 true，则最终的文件大小显示保留 B 的后缀.
-  * @param {boolean} [isSuffix=true] - 如果为 true，则在所得到的大小后面加上 kb、mb、gb、tb 等后缀.
-  * @returns {string} 文件大小格式转换后的字符串.
-  */
+   * 将文件大小从字节转化为可读性更好的格式，例如B、KB、MB、GB、TB。
+   * @param {number} size - 带转化的字节数。
+   * @param {boolean} [isByte] - 如果为 true，则最终的文件大小显示保留 B 的后缀.
+   * @param {boolean} [isSuffix] - 如果为 true，则在所得到的大小后面加上 kb、mb、gb、tb 等后缀.
+   * @returns {string} 文件大小格式转换后的字符串.
+   */
   getFileSize (size, isByte = true, isSuffix = true) { // 把字节转换成正常文件大小
     if (size == null || size == undefined) return 0
     let num = 1024.00 // byte
@@ -209,10 +207,10 @@ export default new class {
   }
 
   /**
-    * @description: 圆形进度条渲染
-    * @param {Number} res 百分比小数
-    * @return {*} css样式
-  */
+   *  圆形进度条渲染
+   * @param {number} res 百分比小数
+   * @returns {*} css样式
+   */
   Circle (res) {
     let num = (res * 360).toFixed(0)
     let color = 'var(--low-color)'
@@ -336,8 +334,8 @@ export default new class {
   }
 
   /**
-   * @description: 获取硬盘
-   * @return {*}
+   *  获取硬盘
+   * @returns {*}
    */
   async getFsSize () {
     // 去重
@@ -363,7 +361,10 @@ export default new class {
     })
   }
 
-  /** 获取FastFetch */
+  /**
+   * 获取FastFetch
+   * @param e
+   */
   async getFastFetch (e) {
     if (process.platform == 'win32' && !/pro/.test(e.msg)) return ''
     let ret = await common.execSync('bash plugins/yenai-plugin/resources/state/state.sh')
@@ -389,8 +390,8 @@ export default new class {
   }
 
   /**
-   * @description: 获取网速
-   * @return {object}
+   *  获取网速
+   * @returns {object}
    */
   get getnetwork () {
     let network = _.cloneDeep(this.network)?.[0]
@@ -407,9 +408,9 @@ export default new class {
   }
 
   /**
- * @description: 取插件包
- * @return {*} 插件包数量
- */
+   *  取插件包
+   * @returns {*} 插件包数量
+   */
   get getPluginNum () {
     let str = './plugins'
     let arr = fs.readdirSync(str)

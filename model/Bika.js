@@ -21,9 +21,9 @@ export default new (class {
   /**
    * 关键词搜索作品
    * @param {string} keyword - 搜索关键词
-   * @param {number} [page=1] - 页码，默认为1
-   * @param {'dd'|'da'|'ld'|'vd'} [sort='ld'] - 排序方式：dd（最新发布）、da（最早发布）、ld（最多喜欢）、vd（最多浏览），默认为'ld'
-   * @param {string} [type='advanced'] - 搜索类型：advanced（高级）、category（类别）、author（作者），默认为'advanced'
+   * @param {number} [page] - 页码，默认为1
+   * @param {string} [type] - 搜索类型：advanced（高级）、category（类别）、author（作者），默认为'advanced'
+   * @param {'dd'|'da'|'ld'|'vd'} [sort] - 排序方式：dd（最新发布）、da（最早发布）、ld（最多喜欢）、vd（最多浏览），默认为'ld'
    * @throws {Error} 当未找到作品时，会抛出异常
    * @returns {Array<string>} 返回搜索结果信息数组
    */
@@ -77,8 +77,8 @@ export default new (class {
    * 获取漫画某一话某一页的信息及图片列表
    * @async
    * @param {string} id - 漫画id
-   * @param {number} [page=1] - 页码，默认为1
-   * @param {number} [order=1] - 话数，默认为1
+   * @param {number} [page] - 页码，默认为1
+   * @param {number} [order] - 话数，默认为1
    * @returns {Promise<string[]>} - 返回一个数组，包含漫画某一话某一页的信息及图片列表
    * @throws {Error} - 如果返回结果中包含error，则抛出异常
    */
@@ -112,7 +112,7 @@ export default new (class {
   /**
    * 获取下一个漫画页面或漫画章节的信息及图片列表
    * @async
-   * @param {string} [type='comicPage'] - 请求的类型，可选值为'comicPage'或'chapter'，默认为'comicPage'
+   * @param {string} [type] - 请求的类型，可选值为'comicPage'或'chapter'，默认为'comicPage'
    * @returns {Promise<string[]>} - 返回一个数组，包含下一个漫画页面或漫画章节的信息及图片列表
    * @throws {Error} - 如果未找到上一个id，则抛出异常
    */

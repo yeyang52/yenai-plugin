@@ -2,6 +2,11 @@ import request from '../../lib/request/request.js'
 import { Config, Plugin_Path } from '../../components/index.js'
 import common from '../../../../lib/common/common.js'
 import _ from 'lodash'
+
+/**
+ *
+ * @param imgURL
+ */
 export default async function doSearch (imgURL) {
   let result = await getSearchResult(imgURL)
   if (result.error) throw Error(result.error)
@@ -47,11 +52,9 @@ export default async function doSearch (imgURL) {
 const date2str = ({ year, month, day }) => [year, month, day].join('-')
 /**
  * 取得搜番结果
- *
- * @param {string} host 自定义 whatanime 的 host
- * @param {string} key whatanime token
  * @param {string} url 图片地址
- * @returns Prased JSON
+ * @param {string} key whatanime token
+ * @returns {Promise<Response|*>} Prased JSON
  */
 async function getSearchResult (url, key = '') {
   let host = 'https://api.trace.moe'
@@ -90,9 +93,8 @@ query ($id: Int) {
 }`
 /**
  * 取得番剧信息
- *
  * @param {number} id
- * @returns Prased JSON
+ * @returns {Promise<Response|*>} Prased JSON
  */
 async function getAnimeInfo (id) {
   return await request.post('https://trace.moe/anilist/', {
@@ -103,6 +105,10 @@ async function getAnimeInfo (id) {
   }).then(res => res.json())
 }
 
+/**
+ *
+ * @param url
+ */
 async function downFile (url) {
   let path = `${Plugin_Path}/temp/whatanime/1.mp4`
   logger.mark('[Yenai-Plugin][whatanime]下载预览视频')

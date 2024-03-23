@@ -49,7 +49,10 @@ export class NewHandle extends plugin {
     })
   }
 
-  /** 同意拒绝好友申请 */
+  /**
+   * 同意拒绝好友申请
+   * @param e
+   */
   async PrivateAdd (e) {
     if (!e.isMaster) return false
     let yes = !!/同意/.test(e.msg)
@@ -117,7 +120,10 @@ export class NewHandle extends plugin {
     }
   }
 
-  /** 引用同意好友申请和群邀请 */
+  /**
+   * 引用同意好友申请和群邀请
+   * @param e
+   */
   async Handle (e) {
     if (!e.source) return false
     if (e.source.user_id != (e.bot ?? Bot).uin) return false

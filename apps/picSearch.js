@@ -37,11 +37,10 @@ export class NewPicSearch extends plugin {
     if (!await this._Authentication(e)) return
     if (!await this.handelImg(e, 'SauceNAO')) return
     await PicSearch.SauceNAO(e.img[0])
-      .then(async res => {
-        res.length == 1
-          ? common.recallsendMsg(e, res[0], true)
-          : common.recallSendForwardMsg(e, res, { xmlTitle: false })
-      })
+      .then(async res => res.length == 1
+        ? common.recallsendMsg(e, res[0], true)
+        : common.recallSendForwardMsg(e, res, { xmlTitle: false })
+      )
       .catch(async err => {
         await common.handleException(e, err)
         if (Config.picSearch.useAscii2dWhenFailed) {
@@ -67,6 +66,7 @@ export class NewPicSearch extends plugin {
         for (let i of res) {
           await e.reply(i)
         }
+        return true
       })
       .catch(err => common.handleException(e, err))
   }

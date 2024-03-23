@@ -151,7 +151,7 @@ export class Assistant extends plugin {
     }
 
     await this.Bot.setAvatar(e.img[0])
-      .then(() => { e.reply('✅ 头像修改成功') })
+      .then(() => e.reply('✅ 头像修改成功'))
       .catch((err) => {
         e.reply('❎ 头像修改失败')
         logger.error(err)

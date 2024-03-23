@@ -112,7 +112,10 @@ export class NewPixiv extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  /** 关键词搜图 */
+  /**
+   * 关键词搜图
+   * @param e
+   */
   async searchTags (e) {
     let regRet = tagReg.exec(e.msg)
     if (!await this._Authentication(e, 'sese')) return
@@ -126,7 +129,10 @@ export class NewPixiv extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  /** 获取热门tag */
+  /**
+   * 获取热门tag
+   * @param e
+   */
   async popularTags (e) {
     if (!await this._Authentication(e, 'sese')) return
     e.reply(Pixiv.startMsg)
@@ -135,7 +141,10 @@ export class NewPixiv extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  /** 以uid搜图**/
+  /**
+   * 以uid搜图
+   * @param e
+   */
   async searchUid (e) {
     if (!await this._Authentication(e, 'sese')) return
 
@@ -189,7 +198,10 @@ export class NewPixiv extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  /** 搜索用户 */
+  /**
+   * 搜索用户
+   * @param e
+   */
   async searchUser (e) {
     if (!await this._Authentication(e, 'sese')) return
 
@@ -201,7 +213,10 @@ export class NewPixiv extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  /** 推荐作品 */
+  /**
+   * 推荐作品
+   * @param e
+   */
   async illustRecommended (e) {
     if (!await this._Authentication(e, 'sese')) return
     e.reply(Pixiv.startMsg)
@@ -228,14 +243,20 @@ export class NewPixiv extends plugin {
     new Admin().SeSe_Settings(e)
   }
 
-  /** 图片直连 */
+  /**
+   * 图片直连
+   * @param e
+   */
   async directConnection (e) {
     let isSwitch = /开启/.test(e.msg)
     Config.modify('pixiv', 'pixivDirectConnection', isSwitch)
     new Admin().SeSe_Settings(e)
   }
 
-  /** 登录信息 */
+  /**
+   * 登录信息
+   * @param e
+   */
   async loginInfo (e) {
     await Pixiv.loginInfo()
       .then(res => e.reply(res))

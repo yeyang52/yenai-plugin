@@ -33,7 +33,10 @@ class Config {
     }
   }
 
-  /** 群配置 */
+  /**
+   * 群配置
+   * @param groupId
+   */
   getGroup (groupId = '') {
     let config = this.getConfig('whole')
     let group = this.getConfig('group')
@@ -100,19 +103,28 @@ class Config {
     return this.getDefOrConfig('state')
   }
 
-  /** 默认配置和用户配置 */
+  /**
+   * 默认配置和用户配置
+   * @param name
+   */
   getDefOrConfig (name) {
     let def = this.getdefSet(name)
     let config = this.getConfig(name)
     return { ...def, ...config }
   }
 
-  /** 默认配置 */
+  /**
+   * 默认配置
+   * @param name
+   */
   getdefSet (name) {
     return this.getYaml('default_config', name)
   }
 
-  /** 用户配置 */
+  /**
+   * 用户配置
+   * @param name
+   */
   getConfig (name) {
     return this.getYaml('config', name)
   }
@@ -137,7 +149,12 @@ class Config {
     return this.config[key]
   }
 
-  /** 监听配置文件 */
+  /**
+   * 监听配置文件
+   * @param file
+   * @param name
+   * @param type
+   */
   watch (file, name, type = 'default_config') {
     let key = `${type}.${name}`
 
@@ -157,10 +174,10 @@ class Config {
   }
 
   /**
-   * @description: 修改设置
-   * @param {String} name 文件名
-   * @param {String} key 修改的key值
-   * @param {String|Number} value 修改的value值
+   * 修改设置
+   * @param {string} name 文件名
+   * @param {string} key 修改的key值
+   * @param {string | number} value 修改的value值
    * @param {'config'|'default_config'} type 配置文件或默认
    */
   modify (name, key, value, type = 'config') {
@@ -170,10 +187,11 @@ class Config {
   }
 
   /**
-   * @description: 群单独设置
-   * @param {String|Number} groupId 群号
-   * @param {String} key 设置项
+   * 群单独设置
+   * @param {string | number} groupId 群号
+   * @param {string} key 设置项
    * @param {unknown} value
+   * @param isDel
    */
   aloneModify (groupId, key, value, isDel) {
     let path = `${Plugin_Path}/config/config/group.yaml`
@@ -185,10 +203,10 @@ class Config {
   }
 
   /**
-   * @description: 修改配置数组
-   * @param {String} name 文件名
-   * @param {String|Number} key key值
-   * @param {String|Number} value value
+   * 修改配置数组
+   * @param {string} name 文件名
+   * @param {string | number} key key值
+   * @param {string | number} value value
    * @param {'add'|'del'} category 类别 add or del
    * @param {'config'|'default_config'} type 配置文件或默认
    */

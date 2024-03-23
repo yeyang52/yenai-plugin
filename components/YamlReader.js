@@ -7,7 +7,6 @@ import chokidar from 'chokidar'
 export default class YamlReader {
   /**
    * 读写yaml文件
-   *
    * @param yamlPath yaml文件绝对路径
    * @param isWatch 是否监听文件变化
    */

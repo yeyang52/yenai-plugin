@@ -3,6 +3,10 @@ import { memes, common } from '../../index.js'
 import { Config } from '../../../components/index.js'
 import { successImgs, faildsImgs } from '../../../constants/fun.js'
 
+/**
+ *
+ * @param e
+ */
 export default async function thumbUp (e) {
   let _do = '赞'
   let userId = e.user_id
@@ -73,11 +77,11 @@ class ThumbUpApi {
   }
 
   /**
-     * @description: 陌生人点赞
-     * @param {Number} uid QQ号
-     * @param {Number} times 数量
-     * @return {Object}
-     */
+   * 陌生人点赞
+   * @param {number} uid QQ号
+   * @param {number} times 数量
+   * @returns {object}
+   */
   async thumbUp (uid, times = 1) {
     try {
       let core = this.Bot.icqq?.core

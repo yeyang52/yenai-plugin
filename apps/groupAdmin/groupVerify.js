@@ -201,6 +201,12 @@ Bot.on?.('notice.group.decrease', async (e) => {
 })
 
 // 发送验证信息
+/**
+ *
+ * @param user_id
+ * @param group_id
+ * @param e
+ */
 async function verify (user_id, group_id, e) {
   if (!e.group.is_admin && !e.group.is_owner) return
   user_id = Number(user_id)

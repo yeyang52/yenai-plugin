@@ -103,7 +103,10 @@ export class NewGroupBannedWords extends plugin {
     }
   }
 
-  /** 禁言 */
+  /**
+   * 禁言
+   * @param time
+   */
   #mute (time) {
     const e = this.e
     if (e.anonymous) {
@@ -113,7 +116,10 @@ export class NewGroupBannedWords extends plugin {
     }
   }
 
-  /** 过滤别名 */
+  /**
+   * 过滤别名
+   * @param msg
+   */
   #trimAlias (msg) {
     let groupCfg = this.e.runtime.cfg.getGroup(this.group_id)
     let alias = groupCfg.botAlias

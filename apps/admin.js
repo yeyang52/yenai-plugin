@@ -230,7 +230,6 @@ const getStatus = function (rote, alone) {
 
 /**
  * 检查一个数值是否满足给定的限制条件，并返回经过验证的数值。
- *
  * @param {number} value - 要检查的数值。
  * @param {string} limit - 要检查的限制条件。
  *   限制条件可以是以下格式之一：

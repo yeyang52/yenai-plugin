@@ -1,3 +1,5 @@
+#!/bin/sh
+
 echo "-----------代码正在eslint格式化-----------"
 
 pnpm run lint

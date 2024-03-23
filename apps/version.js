@@ -39,6 +39,10 @@ export class NewVersion extends plugin {
   }
 }
 
+/**
+ *
+ * @param e
+ */
 async function versionInfo (e) {
   return await puppeteer.render(
     'help/version-info',

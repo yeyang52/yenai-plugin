@@ -34,12 +34,12 @@ export default new class setu {
   }
 
   /**
-     * @description: 请求api
-     * @param {String} r18 是否r18 0或1
-     * @param {Number} num 数量
-     * @param {String} tag 关键词
-     * @return {Object}
-     */
+   * 请求api
+   * @param {string} r18 是否r18 0或1
+   * @param {number} num 数量
+   * @param {string} tag 关键词
+   * @returns {object}
+   */
   async setuApi (r18, num = 1, tag = []) {
     let api = 'https://api.lolicon.app/setu/v2'
     const { imgSize, excludeAI } = Config.setu
@@ -71,11 +71,11 @@ export default new class setu {
   }
 
   /**
-     * @description: 发送消息和写入cd
-     * @param {*} e oicq
-     * @param {Array} img 消息数组
-     * @return {Boolean}
-     */
+   * 发送消息和写入cd
+   * @param {*} e oicq
+   * @param {Array} msg 消息数组
+   * @returns {boolean}
+   */
   async sendMsgOrSetCd (e, msg) {
     // 发送消息
     let res = await common.recallSendForwardMsg(e, msg, false)
@@ -85,12 +85,12 @@ export default new class setu {
   }
 
   /**
-     * @description: 设置cd
-     * @param {Number} userId QQ号
-     * @param {Number} groupId 群号不传为私聊CD
-     * @param {Number} cd cd时间
-     * @return {*}
-     */
+   * 设置cd
+   * @param {number} userId QQ号
+   * @param {number} groupId 群号不传为私聊CD
+   * @param {number} cd cd时间
+   * @returns {*}
+   */
   setCdTime (userId, groupId, cd = this.getCfgCd(userId, groupId)) {
     let present = parseInt(Date.now() / 1000)
     userId = userId - 0
@@ -111,10 +111,10 @@ export default new class setu {
   }
 
   /**
-   * @description: 获取剩余CD时间
-   * @param {Number} userId QQ号
-   * @param {Number} groupId 群号不传则为私聊CD
-   * @return {String} 格式化后的时间
+   * 获取剩余CD时间
+   * @param {number} userId QQ号
+   * @param {number} groupId 群号不传则为私聊CD
+   * @returns {string} 格式化后的时间
    */
   getRemainingCd (userId, groupId) {
     userId = userId - 0
@@ -134,11 +134,11 @@ export default new class setu {
   }
 
   /**
-     * @description: 获取配置cd
-     * @param {Number} userId QQ号
-     * @param {Number} groupId 传群号为群聊配置
-     * @return {*}
-     */
+   * 获取配置cd
+   * @param {number} userId QQ号
+   * @param {number} groupId 传群号为群聊配置
+   * @returns {*}
+   */
   getCfgCd (userId, groupId) {
     let data = Data.readJSON(`setu${groupId ? '' : '_s'}.json`, this.root)
     let CD = groupId ? data[groupId]?.cd : data[userId]
@@ -147,10 +147,10 @@ export default new class setu {
   }
 
   /**
-     * @description: 获取r18
-     * @param {Number} groupID 群号不传为私聊
-     * @return {String}  0或1
-     */
+   * 获取r18
+   * @param {number} groupID 群号不传为私聊
+   * @returns {string}  0或1
+   */
   getR18 (groupID) {
     let data = Data.readJSON(`setu${groupID ? '' : '_s'}.json`, this.root)
     let R18 = groupID ? data[groupID]?.r18 : data.r18
@@ -159,10 +159,10 @@ export default new class setu {
   }
 
   /**
-     * @description: 获取群的撤回时间
-     * @param {*} e oicq
-     * @return {Number}
-     */
+   * 获取群的撤回时间
+   * @param groupId
+   * @returns {number}
+   */
   getRecallTime (groupId) {
     if (!groupId) return 0
     let data = Data.readJSON('setu.json', this.root)
@@ -172,12 +172,12 @@ export default new class setu {
   }
 
   /**
-     * @description: 设置群cd和撤回时间
-     * @param {Number} groupId 群号
-     * @param {Number} num 设置时间
-     * @param {Boolean} type 为true设置撤回时间反之设置CD
-     * @return {Boolean}
-     */
+   * 设置群cd和撤回时间
+   * @param {number} groupId 群号
+   * @param {number} num 设置时间
+   * @param {boolean} type 为true设置撤回时间反之设置CD
+   * @returns {boolean}
+   */
   setGroupRecallTimeAndCd (groupId, num, type) {
     let data = Data.readJSON('setu.json', this.root)
 
@@ -189,11 +189,11 @@ export default new class setu {
   }
 
   /**
-     * @description: 设置CD
-     * @param {*} e oicq
-     * @param {String} qq 设置的qq
-     * @param {String} cd 设置的cd
-     */
+   * 设置CD
+   * @param {*} e oicq
+   * @param {string} qq 设置的qq
+   * @param {string} cd 设置的cd
+   */
   setUserCd (e, qq, cd) {
     let data = Data.readJSON('setu_s.json', this.root)
 
@@ -209,10 +209,10 @@ export default new class setu {
   }
 
   /**
-     * @description: 设置r18
-     * @param {String|Number} groupID 群聊id为假时设置私聊
-     * @param {Boolean} isopen 开启或关闭
-     */
+   * 设置r18
+   * @param {string | number} groupID 群聊id为假时设置私聊
+   * @param {boolean} isopen 开启或关闭
+   */
   setR18 (groupID, isopen) {
     let data = Data.readJSON(`setu${groupID ? '' : '_s'}.json`, this.root)
     if (groupID) {
@@ -231,10 +231,10 @@ export default new class setu {
   }
 
   /**
-     * @description: 获取现有设置
-     * @param {*} e oicq
-     * @return {*}
-     */
+   * 获取现有设置
+   * @param {*} e oicq
+   * @returns {*}
+   */
   getSeSeConfig (e) {
     let set = _.cloneDeep(this.def)
     set.cd = this.getCfgCd(e.user_id, e.group_id)

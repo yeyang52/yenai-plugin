@@ -3,6 +3,10 @@ import { Config } from '../../components/index.js'
 import sagiri from '../../tools/sagiri.js'
 import request from '../../lib/request/request.js'
 import Ascii2D from './ascii2d.js'
+/**
+ *
+ * @param url
+ */
 export default async function doSearch (url) {
   let res = await getSearchResult(url)
   logger.debug('SauceNAO result:', res)
@@ -49,6 +53,11 @@ export default async function doSearch (url) {
   return message
 }
 
+/**
+ *
+ * @param imgURL
+ * @param db
+ */
 async function getSearchResult (imgURL, db = 999) {
   logger.debug(`saucenao [${imgURL}]}`)
   let api_key = Config.picSearch.SauceNAOApiKey

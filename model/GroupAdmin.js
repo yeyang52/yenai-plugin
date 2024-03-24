@@ -363,7 +363,8 @@ export default class {
     // 判断是否为主人
     if ((Config.masterQQ?.includes(Number(userId)) || a.includes(Number(userId))) && time != 0) throw Error('居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ')
 
-    const Memberinfo = group.pickMember(Number(userId)).info
+    const Member = group.pickMember(userId)
+    const Memberinfo = Member?.info || await Member?.getInfo?.()
     // 判断是否有这个人
     if (!Memberinfo) throw Error('❎ 这个群没有这个人哦~')
 
@@ -396,9 +397,10 @@ export default class {
     if (!groupId || !(/^\d+$/.test(groupId))) throw Error('❎ 请输入正确的群号')
 
     // 判断是否为主人
-    if (Config.masterQQ?.includes(Number(userId)) || a.includes(Number(userId))) throw Error('居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ')
+    if (Config.masterQQ?.includes(Number(userId) || String(userId)) || a.includes(Number(userId))) throw Error('居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ')
 
-    const Memberinfo = group?.pickMember(Number(userId)).info
+    const Member = group.pickMember(userId)
+    const Memberinfo = Member?.info || await Member?.getInfo?.()
     // 判断是否有这个人
     if (!Memberinfo) throw Error('❎ 这个群没有这个人哦~')
     if (Memberinfo.role === 'owner') throw Error('调戏群主拖出去枪毙5分钟(。>︿<)_θ')
@@ -410,7 +412,7 @@ export default class {
       if (!isMaster) throw Error('这个淫系管理员辣，只有主淫才可以干ta')
     }
 
-    const res = await group.kickMember(Number(userId))
+    const res = await group.kickMember(Number(userId) || String(userId))
     if (!res) throw Error('额...踢出失败哩，可能这个淫比较腻害>_<')
     return '已把这个坏淫踢掉惹！！！'
   }

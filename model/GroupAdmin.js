@@ -6,8 +6,9 @@ import _ from 'lodash'
 import moment from 'moment'
 import loader from '../../../lib/plugins/loader.js'
 import { Config } from '../components/index.js'
-import { common, QQApi } from './index.js'
+import { QQApi } from './index.js'
 import { Time_unit, ROLE_MAP } from '../constants/other.js'
+import formatDuration from '../tools/formatDuration.js'
 
 // 无管理文案
 const ROLE_ERROR = '我连管理员都木有，这种事怎么可能做到的辣！！！'
@@ -53,7 +54,7 @@ export default class {
         `\n昵称：${item.card || item.nickname}\n`,
         `QQ：${item.user_id}\n`,
         `群身份：${ROLE_MAP[item.role]}\n`,
-        `禁言剩余时间：${common.formatTime(time - Date.now() / 1000, 'default')}\n`,
+        `禁言剩余时间：${formatDuration(time - Date.now() / 1000, 'default')}\n`,
         `禁言到期时间：${new Date(time * 1000).toLocaleString()}`
       ]
     })

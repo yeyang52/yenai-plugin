@@ -3,6 +3,7 @@ import { Data, Plugin_Path, Config } from '../components/index.js'
 import _ from 'lodash'
 import { setuMsg } from '../constants/msg.js'
 import request from '../lib/request/request.js'
+import formatDuration from '../tools/formatDuration.js'
 export default new class setu {
   constructor () {
     this.root = `${Plugin_Path}/config/setu`
@@ -130,7 +131,7 @@ export default new class setu {
       over = (this.temp[userId] - present)
     }
     if (over <= 0) return false
-    return common.formatTime(over, 'default', false)
+    return formatDuration(over, 'default', false)
   }
 
   /**

@@ -6,6 +6,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import { Config, Version, Plugin_Name } from '../components/index.js'
 import { status } from '../constants/other.js'
 import { State, common, puppeteer } from '../model/index.js'
+import formatDuration from '../tools/formatDuration.js'
 const require = createRequire(import.meta.url)
 
 let interval = false
@@ -122,7 +123,7 @@ export class NewState extends plugin {
 const getBotState = async (botList) => {
   const defaultAvatar = `../../../../../plugins/${Plugin_Name}/resources/state/img/default_avatar.jpg`
   const BotName = Version.name
-  const systime = common.formatTime(os.uptime(), 'dd天hh小时mm分', false)
+  const systime = formatDuration(os.uptime(), 'dd天hh小时mm分', false)
   const calendar = moment().format('YYYY-MM-DD HH:mm:ss')
 
   const dataPromises = botList.map(async (i) => {
@@ -141,7 +142,7 @@ const getBotState = async (botList) => {
     const friendQuantity = bot.fl?.size || 0
     const groupQuantity = bot.gl?.size || 0
     const groupMemberQuantity = Array.from(bot.gml?.values() || []).reduce((acc, curr) => acc + curr.size, 0)
-    const runTime = common.formatTime(Date.now() / 1000 - bot.stat?.start_time, 'dd天hh小时mm分', false)
+    const runTime = formatDuration(Date.now() / 1000 - bot.stat?.start_time, 'dd天hh小时mm分', false)
     const botVersion = bot.version ? `${bot.version.name}(${bot.version.id})${bot.apk ? ` ${bot.version.version}` : ''}` : `ICQQ(QQ) v${require('icqq/package.json').version}`
 
     return `<div class="box">

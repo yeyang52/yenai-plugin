@@ -2,6 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import { Config } from '../components/index.js'
 import { setu, common } from '../model/index.js'
 import { Admin } from './admin.js'
+import translateChinaNum from '../tools/translateChinaNum.js'
 
 const NumReg = '[零一壹二两三四五六七八九十百千万亿\\d]+'
 
@@ -48,7 +49,7 @@ export class SeSe extends plugin {
     if (cdTime) return e.reply(` ${setu.CDMsg}你的CD还有${cdTime}`, false, { at: true })
 
     let num = e.msg.match(new RegExp(NumReg))
-    num = num ? common.translateChinaNum(num[0]) : 1
+    num = num ? translateChinaNum(num[0]) : 1
     if (num > 20) {
       return e.reply('❎ 最大张数不能大于20张')
     } else if (num > 6) {
@@ -76,7 +77,7 @@ export class SeSe extends plugin {
       num = 1
     } else {
       tag = tag.replace(num[0], '').trim()
-      num = common.translateChinaNum(num[1])
+      num = translateChinaNum(num[1])
     }
 
     if (num > 20) {
@@ -114,7 +115,7 @@ export class SeSe extends plugin {
   // 设置群撤回间隔和cd
   async setGroupRecallAndCD (e) {
     let num = e.msg.match(new RegExp(NumReg))
-    num = common.translateChinaNum(num[0])
+    num = translateChinaNum(num[0])
     let type = /撤回间隔/.test(e.msg)
     setu.setGroupRecallTimeAndCd(e.group_id, num, type)
     new Admin().SeSe_Settings(e)
@@ -132,7 +133,7 @@ export class SeSe extends plugin {
     let reg = `^#?设置cd\\s?((\\d+)\\s)?(${NumReg})(s|秒)?$`
     let regRet = e.msg.match(new RegExp(reg))
     let qq = e.message.find(item => item.type == 'at')?.qq ?? regRet[2]
-    let cd = common.translateChinaNum(regRet[3])
+    let cd = translateChinaNum(regRet[3])
     if (!qq) return e.reply('❎ 请输入要设置QQ', true)
     if (!cd) return e.reply('❎ CD为空，请检查', true)
     setu.setUserCd(e, qq ?? regRet[2], cd)

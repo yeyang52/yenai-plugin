@@ -1,9 +1,11 @@
 import _ from 'lodash'
 import moment from 'moment'
 import { Config } from '../../components/index.js'
-import { common, GroupAdmin as Ga, puppeteer, QQApi, GroupBannedWords } from '../../model/index.js'
-import cronValidate from '../../tools/cronValidate.js'
 import { Time_unit } from '../../constants/other.js'
+import { GroupAdmin as Ga, GroupBannedWords, QQApi, common, puppeteer } from '../../model/index.js'
+import cronValidate from '../../tools/cronValidate.js'
+import translateChinaNum from '../../tools/translateChinaNum.js'
+
 // API请求错误文案
 const API_ERROR = '❎ 出错辣，请稍后重试'
 // 正则
@@ -169,7 +171,7 @@ export class GroupAdmin extends plugin {
     let qq = e.message.find(item => item.type == 'at')?.qq
     let reg = `#禁言\\s?((\\d+)\\s)?(${Numreg})?(${TimeUnitReg})?`
     let regRet = e.msg.match(new RegExp(reg))
-    const time = common.translateChinaNum(regRet[3])
+    const time = translateChinaNum(regRet[3])
     new Ga(e).muteMember(
       e.group_id, qq ?? regRet[2], e.user_id, time, regRet[4]
     ).then(res => e.reply(res))
@@ -221,7 +223,7 @@ export class GroupAdmin extends plugin {
     // 解析正则
     let regRet = Autisticreg.exec(e.msg)
     // 获取数字
-    let TabooTime = common.translateChinaNum(regRet[2] || 5)
+    let TabooTime = translateChinaNum(regRet[2] || 5)
 
     let Company = Time_unit[_.toUpper(regRet[3]) || '分']
 
@@ -407,7 +409,7 @@ export class GroupAdmin extends plugin {
     if (!common.checkPermission(e, 'admin', 'admin')) { return true }
 
     let regRet = noactivereg.exec(e.msg)
-    regRet[2] = common.translateChinaNum(regRet[2] || 1)
+    regRet[2] = translateChinaNum(regRet[2] || 1)
     // 确认清理直接执行
     if (regRet[1] == '确认清理') {
       try {
@@ -423,7 +425,7 @@ export class GroupAdmin extends plugin {
       }
     }
     // 查看和清理都会发送列表
-    let page = common.translateChinaNum(regRet[5] || 1)
+    let page = translateChinaNum(regRet[5] || 1)
     let msg = null
     try {
       msg = await new Ga(e).getNoactiveInfo(
@@ -472,7 +474,7 @@ export class GroupAdmin extends plugin {
     }
     // 发送列表
     let page = e.msg.match(new RegExp(Numreg))
-    page = page ? common.translateChinaNum(page[0]) : 1
+    page = page ? translateChinaNum(page[0]) : 1
     new Ga(e).getNeverSpeakInfo(e.group_id, page)
       .then(res => common.getforwardMsg(e, res, {
         isxml: true,
@@ -484,7 +486,7 @@ export class GroupAdmin extends plugin {
   // 查看不活跃排行榜和入群记录
   async RankingList (e) {
     let num = e.msg.match(new RegExp(Numreg))
-    num = num ? common.translateChinaNum(num[0]) : 10
+    num = num ? translateChinaNum(num[0]) : 10
     let msg = ''
     if (/(不活跃|潜水)/.test(e.msg)) {
       msg = await new Ga(e).InactiveRanking(e.group_id, num)

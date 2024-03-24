@@ -1,6 +1,7 @@
 import { common } from '../../model/index.js'
 import { Config } from '../../components/index.js'
 import moment from 'moment'
+import formatDuration from '../../tools/formatDuration.js'
 
 Bot.on?.('notice.group', async (e) => {
   let msg
@@ -142,7 +143,7 @@ Bot.on?.('notice.group', async (e) => {
     }
     // 禁言 (这里仅处理机器人被禁言)
     case 'ban': {
-      const forbiddenTime = common.formatTime(e.duration, 'default')
+      const forbiddenTime = formatDuration(e.duration, 'default')
 
       if (!Config.getGroup(e.group_id).botBeenBanned) return false
 

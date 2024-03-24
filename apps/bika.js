@@ -1,6 +1,7 @@
 import { Bika, common, Pixiv } from '../model/index.js'
 import { Config } from '../components/index.js'
 import { Admin } from './admin.js'
+import translateChinaNum from '../tools/translateChinaNum.js'
 
 // 汉字数字匹配正则
 const numReg = '[零一壹二两三四五六七八九十百千万亿\\d]+'
@@ -64,7 +65,7 @@ export class NewBika extends plugin {
     if (!await this._Authentication(e)) return
     e.reply(Pixiv.startMsg)
     let regRet = e.msg.match(searchReg)
-    let page = common.translateChinaNum(regRet[5])
+    let page = translateChinaNum(regRet[5])
     await Bika.search(regRet[3], page, regRet[2])
       .then(res => common.recallSendForwardMsg(e, res))
       .catch(err => common.handleException(e, err))
@@ -78,8 +79,8 @@ export class NewBika extends plugin {
     if (!await this._Authentication(e)) return
     e.reply(Pixiv.startMsg)
     let regRet = e.msg.match(comicPageReg)
-    let page = common.translateChinaNum(regRet[4])
-    let order = common.translateChinaNum(regRet[6])
+    let page = translateChinaNum(regRet[4])
+    let order = translateChinaNum(regRet[6])
     await Bika.comicPage(regRet[2], page, order)
       .then(res => common.recallSendForwardMsg(e, res))
       .catch(err => common.handleException(e, err))

@@ -24,6 +24,7 @@ module.exports = {
     'quote-props': ['error', 'consistent'],
     'no-eval': ['error', { allowIndirect: true }],
     'jsdoc/require-returns': 0,
+    'jsdoc/require-jsdoc': 0,
     'jsdoc/require-param-description': 0,
     'jsdoc/require-returns-description': 0,
     'jsdoc/require-param-type': 0

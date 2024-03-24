@@ -3,6 +3,7 @@ import { Config } from '../components/index.js'
 import { Pixiv, common, setu } from '../model/index.js'
 import { Admin } from './admin.js'
 import { ImageRPSS } from '../constants/pixiv.js'
+import translateChinaNum from '../tools/translateChinaNum.js'
 // 文案
 const SWITCH_ERROR = '主人没有开放这个功能哦(＊／ω＼＊)'
 // 汉字数字匹配正则
@@ -106,7 +107,7 @@ export class NewPixiv extends plugin {
 
     e.reply(Pixiv.startMsg)
 
-    let page = common.translateChinaNum(regRet[6])
+    let page = translateChinaNum(regRet[6])
     await Pixiv.Rank(page, regRet[2], regRet[3], regRet[4])
       .then(res => common.recallSendForwardMsg(e, res))
       .catch(err => common.handleException(e, err))
@@ -123,7 +124,7 @@ export class NewPixiv extends plugin {
 
     e.reply(Pixiv.startMsg)
 
-    let page = common.translateChinaNum(regRet[4])
+    let page = translateChinaNum(regRet[4])
     await Pixiv[`${regRet[1] ? 's' : 'vilipixS'}earchTags`](regRet[2], page, !setu.getR18(e.group_id))
       .then(res => common.recallSendForwardMsg(e, res))
       .catch(err => common.handleException(e, err))
@@ -151,7 +152,7 @@ export class NewPixiv extends plugin {
     e.reply(Pixiv.startMsg)
 
     let regRet = uidReg.exec(e.msg)
-    let page = common.translateChinaNum(regRet[3])
+    let page = translateChinaNum(regRet[3])
 
     await Pixiv.userIllust(regRet[1], page, !setu.getR18(e.group_id))
       .then(res => common.recallSendForwardMsg(e, res))
@@ -169,7 +170,7 @@ export class NewPixiv extends plugin {
       e.reply('你要的太多辣，奴家只给你一张辣(•́へ•́ ╬)')
       num = 1
     }
-    num = common.translateChinaNum(num)
+    num = translateChinaNum(num)
     await Pixiv.vilipixRandomImg(num)
       .then(res => common.recallSendForwardMsg(e, res))
       .catch(err => common.handleException(e, err))
@@ -207,7 +208,7 @@ export class NewPixiv extends plugin {
 
     e.reply(Pixiv.startMsg)
     let regRet = e.msg.match(searchUser)
-    let page = common.translateChinaNum(regRet[3])
+    let page = translateChinaNum(regRet[3])
     await Pixiv.searchUser(regRet[1], page, !setu.getR18(e.group_id))
       .then(res => common.recallSendForwardMsg(e, res))
       .catch(err => common.handleException(e, err))

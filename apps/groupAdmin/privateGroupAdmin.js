@@ -1,5 +1,6 @@
 import { GroupAdmin as Ga, common } from '../../model/index.js'
 import { Time_unit } from '../../constants/other.js'
+import translateChinaNum from '../../tools/translateChinaNum.js'
 // 正则
 const Numreg = '[一壹二两三四五六七八九十百千万亿\\d]+'
 const TimeUnitReg = Object.keys(Time_unit).join('|')
@@ -34,7 +35,7 @@ export class PrivateGroupAdmin extends plugin {
   async muteMember (e) {
     if (!common.checkPermission(e, 'master')) return
     let regRet = e.msg.match(muteMemberReg)
-    const time = common.translateChinaNum(regRet[3])
+    const time = translateChinaNum(regRet[3])
     let res = await new Ga(e).muteMember(regRet[1], regRet[2], e.user_id, time, regRet[4])
     e.reply(res)
   }

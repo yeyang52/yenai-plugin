@@ -1,15 +1,12 @@
-/*! !!!!!!
-以下为凶残的cron表达式验证，胆小肾虚及心脏病者慎入!!!
-不听劝告者后果自负T T
-!!!!!!!
-cron表达式为秒，分，时，日，月，周，年
-判断正误方法：错误的话返回错误信息，正确的话返回true
-*/
-// 返回错误信息用
 let message = ''
 /**
- *
- * @param cronExpression
+ * ! !!!!!!
+ * 以下为凶残的cron表达式验证，胆小肾虚及心脏病者慎入!!!
+ * 不听劝告者后果自负T T
+ * !!!!!!!
+ * cron表达式为秒，分，时，日，月，周，年
+ * 判断正误方法：错误的话返回错误信息，正确的话返回true
+ * @param {string | true}cronExpression crom表达式
  */
 export default function cronValidate (cronExpression) {
   // 先将cron表达式进行分割

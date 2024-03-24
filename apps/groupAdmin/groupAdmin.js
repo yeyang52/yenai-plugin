@@ -3,8 +3,7 @@ import moment from 'moment'
 import { Config } from '../../components/index.js'
 import { Time_unit } from '../../constants/other.js'
 import { GroupAdmin as Ga, GroupBannedWords, QQApi, common, puppeteer } from '../../model/index.js'
-import cronValidate from '../../tools/cronValidate.js'
-import translateChinaNum from '../../tools/translateChinaNum.js'
+import { cronValidate, translateChinaNum } from '../../tools/index.js'
 
 // API请求错误文案
 const API_ERROR = '❎ 出错辣，请稍后重试'

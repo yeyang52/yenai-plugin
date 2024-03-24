@@ -1,7 +1,9 @@
-import plugin from '../../../lib/plugins/plugin.js'
 import _ from 'lodash'
-import { common } from '../model/index.js'
 import moment from 'moment'
+import plugin from '../../../lib/plugins/plugin.js'
+import { common } from '../model/index.js'
+import { sleep } from '../tools/index.js'
+
 const ROLE_MAP = {
   admin: '群管理',
   owner: '群主',
@@ -94,7 +96,7 @@ export class NewHandle extends plugin {
         } else {
           fail.push(`${fail.length + 1}、${i.user_id}`)
         }
-        await common.sleep(2000)
+        await sleep(2000)
       }
       let msg = [
         `本次共${yes ? '同意' : '拒绝'}${FriendAdd.length}条好友申请\n成功：${success.length}\n失败：${fail.length}`
@@ -316,7 +318,7 @@ export class NewHandle extends plugin {
             fail.push(`${fail.length + 1}、${i.user_id}`)
           }
         }
-        await common.sleep(1000)
+        await sleep(1000)
       }
       let msg = [
         `本次共处理${SystemMsg.length}条群申请\n成功：${success.length}\n失败：${fail.length}\n风险：${risk.length}`
@@ -377,7 +379,7 @@ export class NewHandle extends plugin {
         } else {
           fail.push(`${fail.length + 1}、${i.user_id}`)
         }
-        await common.sleep(1000)
+        await sleep(1000)
       }
       let msg = [`本次共处理${SystemMsg.length}条群邀请\n成功：${success.length}\n失败：${fail.length}`]
       if (!_.isEmpty(success)) msg.push(['以下为成功的名单：\n', success.join('\n')])

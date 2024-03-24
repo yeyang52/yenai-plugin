@@ -3,6 +3,8 @@ import { common } from '../index.js'
 import _ from 'lodash'
 import moment from 'moment'
 import request from '../../lib/request/request.js'
+import { sleep } from '../../tools/index.js'
+
 /** QQ接口 */
 export default class {
   constructor (e) {
@@ -459,7 +461,7 @@ export default class {
         data,
         statusCode: 'json'
       }))
-      await common.sleep(5000)
+      await sleep(5000)
     }
     return res
   }

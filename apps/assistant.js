@@ -1,11 +1,13 @@
-import plugin from '../../../lib/plugins/plugin.js'
-import { common, QQApi } from '../model/index.js'
-import { Version } from '../components/index.js'
 import _ from 'lodash'
 import moment from 'moment'
-import { status } from '../constants/other.js'
-import yaml from 'yaml'
 import fs from 'node:fs'
+import yaml from 'yaml'
+import plugin from '../../../lib/plugins/plugin.js'
+import { Version } from '../components/index.js'
+import { status } from '../constants/other.js'
+import { common, QQApi } from '../model/index.js'
+import { sleep } from '../tools/index.js'
+
 /** API请求错误文案 */
 const API_ERROR = '❎ 出错辣，请稍后重试'
 
@@ -458,7 +460,7 @@ export class Assistant extends plugin {
           .then(() => e.reply('✅ ' + i + ' 群聊消息已送达'))
           .catch((err) =>
             common.handleException(e, err, { MsgTemplate: `❎ ${i} 发送失败\n错误信息为:{error}` }))
-        await common.sleep(5000)
+        await sleep(5000)
       }
     }
     return false
@@ -480,7 +482,7 @@ export class Assistant extends plugin {
 
     if (quits == e.group_id) {
       e.reply('✅ 3秒后退出本群聊')
-      await common.sleep(3000)
+      await sleep(3000)
     }
 
     await this.Bot.pickGroup(quits).quit()
@@ -798,7 +800,7 @@ export class Assistant extends plugin {
       logger.info(`${e.logFnc}执行撤回消息`)
       await target.recallMsg(source.message_id)
     }
-    await common.sleep(300)
+    await sleep(300)
     let recallcheck = await this.Bot.getMsg(source.message_id)
     if (recallcheck && recallcheck.message_id == source.message_id) {
       let msg

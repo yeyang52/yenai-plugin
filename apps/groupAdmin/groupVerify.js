@@ -1,6 +1,7 @@
 import { Config } from '../../components/index.js'
 import { common, GroupAdmin as Ga } from '../../model/index.js'
 import _ from 'lodash'
+import { sleep } from '../../tools/index.js'
 // 全局
 let temp = {}
 const ops = ['+', '-']
@@ -92,7 +93,7 @@ export class NewGroupVerify extends plugin {
     }
     for (let item of list) {
       await verify(item.user_id, e.group_id, e)
-      await common.sleep(2000)
+      await sleep(2000)
     }
   }
 
@@ -137,7 +138,7 @@ Bot.on?.('notice.group.increase', async (e) => {
   if (e.user_id == (e.bot ?? Bot).uin) return
   if (Config.masterQQ.includes(e.user_id)) return
 
-  await common.sleep(DelayTime * 1000)
+  await sleep(DelayTime * 1000)
   await verify(e.user_id, e.group_id, e)
 })
 

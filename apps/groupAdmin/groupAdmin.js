@@ -34,7 +34,7 @@ export class GroupAdmin extends plugin {
           fnc: 'noMuteMember'
         },
         {
-          reg: '^#全体(禁言|解禁)$',
+          reg: '^#全(体|员)(禁言|解禁)$',
           fnc: 'muteAll'
         },
         {
@@ -62,7 +62,7 @@ export class GroupAdmin extends plugin {
           fnc: 'GetAnnounce'
         },
         {
-          reg: '^#修改头衔',
+          reg: '^#(修改|设置)头衔',
           fnc: 'adminsetTitle'
         },
         {
@@ -198,7 +198,7 @@ export class GroupAdmin extends plugin {
    */
   async muteAll (e) {
     if (!common.checkPermission(e, 'admin', 'admin')) { return true }
-    let type = /全体禁言/.test(e.msg)
+    let type = /全(体|员)禁言/.test(e.msg)
     let res = await e.group.muteAll(type)
     if (!res) return e.reply('❎ 未知错误', true)
     type ? e.reply('全都不准说话了哦~') : e.reply('好耶！！可以说话啦~')
@@ -301,7 +301,7 @@ export class GroupAdmin extends plugin {
     if (!common.checkPermission(e, 'master', 'owner')) return
     let qq = e.message.find(item => item.type == 'at')?.qq
     if (!qq) return e.reply('请艾特要修改的人哦~')
-    let text = e.msg.replace(/#?修改头衔/g, '')
+    let text = e.msg.replace(/#?(修改|设置)头衔/g, '')
     let res = await e.group.setTitle(qq, text)
     if (res) {
       e.reply(`已经把这个小可爱的头衔设置为「${text}」辣`)

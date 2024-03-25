@@ -215,7 +215,7 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 </details>
 <br>
 
-更多信息请移步[文档](https://www.yenai.ren)
+更多信息请移步[文档](https://yenai.trss.me)
 
 ## 特别鸣谢 ❤️
 
@@ -286,6 +286,6 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 
 💬：254974507(已锁)
 
-❤️：[打赏](https://www.yenai.ren/donate.html)
+❤️：[打赏](https://yenai.trss.me/donate.html)
 
 ![Alt](https://repobeats.axiom.co/api/embed/42b5a7769074be124bd9ab02456897e37d1581f1.svg "Repobeats analytics image")

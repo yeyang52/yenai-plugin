@@ -231,7 +231,7 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 ### 贡献者 ✨
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-11-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 感谢这些了不起的人 ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
@@ -254,6 +254,7 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ikechan8370"><img src="https://avatars.githubusercontent.com/u/21212372?v=4?s=100" width="100px;" alt="ikechan8370"/><br /><sub><b>ikechan8370</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=ikechan8370" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/fsqhn"><img src="https://avatars.githubusercontent.com/u/13745793?v=4?s=100" width="100px;" alt="fsqhn"/><br /><sub><b>fsqhn</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=fsqhn" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Zyy955"><img src="https://avatars.githubusercontent.com/u/74231782?v=4?s=100" width="100px;" alt="Zyy955"/><br /><sub><b>Zyy955</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=Zyy955" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Denfenglai"><img src="https://avatars.githubusercontent.com/u/129082426?v=4?s=100" width="100px;" alt="等风来"/><br /><sub><b>等风来</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=Denfenglai" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

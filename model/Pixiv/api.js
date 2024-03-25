@@ -1,23 +1,12 @@
 import request, { qs } from '../../lib/request/request.js'
 import moment from 'moment'
-import { Config } from '../../components/index.js'
-import md5 from 'md5'
+import { login, headers } from './login.js'
+import { timeToSeconds, getNoonTomorrow } from './utils.js'
 
-const CLIENT_ID = 'MOBrBDS8blbauoSck0ZfDbtuzpyT'
-const CLIENT_SECRET = 'lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj'
-const HASH_SECRET = '28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c'
 export default class PixivApi {
   constructor (refresh_token) {
     this.baseUrl = 'https://app-api.pixiv.net/'
-    this.headers = {
-      'User-Agent': 'PixivIOSApp/7.13.3 (iOS 14.6; iPhone13,2)',
-      'Accept-Language': Config.pixiv.language,
-      'App-OS': 'ios',
-      'App-OS-Version': '14.6',
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Accept': '*/*',
-      'Connection': 'Keep-Alive'
-    }
+    this.headers = headers
     this._once = false
     this.refresh_token = refresh_token
     this.access_token = null
@@ -28,32 +17,10 @@ export default class PixivApi {
     if (!this.refresh_token) {
       throw Error('[Yenai][Pixiv] 未配置refresh_token刷新令牌')
     }
-    const local_time = moment().format()
-    const headers = {
-      ...this.headers,
-      'X-Client-Time': local_time,
-      'X-Client-Hash': md5(`${local_time}${HASH_SECRET}`)
-    }
-    const data = {
-      client_id: CLIENT_ID,
-      client_secret: CLIENT_SECRET,
-      grant_type: 'refresh_token',
-      refresh_token: this.refresh_token
-    }
-    const { response, error } = await request.post('https://oauth.secure.pixiv.net/auth/token', {
-      data,
-      headers
-    }).then(res => res.json())
-    if (error) throw Error(`[Yenai][Pixiv]login Error Response: ${error}`)
+    const response = login(this.refresh_token)
     this.access_token = response.access_token
     this.refresh_token = response.refresh_token
     this.auth = response
-    if (this.access_token) {
-      const { id, name, account } = this.auth.user
-      logger.info(`[Yenai][Pixiv]login ${logger.yellow(`${name}(${id}) @${account}`)} ${logger.green('success')}`)
-    } else {
-      logger.error(`[Yenai][Pixiv]login ${logger.red('fail')}`)
-    }
   }
 
   async request (target, options = {}, caching = false) {
@@ -200,47 +167,4 @@ export default class PixivApi {
   async illustRecommended (params = {}) {
     return await this.request('v1/illust/recommended', params)
   }
-}
-/**
- *
- * @param time
- */
-function timeToSeconds (time) {
-  let seconds = 0
-  let timeArray = time.split(' ')
-  for (let i = 0; i < timeArray.length; i++) {
-    let unit = timeArray[i].charAt(timeArray[i].length - 1)
-    let value = parseInt(timeArray[i].substring(0, timeArray[i].length - 1))
-    switch (unit) {
-      case 's':
-        seconds += value
-        break
-      case 'm':
-        seconds += value * 60
-        break
-      case 'h':
-        seconds += value * 60 * 60
-        break
-      case 'd':
-        seconds += value * 60 * 60 * 24
-        break
-      default:
-        break
-    }
-  }
-  return seconds
-}
-
-/**
- *
- */
-function getNoonTomorrow () {
-  const now = moment() // 获取当前时间
-  const noonToday = moment().startOf('day').add(12, 'hours') // 获取今天中午12点的时间
-  const noonTomorrow = moment().add(1, 'day').startOf('day').add(12, 'hours') // 获取明天中午12点的时间
-  let time = now < noonToday
-    ? noonToday.diff(now, 'hours')
-    : noonTomorrow.diff(now, 'hours')
-  if (time > 12) time = 12
-  return time + 'h'
 }

@@ -265,6 +265,10 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 
 本段遵循 [all-contributors](https://github.com/all-contributors/all-contributors) 规范，欢迎任何形式的贡献！
 
+## 如何贡献
+
+请查看我们的[贡献指南](CONTRIBUTING.md)，了解如何开始贡献
+
 ## 友情链接 😊
 
 - [Yunzai-Bot插件索引](https://gitee.com/Hikari666/Yunzai-Bot-plugins-index)

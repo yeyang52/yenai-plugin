@@ -2,7 +2,6 @@ import puppeteer from '../lib/puppeteer/puppeteer.js'
 import uploadRecord from '../tools/uploadRecord.js'
 import Bika from './Bika.js'
 import common from '../lib/common/common.js'
-import State from './State.js'
 import GroupAdmin from './GroupAdmin.js'
 import funApi from './api/funApi.js'
 import Pixiv from './Pixiv.js'
@@ -22,7 +21,6 @@ export const PicSearch = {
 export {
   puppeteer,
   common,
-  State,
   Pixiv,
   setu,
   Bika,

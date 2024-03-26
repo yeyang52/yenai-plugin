@@ -1,5 +1,8 @@
-# 1.3.2
-
+# 1.4.0
+* 增加开发依赖`all-contributors-cli` `eslint` `eslint-config-standard` `eslint-plugin-import` `eslint-plugin-jsdoc` `eslint-plugin-promise` `husky` `lint-staged`
+* 使用`husky`和`lint-staged`进行提交时eslint检测和自动格式化
+* 分离一些文件代码，让文件不再臃肿，便于维护
+* 增加贡献指南，请遵守贡献指南进行贡献，感谢您的贡献
 * **优化了** 部分正则
   * `#全体禁言/解禁` 可通过 `#全员禁言/解禁`触发
   * `#修改头衔` 可通过 `#设置头衔`触发
@@ -9,14 +12,13 @@
   * 可 **@** 一个人或直接写入QQ
   * 可在拉白后面加 **群** 来拉白群聊
   * 配置后白名单后仅白名单可触发命令
-
-# 1.3.1
-
 * `#椰奶状态`适配TRSS-Yunzai消息统计
 * `#状态`可配置背景图片API链接 **@Zyy955**
   * **config/config/state.yaml**
   * 若没有对应配置请自行键入
   * **backdrop: "url"**
+* 修复一些bug
+* 重构一些代码
 
 # 1.3.0
 
@@ -29,30 +31,17 @@
 * 将`#状态pro`的头像统一对齐显示
 * `加精`可通过`设精`触发
 * `#状态pro`显示所有Bot(**TRSS-Yunzai**)
-
-# 1.2.9
-
 * 优化**通知消息**及**事件**
 * `#状态`显示登录平台版本
 * 增加`赞他`命令ⁿᵉʷ
-
-# 1.2.8
-
 * 增加状态配置文件`config/state.yaml`
 * 增加网址测试超时时间配置
 * 增加网址测试配置
 * 将`whole.yaml`状态相关配置移入`state.yaml`
 * 优化状态异步任务使用`Promise.all`
 * 增加`移精`命令ⁿᵉʷ
-
-# 1.2.7
-
 * 删除依赖`puppeteer-extra``puppeteer-extra-plugin-stealth`
 * 并使用Puppeteer新无头模式，如**Chrome版本过低**可能无法使用
-
-
-# 1.2.1 ~ 1.2.6
-
 * 新增`jimp`依赖用于生成点赞回复图片
 * 新增`#设置机型`ⁿᵉʷ
 * 违禁词增加正则类型

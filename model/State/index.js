@@ -36,21 +36,14 @@ export async function getData (e) {
 
   let [FastFetch, HardDisk, psTest] = await Promise.all(promiseTaskList)
   /** bot列表 */
-  let BotList = [e.self_id]
+  let BotList = _getBotList(e)
 
-  if (e.msg.includes('pro')) {
-    if (Array.isArray(Bot?.uin)) {
-      BotList = Bot.uin
-    } else if (Bot?.adapter && Bot.adapter.includes(e.self_id)) {
-      BotList = Bot.adapter
-    }
-  }
   return {
     BotStatus: await getBotState(BotList),
     chartData: JSON.stringify(common.checkIfEmpty(Monitor.chartData, ['echarts_theme', 'cpu', 'ram']) ? undefined : Monitor.chartData),
     visualData,
     otherInfo: _getOtherInfo(),
-    psTest,
+    psTest: _.isEmpty(psTest) ? undefined : psTest,
     FastFetch,
     HardDisk,
     // 硬盘速率
@@ -69,5 +62,20 @@ function _getOtherInfo () {
   otherInfo.push(Monitor.getNetwork)
   // 插件数量
   otherInfo.push(getPluginNum())
-  return otherInfo
+
+  return _.compact(otherInfo)
+}
+
+function _getBotList (e) {
+  /** bot列表 */
+  let BotList = [e.self_id]
+
+  if (e.msg.includes('pro')) {
+    if (Array.isArray(Bot?.uin)) {
+      BotList = Bot.uin
+    } else if (Bot?.adapter && Bot.adapter.includes(e.self_id)) {
+      BotList = Bot.adapter
+    }
+  }
+  return BotList
 }

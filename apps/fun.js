@@ -280,7 +280,8 @@ export class Fun extends plugin {
     const id = this.e.msg.replace(/^#?查?看头像/, '').trim() || this.e.at ||
       this.e.message.find(item => item.type == 'at')?.qq || this.e.user_id
     try {
-      const url = await (this.e.group?.pickMember ? this.e.group.pickMember : this.e.bot.pickFriend)(id).getAvatarUrl()
+      let url = await this.e.group?.pickMember(id)?.getAvatarUrl()
+      if (!url) url = await this.e.bot.pickFriend(id).getAvatarUrl()
       if (url) return await this.reply(segment.image(url), true)
     } catch (error) {
       logger.error('获取头像错误', error)

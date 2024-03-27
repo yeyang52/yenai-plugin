@@ -27,7 +27,8 @@ module.exports = {
     'jsdoc/require-jsdoc': 0,
     'jsdoc/require-param-description': 0,
     'jsdoc/require-returns-description': 0,
-    'jsdoc/require-param-type': 0
+    'jsdoc/require-param-type': 0,
+    'import/extensions': ['error', 'ignorePackages']
   },
   ignorePatterns: ['resources/state/echarts.min.js']
 }

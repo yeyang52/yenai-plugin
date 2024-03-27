@@ -1,5 +1,5 @@
 # 1.4.0
-* 增加开发依赖`all-contributors-cli` `eslint` `eslint-config-standard` `eslint-plugin-import` `eslint-plugin-jsdoc` `eslint-plugin-promise` `husky` `lint-staged`
+* 增加开发依赖`eslint` `eslint-config-standard` `eslint-plugin-import` `eslint-plugin-jsdoc` `eslint-plugin-promise` `husky` `lint-staged`
 * 使用`husky`和`lint-staged`进行提交时eslint检测和自动格式化
 * 分离一些文件代码，让文件不再臃肿，便于维护
 * 增加贡献指南，请遵守贡献指南进行贡献，感谢您的贡献

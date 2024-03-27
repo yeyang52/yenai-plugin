@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import fetch from 'node-fetch'
-import plugin from '../../../lib/plugins/plugin.js'
 import { Config } from '../components/index.js'
 import { heisiType, pandadiuType, xiurenTypeId } from '../constants/fun.js'
 import { common, funApi, uploadRecord } from '../model/index.js'

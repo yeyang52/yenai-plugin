@@ -6,3 +6,5 @@ test.*
 .vscode/
 temp/
 *.css.map
+package-lock.json
+.idea

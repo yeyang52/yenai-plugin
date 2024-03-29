@@ -78,7 +78,7 @@ yarn install
 ## 你发现了问题 ❓
 
 - [Github issues](https://github.com/yeyang52/yenai-plugin/issues)
-- [QQ群](https://jq.qq.com/?_wv=1027&k=o8FTig5Z)
+- [QQ群](https://qm.qq.com/q/wNZDsVV3tC)
 - [QQ频道](https://pd.qq.com/s/dx3y9z1bv)
 
 ## 友情链接 👭

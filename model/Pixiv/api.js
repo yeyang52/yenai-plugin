@@ -17,7 +17,7 @@ export default class PixivApi {
     if (!this.refresh_token) {
       throw Error('[Yenai][Pixiv] 未配置refresh_token刷新令牌')
     }
-    const response = login(this.refresh_token)
+    const response = await login(this.refresh_token)
     this.access_token = response.access_token
     this.refresh_token = response.refresh_token
     this.auth = response

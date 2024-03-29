@@ -109,11 +109,7 @@ export class NewGroupBannedWords extends plugin {
    */
   #mute (time) {
     const e = this.e
-    if (e.anonymous) {
-      e.group.muteAnony(e.anonymous.flag, time)
-    } else {
-      e.member.mute(time)
-    }
+    e.member.mute(time)
   }
 
   /**

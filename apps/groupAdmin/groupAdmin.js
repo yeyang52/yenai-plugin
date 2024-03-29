@@ -45,10 +45,6 @@ export class GroupAdmin extends plugin {
           fnc: 'SetAdmin'
         },
         {
-          reg: '^#(允许|禁止|开启|关闭)匿名$',
-          fnc: 'AllowAnony'
-        },
-        {
           reg: '^#发群公告',
           fnc: 'AddAnnounce'
         },
@@ -246,15 +242,6 @@ export class GroupAdmin extends plugin {
     let name = Member.card || Member.nickname
     if (!res) return e.reply('❎ 未知错误')
     type ? e.reply(`已经把「${name}」设置为管理啦！！`) : e.reply(`「${name}」的管理已经被我吃掉啦~`)
-  }
-
-  // 匿名
-  async AllowAnony (e) {
-    if (!common.checkPermission(e, 'admin', 'admin')) { return true }
-    let type = /(允许|开启)匿名/.test(e.msg)
-    let res = await e.group.allowAnony(type)
-    if (!res) return e.reply('❎ 未知错误', true)
-    type ? e.reply('已把匿名开启了哦，可以藏起来了~') : e.reply('已关闭匿名，小贼们不准藏了~')
   }
 
   // 发群公告

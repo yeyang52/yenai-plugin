@@ -39,16 +39,6 @@ export default function formatDuration (time, format, repair = true) {
     return format(timeObj)
   }
 
-  if (typeof format === 'string') {
-    format = format
-      .replace(/dd/g, day)
-      .replace(/hh/g, timeObj.hour)
-      .replace(/mm/g, timeObj.minute)
-      .replace(/ss/g, timeObj.second)
-
-    return format
-  }
-
   if (format == 'default') {
     let result = ''
 
@@ -66,6 +56,18 @@ export default function formatDuration (time, format, repair = true) {
     }
     return result
   }
+
+  if (typeof format === 'string') {
+    format = format
+      .replace(/dd/g, day)
+      .replace(/hh/g, timeObj.hour)
+      .replace(/mm/g, timeObj.minute)
+      .replace(/ss/g, timeObj.second)
+
+    return format
+  }
+
+
 
   return timeObj
 }

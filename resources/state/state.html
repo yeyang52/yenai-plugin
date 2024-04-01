@@ -14,11 +14,29 @@
             <h1>{{$value.nickname}}</h1>
             <hr noshade>
             <p> Bot 已运行 {{$value.botRunTime}}</p>
-            <p>收 <span>{{$value.recv || 0}}</span> | 发 <span>{{$value.sent || 0}}</span> | 图片 <span>{{$value.screenshot
+            <!-- <p>收 <span>{{$value.recv || 0}}</span> | 发 <span>{{$value.sent || 0}}</span> | 图片 <span>{{$value.screenshot
                     || 0}}</span></p>
             <p>好友 <span>{{$value.friendQuantity}}</span> | 群 <span>{{$value.groupQuantity}}</span> | 群员
                 <span>{{$value.groupMemberQuantity}}</span>
-            </p>
+            </p> -->
+            <table>
+                <tr>
+                    <td>收</td>
+                    <td class="dyeing">{{$value.recv || 0}}</td>
+                    <td>发</td>
+                    <td class="dyeing">{{$value.sent || 0}}</td>
+                    <td>图片</td>
+                    <td class="dyeing">{{$value.screenshot || 0}}</td>
+                </tr>
+                <tr>
+                    <td>好友</td>
+                    <td class="dyeing">{{$value.groupQuantity}}</td>
+                    <td>群</td>
+                    <td class="dyeing">{{$value.friendQuantity}}</td>
+                    <td>群员</td>
+                    <td class="dyeing">{{$value.groupMemberQuantity}}</td>
+                </tr>
+            </table>
             <p>{{$value.onlineStatus}}({{$value.platform}}) | {{$value.botVersion}}</p>
         </div>
     </div>

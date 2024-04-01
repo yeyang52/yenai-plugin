@@ -112,6 +112,26 @@ hr {
   color: rgb(135, 206, 235);
   text-shadow: 1px 1px 1px #000;
 }
+.header table {
+  color: #2f4f4f;
+  font-size: 14px;
+}
+.header table td {
+  text-align: center;
+  line-height: 14px;
+}
+.header table td.dyeing:not(:last-child) {
+  border-right: 2px solid #2f4f4f;
+  padding-right: 10px;
+}
+.header table td.dyeing {
+  color: rgb(135, 206, 235);
+  text-shadow: 1px 1px 1px #000;
+  padding-left: 5px;
+}
+.header table td:nth-child(odd):not(:first-child) {
+  padding-left: 10px;
+}
 .header h1 {
   display: inline-block;
   background-image: linear-gradient(271.14deg, #001bff 0.98%, #00f0ff 25.79%, #fce84a 47.33%, #f34628 65.77%, #b275ff 91.4%);

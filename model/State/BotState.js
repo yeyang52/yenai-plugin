@@ -41,12 +41,7 @@ export default async function getBotState (botList) {
       screenshot,
       friendQuantity,
       groupQuantity,
-      groupMemberQuantity,
-      process: {
-        version: process.version,
-        platform: process.platform,
-        arch: process.arch
-      }
+      groupMemberQuantity
     }
   })
 

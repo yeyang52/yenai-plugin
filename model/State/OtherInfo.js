@@ -4,6 +4,7 @@ import { formatDuration } from '../../tools/index.js'
 import os from 'os'
 import Monitor from './Monitor.js'
 import fs from 'fs'
+import { Version } from '../../components/index.js'
 
 export default function otherInfi () {
   let otherInfo = []
@@ -46,4 +47,8 @@ function getPluginNum () {
   const plugins = plugin?.length || 0
   const js = fs.readdirSync('./plugins/example')?.filter(item => item.includes('.js'))?.length || 0
   return `${plugins} plugin | ${js} js`
+}
+
+export function getCopyright () {
+  return `Created By ${Version.name}<span class="version">${Version.yunzai}</span> & Yenai-Plugin<span class="version">${Version.ver}</span> & Node <span class="version">${process.version}</span>`
 }

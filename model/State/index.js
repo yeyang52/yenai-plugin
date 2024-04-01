@@ -37,10 +37,9 @@ export async function getData (e) {
   let [FastFetch, HardDisk, psTest] = await Promise.all(promiseTaskList)
   /** bot列表 */
   let BotList = _getBotList(e)
-  let BotStatusList = await getBotState(BotList)
-  console.log(BotStatusList)
+
   return {
-    BotStatusList,
+    BotStatusList: await getBotState(BotList),
     chartData: JSON.stringify(common.checkIfEmpty(Monitor.chartData, ['echarts_theme', 'cpu', 'ram']) ? undefined : Monitor.chartData),
     visualData,
     otherInfo: getOtherInfo(),

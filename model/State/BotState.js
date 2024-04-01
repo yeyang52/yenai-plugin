@@ -29,7 +29,7 @@ export default async function getBotState (botList) {
     const runTime = formatDuration(Date.now() / 1000 - bot.stat?.start_time, 'dd天hh小时mm分', false)
     const botVersion = bot.version ? `${bot.version.name}(${bot.version.id})${bot.apk ? ` ${bot.version.version}` : ''}` : `ICQQ(QQ) v${require('icqq/package.json').version}`
 
-    return `<div class="box">
+    return `<div class="box" data-boxInfo="Bot信息">
       <div class="tb">
           <div class="avatar">
               <img src="${avatar}"

@@ -7,7 +7,7 @@
 :root {
     --high-color: #d73403;
     --medium-color: #ffa500;
-    --low-color: #90ee90;
+    --low-color: #87CEEB;
 }
 
 .container {
@@ -36,9 +36,29 @@ body {
     background: rgba(255, 255, 255, 0.45);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     backdrop-filter: blur(10px);
-    border-radius: 10px;
+    border-radius: 0 27px 27px 27px;
     border: 1px solid rgba(255, 255, 255, 0.18);
     font-weight: 700;
+    position: relative;
+
+    &::after {
+        content: attr(data-boxInfo);
+        position: absolute;
+        display: inline-block;
+        height: 20px;
+        left: -15px;
+        top: -12px;
+        text-align: center;
+        font-size: 15px;
+        vertical-align: middle;
+        padding: 0 5px;
+        background: rgba(135, 206, 235);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        backdrop-filter: blur(18.5px);
+        -webkit-backdrop-filter: blur(18.5px);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+    }
 }
 
 .tb {
@@ -137,7 +157,7 @@ hr {
 .cpu {
     width: 100px;
     height: 100px;
-    background: #eee;
+    background: rgba(238, 238, 238, 0.6);
     position: relative;
     border-radius: 50%;
 }
@@ -189,7 +209,7 @@ hr {
     transform: translate(-50%, -50%);
     color: #999;
     font-size: 20px;
-    background: white;
+    background: rgba(255, 255, 255, 0.5);
 }
 
 .memory {
@@ -209,11 +229,12 @@ hr {
         margin: 0 5px;
         position: relative;
         border-radius: 5px;
+        overflow: hidden;
 
         .current {
             background: #90ee90;
             height: 25px;
-            border-radius: 5px;
+            border-radius: 0 10px 10px 0;
         }
 
         .word {

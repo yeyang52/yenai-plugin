@@ -5,7 +5,7 @@
 {{/block}}
 {{block 'main'}}
 {{@BotStatus}}
-<div class="box">
+<div class="box" data-boxInfo="主硬件">
     <ul class="info">
         {{each visualData group}}
         <li class="li">
@@ -34,7 +34,7 @@
 </div>
 
 {{if HardDisk}}
-<div class="box memory">
+<div class="box memory" data-boxInfo="磁盘">
     <ul>
         {{each HardDisk}}
         <li class="HardDisk_li">
@@ -57,7 +57,7 @@
 {{/if}}
 
 {{if chartData}}
-<div class="box">
+<div class="box" data-boxInfo="图表">
     <div id="Chart" style="height: 300px;"></div>
     <script src="{{_res_path}}state/echarts.min.js"></script>
     <script>
@@ -170,7 +170,7 @@
 
 {{/if}}
 {{if otherInfo}}
-<div class="box">
+<div class="box" data-boxInfo="其他">
     {{each otherInfo}}
     <div class="speed">
         <p>{{$value.first}}</p>

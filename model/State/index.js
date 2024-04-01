@@ -9,8 +9,8 @@ import getGPU from './GPU.js'
 import Monitor from './Monitor.js'
 import getNetworTestList from './NetworkLatency.js'
 import getNodeInfo from './NodeInfo.js'
-import getPluginNum from './PluginNum.js'
 import getRAM from './RAM.js'
+import getOtherInfo from './OtherInfo.js'
 
 export { osInfo, si }
 
@@ -37,33 +37,19 @@ export async function getData (e) {
   let [FastFetch, HardDisk, psTest] = await Promise.all(promiseTaskList)
   /** bot列表 */
   let BotList = _getBotList(e)
-
+  let BotStatusList = await getBotState(BotList)
+  console.log(BotStatusList)
   return {
-    BotStatus: await getBotState(BotList),
+    BotStatusList,
     chartData: JSON.stringify(common.checkIfEmpty(Monitor.chartData, ['echarts_theme', 'cpu', 'ram']) ? undefined : Monitor.chartData),
     visualData,
-    otherInfo: _getOtherInfo(),
+    otherInfo: getOtherInfo(),
     psTest: _.isEmpty(psTest) ? undefined : psTest,
     FastFetch,
     HardDisk,
     // 硬盘速率
     fsStats: Monitor.DiskSpeed
   }
-}
-
-function _getOtherInfo () {
-  let otherInfo = []
-  // 其他信息
-  otherInfo.push({
-    first: '系统',
-    tail: osInfo?.distro
-  })
-  // 网络
-  otherInfo.push(Monitor.getNetwork)
-  // 插件数量
-  otherInfo.push(getPluginNum())
-
-  return _.compact(otherInfo)
 }
 
 function _getBotList (e) {

@@ -3,7 +3,6 @@ import { Config } from '../components/index.js'
 import { puppeteer } from '../model/index.js'
 import { getData, si } from '../model/State/index.js'
 import Monitor from '../model/State/Monitor.js'
-import { getCopyright } from '../model/State/OtherInfo.js'
 
 let interval = false
 export class NewState extends plugin {
@@ -47,8 +46,7 @@ export class NewState extends plugin {
 
     // 渲染图片
     await puppeteer.render('state/state', {
-      ...data,
-      copyright: getCopyright()
+      ...data
     }, {
       e,
       scale: 1.4

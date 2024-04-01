@@ -10,7 +10,7 @@ import Monitor from './Monitor.js'
 import getNetworTestList from './NetworkLatency.js'
 import getNodeInfo from './NodeInfo.js'
 import getRAM from './RAM.js'
-import getOtherInfo from './OtherInfo.js'
+import getOtherInfo, { getCopyright } from './OtherInfo.js'
 
 export { osInfo, si }
 
@@ -37,7 +37,7 @@ export async function getData (e) {
   let [FastFetch, HardDisk, psTest] = await Promise.all(promiseTaskList)
   /** bot列表 */
   let BotList = _getBotList(e)
-
+  let isBotIndex = /pro/.test(e.msg) && BotList.length > 1
   return {
     BotStatusList: await getBotState(BotList),
     chartData: JSON.stringify(common.checkIfEmpty(Monitor.chartData, ['echarts_theme', 'cpu', 'ram']) ? undefined : Monitor.chartData),
@@ -47,7 +47,9 @@ export async function getData (e) {
     FastFetch,
     HardDisk,
     // 硬盘速率
-    fsStats: Monitor.DiskSpeed
+    fsStats: Monitor.DiskSpeed,
+    copyright: getCopyright(),
+    isBotIndex
   }
 }
 

@@ -5,7 +5,7 @@
 {{/block}}
 {{block 'main'}}
 {{each BotStatusList}}
-<div class="box" data-boxInfo="Bot信息">
+<div class="box" data-boxInfo="Bot{{isBotIndex ? $index + 1 : ''}}信息">
     <div class="tb">
         <div class="avatar">
             <img src="{{$value.avatar}}" onerror="this.src= '{{$value.defaultAvatar}}'; this.onerror = null;">

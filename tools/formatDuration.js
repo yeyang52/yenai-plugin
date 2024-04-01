@@ -67,7 +67,5 @@ export default function formatDuration (time, format, repair = true) {
     return format
   }
 
-
-
   return timeObj
 }

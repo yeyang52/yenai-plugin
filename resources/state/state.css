@@ -108,6 +108,9 @@ hr {
   font-size: 14px;
   color: #2f4f4f;
 }
+.header p span {
+  color: rgb(135, 206, 235);
+}
 .header h1 {
   display: inline-block;
   background-image: linear-gradient(271.14deg, #001bff 0.98%, #00f0ff 25.79%, #fce84a 47.33%, #f34628 65.77%, #b275ff 91.4%);

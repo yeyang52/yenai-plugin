@@ -14,10 +14,12 @@
             <h1>{{$value.nickname}}</h1>
             <hr noshade>
             <p> Bot 已运行 {{$value.botRunTime}}</p>
-            <p>{{$value.onlineStatus}}({{$value.platform}}) | {{$value.botVersion}}</p>
-            <p>收{{$value.recv || 0}} | 发{{$value.sent || 0}} | 图片{{$value.screenshot || 0}} |
-                好友{{$value.friendQuantity}} | 群{{$value.groupQuantity}} |
-                群员{{$value.groupMemberQuantity}}</p>
+            <p>收 <span>{{$value.recv || 0}}</span> | 发 <span>{{$value.sent || 0}}</span> | 图片 <span>{{$value.screenshot
+                    || 0}}</span></p>
+            <p>好友 <span>{{$value.friendQuantity}}</span> | 群 <span>{{$value.groupQuantity}}</span> | 群员
+                <span>{{$value.groupMemberQuantity}}</span>
+            </p>
+            <p>{{$value.onlineStatus}}({{$value.platform}}) | <span>{{$value.botVersion}}</span></p>
         </div>
     </div>
 </div>

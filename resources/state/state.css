@@ -52,7 +52,7 @@ body {
   vertical-align: middle;
   padding: 0 5px;
   background: rgb(135, 206, 235);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  box-shadow: 30px 30px 30px -10px rgba(0, 0, 0, 0.15), inset 5px 5px 3px rgba(255, 255, 255, 0.75), -15px -15px 35px rgba(255, 255, 255, 0.55), inset -1px -1px 5px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(18.5px);
   -webkit-backdrop-filter: blur(18.5px);
   border-radius: 10px;

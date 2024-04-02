@@ -151,6 +151,10 @@ export class GroupAdmin extends plugin {
         {
           reg: '^#?群管(加|删)白(名单)?',
           fnc: 'whiteQQ'
+        },
+        {
+          reg: '^#?(开启|关闭)白名单(自动)?解禁',
+          fnc: 'noBan'
         }
       ]
     })
@@ -730,5 +734,17 @@ export class GroupAdmin extends plugin {
 
     Config.modifyarr('groupAdmin', 'whiteQQ', qq, type)
     this.reply(`✅ 已${type == 'add' ? '加入' : '删除'}${qq}到群管白名单`)
+  }
+
+  async noBan () {
+    if (!common.checkPermission(this.e, 'master')) return
+    let type = !!/开启/.test(this.e.msg)
+
+    const { noBan } = Config.groupAdmin
+    if (noBan && type) return this.reply('❎ 白名单自动解禁已处于开启状态')
+    if (!noBan && !type) return this.reply('❎ 白名单自动解禁已处于关闭状态')
+
+    Config.modify('groupAdmin', 'noBan', type)
+    this.reply(`✅ 已${type ? '开启' : '关闭'}白名单自动解禁`)
   }
 }

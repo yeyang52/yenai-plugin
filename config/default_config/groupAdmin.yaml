@@ -1,2 +1,4 @@
 #白名单QQ
-whiteQQ: [10086 , 114514]
+whiteQQ: []
+#白名单禁言自动解禁
+noBan: false

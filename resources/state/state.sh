@@ -1,4 +1,4 @@
-echo -n "<div class='box'>"
+echo -n "<div class='box' data-boxInfo="fastFetch">"
 if type fastfetch &>/dev/null;then
   if [ "$(uname)" = Linux ];then
     fastfetch --pipe
@@ -14,7 +14,7 @@ while read i;do
 done
 echo "</div>"
 if type getprop &>/dev/null;then
-  echo -n "<div class='box'>"
+  echo -n "<div class='box' data-boxInfo="安卓">"
   echo "设备代号：$(getprop ro.product.device)
   设备型号：$(getprop ro.product.marketname) ($(getprop ro.product.name))
   认证型号：$(getprop ro.product.model)

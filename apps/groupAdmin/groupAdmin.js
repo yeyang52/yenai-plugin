@@ -726,7 +726,8 @@ export class GroupAdmin extends plugin {
   async whiteQQ () {
     if (!common.checkPermission(this.e, 'master')) return
     let type = /加/.test(this.e.msg) ? 'add' : 'del'
-    let qq = this.e.at || (this.e.msg.match(/\d+/)?.[0] || '')
+    let qq = this.e.at || (Number(this.e.msg.match(/\d+/)?.[0]) || '')
+    if (!qq) return this.reply('❎ 请艾特或输入需要加白的QQ')
 
     const isWhite = Config.groupAdmin.whiteQQ.includes(Number(qq))
     if (isWhite && type == 'add') return this.reply('❎ 此人已在群管白名单内')

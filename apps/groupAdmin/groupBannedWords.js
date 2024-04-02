@@ -1,4 +1,5 @@
 import { common, GroupBannedWords } from '../../model/index.js'
+import { Config } from '../../components/index.js'
 import _ from 'lodash'
 
 export class NewGroupBannedWords extends plugin {
@@ -47,7 +48,8 @@ export class NewGroupBannedWords extends plugin {
   }
 
   async monitor (e) {
-    if (!e.message || e.isMaster || e.member?.is_owner || e.member?.is_admin) {
+    const isWhite = Config.groupAdmin.whiteQQ.includes(e.user_id)
+    if (!e.message || e.isMaster || e.member?.is_owner || e.member?.is_admin || isWhite) {
       return false
     }
     const groupBannedWords = GroupBannedWords.initTextArr(e.group_id)

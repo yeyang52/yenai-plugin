@@ -103,6 +103,10 @@ class Config {
     return this.getDefOrConfig('state')
   }
 
+  get groupAdmin () {
+    return this.getDefOrConfig('groupAdmin')
+  }
+
   /**
    * 默认配置和用户配置
    * @param name

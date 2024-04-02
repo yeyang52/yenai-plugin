@@ -19,7 +19,7 @@ export async function pandadiu (type = 'cos', keywords = '') {
   logger.debug('[Yenai-Plugin][acg]作品索引页：' + homeUrl)
   const home = await request.get(homeUrl).then(res => res.text())
   const href = _.sample(_.map(cheerio.load(home)('div.cos-list.clearfix > ul > a, div.cover.mod_imgLight > a'), item => item.attribs.href))
-  if (!href) throw Error('未找到结果')
+  if (!href) throw new ReplyError('未找到结果')
   logger.debug('[Yenai-Plugin][acg]图片详情页：' + domain + href)
   const details = await request.get(domain + href).then(res => res.text())
   const $ = cheerio.load(details)
@@ -50,7 +50,7 @@ export async function mengdui (keywords, isSearch) {
     const home = await request.get(url).then(res => res.text())
     const $ = cheerio.load(home)
     href = _.sample(_.map($('div.md-wide > ul > li > a'), item => item.attribs.href))
-    if (!href) throw Error($('div.no-tips > p:nth-of-type(1)').text().trim())
+    if (!href) throw new ReplyError($('div.no-tips > p:nth-of-type(1)').text().trim())
     const maxPage = $('div.pagebar.md-flex-wc.mb20 > a:not(:last-child)').length
     mengduipage[keywords] = maxPage
     await redis.set('yenai:mengduipage', JSON.stringify(mengduipage))
@@ -119,7 +119,7 @@ export async function coser () {
       (item) => item.attribs.href
     )
   )
-  if (!href) throw Error('未知错误')
+  if (!href) throw new ReplyError('未知错误')
   logger.debug('[Yenai-Plugin][coser]图片详情页：' + domain + href)
   const imgPage = await request.get(domain + href).then(res => res.text())
   const $1 = cheerio.load(imgPage)

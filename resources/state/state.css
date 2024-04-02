@@ -7,7 +7,7 @@
 :root {
   --high-color: #d73403;
   --medium-color: #ffa500;
-  --low-color: #90ee90;
+  --low-color: #87CEEB;
 }
 
 .container {
@@ -35,7 +35,7 @@ body {
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   -webkit-backdrop-filter: blur(10px);
           backdrop-filter: blur(10px);
-  border-radius: 10px;
+  border-radius: 27px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   font-weight: 700;
 }
@@ -120,7 +120,7 @@ hr {
 .cpu {
   width: 100px;
   height: 100px;
-  background: #eee;
+  background: rgba(238, 238, 238, 0.6);
   position: relative;
   border-radius: 50%;
 }
@@ -169,7 +169,7 @@ hr {
   transform: translate(-50%, -50%);
   color: #999;
   font-size: 20px;
-  background: white;
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .memory li {
@@ -186,11 +186,13 @@ hr {
   margin: 0 5px;
   position: relative;
   border-radius: 5px;
+  overflow: hidden;
 }
+
 .memory .progress .current {
   background: #90ee90;
   height: 25px;
-  border-radius: 5px;
+  border-radius: 0 10px 10px 0; 
 }
 .memory .progress .word {
   position: absolute;

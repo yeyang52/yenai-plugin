@@ -19,8 +19,8 @@ export const headers = {
 
 export async function login (refresh_token) {
   const local_time = moment().format()
-  const headers = {
-    ...this.headers,
+  let _headers = {
+    ...headers,
     'X-Client-Time': local_time,
     'X-Client-Hash': md5(`${local_time}${HASH_SECRET}`)
   }
@@ -32,9 +32,9 @@ export async function login (refresh_token) {
   }
   const { response, error } = await request.post('https://oauth.secure.pixiv.net/auth/token', {
     data,
-    headers
+    headers: _headers
   }).then(res => res.json())
-  if (error) throw Error(`[Yenai][Pixiv]login Error Response: ${error}`)
+  if (error) throw new ReplyError(`[Yenai][Pixiv]login Error Response: ${error}`)
   if (response.access_token) {
     const { id, name, account } = this.auth.user
     logger.info(`[Yenai][Pixiv]login ${logger.yellow(`${name}(${id}) @${account}`)} ${logger.green('success')}`)

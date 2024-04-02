@@ -13,7 +13,6 @@ const OtherCfgType = {
 const SeSeCfgType = {
   涩涩: 'sese',
   涩涩pro: 'sesepro',
-  匿名: 'anonymous',
   代理: {
     name: 'proxy',
     key: 'switchProxy'
@@ -181,12 +180,11 @@ export class Admin extends plugin {
   async SeSe_Settings (e) {
     let set = setu.getSeSeConfig(e)
     let { proxy, pixiv, bika } = Config
-    let { sese, sesepro, anonymous } = Config.getGroup(e.group_id)
-    let { sese: _sese, sesepro: _sesepro, anonymous: _anonymous } = Config.getConfig('group')[e.group_id] ?? {}
+    let { sese, sesepro } = Config.getGroup(e.group_id)
+    let { sese: _sese, sesepro: _sesepro } = Config.getConfig('group')[e.group_id] ?? {}
     let data = {
       sese: getStatus(sese, _sese),
       sesepro: getStatus(sesepro, _sesepro),
-      anonymous: getStatus(anonymous, _anonymous),
       r18: getStatus(set.r18),
       cd: Number(set.cd),
       recall: set.recall ? set.recall : '无',

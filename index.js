@@ -15,6 +15,12 @@ if (!global.segment) {
   }
 }
 
+global.ReplyError = class ReplyError extends Error {
+  constructor (message) {
+    super(message)
+    this.name = 'ReplyError'
+  }
+}
 // 加载监听事件
 const eventsPath = './plugins/yenai-plugin/apps/events'
 const events = fs.readdirSync(eventsPath)

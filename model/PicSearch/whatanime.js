@@ -9,7 +9,7 @@ import _ from 'lodash'
  */
 export default async function doSearch (imgURL) {
   let result = await getSearchResult(imgURL)
-  if (result.error) throw Error(result.error)
+  if (result.error) throw new ReplyError(result.error)
 
   let {
     result: [{
@@ -21,7 +21,7 @@ export default async function doSearch (imgURL) {
     // image // 预览图片
     }]
   } = result
-  if (_.isEmpty(result)) throw Error('未获取到相关信息')
+  if (_.isEmpty(result)) throw new ReplyError('未获取到相关信息')
   similarity = (similarity * 100).toFixed(2) // 相似度
   const time = (() => {
     const s = Math.floor(from)

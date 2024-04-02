@@ -45,7 +45,7 @@ export default class {
       let time = item.shut_up_timestamp ?? item.shutup_time
       return time != 0 && (time - (Date.now() / 1000)) > 0
     })
-    if (_.isEmpty(mutelist)) throw Error('没有被禁言的人哦~')
+    if (_.isEmpty(mutelist)) throw new ReplyError('没有被禁言的人哦~')
     if (!info) return mutelist
     return mutelist.map(item => {
       let time = item.shut_up_timestamp ?? item.shutup_time
@@ -94,7 +94,7 @@ export default class {
       ]
     )
     let pageChunk = _.chunk(msg, 30)
-    if (page > pageChunk.length) throw Error('哪有那么多人辣o(´^｀)o')
+    if (page > pageChunk.length) throw new ReplyError('哪有那么多人辣o(´^｀)o')
 
     let msgs = pageChunk[page - 1]
     msgs.unshift(`当前为第${page}页，共${pageChunk.length}页，本页共${msgs.length}人，总共${msg.length}人`)
@@ -135,7 +135,7 @@ export default class {
     let list = await this._getMemberMap(groupId)
 
     list = list.filter(item => item.last_sent_time < time && item.role == 'member' && item.user_id != this.Bot.uin)
-    if (_.isEmpty(list)) throw Error(`暂时没有${times}${unit}没发言的淫哦╮( •́ω•̀ )╭`)
+    if (_.isEmpty(list)) throw new ReplyError(`暂时没有${times}${unit}没发言的淫哦╮( •́ω•̀ )╭`)
     return list
   }
 
@@ -152,7 +152,7 @@ export default class {
       item.role == 'member' &&
       item.user_id != this.Bot.uin
     )
-    if (_.isEmpty(list)) throw Error('本群暂无从未发言的人哦~')
+    if (_.isEmpty(list)) throw new ReplyError('本群暂无从未发言的人哦~')
     return list
   }
 
@@ -177,7 +177,7 @@ export default class {
       ]
     })
     let pageChunk = _.chunk(msg, 30)
-    if (page > pageChunk.length) throw Error('哪有那么多人辣o(´^｀)o')
+    if (page > pageChunk.length) throw new ReplyError('哪有那么多人辣o(´^｀)o')
 
     let msgs = pageChunk[page - 1]
     msgs.unshift(`当前为第${page}页，共${pageChunk.length}页，本页共${msgs.length}人，总共${msg.length}人`)
@@ -358,8 +358,8 @@ export default class {
     unit = Time_unit[unit.toUpperCase()] ?? (/^\d+$/.test(unit) ? unit : 60)
     const group = this.Bot.pickGroup(Number(groupId), true)
     // 判断是否有管理
-    if (!group.is_admin && !group.is_owner) throw Error(ROLE_ERROR)
-    if (!(/\d{5,}/.test(userId))) throw Error('❎ 请输入正确的QQ号')
+    if (!group.is_admin && !group.is_owner) throw new ReplyError(ROLE_ERROR)
+    if (!(/\d{5,}/.test(userId))) throw new ReplyError('❎ 请输入正确的QQ号')
 
     // 判断是否为主人
     if ((Config.masterQQ?.includes(Number(userId)) || a.includes(Number(userId))) && time != 0) throw Error('居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ')
@@ -367,16 +367,16 @@ export default class {
     const Member = group.pickMember(userId)
     const Memberinfo = Member?.info || await Member?.getInfo?.()
     // 判断是否有这个人
-    if (!Memberinfo) throw Error('❎ 这个群没有这个人哦~')
+    if (!Memberinfo) throw new ReplyError('❎ 这个群没有这个人哦~')
 
     // 特殊处理
-    if (Memberinfo.role === 'owner') throw Error('调戏群主拖出去枪毙5分钟(。>︿<)_θ')
+    if (Memberinfo.role === 'owner') throw new ReplyError('调戏群主拖出去枪毙5分钟(。>︿<)_θ')
 
     const isMaster = Config.masterQQ?.includes(executor) || a.includes(Number(executor))
 
     if (Memberinfo.role === 'admin') {
-      if (!group.is_owner) throw Error('人家又不是群主这种事做不到的辣！')
-      if (!isMaster) throw Error('这个淫系管理员辣，只有主淫才可以干ta')
+      if (!group.is_owner) throw new ReplyError('人家又不是群主这种事做不到的辣！')
+      if (!isMaster) throw new ReplyError('这个淫系管理员辣，只有主淫才可以干ta')
     }
 
     await group.muteMember(userId, time * unit)
@@ -394,8 +394,8 @@ export default class {
   async kickMember (groupId, userId, executor) {
     const group = this.Bot.pickGroup(Number(groupId), true)
 
-    if (!userId || !(/^\d+$/.test(userId))) throw Error('❎ 请输入正确的QQ号')
-    if (!groupId || !(/^\d+$/.test(groupId))) throw Error('❎ 请输入正确的群号')
+    if (!userId || !(/^\d+$/.test(userId))) throw new ReplyError('❎ 请输入正确的QQ号')
+    if (!groupId || !(/^\d+$/.test(groupId))) throw new ReplyError('❎ 请输入正确的群号')
 
     // 判断是否为主人
     if (Config.masterQQ?.includes(Number(userId) || String(userId)) || a.includes(Number(userId))) throw Error('居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ')
@@ -403,18 +403,18 @@ export default class {
     const Member = group.pickMember(userId)
     const Memberinfo = Member?.info || await Member?.getInfo?.()
     // 判断是否有这个人
-    if (!Memberinfo) throw Error('❎ 这个群没有这个人哦~')
-    if (Memberinfo.role === 'owner') throw Error('调戏群主拖出去枪毙5分钟(。>︿<)_θ')
+    if (!Memberinfo) throw new ReplyError('❎ 这个群没有这个人哦~')
+    if (Memberinfo.role === 'owner') throw new ReplyError('调戏群主拖出去枪毙5分钟(。>︿<)_θ')
 
     const isMaster = Config.masterQQ?.includes(executor) || a.includes(Number(executor))
 
     if (Memberinfo.role === 'admin') {
-      if (!group.is_owner) throw Error('人家又不是群主这种事做不到的辣！')
-      if (!isMaster) throw Error('这个淫系管理员辣，只有主淫才可以干ta')
+      if (!group.is_owner) throw new ReplyError('人家又不是群主这种事做不到的辣！')
+      if (!isMaster) throw new ReplyError('这个淫系管理员辣，只有主淫才可以干ta')
     }
 
     const res = await group.kickMember(Number(userId) || String(userId))
-    if (!res) throw Error('额...踢出失败哩，可能这个淫比较腻害>_<')
+    if (!res) throw new ReplyError('额...踢出失败哩，可能这个淫比较腻害>_<')
     return '已把这个坏淫踢掉惹！！！'
   }
 }

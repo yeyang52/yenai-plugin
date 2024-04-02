@@ -195,7 +195,7 @@ export class NewPixiv extends plugin {
     if (ispro && !await this._Authentication(e, 'sesepro', false)) return
 
     await Pixiv.pximg(ispro)
-      .then(res => ispro ? common.recallSendForwardMsg(e, [res]) : common.recallsendMsg(e, res, false, { anony: true }))
+      .then(res => ispro ? common.recallSendForwardMsg(e, [res]) : common.recallsendMsg(e, res, false))
       .catch(err => common.handleException(e, err))
   }
 

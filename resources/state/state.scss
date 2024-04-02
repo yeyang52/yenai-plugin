@@ -7,12 +7,33 @@
 :root {
     --high-color: #d73403;
     --medium-color: #ffa500;
-    --low-color: #90ee90;
+    --low-color: #87CEEB;
+    --bg: rgba(255, 255, 255);
+    /* 背景颜色 */
+    --back-bg: #c5ccda;
+    /* 定义宽度 */
+    --w: 100px;
+    --back-shadow: #fff;
+    /* 父容器gap间距 */
+    --gap: 10px;
+    /* 第二层圆形宽度 */
+    --inner: calc(var(--w) - var(--gap));
+    /* svg圆环颜色 */
+    // --ring-color1: #c1dfc4;
+    // --ring-color2: #3cba92;
+    /* 文本颜色 */
+    --text-color: #999;
+    /* 定义stroke的宽度 */
+    --stroke: 13px;
+    /* svg环形宽度 更正内容*/
+    --circle: calc(var(--inner) - var(--stroke));
+    /* 第三层圆形宽度 */
+    --center: calc(var(--circle) - var(--stroke));
 }
 
 .container {
     background: {
-        color: white;
+        color: #e9e9e9;
         position: center top;
         repeat: no-repeat;
         size: cover;
@@ -36,9 +57,33 @@ body {
     background: rgba(255, 255, 255, 0.45);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     backdrop-filter: blur(10px);
-    border-radius: 10px;
+    border-radius: 0 27px 27px 27px;
     border: 1px solid rgba(255, 255, 255, 0.18);
     font-weight: 700;
+    position: relative;
+
+    // &::after {
+    //     content: attr(data-boxInfo);
+    //     position: absolute;
+    //     display: inline-block;
+    //     height: 20px;
+    //     left: -15px;
+    //     top: -12px;
+    //     text-align: center;
+    //     font-size: 15px;
+    //     vertical-align: middle;
+    //     padding: 0 5px;
+    //     background: rgba(135, 206, 235);
+    //     // 盒子样式
+    //     box-shadow: 30px 30px 30px -10px rgba(0, 0, 0, 0.15),
+    //         inset 5px 5px 3px rgba(255, 255, 255, 0.75),
+    //         -15px -15px 35px rgba(255, 255, 255, 0.55),
+    //         inset -1px -1px 5px rgba(0, 0, 0, 0.2);
+    //     backdrop-filter: blur(18.5px);
+    //     -webkit-backdrop-filter: blur(18.5px);
+    //     border-radius: 10px;
+    //     border: 1px solid rgba(255, 255, 255, 0.18);
+    // }
 }
 
 .tb {
@@ -83,7 +128,7 @@ hr {
 }
 
 .header {
-    max-width: 100%;
+    width: 100%;
     overflow: hidden;
 
     hr {
@@ -91,8 +136,41 @@ hr {
     }
 
     p {
-        font-size: 12px;
+        font-size: 14px;
         color: #2f4f4f;
+
+        span {
+            color: rgb(135, 206, 235);
+            text-shadow: 1px 1px 1px #000;
+        }
+    }
+
+    table {
+        color: #2f4f4f;
+        font-size: 14px;
+
+        td {
+            line-height: 14px;
+
+            &.dyeing {
+                // color: rgb(135, 206, 235);
+                // text-shadow: 1px 1px 1px #000;
+                padding-left: 5px;
+                text-align: center;
+            }
+
+            &.dyeing:not(:last-child) {
+                border-right: 2px solid #2f4f4f;
+                padding-right: 10px;
+            }
+
+
+
+            &:nth-child(odd):not(:first-child) {
+                padding-left: 10px
+            }
+        }
+
     }
 
     h1 {
@@ -109,88 +187,168 @@ hr {
     }
 }
 
-.info {
+.mainHardware {
     width: 100%;
     display: flex;
     justify-content: space-around;
     font-weight: 700;
 
-    .li {
-        article {
-            width: 100px;
-            text-align: center;
+    .container-box {
+        width: var(--w);
+        height: var(--w);
+        position: relative;
+    }
 
-            summary {
-                font-size: 20px;
-                margin-top: 5px;
-            }
+    /* 添加百分比显示文字 */
+    .container-box::after {
+        content: attr(data-num);
+        position: absolute;
+        font-size: 20px;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        color: var(--text-color);
+    }
 
-            p {
-                font-size: 12px;
-                color: #2f4f4f;
-                white-space: nowrap;
-            }
+    .circle-outer {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        // box-shadow: 6px 6px 8px var(--back-bg), -3px -3px 8px var(--back-shadow);
+        background: var(--bg);
+    }
+
+    .circle-outer::before {
+        width: var(--inner);
+        height: var(--inner);
+        box-shadow: inset 8px 8px 10px var(--back-bg),
+            inset -4px -4px 8px var(--back-shadow);
+    }
+
+    .circle-outer::after {
+        width: var(--center);
+        height: var(--center);
+        box-shadow: 6px 6px 8px var(--back-bg), -2px -2px 8px var(--back-shadow);
+    }
+
+    /* 合并代码 */
+    .circle-outer::before,
+    .circle-outer::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        background: var(--bg);
+    }
+
+    svg {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 1;
+        transform: rotate(-90deg);
+    }
+
+    svg circle {
+        cy: calc(var(--circle) / 2);
+        cx: calc(var(--circle) / 2);
+        r: calc(var(--circle) / 2);
+        fill: none;
+        /* 圆角 */
+        stroke-linecap: round;
+        position: absolute;
+        --z: calc(var(--w) / 2);
+        --c: calc(var(--circle) / 2);
+        transform: translate(calc(var(--z) - var(--c)),
+                calc(var(--z) - var(--c)));
+        /* 圆的周长 */
+        stroke-dasharray: calc(3.14 * var(--circle));
+        stroke-dashoffset: calc(3.14 * var(--circle));
+        stroke-width: var(--stroke);
+    }
+
+    // .circle {
+    //     width: 100px;
+    //     height: 100px;
+    //     background: rgba(238, 238, 238, 0.6);
+    //     position: relative;
+    //     border-radius: 50%;
+
+    //     .left,
+    //     .right {
+    //         width: 50px;
+    //         height: 100px;
+    //         position: absolute;
+    //         overflow: hidden;
+    //     }
+
+    //     .right {
+    //         right: 0;
+
+    //         .right-circle {
+    //             border-top-right-radius: 100px;
+    //             border-bottom-right-radius: 100px;
+    //             transform: rotate(180deg);
+    //             transform-origin: left center;
+    //         }
+    //     }
+
+    //     .left .left-circle,
+    //     .right .right-circle {
+    //         width: 50px;
+    //         height: 100px;
+    //         background: #90ee90;
+    //     }
+
+    //     .left {
+    //         .left-circle {
+    //             border-top-left-radius: 100px;
+    //             border-bottom-left-radius: 100px;
+    //             transform: rotate(-180deg);
+    //             transform-origin: right center;
+    //         }
+    //     }
+
+    //     .inner {
+    //         width: 75px;
+    //         height: 75px;
+    //         border-radius: 50%;
+    //         text-align: center;
+    //         line-height: 75px;
+    //         position: absolute;
+    //         left: 50%;
+    //         top: 50%;
+    //         transform: translate(-50%, -50%);
+    //         color: #999;
+    //         font-size: 20px;
+    //         background: rgba(255, 255, 255, 0.5);
+    //     }
+    // }
+
+    article {
+        width: 100px;
+        text-align: center;
+
+        summary {
+            font-size: 20px;
+            margin-top: 5px;
+        }
+
+        p {
+            font-size: 12px;
+            color: #2f4f4f;
+            white-space: nowrap;
         }
     }
+
 }
 
-.cpu {
-    width: 100px;
-    height: 100px;
-    background: #eee;
-    position: relative;
-    border-radius: 50%;
-}
 
-.left,
-.right {
-    width: 50px;
-    height: 100px;
-    position: absolute;
-    overflow: hidden;
-}
-
-.right {
-    right: 0;
-
-    .right-circle {
-        border-top-right-radius: 100px;
-        border-bottom-right-radius: 100px;
-        transform: rotate(180deg);
-        transform-origin: left center;
-    }
-}
-
-.left .left-circle,
-.right .right-circle {
-    width: 50px;
-    height: 100px;
-    background: #90ee90;
-}
-
-.left {
-    .left-circle {
-        border-top-left-radius: 100px;
-        border-bottom-left-radius: 100px;
-        transform: rotate(-180deg);
-        transform-origin: right center;
-    }
-}
-
-.inner {
-    width: 75px;
-    height: 75px;
-    border-radius: 50%;
-    text-align: center;
-    line-height: 75px;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    color: #999;
-    font-size: 20px;
-    background: white;
-}
 
 .memory {
     li {
@@ -209,11 +367,12 @@ hr {
         margin: 0 5px;
         position: relative;
         border-radius: 5px;
+        overflow: hidden;
 
         .current {
             background: #90ee90;
             height: 25px;
-            border-radius: 5px;
+            border-radius: 0 10px 10px 0;
         }
 
         .word {

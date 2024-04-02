@@ -4,13 +4,50 @@
 <link rel="stylesheet" href="{{_res_path}}state/state.css">
 {{/block}}
 {{block 'main'}}
-{{@BotStatus}}
-<div class="box">
-    <ul class="info">
+{{each BotStatusList}}
+<div class="box" data-boxInfo="Bot{{isBotIndex ? $index + 1 : ''}}信息">
+    <div class="tb">
+        <div class="avatar">
+            <img src="{{$value.avatar}}" onerror="this.src= '{{$value.defaultAvatar}}'; this.onerror = null;">
+        </div>
+        <div class="header">
+            <h1>{{$value.nickname}}</h1>
+            <hr noshade>
+            <p> Bot 已运行 {{$value.botRunTime}}</p>
+            <!-- <p>收 <span>{{$value.recv || 0}}</span> | 发 <span>{{$value.sent || 0}}</span> | 图片 <span>{{$value.screenshot
+                    || 0}}</span></p>
+            <p>好友 <span>{{$value.friendQuantity}}</span> | 群 <span>{{$value.groupQuantity}}</span> | 群员
+                <span>{{$value.groupMemberQuantity}}</span>
+            </p> -->
+            <table>
+                <tr>
+                    <td>收</td>
+                    <td class="dyeing">{{$value.recv || 0}}</td>
+                    <td>发</td>
+                    <td class="dyeing">{{$value.sent || 0}}</td>
+                    <td>图片</td>
+                    <td class="dyeing">{{$value.screenshot || 0}}</td>
+                </tr>
+                <tr>
+                    <td>好友</td>
+                    <td class="dyeing">{{$value.friendQuantity}}</td>
+                    <td>群</td>
+                    <td class="dyeing">{{$value.groupQuantity}}</td>
+                    <td>群员</td>
+                    <td class="dyeing">{{$value.groupMemberQuantity}}</td>
+                </tr>
+            </table>
+            <p>{{$value.onlineStatus}}({{$value.platform}}) | {{$value.botVersion}}</p>
+        </div>
+    </div>
+</div>
+{{/each}}
+<div class="box" data-boxInfo="主硬件">
+    <ul class="mainHardware">
         {{each visualData group}}
         <li class="li">
-            <div class="cpu">
-                <div class="left">
+            <!-- <div class="circle"> -->
+            <!-- <div class="left">
                     <div class="left-circle" {{@group.leftCircle}}>
                     </div>
                 </div>
@@ -20,8 +57,21 @@
                 </div>
                 <div class="inner">
                     {{group.inner}}
-                </div>
+                </div> -->
+            <div class="container-box" data-num="{{group.inner}}" id="box">
+                <div class="circle-outer"></div>
+                <!-- 添加svg -->
+                <svg>
+                    <!-- <defs>
+                            <radialGradient id="gradient" cx="50%" cy="50%" r="60%" fx="50%" fy="50%">
+                                <stop offset="30%" stop-color="var(--ring-color2)" />
+                                <stop offset="100%" stop-color="var(--ring-color1)" />
+                            </radialGradient>
+                        </defs> -->
+                    <circle id="circle" stroke="{{group.color}}" style="stroke-dashoffset:{{group.per}}"></circle>
+                </svg>
             </div>
+            <!-- </div> -->
             <article>
                 <summary>{{group.title}}</summary>
                 {{each group.info info}}
@@ -34,7 +84,7 @@
 </div>
 
 {{if HardDisk}}
-<div class="box memory">
+<div class="box memory" data-boxInfo="磁盘">
     <ul>
         {{each HardDisk}}
         <li class="HardDisk_li">
@@ -57,7 +107,7 @@
 {{/if}}
 
 {{if chartData}}
-<div class="box">
+<div class="box" data-boxInfo="图表">
     <div id="Chart" style="height: 300px;"></div>
     <script src="{{_res_path}}state/echarts.min.js"></script>
     <script>
@@ -170,7 +220,7 @@
 
 {{/if}}
 {{if otherInfo}}
-<div class="box">
+<div class="box" data-boxInfo="其他">
     {{each otherInfo}}
     <div class="speed">
         <p>{{$value.first}}</p>
@@ -181,7 +231,7 @@
 {{/if}}
 
 {{if psTest}}
-<div class="box">
+<div class="box" data-boxInfo="网络测试">
     {{each psTest}}
     <div class="speed">
         <p>{{$value.first}}</p>

@@ -7,14 +7,6 @@ logger.info(chalk.rgb(253, 235, 255)('----ヾ(￣▽￣)Bye~Bye~----'))
 logger.info(chalk.rgb(134, 142, 204)(`椰奶插件${Ver.ver}初始化~`))
 logger.info(chalk.rgb(253, 235, 255)('-------------------------'))
 
-if (!global.segment) {
-  try {
-    global.segment = (await import('oicq')).segment
-  } catch (err) {
-    global.segment = (await import('icqq')).segment
-  }
-}
-
 global.ReplyError = class ReplyError extends Error {
   constructor (message) {
     super(message)

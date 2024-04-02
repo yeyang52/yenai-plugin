@@ -137,6 +137,7 @@ Bot.on?.('notice.group.increase', async (e) => {
   if (!e.group.is_admin && !e.group.is_owner) return
   if (e.user_id == (e.bot ?? Bot).uin) return
   if (Config.masterQQ.includes(e.user_id)) return
+  if (Config.groupAdmin.whiteQQ.includes(e.user_id)) return
 
   await sleep(DelayTime * 1000)
   await verify(e.user_id, e.group_id, e)

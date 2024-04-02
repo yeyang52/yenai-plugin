@@ -379,6 +379,10 @@ export default class {
       if (!isMaster) throw new ReplyError('这个淫系管理员辣，只有主淫才可以干ta')
     }
 
+    const isWhite = Config.groupAdmin.whiteQQ.includes(Number(userId))
+
+    if (isWhite && !isMaster && time != 0) throw new ReplyError('❎ 该用户为白名单，不可操作')
+
     await group.muteMember(userId, time * unit)
     const memberName = Memberinfo.card || Memberinfo.nickname
     return time == 0 ? `✅ 已把「${memberName}」从小黑屋揪了出来(｡>∀<｡)` : `已把「${memberName}」扔进了小黑屋( ･_･)ﾉ⌒●~*`
@@ -412,6 +416,10 @@ export default class {
       if (!group.is_owner) throw new ReplyError('人家又不是群主这种事做不到的辣！')
       if (!isMaster) throw new ReplyError('这个淫系管理员辣，只有主淫才可以干ta')
     }
+
+    const isWhite = Config.groupAdmin.whiteQQ.includes(Number(userId))
+
+    if (isWhite && !isMaster) throw new ReplyError('❎ 该用户为白名单，不可操作')
 
     const res = await group.kickMember(Number(userId) || String(userId))
     if (!res) throw new ReplyError('额...踢出失败哩，可能这个淫比较腻害>_<')

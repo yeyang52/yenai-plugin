@@ -362,7 +362,7 @@ export default class {
     if (!(/\d{5,}/.test(userId))) throw new ReplyError('❎ 请输入正确的QQ号')
 
     // 判断是否为主人
-    if ((Config.masterQQ?.includes(Number(userId)) || a.includes(Number(userId))) && time != 0) throw Error('居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ')
+    if ((Config.masterQQ?.includes(Number(userId)) || a.includes(Number(userId))) && time != 0) throw new ReplyError('居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ')
 
     const Member = group.pickMember(userId)
     const Memberinfo = Member?.info || await Member?.getInfo?.()

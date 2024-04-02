@@ -164,7 +164,7 @@ export class GroupAdmin extends plugin {
   async muteMember (e) {
     if (!common.checkPermission(e, 'admin', 'admin')) { return true }
     let qq = e.message.find(item => item.type == 'at')?.qq
-    let reg = `#禁言\\s?((\\d+)\\s)?(${Numreg})?(${TimeUnitReg})?`
+    let reg = `#禁言\\s?((\\d+)\\s?)?(${Numreg})?(${TimeUnitReg})?`
     let regRet = e.msg.match(new RegExp(reg))
     const time = translateChinaNum(regRet[3])
     new Ga(e).muteMember(

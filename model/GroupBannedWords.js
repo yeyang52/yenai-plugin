@@ -27,7 +27,7 @@ export default new class {
   ) {
     let data = Data.readJSON(`${groupId}.json`, this.root)
     if (!data.bannedWords) data.bannedWords = {}
-    if (data.bannedWords[words]) throw Error(`❎ 违禁词${words}已存在`)
+    if (data.bannedWords[words]) throw new ReplyError(`❎ 违禁词${words}已存在`)
     // 翻转对象
     let matchTypeMapMirr = _.invert(this.matchTypeMap)
     let penaltyTypeMapMirr = _.invert(this.penaltyTypeMap)
@@ -48,7 +48,7 @@ export default new class {
 
   delBannedWords (groupId, words) {
     let data = Data.readJSON(`${groupId}.json`, this.root)
-    if (!data.bannedWords[words]) throw Error(`❎ 违禁词${words}不存在`)
+    if (!data.bannedWords[words]) throw new ReplyError(`❎ 违禁词${words}不存在`)
     delete data.bannedWords[words]
     this.dataCach.delete(groupId)
     Data.writeJSON(`${groupId}.json`, data, this.root)
@@ -57,7 +57,7 @@ export default new class {
 
   queryBannedWords (groupId, words) {
     let data = Data.readJSON(`${groupId}.json`, this.root)
-    if (!data.bannedWords[words]) throw Error(`❎ 违禁词${words}不存在`)
+    if (!data.bannedWords[words]) throw new ReplyError(`❎ 违禁词${words}不存在`)
     let { matchType, penaltyType } = data.bannedWords[words]
     return {
       ...data.bannedWords[words],

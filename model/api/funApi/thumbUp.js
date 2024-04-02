@@ -21,7 +21,7 @@ export default async function thumbUp (e) {
   /** 判断是否为好友 */
   let isFriend = await (e.bot ?? Bot).fl.get(userId)
   let allowLikeByStrangers = Config.whole.Strangers_love
-  if (!isFriend && !allowLikeByStrangers) return e.reply(`不加好友不${_do}🙄`, true)
+  if (!isFriend && !allowLikeByStrangers) { return (e.message?.[0]?.text == '#全部赞我') ? false : e.reply(`不加好友不${_do}🙄`, true) }
   /** 执行点赞 */
   let n = 0
   let failsMsg = `今天已经${_do}过了，还搁这讨${_do}呢！！！`
@@ -60,14 +60,16 @@ export default async function thumbUp (e) {
           segment.image((await memes[successFn](avatar)) ||
             _.sample(successImgs) + userId)
       ]
-    : [
+    : (e.message?.[0]?.text == '#全部赞我')
+        ? []
+        : [
           `\n${failsMsg}`,
           segment.image((await memes.crawl(avatar)) ||
             _.sample(faildsImgs) + userId)
-      ]
+          ]
 
   /** 回复 */
-  e.reply(msg, true, { at: userId })
+  if (msg.length) { return e.reply(msg, true, { at: userId }) }
 }
 
 class ThumbUpApi {
@@ -114,7 +116,7 @@ class ThumbUpApi {
 
   async origThumbUp (uid, times) {
     const friend = this.Bot.pickFriend(uid)
-    if (!friend?.thumbUp) throw Error('当前协议端不支持点赞，详情查看\nhttps://gitee.com/TimeRainStarSky/Yunzai')
+    if (!friend?.thumbUp) throw new ReplyError('当前协议端不支持点赞，详情查看\nhttps://gitee.com/TimeRainStarSky/Yunzai')
     const res = { ...await friend.thumbUp(times) }
     if (res.retcode && !res.code) { res.code = res.retcode }
     if (res.message && !res.msg) { res.msg = res.message }

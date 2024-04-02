@@ -54,7 +54,7 @@ export default new class setu {
       excludeAI
     }
     let result = await request.post(api, { data: parans }).then(res => res.json())
-    if (_.isEmpty(result.data)) throw Error('没有找到相关的tag')
+    if (_.isEmpty(result.data)) throw new ReplyError('没有找到相关的tag')
     // 消息
     return await Promise.all(result.data.map(async item => {
       let { pid, title, tags, author, r18, urls, aiType } = item

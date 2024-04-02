@@ -47,10 +47,10 @@ export default new (class {
       .then(res => res.json())
       .catch(err => {
         logger.error(err)
-        throw Error(`bika search Error，${err.message.match(/reason:(.*)/i) || err.message}`)
+        throw new ReplyError(`bika search Error，${err.message.match(/reason:(.*)/i) || err.message}`)
       })
     let { docs, total, page: pg, pages } = res.data.comics
-    if (total == 0) throw Error(`未找到作品，换个${type.alias[0]}试试吧`)
+    if (total == 0) throw new ReplyError(`未找到作品，换个${type.alias[0]}试试吧`)
     this.searchCaching = docs
     let msg = [
       `共找到${total}个关于「${keyword}」${type.alias[0]}的作品`,
@@ -87,9 +87,9 @@ export default new (class {
       .then((res) => res.json())
       .catch(err => {
         logger.error(err)
-        throw Error(`bika comicPage Error，${err.message.match(/reason:(.*)/i) || err.message}`)
+        throw new ReplyError(`bika comicPage Error，${err.message.match(/reason:(.*)/i) || err.message}`)
       })
-    if (res.error) throw Error(res.message)
+    if (res.error) throw new ReplyError(res.message)
     this.idNext = {
       id, page, order
     }
@@ -103,9 +103,9 @@ export default new (class {
   }
 
   async viewComicPage (num) {
-    if (!this.searchCaching) throw Error('请先搜索后再使用此命令')
+    if (!this.searchCaching) throw new ReplyError('请先搜索后再使用此命令')
     let id = this.searchCaching[num]._id
-    if (!id) throw Error('未获取到目标作品，请使用id进行查看')
+    if (!id) throw new ReplyError('未获取到目标作品，请使用id进行查看')
     return this.comicPage(id)
   }
 
@@ -117,7 +117,7 @@ export default new (class {
    * @throws {Error} - 如果未找到上一个id，则抛出异常
    */
   async next (type = 'comicPage') {
-    if (!this.idNext) throw Error('未找到上一个id')
+    if (!this.idNext) throw new ReplyError('未找到上一个id')
     let { id, page, order } = this.idNext
     if (type == 'chapter') {
       order++
@@ -140,9 +140,9 @@ export default new (class {
         .then((res) => res.json())
         .catch(err => {
           logger.error(err)
-          throw Error(`bika categories Error，${err.message.match(/reason:(.*)/i) || err.message}`)
+          throw new ReplyError(`bika categories Error，${err.message.match(/reason:(.*)/i) || err.message}`)
         })
-      if (res.error) throw Error(res.message)
+      if (res.error) throw new ReplyError(res.message)
       res = res.data.categories.filter(item => !item.isWeb)
       await redis.set(key, JSON.stringify(res), { EX: 43200 })
     }
@@ -167,9 +167,9 @@ export default new (class {
       .then((res) => res.json())
       .catch(err => {
         logger.error(err)
-        throw Error(`bika comicDetail Error，${err.message.match(/reason:(.*)/i) || err.message}`)
+        throw new ReplyError(`bika comicDetail Error，${err.message.match(/reason:(.*)/i) || err.message}`)
       })
-    if (res.error) throw Error(res.message)
+    if (res.error) throw new ReplyError(res.message)
     let {
       _id, title, description, author, chineseTeam, categories, tags, pagesCount, epsCount, finished, totalLikes, totalViews, totalComments, thumb
     } = res.data.comic

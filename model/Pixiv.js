@@ -19,7 +19,7 @@ export default new class Pixiv {
     if (!this.PixivClient?.auth) {
       await this.PixivClient.login()
     }
-    if (!this.PixivClient.auth?.user) throw Error('❎ 未获取到登录信息')
+    if (!this.PixivClient.auth?.user) throw new ReplyError('❎ 未获取到登录信息')
     const { profile_image_urls: { px_170x170 }, id, name, account, mail_address, is_premium, x_restrict } = this.PixivClient.auth.user
     return [
       await this._requestPixivImg(px_170x170),
@@ -67,7 +67,7 @@ export default new class Pixiv {
     } else {
       res = await request.get(`${this.domain}/illust`, { params }).then(res => res.json())
     }
-    if (res.error) throw Error(res.error?.user_message || '无法获取数据')
+    if (res.error) throw new ReplyError(res.error?.user_message || '无法获取数据')
     let illust = this._format(res.illust)
     let { id, title, user, tags, total_bookmarks, total_view, url, create_date, x_restrict, illust_ai_type } = illust
     let msg = [
@@ -90,7 +90,7 @@ export default new class Pixiv {
       } else {
         linkmsg.push(`https://pixiv.re/${id}.jpg`)
       }
-      throw Error(linkmsg.join('\n'))
+      throw new ReplyError(linkmsg.join('\n'))
     }
     let img = await Promise.all(url.map(async item => await this._requestPixivImg(item)))
     return { msg, img }
@@ -114,13 +114,13 @@ export default new class Pixiv {
     // r18处理
     if (r18) {
       let R18 = this.ranktype[mode].r18
-      if (!R18) throw Error('该排行没有不适合所有年龄段的分类哦~')
+      if (!R18) throw new ReplyError('该排行没有不适合所有年龄段的分类哦~')
       type = R18.type
       pageSizeAll = R18.total
     }
     // 总页数
     let pageAll = Math.ceil(pageSizeAll / 30)
-    if (page > pageAll) throw Error('哪有那么多图片给你辣(•̀へ •́ ╮ )')
+    if (page > pageAll) throw new ReplyError('哪有那么多图片给你辣(•̀へ •́ ╮ )')
 
     if (!date) date = moment().subtract(moment().utcOffset(9).hour() >= 12 ? 1 : 2, 'days').format('YYYY-MM-DD')
 
@@ -135,8 +135,8 @@ export default new class Pixiv {
     } else {
       res = await request.get(`${this.domain}/rank`, { params }).then(res => res.json())
     }
-    if (res.error) throw Error(res.error.message)
-    if (_.isEmpty(res.illusts)) throw Error('暂无数据，请等待榜单更新哦(。-ω-)zzz')
+    if (res.error) throw new ReplyError(res.error.message)
+    if (_.isEmpty(res.illusts)) throw new ReplyError('暂无数据，请等待榜单更新哦(。-ω-)zzz')
 
     let illusts = await Promise.all(res.illusts.map(async (item, index) => {
       let list = this._format(item)
@@ -186,11 +186,11 @@ export default new class Pixiv {
       offset: (page - 1) * 30
     }
     let res = await request.get(api, { params }).then(res => res.json())
-    if (res.data.count == 0) throw Error('呜呜呜，人家没有找到相关的插画(ó﹏ò｡)')
+    if (res.data.count == 0) throw new ReplyError('呜呜呜，人家没有找到相关的插画(ó﹏ò｡)')
 
     let pageall = Math.ceil(res.data.count / 30)
 
-    if (page > pageall) throw Error('啊啊啊，淫家给不了你那么多辣d(ŐдŐ๑)')
+    if (page > pageall) throw new ReplyError('啊啊啊，淫家给不了你那么多辣d(ŐдŐ๑)')
 
     let list = [
       `当前为第${page}页，共${pageall}页，本页共${res.data.rows.length}张，总共${res.data.count}张`
@@ -230,8 +230,8 @@ export default new class Pixiv {
     } else {
       res = await request.get(`${this.domain}/search`, { params }).then(res => res.json())
     }
-    if (res.error) throw Error(res.error.message)
-    if (_.isEmpty(res.illusts)) throw Error('宝~没有数据了哦(๑＞︶＜)و')
+    if (res.error) throw new ReplyError(res.error.message)
+    if (_.isEmpty(res.illusts)) throw new ReplyError('宝~没有数据了哦(๑＞︶＜)و')
     let sortIllusts = _.orderBy(res.illusts, 'total_bookmarks', 'desc')
     let illusts = []
     let filterNum = 0
@@ -252,7 +252,7 @@ export default new class Pixiv {
         await this._requestPixivImg(image_urls.large)
       ])
     }
-    if (_.isEmpty(illusts)) throw Error('该页全为涩涩内容已全部过滤(#／。＼#)')
+    if (_.isEmpty(illusts)) throw new ReplyError('该页全为涩涩内容已全部过滤(#／。＼#)')
 
     return [
       `本页共${NowNum}张${filterNum ? `，过滤${filterNum}张` : ''}\n可尝试使用 "#tagpro搜图${tag}第${page - 0 + 1}页" 翻页\n无数据则代表无下一页`,
@@ -272,7 +272,7 @@ export default new class Pixiv {
       res = await fetch(`${this.domain}/tags`).then(res => res.json())
     }
 
-    if (!res.trend_tags) throw Error('呜呜呜，没有获取到数据(๑ १д१)')
+    if (!res.trend_tags) throw new ReplyError('呜呜呜，没有获取到数据(๑ १д१)')
 
     let list = []
     for (let i of res.trend_tags) {
@@ -310,7 +310,7 @@ export default new class Pixiv {
           }
         }).then(res => res.json())
       }
-      if (_.isEmpty(wordlist.user_previews)) throw Error('呜呜呜，人家没有找到这个淫d(ŐдŐ๑)')
+      if (_.isEmpty(wordlist.user_previews)) throw new ReplyError('呜呜呜，人家没有找到这个淫d(ŐдŐ๑)')
       keyword = wordlist.user_previews[0].user.id
     }
     const params = {
@@ -324,9 +324,9 @@ export default new class Pixiv {
       res = await request.get(`${this.domain}/member_illust`, { params }).then(res => res.json())
     }
 
-    if (res.error) throw Error(res.error.message)
+    if (res.error) throw new ReplyError(res.error.message)
     // 没有作品直接返回信息
-    if (_.isEmpty(res.illusts)) throw Error(page >= 2 ? '这一页没有作品辣（＞人＜；）' : 'Σ(っ °Д °;)っ这个淫居然没有作品')
+    if (_.isEmpty(res.illusts)) throw new ReplyError(page >= 2 ? '这一页没有作品辣（＞人＜；）' : 'Σ(っ °Д °;)っ这个淫居然没有作品')
 
     let illusts = []
     let filter = 0
@@ -346,7 +346,7 @@ export default new class Pixiv {
         await this._requestPixivImg(url[0])
       ])
     }
-    if (_.isEmpty(illusts)) throw Error('该页全为涩涩内容已全部过滤(#／。＼#)')
+    if (_.isEmpty(illusts)) throw new ReplyError('该页全为涩涩内容已全部过滤(#／。＼#)')
     let { id: uid, name, profile_image_urls } = res.user
     return [
       [
@@ -378,8 +378,8 @@ export default new class Pixiv {
     } else {
       user = await request.get(`${this.domain}/search_user`, { params }).then(res => res.json())
     }
-    if (user.error) throw Error(user.error.message)
-    if (_.isEmpty(user.user_previews)) throw Error('呜呜呜，人家没有找到这个淫d(ŐдŐ๑)')
+    if (user.error) throw new ReplyError(user.error.message)
+    if (_.isEmpty(user.user_previews)) throw new ReplyError('呜呜呜，人家没有找到这个淫d(ŐдŐ๑)')
 
     let msg = await Promise.all(user.user_previews.slice(0, 10).map(async (item, index) => {
       let { id, name, profile_image_urls } = item.user
@@ -410,7 +410,7 @@ export default new class Pixiv {
   async vilipixRandomImg (limit) {
     let api = `https://www.vilipix.com/api/v1/picture/recommand?limit=${limit}&offset=${_.random(1, 700)}`
     let res = await request.get(api).then(res => res.json())
-    if (!res.data || !res.data.rows) throw Error('呜呜呜，没拿到瑟瑟的图片(˃ ⌑ ˂ഃ )')
+    if (!res.data || !res.data.rows) throw new ReplyError('呜呜呜，没拿到瑟瑟的图片(˃ ⌑ ˂ഃ )')
     return res.data.rows.map(item => {
       let { picture_id, title, regular_url, tags, like_total } = item
       return [
@@ -437,8 +437,8 @@ export default new class Pixiv {
     } else {
       res = await request.get(`${this.domain}/related`, { params }).then(res => res.json())
     }
-    if (res.error) throw Error(res.error.user_message)
-    if (_.isEmpty(res.illusts)) throw Error('呃...没有数据(•ิ_•ิ)')
+    if (res.error) throw new ReplyError(res.error.user_message)
+    if (_.isEmpty(res.illusts)) throw new ReplyError('呃...没有数据(•ิ_•ิ)')
 
     let illusts = []
     let filter = 0
@@ -458,7 +458,7 @@ export default new class Pixiv {
         await this._requestPixivImg(image_urls.large)
       ])
     }
-    if (_.isEmpty(illusts)) throw Error('啊啊啊！！！居然全是瑟瑟哒不给你看(＊／ω＼＊)')
+    if (_.isEmpty(illusts)) throw new ReplyError('啊啊啊！！！居然全是瑟瑟哒不给你看(＊／ω＼＊)')
 
     return [
       `Pid:${pid}的相关作品，共${res.illusts.length}张${filter ? `，过滤${filter}张` : ''}`,

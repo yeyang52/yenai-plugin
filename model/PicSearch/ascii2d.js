@@ -15,7 +15,7 @@ async function importCheerio () {
   try {
     cheerio = await import('cheerio')
   } catch (e) {
-    throw Error('未检测到依赖cheerio，请安装后再使用Ascii2D搜图，安装命令：pnpm add cheerio -w 或 pnpm install -P')
+    throw new ReplyError('未检测到依赖cheerio，请安装后再使用Ascii2D搜图，安装命令：pnpm add cheerio -w 或 pnpm install -P')
   }
 }
 
@@ -28,14 +28,14 @@ export default async function doSearch (url) {
   const { ascii2dUsePuppeteer, ascii2dResultMaxQuantity } = Config.picSearch
   const callApi = ascii2dUsePuppeteer ? callAscii2dUrlApiWithPuppeteer : callAscii2dUrlApi
   let ret = await callApi(url)
-  if (!ret) throw Error('Ascii2D搜图请求失败')
+  if (!ret) throw new ReplyError('Ascii2D搜图请求失败')
   const colorURL = ret.url
   if (!colorURL.includes('/color/')) {
     const $ = cheerio.load(ret.data, { decodeEntities: false })
     logger.error('[error] ascii2d url:', colorURL)
     logger.debug(ret.data)
     let isCloudflare = ret.data.includes('cloudflare') ? '绕过Cloudflare盾失败' : false
-    throw Error(`Ascii2D搜索失败，错误原因：${isCloudflare || $('.container > .row > div:first-child > p').text().trim()}`)
+    throw new ReplyError(`Ascii2D搜索失败，错误原因：${isCloudflare || $('.container > .row > div:first-child > p').text().trim()}`)
   }
   const bovwURL = colorURL.replace('/color/', '/bovw/')
   let bovwDetail = await (ascii2dUsePuppeteer ? getAscii2dWithPuppeteer(bovwURL) : request.cfGet(bovwURL))
@@ -47,7 +47,7 @@ export default async function doSearch (url) {
   }
   let colorData = (await parse(ret.data)).slice(0, ascii2dResultMaxQuantity)
   let bovwData = (await parse(bovwDetail.data)).slice(0, ascii2dResultMaxQuantity)
-  if (_.isEmpty(colorData)) throw Error('Ascii2D数据获取失败')
+  if (_.isEmpty(colorData)) throw new ReplyError('Ascii2D数据获取失败')
   let mapfun = item => [
     Config.picSearch.hideImg ? '' : segment.image(item.image),
     `${item.info}\n`,
@@ -72,7 +72,7 @@ const callAscii2dUrlApi = async (imgUrl) => {
   let res = await request.cfGet(`${domain}/search/url/${imgUrl}`).catch(
     err => {
       if (err.stack?.includes('legacy sigalg disallowed or unsupported')) {
-        throw Error(`Error Tls版本过低 请尝试将配置文件的‘cfTLSVersion’字段改为‘TLS1.2’\n详情请参考：https://www.yenai.ren/faq.html#openssl-%E9%94%99%E8%AF%AF\n错误信息：${err.stack}`)
+        throw new ReplyError(`Error Tls版本过低 请尝试将配置文件的‘cfTLSVersion’字段改为‘TLS1.2’\n详情请参考：https://www.yenai.ren/faq.html#openssl-%E9%94%99%E8%AF%AF\n错误信息：${err.stack}`)
       } else {
         throw err
       }

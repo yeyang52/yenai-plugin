@@ -15,9 +15,9 @@ export default class PixivApi {
 
   async login () {
     if (!this.refresh_token) {
-      throw Error('[Yenai][Pixiv] 未配置refresh_token刷新令牌')
+      throw new ReplyError('[Yenai][Pixiv] 未配置refresh_token刷新令牌')
     }
-    const response = login(this.refresh_token)
+    const response = await login(this.refresh_token)
     this.access_token = response.access_token
     this.refresh_token = response.refresh_token
     this.auth = response
@@ -30,7 +30,7 @@ export default class PixivApi {
     } catch (error) {
       if (this._once) {
         this._once = false
-        throw error
+        throw new ReplyError()
       }
       await this.login()
       this._once = true

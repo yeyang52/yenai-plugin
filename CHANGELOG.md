@@ -1,3 +1,7 @@
+# 1.4.1
+* 删除匿名相关功能
+
+
 # 1.4.0
 * 增加开发依赖`eslint` `eslint-config-standard` `eslint-plugin-import` `eslint-plugin-jsdoc` `eslint-plugin-promise` `husky` `lint-staged`
 * 使用`husky`和`lint-staged`进行提交时eslint检测和自动格式化

@@ -1,6 +1,5 @@
 import { formatDuration } from '../../tools/index.js'
 import { Version, Plugin_Name } from '../../components/index.js'
-import moment from 'moment'
 import os from 'os'
 import { status } from '../../constants/other.js'
 import { createRequire } from 'module'
@@ -10,7 +9,6 @@ export default async function getBotState (botList) {
   const defaultAvatar = `../../../../../plugins/${Plugin_Name}/resources/state/img/default_avatar.jpg`
   const BotName = Version.name
   const systime = formatDuration(os.uptime(), 'dd天hh小时mm分', false)
-  const calendar = moment().format('YYYY-MM-DD HH:mm:ss')
 
   const dataPromises = botList.map(async (i) => {
     const bot = Bot[i]
@@ -40,10 +38,10 @@ export default async function getBotState (botList) {
           <div class="header">
               <h1>${nickname}</h1>
               <hr noshade>
+              <p> ${BotName} 已运行 ${runTime}</p>
               <p>${onlineStatus}(${platform}) | ${botVersion}</p>
               <p>收${recv || 0} | 发${sent || 0} | 图片${screenshot || 0} | 好友${friendQuantity} | 群${groupQuantity} | 群员${groupMemberQuantity}</p>
-              <p>${BotName} 已运行 ${runTime} | 系统运行 ${systime}</p>
-              <p>${calendar} | Node.js ${process.version} | ${process.platform} ${process.arch}</p>
+              <p>Node.js ${process.version} | ${process.platform} ${process.arch} | 系统运行 ${systime}</p>
           </div>
       </div>
   </div>`

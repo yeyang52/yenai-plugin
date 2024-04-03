@@ -50,14 +50,10 @@ export class Fun extends plugin {
           reg: '^#?coser$',
           fnc: 'coser'
         },
-        {
-          reg: '^#?铃声搜索',
-          fnc: 'lingsheng'
-        },
-        {
-          reg: '^#?半次元话题$',
-          fnc: 'bcyTopic'
-        },
+        // {
+        //  reg: '^#?铃声搜索',
+        //  fnc: 'lingsheng'
+        // },
         {
           reg: apiReg,
           fnc: 'picture'

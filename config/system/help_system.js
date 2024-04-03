@@ -166,6 +166,10 @@ export const helpList = [{
     title: '#拉黑 #取消拉黑',
     desc: '可带at或直接键入qq，拉黑后面可带"群"',
     icon: 13
+  }, {
+    title: '#拉白 #取消拉白',
+    desc: '用法与 #拉黑 相同',
+    icon: 14
   }]
 },
 {
@@ -192,7 +196,7 @@ export const helpList = [{
     },
     {
       icon: 13,
-      title: '#赞我',
+      title: '#(全部)?赞我',
       desc: '给你点一个大大的赞'
     },
     {
@@ -208,21 +212,21 @@ export const helpList = [{
       title: '#搜索菜单',
       desc: '各大引擎搜索'
     }, {
-      icon: 1,
-      title: '#半次元话题',
-      desc: '=-='
-    }, {
       icon: 7,
       title: '#铃声搜索',
       desc: '铃声多多'
     }, {
       icon: 1,
-      title: '#bgg搜索<关键词>',
+      title: '#桌游搜索<关键词>',
       desc: '桌游搜索'
     }, {
       icon: 19,
-      title: '#bgg排行',
+      title: '#桌游排行',
       desc: '桌游排行'
+    }, {
+      title: '#看头像 <@QQ>',
+      desc: '查看该用户的高清头像图片',
+      icon: 16
     }]
 },
 {

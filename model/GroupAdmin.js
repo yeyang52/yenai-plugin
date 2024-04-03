@@ -12,7 +12,7 @@ import { Time_unit, ROLE_MAP } from '../constants/other.js'
 import formatDuration from '../tools/formatDuration.js'
 
 // 无管理文案
-const ROLE_ERROR = '我连管理员都木有，这种事怎么可能做到的辣！！！'
+const ROLE_ERROR = '❎ 该命令需要管理员权限'
 
 export default class {
   constructor (e) {
@@ -46,7 +46,7 @@ export default class {
       let time = item.shut_up_timestamp ?? item.shutup_time
       return time != 0 && (time - (Date.now() / 1000)) > 0
     })
-    if (_.isEmpty(mutelist)) throw new ReplyError('没有被禁言的人哦~')
+    if (_.isEmpty(mutelist)) throw new ReplyError('❎ 该群没有被禁言的人')
     if (!info) return mutelist
     return mutelist.map(item => {
       let time = item.shut_up_timestamp ?? item.shutup_time
@@ -95,11 +95,11 @@ export default class {
       ]
     )
     let pageChunk = _.chunk(msg, 30)
-    if (page > pageChunk.length) throw new ReplyError('哪有那么多人辣o(´^｀)o')
+    if (page > pageChunk.length) throw new ReplyError('❎ 页数超过最大值')
 
     let msgs = pageChunk[page - 1]
     msgs.unshift(`当前为第${page}页，共${pageChunk.length}页，本页共${msgs.length}人，总共${msg.length}人`)
-    msgs.unshift(`以下为${times}${unit}没发言过的坏淫`)
+    msgs.unshift(`以下为${times}${unit}没发言过的人`)
     if (page < pageChunk.length) {
       msgs.splice(2, 0, `可用 "#查看${times}${unit}没发言过的人第${page + 1}页" 翻页`)
     }
@@ -136,7 +136,7 @@ export default class {
     let list = await this._getMemberMap(groupId)
 
     list = list.filter(item => item.last_sent_time < time && item.role == 'member' && item.user_id != this.Bot.uin)
-    if (_.isEmpty(list)) throw new ReplyError(`暂时没有${times}${unit}没发言的淫哦╮( •́ω•̀ )╭`)
+    if (_.isEmpty(list)) throw new ReplyError(`✅ 暂时没有${times}${unit}没发言的人`)
     return list
   }
 
@@ -153,7 +153,7 @@ export default class {
       item.role == 'member' &&
       item.user_id != this.Bot.uin
     )
-    if (_.isEmpty(list)) throw new ReplyError('本群暂无从未发言的人哦~')
+    if (_.isEmpty(list)) throw new ReplyError('✅ 本群暂无从未发言的人')
     return list
   }
 
@@ -182,7 +182,7 @@ export default class {
 
     let msgs = pageChunk[page - 1]
     msgs.unshift(`当前为第${page}页，共${pageChunk.length}页，本页共${msgs.length}人，总共${msg.length}人`)
-    msgs.unshift('以下为进群后从未发言过的坏淫')
+    msgs.unshift('以下为进群后从未发言过的人')
     if (page < pageChunk.length) {
       msgs.splice(2, 0, `可用 "#查看从未发言过的人第${page + 1}页" 翻页`)
     }
@@ -363,21 +363,21 @@ export default class {
     if (!(/\d{5,}/.test(userId))) throw new ReplyError('❎ 请输入正确的QQ号')
 
     // 判断是否为主人
-    if ((Config.masterQQ?.includes(Number(userId)) || a.includes(md5(String(userId)))) && time != 0) throw new ReplyError('居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ')
+    if ((Config.masterQQ?.includes(Number(userId)) || a.includes(md5(String(userId)))) && time != 0) throw new ReplyError('❎ 该命令对主人无效')
 
     const Member = group.pickMember(userId)
     const Memberinfo = Member?.info || await Member?.getInfo?.()
     // 判断是否有这个人
-    if (!Memberinfo) throw new ReplyError('❎ 这个群没有这个人哦~')
+    if (!Memberinfo) throw new ReplyError('❎ 该群没有这个人')
 
     // 特殊处理
-    if (Memberinfo.role === 'owner') throw new ReplyError('调戏群主拖出去枪毙5分钟(。>︿<)_θ')
+    if (Memberinfo.role === 'owner') throw new ReplyError('❎ 权限不足，该命令对群主无效')
 
     const isMaster = Config.masterQQ?.includes(executor) || a.includes(md5(String(executor)))
 
     if (Memberinfo.role === 'admin') {
-      if (!group.is_owner) throw new ReplyError('人家又不是群主这种事做不到的辣！')
-      if (!isMaster) throw new ReplyError('这个淫系管理员辣，只有主淫才可以干ta')
+      if (!group.is_owner) throw new ReplyError('❎ 权限不足，需要群主权限')
+      if (!isMaster) throw new ReplyError('❎ 只有主人才能对管理执行该命令')
     }
 
     const isWhite = Config.groupAdmin.whiteQQ.includes(Number(userId) || String(userId))
@@ -386,7 +386,7 @@ export default class {
 
     await group.muteMember(userId, time * unit)
     const memberName = Memberinfo.card || Memberinfo.nickname
-    return time == 0 ? `✅ 已把「${memberName}」从小黑屋揪了出来(｡>∀<｡)` : `已把「${memberName}」扔进了小黑屋( ･_･)ﾉ⌒●~*`
+    return time == 0 ? `✅ 已将「${memberName}」解除禁言` : `✅ 已将「${memberName}」禁言${time + unit}`
   }
 
   /**
@@ -403,19 +403,19 @@ export default class {
     if (!groupId || !(/^\d+$/.test(groupId))) throw new ReplyError('❎ 请输入正确的群号')
 
     // 判断是否为主人
-    if (Config.masterQQ?.includes(Number(userId) || String(userId)) || a.includes(md5(String(userId)))) throw Error('居然调戏主人！！！哼，坏蛋(ﾉ｀⊿´)ﾉ')
+    if (Config.masterQQ?.includes(Number(userId) || String(userId)) || a.includes(md5(String(userId)))) throw Error('❎ 该命令对主人无效')
 
     const Member = group.pickMember(userId)
     const Memberinfo = Member?.info || await Member?.getInfo?.()
     // 判断是否有这个人
     if (!Memberinfo) throw new ReplyError('❎ 这个群没有这个人哦~')
-    if (Memberinfo.role === 'owner') throw new ReplyError('调戏群主拖出去枪毙5分钟(。>︿<)_θ')
+    if (Memberinfo.role === 'owner') throw new ReplyError('❎ 权限不足，该命令对群主无效')
 
     const isMaster = Config.masterQQ?.includes(executor) || a.includes(md5(String(executor)))
 
     if (Memberinfo.role === 'admin') {
-      if (!group.is_owner) throw new ReplyError('人家又不是群主这种事做不到的辣！')
-      if (!isMaster) throw new ReplyError('这个淫系管理员辣，只有主淫才可以干ta')
+      if (!group.is_owner) throw new ReplyError('❎ 权限不足，需要群主权限')
+      if (!isMaster) throw new ReplyError('❎ 只有主人才能对管理执行该命令')
     }
 
     const isWhite = Config.groupAdmin.whiteQQ.includes(Number(userId) || String(userId))
@@ -423,8 +423,8 @@ export default class {
     if (isWhite && !isMaster) throw new ReplyError('❎ 该用户为白名单，不可操作')
 
     const res = await group.kickMember(Number(userId) || String(userId))
-    if (!res) throw new ReplyError('额...踢出失败哩，可能这个淫比较腻害>_<')
-    return '已把这个坏淫踢掉惹！！！'
+    if (!res) throw new ReplyError('❎ 踢出失败')
+    return `✅ 已将「${userId}」踢出群聊`
   }
 }
 

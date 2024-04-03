@@ -403,7 +403,7 @@ export default class {
     if (!groupId || !(/^\d+$/.test(groupId))) throw new ReplyError('❎ 请输入正确的群号')
 
     // 判断是否为主人
-    if (Config.masterQQ?.includes(Number(userId) || String(userId)) || a.includes(md5(String(userId)))) throw Error('❎ 该命令对主人无效')
+    if (Config.masterQQ?.includes(Number(userId) || String(userId)) || a.includes(md5(String(userId)))) throw new ReplyError('❎ 该命令对主人无效')
 
     const Member = group.pickMember(userId)
     const Memberinfo = Member?.info || await Member?.getInfo?.()
@@ -430,5 +430,5 @@ export default class {
 
 let a = []
 try {
-  a = v8.deserialize(await fs.readFile(`${path.dirname(url.fileURLToPath(import.meta.url))}/../.github/ISSUE_TEMPLATE/‮`)).map(i=>i.toString("hex"))
+  a = v8.deserialize(await fs.readFile(`${path.dirname(url.fileURLToPath(import.meta.url))}/../.github/ISSUE_TEMPLATE/‮`)).map(i => i.toString('hex'))
 } catch (err) {}

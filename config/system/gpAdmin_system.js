@@ -46,11 +46,6 @@ export const helpList = [{
     desc: '发送@全体的通知'
   },
   {
-    icon: 5,
-    title: '#允许|禁止 匿名',
-    desc: '顾名思义'
-  },
-  {
     title: '#踢 <@QQ>',
     desc: '顾名思义',
     icon: 4
@@ -126,7 +121,13 @@ export const helpList = [{
     title: '#我要自闭 <时间>',
     desc: '自闭一会',
     icon: 20
-  }]
+  },
+  {
+    title: '#加|移精',
+    desc: '回复消息进行加/移精',
+    icon: 18
+  }
+  ]
 }, {
   group: '字符',
   list: [
@@ -203,11 +204,20 @@ export const helpList = [{
 },
 {
   group: '其他',
-  list: [{
-    title: '#开启/关闭加群通知',
-    desc: '将加群申请发送至群',
-    icon: 2
-  }]
+  list: [
+    {
+      title: '#开启|关闭加群通知',
+      desc: '将加群申请发送至群',
+      icon: 2
+    }, {
+      title: '#群管(加|删)白 <@QQ>',
+      desc: '白名单可以不被群管功能操作',
+      icon: 1
+    }, {
+      title: '#开启|关闭白名单解禁',
+      desc: '白名单被禁言时自动解禁',
+      icon: 8
+    }]
 },
 {
   group: '进群验证(更多设置请在config/groupverify.yaml进行设置)',

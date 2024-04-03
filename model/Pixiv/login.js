@@ -35,8 +35,9 @@ export async function login (refresh_token) {
     headers: _headers
   }).then(res => res.json())
   if (error) throw new ReplyError(`[Yenai][Pixiv]login Error Response: ${error}`)
+
   if (response.access_token) {
-    const { id, name, account } = this.auth.user
+    const { id, name, account } = response.user
     logger.info(`[Yenai][Pixiv]login ${logger.yellow(`${name}(${id}) @${account}`)} ${logger.green('success')}`)
   } else {
     logger.error(`[Yenai][Pixiv]login ${logger.red('fail')}`)

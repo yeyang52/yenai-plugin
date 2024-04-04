@@ -294,7 +294,9 @@ export class GroupAdmin extends plugin {
     let text = e.msg.replace(/#?(修改|设置)头衔/g, '')
     let res = await e.group.setTitle(qq, text)
     if (res) {
-      e.reply(`✅ 已经将「${qq}」的头衔设置为「${text}」`)
+      let Member = e.group.pickMember(Number(qq))
+      let name = Member.card || Member.nickname
+      e.reply(`✅ 已经将「${name}」的头衔设置为「${text}」`)
     } else {
       e.reply('❎ 未知错误')
     }
@@ -721,7 +723,6 @@ export class GroupAdmin extends plugin {
 
   /**
    * 加白名单
-   * @param
    */
   async whiteQQ () {
     if (!common.checkPermission(this.e, 'master')) return

@@ -7,6 +7,16 @@
 {{block 'main'}}
 <script>
     var chartData = JSON.parse('{{@chartData}}')
+    const backdrop = chartData.backdrop
+    // 背景api
+    if (backdrop) {
+        var container = document.getElementById('container')
+        const img = new Image();
+        img.onload = function () {
+            container.style.backgroundImage = 'url(' + backdrop + ')';
+        }
+        img.src = backdrop;
+    }
     echarts.registerTheme('westeros', chartData.echarts_theme)
     var formatByte = (num = 1) => {
         return (value) => {

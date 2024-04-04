@@ -13,8 +13,6 @@ const TimeUnitReg = Object.keys(Time_unit).join("|")
 
 /** 清理多久没发言的人正则 */
 const noactivereg = new RegExp(`^#(查看|清理|确认清理|获取)(${Numreg})个?(${TimeUnitReg})没发言的人(第(${Numreg})页)?$`)
-/** 我要自闭正则 */
-const Autisticreg = new RegExp(`^#?我要(自闭|禅定)(${Numreg})?个?(${TimeUnitReg})?$`, "i")
 // 获取定时任务
 const redisTask = await Ga.getRedisMuteTask() || false
 export class GroupAdmin extends plugin {
@@ -133,10 +131,6 @@ export class GroupAdmin extends plugin {
           fnc: "DaySigned"
         },
         {
-          reg: Autisticreg, // 我要自闭
-          fnc: "Autistic"
-        },
-        {
           reg: "^#((今|昨|前|明|后)天|\\d{4}-\\d{1,2}-\\d{1,2})谁生日$",
           fnc: "groupBirthday"
         },
@@ -211,23 +205,6 @@ export class GroupAdmin extends plugin {
     new Ga(e).kickMember(e.group_id, qq, e.user_id)
       .then(res => e.reply(res))
       .catch(err => common.handleException(e, err))
-  }
-
-  // 我要自闭
-  async Autistic (e) {
-    // 判断是否有管理
-    if (!e.group.is_admin && !e.group.is_owner) return
-    if (e.isMaster) return e.reply("别自闭啦~~", true)
-    if (e.member.is_admin && !e.group.is_owner) return e.reply("别自闭啦~~", true)
-    // 解析正则
-    let regRet = Autisticreg.exec(e.msg)
-    // 获取数字
-    let TabooTime = translateChinaNum(regRet[2] || 5)
-
-    let Company = Time_unit[_.toUpper(regRet[3]) || "分"]
-
-    await e.group.muteMember(e.user_id, TabooTime * Company)
-    e.reply("那我就不手下留情了~", true)
   }
 
   // 设置管理

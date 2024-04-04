@@ -1,5 +1,4 @@
 import _ from "lodash"
-import fetch from "node-fetch"
 import { Config } from "../components/index.js"
 import { heisiType, pandadiuType, xiurenTypeId } from "../constants/fun.js"
 import { common, funApi, uploadRecord } from "../model/index.js"
@@ -16,8 +15,6 @@ _.forIn(picApis, (values, key) => {
   key = key.split("|").map(item => mode ? "^" + item + "$" : item).join("|")
   picApiKeys.push(key)
 })
-
-const apiReg = new RegExp(`(${picApiKeys.join("|")}|^jktj$|^接口统计$)`)
 
 export class Fun extends plugin {
   constructor (e) {
@@ -39,10 +36,6 @@ export class Fun extends plugin {
           fnc: "youdao"
         },
         {
-          reg: "^#?((我要|给我)?(资料卡)?(点赞)?(赞|超|操|草|抄|吵|炒)我)$|((赞|超|操|草|抄|吵|炒)(他|她|它|TA|ta|Ta))$",
-          fnc: "thumbUp"
-        },
-        {
           reg: "github.com/[a-zA-Z0-9-]{1,39}/[a-zA-Z0-9_-]{1,100}",
           fnc: "GH"
         },
@@ -50,18 +43,6 @@ export class Fun extends plugin {
           reg: "^#?coser$",
           fnc: "coser"
         },
-        // {
-        //  reg: '^#?铃声搜索',
-        //  fnc: 'lingsheng'
-        // },
-        {
-          reg: apiReg,
-          fnc: "picture"
-        },
-        // {
-        //   reg: '^#?来点神秘图(\\d+|s.*)?$',
-        //   fnc: 'mengdui'
-        // },
         {
           reg: `^#(${Object.keys(pandadiuType).join("|")})?acg`,
           fnc: "acg"
@@ -123,14 +104,6 @@ export class Fun extends plugin {
     }
     const results = await funApi.youdao(msg[4], msg[3], msg[2])
     e.reply(results, true)
-  }
-
-  /**
-   * 点赞
-   * @param e
-   */
-  async thumbUp (e) {
-    await funApi.thumbUp(e)
   }
 
   // github
@@ -201,73 +174,6 @@ export class Fun extends plugin {
     await funApi.xiuren(e.msg.replace(/#?来点/, ""))
       .then(res => common.recallSendForwardMsg(e, res))
       .catch(err => common.handleException(e, err))
-  }
-
-  // 铃声多多
-  // async lingsheng (e) {
-  //   let msg = e.msg.replace(/#|铃声搜索/g, '')
-  //   let num = Math.ceil(Math.random() * 15)
-  //   if (num == 0) num = 1
-  //   let api = `http://xiaobai.klizi.cn/API/music/lingsheng.php?msg=${msg}&n=${num}`
-  //   let res = await fetch(api).then(res => res.json()).catch(err => logger.error(err))
-  //   if (!res) return e.reply(API_ERROR)
-  //   if (res.title == null && res.author == null) return e.reply('❎ 没有找到相关的歌曲哦~', true)
-
-  //   await e.reply([
-  //     `标题：${res.title}\n`,
-  //     `作者：${res.author}`
-  //   ])
-  //   await e.reply(await uploadRecord(res.aac, 0, false))
-  // }
-
-  // api大集合
-  async picture (e) {
-    let { sese, sesepro } = Config.getGroup(e.group_id)
-    if (!sese && !sesepro && !e.isMaster) return false
-    let key = "yenai:apiAggregate:CD"
-    if (await redis.get(key)) return false
-
-    if (/jktj|接口统计/.test(e.msg)) {
-      let msg = ["现接口数量如下"]
-      for (let i in picApis) {
-        if (i == "mode") continue
-        let urls = picApis[i].url || picApis[i]
-        msg.push(`\n♡ ${i} => ${Array.isArray(urls) ? urls.length : 1}`)
-      }
-      return e.reply(msg)
-    }
-    // 解析消息中的类型
-    let regRet = apiReg.exec(e.msg)
-    if (regRet[1] == "mode") return false
-    let picObj = picApis[_.sample(Object.keys(picApis).filter(item => new RegExp(item).test(regRet[1])))]
-    if (Array.isArray(picObj)) picObj = _.sample(picObj)
-    let urlReg = /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i
-    if (!picObj.url && !urlReg.test(encodeURI(picObj)) && !Array.isArray(picObj)) {
-      return logger.error(`${e.logFnc}未找到url`)
-    }
-
-    if (picObj.type !== "image" && picObj.type !== "text" && picObj.type !== "json" && picObj.type) {
-      return logger.error(`${e.logFnc}类型不正确`)
-    }
-
-    let url = picObj.url || picObj
-    // 数组随机取或指定
-    if (Array.isArray(url)) url = _.sample(url)
-
-    url = encodeURI(url)
-
-    if (picObj.type == "text") {
-      url = await fetch(url).then(res => res.text()).catch(err => logger.error(err))
-    } else if (picObj.type == "json") {
-      if (!picObj.path) return logger.error(`${e.logFnc}json未指定路径`)
-      let res = await fetch(url).then(res => res.json()).catch(err => logger.error(err))
-      url = _.get(res, picObj.path)
-    }
-    if (!url) return logger.error(`${e.logFnc}未获取到图片链接`)
-
-    logger.debug(`${e.logFnc}使用接口:${url}`)
-    common.recallsendMsg(e, segment.image(url))
-    redis.set(key, "cd", { EX: 2 })
   }
 
   // 查看头像

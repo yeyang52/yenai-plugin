@@ -151,10 +151,6 @@ export class GroupAdmin extends plugin {
         {
           reg: '^#?群管(加|删)白(名单)?',
           fnc: 'whiteQQ'
-        },
-        {
-          reg: '^#?(开启|关闭)白名单(自动)?解禁',
-          fnc: 'noBan'
         }
       ]
     })
@@ -204,7 +200,7 @@ export class GroupAdmin extends plugin {
     let type = /全(体|员)禁言/.test(e.msg)
     let res = await e.group.muteAll(type)
     if (!res) return e.reply('❎ 未知错误', true)
-    type ? e.reply('全都不准说话了哦~') : e.reply('好耶！！可以说话啦~')
+    e.reply(`✅ 已${type ? '开启' : '关闭'}全体禁言`)
   }
 
   // 踢群员
@@ -249,7 +245,7 @@ export class GroupAdmin extends plugin {
     let res = await e.group.setAdmin(qq, type)
     let name = Member.card || Member.nickname
     if (!res) return e.reply('❎ 未知错误')
-    type ? e.reply(`已经把「${name}」设置为管理啦！！`) : e.reply(`「${name}」的管理已经被我吃掉啦~`)
+    type ? e.reply(`✅ 已经把「${name}」设置为管理啦！！`) : e.reply(`✅ 已取消「${name}」的管理`)
   }
 
   // 发群公告
@@ -298,9 +294,9 @@ export class GroupAdmin extends plugin {
     let text = e.msg.replace(/#?(修改|设置)头衔/g, '')
     let res = await e.group.setTitle(qq, text)
     if (res) {
-      e.reply(`已经把这个小可爱的头衔设置为「${text}」辣`)
+      e.reply(`✅ 已经将「${qq}」的头衔设置为「${text}」`)
     } else {
-      e.reply('额...没给上不知道发生了神魔')
+      e.reply('❎ 未知错误')
     }
   }
 
@@ -315,17 +311,17 @@ export class GroupAdmin extends plugin {
     if (!e.isMaster && !_.isEmpty(TitleBannedWords)) {
       if (TitleFilterModeChange) {
         let reg = new RegExp(TitleBannedWords.join('|'))
-        if (reg.test(Title)) return e.reply('这里面有不好的词汇哦~', true)
+        if (reg.test(Title)) return e.reply('❎ 包含违禁词', true)
       } else {
-        if (TitleBannedWords.includes(Title)) return e.reply('这是有不好的词汇哦~', true)
+        if (TitleBannedWords.includes(Title)) return e.reply('❎ 包含违禁词', true)
       }
     }
     let res = await e.group.setTitle(e.user_id, Title)
     if (!res) return e.reply('❎ 未知错误', true)
 
-    if (!Title) return e.reply('什么"(º Д º*)！没有头衔，哼把你的头衔吃掉！！！', true)
+    if (!Title) return e.reply('❎ 什么"(º Д º*)！没有头衔，哼把你的头衔吃掉！！！', true)
 
-    e.reply(`已将你的头衔更换为「${Title}」`, true)
+    e.reply(`✅ 已将你的头衔更换为「${Title}」`, true)
   }
 
   // 字符列表
@@ -346,7 +342,7 @@ export class GroupAdmin extends plugin {
     let res = await new QQApi(e).drawLucky(e.group_id)
 
     if (!res) return e.reply(API_ERROR)
-    if (res.retcode == 11004) return e.reply('今天已经抽过辣，明天再来抽取吧')
+    if (res.retcode == 11004) return e.reply('❎ 今天已经抽过了，明天再来抽取吧')
     if (res.retcode != 0) return e.reply('❎ 错误\n' + JSON.stringify(res.data))
 
     if (res.data.word_info) {
@@ -394,7 +390,7 @@ export class GroupAdmin extends plugin {
   async relieveAllMute (e) {
     if (!common.checkPermission(e, 'admin', 'admin')) { return true }
     new Ga(e).releaseAllMute()
-      .then(() => e.reply('已经把全部的禁言解除辣╮( •́ω•̀)╭'))
+      .then(() => e.reply('✅ 已将全部禁言解除'))
       .catch(err => common.handleException(e, err))
   }
 
@@ -432,7 +428,7 @@ export class GroupAdmin extends plugin {
     if (regRet[1] == '清理') {
       let list = await new Ga(e).noactiveList(e.group_id, regRet[2], regRet[3])
       e.reply([
-        `本次共需清理「${list.length}」人，防止误触发\n`,
+        `⚠ 本次共需清理「${list.length}」人，防止误触发\n`,
         `请发送：#确认清理${regRet[2]}${regRet[3]}没发言的人`
       ])
     }
@@ -454,7 +450,7 @@ export class GroupAdmin extends plugin {
 
     // 确认清理直接执行
     if (/^#?确认清理/.test(e.msg)) {
-      e.reply('我要开始清理了哦，这可能需要一点时间٩(๑•ㅂ•)۶')
+      e.reply('⚠ 开始清理，这可能需要一点时间')
       let arr = list.map(item => item.user_id)
       let msg = await new Ga(e).BatchKickMember(e.group_id, arr)
       return common.getforwardMsg(e, msg)
@@ -462,7 +458,7 @@ export class GroupAdmin extends plugin {
     // 清理
     if (/^#?清理/.test(e.msg)) {
       e.reply([
-        `本次共需清理「${list.length}」人，防止误触发\n`,
+        `⚠ 本次共需清理「${list.length}」人，防止误触发\n`,
         '请发送：#确认清理从未发言的人'
       ])
     }
@@ -616,7 +612,7 @@ export class GroupAdmin extends plugin {
     if (res.retCode != 0) return e.reply('❎ 未知错误\n' + JSON.stringify(res))
 
     let list = res.response.page[0]
-    if (list.total == 0) return e.reply('今天还没有人打卡哦(￣▽￣)"')
+    if (list.total == 0) return e.reply('❎ 今天还没有人打卡')
     // 发送消息
     let msg = list.infos.map((item, index) => `${index + 1}:${item.uidGroupNick}-${item.uid}\n打卡时间:${moment(item.signedTimeStamp * 1000).format('YYYY-MM-DD HH:mm:ss')}`).join('\n')
     e.reply(msg)
@@ -726,8 +722,7 @@ export class GroupAdmin extends plugin {
   async whiteQQ () {
     if (!common.checkPermission(this.e, 'master')) return
     let type = /加/.test(this.e.msg) ? 'add' : 'del'
-    let qq = this.e.at || (Number(this.e.msg.match(/\d+/)?.[0]) || '')
-    if (!qq) return this.reply('❎ 请艾特或输入需要加白的QQ')
+    let qq = this.e.at || (this.e.msg.match(/\d+/)?.[0] || '')
 
     const isWhite = Config.groupAdmin.whiteQQ.includes(Number(qq))
     if (isWhite && type == 'add') return this.reply('❎ 此人已在群管白名单内')
@@ -735,17 +730,5 @@ export class GroupAdmin extends plugin {
 
     Config.modifyarr('groupAdmin', 'whiteQQ', qq, type)
     this.reply(`✅ 已${type == 'add' ? '加入' : '删除'}${qq}到群管白名单`)
-  }
-
-  async noBan () {
-    if (!common.checkPermission(this.e, 'master')) return
-    let type = !!/开启/.test(this.e.msg)
-
-    const { noBan } = Config.groupAdmin
-    if (noBan && type) return this.reply('❎ 白名单自动解禁已处于开启状态')
-    if (!noBan && !type) return this.reply('❎ 白名单自动解禁已处于关闭状态')
-
-    Config.modify('groupAdmin', 'noBan', type)
-    this.reply(`✅ 已${type ? '开启' : '关闭'}白名单自动解禁`)
   }
 }

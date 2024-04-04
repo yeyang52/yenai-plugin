@@ -719,16 +719,24 @@ export class GroupAdmin extends plugin {
     e.reply(res || `${isAdd}精失败`)
   }
 
+  /**
+   * 加白名单
+   * @param
+   */
   async whiteQQ () {
     if (!common.checkPermission(this.e, 'master')) return
+
     let type = /加/.test(this.e.msg) ? 'add' : 'del'
     let qq = this.e.at || (this.e.msg.match(/\d+/)?.[0] || '')
+    qq = Number(qq) || String(qq)
 
-    const isWhite = Config.groupAdmin.whiteQQ.includes(Number(qq))
-    if (isWhite && type == 'add') return this.reply('❎ 此人已在群管白名单内')
-    if (!isWhite && type == 'del') return this.reply('❎ 此人未在群管白名单中')
+    const { whiteQQ } = Config.groupAdmin
+    const isWhite = whiteQQ.includes(qq)
+
+    if (isWhite && type === 'add') return this.reply('❎ 此人已在群管白名单内')
+    if (!isWhite && type === 'del') return this.reply('❎ 此人未在群管白名单中')
 
     Config.modifyarr('groupAdmin', 'whiteQQ', qq, type)
-    this.reply(`✅ 已${type == 'add' ? '加入' : '删除'}${qq}到群管白名单`)
+    this.reply(`✅ 已${type === 'add' ? '加入' : '删除'}${qq}到群管白名单`)
   }
 }

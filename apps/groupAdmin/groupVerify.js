@@ -1,37 +1,37 @@
-import { Config } from '../../components/index.js'
-import { common, GroupAdmin as Ga } from '../../model/index.js'
-import _ from 'lodash'
-import { sleep } from '../../tools/index.js'
+import { Config } from "../../components/index.js"
+import { common, GroupAdmin as Ga } from "../../model/index.js"
+import _ from "lodash"
+import { sleep } from "../../tools/index.js"
 // 全局
 let temp = {}
-const ops = ['+', '-']
+const ops = ["+", "-"]
 export class NewGroupVerify extends plugin {
   constructor () {
     super({
-      name: '椰奶入群验证',
-      dsc: '重新验证和绕过验证',
-      event: 'message.group',
+      name: "椰奶入群验证",
+      dsc: "重新验证和绕过验证",
+      event: "message.group",
       priority: 5,
       rule: [
         {
-          reg: '^#重新验证(\\d+|从未发言的人)?$',
-          fnc: 'cmdReverify'
+          reg: "^#重新验证(\\d+|从未发言的人)?$",
+          fnc: "cmdReverify"
         },
         {
-          reg: '^#绕过验证(\\d+)?$',
-          fnc: 'cmdPass'
+          reg: "^#绕过验证(\\d+)?$",
+          fnc: "cmdPass"
         },
         {
-          reg: '^#(开启|关闭)验证$',
-          fnc: 'handelverify'
+          reg: "^#(开启|关闭)验证$",
+          fnc: "handelverify"
         },
         {
-          reg: '^#切换验证模式$',
-          fnc: 'setmode'
+          reg: "^#切换验证模式$",
+          fnc: "setmode"
         },
         {
-          reg: '^#设置验证超时时间(\\d+)(s|秒)?$',
-          fnc: 'setovertime'
+          reg: "^#设置验证超时时间(\\d+)(s|秒)?$",
+          fnc: "setovertime"
         }
       ]
     })
@@ -40,40 +40,40 @@ export class NewGroupVerify extends plugin {
 
   // 重新验证
   async cmdReverify (e) {
-    if (!common.checkPermission(e, 'admin', 'admin')) return
+    if (!common.checkPermission(e, "admin", "admin")) return
 
-    if (!this.verifycfg.openGroup.includes(e.group_id)) return e.reply('当前群未开启验证哦~', true)
+    if (!this.verifycfg.openGroup.includes(e.group_id)) return e.reply("当前群未开启验证哦~", true)
 
-    let qq = e.message.find(item => item.type == 'at')?.qq
-    if (!qq) qq = e.msg.replace(/#|重新验证/g, '').trim()
+    let qq = e.message.find(item => item.type == "at")?.qq
+    if (!qq) qq = e.msg.replace(/#|重新验证/g, "").trim()
 
-    if (qq == '从未发言的人') return this.cmdReverifyNeverSpeak(e)
+    if (qq == "从未发言的人") return this.cmdReverifyNeverSpeak(e)
 
-    if (!(/\d{5,}/.test(qq))) return e.reply('❎ 请输入正确的QQ号')
+    if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号")
     qq = Number(qq)
     if (qq == (e.bot ?? Bot).uin) return
 
-    if (Config.masterQQ.includes(qq)) return e.reply('❎ 该命令对机器人管理员无效')
+    if (Config.masterQQ.includes(qq)) return e.reply("❎ 该命令对机器人管理员无效")
 
-    if (temp[qq + e.group_id]) return e.reply('❎ 目标群成员处于验证状态')
+    if (temp[qq + e.group_id]) return e.reply("❎ 目标群成员处于验证状态")
 
     await verify(qq, e.group_id, e)
   }
 
   // 绕过验证
   async cmdPass (e) {
-    if (!common.checkPermission(e, 'admin', 'admin')) return
+    if (!common.checkPermission(e, "admin", "admin")) return
 
-    if (!this.verifycfg.openGroup.includes(e.group_id)) return e.reply('当前群未开启验证哦~', true)
+    if (!this.verifycfg.openGroup.includes(e.group_id)) return e.reply("当前群未开启验证哦~", true)
 
-    let qq = e.message.find(item => item.type == 'at')?.qq
-    if (!qq) qq = e.msg.replace(/#|绕过验证/g, '').trim()
+    let qq = e.message.find(item => item.type == "at")?.qq
+    if (!qq) qq = e.msg.replace(/#|绕过验证/g, "").trim()
 
-    if (!(/\d{5,}/.test(qq))) return e.reply('❎ 请输入正确的QQ号')
+    if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号")
 
     if (qq == (e.bot ?? Bot).uin) return
     qq = Number(qq)
-    if (!temp[qq + e.group_id]) return e.reply('❎ 目标群成员当前无需验证')
+    if (!temp[qq + e.group_id]) return e.reply("❎ 目标群成员当前无需验证")
 
     clearTimeout(temp[qq + e.group_id].kickTimer)
 
@@ -81,7 +81,7 @@ export class NewGroupVerify extends plugin {
 
     delete temp[qq + e.group_id]
 
-    return await e.reply(this.verifycfg.SuccessMsgs[e.group_id] || this.verifycfg.SuccessMsgs[0] || '✅ 验证成功，欢迎入群')
+    return await e.reply(this.verifycfg.SuccessMsgs[e.group_id] || this.verifycfg.SuccessMsgs[0] || "✅ 验证成功，欢迎入群")
   }
 
   async cmdReverifyNeverSpeak (e) {
@@ -99,37 +99,37 @@ export class NewGroupVerify extends plugin {
 
   // 开启验证
   async handelverify (e) {
-    if (!common.checkPermission(e, 'admin', 'admin')) return
-    let type = /开启/.test(e.msg) ? 'add' : 'del'
+    if (!common.checkPermission(e, "admin", "admin")) return
+    let type = /开启/.test(e.msg) ? "add" : "del"
     let isopen = this.verifycfg.openGroup.includes(e.group_id)
-    if (isopen && type == 'add') return e.reply('❎ 本群验证已处于开启状态')
-    if (!isopen && type == 'del') return e.reply('❎ 本群暂未开启验证')
-    Config.modifyarr('groupverify', 'openGroup', e.group_id, type)
-    e.reply(`✅ 已${type == 'add' ? '开启' : '关闭'}本群验证`)
+    if (isopen && type == "add") return e.reply("❎ 本群验证已处于开启状态")
+    if (!isopen && type == "del") return e.reply("❎ 本群暂未开启验证")
+    Config.modifyarr("groupverify", "openGroup", e.group_id, type)
+    e.reply(`✅ 已${type == "add" ? "开启" : "关闭"}本群验证`)
   }
 
   // 切换验证模式
   async setmode (e) {
-    if (!common.checkPermission(e, 'master')) return
-    let value = this.verifycfg.mode == '模糊' ? '精确' : '模糊'
-    Config.modify('groupverify', 'mode', value)
+    if (!common.checkPermission(e, "master")) return
+    let value = this.verifycfg.mode == "模糊" ? "精确" : "模糊"
+    Config.modify("groupverify", "mode", value)
     e.reply(`✅ 已切换验证模式为${value}验证`)
   }
 
   // 设置验证超时时间
   async setovertime (e) {
-    if (!common.checkPermission(e, 'master')) return
+    if (!common.checkPermission(e, "master")) return
     let overtime = e.msg.match(/\d+/g)
-    Config.modify('groupverify', 'time', Number(overtime))
+    Config.modify("groupverify", "time", Number(overtime))
     e.reply(`✅ 已将验证超时时间设置为${overtime}秒`)
     if (overtime < 60) {
-      e.reply('建议至少一分钟(60秒)哦ε(*´･ω･)з')
+      e.reply("建议至少一分钟(60秒)哦ε(*´･ω･)з")
     }
   }
 }
 
 // 进群监听
-Bot.on?.('notice.group.increase', async (e) => {
+Bot.on?.("notice.group.increase", async (e) => {
   logger.mark(`[Yenai-Plugin][进群验证]收到${e.user_id}的进群事件`)
   let { openGroup, DelayTime } = Config.groupverify
 
@@ -144,7 +144,7 @@ Bot.on?.('notice.group.increase', async (e) => {
 })
 
 // 答案监听
-Bot.on?.('message.group', async (e) => {
+Bot.on?.("message.group", async (e) => {
   let { openGroup, mode, SuccessMsgs } = Config.groupverify
 
   if (!openGroup.includes(e.group_id)) return
@@ -157,9 +157,9 @@ Bot.on?.('message.group', async (e) => {
 
   const { nums, operator } = temp[e.user_id + e.group_id]
 
-  const isAccurateModeOK = mode === '精确' && e.raw_message == verifyCode
+  const isAccurateModeOK = mode === "精确" && e.raw_message == verifyCode
 
-  const isVagueModeOK = mode === '模糊' && e.raw_message?.includes(verifyCode)
+  const isVagueModeOK = mode === "模糊" && e.raw_message?.includes(verifyCode)
 
   const isOK = isAccurateModeOK || isVagueModeOK
 
@@ -167,7 +167,7 @@ Bot.on?.('message.group', async (e) => {
     delete temp[e.user_id + e.group_id]
     clearTimeout(kickTimer)
     clearTimeout(remindTimer)
-    return await e.reply(SuccessMsgs[e.group_id] || SuccessMsgs[0] || '✅ 验证成功，欢迎入群')
+    return await e.reply(SuccessMsgs[e.group_id] || SuccessMsgs[0] || "✅ 验证成功，欢迎入群")
   } else {
     temp[e.user_id + e.group_id].remainTimes -= 1
 
@@ -181,14 +181,14 @@ Bot.on?.('message.group', async (e) => {
     }
     clearTimeout(kickTimer)
     clearTimeout(remindTimer)
-    await e.reply([segment.at(e.user_id), '\n验证失败，请重新申请'])
+    await e.reply([segment.at(e.user_id), "\n验证失败，请重新申请"])
     delete temp[e.user_id + e.group_id]
     return await e.group.kickMember(e.user_id)
   }
 })
 
 // 主动退群
-Bot.on?.('notice.group.decrease', async (e) => {
+Bot.on?.("notice.group.decrease", async (e) => {
   if (!e.group.is_admin && !e.group.is_owner) return
 
   if (!temp[e.user_id + e.group_id]) return
@@ -225,10 +225,10 @@ async function verify (user_id, group_id, e) {
 
   [m, n] = [m >= n ? m : n, m >= n ? n : m]
 
-  const verifyCode = String(operator === '-' ? m - n : m + n)
+  const verifyCode = String(operator === "-" ? m - n : m + n)
   logger.mark(`[Yenai-Plugin][进群验证]答案：${verifyCode}`)
   const kickTimer = setTimeout(async () => {
-    e.reply([segment.at(user_id), '\n验证超时，移出群聊，请重新申请'])
+    e.reply([segment.at(user_id), "\n验证超时，移出群聊，请重新申请"])
 
     delete temp[user_id + group_id]
 

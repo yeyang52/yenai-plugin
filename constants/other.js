@@ -30,17 +30,17 @@ export const Time_unit = {
 
 /** 在线状态 */
 export const status = {
-  31: '离开',
-  50: '忙碌',
-  70: '请勿打扰',
-  41: '隐身',
-  11: '我在线上',
-  60: 'Q我吧'
+  31: "离开",
+  50: "忙碌",
+  70: "请勿打扰",
+  41: "隐身",
+  11: "我在线上",
+  60: "Q我吧"
 }
 
 /** 权限 */
 export const ROLE_MAP = {
-  admin: '群管理',
-  owner: '群主',
-  member: '群员'
+  admin: "群管理",
+  owner: "群主",
+  member: "群员"
 }

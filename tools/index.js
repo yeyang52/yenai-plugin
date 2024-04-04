@@ -1,9 +1,9 @@
-import cronValidate from './cronValidate.js'
-import formatDuration from './formatDuration.js'
-import sagiri from './sagiri.js'
-import translateChinaNum from './translateChinaNum.js'
-import uploadRecord from './uploadRecord.js'
-import child_process from 'child_process'
+import cronValidate from "./cronValidate.js"
+import formatDuration from "./formatDuration.js"
+import sagiri from "./sagiri.js"
+import translateChinaNum from "./translateChinaNum.js"
+import uploadRecord from "./uploadRecord.js"
+import child_process from "child_process"
 
 /**
  * 延时函数

@@ -1,6 +1,6 @@
-import _ from 'lodash'
-import { getFileSize } from './utils.js'
-import { si } from './index.js'
+import _ from "lodash"
+import { getFileSize } from "./utils.js"
+import { si } from "./index.js"
 
 /**
  *  获取硬盘
@@ -20,11 +20,11 @@ export default async function getFsSize () {
     item.used = getFileSize(item.used)
     item.size = getFileSize(item.size)
     item.use = Math.round(item.use)
-    item.color = 'var(--low-color)'
+    item.color = "var(--low-color)"
     if (item.use >= 90) {
-      item.color = 'var(--high-color)'
+      item.color = "var(--high-color)"
     } else if (item.use >= 70) {
-      item.color = 'var(--medium-color)'
+      item.color = "var(--medium-color)"
     }
     return item
   })

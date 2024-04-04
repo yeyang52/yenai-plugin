@@ -1,25 +1,25 @@
-import plugin from '../../../lib/plugins/plugin.js'
-import fs from 'node:fs'
-import common from '../../../lib/common/common.js'
-import { Data, Plugin_Path } from '../components/index.js'
-import { incomeCurve } from '../constants/nga.js'
+import plugin from "../../../lib/plugins/plugin.js"
+import fs from "node:fs"
+import common from "../../../lib/common/common.js"
+import { Data, Plugin_Path } from "../components/index.js"
+import { incomeCurve } from "../constants/nga.js"
 
 let gsCfg
 try {
-  gsCfg = (await import('../../genshin/model/gsCfg.js')).default
+  gsCfg = (await import("../../genshin/model/gsCfg.js")).default
 } catch (err) {}
 
 export class NGA extends plugin {
   constructor () {
     super({
-      name: '椰奶NGA',
-      dsc: '收益曲线',
-      event: 'message',
+      name: "椰奶NGA",
+      dsc: "收益曲线",
+      event: "message",
       priority: 500,
       rule: [
         {
-          reg: '^#?(更新)?(.*)(收益曲线|参考面板)(帮助)?$',
-          fnc: 'NGA'
+          reg: "^#?(更新)?(.*)(收益曲线|参考面板)(帮助)?$",
+          fnc: "NGA"
         }
       ]
     })
@@ -30,14 +30,14 @@ export class NGA extends plugin {
 
   // 初始化
   async initFolder (type) {
-    Data.createDir(`data/${type == '收益曲线' ? 'incomeCurve' : 'referencPanel'}`)
+    Data.createDir(`data/${type == "收益曲线" ? "incomeCurve" : "referencPanel"}`)
   }
 
   async NGA () {
     let role = {}
-    let regRet = this.e.msg.match('^#?(更新)?(.*)(收益曲线|参考面板)(帮助)?$')
+    let regRet = this.e.msg.match("^#?(更新)?(.*)(收益曲线|参考面板)(帮助)?$")
     if (regRet[4]) {
-      role.name = '帮助'
+      role.name = "帮助"
     } else {
       if (!gsCfg) return false
       role = gsCfg.getRole(regRet[2])
@@ -47,8 +47,8 @@ export class NGA extends plugin {
 
     let type = regRet[3]
     /** 主角特殊处理 */
-    if (['10000005', '10000007', '20000000'].includes(String(role.roleId))) {
-      if (!['风主', '岩主', '雷主', '草主'].includes(role.alias)) {
+    if (["10000005", "10000007", "20000000"].includes(String(role.roleId))) {
+      if (!["风主", "岩主", "雷主", "草主"].includes(role.alias)) {
         await this.e.reply(`请选择：风主${type}、岩主${type}、雷主${type}、草主${type}`)
         return
       } else {
@@ -58,10 +58,10 @@ export class NGA extends plugin {
 
     let imgList = []
 
-    if (type == '收益曲线') {
+    if (type == "收益曲线") {
       // 收益曲线
       if (!this.incomeCurveObj[role.name]) {
-        return this.e.reply('暂时无该角色收益曲线~>_<')
+        return this.e.reply("暂时无该角色收益曲线~>_<")
       }
       let urls = this.incomeCurveObj[role.name]
 

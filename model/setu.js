@@ -1,9 +1,9 @@
-import { common, Pixiv } from './index.js'
-import { Data, Plugin_Path, Config } from '../components/index.js'
-import _ from 'lodash'
-import { setuMsg } from '../constants/msg.js'
-import request from '../lib/request/request.js'
-import formatDuration from '../tools/formatDuration.js'
+import { common, Pixiv } from "./index.js"
+import { Data, Plugin_Path, Config } from "../components/index.js"
+import _ from "lodash"
+import { setuMsg } from "../constants/msg.js"
+import request from "../lib/request/request.js"
+import formatDuration from "../tools/formatDuration.js"
 export default new class setu {
   constructor () {
     this.root = `${Plugin_Path}/config/setu`
@@ -16,7 +16,7 @@ export default new class setu {
   }
 
   async init () {
-    Data.createDir('config/setu')
+    Data.createDir("config/setu")
   }
 
   /** 开始执行文案 */
@@ -42,9 +42,9 @@ export default new class setu {
    * @returns {object}
    */
   async setuApi (r18, num = 1, tag = []) {
-    let api = 'https://api.lolicon.app/setu/v2'
+    let api = "https://api.lolicon.app/setu/v2"
     const { imgSize, excludeAI } = Config.setu
-    const size = imgSize[_.max(Object.keys(imgSize).filter(item => num > item))] || 'original'
+    const size = imgSize[_.max(Object.keys(imgSize).filter(item => num > item))] || "original"
     let parans = {
       r18,
       num,
@@ -54,7 +54,7 @@ export default new class setu {
       excludeAI
     }
     let result = await request.post(api, { data: parans }).then(res => res.json())
-    if (_.isEmpty(result.data)) throw new ReplyError('没有找到相关的tag')
+    if (_.isEmpty(result.data)) throw new ReplyError("没有找到相关的tag")
     // 消息
     return await Promise.all(result.data.map(async item => {
       let { pid, title, tags, author, r18, urls, aiType } = item
@@ -64,8 +64,8 @@ export default new class setu {
         `画师：${author}\n`,
         `Pid：${pid}\n`,
         `R18：${r18}\n`,
-        `AI：${aiType ? aiType == 1 ? '是' : '否' : '未知'}\n`,
-        `tag：${_.truncate(tags.join(','))}\n`,
+        `AI：${aiType ? aiType == 1 ? "是" : "否" : "未知"}\n`,
+        `tag：${_.truncate(tags.join(","))}\n`,
         await Pixiv._requestPixivImg(urls?.original || urls?.regular || urls?.small)
       ]
     }))
@@ -131,7 +131,7 @@ export default new class setu {
       over = (this.temp[userId] - present)
     }
     if (over <= 0) return false
-    return formatDuration(over, 'default', false)
+    return formatDuration(over, "default", false)
   }
 
   /**
@@ -141,7 +141,7 @@ export default new class setu {
    * @returns {*}
    */
   getCfgCd (userId, groupId) {
-    let data = Data.readJSON(`setu${groupId ? '' : '_s'}.json`, this.root)
+    let data = Data.readJSON(`setu${groupId ? "" : "_s"}.json`, this.root)
     let CD = groupId ? data[groupId]?.cd : data[userId]
     if (CD !== undefined) return CD
     return this.def.cd // 默认300
@@ -153,7 +153,7 @@ export default new class setu {
    * @returns {string}  0或1
    */
   getR18 (groupID) {
-    let data = Data.readJSON(`setu${groupID ? '' : '_s'}.json`, this.root)
+    let data = Data.readJSON(`setu${groupID ? "" : "_s"}.json`, this.root)
     let R18 = groupID ? data[groupID]?.r18 : data.r18
     if (R18 !== undefined) return R18
     return this.def.r18
@@ -166,7 +166,7 @@ export default new class setu {
    */
   getRecallTime (groupId) {
     if (!groupId) return 0
-    let data = Data.readJSON('setu.json', this.root)
+    let data = Data.readJSON("setu.json", this.root)
     let recalltime = data[groupId]?.recall
     if (recalltime !== undefined) return recalltime
     return this.def.recall // 默认120
@@ -180,13 +180,13 @@ export default new class setu {
    * @returns {boolean}
    */
   setGroupRecallTimeAndCd (groupId, num, type) {
-    let data = Data.readJSON('setu.json', this.root)
+    let data = Data.readJSON("setu.json", this.root)
 
     if (!data[groupId]) data[groupId] = _.cloneDeep(this.def)
 
     type ? data[groupId].recall = Number(num) : data[groupId].cd = Number(num)
 
-    return Data.writeJSON('setu.json', data, this.root)
+    return Data.writeJSON("setu.json", data, this.root)
   }
 
   /**
@@ -196,15 +196,15 @@ export default new class setu {
    * @param {string} cd 设置的cd
    */
   setUserCd (e, qq, cd) {
-    let data = Data.readJSON('setu_s.json', this.root)
+    let data = Data.readJSON("setu_s.json", this.root)
 
     data[qq] = Number(cd)
-    if (Data.writeJSON('setu_s.json', data, this.root)) {
+    if (Data.writeJSON("setu_s.json", data, this.root)) {
       e.reply(`✅ 设置用户${qq}的cd成功，cd时间为${cd}秒`)
       delete this.temp[qq]
       return true
     } else {
-      e.reply('❎ 设置失败')
+      e.reply("❎ 设置失败")
       return false
     }
   }
@@ -215,18 +215,18 @@ export default new class setu {
    * @param {boolean} isopen 开启或关闭
    */
   setR18 (groupID, isopen) {
-    let data = Data.readJSON(`setu${groupID ? '' : '_s'}.json`, this.root)
+    let data = Data.readJSON(`setu${groupID ? "" : "_s"}.json`, this.root)
     if (groupID) {
       if (!data[groupID]) data[groupID] = _.cloneDeep(this.def)
       data[groupID].r18 = isopen ? 1 : 0
     } else {
       data.r18 = isopen ? 1 : 0
     }
-    if (Data.writeJSON(`setu${groupID ? '' : '_s'}.json`, data, this.root)) {
-      logger.mark(`[Yenai-Plugin][R18][${groupID ? '群聊' : '私聊'}]已${isopen ? '开启' : '关闭'}${groupID}的涩涩模式`)
+    if (Data.writeJSON(`setu${groupID ? "" : "_s"}.json`, data, this.root)) {
+      logger.mark(`[Yenai-Plugin][R18][${groupID ? "群聊" : "私聊"}]已${isopen ? "开启" : "关闭"}${groupID}的涩涩模式`)
       return true
     } else {
-      logger.mark(`[Yenai-Plugin][R18][${groupID ? '群聊' : '私聊'}]设置失败`)
+      logger.mark(`[Yenai-Plugin][R18][${groupID ? "群聊" : "私聊"}]设置失败`)
       return false
     }
   }

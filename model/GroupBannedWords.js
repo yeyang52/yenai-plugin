@@ -1,21 +1,21 @@
-import _ from 'lodash'
-import moment from 'moment'
-import { Data, Plugin_Path } from '../components/index.js'
+import _ from "lodash"
+import moment from "moment"
+import { Data, Plugin_Path } from "../components/index.js"
 
 export default new class {
   constructor () {
     this.root = `${Plugin_Path}/config/group`
     this.penaltyTypeMap = {
-      1: '踢',
-      2: '禁',
-      3: '撤',
-      4: '踢撤',
-      5: '禁撤'
+      1: "踢",
+      2: "禁",
+      3: "撤",
+      4: "踢撤",
+      5: "禁撤"
     }
     this.matchTypeMap = {
-      1: '精确',
-      2: '模糊',
-      3: '正则'
+      1: "精确",
+      2: "模糊",
+      3: "正则"
     }
     this.dataCach = new Map()
     this.muteTimeCach = new Map()
@@ -23,7 +23,7 @@ export default new class {
   }
 
   addBannedWords (
-    groupId, words, matchType = '精确', penaltyType = '禁', addedBy
+    groupId, words, matchType = "精确", penaltyType = "禁", addedBy
   ) {
     let data = Data.readJSON(`${groupId}.json`, this.root)
     if (!data.bannedWords) data.bannedWords = {}
@@ -34,7 +34,7 @@ export default new class {
     data.bannedWords[words] = {
       matchType: Number(matchTypeMapMirr[matchType]),
       penaltyType: Number(penaltyTypeMapMirr[penaltyType]),
-      date: moment().format('MMM Do YY'),
+      date: moment().format("MMM Do YY"),
       addedBy
     }
     Data.writeJSON(`${groupId}.json`, data, this.root)
@@ -88,15 +88,15 @@ export default new class {
    */
   async keyWordTran (msg) {
     /** 图片 */
-    if (msg.includes('{image')) {
-      let tmp = msg.split('{image')
+    if (msg.includes("{image")) {
+      let tmp = msg.split("{image")
       if (tmp.length > 2) return false
 
-      let md5 = tmp[1].replace(/}|_|:/g, '')
+      let md5 = tmp[1].replace(/}|_|:/g, "")
 
       msg = segment.image(`http://gchat.qpic.cn/gchatpic_new/0/0-0-${md5}/0`)
       msg.asface = true
-    } else if (msg.includes('{at:')) {
+    } else if (msg.includes("{at:")) {
       let tmp = msg.match(/{at:(.+?)}/g)
 
       for (let qq of tmp) {
@@ -106,7 +106,7 @@ export default new class {
         if (!name) continue
         msg = msg.replace(`{at:${qq}}`, `@${name}`)
       }
-    } else if (msg.includes('{face')) {
+    } else if (msg.includes("{face")) {
       let tmp = msg.match(/{face(:|_)(.+?)}/g)
       if (!tmp) return msg
       msg = []

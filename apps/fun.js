@@ -1,54 +1,54 @@
-import _ from 'lodash'
-import fetch from 'node-fetch'
-import { Config } from '../components/index.js'
-import { heisiType, pandadiuType, xiurenTypeId } from '../constants/fun.js'
-import { common, funApi, uploadRecord } from '../model/index.js'
+import _ from "lodash"
+import fetch from "node-fetch"
+import { Config } from "../components/index.js"
+import { heisiType, pandadiuType, xiurenTypeId } from "../constants/fun.js"
+import { common, funApi, uploadRecord } from "../model/index.js"
 
 /** 开始执行文案 */
-const START_EXECUTION = '椰奶产出中......'
+const START_EXECUTION = "椰奶产出中......"
 
-const picApis = Config.getConfig('picApi')
+const picApis = Config.getConfig("picApi")
 /** 解析匹配模式 */
 const picApiKeys = []
 
 _.forIn(picApis, (values, key) => {
   let mode = values.mode !== undefined ? values.mode : picApis.mode
-  key = key.split('|').map(item => mode ? '^' + item + '$' : item).join('|')
+  key = key.split("|").map(item => mode ? "^" + item + "$" : item).join("|")
   picApiKeys.push(key)
 })
 
-const apiReg = new RegExp(`(${picApiKeys.join('|')}|^jktj$|^接口统计$)`)
+const apiReg = new RegExp(`(${picApiKeys.join("|")}|^jktj$|^接口统计$)`)
 
 export class Fun extends plugin {
   constructor (e) {
     super({
-      name: '椰奶娱乐',
-      event: 'message',
+      name: "椰奶娱乐",
+      event: "message",
       priority: 500,
       rule: [
         {
-          reg: '^#唱歌$',
-          fnc: 'Sing'
+          reg: "^#唱歌$",
+          fnc: "Sing"
         },
         {
-          reg: '^#支付宝到账',
-          fnc: 'ZFB'
+          reg: "^#支付宝到账",
+          fnc: "ZFB"
         },
         {
-          reg: '^#(([\u4e00-\u9fa5]{2,6})-)?([\u4e00-\u9fa5]{2,6})?翻译(.*)$',
-          fnc: 'youdao'
+          reg: "^#(([\u4e00-\u9fa5]{2,6})-)?([\u4e00-\u9fa5]{2,6})?翻译(.*)$",
+          fnc: "youdao"
         },
         {
-          reg: '^#?((我要|给我)?(资料卡)?(点赞)?(赞|超|操|草|抄|吵|炒)我)$|((赞|超|操|草|抄|吵|炒)(他|她|它|TA|ta|Ta))$',
-          fnc: 'thumbUp'
+          reg: "^#?((我要|给我)?(资料卡)?(点赞)?(赞|超|操|草|抄|吵|炒)我)$|((赞|超|操|草|抄|吵|炒)(他|她|它|TA|ta|Ta))$",
+          fnc: "thumbUp"
         },
         {
-          reg: 'github.com/[a-zA-Z0-9-]{1,39}/[a-zA-Z0-9_-]{1,100}',
-          fnc: 'GH'
+          reg: "github.com/[a-zA-Z0-9-]{1,39}/[a-zA-Z0-9_-]{1,100}",
+          fnc: "GH"
         },
         {
-          reg: '^#?coser$',
-          fnc: 'coser'
+          reg: "^#?coser$",
+          fnc: "coser"
         },
         // {
         //  reg: '^#?铃声搜索',
@@ -56,27 +56,27 @@ export class Fun extends plugin {
         // },
         {
           reg: apiReg,
-          fnc: 'picture'
+          fnc: "picture"
         },
         // {
         //   reg: '^#?来点神秘图(\\d+|s.*)?$',
         //   fnc: 'mengdui'
         // },
         {
-          reg: `^#(${Object.keys(pandadiuType).join('|')})?acg`,
-          fnc: 'acg'
+          reg: `^#(${Object.keys(pandadiuType).join("|")})?acg`,
+          fnc: "acg"
         },
         {
-          reg: `^#来点(${Object.keys(xiurenTypeId).join('|')})$`,
-          fnc: 'xiuren'
+          reg: `^#来点(${Object.keys(xiurenTypeId).join("|")})$`,
+          fnc: "xiuren"
         },
         {
-          reg: '^#?(查?看|取)头像',
-          fnc: 'LookAvatar'
+          reg: "^#?(查?看|取)头像",
+          fnc: "LookAvatar"
         }
       ]
     })
-    if (e?.message?.[0]?.text == '#全部赞我') { this.thumbUp(e) }
+    if (e?.message?.[0]?.text == "#全部赞我") { this.thumbUp(e) }
   }
 
   /**
@@ -95,12 +95,12 @@ export class Fun extends plugin {
    * @param e
    */
   async ZFB (e) {
-    let amount = parseFloat(e.msg.replace(/#|支付宝到账|元|圆/g, '').trim())
+    let amount = parseFloat(e.msg.replace(/#|支付宝到账|元|圆/g, "").trim())
 
-    if (!/^\d+(\.\d{1,2})?$/.test(amount)) return e.reply('你觉得这河里吗！！', true)
+    if (!/^\d+(\.\d{1,2})?$/.test(amount)) return e.reply("你觉得这河里吗！！", true)
 
     if (!(amount >= 0.01 && amount <= 999999999999.99)) {
-      return e.reply('数字大小超出限制，支持范围为0.01~999999999999.99')
+      return e.reply("数字大小超出限制，支持范围为0.01~999999999999.99")
     }
     e.reply([segment.record(`https://mm.cqu.cc/share/zhifubaodaozhang/mp3/${amount}.mp3`)])
   }
@@ -118,8 +118,8 @@ export class Fun extends plugin {
         : (await e.friend.getChatHistory(e.source.time, 1)).pop()
 
       msg[4] = source.message
-        .filter(item => item.type === 'text')
-        .map(item => item.text).join('')
+        .filter(item => item.type === "text")
+        .map(item => item.text).join("")
     }
     const results = await funApi.youdao(msg[4], msg[3], msg[2])
     e.reply(results, true)
@@ -135,15 +135,15 @@ export class Fun extends plugin {
 
   // github
   async GH (e) {
-    const api = 'https://opengraph.githubassets.com'
+    const api = "https://opengraph.githubassets.com"
 
     let reg = /github.com\/[a-zA-Z0-9-]{1,39}\/[a-zA-Z0-9_-]{1,100}(?:\/(?:pull|issues)\/\d+)?/
     const isMatched = e.msg.match(reg)
 
-    const id = 'Yenai'
+    const id = "Yenai"
     if (isMatched) {
       // const res = isMatched[0].split('/')
-      let path = isMatched[0].replace('github.com/', '')
+      let path = isMatched[0].replace("github.com/", "")
       e.reply(segment.image(`${api}/${id}/${path}`))
       // const [user, repo] = [res[1], res[2].split('#')[0]]
       // e.reply(segment.image(`${api}/${id}/${user}/${repo}`))
@@ -164,7 +164,7 @@ export class Fun extends plugin {
   async acg (e) {
     if (!common.checkSeSePermission(e)) return false
     e.reply(START_EXECUTION)
-    const reg = new RegExp(`^#(${Object.keys(pandadiuType).join('|')})?acg(.*)$`)
+    const reg = new RegExp(`^#(${Object.keys(pandadiuType).join("|")})?acg(.*)$`)
     const type = e.msg.match(reg)
     await funApi.pandadiu(type[1], type[2])
       .then(res => common.recallSendForwardMsg(e, res))
@@ -173,7 +173,7 @@ export class Fun extends plugin {
 
   // 黑丝
   async heisiwu (e) {
-    if (!common.checkSeSePermission(e, 'sesepro')) return false
+    if (!common.checkSeSePermission(e, "sesepro")) return false
 
     e.reply(START_EXECUTION)
     // 获取类型
@@ -185,7 +185,7 @@ export class Fun extends plugin {
 
   // 萌堆
   async mengdui (e) {
-    if (!common.checkSeSePermission(e, 'sesepro')) return false
+    if (!common.checkSeSePermission(e, "sesepro")) return false
     // 开始执行
     e.reply(START_EXECUTION)
     let regRet = e.msg.match(/#?来点神秘图(s)?(.*)/)
@@ -195,10 +195,10 @@ export class Fun extends plugin {
   }
 
   async xiuren (e) {
-    if (!common.checkSeSePermission(e, 'pro')) return false
+    if (!common.checkSeSePermission(e, "pro")) return false
     // 开始执行
     e.reply(START_EXECUTION)
-    await funApi.xiuren(e.msg.replace(/#?来点/, ''))
+    await funApi.xiuren(e.msg.replace(/#?来点/, ""))
       .then(res => common.recallSendForwardMsg(e, res))
       .catch(err => common.handleException(e, err))
   }
@@ -224,13 +224,13 @@ export class Fun extends plugin {
   async picture (e) {
     let { sese, sesepro } = Config.getGroup(e.group_id)
     if (!sese && !sesepro && !e.isMaster) return false
-    let key = 'yenai:apiAggregate:CD'
+    let key = "yenai:apiAggregate:CD"
     if (await redis.get(key)) return false
 
     if (/jktj|接口统计/.test(e.msg)) {
-      let msg = ['现接口数量如下']
+      let msg = ["现接口数量如下"]
       for (let i in picApis) {
-        if (i == 'mode') continue
+        if (i == "mode") continue
         let urls = picApis[i].url || picApis[i]
         msg.push(`\n♡ ${i} => ${Array.isArray(urls) ? urls.length : 1}`)
       }
@@ -238,7 +238,7 @@ export class Fun extends plugin {
     }
     // 解析消息中的类型
     let regRet = apiReg.exec(e.msg)
-    if (regRet[1] == 'mode') return false
+    if (regRet[1] == "mode") return false
     let picObj = picApis[_.sample(Object.keys(picApis).filter(item => new RegExp(item).test(regRet[1])))]
     if (Array.isArray(picObj)) picObj = _.sample(picObj)
     let urlReg = /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i
@@ -246,7 +246,7 @@ export class Fun extends plugin {
       return logger.error(`${e.logFnc}未找到url`)
     }
 
-    if (picObj.type !== 'image' && picObj.type !== 'text' && picObj.type !== 'json' && picObj.type) {
+    if (picObj.type !== "image" && picObj.type !== "text" && picObj.type !== "json" && picObj.type) {
       return logger.error(`${e.logFnc}类型不正确`)
     }
 
@@ -256,9 +256,9 @@ export class Fun extends plugin {
 
     url = encodeURI(url)
 
-    if (picObj.type == 'text') {
+    if (picObj.type == "text") {
       url = await fetch(url).then(res => res.text()).catch(err => logger.error(err))
-    } else if (picObj.type == 'json') {
+    } else if (picObj.type == "json") {
       if (!picObj.path) return logger.error(`${e.logFnc}json未指定路径`)
       let res = await fetch(url).then(res => res.json()).catch(err => logger.error(err))
       url = _.get(res, picObj.path)
@@ -267,22 +267,22 @@ export class Fun extends plugin {
 
     logger.debug(`${e.logFnc}使用接口:${url}`)
     common.recallsendMsg(e, segment.image(url))
-    redis.set(key, 'cd', { EX: 2 })
+    redis.set(key, "cd", { EX: 2 })
   }
 
   // 查看头像
   async LookAvatar () {
-    const id = this.e.msg.replace(/^#?((查?看头像)|取头像)/, '').trim() || this.e.at ||
-      this.e.message.find(item => item.type == 'at')?.qq || this.e.user_id
+    const id = this.e.msg.replace(/^#?((查?看头像)|取头像)/, "").trim() || this.e.at ||
+      this.e.message.find(item => item.type == "at")?.qq || this.e.user_id
     try {
       let url = await this.e.group?.pickMember(id)?.getAvatarUrl()
       if (!url) url = await this.e.bot.pickFriend(id).getAvatarUrl()
-      const msgTest = this.e.msg.includes('取头像')
+      const msgTest = this.e.msg.includes("取头像")
       if (url) return await this.e.reply(msgTest ? `${url}` : segment.image(url))
     } catch (error) {
-      logger.error('获取头像错误', error)
+      logger.error("获取头像错误", error)
     }
-    await this.reply('❎ 获取头像错误', true)
+    await this.reply("❎ 获取头像错误", true)
     return false
   }
 }

@@ -1,21 +1,21 @@
-import cfg from '../../../../lib/config/config.js'
-import { common } from '../../model/index.js'
-import { Config } from '../../components/index.js'
+import cfg from "../../../../lib/config/config.js"
+import { common } from "../../model/index.js"
+import { Config } from "../../components/index.js"
 const ROLE_MAP = {
-  admin: '群管理',
-  owner: '群主',
-  member: '群员'
+  admin: "群管理",
+  owner: "群主",
+  member: "群员"
 }
 
-Bot.on?.('request', async (e) => {
-  let msg = ''
+Bot.on?.("request", async (e) => {
+  let msg = ""
   switch (e.request_type) {
-    case 'group':
+    case "group":
       switch (e.sub_type) {
-        case 'invite':
+        case "invite":
           if (!Config.whole.groupInviteRequest) return false
           if (cfg.masterQQ.includes(e.user_id)) return false
-          logger.info('[Yenai-Plugin]邀请机器人进群')
+          logger.info("[Yenai-Plugin]邀请机器人进群")
           msg = [
             segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/0`),
             `[通知(${e.self_id}) - 邀请机器人进群]\n`,
@@ -27,12 +27,12 @@ Bot.on?.('request', async (e) => {
               `邀请码：${e.seq}\n`
           ]
           if (cfg.other.autoQuit <= 0) {
-            msg.push('----------------\n可引用该消息回复"同意"或"拒绝"')
+            msg.push("----------------\n可引用该消息回复\"同意\"或\"拒绝\"")
           } else {
-            msg.push('已自动处理该邀请')
+            msg.push("已自动处理该邀请")
           }
           break
-        case 'add':
+        case "add":
           if (Config.groupAdd.openGroup.includes(e.group_id)) {
             let msg = [`${Config.groupAdd.msg}\n`,
               segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
@@ -45,7 +45,7 @@ Bot.on?.('request', async (e) => {
             await redis.set(`yenai:groupAdd:${sendmsg.message_id}`, e.user_id, { EX: 3600 })
           }
           if (!Config.getGroup(e.group_id).addGroupApplication) return false
-          logger.info('[Yenai-Plugin]加群申请')
+          logger.info("[Yenai-Plugin]加群申请")
           msg = [
             segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/0`),
             `[通知(${e.self_id}) - 加群申请]\n`,
@@ -53,25 +53,25 @@ Bot.on?.('request', async (e) => {
               `群名：${e.group_name}\n`,
               `账号：${e.user_id}\n`,
               `昵称：${e.nickname}`,
-              e.tips ? `\nTip：${e.tips}` : '',
+              e.tips ? `\nTip：${e.tips}` : "",
               `\n${e.comment}`
           ]
           break
       }
       break
-    case 'friend':
+    case "friend":
       if (!Config.whole.friendRequest) return false
-      logger.info('[Yenai-Plugin]好友申请')
+      logger.info("[Yenai-Plugin]好友申请")
       msg = [
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
         `[通知(${e.self_id}) - 添加好友申请]\n`,
           `申请人账号：${e.user_id}\n`,
           `申请人昵称：${e.nickname}\n`,
-          `申请来源：${e.source || '未知'}\n`,
-          `附加信息：${e.comment || '无附加信息'}\n`
+          `申请来源：${e.source || "未知"}\n`,
+          `附加信息：${e.comment || "无附加信息"}\n`
       ]
       if (cfg.other.autoFriend == 1) {
-        msg.push('Tip：已被 Yunzai 自动处理')
+        msg.push("Tip：已被 Yunzai 自动处理")
       } else {
         msg.push(
             `-------------\n可回复：#同意好友申请${e.user_id} \n或引用该消息回复"同意"或"拒绝"`

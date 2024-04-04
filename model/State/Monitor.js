@@ -1,8 +1,8 @@
-import { Config, Data } from '../../components/index.js'
-import _ from 'lodash'
-import { si } from './index.js'
-import { initDependence } from './DependencyChecker.js'
-import { addData, getFileSize } from './utils.js'
+import { Config, Data } from "../../components/index.js"
+import _ from "lodash"
+import { si } from "./index.js"
+import { initDependence } from "./DependencyChecker.js"
+import { addData, getFileSize } from "./utils.js"
 
 export default new class monitor {
   constructor () {
@@ -29,14 +29,14 @@ export default new class monitor {
       // 内存
       ram: [],
       // 主题
-      echarts_theme: Data.readJSON('resources/state/theme_westeros.json'),
+      echarts_theme: Data.readJSON("resources/state/theme_westeros.json"),
       backdrop: Config.state.backdrop
     }
     this.valueObject = {
-      networkStats: 'rx_sec,tx_sec,iface',
-      currentLoad: 'currentLoad',
-      mem: 'active',
-      fsStats: 'wx_sec,rx_sec'
+      networkStats: "rx_sec,tx_sec,iface",
+      currentLoad: "currentLoad",
+      mem: "active",
+      fsStats: "wx_sec,rx_sec"
     }
 
     this.init()

@@ -1,32 +1,32 @@
-import { PicSearch, common } from '../model/index.js'
-import { Config } from '../components/index.js'
-import _ from 'lodash'
+import { PicSearch, common } from "../model/index.js"
+import { Config } from "../components/index.js"
+import _ from "lodash"
 export class NewPicSearch extends plugin {
   constructor () {
     super({
-      name: '椰奶图片搜索',
-      event: 'message',
+      name: "椰奶图片搜索",
+      event: "message",
       priority: 2000,
       rule: [
         {
-          reg: '^#?(椰奶)?(以图)?搜图$',
-          fnc: 'SauceNAO'
+          reg: "^#?(椰奶)?(以图)?搜图$",
+          fnc: "SauceNAO"
         },
         {
           reg: /^#?(SauceNAO|sn)搜图$/i,
-          fnc: 'SauceNAO'
+          fnc: "SauceNAO"
         },
         {
           reg: /^#?(椰奶|WhatAnime|wa)?(以图)?搜番$/i,
-          fnc: 'WhatAnime'
+          fnc: "WhatAnime"
         },
         {
           reg: /^#?(Ascii2D|ac)搜图$/i,
-          fnc: 'Ascii2D'
+          fnc: "Ascii2D"
         },
         {
           reg: /^#设置SauceNAOApiKey/i,
-          fnc: 'UploadSauceNAOKey'
+          fnc: "UploadSauceNAOKey"
         }
 
       ]
@@ -35,7 +35,7 @@ export class NewPicSearch extends plugin {
 
   async SauceNAO (e) {
     if (!await this._Authentication(e)) return
-    if (!await this.handelImg(e, 'SauceNAO')) return
+    if (!await this.handelImg(e, "SauceNAO")) return
     await PicSearch.SauceNAO(e.img[0])
       .then(async res => res.length == 1
         ? common.recallsendMsg(e, res[0], true)
@@ -44,7 +44,7 @@ export class NewPicSearch extends plugin {
       .catch(async err => {
         await common.handleException(e, err)
         if (Config.picSearch.useAscii2dWhenFailed) {
-          await e.reply('SauceNAO搜图出错，自动使用Ascii2D进行搜索')
+          await e.reply("SauceNAO搜图出错，自动使用Ascii2D进行搜索")
           await this.Ascii2D(e)
         }
       })
@@ -52,7 +52,7 @@ export class NewPicSearch extends plugin {
 
   async Ascii2D (e) {
     if (!await this._Authentication(e)) return
-    if (!await this.handelImg(e, 'Ascii2D')) return
+    if (!await this.handelImg(e, "Ascii2D")) return
     await PicSearch.Ascii2D(e.img[0])
       .then(res => common.recallSendForwardMsg(e, [...res.color, ...res.bovw], { xmlTitle: false }))
       .catch(err => common.handleException(e, err))
@@ -60,8 +60,8 @@ export class NewPicSearch extends plugin {
 
   async WhatAnime (e) {
     if (!await this._Authentication(e)) return
-    if (!await this.handelImg(e, 'WhatAnime')) return
-    await PicSearch.WhatAnime(e.img[0].replace('/c2cpicdw.qpic.cn/offpic_new/', '/gchat.qpic.cn/gchatpic_new/'))
+    if (!await this.handelImg(e, "WhatAnime")) return
+    await PicSearch.WhatAnime(e.img[0].replace("/c2cpicdw.qpic.cn/offpic_new/", "/gchat.qpic.cn/gchatpic_new/"))
       .then(async res => {
         for (let i of res) {
           await e.reply(i)
@@ -73,26 +73,26 @@ export class NewPicSearch extends plugin {
 
   async UploadSauceNAOKey (e) {
     if (!this.e.isMaster) { return true }
-    if (e.isGroup) return e.reply('请私聊进行添加')
-    let apiKey = e.msg.replace(/#设置SauceNAOapiKey/i, '').trim()
-    if (!apiKey) return e.reply('❎ 请发送正确的apikey')
-    Config.modify('picSearch', 'SauceNAOApiKey', apiKey)
-    e.reply('OK')
+    if (e.isGroup) return e.reply("请私聊进行添加")
+    let apiKey = e.msg.replace(/#设置SauceNAOapiKey/i, "").trim()
+    if (!apiKey) return e.reply("❎ 请发送正确的apikey")
+    Config.modify("picSearch", "SauceNAOApiKey", apiKey)
+    e.reply("OK")
   }
 
   async _Authentication (e) {
     if (!this.e.isMaster) { return true }
     const { allowPM, limit, isMasterUse } = Config.picSearch
     if (isMasterUse) {
-      e.reply('主人没有开放这个功能哦(＊／ω＼＊)')
+      e.reply("主人没有开放这个功能哦(＊／ω＼＊)")
       return false
     }
     if (!allowPM && !e.isGroup) {
-      e.reply('主人已禁用私聊该功能')
+      e.reply("主人已禁用私聊该功能")
       return false
     }
-    if (!await common.limit(e.user_id, 'picSearch', limit)) {
-      e.reply('您已达今日「搜图搜番」次数上限', true, { at: true })
+    if (!await common.limit(e.user_id, "picSearch", limit)) {
+      e.reply("您已达今日「搜图搜番」次数上限", true, { at: true })
       return false
     }
     return true
@@ -106,21 +106,21 @@ export class NewPicSearch extends plugin {
       } else {
         source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
       }
-      e.img = [source.message.find(item => item.type == 'image')?.url]
+      e.img = [source.message.find(item => item.type == "image")?.url]
     }
     if (!_.isEmpty(e.img)) return true
     e.sourceFunName = funName
-    this.setContext('MonitorImg')
-    e.reply('⚠ 请发送图片')
+    this.setContext("MonitorImg")
+    e.reply("⚠ 请发送图片")
     return false
   }
 
   async MonitorImg () {
     if (!this.e.img) {
-      this.e.reply('❎ 未检测到图片操作已取消')
+      this.e.reply("❎ 未检测到图片操作已取消")
     } else {
       this[this.getContext().MonitorImg.sourceFunName](this.e)
     }
-    this.finish('MonitorImg')
+    this.finish("MonitorImg")
   }
 }

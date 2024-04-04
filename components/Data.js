@@ -1,11 +1,11 @@
-import _ from 'lodash'
-import fs from 'fs'
-import path from 'path'
+import _ from "lodash"
+import fs from "fs"
+import path from "path"
 
 const _path = process.cwd()
-const plugin = 'yenai-plugin'
-const getRoot = (root = '') => {
-  if (root === 'root' || root === 'yunzai') {
+const plugin = "yenai-plugin"
+const getRoot = (root = "") => {
+  if (root === "root" || root === "yunzai") {
     root = `${_path}/`
   } else if (!root) {
     root = `${_path}/plugins/${plugin}/`
@@ -18,14 +18,14 @@ let Data = {
   /*
   * 根据指定的path依次检查与创建目录
   * */
-  createDir (path = '', root = '', includeFile = false) {
+  createDir (path = "", root = "", includeFile = false) {
     root = getRoot(root)
-    let pathList = path.split('/')
+    let pathList = path.split("/")
     let nowPath = root
     pathList.forEach((name, idx) => {
       name = name.trim()
       if (!includeFile && idx <= pathList.length - 1) {
-        nowPath += name + '/'
+        nowPath += name + "/"
         if (name) {
           if (!fs.existsSync(nowPath)) {
             fs.mkdirSync(nowPath)
@@ -40,11 +40,11 @@ let Data = {
    * @param file
    * @param root
    */
-  readJSON (file = '', root = '') {
+  readJSON (file = "", root = "") {
     root = getRoot(root)
     if (fs.existsSync(`${root}/${file}`)) {
       try {
-        return JSON.parse(fs.readFileSync(`${root}/${file}`, 'utf8'))
+        return JSON.parse(fs.readFileSync(`${root}/${file}`, "utf8"))
       } catch (e) {
         console.log(e)
       }
@@ -59,7 +59,7 @@ let Data = {
    * @param root
    * @param space
    */
-  writeJSON (file, data, root = '', space = '\t') {
+  writeJSON (file, data, root = "", space = "\t") {
     // 检查并创建目录
     Data.createDir(file, root, true)
     root = getRoot(root)
@@ -89,10 +89,10 @@ let Data = {
     await redis.set(key, JSON.stringify(data), { EX })
   },
 
-  async importModule (file, root = '') {
+  async importModule (file, root = "") {
     root = getRoot(root)
     if (!/\.js$/.test(file)) {
-      file = file + '.js'
+      file = file + ".js"
     }
     if (fs.existsSync(`${root}/${file}`)) {
       try {
@@ -139,18 +139,18 @@ let Data = {
   *
   * */
 
-  getData (target, keyList = '', cfg = {}) {
+  getData (target, keyList = "", cfg = {}) {
     target = target || {}
     let defaultData = cfg.defaultData || {}
     let ret = {}
     // 分割逗号
-    if (typeof (keyList) === 'string') {
-      keyList = keyList.split(',')
+    if (typeof (keyList) === "string") {
+      keyList = keyList.split(",")
     }
 
     _.forEach(keyList, (keyCfg) => {
       // 处理通过:指定 toKey & fromKey
-      let _keyCfg = keyCfg.split(':')
+      let _keyCfg = keyCfg.split(":")
       let keyTo = _keyCfg[0].trim()
       let keyFrom = (_keyCfg[1] || _keyCfg[0]).trim()
       let keyRet = keyTo
@@ -211,8 +211,8 @@ let Data = {
   // 循环字符串回调
   eachStr: (arr, fn) => {
     if (_.isString(arr)) {
-      arr = arr.replace(/\s*(;|；|、|，)\s*/, ',')
-      arr = arr.split(',')
+      arr = arr.replace(/\s*(;|；|、|，)\s*/, ",")
+      arr = arr.split(",")
     } else if (_.isNumber(arr)) {
       arr = [arr.toString()]
     }

@@ -1,17 +1,17 @@
-import _ from 'lodash'
-import moment from 'moment'
-import fetch from 'node-fetch'
-import { Config } from '../components/index.js'
-import request from '../lib/request/request.js'
-import { rankType } from '../constants/pixiv.js'
-import { pixivMsg } from '../constants/msg.js'
-import PixivApi from './Pixiv/api.js'
+import _ from "lodash"
+import moment from "moment"
+import fetch from "node-fetch"
+import { Config } from "../components/index.js"
+import request from "../lib/request/request.js"
+import { rankType } from "../constants/pixiv.js"
+import { pixivMsg } from "../constants/msg.js"
+import PixivApi from "./Pixiv/api.js"
 /** API请求错误文案 */
 
 export default new class Pixiv {
   constructor () {
     this.ranktype = rankType
-    this.domain = 'http://api.obfs.dev/api/pixiv'
+    this.domain = "http://api.obfs.dev/api/pixiv"
     this.PixivClient = new PixivApi(Config.pixiv.refresh_token)
   }
 
@@ -19,7 +19,7 @@ export default new class Pixiv {
     if (!this.PixivClient?.auth) {
       await this.PixivClient.login()
     }
-    if (!this.PixivClient.auth?.user) throw new ReplyError('❎ 未获取到登录信息')
+    if (!this.PixivClient.auth?.user) throw new ReplyError("❎ 未获取到登录信息")
     const { profile_image_urls: { px_170x170 }, id, name, account, mail_address, is_premium, x_restrict } = this.PixivClient.auth.user
     return [
       await this._requestPixivImg(px_170x170),
@@ -35,9 +35,9 @@ export default new class Pixiv {
   get headers () {
     if (Config.pixiv.pixivDirectConnection) {
       return {
-        'Host': 'i.pximg.net',
-        'Referer': 'https://www.pixiv.net/',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.46'
+        "Host": "i.pximg.net",
+        "Referer": "https://www.pixiv.net/",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.46"
       }
     } else {
       return undefined
@@ -45,7 +45,7 @@ export default new class Pixiv {
   }
 
   get proxy () {
-    return Config.pixiv.pixivDirectConnection ? 'i.pximg.net' : Config.pixiv.pixivImageProxy
+    return Config.pixiv.pixivDirectConnection ? "i.pximg.net" : Config.pixiv.pixivImageProxy
   }
 
   /** 开始执行文案 */
@@ -67,7 +67,7 @@ export default new class Pixiv {
     } else {
       res = await request.get(`${this.domain}/illust`, { params }).then(res => res.json())
     }
-    if (res.error) throw new ReplyError(res.error?.user_message || '无法获取数据')
+    if (res.error) throw new ReplyError(res.error?.user_message || "无法获取数据")
     let illust = this._format(res.illust)
     let { id, title, user, tags, total_bookmarks, total_view, url, create_date, x_restrict, illust_ai_type } = illust
     let msg = [
@@ -78,19 +78,19 @@ export default new class Pixiv {
       `点赞：${total_bookmarks}\n`,
       `访问：${total_view}\n`,
       `isAI：${illust_ai_type == 2}\n`,
-      `发布：${moment(create_date).format('YYYY-MM-DD HH:mm:ss')}\n`,
-      `Tag：${tags.join('，')}\n`,
+      `发布：${moment(create_date).format("YYYY-MM-DD HH:mm:ss")}\n`,
+      `Tag：${tags.join("，")}\n`,
       `直链：https://pixiv.re/${id}.jpg\n`,
       `传送门：https://www.pixiv.net/artworks/${id}`
     ]
     if (filter && x_restrict) {
-      let linkmsg = ['该作品不适合所有年龄段，请自行使用链接查看：']
+      let linkmsg = ["该作品不适合所有年龄段，请自行使用链接查看："]
       if (url.length > 1) {
         linkmsg.push(...url.map((item, index) => `https://pixiv.re/${id}-${index + 1}.jpg`))
       } else {
         linkmsg.push(`https://pixiv.re/${id}.jpg`)
       }
-      throw new ReplyError(linkmsg.join('\n'))
+      throw new ReplyError(linkmsg.join("\n"))
     }
     let img = await Promise.all(url.map(async item => await this._requestPixivImg(item)))
     return { msg, img }
@@ -104,7 +104,7 @@ export default new class Pixiv {
    * @param {boolean} r18 是否为R18榜单
    * @returns {Array}
    */
-  async Rank (page = 1, date = '', mode = '周', r18 = false) {
+  async Rank (page = 1, date = "", mode = "周", r18 = false) {
     // 转为大写
     mode = _.toUpper(mode)
     // 排行榜类型
@@ -114,15 +114,15 @@ export default new class Pixiv {
     // r18处理
     if (r18) {
       let R18 = this.ranktype[mode].r18
-      if (!R18) throw new ReplyError('该排行没有不适合所有年龄段的分类哦~')
+      if (!R18) throw new ReplyError("该排行没有不适合所有年龄段的分类哦~")
       type = R18.type
       pageSizeAll = R18.total
     }
     // 总页数
     let pageAll = Math.ceil(pageSizeAll / 30)
-    if (page > pageAll) throw new ReplyError('哪有那么多图片给你辣(•̀へ •́ ╮ )')
+    if (page > pageAll) throw new ReplyError("哪有那么多图片给你辣(•̀へ •́ ╮ )")
 
-    if (!date) date = moment().subtract(moment().utcOffset(9).hour() >= 12 ? 1 : 2, 'days').format('YYYY-MM-DD')
+    if (!date) date = moment().subtract(moment().utcOffset(9).hour() >= 12 ? 1 : 2, "days").format("YYYY-MM-DD")
 
     const params = {
       mode: type,
@@ -136,7 +136,7 @@ export default new class Pixiv {
       res = await request.get(`${this.domain}/rank`, { params }).then(res => res.json())
     }
     if (res.error) throw new ReplyError(res.error.message)
-    if (_.isEmpty(res.illusts)) throw new ReplyError('暂无数据，请等待榜单更新哦(。-ω-)zzz')
+    if (_.isEmpty(res.illusts)) throw new ReplyError("暂无数据，请等待榜单更新哦(。-ω-)zzz")
 
     let illusts = await Promise.all(res.illusts.map(async (item, index) => {
       let list = this._format(item)
@@ -153,18 +153,18 @@ export default new class Pixiv {
       ]
     }))
     let formatDate = res.next_url.match(/date=(\d{4}-\d{1,2}-\d{1,2})/)[1]
-    formatDate = moment(formatDate, 'YYYY-MM-DD').format('YYYY年MM月DD日')
+    formatDate = moment(formatDate, "YYYY-MM-DD").format("YYYY年MM月DD日")
     if (/周/.test(mode)) {
-      formatDate = `${moment(formatDate, 'YYYY年MM月DD日').subtract(6, 'days').format('YYYY年MM月DD日')} ~ ${formatDate}`
+      formatDate = `${moment(formatDate, "YYYY年MM月DD日").subtract(6, "days").format("YYYY年MM月DD日")} ~ ${formatDate}`
     } else if (/月/.test(mode)) {
-      formatDate = `${moment(formatDate, 'YYYY年MM月DD日').subtract(29, 'days').format('YYYY年MM月DD日')} ~ ${formatDate}`
+      formatDate = `${moment(formatDate, "YYYY年MM月DD日").subtract(29, "days").format("YYYY年MM月DD日")} ~ ${formatDate}`
     }
     let list = [
-      `${formatDate}的${mode}${r18 ? 'R18' : ''}榜`,
+      `${formatDate}的${mode}${r18 ? "R18" : ""}榜`,
       `当前为第${page}页，共${pageAll}页，本页共${illusts.length}张，总共${pageSizeAll}张`
     ]
     if (page < pageAll) {
-      list.push(`可使用 "#看看${date ? `${formatDate}的` : ''}${mode}${r18 ? 'R18' : ''}榜第${page - 0 + 1}页" 翻页`)
+      list.push(`可使用 "#看看${date ? `${formatDate}的` : ""}${mode}${r18 ? "R18" : ""}榜第${page - 0 + 1}页" 翻页`)
     }
 
     list.push(...illusts)
@@ -178,19 +178,19 @@ export default new class Pixiv {
    * @returns {Array}
    */
   async vilipixSearchTags (tag, page = 1) {
-    const api = 'https://www.vilipix.com/api/v1/picture/public'
+    const api = "https://www.vilipix.com/api/v1/picture/public"
     const params = {
       limit: 30,
       tags: tag,
-      sort: 'new',
+      sort: "new",
       offset: (page - 1) * 30
     }
     let res = await request.get(api, { params }).then(res => res.json())
-    if (res.data.count == 0) throw new ReplyError('呜呜呜，人家没有找到相关的插画(ó﹏ò｡)')
+    if (res.data.count == 0) throw new ReplyError("呜呜呜，人家没有找到相关的插画(ó﹏ò｡)")
 
     let pageall = Math.ceil(res.data.count / 30)
 
-    if (page > pageall) throw new ReplyError('啊啊啊，淫家给不了你那么多辣d(ŐдŐ๑)')
+    if (page > pageall) throw new ReplyError("啊啊啊，淫家给不了你那么多辣d(ŐдŐ๑)")
 
     let list = [
       `当前为第${page}页，共${pageall}页，本页共${res.data.rows.length}张，总共${res.data.count}张`
@@ -222,7 +222,7 @@ export default new class Pixiv {
     const params = {
       word: tag,
       page,
-      order: 'popular_desc'
+      order: "popular_desc"
     }
     let res = null
     if (this.PixivClient.auth) {
@@ -231,8 +231,8 @@ export default new class Pixiv {
       res = await request.get(`${this.domain}/search`, { params }).then(res => res.json())
     }
     if (res.error) throw new ReplyError(res.error.message)
-    if (_.isEmpty(res.illusts)) throw new ReplyError('宝~没有数据了哦(๑＞︶＜)و')
-    let sortIllusts = _.orderBy(res.illusts, 'total_bookmarks', 'desc')
+    if (_.isEmpty(res.illusts)) throw new ReplyError("宝~没有数据了哦(๑＞︶＜)و")
+    let sortIllusts = _.orderBy(res.illusts, "total_bookmarks", "desc")
     let illusts = []
     let filterNum = 0
     let NowNum = res.illusts.length
@@ -252,10 +252,10 @@ export default new class Pixiv {
         await this._requestPixivImg(image_urls.large)
       ])
     }
-    if (_.isEmpty(illusts)) throw new ReplyError('该页全为涩涩内容已全部过滤(#／。＼#)')
+    if (_.isEmpty(illusts)) throw new ReplyError("该页全为涩涩内容已全部过滤(#／。＼#)")
 
     return [
-      `本页共${NowNum}张${filterNum ? `，过滤${filterNum}张` : ''}\n可尝试使用 "#tagpro搜图${tag}第${page - 0 + 1}页" 翻页\n无数据则代表无下一页`,
+      `本页共${NowNum}张${filterNum ? `，过滤${filterNum}张` : ""}\n可尝试使用 "#tagpro搜图${tag}第${page - 0 + 1}页" 翻页\n无数据则代表无下一页`,
       ...illusts
     ]
   }
@@ -272,7 +272,7 @@ export default new class Pixiv {
       res = await fetch(`${this.domain}/tags`).then(res => res.json())
     }
 
-    if (!res.trend_tags) throw new ReplyError('呜呜呜，没有获取到数据(๑ १д१)')
+    if (!res.trend_tags) throw new ReplyError("呜呜呜，没有获取到数据(๑ १д१)")
 
     let list = []
     for (let i of res.trend_tags) {
@@ -310,7 +310,7 @@ export default new class Pixiv {
           }
         }).then(res => res.json())
       }
-      if (_.isEmpty(wordlist.user_previews)) throw new ReplyError('呜呜呜，人家没有找到这个淫d(ŐдŐ๑)')
+      if (_.isEmpty(wordlist.user_previews)) throw new ReplyError("呜呜呜，人家没有找到这个淫d(ŐдŐ๑)")
       keyword = wordlist.user_previews[0].user.id
     }
     const params = {
@@ -326,7 +326,7 @@ export default new class Pixiv {
 
     if (res.error) throw new ReplyError(res.error.message)
     // 没有作品直接返回信息
-    if (_.isEmpty(res.illusts)) throw new ReplyError(page >= 2 ? '这一页没有作品辣（＞人＜；）' : 'Σ(っ °Д °;)っ这个淫居然没有作品')
+    if (_.isEmpty(res.illusts)) throw new ReplyError(page >= 2 ? "这一页没有作品辣（＞人＜；）" : "Σ(っ °Д °;)っ这个淫居然没有作品")
 
     let illusts = []
     let filter = 0
@@ -346,7 +346,7 @@ export default new class Pixiv {
         await this._requestPixivImg(url[0])
       ])
     }
-    if (_.isEmpty(illusts)) throw new ReplyError('该页全为涩涩内容已全部过滤(#／。＼#)')
+    if (_.isEmpty(illusts)) throw new ReplyError("该页全为涩涩内容已全部过滤(#／。＼#)")
     let { id: uid, name, profile_image_urls } = res.user
     return [
       [
@@ -354,7 +354,7 @@ export default new class Pixiv {
         `\nUid：${uid}\n`,
         `画师：${name}`
       ],
-      `本页共${NowNum}张${filter ? `，过滤${filter}张` : ''}\n可尝试使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页\n无数据则代表无下一页`,
+      `本页共${NowNum}张${filter ? `，过滤${filter}张` : ""}\n可尝试使用 "#uid搜图${keyword}第${page - 0 + 1}页" 翻页\n无数据则代表无下一页`,
       ...illusts
     ]
   }
@@ -379,7 +379,7 @@ export default new class Pixiv {
       user = await request.get(`${this.domain}/search_user`, { params }).then(res => res.json())
     }
     if (user.error) throw new ReplyError(user.error.message)
-    if (_.isEmpty(user.user_previews)) throw new ReplyError('呜呜呜，人家没有找到这个淫d(ŐдŐ๑)')
+    if (_.isEmpty(user.user_previews)) throw new ReplyError("呜呜呜，人家没有找到这个淫d(ŐдŐ๑)")
 
     let msg = await Promise.all(user.user_previews.slice(0, 10).map(async (item, index) => {
       let { id, name, profile_image_urls } = item.user
@@ -388,7 +388,7 @@ export default new class Pixiv {
         await this._requestPixivImg(profile_image_urls),
         `\nid: ${id}\n`,
         `name: ${name}\n`,
-        '作品:\n'
+        "作品:\n"
       ]
       for (let i of item.illusts) {
         let { image_urls, x_restrict } = this._format(i)
@@ -398,7 +398,7 @@ export default new class Pixiv {
       return ret
     }))
     if (msg.length == 30)msg.unshift(`可尝试使用 "#user搜索${word}第${page + 1}页" 翻页`)
-    msg.unshift(`当前为第${page}页，已${isfilter ? '开启' : '关闭'}过滤`)
+    msg.unshift(`当前为第${page}页，已${isfilter ? "开启" : "关闭"}过滤`)
     return msg
   }
 
@@ -410,7 +410,7 @@ export default new class Pixiv {
   async vilipixRandomImg (limit) {
     let api = `https://www.vilipix.com/api/v1/picture/recommand?limit=${limit}&offset=${_.random(1, 700)}`
     let res = await request.get(api).then(res => res.json())
-    if (!res.data || !res.data.rows) throw new ReplyError('呜呜呜，没拿到瑟瑟的图片(˃ ⌑ ˂ഃ )')
+    if (!res.data || !res.data.rows) throw new ReplyError("呜呜呜，没拿到瑟瑟的图片(˃ ⌑ ˂ഃ )")
     return res.data.rows.map(item => {
       let { picture_id, title, regular_url, tags, like_total } = item
       return [
@@ -438,7 +438,7 @@ export default new class Pixiv {
       res = await request.get(`${this.domain}/related`, { params }).then(res => res.json())
     }
     if (res.error) throw new ReplyError(res.error.user_message)
-    if (_.isEmpty(res.illusts)) throw new ReplyError('呃...没有数据(•ิ_•ิ)')
+    if (_.isEmpty(res.illusts)) throw new ReplyError("呃...没有数据(•ิ_•ิ)")
 
     let illusts = []
     let filter = 0
@@ -458,10 +458,10 @@ export default new class Pixiv {
         await this._requestPixivImg(image_urls.large)
       ])
     }
-    if (_.isEmpty(illusts)) throw new ReplyError('啊啊啊！！！居然全是瑟瑟哒不给你看(＊／ω＼＊)')
+    if (_.isEmpty(illusts)) throw new ReplyError("啊啊啊！！！居然全是瑟瑟哒不给你看(＊／ω＼＊)")
 
     return [
-      `Pid:${pid}的相关作品，共${res.illusts.length}张${filter ? `，过滤${filter}张` : ''}`,
+      `Pid:${pid}的相关作品，共${res.illusts.length}张${filter ? `，过滤${filter}张` : ""}`,
       ...illusts
     ]
   }
@@ -471,13 +471,13 @@ export default new class Pixiv {
    * @param pro
    */
   async pximg (pro) {
-    let url = 'https://image.anosu.top/pixiv/json'
+    let url = "https://image.anosu.top/pixiv/json"
     const params = {
       r18: pro ? 1 : 0,
       proxy: this.proxy
     }
     let res = await request.get(url, {
-      statusCode: 'json',
+      statusCode: "json",
       params
     })
     let { pid, uid, title, user, tags, url: urls, r18 } = res[0]
@@ -487,7 +487,7 @@ export default new class Pixiv {
       `R18: ${r18 ?? false}\n`,
       `标题：${title}\n`,
       `画师：${user}\n`,
-      `Tag：${tags.join('，')}\n`,
+      `Tag：${tags.join("，")}\n`,
       await this._requestPixivImg(urls)
     ]
     return msg
@@ -520,7 +520,7 @@ export default new class Pixiv {
    * @returns {Promise}
    */
   async _requestPixivImg (url) {
-    url = url.replace('i.pximg.net', this.proxy)
+    url = url.replace("i.pximg.net", this.proxy)
     logger.debug(`pixiv getImg URL: ${url}`)
     let headers = /s.pximg.net/.test(url) ? undefined : this.headers
     return request.proxyRequestImg(url, { headers })

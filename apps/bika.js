@@ -1,56 +1,56 @@
-import { Bika, common, Pixiv } from '../model/index.js'
-import { Config } from '../components/index.js'
-import { Admin } from './admin.js'
-import translateChinaNum from '../tools/translateChinaNum.js'
+import { Bika, common, Pixiv } from "../model/index.js"
+import { Config } from "../components/index.js"
+import { Admin } from "./admin.js"
+import translateChinaNum from "../tools/translateChinaNum.js"
 
 // 汉字数字匹配正则
-const numReg = '[零一壹二两三四五六七八九十百千万亿\\d]+'
-const Prefix = '(bika|哔咔)'
+const numReg = "[零一壹二两三四五六七八九十百千万亿\\d]+"
+const Prefix = "(bika|哔咔)"
 // 命令正则
 const searchReg = new RegExp(`^#?${Prefix}(类别|作者|高级)?搜索(.*?)(第(${numReg})页)?$`)
 const comicPageReg = new RegExp(`^#?${Prefix}id(.*?)(第(${numReg})页)?(第(${numReg})话)?$`)
 export class NewBika extends plugin {
   constructor () {
     super({
-      name: '椰奶哔咔',
-      event: 'message',
+      name: "椰奶哔咔",
+      event: "message",
       priority: 2000,
       rule: [
         {
           reg: searchReg,
-          fnc: 'search'
+          fnc: "search"
         },
         {
           reg: comicPageReg,
-          fnc: 'comicPage'
+          fnc: "comicPage"
         },
         {
           reg: `^#?${Prefix}看\\d+$`,
-          fnc: 'viewComicPage'
+          fnc: "viewComicPage"
         },
         {
           reg: `^#?${Prefix}下一页$`,
-          fnc: 'nextComicPage'
+          fnc: "nextComicPage"
         },
         {
           reg: `^#?${Prefix}下一话$`,
-          fnc: 'nextChapter'
+          fnc: "nextChapter"
         },
         {
           reg: `^#?${Prefix}类别列表$`,
-          fnc: 'categories'
+          fnc: "categories"
         },
         {
           reg: `^#?${Prefix}(详情|细节)(.*)$`,
-          fnc: 'comicDetail'
+          fnc: "comicDetail"
         },
         {
           reg: `^#?${Prefix}修改图片质量(.*)$`,
-          fnc: 'imageQuality'
+          fnc: "imageQuality"
         },
         {
           reg: `^#?${Prefix}(开启|关闭)直连$`,
-          fnc: 'directConnection'
+          fnc: "directConnection"
         }
       ]
 
@@ -115,7 +115,7 @@ export class NewBika extends plugin {
    */
   async nextChapter (e) {
     if (!await this._Authentication(e)) return
-    await Bika.next('chapter')
+    await Bika.next("chapter")
       .then(res => common.recallSendForwardMsg(e, res))
       .catch(err => common.handleException(e, err))
   }
@@ -152,14 +152,14 @@ export class NewBika extends plugin {
   async imageQuality (e) {
     let quality = e.msg.match(new RegExp(`#?${Prefix}修改图片质量(.*)`))[2]
     let imageQualityType = {
-      低质量: 'low',
-      中等质量: 'medium',
-      高质量: 'high',
-      原图: 'original'
+      低质量: "low",
+      中等质量: "medium",
+      高质量: "high",
+      原图: "original"
     }
-    if (!imageQualityType[quality] && !Object.values(imageQualityType).includes(quality)) return e.reply(`错误参数，支持的参数为${Object.keys(imageQualityType).join('，')}`)
+    if (!imageQualityType[quality] && !Object.values(imageQualityType).includes(quality)) return e.reply(`错误参数，支持的参数为${Object.keys(imageQualityType).join("，")}`)
     let type = imageQualityType[quality] ?? quality
-    Config.modify('bika', 'imageQuality', type)
+    Config.modify("bika", "imageQuality", type)
     new Admin().SeSe_Settings(e)
   }
 
@@ -171,21 +171,21 @@ export class NewBika extends plugin {
     if (!this.e.isMaster) { return true }
     let now = Config.bika.bikaDirectConnection
     let isSwitch = /开启/.test(e.msg)
-    if (now && isSwitch) return e.reply('❎ bika图片直连已处于开启状态')
-    if (!now && !isSwitch) return e.reply('❎ bika图片直连已处于关闭状态')
-    Config.modify('bika', 'bikaDirectConnection', isSwitch)
+    if (now && isSwitch) return e.reply("❎ bika图片直连已处于开启状态")
+    if (!now && !isSwitch) return e.reply("❎ bika图片直连已处于关闭状态")
+    Config.modify("bika", "bikaDirectConnection", isSwitch)
     new Admin().SeSe_Settings(e)
   }
 
   async _Authentication (e) {
     if (!this.e.isMaster) { return true }
-    if (!common.checkSeSePermission(e, 'sesepro')) return false
+    if (!common.checkSeSePermission(e, "sesepro")) return false
     if (!Config.bika.allowPM && !e.isGroup) {
-      e.reply('主人已禁用私聊该功能')
+      e.reply("主人已禁用私聊该功能")
       return false
     }
-    if (!await common.limit(e.user_id, 'bika', Config.bika.limit)) {
-      e.reply('您已达今日「bika」次数上限', true, { at: true })
+    if (!await common.limit(e.user_id, "bika", Config.bika.limit)) {
+      e.reply("您已达今日「bika」次数上限", true, { at: true })
       return false
     }
     return true

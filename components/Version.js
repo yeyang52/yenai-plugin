@@ -1,6 +1,6 @@
-import fs from 'fs'
-import _ from 'lodash'
-import cfg from '../../../lib/config/config.js'
+import fs from "fs"
+import _ from "lodash"
+import cfg from "../../../lib/config/config.js"
 const Plugin_Path = `${process.cwd()}/plugins/yenai-plugin`
 const README_path = `${Plugin_Path}/README.md`
 const CHANGELOG_path = `${Plugin_Path}/CHANGELOG.md`
@@ -12,19 +12,19 @@ let currentVersion
 let versionCount = 2
 
 const getLine = function (line) {
-  line = line.replace(/(^\s*\*|\r)/g, '')
-  line = line.replace(/\s*`([^`]+`)/g, '<span class="cmd">$1')
-  line = line.replace(/`\s*/g, '</span>')
-  line = line.replace(/\s*\*\*([^*]+\*\*)/g, '<span class="strong">$1')
-  line = line.replace(/\*\*\s*/g, '</span>')
-  line = line.replace(/ⁿᵉʷ/g, '<span class="new"></span>')
+  line = line.replace(/(^\s*\*|\r)/g, "")
+  line = line.replace(/\s*`([^`]+`)/g, "<span class=\"cmd\">$1")
+  line = line.replace(/`\s*/g, "</span>")
+  line = line.replace(/\s*\*\*([^*]+\*\*)/g, "<span class=\"strong\">$1")
+  line = line.replace(/\*\*\s*/g, "</span>")
+  line = line.replace(/ⁿᵉʷ/g, "<span class=\"new\"></span>")
   return line
 }
 
 try {
   if (fs.existsSync(CHANGELOG_path)) {
-    logs = fs.readFileSync(CHANGELOG_path, 'utf8') || ''
-    logs = logs.replace(/\t/g, '   ').split('\n')
+    logs = fs.readFileSync(CHANGELOG_path, "utf8") || ""
+    logs = logs.replace(/\t/g, "   ").split("\n")
     let temp = {}
     let lastLine = {}
     _.forEach(logs, (line) => {
@@ -78,7 +78,7 @@ try {
 
 try {
   if (fs.existsSync(README_path)) {
-    let README = fs.readFileSync(README_path, 'utf8') || ''
+    let README = fs.readFileSync(README_path, "utf8") || ""
     let reg = /版本：(.*)/.exec(README)
     if (reg) {
       currentVersion = reg[1]
@@ -87,12 +87,12 @@ try {
 } catch (err) { }
 
 let yunzaiName = cfg.package.name
-if (yunzaiName == 'miao-yunzai') {
-  yunzaiName = 'Miao-Yunzai'
-} else if (yunzaiName == 'yunzai') {
-  yunzaiName = 'Yunzai-Bot'
-} else if (yunzaiName == 'trss-yunzai') {
-  yunzaiName = 'TRSS-Yunzai'
+if (yunzaiName == "miao-yunzai") {
+  yunzaiName = "Miao-Yunzai"
+} else if (yunzaiName == "yunzai") {
+  yunzaiName = "Yunzai-Bot"
+} else if (yunzaiName == "trss-yunzai") {
+  yunzaiName = "TRSS-Yunzai"
 } else {
   yunzaiName = _.capitalize(yunzaiName)
 }

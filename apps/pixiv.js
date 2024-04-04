@@ -1,83 +1,83 @@
-import plugin from '../../../lib/plugins/plugin.js'
-import { Config } from '../components/index.js'
-import { Pixiv, common, setu } from '../model/index.js'
-import { Admin } from './admin.js'
-import { ImageRPSS } from '../constants/pixiv.js'
-import translateChinaNum from '../tools/translateChinaNum.js'
+import plugin from "../../../lib/plugins/plugin.js"
+import { Config } from "../components/index.js"
+import { Pixiv, common, setu } from "../model/index.js"
+import { Admin } from "./admin.js"
+import { ImageRPSS } from "../constants/pixiv.js"
+import translateChinaNum from "../tools/translateChinaNum.js"
 // 文案
-const SWITCH_ERROR = '主人没有开放这个功能哦(＊／ω＼＊)'
+const SWITCH_ERROR = "主人没有开放这个功能哦(＊／ω＼＊)"
 // 汉字数字匹配正则
-const numReg = '[一壹二两三四五六七八九十百千万亿\\d]+'
+const numReg = "[一壹二两三四五六七八九十百千万亿\\d]+"
 // 正则
 const pidReg = /^#?pid搜图\s?(\d+)$/i
 
-const rankingrReg = new RegExp(`^#?看看((\\d{4}-\\d{1,2}-\\d{1,2})的)?(${Object.keys(Pixiv.ranktype).join('|')})(r18)?榜\\s?(第(${numReg})页)?$`, 'i')
-const tagReg = new RegExp(`^#?tag(pro)?搜图(.*?)(第(${numReg})页)?$`, 'i')
-const uidReg = new RegExp(`^#?uid搜图(.*?)(第(${numReg})页)?$`, 'i')
-const searchUser = new RegExp(`^#?user搜索(.*?)(第(${numReg})页)?$`, 'i')
+const rankingrReg = new RegExp(`^#?看看((\\d{4}-\\d{1,2}-\\d{1,2})的)?(${Object.keys(Pixiv.ranktype).join("|")})(r18)?榜\\s?(第(${numReg})页)?$`, "i")
+const tagReg = new RegExp(`^#?tag(pro)?搜图(.*?)(第(${numReg})页)?$`, "i")
+const uidReg = new RegExp(`^#?uid搜图(.*?)(第(${numReg})页)?$`, "i")
+const searchUser = new RegExp(`^#?user搜索(.*?)(第(${numReg})页)?$`, "i")
 const randomImgReg = new RegExp(`^#?来(${numReg})?张(好(康|看)(的|哒)|hkd|涩图)$|^#有内鬼$`)
 
 export class NewPixiv extends plugin {
   constructor () {
     super({
-      name: '椰奶pixiv',
-      event: 'message',
+      name: "椰奶pixiv",
+      event: "message",
       priority: 500,
       rule: [
         {
           reg: pidReg,
-          fnc: 'searchPid'
+          fnc: "searchPid"
         },
         {
           reg: rankingrReg,
-          fnc: 'pixivRank'
+          fnc: "pixivRank"
         },
         {
           reg: tagReg,
-          fnc: 'searchTags'
+          fnc: "searchTags"
         },
         {
           reg: uidReg,
-          fnc: 'searchUid'
+          fnc: "searchUid"
         },
         {
           reg: searchUser,
-          fnc: 'searchUser'
+          fnc: "searchUser"
         },
         {
           reg: randomImgReg,
-          fnc: 'vilipixRandomImg'
+          fnc: "vilipixRandomImg"
         },
         {
-          reg: '^#?(查看|获取)?热门(t|T)(a|A)(g|G)$',
-          fnc: 'popularTags'
+          reg: "^#?(查看|获取)?热门(t|T)(a|A)(g|G)$",
+          fnc: "popularTags"
         },
         {
-          reg: '^#?看?看?相关作品(\\d+)$',
-          fnc: 'relatedIllust'
+          reg: "^#?看?看?相关作品(\\d+)$",
+          fnc: "relatedIllust"
         },
         {
-          reg: '^#来(\\d+)?张推荐图$',
-          fnc: 'illustRecommended'
+          reg: "^#来(\\d+)?张推荐图$",
+          fnc: "illustRecommended"
         },
         {
-          reg: '^#?(P|p)ximg(pro)?$',
-          fnc: 'pximg'
+          reg: "^#?(P|p)ximg(pro)?$",
+          fnc: "pximg"
         },
         {
-          reg: '^#(p站|pixiv)(查看|更换)代理',
-          fnc: 'setProxy',
-          permission: 'master'
+          reg: "^#(p站|pixiv)(查看|更换)代理",
+          fnc: "setProxy",
+          permission: "master"
         },
         {
-          reg: '^#(p站|pixiv)(开启|关闭)直连$',
-          fnc: 'directConnection',
-          permission: 'master'
+          reg: "^#(p站|pixiv)(开启|关闭)直连$",
+          fnc: "directConnection",
+          permission: "master"
         },
         {
-          reg: '^#(p站|pixiv)登录信息$',
-          fnc: 'loginInfo',
-          permission: 'master'
+          reg: "^#(p站|pixiv)登录信息$",
+          fnc: "loginInfo",
+          permission: "master"
         }
       ]
     })
@@ -85,7 +85,7 @@ export class NewPixiv extends plugin {
 
   // pid搜图
   async searchPid (e) {
-    if (!await this._Authentication(e, 'sese')) return
+    if (!await this._Authentication(e, "sese")) return
     e.reply(Pixiv.startMsg)
     let regRet = pidReg.exec(e.msg)
     let filter = !e.isMaster && !setu.getR18(e.group_id)
@@ -100,7 +100,7 @@ export class NewPixiv extends plugin {
   // p站排行榜
   async pixivRank (e) {
     let regRet = rankingrReg.exec(e.msg)
-    if (!await this._Authentication(e, 'sese')) return
+    if (!await this._Authentication(e, "sese")) return
     if ((regRet[4] && !setu.getR18(e.group_id)) && !e.isMaster) {
       return e.reply(SWITCH_ERROR)
     }
@@ -119,13 +119,13 @@ export class NewPixiv extends plugin {
    */
   async searchTags (e) {
     let regRet = tagReg.exec(e.msg)
-    if (!await this._Authentication(e, 'sese')) return
-    if (regRet[1] && !await this._Authentication(e, 'sesepro')) return
+    if (!await this._Authentication(e, "sese")) return
+    if (regRet[1] && !await this._Authentication(e, "sesepro")) return
 
     e.reply(Pixiv.startMsg)
 
     let page = translateChinaNum(regRet[4])
-    await Pixiv[`${regRet[1] ? 's' : 'vilipixS'}earchTags`](regRet[2], page, !setu.getR18(e.group_id))
+    await Pixiv[`${regRet[1] ? "s" : "vilipixS"}earchTags`](regRet[2], page, !setu.getR18(e.group_id))
       .then(res => common.recallSendForwardMsg(e, res))
       .catch(err => common.handleException(e, err))
   }
@@ -135,7 +135,7 @@ export class NewPixiv extends plugin {
    * @param e
    */
   async popularTags (e) {
-    if (!await this._Authentication(e, 'sese')) return
+    if (!await this._Authentication(e, "sese")) return
     e.reply(Pixiv.startMsg)
     await Pixiv.PopularTags()
       .then(res => common.recallSendForwardMsg(e, res))
@@ -147,7 +147,7 @@ export class NewPixiv extends plugin {
    * @param e
    */
   async searchUid (e) {
-    if (!await this._Authentication(e, 'sese')) return
+    if (!await this._Authentication(e, "sese")) return
 
     e.reply(Pixiv.startMsg)
 
@@ -161,13 +161,13 @@ export class NewPixiv extends plugin {
 
   // 随机原创插画
   async vilipixRandomImg (e) {
-    if (!await this._Authentication(e, 'sese')) return
+    if (!await this._Authentication(e, "sese")) return
     e.reply(Pixiv.startMsg)
     let regRet = randomImgReg.exec(e.msg)
 
     let num = regRet[1] || 1
     if (num > 50) {
-      e.reply('你要的太多辣，奴家只给你一张辣(•́へ•́ ╬)')
+      e.reply("你要的太多辣，奴家只给你一张辣(•́へ•́ ╬)")
       num = 1
     }
     num = translateChinaNum(num)
@@ -178,7 +178,7 @@ export class NewPixiv extends plugin {
 
   // 相关作品
   async relatedIllust (e) {
-    if (!await this._Authentication(e, 'sese')) return
+    if (!await this._Authentication(e, "sese")) return
 
     e.reply(Pixiv.startMsg)
 
@@ -191,8 +191,8 @@ export class NewPixiv extends plugin {
   // p站单图
   async pximg (e) {
     let ispro = /pro/.test(e.msg)
-    if (!await this._Authentication(e, 'sese')) return
-    if (ispro && !await this._Authentication(e, 'sesepro', false)) return
+    if (!await this._Authentication(e, "sese")) return
+    if (ispro && !await this._Authentication(e, "sesepro", false)) return
 
     await Pixiv.pximg(ispro)
       .then(res => ispro ? common.recallSendForwardMsg(e, [res]) : common.recallsendMsg(e, res, false))
@@ -204,7 +204,7 @@ export class NewPixiv extends plugin {
    * @param e
    */
   async searchUser (e) {
-    if (!await this._Authentication(e, 'sese')) return
+    if (!await this._Authentication(e, "sese")) return
 
     e.reply(Pixiv.startMsg)
     let regRet = e.msg.match(searchUser)
@@ -219,7 +219,7 @@ export class NewPixiv extends plugin {
    * @param e
    */
   async illustRecommended (e) {
-    if (!await this._Authentication(e, 'sese')) return
+    if (!await this._Authentication(e, "sese")) return
     e.reply(Pixiv.startMsg)
     let num = e.msg.match(/\d+/) || 1
     await Pixiv.illustRecommended(num).then(res => res.length == 1
@@ -230,16 +230,16 @@ export class NewPixiv extends plugin {
 
   // 更换代理
   async setProxy (e) {
-    if (/查看/.test(e.msg)) return e.reply(await redis.get('yenai:proxy'))
-    let proxy = e.msg.replace(/#|(p站|pixiv)更换代理/g, '').trim()
+    if (/查看/.test(e.msg)) return e.reply(await redis.get("yenai:proxy"))
+    let proxy = e.msg.replace(/#|(p站|pixiv)更换代理/g, "").trim()
     if (new RegExp(`^[1-${ImageRPSS.length}]$`).test(proxy)) {
       proxy = ImageRPSS[proxy - 1]
     }
     if (!/([\w\d]+\.){2}[\w\d]+/.test(proxy)) {
-      return e.reply('请检查代理地址是否正确')
+      return e.reply("请检查代理地址是否正确")
     }
     logger.mark(`${e.logFnc}切换为${proxy}`)
-    Config.modify('pixiv', 'pixivImageProxy', proxy)
+    Config.modify("pixiv", "pixivImageProxy", proxy)
     new Admin().SeSe_Settings(e)
   }
 
@@ -249,7 +249,7 @@ export class NewPixiv extends plugin {
    */
   async directConnection (e) {
     let isSwitch = /开启/.test(e.msg)
-    Config.modify('pixiv', 'pixivDirectConnection', isSwitch)
+    Config.modify("pixiv", "pixivDirectConnection", isSwitch)
     new Admin().SeSe_Settings(e)
   }
 
@@ -263,15 +263,15 @@ export class NewPixiv extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  async _Authentication (e, type = 'sese', limit = true) {
+  async _Authentication (e, type = "sese", limit = true) {
     if (e.isMaster) return true
     if (!Config.pixiv.allowPM && !e.isGroup) {
-      e.reply('主人已禁用私聊该功能')
+      e.reply("主人已禁用私聊该功能")
       return false
     }
     if (!common.checkSeSePermission(e, type)) return false
-    if (limit && !await common.limit(e.user_id, 'pixiv', Config.pixiv.limit)) {
-      e.reply('您已达今日「Pixiv」次数上限', true, { at: true })
+    if (limit && !await common.limit(e.user_id, "pixiv", Config.pixiv.limit)) {
+      e.reply("您已达今日「Pixiv」次数上限", true, { at: true })
       return false
     }
     return true

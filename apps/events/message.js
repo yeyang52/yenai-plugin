@@ -1,7 +1,7 @@
-import { common } from '../../model/index.js'
-import { Config } from '../../components/index.js'
+import { common } from "../../model/index.js"
+import { Config } from "../../components/index.js"
 
-Bot.on?.('message', async (e) => {
+Bot.on?.("message", async (e) => {
   // 判断是否存在消息
   if (!e?.message?.length) return false
   // 判断是否为机器人消息
@@ -11,7 +11,7 @@ Bot.on?.('message', async (e) => {
   // 删除缓存时间
   const deltime = Config.whole.deltime
   // 判断群聊还是私聊
-  if (e.message_type == 'group') {
+  if (e.message_type == "group") {
     // 关闭撤回停止存储
     if (Config.getGroup(e.group_id).groupRecall) {
       // logger.debug(`[Yenai-Plugin]存储群消息${e.group_id}=>${e.message_id}`)
@@ -22,7 +22,7 @@ Bot.on?.('message', async (e) => {
         { EX: deltime }
       )
     }
-  } else if (e.message_type == 'private') {
+  } else if (e.message_type == "private") {
     // 关闭撤回停止存储
     if (Config.whole.PrivateRecall) {
       // logger.debug(`[Yenai-Plugin]存储私聊消息${e.user_id}=>${e.message_id}`)
@@ -38,11 +38,11 @@ Bot.on?.('message', async (e) => {
   let msg = null
   let forwardMsg = null
   if (
-    e.message[0].type == 'flash' &&
-    e.message_type === 'group'
+    e.message[0].type == "flash" &&
+    e.message_type === "group"
   ) {
     if (!Config.getGroup(e.group_id).flashPhoto) return false
-    logger.info('[Yenai-Plugin]群聊闪照')
+    logger.info("[Yenai-Plugin]群聊闪照")
     msg = [
       segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`),
       `[消息(${e.self_id}) - 闪照消息]\n`,
@@ -53,11 +53,11 @@ Bot.on?.('message', async (e) => {
       `闪照链接:${e.message[0].url}`
     ]
   } else if (
-    e.message[0].type == 'flash' &&
-    e.message_type === 'discuss' &&
+    e.message[0].type == "flash" &&
+    e.message_type === "discuss" &&
     Config.whole.flashPhoto
   ) {
-    logger.info('[Yenai-Plugin]讨论组闪照')
+    logger.info("[Yenai-Plugin]讨论组闪照")
     msg = [
       segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
       `[消息(${e.self_id}) - 闪照消息]\n`,
@@ -68,11 +68,11 @@ Bot.on?.('message', async (e) => {
       `闪照链接:${e.message[0].url}`
     ]
   } else if (
-    e.message[0].type == 'flash' &&
-    e.message_type === 'private' &&
+    e.message[0].type == "flash" &&
+    e.message_type === "private" &&
     Config.whole.flashPhoto
   ) {
-    logger.info('[Yenai-Plugin]好友闪照')
+    logger.info("[Yenai-Plugin]好友闪照")
     msg = [
       segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
       `[消息(${e.self_id}) - 闪照消息]\n`,
@@ -80,7 +80,7 @@ Bot.on?.('message', async (e) => {
       `发送人昵称：${e.sender.nickname}\n`,
       `闪照链接:${e.message[0].url}`
     ]
-  } else if (e.message_type === 'private' && e.sub_type === 'friend') {
+  } else if (e.message_type === "private" && e.sub_type === "friend") {
     if (!Config.whole.privateMessage) return false
 
     // 特殊消息处理
@@ -89,26 +89,26 @@ Bot.on?.('message', async (e) => {
       forwardMsg = arr.msg
       e.message = arr.type
     }
-    logger.info('[Yenai-Plugin]好友消息')
+    logger.info("[Yenai-Plugin]好友消息")
     msg = [
       segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
       `[消息(${e.self_id}) - 好友消息]\n`,
       `好友账号：${e.user_id}\n`,
       `好友昵称：${e.sender.nickname}\n`,
-      '消息内容：',
+      "消息内容：",
       ...e.message
     ]
     // 添加提示消息
     const key = `yenai:notice:privateMessage:${e.user_id}`
     if (!(await redis.get(key))) {
-      await redis.set(key, '1', { EX: 600 })
+      await redis.set(key, "1", { EX: 600 })
       msg.push(
-        '\n-------------\n',
-        '引用该消息：回复 <内容>\n',
+        "\n-------------\n",
+        "引用该消息：回复 <内容>\n",
         `或发送:回复 ${e.user_id} <内容>`
       )
     }
-  } else if (e.message_type === 'private' && e.sub_type === 'group') {
+  } else if (e.message_type === "private" && e.sub_type === "group") {
     if (!Config.getGroup(e.group_id).grouptemporaryMessage) return false
     // 特殊消息处理
     const arr = getMsgType(e.message)
@@ -116,26 +116,26 @@ Bot.on?.('message', async (e) => {
       forwardMsg = arr.msg
       e.message = arr.type
     }
-    logger.info('[Yenai-Plugin]群临时消息')
+    logger.info("[Yenai-Plugin]群临时消息")
     // 发送的消息
     msg = [
       segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
       `[消息(${e.self_id}) - 群临时消息]\n`,
       `来源群号：${e.sender.group_id}\n`,
       `发送人账号：${e.user_id}\n`,
-      '消息内容：',
+      "消息内容：",
       ...e.message
     ]
     // 添加提示消息
     const key = `yenai:notice:tempprivateMessage:${e.user_id}`
     if (!(await redis.get(key))) {
-      await redis.set(key, '1', { EX: 600 })
+      await redis.set(key, "1", { EX: 600 })
       msg.push(
-        '\n-------------\n',
-        '可回复 "加为好友" 添加好友\n或 "回复 <消息>"'
+        "\n-------------\n",
+        "可回复 \"加为好友\" 添加好友\n或 \"回复 <消息>\""
       )
     }
-  } else if (e.message_type === 'group') {
+  } else if (e.message_type === "group") {
     if (!Config.getGroup(e.group_id).groupMessage) return false
     // 特殊消息处理
     const arr = getMsgType(e.message)
@@ -143,7 +143,7 @@ Bot.on?.('message', async (e) => {
       forwardMsg = arr.msg
       e.message = arr.type
     }
-    logger.info('[Yenai-Plugin]群聊消息')
+    logger.info("[Yenai-Plugin]群聊消息")
     msg = [
       segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`),
       `[消息(${e.self_id}) - 群聊消息]\n`,
@@ -151,12 +151,12 @@ Bot.on?.('message', async (e) => {
       `来源群名：${e.group_name}\n`,
       `发送人账号：${e.user_id}\n`,
       `发送人昵称：${e.sender.nickname}\n`,
-      '消息内容：',
+      "消息内容：",
       ...e.message
     ]
-  } else if (e.message_type === 'discuss') {
+  } else if (e.message_type === "discuss") {
     if (!Config.getGroup(e.group_id).groupMessage) return false
-    logger.info('[Yenai-Plugin]讨论组消息')
+    logger.info("[Yenai-Plugin]讨论组消息")
     msg = [
       segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
       `[消息(${e.self_id}) - 群聊消息]\n`,
@@ -182,15 +182,15 @@ function getMsgType (msg) {
   const msgType = {
     record: {
       msg: segment.record(msg[0].url),
-      type: '[语音]'
+      type: "[语音]"
     },
     video: {
       msg: segment.video(msg[0].file),
-      type: '[视频]'
+      type: "[视频]"
     },
     xml: {
       msg,
-      type: '[合并消息]'
+      type: "[合并消息]"
     }
   }
   return msgType[msg[0].type]

@@ -1,9 +1,9 @@
-import fs from 'fs'
-import _ from 'lodash'
-import { Plugin_Path } from '../components/index.js'
+import fs from "fs"
+import _ from "lodash"
+import { Plugin_Path } from "../components/index.js"
 let Jimp = null
 try {
-  Jimp = (await import('jimp')).default
+  Jimp = (await import("jimp")).default
 } catch {}
 export default new class {
   constructor () {
@@ -22,7 +22,7 @@ export default new class {
     background.composite(image2, 30, 300)
     const buff = await background.getBufferAsync(Jimp.MIME_JPEG)
     // debug
-    let kb = (buff.length / 1024).toFixed(2) + 'kb'
+    let kb = (buff.length / 1024).toFixed(2) + "kb"
     logger.debug(`[Yenai-Plugin][memes]生成zan ${kb}`)
     return buff
   }
@@ -39,7 +39,7 @@ export default new class {
     background.composite(image2, 0, 400)
     const buff = await background.getBufferAsync(Jimp.MIME_JPEG)
     // debug
-    let kb = (buff.length / 1024).toFixed(2) + 'kb'
+    let kb = (buff.length / 1024).toFixed(2) + "kb"
     logger.debug(`[Yenai-Plugin][memes]生成crawl ${kb}`)
     return buff
   }
@@ -54,7 +54,7 @@ export default new class {
     images.composite(backgrounp, 0, 0)
     const buff = await images.getBufferAsync(Jimp.MIME_JPEG)
     // debug
-    let kb = (buff.length / 1024).toFixed(2) + 'kb'
+    let kb = (buff.length / 1024).toFixed(2) + "kb"
     logger.debug(`[Yenai-Plugin][memes]生成ganyu ${kb}`)
     return buff
   }

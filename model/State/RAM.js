@@ -1,5 +1,5 @@
-import { getFileSize, Circle } from './utils.js'
-import os from 'os'
+import { getFileSize, Circle } from "./utils.js"
+import os from "os"
 
 /** 获取当前内存占用 */
 export default function getMemUsage () {
@@ -14,8 +14,8 @@ export default function getMemUsage () {
 
   return {
     ...Circle(MemUsage),
-    inner: Math.round(MemUsage * 100) + '%',
-    title: 'RAM',
+    inner: Math.round(MemUsage * 100) + "%",
+    title: "RAM",
     info: [
         `总共 ${totalmem}`,
         `已用 ${Usingmemory}`,

@@ -35,12 +35,12 @@ export default function formatDuration (time, format, repair = true) {
     minute: repair && minute < 10 ? `0${minute}` : minute,
     second: repair && second < 10 ? `0${second}` : second
   }
-  if (typeof format === 'function') {
+  if (typeof format === "function") {
     return format(timeObj)
   }
 
-  if (format == 'default') {
-    let result = ''
+  if (format == "default") {
+    let result = ""
 
     if (day > 0) {
       result += `${day}天`
@@ -57,7 +57,7 @@ export default function formatDuration (time, format, repair = true) {
     return result
   }
 
-  if (typeof format === 'string') {
+  if (typeof format === "string") {
     format = format
       .replace(/dd/g, day)
       .replace(/hh/g, timeObj.hour)

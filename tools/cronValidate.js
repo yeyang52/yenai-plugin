@@ -1,4 +1,4 @@
-let message = ''
+let message = ""
 /**
  * ! !!!!!!
  * 以下为凶残的cron表达式验证，胆小肾虚及心脏病者慎入!!!
@@ -10,13 +10,13 @@ let message = ''
  */
 export default function cronValidate (cronExpression) {
   // 先将cron表达式进行分割
-  let cronParams = cronExpression.split(' ')
+  let cronParams = cronExpression.split(" ")
   // 判断cron表达式是否具有该具有的属性长度，没有年份的长度为6，带年份的长度为7，其他情况都是错误的
   if (cronParams.length < 6 || cronParams.length > 7) {
-    return 'cron表达式需要输入6-7位参数，请重新输入'
+    return "cron表达式需要输入6-7位参数，请重新输入"
   } else {
     // 日和周必须有一个为?，或者全为*
-    if ((cronParams[3] == '?' && cronParams[5] != '?') || (cronParams[5] == '?' && cronParams[3] != '?') || (cronParams[3] == '*' && cronParams[5] == '*')) {
+    if ((cronParams[3] == "?" && cronParams[5] != "?") || (cronParams[5] == "?" && cronParams[3] != "?") || (cronParams[3] == "*" && cronParams[5] == "*")) {
       // 检查第一位的秒是否正确
       message = checkSecondsField(cronParams[0])
       if (message != true) {
@@ -63,7 +63,7 @@ export default function cronValidate (cronExpression) {
 
       return true
     } else {
-      return '指定日时周必须设为不指定(?),指定周时日必须设为不指定(?)'
+      return "指定日时周必须设为不指定(?),指定周时日必须设为不指定(?)"
     }
   }
 }
@@ -74,7 +74,7 @@ export default function cronValidate (cronExpression) {
  * @param secondsField
  */
 function checkSecondsField (secondsField) {
-  return checkField(secondsField, 0, 59, '秒')
+  return checkField(secondsField, 0, 59, "秒")
 }
 
 // 检查分的函数方法
@@ -83,7 +83,7 @@ function checkSecondsField (secondsField) {
  * @param minutesField
  */
 function checkMinutesField (minutesField) {
-  return checkField(minutesField, 0, 59, '分')
+  return checkField(minutesField, 0, 59, "分")
 }
 
 // 检查小时的函数方法
@@ -92,7 +92,7 @@ function checkMinutesField (minutesField) {
  * @param hoursField
  */
 function checkHoursField (hoursField) {
-  return checkField(hoursField, 0, 23, '时')
+  return checkField(hoursField, 0, 23, "时")
 }
 
 // 检查日期的函数方法
@@ -101,17 +101,17 @@ function checkHoursField (hoursField) {
  * @param dayOfMonthField
  */
 function checkDayOfMonthField (dayOfMonthField) {
-  if (dayOfMonthField == '?') {
+  if (dayOfMonthField == "?") {
     return true
   }
-  if (dayOfMonthField.indexOf('L') >= 0) {
-    return checkFieldWithLetter(dayOfMonthField, 'L', 1, 7, '日')
-  } else if (dayOfMonthField.indexOf('W') >= 0) {
-    return checkFieldWithLetter(dayOfMonthField, 'W', 1, 31, '日')
-  } else if (dayOfMonthField.indexOf('C') >= 0) {
-    return checkFieldWithLetter(dayOfMonthField, 'C', 1, 31, '日')
+  if (dayOfMonthField.indexOf("L") >= 0) {
+    return checkFieldWithLetter(dayOfMonthField, "L", 1, 7, "日")
+  } else if (dayOfMonthField.indexOf("W") >= 0) {
+    return checkFieldWithLetter(dayOfMonthField, "W", 1, 31, "日")
+  } else if (dayOfMonthField.indexOf("C") >= 0) {
+    return checkFieldWithLetter(dayOfMonthField, "C", 1, 31, "日")
   }
-  return checkField(dayOfMonthField, 1, 31, '日')
+  return checkField(dayOfMonthField, 1, 31, "日")
 }
 
 // 检查月份的函数方法
@@ -121,20 +121,20 @@ function checkDayOfMonthField (dayOfMonthField) {
  */
 function checkMonthsField (monthsField) {
   // 月份简写处理
-  if (monthsField != '*') {
-    monthsField = monthsField.replace('JAN', '1')
-    monthsField = monthsField.replace('FEB', '2')
-    monthsField = monthsField.replace('MAR', '3')
-    monthsField = monthsField.replace('APR', '4')
-    monthsField = monthsField.replace('MAY', '5')
-    monthsField = monthsField.replace('JUN', '6')
-    monthsField = monthsField.replace('JUL', '7')
-    monthsField = monthsField.replace('AUG', '8')
-    monthsField = monthsField.replace('SEP', '9')
-    monthsField = monthsField.replace('OCT', '10')
-    monthsField = monthsField.replace('NOV', '11')
-    monthsField = monthsField.replace('DEC', '12')
-    return checkField(monthsField, 1, 12, '月份')
+  if (monthsField != "*") {
+    monthsField = monthsField.replace("JAN", "1")
+    monthsField = monthsField.replace("FEB", "2")
+    monthsField = monthsField.replace("MAR", "3")
+    monthsField = monthsField.replace("APR", "4")
+    monthsField = monthsField.replace("MAY", "5")
+    monthsField = monthsField.replace("JUN", "6")
+    monthsField = monthsField.replace("JUL", "7")
+    monthsField = monthsField.replace("AUG", "8")
+    monthsField = monthsField.replace("SEP", "9")
+    monthsField = monthsField.replace("OCT", "10")
+    monthsField = monthsField.replace("NOV", "11")
+    monthsField = monthsField.replace("DEC", "12")
+    return checkField(monthsField, 1, 12, "月份")
   } else {
     return true
   }
@@ -146,24 +146,24 @@ function checkMonthsField (monthsField) {
  * @param dayOfWeekField
  */
 function checkDayOfWeekField (dayOfWeekField) {
-  dayOfWeekField = dayOfWeekField.replace('SUN', '1')
-  dayOfWeekField = dayOfWeekField.replace('MON', '2')
-  dayOfWeekField = dayOfWeekField.replace('TUE', '3')
-  dayOfWeekField = dayOfWeekField.replace('WED', '4')
-  dayOfWeekField = dayOfWeekField.replace('THU', '5')
-  dayOfWeekField = dayOfWeekField.replace('FRI', '6')
-  dayOfWeekField = dayOfWeekField.replace('SAT', '7')
-  if (dayOfWeekField == '?') {
+  dayOfWeekField = dayOfWeekField.replace("SUN", "1")
+  dayOfWeekField = dayOfWeekField.replace("MON", "2")
+  dayOfWeekField = dayOfWeekField.replace("TUE", "3")
+  dayOfWeekField = dayOfWeekField.replace("WED", "4")
+  dayOfWeekField = dayOfWeekField.replace("THU", "5")
+  dayOfWeekField = dayOfWeekField.replace("FRI", "6")
+  dayOfWeekField = dayOfWeekField.replace("SAT", "7")
+  if (dayOfWeekField == "?") {
     return true
   }
-  if (dayOfWeekField.indexOf('L') >= 0) {
-    return checkFieldWithLetterWeek(dayOfWeekField, 'L', 1, 7, '星期')
-  } else if (dayOfWeekField.indexOf('C') >= 0) {
-    return checkFieldWithLetterWeek(dayOfWeekField, 'C', 1, 7, '星期')
-  } else if (dayOfWeekField.indexOf('#') >= 0) {
-    return checkFieldWithLetterWeek(dayOfWeekField, '#', 1, 7, '星期')
+  if (dayOfWeekField.indexOf("L") >= 0) {
+    return checkFieldWithLetterWeek(dayOfWeekField, "L", 1, 7, "星期")
+  } else if (dayOfWeekField.indexOf("C") >= 0) {
+    return checkFieldWithLetterWeek(dayOfWeekField, "C", 1, 7, "星期")
+  } else if (dayOfWeekField.indexOf("#") >= 0) {
+    return checkFieldWithLetterWeek(dayOfWeekField, "#", 1, 7, "星期")
   } else {
-    return checkField(dayOfWeekField, 1, 7, '星期')
+    return checkField(dayOfWeekField, 1, 7, "星期")
   }
 }
 
@@ -173,7 +173,7 @@ function checkDayOfWeekField (dayOfWeekField) {
  * @param yearField
  */
 function checkYearField (yearField) {
-  return checkField(yearField, 1970, 2099, '年的')
+  return checkField(yearField, 1970, 2099, "年的")
 }
 
 // 通用的检查值的大小范围的方法( - , / *)
@@ -186,15 +186,15 @@ function checkYearField (yearField) {
  */
 function checkField (value, minimal, maximal, attribute) {
   // 校验值中是否有“-”，如果有“-”的话，下标会>0
-  if (value.indexOf('-') > -1) {
+  if (value.indexOf("-") > -1) {
     return checkRangeAndCycle(value, minimal, maximal, attribute)
-  } else if (value.indexOf(',') > -1) {
+  } else if (value.indexOf(",") > -1) {
     // 校验值中是否有“，”，如果有“,”的话，下标会>0
     return checkListField(value, minimal, maximal, attribute)
-  } else if (value.indexOf('/') > -1) {
+  } else if (value.indexOf("/") > -1) {
     // 校验值中是否有“/”，如果有“/”的话，下标会>0
     return checkIncrementField(value, minimal, maximal, attribute)
-  } else if (value == '*') {
+  } else if (value == "*") {
     // 校验值是否为“*”
     return true
   } else {
@@ -219,15 +219,15 @@ function checkIntValue (value, minimal, maximal, checkExtremity, attribute) {
     if (value == val) {
       if (checkExtremity) {
         if (val < minimal || val > maximal) {
-          return (attribute + '的参数取值范围必须在' + minimal + '-' + maximal + '之间')
+          return (attribute + "的参数取值范围必须在" + minimal + "-" + maximal + "之间")
         }
         return true
       }
       return true
     }
-    return (attribute + '的参数存在非法字符，必须为整数或允许的大写英文')
+    return (attribute + "的参数存在非法字符，必须为整数或允许的大写英文")
   } catch (e) {
-    return (attribute + '的参数有非法字符，必须是整数~')
+    return (attribute + "的参数有非法字符，必须是整数~")
   }
 }
 // 检验枚举类型的参数是否正确
@@ -239,7 +239,7 @@ function checkIntValue (value, minimal, maximal, checkExtremity, attribute) {
  * @param attribute
  */
 function checkListField (value, minimal, maximal, attribute) {
-  let st = value.split(',')
+  let st = value.split(",")
   let values = new Array(st.length)
   // 计算枚举的数字在数组中中出现的次数，出现一次为没有重复的。
   let count = 0
@@ -259,7 +259,7 @@ function checkListField (value, minimal, maximal, attribute) {
         count++
       }
       if (count > 1) {
-        return (attribute + '中的参数重复')
+        return (attribute + "中的参数重复")
       }
     }
   }
@@ -270,13 +270,13 @@ function checkListField (value, minimal, maximal, attribute) {
     try {
       let val = parseInt(currentValue, 10)
       if (val < previousValue) {
-        return (attribute + '的参数应该从小到大')
+        return (attribute + "的参数应该从小到大")
       } else {
         previousValue = val
       }
     } catch (e) {
       // 前面验证过了，这边的代码不可能跑到
-      return ('这段提示用不到')
+      return ("这段提示用不到")
     }
   }
   return true
@@ -291,12 +291,12 @@ function checkListField (value, minimal, maximal, attribute) {
  * @param attribute
  */
 function checkIncrementField (value, minimal, maximal, attribute) {
-  if (value.split('/').length > 2) {
+  if (value.split("/").length > 2) {
     return (attribute + "中的参数只能有一个'/'")
   }
-  let start = value.substring(0, value.indexOf('/'))
-  let increment = value.substring(value.indexOf('/') + 1)
-  if (start != '*') {
+  let start = value.substring(0, value.indexOf("/"))
+  let increment = value.substring(value.indexOf("/") + 1)
+  if (start != "*") {
     // 检验前值是否正确
     message = checkIntValue(start, minimal, maximal, true, attribute)
     if (message != true) {
@@ -324,19 +324,19 @@ function checkIncrementField (value, minimal, maximal, attribute) {
  */
 function checkRangeAndCycle (params, minimal, maximal, attribute) {
   // 校验“-”符号是否只有一个
-  if (params.split('-').length > 2) {
+  if (params.split("-").length > 2) {
     return (attribute + "中的参数只能有一个'-'")
   }
   let value = null
   let cycle = null
   // 检验范围内是否有嵌套周期
-  if (params.indexOf('/') > -1) {
+  if (params.indexOf("/") > -1) {
     // 校验“/”符号是否只有一个
-    if (params.split('/').length > 2) {
+    if (params.split("/").length > 2) {
       return (attribute + "中的参数只能有一个'/'")
     }
-    value = params.split('/')[0]
-    cycle = params.split('/')[1]
+    value = params.split("/")[0]
+    cycle = params.split("/")[1]
     // 判断循环的参数是否正确
     message = checkIntValue(cycle, minimal, maximal, true, attribute)
     if (message != true) {
@@ -345,8 +345,8 @@ function checkRangeAndCycle (params, minimal, maximal, attribute) {
   } else {
     value = params
   }
-  let startValue = value.substring(0, value.indexOf('-'))
-  let endValue = value.substring(value.indexOf('-') + 1)
+  let startValue = value.substring(0, value.indexOf("-"))
+  let endValue = value.substring(value.indexOf("-") + 1)
   // 判断参数范围的第一个值是否正确
   message = checkIntValue(startValue, minimal, maximal, true, attribute)
   if (message != true) {
@@ -362,15 +362,15 @@ function checkRangeAndCycle (params, minimal, maximal, attribute) {
     let startVal = parseInt(startValue, 10)
     let endVal = parseInt(endValue, 10)
     if (endVal < startVal) {
-      return (attribute + '的取值范围错误，前值必须小于后值')
+      return (attribute + "的取值范围错误，前值必须小于后值")
     }
     if ((endVal - startVal) < parseInt(cycle, 10)) {
-      return (attribute + '的取值范围内的循环无意义')
+      return (attribute + "的取值范围内的循环无意义")
     }
     return true
   } catch (e) {
     // 用不到这行代码的
-    return (attribute + '的参数有非法字符，必须是整数')
+    return (attribute + "的参数有非法字符，必须是整数")
   }
 }
 
@@ -391,22 +391,22 @@ function checkFieldWithLetter (value, letter, minimalBefore, maximalBefore, attr
       count++
     }
     if (count > 1) {
-      return (attribute + '的值的' + letter + '字母只能有一个')
+      return (attribute + "的值的" + letter + "字母只能有一个")
     }
   }
   // 校验L
-  if (letter == 'L') {
-    if (value == 'LW') {
+  if (letter == "L") {
+    if (value == "LW") {
       return true
     }
-    if (value == 'L') {
+    if (value == "L") {
       return true
     }
-    if (value.endsWith('LW') && value.length > 2) {
-      return (attribute + '中的参数，最后的LW前面不能有任何字母参数')
+    if (value.endsWith("LW") && value.length > 2) {
+      return (attribute + "中的参数，最后的LW前面不能有任何字母参数")
     }
-    if (!value.endsWith('L')) {
-      return (attribute + '中的参数，L字母后面不能有W以外的字符、数字等')
+    if (!value.endsWith("L")) {
+      return (attribute + "中的参数，L字母后面不能有W以外的字符、数字等")
     } else {
       let num = value.substring(0, value.indexOf(letter))
       return checkIntValue(num, minimalBefore, maximalBefore, true, attribute)
@@ -414,24 +414,24 @@ function checkFieldWithLetter (value, letter, minimalBefore, maximalBefore, attr
   }
 
   // 校验W
-  if (letter == 'W') {
-    if (!value.endsWith('W')) {
-      return (attribute + '中的参数的W必须作为结尾')
+  if (letter == "W") {
+    if (!value.endsWith("W")) {
+      return (attribute + "中的参数的W必须作为结尾")
     } else {
-      if (value == 'W') {
-        return (attribute + '中的参数的W前面必须有数字')
+      if (value == "W") {
+        return (attribute + "中的参数的W前面必须有数字")
       }
       let num = value.substring(0, value.indexOf(letter))
       return checkIntValue(num, minimalBefore, maximalBefore, true, attribute)
     }
   }
 
-  if (letter == 'C') {
-    if (!value.endsWith('C')) {
-      return (attribute + '中的参数的C必须作为结尾')
+  if (letter == "C") {
+    if (!value.endsWith("C")) {
+      return (attribute + "中的参数的C必须作为结尾")
     } else {
-      if (value == 'C') {
-        return (attribute + '中的参数的C前面必须有数字')
+      if (value == "C") {
+        return (attribute + "中的参数的C前面必须有数字")
       }
       let num = value.substring(0, value.indexOf(letter))
       return checkIntValue(num, minimalBefore, maximalBefore, true, attribute)
@@ -456,51 +456,51 @@ function checkFieldWithLetterWeek (value, letter, minimalBefore, maximalBefore, 
       count++
     }
     if (count > 1) {
-      return (attribute + '的值的' + letter + '字母只能有一个')
+      return (attribute + "的值的" + letter + "字母只能有一个")
     }
   }
   // 校验L
-  if (letter == 'L') {
-    if (value == 'L') {
+  if (letter == "L") {
+    if (value == "L") {
       return true
     }
-    if (!value.endsWith('L')) {
-      return (attribute + '中的参数，L字母必须是最后一位')
+    if (!value.endsWith("L")) {
+      return (attribute + "中的参数，L字母必须是最后一位")
     } else {
       let num = value.substring(0, value.indexOf(letter))
       return checkIntValue(num, minimalBefore, maximalBefore, true, attribute)
     }
   }
 
-  if (letter == 'C') {
-    if (!value.endsWith('C')) {
-      return (attribute + '中的参数的C必须作为结尾')
+  if (letter == "C") {
+    if (!value.endsWith("C")) {
+      return (attribute + "中的参数的C必须作为结尾")
     } else {
-      if (value == 'C') {
-        return (attribute + '中的参数的C前面必须有数字')
+      if (value == "C") {
+        return (attribute + "中的参数的C前面必须有数字")
       }
       let num = value.substring(0, value.indexOf(letter))
       return checkIntValue(num, minimalBefore, maximalBefore, true, attribute)
     }
   }
 
-  if (letter == '#') {
-    if (value == '#') {
-      return (attribute + '中的#前后必须有整数')
+  if (letter == "#") {
+    if (value == "#") {
+      return (attribute + "中的#前后必须有整数")
     }
     if (value.charAt(0) == letter) {
-      return (attribute + '中的#前面必须有整数')
+      return (attribute + "中的#前面必须有整数")
     }
-    if (value.endsWith('#')) {
-      return (attribute + '中的#后面必须有整数')
+    if (value.endsWith("#")) {
+      return (attribute + "中的#后面必须有整数")
     }
     let num1 = value.substring(0, value.indexOf(letter))
     let num2 = value.substring(value.indexOf(letter) + 1, value.length)
-    message = checkIntValue(num1, 1, 4, true, (attribute + '的#前面'))
+    message = checkIntValue(num1, 1, 4, true, (attribute + "的#前面"))
     if (message != true) {
       return message
     }
-    message = checkIntValue(num2, minimalBefore, maximalBefore, true, (attribute + '的#后面'))
+    message = checkIntValue(num2, minimalBefore, maximalBefore, true, (attribute + "的#后面"))
     if (message != true) {
       return message
     }

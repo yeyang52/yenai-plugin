@@ -1,16 +1,16 @@
-import _ from 'lodash'
-import common from '../../lib/common/common.js'
-import getBotState from './BotState.js'
-import getCPU from './CPU.js'
-import { osInfo, si } from './DependencyChecker.js'
-import getFastFetch from './FastFetch.js'
-import getFsSize from './FsSize.js'
-import getGPU from './GPU.js'
-import Monitor from './Monitor.js'
-import getNetworTestList from './NetworkLatency.js'
-import getNodeInfo from './NodeInfo.js'
-import getRAM from './RAM.js'
-import getOtherInfo, { getCopyright } from './OtherInfo.js'
+import _ from "lodash"
+import common from "../../lib/common/common.js"
+import getBotState from "./BotState.js"
+import getCPU from "./CPU.js"
+import { osInfo, si } from "./DependencyChecker.js"
+import getFastFetch from "./FastFetch.js"
+import getFsSize from "./FsSize.js"
+import getGPU from "./GPU.js"
+import Monitor from "./Monitor.js"
+import getNetworTestList from "./NetworkLatency.js"
+import getNodeInfo from "./NodeInfo.js"
+import getRAM from "./RAM.js"
+import getOtherInfo, { getCopyright } from "./OtherInfo.js"
 
 export { osInfo, si }
 
@@ -40,7 +40,7 @@ export async function getData (e) {
   let isBotIndex = /pro/.test(e.msg) && BotList.length > 1
   return {
     BotStatusList: await getBotState(BotList),
-    chartData: JSON.stringify(common.checkIfEmpty(Monitor.chartData, ['echarts_theme', 'cpu', 'ram']) ? undefined : Monitor.chartData),
+    chartData: JSON.stringify(common.checkIfEmpty(Monitor.chartData, ["echarts_theme", "cpu", "ram"]) ? undefined : Monitor.chartData),
     visualData,
     otherInfo: getOtherInfo(),
     psTest: _.isEmpty(psTest) ? undefined : psTest,
@@ -57,7 +57,7 @@ function _getBotList (e) {
   /** bot列表 */
   let BotList = [e.self_id]
 
-  if (e.msg.includes('pro')) {
+  if (e.msg.includes("pro")) {
     if (Array.isArray(Bot?.uin)) {
       BotList = Bot.uin
     } else if (Bot?.adapter && Bot.adapter.includes(e.self_id)) {

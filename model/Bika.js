@@ -1,13 +1,13 @@
-import _ from 'lodash'
-import request from '../lib/request/request.js'
-import { Config } from '../components/index.js'
+import _ from "lodash"
+import request from "../lib/request/request.js"
+import { Config } from "../components/index.js"
 
 export default new (class {
   constructor () {
-    this.domain = 'https://api.obfs.dev/api/bika'
+    this.domain = "https://api.obfs.dev/api/bika"
     this.hearder = {
       headers: {
-        'x-image-quality': Config.bika.imageQuality
+        "x-image-quality": Config.bika.imageQuality
       }
     }
     this.searchCaching = null
@@ -27,18 +27,18 @@ export default new (class {
    * @throws {Error} 当未找到作品时，会抛出异常
    * @returns {Array<string>} 返回搜索结果信息数组
    */
-  async search (keyword, page = 1, type = 'advanced', sort = 'ld') {
+  async search (keyword, page = 1, type = "advanced", sort = "ld") {
     let types = [
       {
-        alias: ['关键词', 'advanced', '高级'],
+        alias: ["关键词", "advanced", "高级"],
         url: `${this.domain}/advanced_search?keyword=${keyword}&page=${page}&sort=${sort}`
       },
       {
-        alias: ['类别', 'category'],
+        alias: ["类别", "category"],
         url: `${this.domain}/category_list?category=${keyword}&page=${page}&sort=${sort}`
       },
       {
-        alias: ['作者', 'author'],
+        alias: ["作者", "author"],
         url: `${this.domain}/author_list?author=${keyword}&page=${page}&sort=${sort}`
       }
     ]
@@ -57,16 +57,16 @@ export default new (class {
       `当前为第${pg}页，共${pages}页`
     ]
     for (let [index, item] of docs.entries()) {
-      let { title, tags, categories, author, description = '未知', likesCount, thumb, _id, finished } = item
+      let { title, tags, categories, author, description = "未知", likesCount, thumb, _id, finished } = item
       msg.push(_id)
       msg.push([
           `${index + 1}、${title}\n`,
           `作者：${author}\n`,
           `描述：${_.truncate(description)}\n`,
-          `分类：${categories.join('，')}\n`,
+          `分类：${categories.join("，")}\n`,
           `喜欢：${likesCount}\n`,
           `完结：${finished}\n`,
-          tags ? `tag：${_.truncate(tags.join(','))}\n` : '',
+          tags ? `tag：${_.truncate(tags.join(","))}\n` : "",
           await this._requestBikaImg(thumb.fileServer, thumb.path)
       ])
     }
@@ -103,9 +103,9 @@ export default new (class {
   }
 
   async viewComicPage (num) {
-    if (!this.searchCaching) throw new ReplyError('请先搜索后再使用此命令')
+    if (!this.searchCaching) throw new ReplyError("请先搜索后再使用此命令")
     let id = this.searchCaching[num]._id
-    if (!id) throw new ReplyError('未获取到目标作品，请使用id进行查看')
+    if (!id) throw new ReplyError("未获取到目标作品，请使用id进行查看")
     return this.comicPage(id)
   }
 
@@ -116,10 +116,10 @@ export default new (class {
    * @returns {Promise<string[]>} - 返回一个数组，包含下一个漫画页面或漫画章节的信息及图片列表
    * @throws {Error} - 如果未找到上一个id，则抛出异常
    */
-  async next (type = 'comicPage') {
-    if (!this.idNext) throw new ReplyError('未找到上一个id')
+  async next (type = "comicPage") {
+    if (!this.idNext) throw new ReplyError("未找到上一个id")
     let { id, page, order } = this.idNext
-    if (type == 'chapter') {
+    if (type == "chapter") {
       order++
       page = 1
     } else {
@@ -133,7 +133,7 @@ export default new (class {
 
   /** 类别列表 */
   async categories () {
-    let key = 'yenai:bika:categories'
+    let key = "yenai:bika:categories"
     let res = JSON.parse(await redis.get(key))
     if (!res) {
       res = await request.get(`${this.domain}/categories`, this.hearder)
@@ -147,7 +147,7 @@ export default new (class {
       await redis.set(key, JSON.stringify(res), { EX: 43200 })
     }
     return await Promise.all(res.map(async item => {
-      let { title, thumb, description = '未知' } = item
+      let { title, thumb, description = "未知" } = item
       return [
         `category: ${title}\n`,
         `描述:${description}\n`,
@@ -185,8 +185,8 @@ export default new (class {
       `喜欢：${totalLikes}\n`,
       `浏览量：${totalViews}\n`,
       `评论量：${totalComments}\n`,
-      `分类：${categories.join('，')}\n`,
-      `tag：${tags.join('，')}`,
+      `分类：${categories.join("，")}\n`,
+      `tag：${tags.join("，")}`,
       await this._requestBikaImg(thumb.fileServer, thumb.path)
     ]
   }
@@ -199,7 +199,7 @@ export default new (class {
    * @returns {Promise<import('icqq').ImageElem>} - 返回构造图片消息
    */
   async _requestBikaImg (fileServer, path) {
-    fileServer = /static/.test(fileServer) ? fileServer : fileServer + '/static/'
+    fileServer = /static/.test(fileServer) ? fileServer : fileServer + "/static/"
     let url = (/picacomic.com/.test(fileServer) && this.imgproxy ? this.imgproxy : fileServer) + path
     return request.proxyRequestImg(url)
   }

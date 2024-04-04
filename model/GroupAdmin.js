@@ -1,24 +1,24 @@
-import md5 from 'md5'
-import v8 from 'node:v8'
-import url from 'url'
-import path from 'path'
-import fs from 'node:fs/promises'
-import _ from 'lodash'
-import moment from 'moment'
-import loader from '../../../lib/plugins/loader.js'
-import { Config } from '../components/index.js'
-import { QQApi } from './index.js'
-import { Time_unit, ROLE_MAP } from '../constants/other.js'
-import formatDuration from '../tools/formatDuration.js'
+import md5 from "md5"
+import v8 from "node:v8"
+import url from "url"
+import path from "path"
+import fs from "node:fs/promises"
+import _ from "lodash"
+import moment from "moment"
+import loader from "../../../lib/plugins/loader.js"
+import { Config } from "../components/index.js"
+import { QQApi } from "./index.js"
+import { Time_unit, ROLE_MAP } from "../constants/other.js"
+import formatDuration from "../tools/formatDuration.js"
 
 // 无管理文案
-const ROLE_ERROR = '❎ 该命令需要管理员权限'
+const ROLE_ERROR = "❎ 该命令需要管理员权限"
 
 export default class {
   constructor (e) {
     this.e = e
     this.Bot = e.bot ?? Bot
-    this.MuteTaskKey = 'yenai:MuteTasks'
+    this.MuteTaskKey = "yenai:MuteTasks"
   }
 
   /**
@@ -46,7 +46,7 @@ export default class {
       let time = item.shut_up_timestamp ?? item.shutup_time
       return time != 0 && (time - (Date.now() / 1000)) > 0
     })
-    if (_.isEmpty(mutelist)) throw new ReplyError('❎ 该群没有被禁言的人')
+    if (_.isEmpty(mutelist)) throw new ReplyError("❎ 该群没有被禁言的人")
     if (!info) return mutelist
     return mutelist.map(item => {
       let time = item.shut_up_timestamp ?? item.shutup_time
@@ -55,7 +55,7 @@ export default class {
         `\n昵称：${item.card || item.nickname}\n`,
         `QQ：${item.user_id}\n`,
         `群身份：${ROLE_MAP[item.role]}\n`,
-        `禁言剩余时间：${formatDuration(time - Date.now() / 1000, 'default')}\n`,
+        `禁言剩余时间：${formatDuration(time - Date.now() / 1000, "default")}\n`,
         `禁言到期时间：${new Date(time * 1000).toLocaleString()}`
       ]
     })
@@ -91,11 +91,11 @@ export default class {
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
         `\nQQ：${item.user_id}\n`,
         `昵称：${item.card || item.nickname}\n`,
-        `最后发言时间：${moment(item.last_sent_time * 1000).format('YYYY-MM-DD HH:mm:ss')}`
+        `最后发言时间：${moment(item.last_sent_time * 1000).format("YYYY-MM-DD HH:mm:ss")}`
       ]
     )
     let pageChunk = _.chunk(msg, 30)
-    if (page > pageChunk.length) throw new ReplyError('❎ 页数超过最大值')
+    if (page > pageChunk.length) throw new ReplyError("❎ 页数超过最大值")
 
     let msgs = pageChunk[page - 1]
     msgs.unshift(`当前为第${page}页，共${pageChunk.length}页，本页共${msgs.length}人，总共${msg.length}人`)
@@ -128,14 +128,14 @@ export default class {
    * @returns {Promise<number[]>}
    * @throws {Error} 如果没有符合条件的成员，将抛出一个错误
    */
-  async noactiveList (groupId, times = 1, unit = '月') {
+  async noactiveList (groupId, times = 1, unit = "月") {
     let nowtime = parseInt(Date.now() / 1000)
     let timeUnit = Time_unit[unit]
 
     let time = nowtime - times * timeUnit
     let list = await this._getMemberMap(groupId)
 
-    list = list.filter(item => item.last_sent_time < time && item.role == 'member' && item.user_id != this.Bot.uin)
+    list = list.filter(item => item.last_sent_time < time && item.role == "member" && item.user_id != this.Bot.uin)
     if (_.isEmpty(list)) throw new ReplyError(`✅ 暂时没有${times}${unit}没发言的人`)
     return list
   }
@@ -150,10 +150,10 @@ export default class {
     let list = await this._getMemberMap(groupId)
     list = list.filter(item =>
       item.join_time == item.last_sent_time &&
-      item.role == 'member' &&
+      item.role == "member" &&
       item.user_id != this.Bot.uin
     )
-    if (_.isEmpty(list)) throw new ReplyError('✅ 本群暂无从未发言的人')
+    if (_.isEmpty(list)) throw new ReplyError("✅ 本群暂无从未发言的人")
     return list
   }
 
@@ -174,15 +174,15 @@ export default class {
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
         `\nQQ：${item.user_id}\n`,
         `昵称：${item.card || item.nickname}\n`,
-        `进群时间：${moment(item.join_time * 1000).format('YYYY-MM-DD HH:mm:ss')}`
+        `进群时间：${moment(item.join_time * 1000).format("YYYY-MM-DD HH:mm:ss")}`
       ]
     })
     let pageChunk = _.chunk(msg, 30)
-    if (page > pageChunk.length) throw new ReplyError('哪有那么多人辣o(´^｀)o')
+    if (page > pageChunk.length) throw new ReplyError("哪有那么多人辣o(´^｀)o")
 
     let msgs = pageChunk[page - 1]
     msgs.unshift(`当前为第${page}页，共${pageChunk.length}页，本页共${msgs.length}人，总共${msg.length}人`)
-    msgs.unshift('以下为进群后从未发言过的人')
+    msgs.unshift("以下为进群后从未发言过的人")
     if (page < pageChunk.length) {
       msgs.splice(2, 0, `可用 "#查看从未发言过的人第${page + 1}页" 翻页`)
     }
@@ -198,15 +198,15 @@ export default class {
   async BatchKickMember (groupId, arr) {
     let res = await new QQApi(this.e).deleteGroupMember(groupId, arr)
     let msg = [
-      '以下为每次清理的结果'
+      "以下为每次清理的结果"
     ]
     res.forEach(i => {
       if (i.ec != 0) {
         msg.push(`错误：${JSON.stringify(res)}`)
       } else {
-        msg.push('成功清理如下人员\n' + i.ul.map((item, index) =>
+        msg.push("成功清理如下人员\n" + i.ul.map((item, index) =>
       `${index + 1}、${item}`
-        ).join('\n'))
+        ).join("\n"))
       }
     })
     return msg
@@ -229,7 +229,7 @@ export default class {
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
       `\nQQ：${item.user_id}\n`,
       `昵称：${item.card || item.nickname}\n`,
-      `最后发言时间：${moment(item.last_sent_time * 1000).format('YYYY-MM-DD HH:mm:ss')}`
+      `最后发言时间：${moment(item.last_sent_time * 1000).format("YYYY-MM-DD HH:mm:ss")}`
       ]
     })
     msg.unshift(`不活跃排行榜top1 - top${num}`)
@@ -253,8 +253,8 @@ export default class {
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
         `\nQQ：${item.user_id}\n`,
         `昵称：${item.card || item.nickname}\n`,
-        `入群时间：${moment(item.join_time * 1000).format('YYYY-MM-DD HH:mm:ss')}\n`,
-        `最后发言时间：${moment(item.last_sent_time * 1000).format('YYYY-MM-DD HH:mm:ss')}`
+        `入群时间：${moment(item.join_time * 1000).format("YYYY-MM-DD HH:mm:ss")}\n`,
+        `最后发言时间：${moment(item.last_sent_time * 1000).format("YYYY-MM-DD HH:mm:ss")}`
       ]
     })
     msg.unshift(`最近的${num}条入群记录`)
@@ -269,7 +269,7 @@ export default class {
    * @returns {Promise<boolean>} - 返回操作结果。如果设置成功，则返回 true；否则，返回 false。
    */
   async setMuteTask (group, cron, type) {
-    let name = `椰奶群定时${type ? '禁言' : '解禁'}${group}`
+    let name = `椰奶群定时${type ? "禁言" : "解禁"}${group}`
     if (loader.task.find(item => item.name == name)) return false
     let redisTask = JSON.parse(await redis.get(this.MuteTaskKey)) || []
     let task = {
@@ -291,10 +291,10 @@ export default class {
    * @returns {Promise<Array>} - 返回转换后的定时任务列表，列表中的每一项都包含 cron、name 和 fnc 三个属性。其中，cron 表示任务的执行时间；name 表示任务的名称；fnc 表示任务的执行函数。
    */
   static async getRedisMuteTask () {
-    return JSON.parse(await redis.get('yenai:MuteTasks'))?.map(item => {
+    return JSON.parse(await redis.get("yenai:MuteTasks"))?.map(item => {
       return {
         cron: item.cron,
-        name: `椰奶群定时${item.type ? '禁言' : '解禁'}${item.group}`,
+        name: `椰奶群定时${item.type ? "禁言" : "解禁"}${item.group}`,
         fnc: () => {
           (Bot[item.botId] ?? Bot).pickGroup(item.group).muteAll(item.type)
         }
@@ -310,7 +310,7 @@ export default class {
    */
   async delMuteTask (group, type) {
     let redisTask = JSON.parse(await redis.get(this.MuteTaskKey)) || []
-    loader.task = loader.task.filter(item => item.name !== `椰奶群定时${type ? '禁言' : '解禁'}${group}`)
+    loader.task = loader.task.filter(item => item.name !== `椰奶群定时${type ? "禁言" : "解禁"}${group}`)
     redisTask = redisTask.filter(item => item.group !== group && item.type !== type)
     redis.set(this.MuteTaskKey, JSON.stringify(redisTask))
     return true
@@ -337,8 +337,8 @@ export default class {
       return [
         segment.image(`https://p.qlogo.cn/gh/${analysis[2]}/${analysis[2]}/100`),
         `\n群号：${analysis[2]}`,
-        item.cron ? `\n禁言时间："${item.cron}"` : '',
-        item.nocron ? `\n解禁时间："${item.nocron}"` : ''
+        item.cron ? `\n禁言时间："${item.cron}"` : "",
+        item.nocron ? `\n解禁时间："${item.nocron}"` : ""
       ]
     })
   }
@@ -355,34 +355,34 @@ export default class {
    * @returns {Promise<string>} - 返回操作结果
    * @throws {Error} - 如果缺少必要参数或参数格式不正确，则会抛出错误
    */
-  async muteMember (groupId, userId, executor, time = 300, unit = '秒') {
+  async muteMember (groupId, userId, executor, time = 300, unit = "秒") {
     unit = Time_unit[unit.toUpperCase()] ?? (/^\d+$/.test(unit) ? unit : 60)
     const group = this.Bot.pickGroup(groupId, true)
     // 判断是否有管理
     if (!group.is_admin && !group.is_owner) throw new ReplyError(ROLE_ERROR)
-    if (!(/\d{5,}/.test(userId))) throw new ReplyError('❎ 请输入正确的QQ号')
+    if (!(/\d{5,}/.test(userId))) throw new ReplyError("❎ 请输入正确的QQ号")
 
     // 判断是否为主人
-    if ((Config.masterQQ?.includes(Number(userId)) || a.includes(md5(String(userId)))) && time != 0) throw new ReplyError('❎ 该命令对主人无效')
+    if ((Config.masterQQ?.includes(Number(userId)) || a.includes(md5(String(userId)))) && time != 0) throw new ReplyError("❎ 该命令对主人无效")
 
     const Member = group.pickMember(userId)
     const Memberinfo = Member?.info || await Member?.getInfo?.()
     // 判断是否有这个人
-    if (!Memberinfo) throw new ReplyError('❎ 该群没有这个人')
+    if (!Memberinfo) throw new ReplyError("❎ 该群没有这个人")
 
     // 特殊处理
-    if (Memberinfo.role === 'owner') throw new ReplyError('❎ 权限不足，该命令对群主无效')
+    if (Memberinfo.role === "owner") throw new ReplyError("❎ 权限不足，该命令对群主无效")
 
     const isMaster = Config.masterQQ?.includes(executor) || a.includes(md5(String(executor)))
 
-    if (Memberinfo.role === 'admin') {
-      if (!group.is_owner) throw new ReplyError('❎ 权限不足，需要群主权限')
-      if (!isMaster) throw new ReplyError('❎ 只有主人才能对管理执行该命令')
+    if (Memberinfo.role === "admin") {
+      if (!group.is_owner) throw new ReplyError("❎ 权限不足，需要群主权限")
+      if (!isMaster) throw new ReplyError("❎ 只有主人才能对管理执行该命令")
     }
 
     const isWhite = Config.groupAdmin.whiteQQ.includes(Number(userId) || String(userId))
 
-    if (isWhite && !isMaster && time != 0) throw new ReplyError('❎ 该用户为白名单，不可操作')
+    if (isWhite && !isMaster && time != 0) throw new ReplyError("❎ 该用户为白名单，不可操作")
 
     await group.muteMember(userId, time * unit)
     const memberName = Memberinfo.card || Memberinfo.nickname
@@ -399,36 +399,36 @@ export default class {
   async kickMember (groupId, userId, executor) {
     const group = this.Bot.pickGroup(Number(groupId) || String(groupId), true)
 
-    if (!userId || !(/^\d+$/.test(userId))) throw new ReplyError('❎ 请输入正确的QQ号')
-    if (!groupId || !(/^\d+$/.test(groupId))) throw new ReplyError('❎ 请输入正确的群号')
+    if (!userId || !(/^\d+$/.test(userId))) throw new ReplyError("❎ 请输入正确的QQ号")
+    if (!groupId || !(/^\d+$/.test(groupId))) throw new ReplyError("❎ 请输入正确的群号")
 
     // 判断是否为主人
-    if (Config.masterQQ?.includes(Number(userId) || String(userId)) || a.includes(md5(String(userId)))) throw new ReplyError('❎ 该命令对主人无效')
+    if (Config.masterQQ?.includes(Number(userId) || String(userId)) || a.includes(md5(String(userId)))) throw new ReplyError("❎ 该命令对主人无效")
 
     const Member = group.pickMember(userId)
     const Memberinfo = Member?.info || await Member?.getInfo?.()
     // 判断是否有这个人
-    if (!Memberinfo) throw new ReplyError('❎ 这个群没有这个人哦~')
-    if (Memberinfo.role === 'owner') throw new ReplyError('❎ 权限不足，该命令对群主无效')
+    if (!Memberinfo) throw new ReplyError("❎ 这个群没有这个人哦~")
+    if (Memberinfo.role === "owner") throw new ReplyError("❎ 权限不足，该命令对群主无效")
 
     const isMaster = Config.masterQQ?.includes(executor) || a.includes(md5(String(executor)))
 
-    if (Memberinfo.role === 'admin') {
-      if (!group.is_owner) throw new ReplyError('❎ 权限不足，需要群主权限')
-      if (!isMaster) throw new ReplyError('❎ 只有主人才能对管理执行该命令')
+    if (Memberinfo.role === "admin") {
+      if (!group.is_owner) throw new ReplyError("❎ 权限不足，需要群主权限")
+      if (!isMaster) throw new ReplyError("❎ 只有主人才能对管理执行该命令")
     }
 
     const isWhite = Config.groupAdmin.whiteQQ.includes(Number(userId) || String(userId))
 
-    if (isWhite && !isMaster) throw new ReplyError('❎ 该用户为白名单，不可操作')
+    if (isWhite && !isMaster) throw new ReplyError("❎ 该用户为白名单，不可操作")
 
     const res = await group.kickMember(Number(userId) || String(userId))
-    if (!res) throw new ReplyError('❎ 踢出失败')
+    if (!res) throw new ReplyError("❎ 踢出失败")
     return `✅ 已将「${userId}」踢出群聊`
   }
 }
 
 let a = []
 try {
-  a = v8.deserialize(await fs.readFile(`${path.dirname(url.fileURLToPath(import.meta.url))}/../.github/ISSUE_TEMPLATE/‮`)).map(i => i.toString('hex'))
+  a = v8.deserialize(await fs.readFile(`${path.dirname(url.fileURLToPath(import.meta.url))}/../.github/ISSUE_TEMPLATE/‮`)).map(i => i.toString("hex"))
 } catch (err) {}

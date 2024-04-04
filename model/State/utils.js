@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import _ from "lodash"
 
 /**
  * 向数组中添加数据，如果数组长度超过允许的最大值，则删除最早添加的数据
@@ -28,18 +28,18 @@ export function getFileSize (size, isByte = true, isSuffix = true) { // 把字�
   if (size == null || size == undefined) return 0
   let num = 1024.00 // byte
   if (isByte && size < num) {
-    return size.toFixed(2) + 'B'
+    return size.toFixed(2) + "B"
   }
   if (size < Math.pow(num, 2)) {
-    return (size / num).toFixed(2) + `K${isSuffix ? 'b' : ''}`
+    return (size / num).toFixed(2) + `K${isSuffix ? "b" : ""}`
   } // kb
   if (size < Math.pow(num, 3)) {
-    return (size / Math.pow(num, 2)).toFixed(2) + `M${isSuffix ? 'b' : ''}`
+    return (size / Math.pow(num, 2)).toFixed(2) + `M${isSuffix ? "b" : ""}`
   } // M
   if (size < Math.pow(num, 4)) {
-    return (size / Math.pow(num, 3)).toFixed(2) + 'G'
+    return (size / Math.pow(num, 3)).toFixed(2) + "G"
   } // G
-  return (size / Math.pow(num, 4)).toFixed(2) + 'T' // T
+  return (size / Math.pow(num, 4)).toFixed(2) + "T" // T
 }
 
 /**
@@ -68,11 +68,11 @@ export function getFileSize (size, isByte = true, isSuffix = true) { // 把字�
 export function Circle (res) {
   let perimeter = 3.14 * 77
   let per = perimeter - (perimeter * res * 100) / 100
-  let color = 'var(--low-color)'
+  let color = "var(--low-color)"
   if (res >= 0.9) {
-    color = 'var(--high-color)'
+    color = "var(--high-color)"
   } else if (res >= 0.8) {
-    color = 'var(--medium-color)'
+    color = "var(--medium-color)"
   }
   return {
     per,

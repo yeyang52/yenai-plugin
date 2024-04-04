@@ -1,5 +1,5 @@
-import { getFileSize, Circle } from './utils.js'
-import os from 'os'
+import { getFileSize, Circle } from "./utils.js"
+import os from "os"
 
 /** 获取nodejs内存情况 */
 export default function getNodeInfo () {
@@ -14,8 +14,8 @@ export default function getNodeInfo () {
   let occupy = (memory.rss / (os.totalmem() - os.freemem())).toFixed(2)
   return {
     ...Circle(occupy),
-    inner: Math.round(occupy * 100) + '%',
-    title: 'Node',
+    inner: Math.round(occupy * 100) + "%",
+    title: "Node",
     info: [
         `总 ${rss}`,
         `堆 ${heapTotal}`,

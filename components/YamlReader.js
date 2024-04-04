@@ -1,7 +1,7 @@
-import fs from 'fs'
-import YAML from 'yaml'
-import _ from 'lodash'
-import chokidar from 'chokidar'
+import fs from "fs"
+import YAML from "yaml"
+import _ from "lodash"
+import chokidar from "chokidar"
 // import Constant from '../server/constant/Constant.js'
 
 export default class YamlReader {
@@ -18,9 +18,9 @@ export default class YamlReader {
 
   initYaml () {
     // parseDocument 将会保留注释
-    this.document = YAML.parseDocument(fs.readFileSync(this.yamlPath, 'utf8'))
+    this.document = YAML.parseDocument(fs.readFileSync(this.yamlPath, "utf8"))
     if (this.isWatch && !this.watcher) {
-      this.watcher = chokidar.watch(this.yamlPath).on('change', () => {
+      this.watcher = chokidar.watch(this.yamlPath).on("change", () => {
         if (this.isSave) {
           this.isSave = false
           return
@@ -40,7 +40,7 @@ export default class YamlReader {
 
   /* 检查集合是否包含key的值 */
   has (keyPath) {
-    return this.document.hasIn(keyPath.split('.'))
+    return this.document.hasIn(keyPath.split("."))
   }
 
   /* 返回key的值 */
@@ -56,19 +56,19 @@ export default class YamlReader {
 
   /* 删除key */
   delete (keyPath) {
-    this.document.deleteIn(keyPath.split('.'))
+    this.document.deleteIn(keyPath.split("."))
     this.save()
   }
 
   // 数组添加数据
   addIn (keyPath, value) {
-    this.document.addIn(keyPath.split('.'), value)
+    this.document.addIn(keyPath.split("."), value)
     this.save()
   }
 
   // 彻底删除某个key
   deleteKey (keyPath) {
-    let keys = keyPath.split('.')
+    let keys = keyPath.split(".")
     keys = this.mapParentKeys(keys)
     this.document.deleteIn(keys)
     this.save()
@@ -77,6 +77,6 @@ export default class YamlReader {
   save () {
     this.isSave = true
     let yaml = this.document.toString()
-    fs.writeFileSync(this.yamlPath, yaml, 'utf8')
+    fs.writeFileSync(this.yamlPath, yaml, "utf8")
   }
 }

@@ -1,12 +1,12 @@
 /* eslint-disable no-void */
 const DoujinMangaLexicon = {
-  name: 'The Doujinshi & Manga Lexicon',
+  name: "The Doujinshi & Manga Lexicon",
   index: 3,
   urlMatcher: /(?:http:\/\/)?doujinshi\.mugimugi\.org\/index\.php?p=book&id=\d+/i,
   backupUrl: ({ data: { ddb_id } }) => `http://doujinshi.mugimugi.org/index.php?P=BOOK&ID=${ddb_id}`
 }
 const Pixiv = {
-  name: 'Pixiv',
+  name: "Pixiv",
   index: 5,
   urlMatcher: /(?:https?:\/\/)?(?:www\.)?pixiv\.net\/member_illust\.php\?mode=.+&illust_id=\d+/i,
   backupUrl: ({ data: { pixiv_id } }) => `https://www.pixiv.net/artworks/${pixiv_id}`,
@@ -16,118 +16,118 @@ const Pixiv = {
   })
 }
 const NicoNicoSeiga = {
-  name: 'Nico Nico Seiga',
+  name: "Nico Nico Seiga",
   index: 8,
   urlMatcher: /(?:http:\/\/)?seiga\.nicovideo\.jp\/seiga\/im\d+/i,
   backupUrl: ({ data: { seiga_id } }) => `http://seiga.nicovideo.jp/seiga/im${seiga_id}`
 }
 const Danbooru = {
-  name: 'Danbooru',
+  name: "Danbooru",
   index: 9,
   urlMatcher: /(?:https?:\/\/)?danbooru\.donmai\.us\/(?:posts|post\/show)\/\d+/i,
   backupUrl: ({ data: { danbooru_id } }) => `https://danbooru.donmai.us/posts/${danbooru_id}`
 }
 const Drawr = {
-  name: 'drawr',
+  name: "drawr",
   index: 10,
   urlMatcher: /(?:http:\/\/)?(?:www\.)?drawr\.net\/show\.php\?id=\d+/i,
   backupUrl: ({ data: { drawr_id } }) => `http://drawr.net/show.php?id=${drawr_id}`
 }
 const Nijie = {
-  name: 'Nijie',
+  name: "Nijie",
   index: 11,
   urlMatcher: /(?:http:\/\/)?nijie\.info\/view\.php\?id=\d+/i,
   backupUrl: (data) => `http://nijie.info/view.php?id=${data.data.nijie_id}`
 }
 const Yandere = {
-  name: 'Yande.re',
+  name: "Yande.re",
   index: 12,
   urlMatcher: /(?:https?:\/\/)?yande\.re\/post\/show\/\d+/i,
   backupUrl: (data) => `https://yande.re/post/show/${data.data.yandere_id}`
 }
 const OpeningsMoe = {
-  name: 'Openings.moe',
+  name: "Openings.moe",
   index: 13,
   urlMatcher: /(?:https?:\/\/)?openings\.moe\/\?video=.*/,
   backupUrl: (data) => `https://openings.moe/?video=${data.data.file}`
 }
 const Fakku = {
-  name: 'FAKKU',
+  name: "FAKKU",
   index: 16,
   urlMatcher: /(?:https?:\/\/)?(www\.)?fakku\.net\/hentai\/[a-z-]+\d+}/i,
-  backupUrl: (data) => { let _a; return `https://www.fakku.net/hentai/${(_a = data.data.source) === null || _a === void 0 ? void 0 : _a.toLowerCase().replace(' ', '-')}` }
+  backupUrl: (data) => { let _a; return `https://www.fakku.net/hentai/${(_a = data.data.source) === null || _a === void 0 ? void 0 : _a.toLowerCase().replace(" ", "-")}` }
 }
 const NHentai = {
-  name: 'nHentai',
+  name: "nHentai",
   index: 18,
   urlMatcher: /https?:\/\/nhentai.net\/g\/\d+/i,
   backupUrl: (data) => { let _a; return `https://nhentai.net/g/${(_a = data.header.thumbnail.match(/nhentai\/(\d+)/)) === null || _a === void 0 ? void 0 : _a[1]}` }
 }
 const TwoDMarket = {
-  name: '2D-Market',
+  name: "2D-Market",
   index: 19,
   urlMatcher: /https?:\/\/2d-market\.com\/comic\/\d+/i,
   backupUrl: (data) => {
     let _a, _b
-    return `http://2d-market.com/Comic/${(_a = data.header.thumbnail.match(/2d_market\/(\d+)/i)) === null || _a === void 0 ? void 0 : _a[1]}-${(_b = data.data.source) === null || _b === void 0 ? void 0 : _b.replace(' ', '-')}`
+    return `http://2d-market.com/Comic/${(_a = data.header.thumbnail.match(/2d_market\/(\d+)/i)) === null || _a === void 0 ? void 0 : _a[1]}-${(_b = data.data.source) === null || _b === void 0 ? void 0 : _b.replace(" ", "-")}`
   }
 }
 const MediBang = {
-  name: 'MediBang',
+  name: "MediBang",
   index: 20,
   urlMatcher: /(?:https?:\/\/)?medibang\.com\/picture\/[\da-z]+/i,
   backupUrl: (data) => data.data.url
 }
 const AniDB = {
-  name: 'AniDB',
+  name: "AniDB",
   index: 21,
   urlMatcher: /(?:https?:\/\/)?anidb\.net\/perl-bin\/animedb\.pl\?show=.+&aid=\d+/i,
   backupUrl: (data) => `https://anidb.net/perl-bin/animedb.pl?show=anime&aid=${data.data.anidb_aid}`
 }
 const IMDb = {
-  name: 'IMDb',
+  name: "IMDb",
   index: 23,
   urlMatcher: /(?:https?:\/\/)?(?:www\.)?imdb\.com\/title\/.+/i,
   backupUrl: (data) => `https://www.imdb.com/title/${data.data.imdb_id}`
 }
 const Gelbooru = {
-  name: 'Gelbooru',
+  name: "Gelbooru",
   index: 25,
   urlMatcher: /(?:https?:\/\/)gelbooru\.com\/index\.php\?page=post&s=view&id=\d+/i,
   backupUrl: (data) => `https://gelbooru.com/index.php?page=post&s=view&id=${data.data.gelbooru_id}`
 }
 const Konachan = {
-  name: 'Konachan',
+  name: "Konachan",
   index: 26,
   urlMatcher: /(?:http:\/\/)?konachan\.com\/post\/show\/\d+/i,
   backupUrl: (data) => `https://konachan.com/post/show/${data.data.konachan_id}`
 }
 const SankakuChannel = {
-  name: 'Sankaku Channel',
+  name: "Sankaku Channel",
   index: 27,
   urlMatcher: /(?:https?:\/\/)?chan\.sankakucomplex\.com\/post\/show\/\d+/i,
   backupUrl: (data) => `https://chan.sankakucomplex.com/post/show/${data.data.sankaku_id}`
 }
 const AnimePictures = {
-  name: 'Anime-Pictures',
+  name: "Anime-Pictures",
   index: 28,
   urlMatcher: /(?:https?:\/\/)?anime-pictures\.net\/pictures\/view_post\/\d+/i,
-  backupUrl: (data) => `https://anime-pictures.net/pictures/view_post/${data.data['anime-pictures_id']}`
+  backupUrl: (data) => `https://anime-pictures.net/pictures/view_post/${data.data["anime-pictures_id"]}`
 }
 const E621 = {
-  name: 'e621',
+  name: "e621",
   index: 29,
   urlMatcher: /(?:https?:\/\/)?e621\.net\/post\/show\/\d+/i,
   backupUrl: (data) => `https://e621.net/post/show/${data.data.e621_id}`
 }
 const IdolComplex = {
-  name: 'Idol Complex',
+  name: "Idol Complex",
   index: 30,
   urlMatcher: /(?:https?:\/\/)?idol\.sankakucomplex\.com\/post\/show\/\d+/i,
   backupUrl: (data) => `https://idol.sankakucomplex.com/post/show/${data.data.idol_id}`
 }
 const bcyIllust = {
-  name: 'bcy.net Illust',
+  name: "bcy.net Illust",
   index: 31,
   urlMatcher: /(?:http:\/\/)?bcy.net\/illust\/detail\/\d+/i,
   backupUrl: (data) => `https://bcy.net/${data.data.bcy_type}/detail/${data.data.member_link_id}/${data.data.bcy_id}`,
@@ -137,19 +137,19 @@ const bcyIllust = {
   })
 }
 const bcyCosplay = {
-  name: 'bcy.net Cosplay',
+  name: "bcy.net Cosplay",
   index: 32,
   urlMatcher: /(?:http:\/\/)?bcy.net\/coser\/detail\/\d{5}/i,
   backupUrl: (data) => `https://bcy.net/${data.data.bcy_type}/detail/${data.data.member_link_id}/${data.data.bcy_id}`
 }
 const PortalGraphics = {
-  name: 'PortalGraphics',
+  name: "PortalGraphics",
   index: 33,
   urlMatcher: /(?:http:\/\/)?web\.archive\.org\/web\/http:\/\/www\.portalgraphics\.net\/pg\/illust\/\?image_id=\d+/i,
   backupUrl: (data) => `http://web.archive.org/web/http://www.portalgraphics.net/pg/illust/?image_id=${data.data.pg_id}`
 }
 const DeviantArt = {
-  name: 'deviantArt',
+  name: "deviantArt",
   index: 34,
   urlMatcher: /(?:https:\/\/)?deviantart\.com\/view\/\d+/i,
   backupUrl: (data) => `https://deviantart.com/view/${data.data.da_id}`,
@@ -159,19 +159,19 @@ const DeviantArt = {
   })
 }
 const Pawoo = {
-  name: 'Pawoo',
+  name: "Pawoo",
   index: 35,
   urlMatcher: /(?:https?:\/\/)?pawoo\.net\/@.+/i,
   backupUrl: (data) => `https://pawoo.net/@${data.data.user_acct}/${data.data.pawoo_id}`
 }
 const MangaUpdates = {
-  name: 'Manga Updates',
+  name: "Manga Updates",
   index: 36,
   urlMatcher: /(?:https:\/\/)?www\.mangaupdates\.com\/series\.html\?id=\d+/gi,
   backupUrl: (data) => `https://www.mangaupdates.com/series.html?id=${data.data.mu_id}`
 }
 const MangaDex = {
-  name: 'MangaDex',
+  name: "MangaDex",
   index: 37,
   urlMatcher: /(?:https?:\/\/)?mangadex\.org\/chapter\/(\w|-)+\/(?:\d+)?/gi,
   backupUrl: (data) => `https://mangadex.org/chapter/${data.data.md_id}`,
@@ -181,7 +181,7 @@ const MangaDex = {
   })
 }
 const ArtStation = {
-  name: 'FurAffinity',
+  name: "FurAffinity",
   index: 39,
   urlMatcher: /(?:https?:\/\/)?www\.artstation\.com\/artwork\/\w+/i,
   backupUrl: (data) => `https://www.artstation.com/artwork/${data.data.as_project}`,
@@ -191,7 +191,7 @@ const ArtStation = {
   })
 }
 const FurAffinity = {
-  name: 'FurAffinity',
+  name: "FurAffinity",
   index: 40,
   urlMatcher: /(?:https?:\/\/)?furaffinity\.net\/view\/\d+/i,
   backupUrl: (data) => `https://furaffinity.net/view/${data.data.fa_id}`,
@@ -201,7 +201,7 @@ const FurAffinity = {
   })
 }
 const Twitter = {
-  name: 'Twitter',
+  name: "Twitter",
   index: 41,
   urlMatcher: /(?:https?:\/\/)?twitter\.com\/.+/i,
   backupUrl: (data) => `https://twitter.com/i/web/status/${data.data.tweet_id}`,
@@ -211,7 +211,7 @@ const Twitter = {
   })
 }
 const FurryNetwork = {
-  name: 'Furry Network',
+  name: "Furry Network",
   index: 42,
   urlMatcher: /(?:https?:\/\/)?furrynetwork\.com\/artwork\/\d+/i,
   backupUrl: (data) => `https://furrynetwork.com/artwork/${data.data.fn_id}`,
@@ -221,22 +221,22 @@ const FurryNetwork = {
   })
 }
 const Kemono = {
-  name: 'Kemono',
+  name: "Kemono",
   index: 43,
   urlMatcher: /|(?:(?:https?:\/\/)?fantia\.jp\/posts\/\d+)|(?:(?:https?:\/\/)?subscribestar\.adult\/posts\/\d+)|(?:(?:https?:\/\/)?gumroad\.com\/l\/\w+)|(?:(?:https?:\/\/)?patreon\.com\/posts\/\d+)|(?:(?:https?:\/\/)?pixiv\.net\/fanbox\/creator\/\d+\/post\/\d+)|(?:(?:https?:\/\/)?dlsite\.com\/home\/work\/=\/product_id\/\w+\.\w+)/i,
   backupUrl: (data) => {
     switch (data.data.service) {
-      case 'fantia':
+      case "fantia":
         return `https://fantia.jp/posts/${data.data.id}`
-      case 'subscribestar':
+      case "subscribestar":
         return `https://subscribestar.adult/posts/${data.data.id}`
-      case 'gumroad':
+      case "gumroad":
         return `https://gumroad.com/l/${data.data.id}`
-      case 'patreon':
+      case "patreon":
         return `https://patreon.com/posts/${data.data.id}`
-      case 'fanbox':
+      case "fanbox":
         return `https://pixiv.net/fanbox/creator/${data.data.user_id}/post/${data.data.id}`
-      case 'dlsite':
+      case "dlsite":
         return `https://dlsite.com/home/work/=/${data.data.id}`
       default:
         // throw new errors_1.SagiriClientError(999, `Unknown service type for Kemono: ${data.data.service}`)
@@ -245,32 +245,32 @@ const Kemono = {
   },
   authorData: (data) => {
     switch (data.service) {
-      case 'fantia':
+      case "fantia":
         return {
           authorName: data.user_name,
           authorUrl: `https://fantia.jp/fanclubs/${data.user_id}`
         }
-      case 'subscribestar':
+      case "subscribestar":
         return {
           authorName: data.user_name,
           authorUrl: `https://subscribestar.adult/${data.user_id}`
         }
-      case 'gumroad':
+      case "gumroad":
         return {
           authorName: data.user_name,
           authorUrl: `https://gumroad.com/${data.user_id}`
         }
-      case 'patreon':
+      case "patreon":
         return {
           authorName: data.user_name,
           authorUrl: `https://patreon.com/user?u=${data.user_id}`
         }
-      case 'fanbox':
+      case "fanbox":
         return {
           authorName: data.user_name,
           authorUrl: `https://pixiv.net/fanbox/creator/${data.user_id}`
         }
-      case 'dlsite':
+      case "dlsite":
         return {
           authorName: data.user_name,
           authorUrl: `https://dlsite.com/eng/cicrle/profile/=/marker_id/${data.user_id}`
@@ -282,7 +282,7 @@ const Kemono = {
   }
 }
 const Skeb = {
-  name: 'Skeb',
+  name: "Skeb",
   index: 44,
   urlMatcher: /(?:(?:https?:\/\/)?skeb\.jp\/@\w+\/works\/\d+)/i,
   backupUrl: (data) => `https://skeb.jp${data.data.path}`,

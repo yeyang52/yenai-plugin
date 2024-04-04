@@ -1,25 +1,25 @@
-import plugin from '../../../lib/plugins/plugin.js'
-import fs from 'fs'
-import _ from 'lodash'
-import { Data } from '../components/index.js'
-import { puppeteer } from '../model/index.js'
+import plugin from "../../../lib/plugins/plugin.js"
+import fs from "fs"
+import _ from "lodash"
+import { Data } from "../components/index.js"
+import { puppeteer } from "../model/index.js"
 const helpType = {
-  群管: 'gpAdmin',
-  涩涩: 'sese'
+  群管: "gpAdmin",
+  涩涩: "sese"
 }
 const helpReg = new RegExp(
-  `^#?椰奶(插件)?(${Object.keys(helpType).join('|')})?(帮助|菜单|功能)$`
+  `^#?椰奶(插件)?(${Object.keys(helpType).join("|")})?(帮助|菜单|功能)$`
 )
 export class YenaiHelp extends plugin {
   constructor () {
     super({
-      name: '椰奶帮助',
-      event: 'message',
+      name: "椰奶帮助",
+      event: "message",
       priority: 2000,
       rule: [
         {
           reg: helpReg,
-          fnc: 'message'
+          fnc: "message"
         }
       ]
     })
@@ -45,7 +45,7 @@ async function help (e) {
     diyCfg = gpAdminHelp.diyCfg
     sysCfg = gpAdminHelp.sysCfg
   } else {
-    let indexHelp = await Data.importCfg('help')
+    let indexHelp = await Data.importCfg("help")
     diyCfg = indexHelp.diyCfg
     sysCfg = indexHelp.sysCfg
   }
@@ -57,14 +57,14 @@ async function help (e) {
   let helpGroup = []
 
   _.forEach(helpList, (group) => {
-    if (group.auth && group.auth === 'master' && !e.isMaster) {
+    if (group.auth && group.auth === "master" && !e.isMaster) {
       return true
     }
 
     _.forEach(group.list, (help) => {
       let icon = help.icon * 1
       if (!icon) {
-        help.css = 'display:none'
+        help.css = "display:none"
       } else {
         let x = (icon - 1) % 10
         let y = (icon - x - 1) / 10
@@ -74,12 +74,12 @@ async function help (e) {
 
     helpGroup.push(group)
   })
-  return await puppeteer.render('help/index', {
+  return await puppeteer.render("help/index", {
     helpCfg: helpConfig,
     helpGroup,
     bg: await rodom(),
     colCount: 3,
-    element: 'default'
+    element: "default"
   }, {
     e,
     scale: 1.2
@@ -87,7 +87,7 @@ async function help (e) {
 }
 
 const rodom = async function () {
-  let image = fs.readdirSync('./plugins/yenai-plugin/resources/help/imgs/')
+  let image = fs.readdirSync("./plugins/yenai-plugin/resources/help/imgs/")
   let list_img = []
   for (let val of image) {
     list_img.push(val)

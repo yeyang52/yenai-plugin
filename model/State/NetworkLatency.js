@@ -1,5 +1,5 @@
-import request from '../../lib/request/request.js'
-import { Config } from '../../components/index.js'
+import request from "../../lib/request/request.js"
+import { Config } from "../../components/index.js"
 
 export default function getNetworTestList () {
   let { psTestSites, psTestTimeout } = Config.state
@@ -22,7 +22,7 @@ export default function getNetworTestList () {
  * @returns {string}
  */
 async function getNetworkLatency (url, timeoutTime = 5000) {
-  const AbortController = globalThis.AbortController || await import('abort-controller')
+  const AbortController = globalThis.AbortController || await import("abort-controller")
 
   const controller = new AbortController()
   const timeout = setTimeout(() => {
@@ -33,24 +33,24 @@ async function getNetworkLatency (url, timeoutTime = 5000) {
     let { status } = await request.get(url, { signal: controller.signal })
     const endTime = Date.now()
     let delay = endTime - startTime
-    let color = ''; let statusColor = ''
+    let color = ""; let statusColor = ""
     if (delay > 2000) {
-      color = '#F44336'
+      color = "#F44336"
     } else if (delay > 500) {
-      color = '#d68100'
+      color = "#d68100"
     } else {
-      color = '#188038'
+      color = "#188038"
     }
     if (status >= 500) {
-      statusColor = '#9C27B0'
+      statusColor = "#9C27B0"
     } else if (status >= 400) {
-      statusColor = '#F44336'
+      statusColor = "#F44336"
     } else if (status >= 300) {
-      statusColor = '#FF9800'
+      statusColor = "#FF9800"
     } else if (status >= 200) {
-      statusColor = '#188038'
+      statusColor = "#188038"
     } else if (status >= 100) {
-      statusColor = '#03A9F4'
+      statusColor = "#03A9F4"
     }
     return `<span style='color:${statusColor}'>${status}</span> | <span style='color:${color}'>${delay}ms</span>`
   } catch {

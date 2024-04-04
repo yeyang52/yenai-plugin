@@ -707,6 +707,8 @@ export class GroupAdmin extends plugin {
     let type = /加/.test(this.e.msg) ? "add" : "del"
     let qq = this.e.at || (this.e.msg.match(/\d+/)?.[0] || "")
     qq = Number(qq) || String(qq)
+    
+    if (!qq) return this.reply("❎ 请艾特或输入需要加白的QQ")
 
     const { whiteQQ } = Config.groupAdmin
     const isWhite = whiteQQ.includes(qq)

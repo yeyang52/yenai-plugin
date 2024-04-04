@@ -44,30 +44,18 @@
 {{/each}}
 <div class="box" data-boxInfo="主硬件">
     <ul class="mainHardware">
-        {{each visualData group}}
+        {{each visualData group i}}
         <li class="li">
-            <!-- <div class="circle"> -->
-            <!-- <div class="left">
-                    <div class="left-circle" {{@group.leftCircle}}>
-                    </div>
-                </div>
-                <div class="right">
-                    <div class="right-circle" {{@group.rightCircle}}>
-                    </div>
-                </div>
-                <div class="inner">
-                    {{group.inner}}
-                </div> -->
             <div class="container-box" data-num="{{group.inner}}" id="box">
                 <div class="circle-outer"></div>
                 <!-- 添加svg -->
                 <svg>
                     <!-- <defs>
-                            <radialGradient id="gradient" cx="50%" cy="50%" r="60%" fx="50%" fy="50%">
-                                <stop offset="30%" stop-color="var(--ring-color2)" />
-                                <stop offset="100%" stop-color="var(--ring-color1)" />
-                            </radialGradient>
-                        </defs> -->
+                        <radialGradient id="gradient{{i}}" cx="50%" cy="50%" r="60%" fx="50%" fy="50%">
+                            <stop offset="30%" stop-color="var({{group.color}}-dark)" />
+                            <stop offset="100%" stop-color="var({{group.color}}-light)" />
+                        </radialGradient>
+                    </defs> -->
                     <circle id="circle" stroke="{{group.color}}" style="stroke-dashoffset:{{group.per}}"></circle>
                 </svg>
             </div>

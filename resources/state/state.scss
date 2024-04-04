@@ -18,9 +18,6 @@
     --gap: 10px;
     /* 第二层圆形宽度 */
     --inner: calc(var(--w) - var(--gap));
-    /* svg圆环颜色 */
-    // --ring-color1: #c1dfc4;
-    // --ring-color2: #3cba92;
     /* 文本颜色 */
     --text-color: #999;
     /* 定义stroke的宽度 */
@@ -271,64 +268,6 @@ hr {
         stroke-dashoffset: calc(3.14 * var(--circle));
         stroke-width: var(--stroke);
     }
-
-    // .circle {
-    //     width: 100px;
-    //     height: 100px;
-    //     background: rgba(238, 238, 238, 0.6);
-    //     position: relative;
-    //     border-radius: 50%;
-
-    //     .left,
-    //     .right {
-    //         width: 50px;
-    //         height: 100px;
-    //         position: absolute;
-    //         overflow: hidden;
-    //     }
-
-    //     .right {
-    //         right: 0;
-
-    //         .right-circle {
-    //             border-top-right-radius: 100px;
-    //             border-bottom-right-radius: 100px;
-    //             transform: rotate(180deg);
-    //             transform-origin: left center;
-    //         }
-    //     }
-
-    //     .left .left-circle,
-    //     .right .right-circle {
-    //         width: 50px;
-    //         height: 100px;
-    //         background: #90ee90;
-    //     }
-
-    //     .left {
-    //         .left-circle {
-    //             border-top-left-radius: 100px;
-    //             border-bottom-left-radius: 100px;
-    //             transform: rotate(-180deg);
-    //             transform-origin: right center;
-    //         }
-    //     }
-
-    //     .inner {
-    //         width: 75px;
-    //         height: 75px;
-    //         border-radius: 50%;
-    //         text-align: center;
-    //         line-height: 75px;
-    //         position: absolute;
-    //         left: 50%;
-    //         top: 50%;
-    //         transform: translate(-50%, -50%);
-    //         color: #999;
-    //         font-size: 20px;
-    //         background: rgba(255, 255, 255, 0.5);
-    //     }
-    // }
 
     article {
         width: 100px;

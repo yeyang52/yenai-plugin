@@ -19,7 +19,6 @@
   --gap: 10px;
   /* 第二层圆形宽度 */
   --inner: calc(var(--w) - var(--gap));
-  /* svg圆环颜色 */
   /* 文本颜色 */
   --text-color: #999;
   /* 定义stroke的宽度 */

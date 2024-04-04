@@ -47,35 +47,17 @@ export function getFileSize (size, isByte = true, isSuffix = true) { // 把字�
  * @param {number} res 百分比小数
  * @returns {*} css样式
  */
-// export function Circle (res) {
-//   let num = (res * 360).toFixed(0)
-//   let color = 'var(--low-color)'
-//   if (res >= 0.9) {
-//     color = 'var(--high-color)'
-//   } else if (res >= 0.8) {
-//     color = 'var(--medium-color)'
-//   }
-//   let leftCircle = `style="transform:rotate(-180deg);background:${color};"`
-//   let rightCircle = `style="transform:rotate(360deg);background:${color};"`
-//   if (num > 180) {
-//     leftCircle = `style="transform:rotate(${num}deg);background:${color};"`
-//   } else {
-//     rightCircle = `style="transform:rotate(-${180 - num}deg);background:${color};"`
-//   }
-//   return { leftCircle, rightCircle }
-// }
-
 export function Circle (res) {
   let perimeter = 3.14 * 77
   let per = perimeter - (perimeter * res * 100) / 100
-  let color = "var(--low-color)"
+  let color = "--low-color"
   if (res >= 0.9) {
-    color = "var(--high-color)"
+    color = "--high-color"
   } else if (res >= 0.8) {
-    color = "var(--medium-color)"
+    color = "--medium-color"
   }
   return {
     per,
-    color
+    color: `var(${color})`
   }
 }

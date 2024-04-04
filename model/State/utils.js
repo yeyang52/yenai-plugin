@@ -48,7 +48,7 @@ export function getFileSize (size, isByte = true, isSuffix = true) { // 把字�
  * @returns {*} css样式
  */
 export function Circle (res) {
-  let perimeter = 3.14 * 77
+  let perimeter = 3.14 * 80
   let per = perimeter - (perimeter * res * 100) / 100
   let color = "--low-color"
   if (res >= 0.9) {

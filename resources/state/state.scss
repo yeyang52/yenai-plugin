@@ -15,13 +15,13 @@
     --w: 100px;
     --back-shadow: #fff;
     /* 父容器gap间距 */
-    --gap: 10px;
+    --gap: 8px;
     /* 第二层圆形宽度 */
     --inner: calc(var(--w) - var(--gap));
     /* 文本颜色 */
-    --text-color: #999;
+    --text-color: #514f4f;
     /* 定义stroke的宽度 */
-    --stroke: 13px;
+    --stroke: 12px;
     /* svg环形宽度 更正内容*/
     --circle: calc(var(--inner) - var(--stroke));
     /* 第三层圆形宽度 */
@@ -55,7 +55,7 @@ body {
     background: rgba(255, 255, 255, 0.45);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     backdrop-filter: blur(10px);
-    border-radius: 0 27px 27px 27px;
+    border-radius: 15px;
     border: 1px solid rgba(255, 255, 255, 0.18);
     font-weight: 700;
     position: relative;
@@ -312,7 +312,7 @@ hr {
         .current {
             background: #90ee90;
             height: 25px;
-            border-radius: 0 10px 10px 0;
+            border-radius: inherit;
         }
 
         .word {

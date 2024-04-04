@@ -108,7 +108,11 @@
         // 背景api
         if (backdrop) {
             var container = document.getElementById('container')
-            container.style.backgroundImage = 'url(' + backdrop + ')'
+            const img = new Image();
+            img.onload = function () {
+                container.style.backgroundImage = 'url(' + backdrop + ')';
+            }
+            img.src = backdrop;
         }
         const by = (value) => {
             value = value?.value ?? value

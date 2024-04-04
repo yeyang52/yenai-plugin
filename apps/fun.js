@@ -71,7 +71,7 @@ export class Fun extends plugin {
           fnc: 'xiuren'
         },
         {
-          reg: '^#?((查?看头像)|取头像)',
+          reg: '^#?(查?看|取)头像',
           fnc: 'LookAvatar'
         }
       ]

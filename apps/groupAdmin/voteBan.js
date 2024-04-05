@@ -59,7 +59,7 @@ export class NewGroupVerify extends plugin {
       // 处理结果
       if (!Vote[key]) return
       const { supportCount, opposeCount } = Vote[key]
-      let msg = `投票结束，投票结果：\n支持票数${supportCount}\n反对票数${opposeCount}\n`
+      let msg = `投票结束，投票结果：\n支持票数：${supportCount}\n反对票数：${opposeCount}\n`
       if (supportCount > opposeCount && supportCount >= 3) {
         msg += "支持票数大于反对票\n执行禁言操作"
         await e.group.muteMember(targetQQ, 3600)

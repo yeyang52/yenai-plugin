@@ -45,11 +45,11 @@ export function getFileSize (size, isByte = true, isSuffix = true) { // 把字�
 /**
  *  圆形进度条渲染
  * @param {number} res 百分比小数
- * @returns {*} css样式
+ * @returns {{per:number,color:string}} per - stroke-dashoffset属性 color - 进度条颜色
  */
 export function Circle (res) {
   let perimeter = 3.14 * 80
-  let per = perimeter - (perimeter * res * 100) / 100
+  let per = perimeter - perimeter * res
   let color = "--low-color"
   if (res >= 0.9) {
     color = "--high-color"

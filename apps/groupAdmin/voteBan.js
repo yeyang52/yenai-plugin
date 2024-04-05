@@ -54,7 +54,6 @@ export class NewGroupVerify extends plugin {
       List: [e.user_id]
     }
     e.reply([
-      "对",
       segment.at(targetQQ),
       `(${targetQQ})的禁言投票已发起\n`,
       "发起人:",

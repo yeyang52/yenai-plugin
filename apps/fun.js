@@ -57,7 +57,6 @@ export class Fun extends plugin {
         }
       ]
     })
-    if (e?.message?.[0]?.text == "#全部赞我") { this.thumbUp(e) }
   }
 
   /**
@@ -83,7 +82,7 @@ export class Fun extends plugin {
     if (!(amount >= 0.01 && amount <= 999999999999.99)) {
       return e.reply("数字大小超出限制，支持范围为0.01~999999999999.99")
     }
-    e.reply([segment.record(`https://mm.cqu.cc/share/zhifubaodaozhang/mp3/${amount}.mp3`)])
+    e.reply([ segment.record(`https://mm.cqu.cc/share/zhifubaodaozhang/mp3/${amount}.mp3`) ])
   }
 
   /**

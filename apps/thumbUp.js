@@ -4,7 +4,7 @@ import { Config } from "../components/index.js"
 import { successImgs, faildsImgs } from "../constants/fun.js"
 
 export class ThumbUp extends plugin {
-  constructor () {
+  constructor (e) {
     super({
       name: "椰奶点赞",
       event: "message",
@@ -16,6 +16,7 @@ export class ThumbUp extends plugin {
         }
       ]
     })
+    if (e?.message?.[0]?.text == "#全部赞我") { this.thumbUp(e) }
   }
 
   /**
@@ -66,7 +67,7 @@ export class ThumbUp extends plugin {
     }
     let successMsg = `给${isSelf ? "你" : userId}${_do}了${n}下哦，记得回我~ ${isFriend ? "" : `(如${_do}失败请添加好友)`}`
     const avatar = `https://q1.qlogo.cn/g?b=qq&s=100&nk=${userId}`
-    const successFn = _.sample(["ganyu", "zan"])
+    const successFn = _.sample([ "ganyu", "zan" ])
 
     /** 判断点赞是否成功 */
     let msg = n > 0

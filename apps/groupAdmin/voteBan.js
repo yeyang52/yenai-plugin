@@ -63,7 +63,7 @@ export class NewGroupVerify extends plugin {
       "请支持者发送：\n",
       `「#支持禁言${targetQQ}」\n`,
       "不支持者请发送：\n",
-      `#反对禁言${targetQQ}」\n`,
+      `「#反对禁言${targetQQ}」\n`,
       `超时时间：${time}秒\n`,
       "规则：支持票大于反对票且参与人高于3人即可成功禁言"
     ])

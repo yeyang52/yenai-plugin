@@ -53,8 +53,20 @@ export class NewGroupVerify extends plugin {
       opposeCount: 0,
       List: [e.user_id]
     }
-
-    e.reply(`对${targetQQ}的禁言投票已发起\n发起人:${e.user_id}\n请支持者发送：\n「#支持禁言${targetQQ}」\n不支持者请发送：\n「#反对禁言${targetQQ}」\n超时时间：${time}秒\n规则：支持票大于反对票且参与人高于3人即可成功禁言`)
+    e.reply([
+      "对",
+      segment.at(targetQQ),
+      `(${targetQQ})的禁言投票已发起\n`,
+      "发起人:",
+      segment.at(e.user_id),
+      `(${e.user_id})\n`,
+      "请支持者发送：\n",
+      `「#支持禁言${targetQQ}」\n`,
+      "不支持者请发送：\n",
+      `#反对禁言${targetQQ}」\n`,
+      `超时时间：${time}秒\n`,
+      "规则：支持票大于反对票且参与人高于3人即可成功禁言"
+    ])
     setTimeout(async () => {
       // 处理结果
       if (!Vote[key]) return

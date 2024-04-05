@@ -30,7 +30,8 @@ module.exports = {
     "jsdoc/require-param-description": 0,
     "jsdoc/require-returns-description": 0,
     "jsdoc/require-param-type": 0,
-    "import/extensions": ["error", "ignorePackages"]
+    "import/extensions": ["error", "ignorePackages"],
+    "array-bracket-newline": ["error", { multiline: true }]
   },
   ignorePatterns: ["resources/state/echarts.min.js"]
 }

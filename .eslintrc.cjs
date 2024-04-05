@@ -3,12 +3,17 @@ module.exports = {
     es2021: true,
     node: true
   },
-  extends: ["standard", "plugin:jsdoc/recommended", "plugin:import/recommended", "plugin:promise/recommended"],
+  extends: [
+    "standard",
+    "plugin:jsdoc/recommended",
+    "plugin:import/recommended",
+    "plugin:promise/recommended"
+  ],
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module"
   },
-  plugins: ["import", "promise", "jsdoc"],
+  plugins: [ "import", "promise", "jsdoc" ],
   globals: {
     Bot: true,
     redis: true,
@@ -18,20 +23,22 @@ module.exports = {
     ReplyError: true
   },
   rules: {
-    "eqeqeq": ["off"],
-    "prefer-const": ["off"],
+    "eqeqeq": [ "off" ],
+    "prefer-const": [ "off" ],
     "arrow-body-style": "off",
     "camelcase": "off",
-    "quotes": ["error", "double"],
-    "quote-props": ["error", "consistent"],
-    "no-eval": ["error", { allowIndirect: true }],
+    "quotes": [ "error", "double" ],
+    "quote-props": [ "error", "consistent" ],
+    "no-eval": [ "error", { allowIndirect: true } ],
+    "array-bracket-newline": [ "error", { multiline: true } ],
+    "array-bracket-spacing": [ "error", "always" ],
+    // 插件规则
     "jsdoc/require-returns": 0,
     "jsdoc/require-jsdoc": 0,
     "jsdoc/require-param-description": 0,
     "jsdoc/require-returns-description": 0,
     "jsdoc/require-param-type": 0,
-    "import/extensions": ["error", "ignorePackages"],
-    "array-bracket-newline": ["error", { multiline: true }]
+    "import/extensions": [ "error", "ignorePackages" ]
   },
-  ignorePatterns: ["resources/state/echarts.min.js"]
+  ignorePatterns: [ "resources/state/echarts.min.js" ]
 }

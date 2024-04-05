@@ -51,9 +51,9 @@ export class NewGroupVerify extends plugin {
     Vote[key] = {
       supportCount: 1,
       opposeCount: 0,
-      List: [e.user_id]
+      List: [ e.user_id ]
     }
-    e.reply([
+    let res = await e.reply([
       segment.at(targetQQ),
       `(${targetQQ})的禁言投票已发起\n`,
       "发起人:",
@@ -66,6 +66,7 @@ export class NewGroupVerify extends plugin {
       `超时时间：${time}秒\n`,
       "规则：支持票大于反对票且参与人高于3人即可成功禁言"
     ])
+    if (!res) return false
     setTimeout(async () => {
       // 处理结果
       if (!Vote[key]) return
@@ -80,6 +81,20 @@ export class NewGroupVerify extends plugin {
       delete Vote[key]
       return e.reply(msg, true)
     }, time * 1000)
+    setTimeout(async () => {
+      const { supportCount, opposeCount } = Vote[key]
+      const msg = [
+        segment.at(targetQQ),
+        `(${targetQQ})的禁言投票仅剩一分钟结束\n`,
+        "当前票数：\n",
+      `支持票数：${supportCount}\n反对票数：${opposeCount}\n`,
+      "请支持者发送：\n",
+        `「#支持禁言${targetQQ}」\n`,
+        "不支持者请发送：\n",
+        `「#反对禁言${targetQQ}」\n`
+      ]
+      e.reply(msg)
+    }, time * 1000 - 60000)
   }
 
   async Follow (e) {

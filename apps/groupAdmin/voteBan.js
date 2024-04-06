@@ -108,7 +108,7 @@ export class NewGroupVerify extends plugin {
 
     if (!Vote[key]) return e.reply("❎ 未找到对应投票")
 
-    if (e.member.is_admin && e.member.is_owner) {
+    if (e.member.is_admin || e.member.is_owner) {
       if (/支持/.test(e.msg)) {
         await e.reply("投票结束，管理员介入，无需投票直接执行禁言", true)
         await e.group.muteMember(targetQQ, 3600)

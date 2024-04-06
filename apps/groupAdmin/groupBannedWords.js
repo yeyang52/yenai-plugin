@@ -129,8 +129,7 @@ export class NewGroupBannedWords extends plugin {
         msg = _.trimStart(msg, name).trim()
       }
     }
-
-    return msg
+    return msg.replace(/＃/g, "#")
   }
 
   async add(e) {

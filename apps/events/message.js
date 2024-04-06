@@ -1,7 +1,7 @@
 import { common } from "../../model/index.js"
 import { Config } from "../../components/index.js"
 
-Bot.on?.("message", async (e) => {
+Bot.on?.("message", async(e) => {
   // 判断是否存在消息
   if (!e?.message?.length) return false
   // 判断是否为机器人消息
@@ -178,7 +178,7 @@ Bot.on?.("message", async (e) => {
  *
  * @param msg
  */
-function getMsgType (msg) {
+function getMsgType(msg) {
   const msgType = {
     record: {
       msg: segment.record(msg[0].url),

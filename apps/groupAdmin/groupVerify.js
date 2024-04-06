@@ -4,9 +4,9 @@ import _ from "lodash"
 import { sleep } from "../../tools/index.js"
 // 全局
 let temp = {}
-const ops = ["+", "-"]
+const ops = [ "+", "-" ]
 export class NewGroupVerify extends plugin {
-  constructor () {
+  constructor() {
     super({
       name: "椰奶入群验证",
       dsc: "重新验证和绕过验证",
@@ -39,7 +39,7 @@ export class NewGroupVerify extends plugin {
   }
 
   // 重新验证
-  async cmdReverify (e) {
+  async cmdReverify(e) {
     if (!common.checkPermission(e, "admin", "admin")) return
 
     if (!this.verifycfg.openGroup.includes(e.group_id)) return e.reply("当前群未开启验证哦~", true)
@@ -61,7 +61,7 @@ export class NewGroupVerify extends plugin {
   }
 
   // 绕过验证
-  async cmdPass (e) {
+  async cmdPass(e) {
     if (!common.checkPermission(e, "admin", "admin")) return
 
     if (!this.verifycfg.openGroup.includes(e.group_id)) return e.reply("当前群未开启验证哦~", true)
@@ -84,7 +84,7 @@ export class NewGroupVerify extends plugin {
     return await e.reply(this.verifycfg.SuccessMsgs[e.group_id] || this.verifycfg.SuccessMsgs[0] || "✅ 验证成功，欢迎入群")
   }
 
-  async cmdReverifyNeverSpeak (e) {
+  async cmdReverifyNeverSpeak(e) {
     let list = null
     try {
       list = await new Ga(e).getNeverSpeak(e.group_id)
@@ -98,7 +98,7 @@ export class NewGroupVerify extends plugin {
   }
 
   // 开启验证
-  async handelverify (e) {
+  async handelverify(e) {
     if (!common.checkPermission(e, "admin", "admin")) return
     let type = /开启/.test(e.msg) ? "add" : "del"
     let isopen = this.verifycfg.openGroup.includes(e.group_id)
@@ -109,7 +109,7 @@ export class NewGroupVerify extends plugin {
   }
 
   // 切换验证模式
-  async setmode (e) {
+  async setmode(e) {
     if (!common.checkPermission(e, "master")) return
     let value = this.verifycfg.mode == "模糊" ? "精确" : "模糊"
     Config.modify("groupverify", "mode", value)
@@ -117,7 +117,7 @@ export class NewGroupVerify extends plugin {
   }
 
   // 设置验证超时时间
-  async setovertime (e) {
+  async setovertime(e) {
     if (!common.checkPermission(e, "master")) return
     let overtime = e.msg.match(/\d+/g)
     Config.modify("groupverify", "time", Number(overtime))
@@ -129,7 +129,7 @@ export class NewGroupVerify extends plugin {
 }
 
 // 进群监听
-Bot.on?.("notice.group.increase", async (e) => {
+Bot.on?.("notice.group.increase", async(e) => {
   logger.mark(`[Yenai-Plugin][进群验证]收到${e.user_id}的进群事件`)
   let { openGroup, DelayTime } = Config.groupverify
 
@@ -144,7 +144,7 @@ Bot.on?.("notice.group.increase", async (e) => {
 })
 
 // 答案监听
-Bot.on?.("message.group", async (e) => {
+Bot.on?.("message.group", async(e) => {
   let { openGroup, mode, SuccessMsgs } = Config.groupverify
 
   if (!openGroup.includes(e.group_id)) return
@@ -177,18 +177,18 @@ Bot.on?.("message.group", async (e) => {
       await e.recall()
 
       const msg = `\n❎ 验证失败\n你还有「${remainTimes}」次机会\n请发送「${nums[0]} ${operator} ${nums[1]}」的运算结果`
-      return await e.reply([segment.at(e.user_id), msg])
+      return await e.reply([ segment.at(e.user_id), msg ])
     }
     clearTimeout(kickTimer)
     clearTimeout(remindTimer)
-    await e.reply([segment.at(e.user_id), "\n验证失败，请重新申请"])
+    await e.reply([ segment.at(e.user_id), "\n验证失败，请重新申请" ])
     delete temp[e.user_id + e.group_id]
     return await e.group.kickMember(e.user_id)
   }
 })
 
 // 主动退群
-Bot.on?.("notice.group.decrease", async (e) => {
+Bot.on?.("notice.group.decrease", async(e) => {
   if (!e.group.is_admin && !e.group.is_owner) return
 
   if (!temp[e.user_id + e.group_id]) return
@@ -209,7 +209,7 @@ Bot.on?.("notice.group.decrease", async (e) => {
  * @param group_id
  * @param e
  */
-async function verify (user_id, group_id, e) {
+async function verify(user_id, group_id, e) {
   if (!e.group.is_admin && !e.group.is_owner) return
   user_id = Number(user_id)
   group_id = Number(group_id)
@@ -218,17 +218,17 @@ async function verify (user_id, group_id, e) {
   const { times, range, time, remindAtLastMinute } = Config.groupverify
   const operator = ops[_.random(0, 1)]
 
-  let [m, n] = [_.random(range.min, range.max), _.random(range.min, range.max)]
+  let [ m, n ] = [ _.random(range.min, range.max), _.random(range.min, range.max) ]
   while (m == n) {
     n = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min
   }
 
-  [m, n] = [m >= n ? m : n, m >= n ? n : m]
+  [ m, n ] = [ m >= n ? m : n, m >= n ? n : m ]
 
   const verifyCode = String(operator === "-" ? m - n : m + n)
   logger.mark(`[Yenai-Plugin][进群验证]答案：${verifyCode}`)
-  const kickTimer = setTimeout(async () => {
-    e.reply([segment.at(user_id), "\n验证超时，移出群聊，请重新申请"])
+  const kickTimer = setTimeout(async() => {
+    e.reply([ segment.at(user_id), "\n验证超时，移出群聊，请重新申请" ])
 
     delete temp[user_id + group_id]
 
@@ -239,11 +239,11 @@ async function verify (user_id, group_id, e) {
 
   const shouldRemind = remindAtLastMinute && time >= 120
 
-  const remindTimer = setTimeout(async () => {
+  const remindTimer = setTimeout(async() => {
     if (shouldRemind && temp[user_id + group_id].remindTimer) {
       const msg = ` \n验证仅剩最后一分钟\n请发送「${m} ${operator} ${n}」的运算结果\n否则将会被移出群聊`
 
-      await e.reply([segment.at(user_id), msg])
+      await e.reply([ segment.at(user_id), msg ])
     }
     clearTimeout(remindTimer)
   }, Math.abs(time * 1000 - 60000))
@@ -251,10 +251,10 @@ async function verify (user_id, group_id, e) {
   const msg = ` 欢迎！\n请在「${time}」秒内发送\n「${m} ${operator} ${n}」的运算结果\n否则将会被移出群聊`
 
   // 消息发送成功才写入
-  if (await e.reply([segment.at(user_id), msg])) {
+  if (await e.reply([ segment.at(user_id), msg ])) {
     temp[user_id + group_id] = {
       remainTimes: times,
-      nums: [m, n],
+      nums: [ m, n ],
       operator,
       verifyCode,
       kickTimer,

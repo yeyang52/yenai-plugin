@@ -1,6 +1,6 @@
 import moment from "moment"
 
-export function timeToSeconds (time) {
+export function timeToSeconds(time) {
   let seconds = 0
   let timeArray = time.split(" ")
   for (let i = 0; i < timeArray.length; i++) {
@@ -26,7 +26,7 @@ export function timeToSeconds (time) {
   return seconds
 }
 
-export function getNoonTomorrow () {
+export function getNoonTomorrow() {
   const now = moment() // 获取当前时间
   const noonToday = moment().startOf("day").add(12, "hours") // 获取今天中午12点的时间
   const noonTomorrow = moment().add(1, "day").startOf("day").add(12, "hours") // 获取明天中午12点的时间

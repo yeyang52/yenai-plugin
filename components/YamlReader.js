@@ -10,13 +10,13 @@ export default class YamlReader {
    * @param yamlPath yaml文件绝对路径
    * @param isWatch 是否监听文件变化
    */
-  constructor (yamlPath, isWatch = false) {
+  constructor(yamlPath, isWatch = false) {
     this.yamlPath = yamlPath
     this.isWatch = isWatch
     this.initYaml()
   }
 
-  initYaml () {
+  initYaml() {
     // parseDocument 将会保留注释
     this.document = YAML.parseDocument(fs.readFileSync(this.yamlPath, "utf8"))
     if (this.isWatch && !this.watcher) {
@@ -31,7 +31,7 @@ export default class YamlReader {
   }
 
   /** 返回读取的对象 */
-  get jsonData () {
+  get jsonData() {
     if (!this.document) {
       return null
     }
@@ -39,42 +39,42 @@ export default class YamlReader {
   }
 
   /* 检查集合是否包含key的值 */
-  has (keyPath) {
+  has(keyPath) {
     return this.document.hasIn(keyPath.split("."))
   }
 
   /* 返回key的值 */
-  get (keyPath) {
+  get(keyPath) {
     return _.get(this.jsonData, keyPath)
   }
 
   /* 修改某个key的值 */
-  set (keyPath, value) {
-    this.document.setIn([keyPath], value)
+  set(keyPath, value) {
+    this.document.setIn([ keyPath ], value)
     this.save()
   }
 
   /* 删除key */
-  delete (keyPath) {
+  delete(keyPath) {
     this.document.deleteIn(keyPath.split("."))
     this.save()
   }
 
   // 数组添加数据
-  addIn (keyPath, value) {
+  addIn(keyPath, value) {
     this.document.addIn(keyPath.split("."), value)
     this.save()
   }
 
   // 彻底删除某个key
-  deleteKey (keyPath) {
+  deleteKey(keyPath) {
     let keys = keyPath.split(".")
     keys = this.mapParentKeys(keys)
     this.document.deleteIn(keys)
     this.save()
   }
 
-  save () {
+  save() {
     this.isSave = true
     let yaml = this.document.toString()
     fs.writeFileSync(this.yamlPath, yaml, "utf8")

@@ -5,7 +5,7 @@ import { setuMsg } from "../constants/msg.js"
 import request from "../lib/request/request.js"
 import formatDuration from "../tools/formatDuration.js"
 export default new class setu {
-  constructor () {
+  constructor() {
     this.root = `${Plugin_Path}/config/setu`
     // 默认配置
     this.def = Config.setu.defSet
@@ -15,22 +15,22 @@ export default new class setu {
     this.init()
   }
 
-  async init () {
+  async init() {
     Data.createDir("config/setu")
   }
 
   /** 开始执行文案 */
-  get startMsg () {
+  get startMsg() {
     return _.sample(setuMsg.start)
   }
 
   /** CD中文案 */
-  get CDMsg () {
+  get CDMsg() {
     return _.sample(setuMsg.cd)
   }
 
   /** 发送图片文案 */
-  get sendMsgs () {
+  get sendMsgs() {
     return _.sample(setuMsg.send)
   }
 
@@ -41,7 +41,7 @@ export default new class setu {
    * @param {string} tag 关键词
    * @returns {object}
    */
-  async setuApi (r18, num = 1, tag = []) {
+  async setuApi(r18, num = 1, tag = []) {
     let api = "https://api.lolicon.app/setu/v2"
     const { imgSize, excludeAI } = Config.setu
     const size = imgSize[_.max(Object.keys(imgSize).filter(item => num > item))] || "original"
@@ -77,7 +77,7 @@ export default new class setu {
    * @param {Array} msg 消息数组
    * @returns {boolean}
    */
-  async sendMsgOrSetCd (e, msg) {
+  async sendMsgOrSetCd(e, msg) {
     // 发送消息
     let res = await common.recallSendForwardMsg(e, msg, false)
     if (!res) return false
@@ -92,7 +92,7 @@ export default new class setu {
    * @param {number} cd cd时间
    * @returns {*}
    */
-  setCdTime (userId, groupId, cd = this.getCfgCd(userId, groupId)) {
+  setCdTime(userId, groupId, cd = this.getCfgCd(userId, groupId)) {
     let present = parseInt(Date.now() / 1000)
     userId = userId - 0
     groupId = groupId - 0
@@ -117,7 +117,7 @@ export default new class setu {
    * @param {number} groupId 群号不传则为私聊CD
    * @returns {string} 格式化后的时间
    */
-  getRemainingCd (userId, groupId) {
+  getRemainingCd(userId, groupId) {
     userId = userId - 0
     groupId = groupId - 0
     // 获取现在的时间并转换为秒
@@ -140,7 +140,7 @@ export default new class setu {
    * @param {number} groupId 传群号为群聊配置
    * @returns {*}
    */
-  getCfgCd (userId, groupId) {
+  getCfgCd(userId, groupId) {
     let data = Data.readJSON(`setu${groupId ? "" : "_s"}.json`, this.root)
     let CD = groupId ? data[groupId]?.cd : data[userId]
     if (CD !== undefined) return CD
@@ -152,7 +152,7 @@ export default new class setu {
    * @param {number} groupID 群号不传为私聊
    * @returns {string}  0或1
    */
-  getR18 (groupID) {
+  getR18(groupID) {
     let data = Data.readJSON(`setu${groupID ? "" : "_s"}.json`, this.root)
     let R18 = groupID ? data[groupID]?.r18 : data.r18
     if (R18 !== undefined) return R18
@@ -164,7 +164,7 @@ export default new class setu {
    * @param groupId
    * @returns {number}
    */
-  getRecallTime (groupId) {
+  getRecallTime(groupId) {
     if (!groupId) return 0
     let data = Data.readJSON("setu.json", this.root)
     let recalltime = data[groupId]?.recall
@@ -179,7 +179,7 @@ export default new class setu {
    * @param {boolean} type 为true设置撤回时间反之设置CD
    * @returns {boolean}
    */
-  setGroupRecallTimeAndCd (groupId, num, type) {
+  setGroupRecallTimeAndCd(groupId, num, type) {
     let data = Data.readJSON("setu.json", this.root)
 
     if (!data[groupId]) data[groupId] = _.cloneDeep(this.def)
@@ -195,7 +195,7 @@ export default new class setu {
    * @param {string} qq 设置的qq
    * @param {string} cd 设置的cd
    */
-  setUserCd (e, qq, cd) {
+  setUserCd(e, qq, cd) {
     let data = Data.readJSON("setu_s.json", this.root)
 
     data[qq] = Number(cd)
@@ -214,7 +214,7 @@ export default new class setu {
    * @param {string | number} groupID 群聊id为假时设置私聊
    * @param {boolean} isopen 开启或关闭
    */
-  setR18 (groupID, isopen) {
+  setR18(groupID, isopen) {
     let data = Data.readJSON(`setu${groupID ? "" : "_s"}.json`, this.root)
     if (groupID) {
       if (!data[groupID]) data[groupID] = _.cloneDeep(this.def)
@@ -236,7 +236,7 @@ export default new class setu {
    * @param {*} e oicq
    * @returns {*}
    */
-  getSeSeConfig (e) {
+  getSeSeConfig(e) {
     let set = _.cloneDeep(this.def)
     set.cd = this.getCfgCd(e.user_id, e.group_id)
     set.r18 = this.getR18(e.group_id)

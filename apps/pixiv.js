@@ -18,7 +18,7 @@ const searchUser = new RegExp(`^#?user搜索(.*?)(第(${numReg})页)?$`, "i")
 const randomImgReg = new RegExp(`^#?来(${numReg})?张(好(康|看)(的|哒)|hkd|涩图)$|^#有内鬼$`)
 
 export class NewPixiv extends plugin {
-  constructor () {
+  constructor() {
     super({
       name: "椰奶pixiv",
       event: "message",
@@ -84,7 +84,7 @@ export class NewPixiv extends plugin {
   }
 
   // pid搜图
-  async searchPid (e) {
+  async searchPid(e) {
     if (!await this._Authentication(e, "sese")) return
     e.reply(Pixiv.startMsg)
     let regRet = pidReg.exec(e.msg)
@@ -98,7 +98,7 @@ export class NewPixiv extends plugin {
   }
 
   // p站排行榜
-  async pixivRank (e) {
+  async pixivRank(e) {
     let regRet = rankingrReg.exec(e.msg)
     if (!await this._Authentication(e, "sese")) return
     if ((regRet[4] && !setu.getR18(e.group_id)) && !e.isMaster) {
@@ -117,7 +117,7 @@ export class NewPixiv extends plugin {
    * 关键词搜图
    * @param e
    */
-  async searchTags (e) {
+  async searchTags(e) {
     let regRet = tagReg.exec(e.msg)
     if (!await this._Authentication(e, "sese")) return
     if (regRet[1] && !await this._Authentication(e, "sesepro")) return
@@ -134,7 +134,7 @@ export class NewPixiv extends plugin {
    * 获取热门tag
    * @param e
    */
-  async popularTags (e) {
+  async popularTags(e) {
     if (!await this._Authentication(e, "sese")) return
     e.reply(Pixiv.startMsg)
     await Pixiv.PopularTags()
@@ -146,7 +146,7 @@ export class NewPixiv extends plugin {
    * 以uid搜图
    * @param e
    */
-  async searchUid (e) {
+  async searchUid(e) {
     if (!await this._Authentication(e, "sese")) return
 
     e.reply(Pixiv.startMsg)
@@ -160,7 +160,7 @@ export class NewPixiv extends plugin {
   }
 
   // 随机原创插画
-  async vilipixRandomImg (e) {
+  async vilipixRandomImg(e) {
     if (!await this._Authentication(e, "sese")) return
     e.reply(Pixiv.startMsg)
     let regRet = randomImgReg.exec(e.msg)
@@ -177,7 +177,7 @@ export class NewPixiv extends plugin {
   }
 
   // 相关作品
-  async relatedIllust (e) {
+  async relatedIllust(e) {
     if (!await this._Authentication(e, "sese")) return
 
     e.reply(Pixiv.startMsg)
@@ -189,13 +189,13 @@ export class NewPixiv extends plugin {
   }
 
   // p站单图
-  async pximg (e) {
+  async pximg(e) {
     let ispro = /pro/.test(e.msg)
     if (!await this._Authentication(e, "sese")) return
     if (ispro && !await this._Authentication(e, "sesepro", false)) return
 
     await Pixiv.pximg(ispro)
-      .then(res => ispro ? common.recallSendForwardMsg(e, [res]) : common.recallsendMsg(e, res, false))
+      .then(res => ispro ? common.recallSendForwardMsg(e, [ res ]) : common.recallsendMsg(e, res, false))
       .catch(err => common.handleException(e, err))
   }
 
@@ -203,7 +203,7 @@ export class NewPixiv extends plugin {
    * 搜索用户
    * @param e
    */
-  async searchUser (e) {
+  async searchUser(e) {
     if (!await this._Authentication(e, "sese")) return
 
     e.reply(Pixiv.startMsg)
@@ -218,7 +218,7 @@ export class NewPixiv extends plugin {
    * 推荐作品
    * @param e
    */
-  async illustRecommended (e) {
+  async illustRecommended(e) {
     if (!await this._Authentication(e, "sese")) return
     e.reply(Pixiv.startMsg)
     let num = e.msg.match(/\d+/) || 1
@@ -229,7 +229,7 @@ export class NewPixiv extends plugin {
   }
 
   // 更换代理
-  async setProxy (e) {
+  async setProxy(e) {
     if (/查看/.test(e.msg)) return e.reply(await redis.get("yenai:proxy"))
     let proxy = e.msg.replace(/#|(p站|pixiv)更换代理/g, "").trim()
     if (new RegExp(`^[1-${ImageRPSS.length}]$`).test(proxy)) {
@@ -247,7 +247,7 @@ export class NewPixiv extends plugin {
    * 图片直连
    * @param e
    */
-  async directConnection (e) {
+  async directConnection(e) {
     let isSwitch = /开启/.test(e.msg)
     Config.modify("pixiv", "pixivDirectConnection", isSwitch)
     new Admin().SeSe_Settings(e)
@@ -257,13 +257,13 @@ export class NewPixiv extends plugin {
    * 登录信息
    * @param e
    */
-  async loginInfo (e) {
+  async loginInfo(e) {
     await Pixiv.loginInfo()
       .then(res => e.reply(res))
       .catch(err => common.handleException(e, err))
   }
 
-  async _Authentication (e, type = "sese", limit = true) {
+  async _Authentication(e, type = "sese", limit = true) {
     if (e.isMaster) return true
     if (!Config.pixiv.allowPM && !e.isGroup) {
       e.reply("主人已禁用私聊该功能")

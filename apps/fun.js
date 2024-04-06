@@ -17,7 +17,7 @@ _.forIn(picApis, (values, key) => {
 })
 
 export class Fun extends plugin {
-  constructor (e) {
+  constructor(e) {
     super({
       name: "椰奶娱乐",
       event: "message",
@@ -63,7 +63,7 @@ export class Fun extends plugin {
    * 随机唱鸭
    * @param e
    */
-  async Sing (e) {
+  async Sing(e) {
     let data = await funApi.randomSinging()
     if (data.error) return e.reply(data.error)
     await e.reply(await uploadRecord(data.audioUrl, 0, false))
@@ -74,7 +74,7 @@ export class Fun extends plugin {
    * 支付宝语音
    * @param e
    */
-  async ZFB (e) {
+  async ZFB(e) {
     let amount = parseFloat(e.msg.replace(/#|支付宝到账|元|圆/g, "").trim())
 
     if (!/^\d+(\.\d{1,2})?$/.test(amount)) return e.reply("你觉得这河里吗！！", true)
@@ -89,7 +89,7 @@ export class Fun extends plugin {
    * 有道翻译
    * @param e
    */
-  async youdao (e) {
+  async youdao(e) {
     const msg = e.msg.match(/#(([\u4e00-\u9fa5]{2,6})-)?([\u4e00-\u9fa5]{2,6})?翻译(.*)/)
     // 如果是在群聊中回复，则获取上一条消息作为翻译内容
     if (e.source) {
@@ -106,7 +106,7 @@ export class Fun extends plugin {
   }
 
   // github
-  async GH (e) {
+  async GH(e) {
     const api = "https://opengraph.githubassets.com"
 
     let reg = /github.com\/[a-zA-Z0-9-]{1,39}\/[a-zA-Z0-9_-]{1,100}(?:\/(?:pull|issues)\/\d+)?/
@@ -123,7 +123,7 @@ export class Fun extends plugin {
   }
 
   // coser
-  async coser (e) {
+  async coser(e) {
     if (!common.checkSeSePermission(e)) return false
 
     e.reply(START_EXECUTION)
@@ -133,7 +133,7 @@ export class Fun extends plugin {
   }
 
   // cos/acg搜索
-  async acg (e) {
+  async acg(e) {
     if (!common.checkSeSePermission(e)) return false
     e.reply(START_EXECUTION)
     const reg = new RegExp(`^#(${Object.keys(pandadiuType).join("|")})?acg(.*)$`)
@@ -144,7 +144,7 @@ export class Fun extends plugin {
   }
 
   // 黑丝
-  async heisiwu (e) {
+  async heisiwu(e) {
     if (!common.checkSeSePermission(e, "sesepro")) return false
 
     e.reply(START_EXECUTION)
@@ -156,7 +156,7 @@ export class Fun extends plugin {
   }
 
   // 萌堆
-  async mengdui (e) {
+  async mengdui(e) {
     if (!common.checkSeSePermission(e, "sesepro")) return false
     // 开始执行
     e.reply(START_EXECUTION)
@@ -166,7 +166,7 @@ export class Fun extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  async xiuren (e) {
+  async xiuren(e) {
     if (!common.checkSeSePermission(e, "pro")) return false
     // 开始执行
     e.reply(START_EXECUTION)
@@ -176,7 +176,7 @@ export class Fun extends plugin {
   }
 
   // 查看头像
-  async LookAvatar () {
+  async LookAvatar() {
     const id = this.e.msg.replace(/^#?((查?看头像)|取头像)/, "").trim() || this.e.at ||
       this.e.message.find(item => item.type == "at")?.qq || this.e.user_id
     try {

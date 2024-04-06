@@ -6,7 +6,7 @@ import { si } from "./index.js"
  *  获取硬盘
  * @returns {*}
  */
-export default async function getFsSize () {
+export default async function getFsSize() {
   // 去重
   let HardDisk = _.uniqWith(await si.fsSize(),
     (a, b) =>

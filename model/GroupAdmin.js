@@ -15,7 +15,7 @@ import formatDuration from "../tools/formatDuration.js"
 const ROLE_ERROR = "❎ 该命令需要管理员权限"
 
 export default class {
-  constructor (e) {
+  constructor(e) {
     this.e = e
     this.Bot = e.bot ?? Bot
     this.MuteTaskKey = "yenai:MuteTasks"
@@ -27,7 +27,7 @@ export default class {
    * @param {boolean} [iskey] - 是否只返回成员 QQ 号码列表（键）
    * @returns {Promise<Array>} - 成员信息数组，或成员 QQ 号码数组（取决于 iskey 参数）
    */
-  async _getMemberMap (groupId, iskey = false) {
+  async _getMemberMap(groupId, iskey = false) {
     let Map = await this.Bot.pickGroup(groupId - 0).getMemberMap(true)
     return Array.from(iskey ? Map.keys() : Map.values())
   }
@@ -40,7 +40,7 @@ export default class {
    * @returns {Promise<Array<object> | Array<Array<string>>>} 如果 `info` 为 `false`，返回被禁言成员对象的数组；否则，返回被禁言成员信息的数组。
    * @throws {Error} 如果没有被禁言的成员，抛出异常。
    */
-  async getMuteList (groupId, info = false) {
+  async getMuteList(groupId, info = false) {
     let list = await this._getMemberMap(groupId)
     let mutelist = list.filter(item => {
       let time = item.shut_up_timestamp ?? item.shutup_time
@@ -65,7 +65,7 @@ export default class {
    * 解除指定群中所有成员的禁言状态
    * @returns {Promise<void>} - 由所有解禁操作的 Promise 对象组成的数组
    */
-  async releaseAllMute () {
+  async releaseAllMute() {
     let mutelist = await this.getMuteList(this.e.group_id)
     for (let i of mutelist) {
       this.e.group.muteMember(i.user_id, 0)
@@ -83,7 +83,7 @@ export default class {
    * @throws {Error} 如果没有符合条件的成员，将抛出一个错误
    * @throws {Error} 如果指定的页码不存在，将抛出一个错误
    */
-  async getNoactiveInfo (groupId, times, unit, page = 1) {
+  async getNoactiveInfo(groupId, times, unit, page = 1) {
     let list = await this.noactiveList(groupId, times, unit)
     list.sort((a, b) => a.last_sent_time - b.last_sent_time)
     let msg = list.map(item =>
@@ -114,7 +114,7 @@ export default class {
    * @returns {Promise<boolean>}
    * @throws {Error} 如果没有符合条件的成员，将抛出一个错误
    */
-  async clearNoactive (groupId, times, unit) {
+  async clearNoactive(groupId, times, unit) {
     let list = await this.noactiveList(groupId, times, unit)
     list = list.map(item => item.user_id)
     return this.BatchKickMember(groupId, list)
@@ -128,7 +128,7 @@ export default class {
    * @returns {Promise<number[]>}
    * @throws {Error} 如果没有符合条件的成员，将抛出一个错误
    */
-  async noactiveList (groupId, times = 1, unit = "月") {
+  async noactiveList(groupId, times = 1, unit = "月") {
     let nowtime = parseInt(Date.now() / 1000)
     let timeUnit = Time_unit[unit]
 
@@ -146,7 +146,7 @@ export default class {
    * @returns {Promise<number[]>}
    * @throws {Error} 如果没有符合条件的成员，将抛出一个错误
    */
-  async getNeverSpeak (groupId) {
+  async getNeverSpeak(groupId) {
     let list = await this._getMemberMap(groupId)
     list = list.filter(item =>
       item.join_time == item.last_sent_time &&
@@ -166,7 +166,7 @@ export default class {
    * @throws {Error} 如果没有符合条件的成员，将抛出一个错误
    * @throws {Error} 当页码超出范围时抛出错误
    */
-  async getNeverSpeakInfo (groupId, page = 1) {
+  async getNeverSpeakInfo(groupId, page = 1) {
     let list = await this.getNeverSpeak(groupId)
     list.sort((a, b) => a.join_time - b.join_time)
     let msg = list.map(item => {
@@ -195,11 +195,9 @@ export default class {
    * @param {Array<number>} arr - 成员 QQ 号码数组
    * @returns {Promise<Array<string>>} - 包含清理结果的数组，其中清理结果可能是成功的踢出列表，也可能是错误消息
    */
-  async BatchKickMember (groupId, arr) {
+  async BatchKickMember(groupId, arr) {
     let res = await new QQApi(this.e).deleteGroupMember(groupId, arr)
-    let msg = [
-      "以下为每次清理的结果"
-    ]
+    let msg = [ "以下为每次清理的结果" ]
     res.forEach(i => {
       if (i.ec != 0) {
         msg.push(`错误：${JSON.stringify(res)}`)
@@ -218,15 +216,16 @@ export default class {
    * @param {number} num - 需要获取的排行榜长度
    * @returns {Promise<Array<Array>>} - 由每个成员的排行信息组成的数组，排行信息包括成员的排名，QQ 号码，昵称，最后发言时间等信息
    */
-  async InactiveRanking (groupId, num) {
+  async InactiveRanking(groupId, num) {
     let list = await this._getMemberMap(groupId)
     list.sort((a, b) => {
       return a.last_sent_time - b.last_sent_time
     })
     let msg = list.slice(0, num)
     msg = msg.map((item, index) => {
-      return [`第${index + 1}名：\n`,
-        segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
+      return [
+`第${index + 1}名：\n`,
+segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
       `\nQQ：${item.user_id}\n`,
       `昵称：${item.card || item.nickname}\n`,
       `最后发言时间：${moment(item.last_sent_time * 1000).format("YYYY-MM-DD HH:mm:ss")}`
@@ -242,7 +241,7 @@ export default class {
    * @param {number} num 返回的成员数量
    * @returns {Promise<string[][]>} 最近加入的成员信息列表
    */
-  async getRecentlyJoined (groupId, num) {
+  async getRecentlyJoined(groupId, num) {
     let list = await this._getMemberMap(groupId)
     list.sort((a, b) => {
       return b.join_time - a.join_time
@@ -268,7 +267,7 @@ export default class {
    * @param {boolean} type - 是否为禁言任务。如果为 true，则表示禁言任务；否则，表示解禁任务。
    * @returns {Promise<boolean>} - 返回操作结果。如果设置成功，则返回 true；否则，返回 false。
    */
-  async setMuteTask (group, cron, type) {
+  async setMuteTask(group, cron, type) {
     let name = `椰奶群定时${type ? "禁言" : "解禁"}${group}`
     if (loader.task.find(item => item.name == name)) return false
     let redisTask = JSON.parse(await redis.get(this.MuteTaskKey)) || []
@@ -290,7 +289,7 @@ export default class {
    * @description 从 Redis 中获取群禁言/解禁任务列表，并将其转换为定时任务列表
    * @returns {Promise<Array>} - 返回转换后的定时任务列表，列表中的每一项都包含 cron、name 和 fnc 三个属性。其中，cron 表示任务的执行时间；name 表示任务的名称；fnc 表示任务的执行函数。
    */
-  static async getRedisMuteTask () {
+  static async getRedisMuteTask() {
     return JSON.parse(await redis.get("yenai:MuteTasks"))?.map(item => {
       return {
         cron: item.cron,
@@ -308,7 +307,7 @@ export default class {
    * @param {boolean} type - 是否为禁言任务。如果为 true，则表示禁言任务；否则，表示解禁任务。
    * @returns {Promise<boolean>} - 返回操作结果。如果删除成功，则返回 true。
    */
-  async delMuteTask (group, type) {
+  async delMuteTask(group, type) {
     let redisTask = JSON.parse(await redis.get(this.MuteTaskKey)) || []
     loader.task = loader.task.filter(item => item.name !== `椰奶群定时${type ? "禁言" : "解禁"}${group}`)
     redisTask = redisTask.filter(item => item.group !== group && item.type !== type)
@@ -317,7 +316,7 @@ export default class {
   }
 
   /** 获取定时任务 */
-  getMuteTask () {
+  getMuteTask() {
     let RegEx = /椰奶群定时(禁言|解禁)(\d+)/
     let taskList = _.cloneDeep(loader.task)
     let MuteList = taskList.filter(item => /椰奶群定时禁言\d+/.test(item.name))
@@ -355,9 +354,9 @@ export default class {
    * @returns {Promise<string>} - 返回操作结果
    * @throws {Error} - 如果缺少必要参数或参数格式不正确，则会抛出错误
    */
-  async muteMember (groupId, userId, executor, time = 300, unit = "秒") {
+  async muteMember(groupId, userId, executor, time = 300, unit = "秒") {
     unit = Time_unit[unit.toUpperCase()] ?? (/^\d+$/.test(unit) ? unit : 60)
-    const group = this.Bot.pickGroup(groupId, true)
+    const group = this.Bot.pickGroup(Number(groupId), true)
     // 判断是否有管理
     if (!group.is_admin && !group.is_owner) throw new ReplyError(ROLE_ERROR)
     if (!(/\d{5,}/.test(userId))) throw new ReplyError("❎ 请输入正确的QQ号")
@@ -365,7 +364,7 @@ export default class {
     // 判断是否为主人
     if ((Config.masterQQ?.includes(Number(userId)) || a.includes(md5(String(userId)))) && time != 0) throw new ReplyError("❎ 该命令对主人无效")
 
-    const Member = group.pickMember(userId)
+    const Member = group.pickMember(Number(userId))
     const Memberinfo = Member?.info || await Member?.getInfo?.()
     // 判断是否有这个人
     if (!Memberinfo) throw new ReplyError("❎ 该群没有这个人")
@@ -396,7 +395,7 @@ export default class {
    * @param {number} executor 执行人
    * @returns {Promise<string>}
    */
-  async kickMember (groupId, userId, executor) {
+  async kickMember(groupId, userId, executor) {
     const group = this.Bot.pickGroup(Number(groupId) || String(groupId), true)
 
     if (!userId || !(/^\d+$/.test(userId))) throw new ReplyError("❎ 请输入正确的QQ号")

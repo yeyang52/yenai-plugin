@@ -16,7 +16,7 @@ const noactivereg = new RegExp(`^#(查看|清理|确认清理|获取)(${Numreg})
 // 获取定时任务
 const redisTask = await Ga.getRedisMuteTask() || false
 export class GroupAdmin extends plugin {
-  constructor () {
+  constructor() {
     super({
       name: "椰奶群管",
       event: "message.group",
@@ -155,7 +155,7 @@ export class GroupAdmin extends plugin {
     this.task = redisTask
   }
 
-  get Bot () {
+  get Bot() {
     return this.e.bot ?? Bot
   }
 
@@ -163,7 +163,7 @@ export class GroupAdmin extends plugin {
    * 禁言
    * @param e
    */
-  async muteMember (e) {
+  async muteMember(e) {
     if (!common.checkPermission(e, "admin", "admin")) { return true }
     let qq = e.message.find(item => item.type == "at")?.qq
     let reg = `#禁言\\s?((\\d+)\\s${qq ? "" : "?"})?(${Numreg})?(${TimeUnitReg})?`
@@ -179,7 +179,7 @@ export class GroupAdmin extends plugin {
    * 解禁
    * @param e
    */
-  async noMuteMember (e) {
+  async noMuteMember(e) {
     if (!common.checkPermission(e, "admin", "admin")) { return true }
     let qq = e.message.find(item => item.type == "at")?.qq
     let regRet = e.msg.match(/#解禁(\d+)/)
@@ -193,7 +193,7 @@ export class GroupAdmin extends plugin {
    * 全体禁言
    * @param e
    */
-  async muteAll (e) {
+  async muteAll(e) {
     if (!common.checkPermission(e, "admin", "admin")) { return true }
     let type = /全(体|员)禁言/.test(e.msg)
     let res = await e.group.muteAll(type)
@@ -202,7 +202,7 @@ export class GroupAdmin extends plugin {
   }
 
   // 踢群员
-  async kickMember (e) {
+  async kickMember(e) {
     if (!common.checkPermission(e, "admin", "admin")) { return true }
     let qq = e.message.find(item => item.type == "at")?.qq
     if (!qq) qq = e.msg.replace(/#|踢/g, "").trim()
@@ -212,7 +212,7 @@ export class GroupAdmin extends plugin {
   }
 
   // 设置管理
-  async SetAdmin (e) {
+  async SetAdmin(e) {
     if (!common.checkPermission(e, "master", "owner")) return
     let qq = e.message.find(item => item.type == "at")?.qq
     let type = /设置管理/.test(e.msg)
@@ -230,7 +230,7 @@ export class GroupAdmin extends plugin {
   }
 
   // 发群公告
-  async AddAnnounce (e) {
+  async AddAnnounce(e) {
     if (!common.checkPermission(e, "admin", "admin")) { return true }
     // 获取发送的内容
     let msg = e.msg.replace(/#|发群公告/g, "").trim()
@@ -245,14 +245,14 @@ export class GroupAdmin extends plugin {
   }
 
   // 查群公告
-  async GetAnnounce (e) {
+  async GetAnnounce(e) {
     let res = await new QQApi(e).getAnnouncelist(e.group_id)
     if (!res) return e.reply(API_ERROR)
     return e.reply(res)
   }
 
   // 删群公告
-  async DelAnnounce (e) {
+  async DelAnnounce(e) {
     if (!common.checkPermission(e, "admin", "admin")) { return true }
     let msg = e.msg.replace(/#|删群公告/, "").trim()
     if (!msg) return e.reply("❎ 序号不可为空")
@@ -268,7 +268,7 @@ export class GroupAdmin extends plugin {
   }
 
   // 修改头衔
-  async adminsetTitle (e) {
+  async adminsetTitle(e) {
     if (!common.checkPermission(e, "master", "owner")) return
     let qq = e.message.find(item => item.type == "at")?.qq
     if (!qq) return e.reply("请艾特要修改的人哦~")
@@ -284,7 +284,7 @@ export class GroupAdmin extends plugin {
   }
 
   // 申请头衔
-  async SetGroupSpecialTitle (e) {
+  async SetGroupSpecialTitle(e) {
     if (!common.checkPermission(e, "all", "owner")) return
     let Title = e.msg.replace(/#|申请头衔/g, "")
     // 屏蔽词处理
@@ -308,7 +308,7 @@ export class GroupAdmin extends plugin {
   }
 
   // 字符列表
-  async qun_luckylist (e) {
+  async qun_luckylist(e) {
     let data = await new QQApi(e).luckylist(e.group_id)
     if (!data) return e.reply(API_ERROR)
     if (data.retcode != 0) return e.reply("❎ 获取数据失败\n" + JSON.stringify(data))
@@ -321,7 +321,7 @@ export class GroupAdmin extends plugin {
   }
 
   // 抽幸运字符
-  async qun_lucky (e) {
+  async qun_lucky(e) {
     let res = await new QQApi(e).drawLucky(e.group_id)
 
     if (!res) return e.reply(API_ERROR)
@@ -337,7 +337,7 @@ export class GroupAdmin extends plugin {
   }
 
   // 替换幸运字符
-  async qun_luckyuse (e) {
+  async qun_luckyuse(e) {
     if (!common.checkPermission(e, "admin", "admin")) { return true }
     let id = e.msg.replace(/#|替换(幸运)?字符/g, "")
     let res = await new QQApi(e).equipLucky(e.group_id, id)
@@ -348,7 +348,7 @@ export class GroupAdmin extends plugin {
   }
 
   // 开启或关闭群字符
-  async qun_luckyset (e) {
+  async qun_luckyset(e) {
     if (!common.checkPermission(e, "admin", "admin")) { return true }
 
     let res = await new QQApi(e).swichLucky(e.group_id, /开启/.test(e.msg))
@@ -360,7 +360,7 @@ export class GroupAdmin extends plugin {
   }
 
   // 获取禁言列表
-  async Mutelist (e) {
+  async Mutelist(e) {
     new Ga(e).getMuteList(e.group_id, true)
       .then(res => common.getforwardMsg(e, res, {
         isxml: true,
@@ -370,7 +370,7 @@ export class GroupAdmin extends plugin {
   }
 
   // 解除全部禁言
-  async relieveAllMute (e) {
+  async relieveAllMute(e) {
     if (!common.checkPermission(e, "admin", "admin")) { return true }
     new Ga(e).releaseAllMute()
       .then(() => e.reply("✅ 已将全部禁言解除"))
@@ -378,7 +378,7 @@ export class GroupAdmin extends plugin {
   }
 
   // 查看和清理多久没发言的人
-  async noactive (e) {
+  async noactive(e) {
     if (!common.checkPermission(e, "admin", "admin")) { return true }
 
     let regRet = noactivereg.exec(e.msg)
@@ -422,7 +422,7 @@ export class GroupAdmin extends plugin {
   }
 
   // 查看和清理从未发言的人
-  async neverspeak (e) {
+  async neverspeak(e) {
     if (!common.checkPermission(e, "admin", "admin")) { return true }
     let list = null
     try {
@@ -457,7 +457,7 @@ export class GroupAdmin extends plugin {
   }
 
   // 查看不活跃排行榜和入群记录
-  async RankingList (e) {
+  async RankingList(e) {
     let num = e.msg.match(new RegExp(Numreg))
     num = num ? translateChinaNum(num[0]) : 10
     let msg = ""
@@ -470,7 +470,7 @@ export class GroupAdmin extends plugin {
   }
 
   // 发送通知
-  async Send_notice (e) {
+  async Send_notice(e) {
     if (!common.checkPermission(e, "admin", "admin")) return
 
     e.message[0].text = e.message[0].text.replace("#发通知", "").trim()
@@ -481,7 +481,7 @@ export class GroupAdmin extends plugin {
   }
 
   // 设置定时群禁言
-  async timeMute (e) {
+  async timeMute(e) {
     if (!common.checkPermission(e, "admin", "admin")) return
     let type = /禁言/.test(e.msg)
     if (/任务/.test(e.msg)) {
@@ -514,7 +514,7 @@ export class GroupAdmin extends plugin {
   }
 
   // 谁是龙王
-  async dragonKing (e) {
+  async dragonKing(e) {
     // 浏览器截图
     let screenshot = await puppeteer.Webpage({
       url: `https://qun.qq.com/interactive/honorlist?gc=${e.group_id}&type=1&_wv=3&_wwv=129`,
@@ -536,7 +536,7 @@ export class GroupAdmin extends plugin {
    * 群星级
    * @param e
    */
-  async Group_xj (e) {
+  async Group_xj(e) {
     let screenshot = await puppeteer.Webpage({
       url: `https://qqweb.qq.com/m/business/qunlevel/index.html?gc=${e.group_id}&from=0&_wv=1027`,
       cookie: common.getck("qun.qq.com", this.Bot, true),
@@ -559,7 +559,7 @@ export class GroupAdmin extends plugin {
   }
 
   // 群发言榜单
-  async SpeakRank (e) {
+  async SpeakRank(e) {
     if (!common.checkPermission(e, "all", "admin")) return
 
     // 图片截图
@@ -580,7 +580,7 @@ export class GroupAdmin extends plugin {
   }
 
   // 今日打卡
-  async DaySigned (e) {
+  async DaySigned(e) {
     // 浏览器截图
     let screenshot = await puppeteer.Webpage({
       url: `https://qun.qq.com/v2/signin/list?gc=${e.group_id}`,
@@ -602,7 +602,7 @@ export class GroupAdmin extends plugin {
   }
 
   // 查看某天谁生日
-  async groupBirthday (e) {
+  async groupBirthday(e) {
     let date = e.msg.match(/^#?(今天|昨天|明天|后天|\d{4}-\d{1,2}-\d{1,2})谁生日$/)[1]
     if (date == "昨天") {
       date = moment().subtract(1, "days").format("YYYY-MM-DD")
@@ -626,7 +626,7 @@ export class GroupAdmin extends plugin {
   }
 
   // 群数据
-  async groupData (e) {
+  async groupData(e) {
     if (!common.checkPermission(e, "all", "admin")) return
 
     // 浏览器截图
@@ -674,7 +674,7 @@ export class GroupAdmin extends plugin {
    * 开启或关闭加群通知
    * @param e
    */
-  async handleGroupAdd (e) {
+  async handleGroupAdd(e) {
     if (!common.checkPermission(e, "admin", "admin")) return
     let type = /开启/.test(e.msg) ? "add" : "del"
     let isopen = Config.groupAdd.openGroup.includes(e.group_id)
@@ -688,7 +688,7 @@ export class GroupAdmin extends plugin {
    * 加精
    * @param e
    */
-  async essenceMessage (e) {
+  async essenceMessage(e) {
     if (!common.checkPermission(e, "admin", "admin")) return
     if (!e.source) return e.reply("请对要加精的消息进行引用")
     let source = (await e.group.getChatHistory(e.source.seq, 1)).pop()
@@ -705,7 +705,7 @@ export class GroupAdmin extends plugin {
   /**
    * 加白名单
    */
-  async whiteQQ () {
+  async whiteQQ() {
     if (!common.checkPermission(this.e, "master")) return
 
     let type = /加/.test(this.e.msg) ? "add" : "del"
@@ -724,7 +724,7 @@ export class GroupAdmin extends plugin {
     this.reply(`✅ 已${type === "add" ? "加入" : "删除"}${qq}到群管白名单`)
   }
 
-  async noBan () {
+  async noBan() {
     if (!common.checkPermission(this.e, "master")) return
     let type = !!/开启/.test(this.e.msg)
 

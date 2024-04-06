@@ -3,7 +3,7 @@ import request from "../lib/request/request.js"
 import { Config } from "../components/index.js"
 
 export default new (class {
-  constructor () {
+  constructor() {
     this.domain = "https://api.obfs.dev/api/bika"
     this.hearder = {
       headers: {
@@ -14,7 +14,7 @@ export default new (class {
     this.idNext = null
   }
 
-  get imgproxy () {
+  get imgproxy() {
     return Config.bika.bikaDirectConnection ? undefined : `https://${Config.bika.bikaImageProxy}/`
   }
 
@@ -27,18 +27,18 @@ export default new (class {
    * @throws {Error} 当未找到作品时，会抛出异常
    * @returns {Array<string>} 返回搜索结果信息数组
    */
-  async search (keyword, page = 1, type = "advanced", sort = "ld") {
+  async search(keyword, page = 1, type = "advanced", sort = "ld") {
     let types = [
       {
-        alias: ["关键词", "advanced", "高级"],
+        alias: [ "关键词", "advanced", "高级" ],
         url: `${this.domain}/advanced_search?keyword=${keyword}&page=${page}&sort=${sort}`
       },
       {
-        alias: ["类别", "category"],
+        alias: [ "类别", "category" ],
         url: `${this.domain}/category_list?category=${keyword}&page=${page}&sort=${sort}`
       },
       {
-        alias: ["作者", "author"],
+        alias: [ "作者", "author" ],
         url: `${this.domain}/author_list?author=${keyword}&page=${page}&sort=${sort}`
       }
     ]
@@ -56,7 +56,7 @@ export default new (class {
       `共找到${total}个关于「${keyword}」${type.alias[0]}的作品`,
       `当前为第${pg}页，共${pages}页`
     ]
-    for (let [index, item] of docs.entries()) {
+    for (let [ index, item ] of docs.entries()) {
       let { title, tags, categories, author, description = "未知", likesCount, thumb, _id, finished } = item
       msg.push(_id)
       msg.push([
@@ -82,7 +82,7 @@ export default new (class {
    * @returns {Promise<string[]>} - 返回一个数组，包含漫画某一话某一页的信息及图片列表
    * @throws {Error} - 如果返回结果中包含error，则抛出异常
    */
-  async comicPage (id, page = 1, order = 1) {
+  async comicPage(id, page = 1, order = 1) {
     let res = await request.get(`${this.domain}/comic_page?id=${id}&page=${page}&order=${order}`, this.hearder)
       .then((res) => res.json())
       .catch(err => {
@@ -102,7 +102,7 @@ export default new (class {
     ]
   }
 
-  async viewComicPage (num) {
+  async viewComicPage(num) {
     if (!this.searchCaching) throw new ReplyError("请先搜索后再使用此命令")
     let id = this.searchCaching[num]._id
     if (!id) throw new ReplyError("未获取到目标作品，请使用id进行查看")
@@ -116,7 +116,7 @@ export default new (class {
    * @returns {Promise<string[]>} - 返回一个数组，包含下一个漫画页面或漫画章节的信息及图片列表
    * @throws {Error} - 如果未找到上一个id，则抛出异常
    */
-  async next (type = "comicPage") {
+  async next(type = "comicPage") {
     if (!this.idNext) throw new ReplyError("未找到上一个id")
     let { id, page, order } = this.idNext
     if (type == "chapter") {
@@ -132,7 +132,7 @@ export default new (class {
   }
 
   /** 类别列表 */
-  async categories () {
+  async categories() {
     let key = "yenai:bika:categories"
     let res = JSON.parse(await redis.get(key))
     if (!res) {
@@ -162,7 +162,7 @@ export default new (class {
    * @param {string} id - 漫画的id
    * @returns {Promise<string[]>} - 返回一个由字符串组成的数组，包含漫画的详细信息和封面图片
    */
-  async comicDetail (id) {
+  async comicDetail(id) {
     let res = await request.get(`${this.domain}/comic_detail?id=${id}`, this.hearder)
       .then((res) => res.json())
       .catch(err => {
@@ -198,7 +198,7 @@ export default new (class {
    * @param {string} path - 图片的路径
    * @returns {Promise<import('icqq').ImageElem>} - 返回构造图片消息
    */
-  async _requestBikaImg (fileServer, path) {
+  async _requestBikaImg(fileServer, path) {
     fileServer = /static/.test(fileServer) ? fileServer : fileServer + "/static/"
     let url = (/picacomic.com/.test(fileServer) && this.imgproxy ? this.imgproxy : fileServer) + path
     return request.proxyRequestImg(url)

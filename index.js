@@ -8,7 +8,7 @@ logger.info(chalk.rgb(134, 142, 204)(`椰奶插件${Ver.ver}初始化~`))
 logger.info(chalk.rgb(253, 235, 255)("-------------------------"))
 
 global.ReplyError = class ReplyError extends Error {
-  constructor (message) {
+  constructor(message) {
     super(message)
     this.name = "ReplyError"
   }

@@ -18,7 +18,7 @@ let Data = {
   /*
   * 根据指定的path依次检查与创建目录
   * */
-  createDir (path = "", root = "", includeFile = false) {
+  createDir(path = "", root = "", includeFile = false) {
     root = getRoot(root)
     let pathList = path.split("/")
     let nowPath = root
@@ -40,7 +40,7 @@ let Data = {
    * @param file
    * @param root
    */
-  readJSON (file = "", root = "") {
+  readJSON(file = "", root = "") {
     root = getRoot(root)
     if (fs.existsSync(`${root}/${file}`)) {
       try {
@@ -59,7 +59,7 @@ let Data = {
    * @param root
    * @param space
    */
-  writeJSON (file, data, root = "", space = "\t") {
+  writeJSON(file, data, root = "", space = "\t") {
     // 检查并创建目录
     Data.createDir(file, root, true)
     root = getRoot(root)
@@ -73,7 +73,7 @@ let Data = {
     }
   },
 
-  async getCacheJSON (key) {
+  async getCacheJSON(key) {
     try {
       let txt = await redis.get(key)
       if (txt) {
@@ -85,11 +85,11 @@ let Data = {
     return {}
   },
 
-  async setCacheJSON (key, data, EX = 3600 * 24 * 90) {
+  async setCacheJSON(key, data, EX = 3600 * 24 * 90) {
     await redis.set(key, JSON.stringify(data), { EX })
   },
 
-  async importModule (file, root = "") {
+  async importModule(file, root = "") {
     root = getRoot(root)
     if (!/\.js$/.test(file)) {
       file = file + ".js"
@@ -105,16 +105,16 @@ let Data = {
     return {}
   },
 
-  async importDefault (file, root) {
+  async importDefault(file, root) {
     let ret = await Data.importModule(file, root)
     return ret.default || {}
   },
 
-  async import (name) {
+  async import(name) {
     return await Data.importModule(`components/optional-lib/${name}.js`)
   },
 
-  async importCfg (key) {
+  async importCfg(key) {
     let sysCfg = await Data.importModule(`config/system/${key}_system.js`)
     let diyCfg = await Data.importModule(`config/${key}.js`)
     if (diyCfg.isSys) {
@@ -139,7 +139,7 @@ let Data = {
   *
   * */
 
-  getData (target, keyList = "", cfg = {}) {
+  getData(target, keyList = "", cfg = {}) {
     target = target || {}
     let defaultData = cfg.defaultData || {}
     let ret = {}
@@ -166,12 +166,12 @@ let Data = {
     return ret
   },
 
-  getVal (target, keyFrom, defaultValue) {
+  getVal(target, keyFrom, defaultValue) {
     return _.get(target, keyFrom, defaultValue)
   },
 
   // 异步池，聚合请求
-  async asyncPool (poolLimit, array, iteratorFn) {
+  async asyncPool(poolLimit, array, iteratorFn) {
     const ret = [] // 存储所有的异步任务
     const executing = [] // 存储正在执行的异步任务
     for (const item of array) {
@@ -195,12 +195,12 @@ let Data = {
   },
 
   // sleep
-  sleep (ms) {
+  sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms))
   },
 
   // 获取默认值
-  def () {
+  def() {
     for (let idx in arguments) {
       if (!_.isUndefined(arguments[idx])) {
         return arguments[idx]
@@ -214,7 +214,7 @@ let Data = {
       arr = arr.replace(/\s*(;|；|、|，)\s*/, ",")
       arr = arr.split(",")
     } else if (_.isNumber(arr)) {
-      arr = [arr.toString()]
+      arr = [ arr.toString() ]
     }
     _.forEach(arr, (str, idx) => {
       if (!_.isUndefined(str)) {
@@ -223,7 +223,7 @@ let Data = {
     })
   },
 
-  regRet (reg, txt, idx) {
+  regRet(reg, txt, idx) {
     if (reg && txt) {
       let ret = reg.exec(txt)
       if (ret && ret[idx]) {
@@ -238,7 +238,7 @@ let Data = {
    * @param extension
    * @param excludeDir
    */
-  readDirRecursive (directory, extension, excludeDir) {
+  readDirRecursive(directory, extension, excludeDir) {
     let files = fs.readdirSync(directory)
 
     let jsFiles = files.filter(file => path.extname(file) === `.${extension}`)

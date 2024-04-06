@@ -7,7 +7,7 @@ import Ascii2D from "./ascii2d.js"
  *
  * @param url
  */
-export default async function doSearch (url) {
+export default async function doSearch(url) {
   let res = await getSearchResult(url)
   logger.debug("SauceNAO result:", res)
   if (res.header.status != 0) throw new ReplyError("SauceNAO搜图，错误信息：" + res.header.message?.replace(/<.*?>/g, ""))
@@ -58,7 +58,7 @@ export default async function doSearch (url) {
  * @param imgURL
  * @param db
  */
-async function getSearchResult (imgURL, db = 999) {
+async function getSearchResult(imgURL, db = 999) {
   logger.debug(`saucenao [${imgURL}]}`)
   let api_key = Config.picSearch.SauceNAOApiKey
   if (!api_key) throw new ReplyError("未配置SauceNAOApiKey，无法使用SauceNAO搜图，请在 https://saucenao.com/user.php?page=search-api 进行获取，请用指令：#设置SauceNAOapiKey <apikey> 进行添加")

@@ -3,7 +3,7 @@ import { si, osInfo } from "./index.js"
 import { Circle } from "./utils.js"
 
 /** 获取CPU占用 */
-export default async function getCpuInfo () {
+export default async function getCpuInfo() {
   let { currentLoad: { currentLoad }, cpuCurrentSpeed } = await si.get({
     currentLoad: "currentLoad",
     cpuCurrentSpeed: "max,avg"

@@ -2,7 +2,7 @@ import { getFileSize, Circle } from "./utils.js"
 import os from "os"
 
 /** 获取nodejs内存情况 */
-export default function getNodeInfo () {
+export default function getNodeInfo() {
   let memory = process.memoryUsage()
   // 总共
   let rss = getFileSize(memory.rss)

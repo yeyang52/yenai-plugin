@@ -7,7 +7,7 @@ import _ from "lodash"
  * @param {number} [maxLen] - 数组允许的最大长度，默认值为60
  * @returns {void}
  */
-export function addData (arr, data, maxLen = 60) {
+export function addData(arr, data, maxLen = 60) {
   if (data === null || data === undefined) return
   // 如果数组长度超过允许的最大值，删除第一个元素
   if (arr.length >= maxLen) {
@@ -24,7 +24,7 @@ export function addData (arr, data, maxLen = 60) {
  * @param {boolean} [isSuffix] - 如果为 true，则在所得到的大小后面加上 kb、mb、gb、tb 等后缀.
  * @returns {string} 文件大小格式转换后的字符串.
  */
-export function getFileSize (size, isByte = true, isSuffix = true) { // 把字节转换成正常文件大小
+export function getFileSize(size, isByte = true, isSuffix = true) { // 把字节转换成正常文件大小
   if (size == null || size == undefined) return 0
   let num = 1024.00 // byte
   if (isByte && size < num) {
@@ -47,7 +47,7 @@ export function getFileSize (size, isByte = true, isSuffix = true) { // 把字�
  * @param {number} res 百分比小数
  * @returns {{per:number,color:string}} per - stroke-dashoffset属性 color - 进度条颜色
  */
-export function Circle (res) {
+export function Circle(res) {
   let perimeter = 3.14 * 80
   let per = perimeter - perimeter * res
   let color = "--low-color"

@@ -3,7 +3,7 @@ import { update } from "../../other/update.js"
 import { Version, Plugin_Name } from "../components/index.js"
 import { puppeteer } from "../model/index.js"
 export class NewVersion extends plugin {
-  constructor () {
+  constructor() {
     super({
       name: "椰奶版本信息",
       event: "message",
@@ -22,11 +22,11 @@ export class NewVersion extends plugin {
     this.key = "yenai:restart"
   }
 
-  async plugin_version () {
+  async plugin_version() {
     return versionInfo(this.e)
   }
 
-  async update_log () {
+  async update_log() {
     // eslint-disable-next-line new-cap
     let Update_Plugin = new update()
     Update_Plugin.e = this.e
@@ -43,7 +43,7 @@ export class NewVersion extends plugin {
  *
  * @param e
  */
-async function versionInfo (e) {
+async function versionInfo(e) {
   return await puppeteer.render(
     "help/version-info",
     {

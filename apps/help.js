@@ -11,7 +11,7 @@ const helpReg = new RegExp(
   `^#?椰奶(插件)?(${Object.keys(helpType).join("|")})?(帮助|菜单|功能)$`
 )
 export class YenaiHelp extends plugin {
-  constructor () {
+  constructor() {
     super({
       name: "椰奶帮助",
       event: "message",
@@ -25,7 +25,7 @@ export class YenaiHelp extends plugin {
     })
   }
 
-  async message () {
+  async message() {
     return await help(this.e)
   }
 }
@@ -34,7 +34,7 @@ export class YenaiHelp extends plugin {
  *
  * @param e
  */
-async function help (e) {
+async function help(e) {
   let custom = {}
   // let help = {}
   const special = e.msg.match(helpReg)[2]
@@ -86,7 +86,7 @@ async function help (e) {
   })
 }
 
-const rodom = async function () {
+const rodom = async function() {
   let image = fs.readdirSync("./plugins/yenai-plugin/resources/help/imgs/")
   let list_img = []
   for (let val of image) {

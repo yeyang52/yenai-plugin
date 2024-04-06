@@ -55,15 +55,13 @@ const NumberCfgType = {
 }
 
 /** 支持单独设置的项 */
-const aloneKeys = [
-  "群消息", "群临时消息", "群撤回", "群邀请", "群管理变动", "群聊列表变动", "群成员变动", "加群通知", "禁言", "闪照", "匿名", "涩涩", "涩涩pro"
-]
+const aloneKeys = [ "群消息", "群临时消息", "群撤回", "群邀请", "群管理变动", "群聊列表变动", "群成员变动", "加群通知", "禁言", "闪照", "匿名", "涩涩", "涩涩pro" ]
 
 const SwitchCfgReg = new RegExp(`^#椰奶设置(${Object.keys(SwitchCfgType).join("|")})(单独)?(开启|关闭|取消)$`)
 const NumberCfgReg = new RegExp(`^#椰奶设置(${Object.keys(NumberCfgType).join("|")})(\\d+)秒?$`)
 
 export class Admin extends plugin {
-  constructor () {
+  constructor() {
     super({
       name: "椰奶配置",
       event: "message",
@@ -90,7 +88,7 @@ export class Admin extends plugin {
   }
 
   // 更改配置
-  async ConfigSwitch (e) {
+  async ConfigSwitch(e) {
     if (!common.checkPermission(e, "master")) return
     // 解析消息
     let regRet = SwitchCfgReg.exec(e.msg)
@@ -124,7 +122,7 @@ export class Admin extends plugin {
   }
 
   // 修改数字设置
-  async ConfigNumber (e) {
+  async ConfigNumber(e) {
     if (!common.checkPermission(e, "master")) return
     let regRet = e.msg.match(NumberCfgReg)
     let type = NumberCfgType[regRet[1]]
@@ -134,7 +132,7 @@ export class Admin extends plugin {
   }
 
   // 修改全部通知设置
-  async SetAllNotice (e) {
+  async SetAllNotice(e) {
     if (!common.checkPermission(e, "master")) return
     let yes = /启用/.test(e.msg)
     for (let i in NoticeCfgType) {
@@ -143,7 +141,7 @@ export class Admin extends plugin {
     this.index_Settings(e)
   }
 
-  async Settings (e) {
+  async Settings(e) {
     if (!common.checkPermission(e, "master")) return
     if (/sese|涩涩/.test(e.msg)) {
       this.SeSe_Settings(e)
@@ -153,9 +151,9 @@ export class Admin extends plugin {
   }
 
   // 渲染发送图片
-  async index_Settings (e) {
+  async index_Settings(e) {
     let data = {}
-    const special = ["deltime", "renderScale"]
+    const special = [ "deltime", "renderScale" ]
     let _cfg = Config.getGroup(e.group_id)
     for (let key in _cfg) {
       if (special.includes(key)) {
@@ -177,7 +175,7 @@ export class Admin extends plugin {
   }
 
   // 查看涩涩设置
-  async SeSe_Settings (e) {
+  async SeSe_Settings(e) {
     let set = setu.getSeSeConfig(e)
     let { proxy, pixiv, bika } = Config
     let { sese, sesepro } = Config.getGroup(e.group_id)
@@ -207,7 +205,7 @@ export class Admin extends plugin {
 }
 
 // 随机底图
-const rodom = async function () {
+const rodom = async function() {
   let image = fs.readdirSync("./plugins/yenai-plugin/resources/admin/imgs/bg")
   let listImg = []
   for (let val of image) {
@@ -217,7 +215,7 @@ const rodom = async function () {
   return imgs
 }
 
-const getStatus = function (rote, alone) {
+const getStatus = function(rote, alone) {
   let badge = alone != undefined ? "<span class=\"badge\";>群单独</span>" : ""
   if (rote) {
     return badge + "<div class=\"cfg-status\" >已开启</div>"
@@ -235,13 +233,13 @@ const getStatus = function (rote, alone) {
  *   - "<X" 或 ">X" 形式的比较限制条件，其中 X 是表示限制值的数字。
  * @returns {number} 经过验证的数值。如果给定的值超出了限制条件，则返回限制条件对应的最大值或最小值，否则返回原值。
  */
-function checkNumberValue (value, limit) {
+function checkNumberValue(value, limit) {
   // 检查是否存在限制条件
   if (!limit) {
     return value
   }
   // 解析限制条件
-  const [symbol, limitValue] = limit.match(/^([<>])?(.+)$/).slice(1)
+  const [ symbol, limitValue ] = limit.match(/^([<>])?(.+)$/).slice(1)
   const parsedLimitValue = parseFloat(limitValue)
 
   // 检查比较限制条件
@@ -251,7 +249,7 @@ function checkNumberValue (value, limit) {
 
   // 检查范围限制条件
   if (!isNaN(value)) {
-    const [lowerLimit, upperLimit] = limit.split("-").map(parseFloat)
+    const [ lowerLimit, upperLimit ] = limit.split("-").map(parseFloat)
     const clampedValue = Math.min(Math.max(value, lowerLimit || -Infinity), upperLimit || Infinity)
     return clampedValue
   }

@@ -9,7 +9,7 @@ import _ from "lodash"
  * @param to
  * @param from
  */
-export default async function youdao (msg, to = "auto", from = "auto") {
+export default async function youdao(msg, to = "auto", from = "auto") {
   if (to != "auto") to = youDaoLangType.find(item => item.label == to)?.code
   if (from != "auto") from = youDaoLangType.find(item => item.label == from)?.code
   if (!to || !from) return `未找到翻译的语种，支持的语言为：\n${youDaoLangType.map(item => item.label).join("，")}\n示例：#翻译你好 - 自动翻译\n#日语翻译你好 - 指定翻译为语种\n#中文-日语翻译你好 - 指定原语言翻译为指定语言`
@@ -18,7 +18,7 @@ export default async function youdao (msg, to = "auto", from = "auto") {
   // API 请求错误提示
   const qs = (obj) => {
     let res = ""
-    for (const [k, v] of Object.entries(obj)) { res += `${k}=${encodeURIComponent(v)}&` }
+    for (const [ k, v ] of Object.entries(obj)) { res += `${k}=${encodeURIComponent(v)}&` }
     return res.slice(0, res.length - 1)
   }
   const appVersion = "5.0 (Windows NT 10.0; Win64; x64) Chrome/98.0.4750.0"

@@ -2,7 +2,7 @@ import { PicSearch, common } from "../model/index.js"
 import { Config } from "../components/index.js"
 import _ from "lodash"
 export class NewPicSearch extends plugin {
-  constructor () {
+  constructor() {
     super({
       name: "椰奶图片搜索",
       event: "message",
@@ -33,7 +33,7 @@ export class NewPicSearch extends plugin {
     })
   }
 
-  async SauceNAO (e) {
+  async SauceNAO(e) {
     if (!await this._Authentication(e)) return
     if (!await this.handelImg(e, "SauceNAO")) return
     await PicSearch.SauceNAO(e.img[0])
@@ -50,15 +50,15 @@ export class NewPicSearch extends plugin {
       })
   }
 
-  async Ascii2D (e) {
+  async Ascii2D(e) {
     if (!await this._Authentication(e)) return
     if (!await this.handelImg(e, "Ascii2D")) return
     await PicSearch.Ascii2D(e.img[0])
-      .then(res => common.recallSendForwardMsg(e, [...res.color, ...res.bovw], { xmlTitle: false }))
+      .then(res => common.recallSendForwardMsg(e, [ ...res.color, ...res.bovw ], { xmlTitle: false }))
       .catch(err => common.handleException(e, err))
   }
 
-  async WhatAnime (e) {
+  async WhatAnime(e) {
     if (!await this._Authentication(e)) return
     if (!await this.handelImg(e, "WhatAnime")) return
     await PicSearch.WhatAnime(e.img[0].replace("/c2cpicdw.qpic.cn/offpic_new/", "/gchat.qpic.cn/gchatpic_new/"))
@@ -71,7 +71,7 @@ export class NewPicSearch extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  async UploadSauceNAOKey (e) {
+  async UploadSauceNAOKey(e) {
     if (!this.e.isMaster) { return true }
     if (e.isGroup) return e.reply("请私聊进行添加")
     let apiKey = e.msg.replace(/#设置SauceNAOapiKey/i, "").trim()
@@ -80,7 +80,7 @@ export class NewPicSearch extends plugin {
     e.reply("OK")
   }
 
-  async _Authentication (e) {
+  async _Authentication(e) {
     if (!this.e.isMaster) { return true }
     const { allowPM, limit, isMasterUse } = Config.picSearch
     if (isMasterUse) {
@@ -98,7 +98,7 @@ export class NewPicSearch extends plugin {
     return true
   }
 
-  async handelImg (e, funName) {
+  async handelImg(e, funName) {
     if (e.source) {
       let source
       if (e.isGroup) {
@@ -106,7 +106,7 @@ export class NewPicSearch extends plugin {
       } else {
         source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
       }
-      e.img = [source.message.find(item => item.type == "image")?.url]
+      e.img = [ source.message.find(item => item.type == "image")?.url ]
     }
     if (!_.isEmpty(e.img)) return true
     e.sourceFunName = funName
@@ -115,7 +115,7 @@ export class NewPicSearch extends plugin {
     return false
   }
 
-  async MonitorImg () {
+  async MonitorImg() {
     if (!this.e.img) {
       this.e.reply("❎ 未检测到图片操作已取消")
     } else {

@@ -9,13 +9,13 @@ import PixivApi from "./Pixiv/api.js"
 /** API请求错误文案 */
 
 export default new class Pixiv {
-  constructor () {
+  constructor() {
     this.ranktype = rankType
     this.domain = "http://api.obfs.dev/api/pixiv"
     this.PixivClient = new PixivApi(Config.pixiv.refresh_token)
   }
 
-  async loginInfo () {
+  async loginInfo() {
     if (!this.PixivClient?.auth) {
       await this.PixivClient.login()
     }
@@ -32,7 +32,7 @@ export default new class Pixiv {
     ]
   }
 
-  get headers () {
+  get headers() {
     if (Config.pixiv.pixivDirectConnection) {
       return {
         "Host": "i.pximg.net",
@@ -44,12 +44,12 @@ export default new class Pixiv {
     }
   }
 
-  get proxy () {
+  get proxy() {
     return Config.pixiv.pixivDirectConnection ? "i.pximg.net" : Config.pixiv.pixivImageProxy
   }
 
   /** 开始执行文案 */
-  get startMsg () {
+  get startMsg() {
     return _.sample(pixivMsg.start)
   }
 
@@ -59,7 +59,7 @@ export default new class Pixiv {
    * @param filter
    * @returns {object}
    */
-  async illust (ids, filter = false) {
+  async illust(ids, filter = false) {
     const params = { id: ids }
     let res = null
     if (this.PixivClient.auth) {
@@ -84,7 +84,7 @@ export default new class Pixiv {
       `传送门：https://www.pixiv.net/artworks/${id}`
     ]
     if (filter && x_restrict) {
-      let linkmsg = ["该作品不适合所有年龄段，请自行使用链接查看："]
+      let linkmsg = [ "该作品不适合所有年龄段，请自行使用链接查看：" ]
       if (url.length > 1) {
         linkmsg.push(...url.map((item, index) => `https://pixiv.re/${id}-${index + 1}.jpg`))
       } else {
@@ -104,7 +104,7 @@ export default new class Pixiv {
    * @param {boolean} r18 是否为R18榜单
    * @returns {Array}
    */
-  async Rank (page = 1, date = "", mode = "周", r18 = false) {
+  async Rank(page = 1, date = "", mode = "周", r18 = false) {
     // 转为大写
     mode = _.toUpper(mode)
     // 排行榜类型
@@ -138,7 +138,7 @@ export default new class Pixiv {
     if (res.error) throw new ReplyError(res.error.message)
     if (_.isEmpty(res.illusts)) throw new ReplyError("暂无数据，请等待榜单更新哦(。-ω-)zzz")
 
-    let illusts = await Promise.all(res.illusts.map(async (item, index) => {
+    let illusts = await Promise.all(res.illusts.map(async(item, index) => {
       let list = this._format(item)
       let { id, title, user, tags, total_bookmarks, image_urls } = list
       return [
@@ -177,7 +177,7 @@ export default new class Pixiv {
    * @param {string} page 页数
    * @returns {Array}
    */
-  async vilipixSearchTags (tag, page = 1) {
+  async vilipixSearchTags(tag, page = 1) {
     const api = "https://www.vilipix.com/api/v1/picture/public"
     const params = {
       limit: 30,
@@ -192,9 +192,7 @@ export default new class Pixiv {
 
     if (page > pageall) throw new ReplyError("啊啊啊，淫家给不了你那么多辣d(ŐдŐ๑)")
 
-    let list = [
-      `当前为第${page}页，共${pageall}页，本页共${res.data.rows.length}张，总共${res.data.count}张`
-    ]
+    let list = [ `当前为第${page}页，共${pageall}页，本页共${res.data.rows.length}张，总共${res.data.count}张` ]
     if (page < pageall) {
       list.push(`可使用 "#tag搜图${tag}第${page - 0 + 1}页" 翻页`)
     }
@@ -218,7 +216,7 @@ export default new class Pixiv {
    * @param isfilter
    * @returns {*}
    */
-  async searchTags (tag, page = 1, isfilter = true) {
+  async searchTags(tag, page = 1, isfilter = true) {
     const params = {
       word: tag,
       page,
@@ -264,7 +262,7 @@ export default new class Pixiv {
    * 获取热门tag
    * @returns {Array}
    */
-  async PopularTags () {
+  async PopularTags() {
     let res = null
     if (this.PixivClient.auth) {
       res = await this.PixivClient.tags()
@@ -297,7 +295,7 @@ export default new class Pixiv {
    * @param {boolean} isfilter 是否过滤敏感内容
    * @returns {Array}
    */
-  async userIllust (keyword, page = 1, isfilter = true) {
+  async userIllust(keyword, page = 1, isfilter = true) {
     // 关键词搜索
     if (!/^\d+$/.test(keyword)) {
       let wordlist = null
@@ -366,7 +364,7 @@ export default new class Pixiv {
    * @param {boolean} isfilter 是否过滤敏感内容
    * @returns {Array} 可直接发送的消息数组
    */
-  async searchUser (word, page = 1, isfilter = true) {
+  async searchUser(word, page = 1, isfilter = true) {
     let params = {
       word,
       page,
@@ -381,7 +379,7 @@ export default new class Pixiv {
     if (user.error) throw new ReplyError(user.error.message)
     if (_.isEmpty(user.user_previews)) throw new ReplyError("呜呜呜，人家没有找到这个淫d(ŐдŐ๑)")
 
-    let msg = await Promise.all(user.user_previews.slice(0, 10).map(async (item, index) => {
+    let msg = await Promise.all(user.user_previews.slice(0, 10).map(async(item, index) => {
       let { id, name, profile_image_urls } = item.user
       let ret = [
         `${(page - 1) * 10 + index + 1}、`,
@@ -407,7 +405,7 @@ export default new class Pixiv {
    * vilipix随机图片
    * @returns {Array}
    */
-  async vilipixRandomImg (limit) {
+  async vilipixRandomImg(limit) {
     let api = `https://www.vilipix.com/api/v1/picture/recommand?limit=${limit}&offset=${_.random(1, 700)}`
     let res = await request.get(api).then(res => res.json())
     if (!res.data || !res.data.rows) throw new ReplyError("呜呜呜，没拿到瑟瑟的图片(˃ ⌑ ˂ഃ )")
@@ -429,7 +427,7 @@ export default new class Pixiv {
    * @param isfilter
    * @returns {*}
    */
-  async relatedIllust (pid, isfilter = true) {
+  async relatedIllust(pid, isfilter = true) {
     let params = { id: pid }
     let res = null
     if (this.PixivClient.auth) {
@@ -470,7 +468,7 @@ export default new class Pixiv {
    * p站单图
    * @param pro
    */
-  async pximg (pro) {
+  async pximg(pro) {
     let url = "https://image.anosu.top/pixiv/json"
     const params = {
       r18: pro ? 1 : 0,
@@ -498,9 +496,9 @@ export default new class Pixiv {
    * @param {number} num 数量
    * @returns {Promise}
    */
-  async illustRecommended (num) {
+  async illustRecommended(num) {
     let list = await this.PixivClient.illustRecommended()
-    return Promise.all(_.take(list.illusts, num).map(async (item) => {
+    return Promise.all(_.take(list.illusts, num).map(async(item) => {
       let { id, title, user, tags, total_bookmarks, image_urls } = this._format(item)
       return [
         `标题：${title}\n`,
@@ -519,7 +517,7 @@ export default new class Pixiv {
    * @param {string} url
    * @returns {Promise}
    */
-  async _requestPixivImg (url) {
+  async _requestPixivImg(url) {
     url = url.replace("i.pximg.net", this.proxy)
     logger.debug(`pixiv getImg URL: ${url}`)
     let headers = /s.pximg.net/.test(url) ? undefined : this.headers
@@ -543,7 +541,7 @@ export default new class Pixiv {
    * illust_ai_type  是否为AI作品
    * visible  是否为可见作品
    */
-  _format (illusts) {
+  _format(illusts) {
     let url = []
     let { tags, meta_single_page, meta_pages } = illusts
     tags = _.uniq(_.compact(_.flattenDeep(tags?.map(item => Object.values(item)))))

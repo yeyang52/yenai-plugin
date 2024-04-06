@@ -1,7 +1,7 @@
 export let si = false
 export let osInfo = null
 
-export async function initDependence () {
+export async function initDependence() {
   if (si) return si
   try {
     si = await import("systeminformation")

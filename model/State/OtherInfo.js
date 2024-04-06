@@ -6,7 +6,7 @@ import Monitor from "./Monitor.js"
 import fs from "fs"
 import { Version } from "../../components/index.js"
 
-export default function otherInfi () {
+export default function otherInfi() {
   let otherInfo = []
   // 其他信息
   otherInfo.push({
@@ -28,11 +28,11 @@ export default function otherInfi () {
   return _.compact(otherInfo)
 }
 
-function getSystime () {
+function getSystime() {
   return formatDuration(os.uptime(), "dd天hh小时mm分", false)
 }
 
-function getPluginNum () {
+function getPluginNum() {
   let str = "./plugins"
   let arr = fs.readdirSync(str)
   let plugin = []
@@ -42,13 +42,13 @@ function getPluginNum () {
       plugin.push(val)
     }
   })
-  let del = ["example", "genshin", "other", "system", "bin"]
+  let del = [ "example", "genshin", "other", "system", "bin" ]
   plugin = plugin.filter(item => !del.includes(item))
   const plugins = plugin?.length || 0
   const js = fs.readdirSync("./plugins/example")?.filter(item => item.includes(".js"))?.length || 0
   return `${plugins} plugin | ${js} js`
 }
 
-export function getCopyright () {
+export function getCopyright() {
   return `Created By ${Version.name}<span class="version">${Version.yunzai}</span> & Yenai-Plugin<span class="version">${Version.ver}</span> & Node <span class="version">${process.version}</span>`
 }

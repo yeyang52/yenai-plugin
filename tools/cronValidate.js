@@ -8,7 +8,7 @@ let message = ""
  * 判断正误方法：错误的话返回错误信息，正确的话返回true
  * @param {string | true}cronExpression crom表达式
  */
-export default function cronValidate (cronExpression) {
+export default function cronValidate(cronExpression) {
   // 先将cron表达式进行分割
   let cronParams = cronExpression.split(" ")
   // 判断cron表达式是否具有该具有的属性长度，没有年份的长度为6，带年份的长度为7，其他情况都是错误的
@@ -73,7 +73,7 @@ export default function cronValidate (cronExpression) {
  *
  * @param secondsField
  */
-function checkSecondsField (secondsField) {
+function checkSecondsField(secondsField) {
   return checkField(secondsField, 0, 59, "秒")
 }
 
@@ -82,7 +82,7 @@ function checkSecondsField (secondsField) {
  *
  * @param minutesField
  */
-function checkMinutesField (minutesField) {
+function checkMinutesField(minutesField) {
   return checkField(minutesField, 0, 59, "分")
 }
 
@@ -91,7 +91,7 @@ function checkMinutesField (minutesField) {
  *
  * @param hoursField
  */
-function checkHoursField (hoursField) {
+function checkHoursField(hoursField) {
   return checkField(hoursField, 0, 23, "时")
 }
 
@@ -100,7 +100,7 @@ function checkHoursField (hoursField) {
  *
  * @param dayOfMonthField
  */
-function checkDayOfMonthField (dayOfMonthField) {
+function checkDayOfMonthField(dayOfMonthField) {
   if (dayOfMonthField == "?") {
     return true
   }
@@ -119,7 +119,7 @@ function checkDayOfMonthField (dayOfMonthField) {
  *
  * @param monthsField
  */
-function checkMonthsField (monthsField) {
+function checkMonthsField(monthsField) {
   // 月份简写处理
   if (monthsField != "*") {
     monthsField = monthsField.replace("JAN", "1")
@@ -145,7 +145,7 @@ function checkMonthsField (monthsField) {
  *
  * @param dayOfWeekField
  */
-function checkDayOfWeekField (dayOfWeekField) {
+function checkDayOfWeekField(dayOfWeekField) {
   dayOfWeekField = dayOfWeekField.replace("SUN", "1")
   dayOfWeekField = dayOfWeekField.replace("MON", "2")
   dayOfWeekField = dayOfWeekField.replace("TUE", "3")
@@ -172,7 +172,7 @@ function checkDayOfWeekField (dayOfWeekField) {
  *
  * @param yearField
  */
-function checkYearField (yearField) {
+function checkYearField(yearField) {
   return checkField(yearField, 1970, 2099, "年的")
 }
 
@@ -184,7 +184,7 @@ function checkYearField (yearField) {
  * @param maximal
  * @param attribute
  */
-function checkField (value, minimal, maximal, attribute) {
+function checkField(value, minimal, maximal, attribute) {
   // 校验值中是否有“-”，如果有“-”的话，下标会>0
   if (value.indexOf("-") > -1) {
     return checkRangeAndCycle(value, minimal, maximal, attribute)
@@ -212,7 +212,7 @@ function checkField (value, minimal, maximal, attribute) {
  * @param checkExtremity
  * @param attribute
  */
-function checkIntValue (value, minimal, maximal, checkExtremity, attribute) {
+function checkIntValue(value, minimal, maximal, checkExtremity, attribute) {
   try {
     // 用10进制犯法来进行整数转换
     let val = parseInt(value, 10)
@@ -238,7 +238,7 @@ function checkIntValue (value, minimal, maximal, checkExtremity, attribute) {
  * @param maximal
  * @param attribute
  */
-function checkListField (value, minimal, maximal, attribute) {
+function checkListField(value, minimal, maximal, attribute) {
   let st = value.split(",")
   let values = new Array(st.length)
   // 计算枚举的数字在数组中中出现的次数，出现一次为没有重复的。
@@ -290,7 +290,7 @@ function checkListField (value, minimal, maximal, attribute) {
  * @param maximal
  * @param attribute
  */
-function checkIncrementField (value, minimal, maximal, attribute) {
+function checkIncrementField(value, minimal, maximal, attribute) {
   if (value.split("/").length > 2) {
     return (attribute + "中的参数只能有一个'/'")
   }
@@ -322,7 +322,7 @@ function checkIncrementField (value, minimal, maximal, attribute) {
  * @param maximal
  * @param attribute
  */
-function checkRangeAndCycle (params, minimal, maximal, attribute) {
+function checkRangeAndCycle(params, minimal, maximal, attribute) {
   // 校验“-”符号是否只有一个
   if (params.split("-").length > 2) {
     return (attribute + "中的参数只能有一个'-'")
@@ -383,7 +383,7 @@ function checkRangeAndCycle (params, minimal, maximal, attribute) {
  * @param maximalBefore
  * @param attribute
  */
-function checkFieldWithLetter (value, letter, minimalBefore, maximalBefore, attribute) {
+function checkFieldWithLetter(value, letter, minimalBefore, maximalBefore, attribute) {
   // 判断是否只有一个字母
   for (let i = 0; i < value.length; i++) {
     let count = 0
@@ -448,7 +448,7 @@ function checkFieldWithLetter (value, letter, minimalBefore, maximalBefore, attr
  * @param maximalBefore
  * @param attribute
  */
-function checkFieldWithLetterWeek (value, letter, minimalBefore, maximalBefore, attribute) {
+function checkFieldWithLetterWeek(value, letter, minimalBefore, maximalBefore, attribute) {
   // 判断是否只有一个字母
   for (let i = 0; i < value.length; i++) {
     let count = 0

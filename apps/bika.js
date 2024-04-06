@@ -10,7 +10,7 @@ const Prefix = "(bika|哔咔)"
 const searchReg = new RegExp(`^#?${Prefix}(类别|作者|高级)?搜索(.*?)(第(${numReg})页)?$`)
 const comicPageReg = new RegExp(`^#?${Prefix}id(.*?)(第(${numReg})页)?(第(${numReg})话)?$`)
 export class NewBika extends plugin {
-  constructor () {
+  constructor() {
     super({
       name: "椰奶哔咔",
       event: "message",
@@ -61,7 +61,7 @@ export class NewBika extends plugin {
    * 搜索
    * @param e
    */
-  async search (e) {
+  async search(e) {
     if (!await this._Authentication(e)) return
     e.reply(Pixiv.startMsg)
     let regRet = e.msg.match(searchReg)
@@ -75,7 +75,7 @@ export class NewBika extends plugin {
    * 漫画页面
    * @param e
    */
-  async comicPage (e) {
+  async comicPage(e) {
     if (!await this._Authentication(e)) return
     e.reply(Pixiv.startMsg)
     let regRet = e.msg.match(comicPageReg)
@@ -90,7 +90,7 @@ export class NewBika extends plugin {
    * 快速查看
    * @param e
    */
-  async viewComicPage (e) {
+  async viewComicPage(e) {
     if (!await this._Authentication(e)) return
     let number = e.msg.match(/\d+/) - 1
     await Bika.viewComicPage(number)
@@ -102,7 +102,7 @@ export class NewBika extends plugin {
    * 下一页
    * @param e
    */
-  async nextComicPage (e) {
+  async nextComicPage(e) {
     if (!await this._Authentication(e)) return
     await Bika.next()
       .then(res => common.recallSendForwardMsg(e, res))
@@ -113,7 +113,7 @@ export class NewBika extends plugin {
    * 下一话
    * @param e
    */
-  async nextChapter (e) {
+  async nextChapter(e) {
     if (!await this._Authentication(e)) return
     await Bika.next("chapter")
       .then(res => common.recallSendForwardMsg(e, res))
@@ -124,7 +124,7 @@ export class NewBika extends plugin {
    * 类别列表
    * @param e
    */
-  async categories (e) {
+  async categories(e) {
     if (!await this._Authentication(e)) return
     e.reply(Pixiv.startMsg)
     await Bika.categories()
@@ -136,7 +136,7 @@ export class NewBika extends plugin {
    * 漫画细节
    * @param e
    */
-  async comicDetail (e) {
+  async comicDetail(e) {
     if (!await this._Authentication(e)) return
     e.reply(Pixiv.startMsg)
     let id = e.msg.match(new RegExp(`#?${Prefix}(详情|细节)(.*)`))[3]
@@ -149,7 +149,7 @@ export class NewBika extends plugin {
    * 图片质量
    * @param e
    */
-  async imageQuality (e) {
+  async imageQuality(e) {
     let quality = e.msg.match(new RegExp(`#?${Prefix}修改图片质量(.*)`))[2]
     let imageQualityType = {
       低质量: "low",
@@ -167,7 +167,7 @@ export class NewBika extends plugin {
    * 图片直连
    * @param e
    */
-  async directConnection (e) {
+  async directConnection(e) {
     if (!this.e.isMaster) { return true }
     let now = Config.bika.bikaDirectConnection
     let isSwitch = /开启/.test(e.msg)
@@ -177,7 +177,7 @@ export class NewBika extends plugin {
     new Admin().SeSe_Settings(e)
   }
 
-  async _Authentication (e) {
+  async _Authentication(e) {
     if (!this.e.isMaster) { return true }
     if (!common.checkSeSePermission(e, "sesepro")) return false
     if (!Config.bika.allowPM && !e.isGroup) {

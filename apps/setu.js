@@ -7,7 +7,7 @@ import translateChinaNum from "../tools/translateChinaNum.js"
 const NumReg = "[零一壹二两三四五六七八九十百千万亿\\d]+"
 
 export class SeSe extends plugin {
-  constructor () {
+  constructor() {
     super({
       name: "椰奶setu",
       event: "message",
@@ -41,7 +41,7 @@ export class SeSe extends plugin {
     })
   }
 
-  async setuRandom (e) {
+  async setuRandom(e) {
     if (!await this._Authentication(e)) return
 
     const cdTime = setu.getRemainingCd(e.user_id, e.group_id)
@@ -65,7 +65,7 @@ export class SeSe extends plugin {
   }
 
   // tag搜图
-  async setuTag (e) {
+  async setuTag(e) {
     if (!await this._Authentication(e)) return
 
     let cdTime = setu.getRemainingCd(e.user_id, e.group_id)
@@ -97,7 +97,7 @@ export class SeSe extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  async _Authentication (e) {
+  async _Authentication(e) {
     if (e.isMaster) return true
     const { allowPM, limit } = Config.setu
     if (!allowPM && !e.isGroup) {
@@ -113,7 +113,7 @@ export class SeSe extends plugin {
   }
 
   // 设置群撤回间隔和cd
-  async setGroupRecallAndCD (e) {
+  async setGroupRecallAndCD(e) {
     let num = e.msg.match(new RegExp(NumReg))
     num = translateChinaNum(num[0])
     let type = /撤回间隔/.test(e.msg)
@@ -122,14 +122,14 @@ export class SeSe extends plugin {
   }
 
   // 开启r18
-  async setSeSe (e) {
+  async setSeSe(e) {
     let isopen = !!/开启/.test(e.msg)
     setu.setR18(e.group_id, isopen)
     new Admin().SeSe_Settings(e)
   }
 
   // 指令设置
-  async setCd (e) {
+  async setCd(e) {
     let reg = `^#?设置cd\\s?((\\d+)\\s)?(${NumReg})(s|秒)?$`
     let regRet = e.msg.match(new RegExp(reg))
     let qq = e.message.find(item => item.type == "at")?.qq ?? regRet[2]

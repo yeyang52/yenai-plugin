@@ -1,6 +1,6 @@
 import { update as Update } from "../../other/update.js"
 export class YenaiUpdate extends plugin {
-  constructor () {
+  constructor() {
     super({
       name: "椰奶更新插件",
       event: "message",
@@ -14,7 +14,7 @@ export class YenaiUpdate extends plugin {
     })
   }
 
-  async update (e = this.e) {
+  async update(e = this.e) {
     e.msg = `#${e.msg.includes("强制") ? "强制" : ""}更新yenai-plugin`
     const up = new Update(e)
     up.e = e

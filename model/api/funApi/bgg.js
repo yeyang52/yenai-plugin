@@ -6,7 +6,7 @@ import { puppeteer } from "../../index.js"
  *
  * @param keyword
  */
-export default async function bgg (keyword) {
+export default async function bgg(keyword) {
   let cheerio = await _importDependency()
   let url = "https://www.gstonegames.com/game/?hot_sort=1&keyword=" + encodeURIComponent(keyword)
   const home = await request.get(url).then((res) => res.text())

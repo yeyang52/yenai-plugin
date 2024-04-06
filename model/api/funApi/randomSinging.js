@@ -2,7 +2,7 @@ import { API_ERROR } from "./utils.js"
 import _ from "lodash"
 
 /** 随机唱歌/唱鸭 */
-export default async function randomSinging () {
+export default async function randomSinging() {
   try {
     const api = "https://m.api.singduck.cn/user-piece/SoQJ9cKu61FJ1Vwc7"
     let res = await fetch(api).then(res => res.text())

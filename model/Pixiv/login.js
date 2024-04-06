@@ -17,7 +17,7 @@ export const headers = {
   "Connection": "Keep-Alive"
 }
 
-export async function login (refresh_token) {
+export async function login(refresh_token) {
   const local_time = moment().format()
   let _headers = {
     ...headers,

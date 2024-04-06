@@ -4,10 +4,10 @@ import { status } from "../../constants/other.js"
 import { createRequire } from "module"
 const require = createRequire(import.meta.url)
 
-export default async function getBotState (botList) {
+export default async function getBotState(botList) {
   const defaultAvatar = `../../../../../plugins/${Plugin_Name}/resources/state/img/default_avatar.jpg`
 
-  const dataPromises = botList.map(async (i) => {
+  const dataPromises = botList.map(async(i) => {
     const bot = Bot[i]
     if (!bot?.uin) return ""
 

@@ -11,7 +11,7 @@ const Plugin_Path = `${Path}/plugins/yenai-plugin`
 /**
  *
  */
-export function supportGuoba () {
+export function supportGuoba() {
   return {
     pluginInfo: {
       name: "yenai-plugin",
@@ -370,7 +370,7 @@ export function supportGuoba () {
 
       ],
       // 获取配置数据方法（用于前端填充显示数据）
-      getConfigData () {
+      getConfigData() {
         return {
           whole: Config.whole,
           pixiv: Config.pixiv,
@@ -380,7 +380,7 @@ export function supportGuoba () {
       },
 
       // 设置配置的方法（前端点确定后调用的方法）
-      setConfigData (data, { Result }) {
+      setConfigData(data, { Result }) {
         for (let key in data) Config.modify(...key.split("."), data[key])
 
         return Result.ok({}, "保存成功辣ε(*´･ω･)з")

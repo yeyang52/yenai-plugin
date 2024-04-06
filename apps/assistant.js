@@ -18,7 +18,7 @@ let GroupListMsgReg = /^#发群列表\s?(\d+(,\d+){0,})\s?([^]*)$/
 let friendTypeReg = /^#更改好友申请方式([0123])((.*)\s(.*))?$/
 
 export class Assistant extends plugin {
-  constructor () {
+  constructor() {
     super({
       name: "椰奶小助手",
       event: "message",
@@ -136,7 +136,7 @@ export class Assistant extends plugin {
     })
   }
 
-  get Bot () {
+  get Bot() {
     return this.e.bot ?? Bot
   }
 
@@ -144,7 +144,7 @@ export class Assistant extends plugin {
    * 改头像
    * @param e
    */
-  async SetAvatar (e) {
+  async SetAvatar(e) {
     if (!common.checkPermission(e, "master")) return
     if (!e.img) {
       this.setContext("_avatarContext")
@@ -160,7 +160,7 @@ export class Assistant extends plugin {
       })
   }
 
-  async _avatarContext () {
+  async _avatarContext() {
     let img = this.e.img
     if (/取消/.test(this.e.msg)) {
       this.finish("_avatarContext")
@@ -186,7 +186,7 @@ export class Assistant extends plugin {
    * 改昵称
    * @param e
    */
-  async SetNickname (e) {
+  async SetNickname(e) {
     if (!common.checkPermission(e, "master")) return
     let name = e.msg.replace(/#|改昵称/g, "").trim()
 
@@ -202,7 +202,7 @@ export class Assistant extends plugin {
    * 改群名片
    * @param e
    */
-  async SetGroupCard (e) {
+  async SetGroupCard(e) {
     if (!common.checkPermission(e, "master")) return
     let group = ""
     let card = ""
@@ -237,7 +237,7 @@ export class Assistant extends plugin {
    * 改群头像
    * @param e
    */
-  async SetGroupAvatar (e) {
+  async SetGroupAvatar(e) {
     if (e.isPrivate) {
       if (!e.isMaster) return logger.mark(`${e.logFnc}不为主人`)
       e.group_id = e.msg.replace(/#|改群头像/g, "").trim()
@@ -269,7 +269,7 @@ export class Assistant extends plugin {
       })
   }
 
-  _GroupAvatarContext (e) {
+  _GroupAvatarContext(e) {
     let img = this.e.img
     if (/取消/.test(this.e.msg)) {
       this.finish("_GroupAvatarContext")
@@ -295,7 +295,7 @@ export class Assistant extends plugin {
    * 改群昵称
    * @param e
    */
-  async SetGroupName (e) {
+  async SetGroupName(e) {
     if (!common.checkPermission(e, "admin", "admin")) return
     let group = ""
     let card = ""
@@ -335,7 +335,7 @@ export class Assistant extends plugin {
    * 改签名
    * @param e
    */
-  async SetSignature (e) {
+  async SetSignature(e) {
     if (!common.checkPermission(e, "master")) return
     let signs = e.msg.replace(/#|改签名/g, "").trim()
     await this.Bot.setSignature(signs)
@@ -350,7 +350,7 @@ export class Assistant extends plugin {
    * 改状态
    * @param e
    */
-  async SetOnlineStatus (e) {
+  async SetOnlineStatus(e) {
     if (!common.checkPermission(e, "master")) return
     let signs = e.msg.replace(/#|改状态/g, "").trim()
 
@@ -372,7 +372,7 @@ export class Assistant extends plugin {
    * 发好友
    * @param e
    */
-  async SendFriendMsg (e) {
+  async SendFriendMsg(e) {
     if (!common.checkPermission(e, "master")) return
     let regRet = FriendsReg.exec(e.msg)
     let qq = regRet[1]
@@ -394,7 +394,7 @@ export class Assistant extends plugin {
    * 发群聊
    * @param e
    */
-  async SendGroupMsg (e) {
+  async SendGroupMsg(e) {
     if (!common.checkPermission(e, "master")) return
     let regRet = GroupMsgReg.exec(e.msg)
 
@@ -416,7 +416,7 @@ export class Assistant extends plugin {
   }
 
   // 发送群列表
-  async SendGroupListMsg (e) {
+  async SendGroupListMsg(e) {
     if (!common.checkPermission(e, "master")) return
     // 获取参数
     let regRet = GroupListMsgReg.exec(e.msg)
@@ -470,7 +470,7 @@ export class Assistant extends plugin {
    * 退群
    * @param e
    */
-  async QuitGroup (e) {
+  async QuitGroup(e) {
     if (!common.checkPermission(e, "master")) return
     let quits = e.msg.replace(/#|退群/g, "").trim()
 
@@ -497,7 +497,7 @@ export class Assistant extends plugin {
    * 删好友
    * @param e
    */
-  async DeleteFriend (e) {
+  async DeleteFriend(e) {
     if (!common.checkPermission(e, "master")) return
     let quits = e.msg.replace(/#|删好友/g, "").trim()
 
@@ -522,7 +522,7 @@ export class Assistant extends plugin {
    * 改性别
    * @param e
    */
-  async SetGender (e) {
+  async SetGender(e) {
     if (!common.checkPermission(e, "master")) return
     let sex = e.msg.replace(/#|改性别/g, "").trim()
 
@@ -547,7 +547,7 @@ export class Assistant extends plugin {
    * 取直链
    * @param e
    */
-  async ImageLink (e) {
+  async ImageLink(e) {
     let img = []
     if (e.source) {
       let source
@@ -575,16 +575,16 @@ export class Assistant extends plugin {
       // 大于两张图片以转发消息发送
       let msg = []
       for (let i of img) {
-        msg.push([segment.image(i), "直链:", i])
+        msg.push([ segment.image(i), "直链:", i ])
       }
       common.getforwardMsg(e, msg)
     } else {
-      await e.reply([segment.image(img[0]), "直链:", img[0]])
+      await e.reply([ segment.image(img[0]), "直链:", img[0] ])
     }
     return true
   }
 
-  async _ImageLinkContext () {
+  async _ImageLinkContext() {
     let img = this.e.img
     if (this.e.msg === "取消") {
       this.finish("_ImageLinkContext")
@@ -604,7 +604,7 @@ export class Assistant extends plugin {
    * 取Face表情
    * @param e
    */
-  async Face (e) {
+  async Face(e) {
     let face = []
     for (let m of e.message) {
       if (m.type === "face") {
@@ -615,7 +615,7 @@ export class Assistant extends plugin {
     }
     if (face.length === 0) return e.reply("❎ 表情参数不可为空", true)
 
-    let res = face.map(function (item) {
+    let res = face.map(function(item) {
       return [
         "表情：",
         item,
@@ -635,7 +635,7 @@ export class Assistant extends plugin {
    * QQ空间 说说列表
    * @param e
    */
-  async Qzonelist (e) {
+  async Qzonelist(e) {
     if (!common.checkPermission(e, "master")) return
     let page = e.msg.replace(/#|获?取说说列表/g, "").trim()
     if (!page) {
@@ -664,7 +664,7 @@ export class Assistant extends plugin {
    * 删除说说
    * @param e
    */
-  async Qzonedel (e) {
+  async Qzonedel(e) {
     if (!common.checkPermission(e, "master")) return
     let pos = e.msg.match(/\d+/)
     // 获取说说列表
@@ -690,7 +690,7 @@ export class Assistant extends plugin {
    * 发说说
    * @param e
    */
-  async Qzonesay (e) {
+  async Qzonesay(e) {
     if (!common.checkPermission(e, "master")) return
     let con = e.msg.replace(/#|发说说/g, "").trim()
     let result = await new QQApi(e).setQzone(con, e.img)
@@ -698,7 +698,7 @@ export class Assistant extends plugin {
 
     if (result.code != 0) return e.reply(`❎ 说说发表失败\n${JSON.stringify(result)}`)
 
-    let msg = ["✅ 说说发表成功，内容：\n", _.truncate(result.content, { length: 15 })]
+    let msg = [ "✅ 说说发表成功，内容：\n", _.truncate(result.content, { length: 15 }) ]
     if (result.pic) {
       msg.push(segment.image(result.pic[0].url1))
     }
@@ -710,7 +710,7 @@ export class Assistant extends plugin {
    * 清空说说和留言
    * @param e
    */
-  async QzonedelAll (e) {
+  async QzonedelAll(e) {
     if (!common.checkPermission(e, "master")) return
     if (/清空说说/.test(e.msg)) {
       this.setContext("_QzonedelAllContext")
@@ -723,7 +723,7 @@ export class Assistant extends plugin {
     }
   }
 
-  async _QzonedelAllContext (e) {
+  async _QzonedelAllContext(e) {
     let msg = this.e.msg
     if (/#?确认清空/.test(msg)) {
       this.finish("_QzonedelAllContext")
@@ -748,7 +748,7 @@ export class Assistant extends plugin {
   }
 
   // 获取群|好友列表
-  async GlOrFl (e) {
+  async GlOrFl(e) {
     if (!common.checkPermission(e, "master")) return
     let msg = []
     if (/群列表/.test(e.msg)) {
@@ -774,7 +774,7 @@ export class Assistant extends plugin {
   }
 
   // 引用撤回
-  async RecallMsgown (e) {
+  async RecallMsgown(e) {
     if (!e.source) return false
     let source
     if (e.isGroup) {
@@ -819,7 +819,7 @@ export class Assistant extends plugin {
   }
 
   // 开关好友添加
-  async FriendSwitch (e) {
+  async FriendSwitch(e) {
     if (!common.checkPermission(e, "master")) return
     let res = await new QQApi(e).addFriendSwitch(/开启/.test(e.msg) ? 1 : 2)
     if (!res) return e.reply(API_ERROR)
@@ -827,7 +827,7 @@ export class Assistant extends plugin {
   }
 
   // 好友申请方式
-  async FriendType (e) {
+  async FriendType(e) {
     if (!common.checkPermission(e, "master")) return
     let regRet = friendTypeReg.exec(e.msg)
     if (regRet[1] == 0) return e.reply("1为允许所有人，2为需要验证，3为问答正确问答(需填问题和答案，格式为：#更改好友申请方式3 问题 答案)")
@@ -844,7 +844,7 @@ export class Assistant extends plugin {
    * 开关戳一戳
    * @param e
    */
-  async Cyc (e) {
+  async Cyc(e) {
     if (!common.checkPermission(e, "master")) return
     let result = await new QQApi(e).setcyc(/开启/.test(e.msg) ? 0 : 1)
     if (!result) return e.reply(API_ERROR)
@@ -853,14 +853,14 @@ export class Assistant extends plugin {
     e.reply(`✅ 已${/开启/.test(e.msg) ? "开启" : "关闭"}戳一戳功能`)
   }
 
-  async setModel (e) {
+  async setModel(e) {
     if (!common.checkPermission(e, "master")) return
     let model = e.msg.replace(/#|设置机型/g, "")
     let res = await new QQApi(e).setModel(model).catch(err => logger.error(err))
-    e.reply(_.get(res, ["13031", "data", "rsp", "iRet"]) == 0 ? "设置成功" : "设置失败")
+    e.reply(_.get(res, [ "13031", "data", "rsp", "iRet" ]) == 0 ? "设置成功" : "设置失败")
   }
 
-  async BlockOne (e) {
+  async BlockOne(e) {
     if (!common.checkPermission(e, "master")) return
     let type = ""
     let name = "拉"
@@ -912,7 +912,7 @@ export class Assistant extends plugin {
     }
   }
 
-  async CancelBlockOne (e) {
+  async CancelBlockOne(e) {
     if (!common.checkPermission(e, "master")) return
     let type = ""
     let name = "取消拉"

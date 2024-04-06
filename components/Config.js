@@ -11,7 +11,7 @@ const Path = process.cwd()
 const Plugin_Name = "yenai-plugin"
 const Plugin_Path = `${Path}/plugins/${Plugin_Name}`
 class Config {
-  constructor () {
+  constructor() {
     this.config = {}
 
     /** 监听文件 */
@@ -21,7 +21,7 @@ class Config {
   }
 
   /** 初始化配置 */
-  initCfg () {
+  initCfg() {
     let path = `${Plugin_Path}/config/config/`
     let pathDef = `${Plugin_Path}/config/default_config/`
     const files = fs.readdirSync(pathDef).filter(file => file.endsWith(".yaml"))
@@ -37,7 +37,7 @@ class Config {
    * 群配置
    * @param groupId
    */
-  getGroup (groupId = "") {
+  getGroup(groupId = "") {
     let config = this.getConfig("whole")
     let group = this.getConfig("group")
     let defCfg = this.getdefSet("whole")
@@ -49,61 +49,61 @@ class Config {
   }
 
   /** 主人QQ */
-  get masterQQ () {
+  get masterQQ() {
     return cfg.masterQQ
   }
 
   /** 获取全局设置 */
-  get whole () {
+  get whole() {
     return this.getDefOrConfig("whole")
   }
 
   /** 进群验证配置 */
-  get groupverify () {
+  get groupverify() {
     return this.getDefOrConfig("groupverify")
   }
 
   /** 头衔屏蔽词 */
-  get groupTitle () {
+  get groupTitle() {
     return this.getDefOrConfig("groupTitle")
   }
 
   /** 加群通知 */
-  get groupAdd () {
+  get groupAdd() {
     return this.getDefOrConfig("groupAdd")
   }
 
   /** 代理 */
-  get proxy () {
+  get proxy() {
     return this.getDefOrConfig("proxy")
   }
 
   /** pixiv */
-  get pixiv () {
+  get pixiv() {
     return this.getDefOrConfig("pixiv")
   }
 
   /** 哔咔 */
-  get bika () {
+  get bika() {
     return this.getDefOrConfig("bika")
   }
 
   /** 搜图 */
-  get picSearch () {
+  get picSearch() {
     return this.getDefOrConfig("picSearch")
   }
 
   /** setu */
-  get setu () {
+  get setu() {
     return this.getDefOrConfig("setu")
   }
 
   /** 状态 */
-  get state () {
+  get state() {
     return this.getDefOrConfig("state")
   }
 
-  get groupAdmin () {
+  get groupAdmin() {
     return this.getDefOrConfig("groupAdmin")
   }
 
@@ -111,7 +111,7 @@ class Config {
    * 默认配置和用户配置
    * @param name
    */
-  getDefOrConfig (name) {
+  getDefOrConfig(name) {
     let def = this.getdefSet(name)
     let config = this.getConfig(name)
     return { ...def, ...config }
@@ -121,7 +121,7 @@ class Config {
    * 默认配置
    * @param name
    */
-  getdefSet (name) {
+  getdefSet(name) {
     return this.getYaml("default_config", name)
   }
 
@@ -129,7 +129,7 @@ class Config {
    * 用户配置
    * @param name
    */
-  getConfig (name) {
+  getConfig(name) {
     return this.getYaml("config", name)
   }
 
@@ -138,7 +138,7 @@ class Config {
    * @param type 默认跑配置-defSet，用户配置-config
    * @param name 名称
    */
-  getYaml (type, name) {
+  getYaml(type, name) {
     let file = `${Plugin_Path}/config/${type}/${name}.yaml`
     let key = `${type}.${name}`
 
@@ -159,7 +159,7 @@ class Config {
    * @param name
    * @param type
    */
-  watch (file, name, type = "default_config") {
+  watch(file, name, type = "default_config") {
     let key = `${type}.${name}`
 
     if (this.watcher[key]) return
@@ -184,7 +184,7 @@ class Config {
    * @param {string | number} value 修改的value值
    * @param {'config'|'default_config'} type 配置文件或默认
    */
-  modify (name, key, value, type = "config") {
+  modify(name, key, value, type = "config") {
     let path = `${Plugin_Path}/config/${type}/${name}.yaml`
     new YamlReader(path).set(key, value)
     delete this.config[`${type}.${name}`]
@@ -197,7 +197,7 @@ class Config {
    * @param {unknown} value
    * @param isDel
    */
-  aloneModify (groupId, key, value, isDel) {
+  aloneModify(groupId, key, value, isDel) {
     let path = `${Plugin_Path}/config/config/group.yaml`
     let yaml = new YamlReader(path)
     let groupCfg = yaml.jsonData[groupId] ?? {}
@@ -214,7 +214,7 @@ class Config {
    * @param {'add'|'del'} category 类别 add or del
    * @param {'config'|'default_config'} type 配置文件或默认
    */
-  modifyarr (name, key, value, category = "add", type = "config") {
+  modifyarr(name, key, value, category = "add", type = "config") {
     let path = `${Plugin_Path}/config/${type}/${name}.yaml`
     let yaml = new YamlReader(path)
     if (category == "add") {
@@ -225,7 +225,7 @@ class Config {
     }
   }
 
-  async change_picApi () {
+  async change_picApi() {
     let tmp = {}
 
     logger.debug("[Yenai-Plugin]api接口修改，重载fun.js")
@@ -243,7 +243,7 @@ class Config {
     })
   }
 
-  async change_pixiv () {
+  async change_pixiv() {
     let pixiv = (await import("../model/index.js")).Pixiv
     let PixivApi = (await import("../model/Pixiv/api.js")).default
     pixiv.PixivClient = new PixivApi(this.pixiv.refresh_token)

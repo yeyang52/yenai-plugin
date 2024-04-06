@@ -7,7 +7,7 @@ const ROLE_MAP = {
   member: "群员"
 }
 
-Bot.on?.("request", async (e) => {
+Bot.on?.("request", async(e) => {
   let msg = ""
   switch (e.request_type) {
     case "group":
@@ -34,8 +34,9 @@ Bot.on?.("request", async (e) => {
           break
         case "add":
           if (Config.groupAdd.openGroup.includes(e.group_id)) {
-            let msg = [`${Config.groupAdd.msg}\n`,
-              segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
+            let msg = [
+`${Config.groupAdd.msg}\n`,
+segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
               `QQ号：${e.user_id}\n`,
               `昵称：${e.nickname}\n`,
               `${e.comment}`

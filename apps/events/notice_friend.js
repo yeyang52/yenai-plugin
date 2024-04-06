@@ -1,7 +1,7 @@
 import { common } from "../../model/index.js"
 import { Config } from "../../components/index.js"
 
-Bot.on?.("notice.friend", async (e) => {
+Bot.on?.("notice.friend", async(e) => {
   let msg
   let forwardMsg
   switch (e.sub_type) {
@@ -43,7 +43,7 @@ Bot.on?.("notice.friend", async (e) => {
       const msgType = {
         flash: {
           msg: () => false,
-          type: ["[闪照]\n", "撤回闪照：", segment.image(res[0].url)]
+          type: [ "[闪照]\n", "撤回闪照：", segment.image(res[0].url) ]
         },
         record: {
           msg: () => segment.record(res[0].url),
@@ -95,7 +95,7 @@ Bot.on?.("notice.friend", async (e) => {
  * 时间转换
  * @param time
  */
-function formatDate (time) {
+function formatDate(time) {
   let now = new Date(parseFloat(time) * 1000)
   // 月
   let month = now.getMonth() + 1

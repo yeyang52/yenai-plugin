@@ -6,7 +6,7 @@ try {
   Jimp = (await import("jimp")).default
 } catch {}
 export default new class {
-  constructor () {
+  constructor() {
     this.folderPath = `${Plugin_Path}/resources/memes`
   }
 
@@ -14,7 +14,7 @@ export default new class {
    * 比心/赞
    * @param image
    */
-  async zan (image) {
+  async zan(image) {
     if (!Jimp) return false
     let background = await Jimp.read(this.getRandomImagePath(`${this.folderPath}/bixin`))
     let image2 = await Jimp.read(image)
@@ -31,7 +31,7 @@ export default new class {
    * 爬
    * @param image
    */
-  async crawl (image) {
+  async crawl(image) {
     if (!Jimp) return false
     let background = await Jimp.read(this.getRandomImagePath(`${this.folderPath}/crawl`))
     let image2 = await Jimp.read(image)
@@ -44,7 +44,7 @@ export default new class {
     return buff
   }
 
-  async ganyu (image) {
+  async ganyu(image) {
     if (!Jimp) return false
     let images = new Jimp(700, 598)
     let avatar = await Jimp.read(image)
@@ -64,7 +64,7 @@ export default new class {
    * @param {string} folderPath - 文件夹路径
    * @returns {string} - 图片路径
    */
-  getRandomImagePath (folderPath) {
+  getRandomImagePath(folderPath) {
   // 读取文件夹里的所有文件
     const files = fs.readdirSync(folderPath)
 

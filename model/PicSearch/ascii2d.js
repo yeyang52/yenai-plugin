@@ -10,7 +10,7 @@ let domain = "https://ascii2d.net/"
 /**
  *
  */
-async function importCheerio () {
+async function importCheerio() {
   if (cheerio) return cheerio
   try {
     cheerio = await import("cheerio")
@@ -23,7 +23,7 @@ async function importCheerio () {
  *
  * @param url
  */
-export default async function doSearch (url) {
+export default async function doSearch(url) {
   await importCheerio()
   const { ascii2dUsePuppeteer, ascii2dResultMaxQuantity } = Config.picSearch
   const callApi = ascii2dUsePuppeteer ? callAscii2dUrlApiWithPuppeteer : callAscii2dUrlApi
@@ -68,7 +68,7 @@ export default async function doSearch (url) {
 const callAscii2dUrlApiWithPuppeteer = (imgUrl) => {
   return getAscii2dWithPuppeteer(`${domain}/search/url/${imgUrl}`)
 }
-const callAscii2dUrlApi = async (imgUrl) => {
+const callAscii2dUrlApi = async(imgUrl) => {
   let res = await request.cfGet(`${domain}/search/url/${imgUrl}`).catch(
     err => {
       if (err.stack?.includes("legacy sigalg disallowed or unsupported")) {
@@ -87,22 +87,22 @@ const callAscii2dUrlApi = async (imgUrl) => {
  *
  * @param url
  */
-async function getAscii2dWithPuppeteer (url) {
+async function getAscii2dWithPuppeteer(url) {
   return await puppeteer.get(url, "body > .container")
 }
 /**
  *
  * @param body
  */
-async function parse (body) {
+async function parse(body) {
   const $ = cheerio.load(body, { decodeEntities: true })
   return _.map($(".item-box"), (item) => {
     const detail = $(".detail-box", item)
     const hash = $(".hash", item)
     const info = $(".info-box > .text-muted", item)
-    const [image] = $(".image-box > img", item)
+    const [ image ] = $(".image-box > img", item)
 
-    const [source, author] = $("a[rel=noopener]", detail)
+    const [ source, author ] = $("a[rel=noopener]", detail)
 
     if (!source && !author) return
 

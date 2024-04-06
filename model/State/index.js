@@ -14,7 +14,7 @@ import getOtherInfo, { getCopyright } from "./OtherInfo.js"
 
 export { osInfo, si }
 
-export async function getData (e) {
+export async function getData(e) {
   // 可视化数据
   let visualData = _.compact(await Promise.all([
     // CPU板块
@@ -34,13 +34,13 @@ export async function getData (e) {
   let NetworTestList = getNetworTestList()
   promiseTaskList.push(NetworTestList)
 
-  let [FastFetch, HardDisk, psTest] = await Promise.all(promiseTaskList)
+  let [ FastFetch, HardDisk, psTest ] = await Promise.all(promiseTaskList)
   /** bot列表 */
   let BotList = _getBotList(e)
   let isBotIndex = /pro/.test(e.msg) && BotList.length > 1
   return {
     BotStatusList: await getBotState(BotList),
-    chartData: JSON.stringify(common.checkIfEmpty(Monitor.chartData, ["echarts_theme", "cpu", "ram"]) ? undefined : Monitor.chartData),
+    chartData: JSON.stringify(common.checkIfEmpty(Monitor.chartData, [ "echarts_theme", "cpu", "ram" ]) ? undefined : Monitor.chartData),
     visualData,
     otherInfo: getOtherInfo(),
     psTest: _.isEmpty(psTest) ? undefined : psTest,
@@ -53,9 +53,9 @@ export async function getData (e) {
   }
 }
 
-function _getBotList (e) {
+function _getBotList(e) {
   /** bot列表 */
-  let BotList = [e.self_id]
+  let BotList = [ e.self_id ]
 
   if (e.msg.includes("pro")) {
     if (Array.isArray(Bot?.uin)) {

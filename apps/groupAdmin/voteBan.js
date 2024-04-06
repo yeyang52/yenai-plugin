@@ -10,7 +10,7 @@ let Vote = {}
 let time = 180 // 投票超时时间 单位秒
 
 export class NewGroupVerify extends plugin {
-  constructor () {
+  constructor() {
     super({
       name: "椰奶投票禁言",
       dsc: "投票禁言某人",
@@ -29,7 +29,7 @@ export class NewGroupVerify extends plugin {
     })
   }
 
-  async Initiate (e) {
+  async Initiate(e) {
     if (!common.checkPermission(e, "all", "admin")) return
     let targetQQ = e.at || (e.msg.match(/\d+/)?.[0] || "")
     targetQQ = Number(targetQQ) || String(targetQQ)
@@ -67,7 +67,7 @@ export class NewGroupVerify extends plugin {
       "规则：支持票大于反对票且参与人高于3人即可成功禁言"
     ])
     if (!res) return false
-    setTimeout(async () => {
+    setTimeout(async() => {
       // 处理结果
       if (!Vote[key]) return
       const { supportCount, opposeCount } = Vote[key]
@@ -81,7 +81,7 @@ export class NewGroupVerify extends plugin {
       delete Vote[key]
       return e.reply(msg, true)
     }, time * 1000)
-    setTimeout(async () => {
+    setTimeout(async() => {
       const { supportCount, opposeCount } = Vote[key]
       const msg = [
         segment.at(targetQQ),
@@ -97,7 +97,7 @@ export class NewGroupVerify extends plugin {
     }, time * 1000 - 60000)
   }
 
-  async Follow (e) {
+  async Follow(e) {
     if (!common.checkPermission(e, "all", "admin")) return
     let targetQQ = e.at || (e.msg.match(/\d+/)?.[0] || "")
     targetQQ = Number(targetQQ) || String(targetQQ)

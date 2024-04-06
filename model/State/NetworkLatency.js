@@ -1,7 +1,7 @@
 import request from "../../lib/request/request.js"
 import { Config } from "../../components/index.js"
 
-export default function getNetworTestList () {
+export default function getNetworTestList() {
   let { psTestSites, psTestTimeout } = Config.state
   if (psTestSites) {
     let psTest = psTestSites?.map(i => getNetworkLatency(i.url, psTestTimeout).then(res => {
@@ -21,7 +21,7 @@ export default function getNetworTestList () {
  * @param {number} [timeoutTime] 超时时间
  * @returns {string}
  */
-async function getNetworkLatency (url, timeoutTime = 5000) {
+async function getNetworkLatency(url, timeoutTime = 5000) {
   const AbortController = globalThis.AbortController || await import("abort-controller")
 
   const controller = new AbortController()

@@ -3,7 +3,7 @@ import { Config } from "../../components/index.js"
 import _ from "lodash"
 
 export class NewGroupBannedWords extends plugin {
-  constructor () {
+  constructor() {
     super({
       name: "椰奶群违禁词",
       event: "message.group",
@@ -47,7 +47,7 @@ export class NewGroupBannedWords extends plugin {
     })
   }
 
-  async monitor (e) {
+  async monitor(e) {
     const isWhite = Config.groupAdmin.whiteQQ.includes(e.user_id)
     if (!e.message || e.isMaster || e.member?.is_owner || e.member?.is_admin || isWhite) {
       return false
@@ -62,7 +62,7 @@ export class NewGroupBannedWords extends plugin {
       .trim()
     const trimmedKeyWord = this.#trimAlias(KeyWord)
     let data = null
-    for (const [k, v] of groupBannedWords) {
+    for (const [ k, v ] of groupBannedWords) {
       if (k.test(trimmedKeyWord)) {
         data = v
         break
@@ -109,7 +109,7 @@ export class NewGroupBannedWords extends plugin {
    * 禁言
    * @param time
    */
-  #mute (time) {
+  #mute(time) {
     const e = this.e
     e.member.mute(time)
   }
@@ -118,11 +118,11 @@ export class NewGroupBannedWords extends plugin {
    * 过滤别名
    * @param msg
    */
-  #trimAlias (msg) {
+  #trimAlias(msg) {
     let groupCfg = this.e.runtime.cfg.getGroup(this.group_id)
     let alias = groupCfg.botAlias
     if (!Array.isArray(alias)) {
-      alias = [alias]
+      alias = [ alias ]
     }
     for (let name of alias) {
       if (msg.startsWith(name)) {
@@ -133,7 +133,7 @@ export class NewGroupBannedWords extends plugin {
     return msg
   }
 
-  async add (e) {
+  async add(e) {
     if (!common.checkPermission(e, "admin", "admin")) return false
     let word = this.#trimAlias(e.toString())
     word = word.match(/^#?新增(模糊|精确|正则)?(踢|禁|撤|踢撤|禁撤)?违禁词(.*)$/)
@@ -162,20 +162,20 @@ export class NewGroupBannedWords extends plugin {
     }
   }
 
-  async del (e) {
+  async del(e) {
     if (!common.checkPermission(e, "admin", "admin")) return false
     let word = this.#trimAlias(e.toString())
     word = word.replace(/#?删除违禁词/, "").trim()
     if (!word) return e.reply("需要删除的屏蔽词为空")
     try {
       let msg = await GroupBannedWords.delBannedWords(e.group_id, word)
-      e.reply(["✅ 成功删除：", msg])
+      e.reply([ "✅ 成功删除：", msg ])
     } catch (error) {
       common.handleException(e, error)
     }
   }
 
-  async query (e) {
+  async query(e) {
     let word = this.#trimAlias(e.toString())
     word = word.replace(/#?查看违禁词/, "").trim()
     if (!word) return e.reply("需要查询的屏蔽词为空")
@@ -195,13 +195,13 @@ export class NewGroupBannedWords extends plugin {
     }
   }
 
-  async list (e) {
+  async list(e) {
     const groupBannedWords = GroupBannedWords.initTextArr(e.group_id)
     if (_.isEmpty(groupBannedWords)) {
       return e.reply("❎ 没有违禁词")
     }
     const msg = []
-    for (const [, v] of groupBannedWords) {
+    for (const [ , v ] of groupBannedWords) {
       const { matchType, penaltyType, addedBy, date, rawItem } = v
       msg.push([
         "违禁词：",
@@ -215,7 +215,7 @@ export class NewGroupBannedWords extends plugin {
     common.getforwardMsg(e, msg)
   }
 
-  async muteTime (e) {
+  async muteTime(e) {
     if (!common.checkPermission(e, "admin", "admin")) return false
     let time = e.msg.match(/\d+/)[0]
     GroupBannedWords.setMuteTime(e.group_id, time)
@@ -223,7 +223,7 @@ export class NewGroupBannedWords extends plugin {
   }
 
   // 增删查头衔屏蔽词
-  async ProhibitedTitle (e) {
+  async ProhibitedTitle(e) {
   // 获取现有的头衔屏蔽词
     let shieldingWords = GroupBannedWords.getTitleBannedWords(e.group_id)
     // 判断是否需要查看头衔屏蔽词
@@ -277,7 +277,7 @@ export class NewGroupBannedWords extends plugin {
   }
 
   // 修改头衔匹配模式
-  async ProhibitedTitlePattern (e) {
+  async ProhibitedTitlePattern(e) {
     if (!common.checkPermission(e, "admin", "admin")) return false
     let res = GroupBannedWords.setTitleFilterModeChange(e.group_id)
     e.reply(`✅ 已修改匹配模式为${res ? "精确" : "模糊"}匹配`)

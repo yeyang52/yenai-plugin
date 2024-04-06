@@ -11,7 +11,7 @@ let changelogs = []
 let currentVersion
 let versionCount = 2
 
-const getLine = function (line) {
+const getLine = function(line) {
   line = line.replace(/(^\s*\*|\r)/g, "")
   line = line.replace(/\s*`([^`]+`)/g, "<span class=\"cmd\">$1")
   line = line.replace(/`\s*/g, "</span>")
@@ -97,16 +97,16 @@ if (yunzaiName == "miao-yunzai") {
   yunzaiName = _.capitalize(yunzaiName)
 }
 let Version = {
-  get ver () {
+  get ver() {
     return currentVersion
   },
-  get name () {
+  get name() {
     return yunzaiName
   },
-  get yunzai () {
+  get yunzai() {
     return yunzai_ver
   },
-  get logs () {
+  get logs() {
     return changelogs
   }
 }

@@ -6,7 +6,7 @@ import Monitor from "../model/State/Monitor.js"
 
 let interval = false
 export class NewState extends plugin {
-  constructor () {
+  constructor() {
     super({
       name: "椰奶状态",
       event: "message",
@@ -24,7 +24,7 @@ export class NewState extends plugin {
     })
   }
 
-  async monitor (e) {
+  async monitor(e) {
     await puppeteer.render("state/monitor", {
       chartData: JSON.stringify(Monitor.chartData)
     }, {
@@ -33,7 +33,7 @@ export class NewState extends plugin {
     })
   }
 
-  async state (e) {
+  async state(e) {
     if (!/椰奶/.test(e.msg) && !Config.whole.state) return false
 
     if (!si) return e.reply("❎ 没有检测到systeminformation依赖，请运行：\"pnpm add systeminformation -w\"进行安装")

@@ -4,7 +4,7 @@ import { Config } from "../components/index.js"
 import { successImgs, faildsImgs } from "../constants/fun.js"
 
 export class ThumbUp extends plugin {
-  constructor (e) {
+  constructor(e) {
     super({
       name: "椰奶点赞",
       event: "message",
@@ -23,7 +23,7 @@ export class ThumbUp extends plugin {
    * 点赞
    * @param e
    */
-  async thumbUp (e) {
+  async thumbUp(e) {
     let _do = "赞"
     let userId = e.user_id
     let isSelf = true

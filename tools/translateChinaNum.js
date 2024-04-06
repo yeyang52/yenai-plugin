@@ -3,7 +3,7 @@
  * @param {string} s_123
  * @returns {number}
  */
-export default function translateChinaNum (s_123) {
+export default function translateChinaNum(s_123) {
   if (!s_123 && s_123 != 0) return s_123
   // 如果是纯数字直接返回
   if (/^\d+$/.test(s_123)) return Number(s_123)
@@ -23,14 +23,14 @@ export default function translateChinaNum (s_123) {
   // 按照亿、万为分割将字符串划分为三部分
   let split = ""
   split = s_123.split("亿")
-  let s_1_23 = split.length > 1 ? split : ["", s_123]
+  let s_1_23 = split.length > 1 ? split : [ "", s_123 ]
   let s_23 = s_1_23[1]
   let s_1 = s_1_23[0]
   split = s_23.split("万")
-  let s_2_3 = split.length > 1 ? split : ["", s_23]
+  let s_2_3 = split.length > 1 ? split : [ "", s_23 ]
   let s_2 = s_2_3[0]
   let s_3 = s_2_3[1]
-  let arr = [s_1, s_2, s_3]
+  let arr = [ s_1, s_2, s_3 ]
 
   // ------------- 对各个部分处理 -------------
   arr = arr.map(item => {

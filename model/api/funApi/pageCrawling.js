@@ -8,7 +8,7 @@ import request from "../../../lib/request/request.js"
  * @param type
  * @param keywords
  */
-export async function pandadiu (type = "cos", keywords = "") {
+export async function pandadiu(type = "cos", keywords = "") {
   let cheerio = await _importDependency()
   let domain = "https://www.pandadiu.com"
   const { id, page } = pandadiuType[type]
@@ -39,7 +39,7 @@ export async function pandadiu (type = "cos", keywords = "") {
  * @param keywords
  * @param isSearch
  */
-export async function mengdui (keywords, isSearch) {
+export async function mengdui(keywords, isSearch) {
   let cheerio = await _importDependency()
   const domain = "https://b6u8.com"
   let href = ""
@@ -70,14 +70,14 @@ export async function mengdui (keywords, isSearch) {
   const imgs = _.map($("div.md-text.mb20.f-16 > p > img"), item => segment.image(item.attribs.src))
   const title = $("h1").text().trim()
   const number = `序号：${href.match(/(\d+).html/)[1]}`
-  return [title, number, ..._.take(imgs, 30)]
+  return [ title, number, ..._.take(imgs, 30) ]
 }
 
 /**
  *
  * @param type
  */
-export async function xiuren (type) {
+export async function xiuren(type) {
   let cheerio = await _importDependency()
   // 可扩展
   let handleType = xiurenTypeId[type]
@@ -106,7 +106,7 @@ export async function xiuren (type) {
 /**
  *
  */
-export async function coser () {
+export async function coser() {
   let cheerio = await _importDependency()
   const domain = "https://t2cy.com"
   const homeUrl = `${domain}/acg/cos/index_${_.random(1, 30)}.html`
@@ -129,5 +129,5 @@ export async function coser () {
     ), item => segment.image(_.includes(item.attribs.src, "http") ? item.attribs.src : domain + (item.attribs["data-loadsrc"] || item.attribs.src))
   )
   const title = $1("h1").text().trim()
-  return [title, ..._.take(imgList, 20)]
+  return [ title, ..._.take(imgList, 20) ]
 }

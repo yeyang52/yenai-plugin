@@ -3,7 +3,7 @@ import moment from "moment"
 import { Data, Plugin_Path } from "../components/index.js"
 
 export default new class {
-  constructor () {
+  constructor() {
     this.root = `${Plugin_Path}/config/group`
     this.penaltyTypeMap = {
       1: "踢",
@@ -22,7 +22,7 @@ export default new class {
     this.groupTitleCach = new Map()
   }
 
-  addBannedWords (
+  addBannedWords(
     groupId, words, matchType = "精确", penaltyType = "禁", addedBy
   ) {
     let data = Data.readJSON(`${groupId}.json`, this.root)
@@ -46,7 +46,7 @@ export default new class {
     }
   }
 
-  delBannedWords (groupId, words) {
+  delBannedWords(groupId, words) {
     let data = Data.readJSON(`${groupId}.json`, this.root)
     if (!data.bannedWords[words]) throw new ReplyError(`❎ 违禁词${words}不存在`)
     delete data.bannedWords[words]
@@ -55,7 +55,7 @@ export default new class {
     return this.keyWordTran(words)
   }
 
-  queryBannedWords (groupId, words) {
+  queryBannedWords(groupId, words) {
     let data = Data.readJSON(`${groupId}.json`, this.root)
     if (!data.bannedWords[words]) throw new ReplyError(`❎ 违禁词${words}不存在`)
     let { matchType, penaltyType } = data.bannedWords[words]
@@ -67,7 +67,7 @@ export default new class {
     }
   }
 
-  setMuteTime (groupId, time) {
+  setMuteTime(groupId, time) {
     let data = Data.readJSON(`${groupId}.json`, this.root)
     data.muteTime = Number(time)
     Data.writeJSON(`${groupId}.json`, data, this.root)
@@ -75,7 +75,7 @@ export default new class {
     return true
   }
 
-  getMuteTime (groupId) {
+  getMuteTime(groupId) {
     if (this.muteTimeCach.get(groupId)) return this.muteTimeCach.get(groupId)
     let data = Data.readJSON(`${groupId}.json`, this.root)
     this.muteTimeCach.set(groupId, data.muteTime ?? 300)
@@ -86,7 +86,7 @@ export default new class {
    * 关键词转换成可发送消息
    * @param msg
    */
-  async keyWordTran (msg) {
+  async keyWordTran(msg) {
     /** 图片 */
     if (msg.includes("{image")) {
       let tmp = msg.split("{image")
@@ -123,7 +123,7 @@ export default new class {
    * 初始化已添加内容
    * @param groupId
    */
-  initTextArr (groupId) {
+  initTextArr(groupId) {
     if (this.dataCach.get(groupId)) return this.dataCach.get(groupId)
 
     try {
@@ -149,19 +149,19 @@ export default new class {
     }
   }
 
-  setTitleFilterModeChange (groupId) {
+  setTitleFilterModeChange(groupId) {
     let data = Data.readJSON(`${groupId}.json`, this.root)
     data.TitleFilterModeChange = data.TitleFilterModeChange ? 0 : 1
     Data.writeJSON(`${groupId}.json`, data, this.root)
     return data.TitleFilterModeChange
   }
 
-  getTitleFilterModeChange (groupId) {
+  getTitleFilterModeChange(groupId) {
     let data = Data.readJSON(`${groupId}.json`, this.root)
     return data.TitleFilterModeChange ?? 0
   }
 
-  addTitleBannedWords (groupId, arr) {
+  addTitleBannedWords(groupId, arr) {
     let data = Data.readJSON(`${groupId}.json`, this.root)
     if (!data.TitleBannedWords)data.TitleBannedWords = []
     data.TitleBannedWords.push(...arr)
@@ -169,14 +169,14 @@ export default new class {
     this.groupTitleCach.delete(groupId)
   }
 
-  getTitleBannedWords (groupId) {
+  getTitleBannedWords(groupId) {
     if (this.groupTitleCach.get(groupId)) return this.groupTitleCach.get(groupId)
     let data = Data.readJSON(`${groupId}.json`, this.root).TitleBannedWords ?? []
     this.groupTitleCach.set(groupId, data)
     return data
   }
 
-  delTitleBannedWords (groupId, arr) {
+  delTitleBannedWords(groupId, arr) {
     let data = Data.readJSON(`${groupId}.json`, this.root)
     data.TitleBannedWords = _.differenceBy(data.TitleBannedWords, arr)
     Data.writeJSON(`${groupId}.json`, data, this.root)

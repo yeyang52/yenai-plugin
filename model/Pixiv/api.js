@@ -4,7 +4,7 @@ import { login, headers } from "./login.js"
 import { timeToSeconds, getNoonTomorrow } from "./utils.js"
 
 export default class PixivApi {
-  constructor (refresh_token) {
+  constructor(refresh_token) {
     this.baseUrl = "https://app-api.pixiv.net/"
     this.headers = headers
     this._once = false
@@ -13,7 +13,7 @@ export default class PixivApi {
     this.auth = null
   }
 
-  async login () {
+  async login() {
     if (!this.refresh_token) {
       throw new ReplyError("[Yenai][Pixiv] 未配置refresh_token刷新令牌")
     }
@@ -23,7 +23,7 @@ export default class PixivApi {
     this.auth = response
   }
 
-  async request (target, options = {}, caching = false) {
+  async request(target, options = {}, caching = false) {
     if (!this.auth) await this.login()
     try {
       return await this._get(target, options, caching)
@@ -38,7 +38,7 @@ export default class PixivApi {
     }
   }
 
-  async _get (target, options = {}, cache) {
+  async _get(target, options = {}, cache) {
     const headers = {
       ...this.headers,
       Authorization: `Bearer ${this.access_token}`
@@ -63,11 +63,11 @@ export default class PixivApi {
     return data
   }
 
-  async tags () {
+  async tags() {
     return this.request("v1/trending-tags/illust")
   }
 
-  async rank ({
+  async rank({
     mode = "week",
     date = moment().subtract(moment().utcOffset(9).hour() >= 12 ? 1 : 2, "days").format("YYYY-MM-DD"),
     page = 1,
@@ -82,7 +82,7 @@ export default class PixivApi {
     }, getNoonTomorrow())
   }
 
-  async illust ({ id }) {
+  async illust({ id }) {
     return this.request("v1/illust/detail", {
       params: {
         illust_id: id
@@ -90,7 +90,7 @@ export default class PixivApi {
     })
   }
 
-  async member ({ id }) {
+  async member({ id }) {
     return this.request("v1/user/detail", {
       params: {
         illust_id: id
@@ -98,7 +98,7 @@ export default class PixivApi {
     })
   }
 
-  async member_illust ({
+  async member_illust({
     id,
     page = 1,
     size = 30,
@@ -113,7 +113,7 @@ export default class PixivApi {
     })
   }
 
-  async search ({
+  async search({
     word,
     page = 1,
     size = 30,
@@ -132,7 +132,7 @@ export default class PixivApi {
     })
   }
 
-  async search_user ({
+  async search_user({
     word,
     page = 1,
     size = 30
@@ -148,7 +148,7 @@ export default class PixivApi {
     )
   }
 
-  async related ({
+  async related({
     id,
     page = 1,
     size = 30
@@ -164,7 +164,7 @@ export default class PixivApi {
     )
   }
 
-  async illustRecommended (params = {}) {
+  async illustRecommended(params = {}) {
     return await this.request("v1/illust/recommended", params)
   }
 }

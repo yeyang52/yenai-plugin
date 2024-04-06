@@ -9,7 +9,7 @@ import child_process from "child_process"
  * 延时函数
  * @param {*} ms 时间(毫秒)
  */
-function sleep (ms) {
+function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
@@ -18,7 +18,7 @@ function sleep (ms) {
  * @param {string} cmd
  * @returns {*}
  */
-async function execSync (cmd) {
+async function execSync(cmd) {
   return new Promise((resolve, reject) => {
     child_process.exec(cmd, (error, stdout, stderr) => {
       resolve({ error, stdout, stderr })

@@ -24,7 +24,7 @@
  * const result = formatDuration(3665, customFormat);
  * // 输出: "1h 1m 5s"
  */
-export default function formatDuration (time, format, repair = true) {
+export default function formatDuration(time, format, repair = true) {
   const second = parseInt(time % 60)
   const minute = parseInt((time / 60) % 60)
   const hour = parseInt((time / (60 * 60)) % 24)

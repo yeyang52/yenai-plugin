@@ -6,7 +6,7 @@ import common from "../lib/common/common.js"
 const searchReg = new RegExp(`^#?(${_.keys(SEARCH_MAP).join("|")})搜索(.*)`)
 
 export class NewSearch extends plugin {
-  constructor () {
+  constructor() {
     super({
       name: "椰奶搜索",
       event: "message",
@@ -33,29 +33,29 @@ export class NewSearch extends plugin {
     })
   }
 
-  async help (e) {
+  async help(e) {
     const searchs = Object.keys(SEARCH_MAP)
     const menu = "当前支持的搜索引擎：\n"
     const tip = "\n格式：<搜索引擎> + 搜索 + <关键词>\n比如：萌娘百科搜索可莉"
     return e.reply(menu + searchs.join("、") + tip)
   }
 
-  async search (e) {
+  async search(e) {
     let regRet = searchReg.exec(e.msg)
     if (/(lp|ip)|(i|p|l)(地址|查询)/ig.test(regRet[2])) return e.reply("(;｀O´)o警告！！触发屏蔽词！！！", true)
     let url = SEARCH_MAP[regRet[1]] + encodeURIComponent(regRet[2])
-    e.reply([await puppeteer.Webpage({ url }), url])
+    e.reply([ await puppeteer.Webpage({ url }), url ])
   }
 
-  async bggSearch (e) {
+  async bggSearch(e) {
     let keyword = e.msg.replace(/#?桌游搜索/, "")
     funApi.bgg(keyword)
       .then(res => e.reply(res))
       .catch(err => common.handleException(e, err))
   }
 
-  async bggRank (e) {
+  async bggRank(e) {
     let url = "https://boardgamegeek.com/browse/boardgame"
-    e.reply([await puppeteer.Webpage({ url }), "目前BGG桌游排行榜如图，访问链接：" + url])
+    e.reply([ await puppeteer.Webpage({ url }), "目前BGG桌游排行榜如图，访问链接：" + url ])
   }
 }

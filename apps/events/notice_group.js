@@ -3,7 +3,7 @@ import { Config } from "../../components/index.js"
 import moment from "moment"
 import formatDuration from "../../tools/formatDuration.js"
 
-Bot.on?.("notice.group", async (e) => {
+Bot.on?.("notice.group", async(e) => {
   let msg
   let forwardMsg
   switch (e.sub_type) {

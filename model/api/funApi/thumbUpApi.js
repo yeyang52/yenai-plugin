@@ -1,5 +1,5 @@
 export default class ThumbUpApi {
-  constructor (e) {
+  constructor(e) {
     this.e = e
     this.Bot = e.bot ?? Bot
   }
@@ -10,7 +10,7 @@ export default class ThumbUpApi {
    * @param {number} times 数量
    * @returns {object}
    */
-  async thumbUp (uid, times = 1) {
+  async thumbUp(uid, times = 1) {
     try {
       let core = this.Bot.icqq?.core
       if (!core) core = (await import("icqq")).core
@@ -18,16 +18,12 @@ export default class ThumbUpApi {
       let ReqFavorite
       if (this.Bot.fl.get(uid)) {
         ReqFavorite = core.jce.encodeStruct([
-          core.jce.encodeNested([
-            this.Bot.uin, 1, this.Bot.sig.seq + 1, 1, 0, Buffer.from("0C180001060131160131", "hex")
-          ]),
+          core.jce.encodeNested([ this.Bot.uin, 1, this.Bot.sig.seq + 1, 1, 0, Buffer.from("0C180001060131160131", "hex") ]),
           uid, 0, 1, Number(times)
         ])
       } else {
         ReqFavorite = core.jce.encodeStruct([
-          core.jce.encodeNested([
-            this.Bot.uin, 1, this.Bot.sig.seq + 1, 1, 0, Buffer.from("0C180001060131160135", "hex")
-          ]),
+          core.jce.encodeNested([ this.Bot.uin, 1, this.Bot.sig.seq + 1, 1, 0, Buffer.from("0C180001060131160135", "hex") ]),
           uid, 0, 5, Number(times)
         ])
       }
@@ -40,7 +36,7 @@ export default class ThumbUpApi {
     }
   }
 
-  async origThumbUp (uid, times) {
+  async origThumbUp(uid, times) {
     const friend = this.Bot.pickFriend(uid)
     if (!friend?.thumbUp) throw new ReplyError("当前协议端不支持点赞，详情查看\nhttps://gitee.com/TimeRainStarSky/Yunzai")
     const res = { ...await friend.thumbUp(times) }

@@ -4,7 +4,7 @@ import { initDependence } from "./DependencyChecker.js"
 
 let isGPU = false;
 
-(async function initGetIsGPU () {
+(async function initGetIsGPU() {
   if (!await initDependence()) return
   const { controllers } = await si.graphics()
   // 初始化GPU获取
@@ -16,7 +16,7 @@ let isGPU = false;
 })()
 
 /** 获取GPU占用 */
-export default async function getGPU () {
+export default async function getGPU() {
   if (!isGPU) return false
   try {
     const { controllers } = await si.graphics()

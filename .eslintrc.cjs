@@ -32,6 +32,8 @@ module.exports = {
     "no-eval": [ "error", { allowIndirect: true } ],
     "array-bracket-newline": [ "error", { multiline: true } ],
     "array-bracket-spacing": [ "error", "always" ],
+    "space-before-function-paren": [ "error", "never" ],
+    "no-invalid-this": "error",
     // 插件规则
     "jsdoc/require-returns": 0,
     "jsdoc/require-jsdoc": 0,

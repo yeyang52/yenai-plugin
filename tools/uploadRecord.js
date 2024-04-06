@@ -24,7 +24,7 @@ try {
  * @param seconds
  * @param transcoding
  */
-async function uploadRecord (record_url, seconds = 0, transcoding = true) {
+async function uploadRecord(record_url, seconds = 0, transcoding = true) {
   if (!Contactable) return segment.record(record_url)
   const result = await getPttBuffer(record_url, Bot.config.ffmpeg_path, transcoding)
   if (!result.buffer) {
@@ -92,7 +92,7 @@ async function uploadRecord (record_url, seconds = 0, transcoding = true) {
     11: 1,
     18: fid,
     19: seconds,
-    30: Buffer.from([8, 0, 40, 0, 56, 0])
+    30: Buffer.from([ 8, 0, 40, 0, 56, 0 ])
   })
   return {
     type: "record", file: "protobuf://" + Buffer.from(b).toString("base64")
@@ -107,7 +107,7 @@ export default uploadRecord
  * @param ffmpeg
  * @param transcoding
  */
-async function getPttBuffer (file, ffmpeg = "ffmpeg", transcoding = true) {
+async function getPttBuffer(file, ffmpeg = "ffmpeg", transcoding = true) {
   let buffer
   let time
   if (file instanceof Buffer || file.startsWith("base64://")) {
@@ -175,9 +175,9 @@ async function getPttBuffer (file, ffmpeg = "ffmpeg", transcoding = true) {
  * @param file
  * @param ffmpeg
  */
-async function getAudioTime (file, ffmpeg = "ffmpeg") {
+async function getAudioTime(file, ffmpeg = "ffmpeg") {
   return new Promise((resolve, _reject) => {
-    (0, child_process.exec)(`${ffmpeg} -i "${file}"`, async (_error, _stdout, stderr) => {
+    (0, child_process.exec)(`${ffmpeg} -i "${file}"`, async(_error, _stdout, stderr) => {
       try {
         let time = stderr.split("Duration:")[1]?.split(",")[0].trim()
         let arr = time?.split(":")
@@ -208,10 +208,10 @@ async function getAudioTime (file, ffmpeg = "ffmpeg") {
  * @param file
  * @param ffmpeg
  */
-async function audioTrans (file, ffmpeg = "ffmpeg") {
+async function audioTrans(file, ffmpeg = "ffmpeg") {
   return new Promise((resolve, reject) => {
     const tmpfile = path.join(TMP_DIR, (0, uuid)());
-    (0, child_process.exec)(`${ffmpeg} -y -i "${file}" -ac 1 -ar 8000 -f amr "${tmpfile}"`, async (_error, _stdout, _stderr) => {
+    (0, child_process.exec)(`${ffmpeg} -y -i "${file}" -ac 1 -ar 8000 -f amr "${tmpfile}"`, async(_error, _stdout, _stderr) => {
       try {
         const amr = await fs.promises.readFile(tmpfile)
         resolve(amr)
@@ -228,7 +228,7 @@ async function audioTrans (file, ffmpeg = "ffmpeg") {
  *
  * @param file
  */
-async function read7Bytes (file) {
+async function read7Bytes(file) {
   const fd = await fs.promises.open(file, "r")
   const buf = (await fd.read(Buffer.alloc(7), 0, 7, 0)).buffer
   fd.close()
@@ -238,7 +238,7 @@ async function read7Bytes (file) {
 /**
  *
  */
-function uuid () {
+function uuid() {
   let hex = crypto.randomBytes(16).toString("hex")
   return hex.substr(0, 8) + "-" + hex.substr(8, 4) + "-" + hex.substr(12, 4) + "-" + hex.substr(16, 4) + "-" + hex.substr(20)
 }
@@ -247,7 +247,7 @@ function uuid () {
  *
  * @param ip
  */
-function int32ip2str (ip) {
+function int32ip2str(ip) {
   if (typeof ip === "string") { return ip }
   ip = ip & 0xffffffff
   return [
@@ -273,7 +273,7 @@ const md5 = (data) => (0, crypto.createHash)("md5").update(data).digest()
 
 errors.LoginErrorCode = errors.drop = errors.ErrorCode = void 0
 let ErrorCode;
-(function (ErrorCode) {
+(function(ErrorCode) {
   /** 客户端离线 */
   ErrorCode[ErrorCode.ClientNotOnline = -1] = "ClientNotOnline"
   /** 发包超时未收到服务器回应 */
@@ -325,7 +325,7 @@ const ErrorMessage = {
  * @param code
  * @param message
  */
-function drop (code, message) {
+function drop(code, message) {
   if (!message || !message.length) { message = ErrorMessage[code] }
   throw new core.ApiRejection(code, message)
 }

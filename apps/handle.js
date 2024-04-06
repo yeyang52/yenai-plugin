@@ -10,7 +10,7 @@ const ROLE_MAP = {
   member: "群员"
 }
 export class NewHandle extends plugin {
-  constructor () {
+  constructor() {
     super({
       name: "椰奶申请处理",
       event: "message",
@@ -55,7 +55,7 @@ export class NewHandle extends plugin {
    * 同意拒绝好友申请
    * @param e
    */
-  async PrivateAdd (e) {
+  async PrivateAdd(e) {
     if (!e.isMaster) return false
     let yes = !!/同意/.test(e.msg)
 
@@ -98,11 +98,9 @@ export class NewHandle extends plugin {
         }
         await sleep(2000)
       }
-      let msg = [
-        `本次共${yes ? "同意" : "拒绝"}${FriendAdd.length}条好友申请\n成功：${success.length}\n失败：${fail.length}`
-      ]
-      if (!_.isEmpty(success)) msg.push(["以下为成功的名单：\n", success.join("\n")])
-      if (!_.isEmpty(fail)) msg.push(["以下为失败的名单：\n", fail.join("\n")])
+      let msg = [ `本次共${yes ? "同意" : "拒绝"}${FriendAdd.length}条好友申请\n成功：${success.length}\n失败：${fail.length}` ]
+      if (!_.isEmpty(success)) msg.push([ "以下为成功的名单：\n", success.join("\n") ])
+      if (!_.isEmpty(fail)) msg.push([ "以下为失败的名单：\n", fail.join("\n") ])
 
       return common.getforwardMsg(e, msg)
     } else {
@@ -126,7 +124,7 @@ export class NewHandle extends plugin {
    * 引用同意好友申请和群邀请
    * @param e
    */
-  async Handle (e) {
+  async Handle(e) {
     if (!e.source) return false
     if (e.source.user_id != (e.bot ?? Bot).uin) return false
     let yes = !!/同意/.test(e.msg)
@@ -206,7 +204,7 @@ export class NewHandle extends plugin {
   }
 
   // 回复好友消息
-  async Replys (e) {
+  async Replys(e) {
     if (!e.isMaster) return false
     let qq = ""
     let group = ""
@@ -262,7 +260,7 @@ export class NewHandle extends plugin {
   }
 
   // 加群员为好友
-  async addFriend (e) {
+  async addFriend(e) {
     if (!e.isMaster) return false
     if (!e.source) return false
     let source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
@@ -280,7 +278,7 @@ export class NewHandle extends plugin {
   }
 
   // 入群请求
-  async GroupAdd (e) {
+  async GroupAdd(e) {
     let SystemMsg = (await (e.bot ?? Bot).getSystemMsg())
       .filter(item => item.request_type == "group" && item.sub_type == "add" && item.group_id == e.group_id)
     if (_.isEmpty(SystemMsg)) return e.reply("暂无加群申请(。-ω-)zzz", true)
@@ -320,12 +318,10 @@ export class NewHandle extends plugin {
         }
         await sleep(1000)
       }
-      let msg = [
-        `本次共处理${SystemMsg.length}条群申请\n成功：${success.length}\n失败：${fail.length}\n风险：${risk.length}`
-      ]
-      if (!_.isEmpty(success)) msg.push(["以下为成功的名单：\n", success.join("\n")])
-      if (!_.isEmpty(fail)) msg.push(["以下为失败的名单：\n", fail.join("\n")])
-      if (!_.isEmpty(risk)) msg.push(["以下为风险账号名单：\n", risk.join("\n")])
+      let msg = [ `本次共处理${SystemMsg.length}条群申请\n成功：${success.length}\n失败：${fail.length}\n风险：${risk.length}` ]
+      if (!_.isEmpty(success)) msg.push([ "以下为成功的名单：\n", success.join("\n") ])
+      if (!_.isEmpty(fail)) msg.push([ "以下为失败的名单：\n", fail.join("\n") ])
+      if (!_.isEmpty(risk)) msg.push([ "以下为风险账号名单：\n", risk.join("\n") ])
       common.getforwardMsg(e, msg)
     } else {
       let qq = e.msg.replace(/#(同意|拒绝)(加|入)群申请/g, "").trim()
@@ -347,7 +343,7 @@ export class NewHandle extends plugin {
   }
 
   // 群邀请列表
-  async GroupInvite (e) {
+  async GroupInvite(e) {
     if (!e.isMaster) return false
     let SystemMsg = (await (e.bot ?? Bot).getSystemMsg()).filter(item => item.request_type == "group" && item.sub_type == "invite")
     if (_.isEmpty(SystemMsg)) return e.reply("暂无群邀请哦(。-ω-)zzz", true)
@@ -381,9 +377,9 @@ export class NewHandle extends plugin {
         }
         await sleep(1000)
       }
-      let msg = [`本次共处理${SystemMsg.length}条群邀请\n成功：${success.length}\n失败：${fail.length}`]
-      if (!_.isEmpty(success)) msg.push(["以下为成功的名单：\n", success.join("\n")])
-      if (!_.isEmpty(fail)) msg.push(["以下为失败的名单：\n", fail.join("\n")])
+      let msg = [ `本次共处理${SystemMsg.length}条群邀请\n成功：${success.length}\n失败：${fail.length}` ]
+      if (!_.isEmpty(success)) msg.push([ "以下为成功的名单：\n", success.join("\n") ])
+      if (!_.isEmpty(fail)) msg.push([ "以下为失败的名单：\n", fail.join("\n") ])
       common.getforwardMsg(e, msg)
     } else {
       let groupid = e.msg.replace(/#(同意|拒绝)群邀请/g, "").trim()
@@ -403,7 +399,7 @@ export class NewHandle extends plugin {
   }
 
   // 全部请求
-  async SystemMsgAll (e) {
+  async SystemMsgAll(e) {
     if (!e.isMaster) return false
     let SystemMsg = await (e.bot ?? Bot).getSystemMsg()
     let FriendAdd = []; let onewayFriend = []; let GroupAdd = []; let GroupInvite = []

@@ -5,7 +5,7 @@ let cheerio = null
 /**
  *
  */
-export async function _importDependency () {
+export async function _importDependency() {
   if (cheerio) return cheerio
   cheerio = await import("cheerio")
     .catch(() => {

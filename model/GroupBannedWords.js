@@ -125,6 +125,9 @@ export default new class {
    */
   initTextArr(groupId) {
     if (this.dataCach.get(groupId)) return this.dataCach.get(groupId)
+    const escapeRegExp = (string) => {
+      return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+    }
 
     try {
       const data = Data.readJSON(`${groupId}.json`, this.root)?.bannedWords
@@ -132,11 +135,11 @@ export default new class {
       for (const item in data) {
         data[item].rawItem = item
         if (data[item].matchType == 2) {
-          _data.set(new RegExp(item), data[item])
+          _data.set(new RegExp(escapeRegExp(item)), data[item])
         } else if (data[item].matchType == 3) {
           _data.set(global.eval(item), data[item])
         } else {
-          _data.set(new RegExp(`^${item}$`), data[item])
+          _data.set(new RegExp(`^${escapeRegExp(item)}$`), data[item])
         }
       }
       this.dataCach.set(groupId, _data)

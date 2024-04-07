@@ -355,7 +355,7 @@ segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
    * @throws {Error} - 如果缺少必要参数或参数格式不正确，则会抛出错误
    */
   async muteMember(groupId, userId, executor, time = 300, unit = "秒") {
-    unit = Time_unit[unit.toUpperCase()] ?? (/^\d+$/.test(unit) ? unit : 60)
+    let _unit = Time_unit[unit.toUpperCase()] ?? (/^\d+$/.test(unit) ? unit : 60)
     const group = this.Bot.pickGroup(Number(groupId), true)
     // 判断是否有管理
     if (!group.is_admin && !group.is_owner) throw new ReplyError(ROLE_ERROR)
@@ -383,7 +383,7 @@ segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
 
     if (isWhite && !isMaster && time != 0) throw new ReplyError("❎ 该用户为白名单，不可操作")
 
-    await group.muteMember(userId, time * unit)
+    await group.muteMember(userId, time * _unit)
     const memberName = Memberinfo.card || Memberinfo.nickname
     return time == 0 ? `✅ 已将「${memberName}」解除禁言` : `✅ 已将「${memberName}」禁言${time + unit}`
   }

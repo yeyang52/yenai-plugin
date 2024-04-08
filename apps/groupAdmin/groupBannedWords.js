@@ -22,7 +22,7 @@ export class NewGroupBannedWords extends plugin {
           fnc: "query"
         },
         {
-          reg: "^#?违禁词列表$",
+          reg: "^#?违禁词列表(原始|raw)?$",
           fnc: "list"
         },
         {
@@ -192,12 +192,13 @@ export class NewGroupBannedWords extends plugin {
     if (_.isEmpty(groupBannedWords)) {
       return e.reply("❎ 没有违禁词")
     }
+    let isRaw = /(原始)|(raw)/.test(e.msg)
     const msg = []
     for (const [ , v ] of groupBannedWords) {
       const { matchType, penaltyType, addedBy, date, rawItem } = v
       msg.push([
         "屏蔽词：",
-        await GroupBannedWords.keyWordTran(rawItem),
+        isRaw ? rawItem : await GroupBannedWords.keyWordTran(rawItem),
         `\n匹配模式：${GroupBannedWords.matchTypeMap[matchType]}\n`,
         `处理方式：${GroupBannedWords.penaltyTypeMap[penaltyType]}\n`,
         `添加人：${addedBy ?? "未知"}\n`,

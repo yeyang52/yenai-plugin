@@ -123,6 +123,11 @@ export const helpList = [
         title: "#加|移精",
         desc: "回复消息进行加/移精",
         icon: 18
+      },
+      {
+        title: "#我要自闭 <时间>",
+        desc: "自闭一会",
+        icon: 20
       }
     ]
   }, {

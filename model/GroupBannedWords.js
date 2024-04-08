@@ -185,4 +185,4 @@ export default new class {
     Data.writeJSON(`${groupId}.json`, data, this.root)
     this.groupTitleCach.delete(groupId)
   }
-}
+}()

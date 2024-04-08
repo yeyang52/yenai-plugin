@@ -143,8 +143,8 @@ export class NewGroupBannedWords extends plugin {
         e.group_id, word[3].trim(), word[1], word[2], e.user_id
       )
       e.reply([
-        "✅ 成功添加违禁词\n",
-        "违禁词：",
+        "✅ 成功添加屏蔽词\n",
+        "屏蔽词：",
         await res.words,
         `\n匹配模式：${res.matchType}\n`,
         `处理方式：${res.penaltyType}`
@@ -174,8 +174,8 @@ export class NewGroupBannedWords extends plugin {
     try {
       const { words, matchType, penaltyType, addedBy, date } = GroupBannedWords.queryBannedWords(e.group_id, word)
       e.reply([
-        "✅ 查询违禁词\n",
-        "违禁词：",
+        "✅ 查询屏蔽词\n",
+        "屏蔽词：",
         await words,
         `\n匹配模式：${matchType}\n`,
         `处理方式：${penaltyType}\n`,
@@ -196,7 +196,7 @@ export class NewGroupBannedWords extends plugin {
     for (const [ , v ] of groupBannedWords) {
       const { matchType, penaltyType, addedBy, date, rawItem } = v
       msg.push([
-        "违禁词：",
+        "屏蔽词：",
         await GroupBannedWords.keyWordTran(rawItem),
         `\n匹配模式：${GroupBannedWords.matchTypeMap[matchType]}\n`,
         `处理方式：${GroupBannedWords.penaltyTypeMap[penaltyType]}\n`,

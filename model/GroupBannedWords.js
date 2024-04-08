@@ -87,6 +87,35 @@ export default new class {
    * @param msg
    */
   async keyWordTran(msg) {
+    /** 图片 */
+    if (msg.includes("{image")) {
+      let tmp = msg.split("{image")
+      if (tmp.length > 2) return false
+
+      let md5 = tmp[1].replace(/}|_|:/g, "")
+
+      msg = segment.image(`http://gchat.qpic.cn/gchatpic_new/0/0-0-${md5}/0`)
+      msg.asface = true
+    } else if (msg.includes("{at:")) {
+      let tmp = msg.match(/{at:(.+?)}/g)
+
+      for (let qq of tmp) {
+        qq = qq.match(/[1-9][0-9]{4,14}/g)[0]
+        let member = await Bot.getGroupMemberInfo(this.group_id, Number(qq)).catch(() => { })
+        let name = member?.card ?? member?.nickname
+        if (!name) continue
+        msg = msg.replace(`{at:${qq}}`, `@${name}`)
+      }
+    } else if (msg.includes("{face")) {
+      let tmp = msg.match(/{face(:|_)(.+?)}/g)
+      if (!tmp) return msg
+      msg = []
+      for (let face of tmp) {
+        let id = face.match(/\d+/g)
+        msg.push(segment.face(id))
+      }
+    }
+
     return msg
   }
 

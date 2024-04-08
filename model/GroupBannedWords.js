@@ -96,16 +96,6 @@ export default new class {
 
       msg = segment.image(`http://gchat.qpic.cn/gchatpic_new/0/0-0-${md5}/0`)
       msg.asface = true
-    } else if (msg.includes("{at:")) {
-      let tmp = msg.match(/{at:(.+?)}/g)
-
-      for (let qq of tmp) {
-        qq = qq.match(/[1-9][0-9]{4,14}/g)[0]
-        let member = await Bot.getGroupMemberInfo(this.group_id, Number(qq)).catch(() => { })
-        let name = member?.card ?? member?.nickname
-        if (!name) continue
-        msg = msg.replace(`{at:${qq}}`, `@${name}`)
-      }
     } else if (msg.includes("{face")) {
       let tmp = msg.match(/{face(:|_)(.+?)}/g)
       if (!tmp) return msg
@@ -185,4 +175,4 @@ export default new class {
     Data.writeJSON(`${groupId}.json`, data, this.root)
     this.groupTitleCach.delete(groupId)
   }
-}()
+}

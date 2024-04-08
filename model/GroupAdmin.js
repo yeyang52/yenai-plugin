@@ -356,15 +356,15 @@ segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
    */
   async muteMember(groupId, userId, executor, time = 300, unit = "秒") {
     let _unit = Time_unit[unit.toUpperCase()] ?? (/^\d+$/.test(unit) ? unit : 60)
-    const group = this.Bot.pickGroup(Number(groupId), true)
+    const group = this.Bot.pickGroup(groupId, true)
     // 判断是否有管理
     if (!group.is_admin && !group.is_owner) throw new ReplyError(ROLE_ERROR)
     if (!(/\d{5,}/.test(userId))) throw new ReplyError("❎ 请输入正确的QQ号")
 
     // 判断是否为主人
-    if ((Config.masterQQ?.includes(Number(userId)) || a.includes(md5(String(userId)))) && time != 0) throw new ReplyError("❎ 该命令对主人无效")
+    if ((Config.masterQQ?.includes(Number(userId) || String(userId)) || a.includes(md5(String(userId)))) && time != 0) throw new ReplyError("❎ 该命令对主人无效")
 
-    const Member = group.pickMember(Number(userId))
+    const Member = group.pickMember(userId)
     const Memberinfo = Member?.info || await Member?.getInfo?.()
     // 判断是否有这个人
     if (!Memberinfo) throw new ReplyError("❎ 该群没有这个人")
@@ -396,7 +396,7 @@ segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
    * @returns {Promise<string>}
    */
   async kickMember(groupId, userId, executor) {
-    const group = this.Bot.pickGroup(Number(groupId) || String(groupId), true)
+    const group = this.Bot.pickGroup(groupId, true)
 
     if (!userId || !(/^\d+$/.test(userId))) throw new ReplyError("❎ 请输入正确的QQ号")
     if (!groupId || !(/^\d+$/.test(groupId))) throw new ReplyError("❎ 请输入正确的群号")
@@ -421,7 +421,7 @@ segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
 
     if (isWhite && !isMaster) throw new ReplyError("❎ 该用户为白名单，不可操作")
 
-    const res = await group.kickMember(Number(userId) || String(userId))
+    const res = await group.kickMember(userId)
     if (!res) throw new ReplyError("❎ 踢出失败")
     return `✅ 已将「${userId}」踢出群聊`
   }

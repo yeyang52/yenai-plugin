@@ -22,11 +22,6 @@ export class NewGroupBannedWords extends plugin {
           fnc: "query"
         },
         {
-          reg: "",
-          fnc: "monitor",
-          log: false
-        },
-        {
           reg: "^#?违禁词列表$",
           fnc: "list"
         },
@@ -47,7 +42,7 @@ export class NewGroupBannedWords extends plugin {
     })
   }
 
-  async monitor(e) {
+  async accept(e) {
     const isWhite = Config.groupAdmin.whiteQQ.includes(e.user_id)
     if (!e.message || e.isMaster || e.member?.is_owner || e.member?.is_admin || isWhite) {
       return false
@@ -56,10 +51,7 @@ export class NewGroupBannedWords extends plugin {
     if (_.isEmpty(groupBannedWords)) {
       return false
     }
-    const KeyWord = e.toString()
-      .replace(/#|＃/g, "")
-      .replace(`{at:${Bot.uin}}`, "")
-      .trim()
+    const KeyWord = e.raw_message.trim()
     const trimmedKeyWord = this.#trimAlias(KeyWord)
     let data = null
     for (const [ k, v ] of groupBannedWords) {
@@ -102,6 +94,7 @@ export class NewGroupBannedWords extends plugin {
         `触发者：${senderCard}(${e.user_id})\n`,
         `执行：${groupPenaltyAction[data.penaltyType]}`
       ], false, { recallMsg: 30 })
+      return "return"
     }
   }
 
@@ -129,12 +122,12 @@ export class NewGroupBannedWords extends plugin {
         msg = _.trimStart(msg, name).trim()
       }
     }
-    return msg.replace(/＃/g, "#")
+    return msg
   }
 
   async add(e) {
     if (!common.checkPermission(e, "admin", "admin")) return false
-    let word = this.#trimAlias(e.toString())
+    let word = this.#trimAlias(e.raw_message)
     word = word.match(/^#?新增(模糊|精确|正则)?(踢|禁|撤|踢撤|禁撤)?违禁词(.*)$/)
     if (!word[3]) return e.reply("需要添加的屏蔽词为空")
     // 校验正则
@@ -163,7 +156,7 @@ export class NewGroupBannedWords extends plugin {
 
   async del(e) {
     if (!common.checkPermission(e, "admin", "admin")) return false
-    let word = this.#trimAlias(e.toString())
+    let word = this.#trimAlias(e.raw_message)
     word = word.replace(/#?删除违禁词/, "").trim()
     if (!word) return e.reply("需要删除的屏蔽词为空")
     try {
@@ -175,7 +168,7 @@ export class NewGroupBannedWords extends plugin {
   }
 
   async query(e) {
-    let word = this.#trimAlias(e.toString())
+    let word = this.#trimAlias(e.raw_message)
     word = word.replace(/#?查看违禁词/, "").trim()
     if (!word) return e.reply("需要查询的屏蔽词为空")
     try {

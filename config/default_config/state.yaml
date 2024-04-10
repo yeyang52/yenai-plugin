@@ -4,7 +4,7 @@ psTestTimeout: 5000
 # 测试访问的网址列表（可空）设置为true或default将使用默认配置
 # name: 显示名称
 # url: 要访问的网址
-psTestSites: true
+psTestSites: false
 # psTestSites:
 #   - name: Baidu
 #     url: https://baidu.com

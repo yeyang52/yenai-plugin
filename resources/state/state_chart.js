@@ -1,8 +1,5 @@
 /* eslint-disable no-undef */
-echarts.registerTheme("westeros", chartData.echarts_theme)
-const chart = echarts.init(document.getElementById("Chart"), "westeros", {
-  renderer: "svg"
-})
+
 const backdrop = chartData.backdrop
 // 背景api
 if (backdrop) {
@@ -22,6 +19,11 @@ if (backdrop) {
   }
   img.src = backdrop
 }
+
+echarts.registerTheme("westeros", chartData.echarts_theme)
+const chart = echarts.init(document.getElementById("Chart"), "westeros", {
+  renderer: "svg"
+})
 const by = (value) => {
   value = value?.value ?? value
   let units = [ "B", "KB", "MB", "GB", "TB" ] // 定义单位数组

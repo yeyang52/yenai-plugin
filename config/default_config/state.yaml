@@ -1,10 +1,10 @@
 #网址测试超时时间
 psTestTimeout: 5000
 
-# 测试访问的网址列表（可空）
+# 测试访问的网址列表（可空）设置为true或default将使用默认配置
 # name: 显示名称
 # url: 要访问的网址
-psTestSites: false
+psTestSites: true
 # psTestSites:
 #   - name: Baidu
 #     url: https://baidu.com
@@ -18,4 +18,4 @@ statusTask: true
 statusPowerShellStart: false
 
 #背景图片api 默认 https://api.sretna.cn/layout/pe.php
-backdrop: "https://api.sretna.cn/layout/pe.php"
+backdrop: 'https://api.sretna.cn/layout/pe.php'

@@ -1,11 +1,11 @@
-import { common, GroupBannedWords } from "../../model/index.js"
+import { common, GroupBannedWords as groupBannedWords } from "../../model/index.js"
 import { Config } from "../../components/index.js"
 import _ from "lodash"
 
-export class NewGroupBannedWords extends plugin {
+export class GroupBannedWords extends plugin {
   constructor() {
     super({
-      name: "椰奶群违禁词",
+      name: "椰奶群管-违禁词",
       event: "message.group",
       priority: 1,
       rule: [
@@ -47,21 +47,21 @@ export class NewGroupBannedWords extends plugin {
     if (!e.message || e.isMaster || e.member?.is_owner || e.member?.is_admin || isWhite) {
       return false
     }
-    const groupBannedWords = GroupBannedWords.initTextArr(e.group_id)
-    if (_.isEmpty(groupBannedWords)) {
+    const bannedWords = groupBannedWords.initTextArr(e.group_id)
+    if (_.isEmpty(bannedWords)) {
       return false
     }
     const KeyWord = e.raw_message.trim()
     const trimmedKeyWord = this.#trimAlias(KeyWord)
     let data = null
-    for (const [ k, v ] of groupBannedWords) {
+    for (const [ k, v ] of bannedWords) {
       if (k.test(trimmedKeyWord)) {
         data = v
         break
       }
     }
     if (!data) return false
-    const muteTime = GroupBannedWords.getMuteTime(e.group_id)
+    const muteTime = groupBannedWords.getMuteTime(e.group_id)
     const punishments = {
       1: () => e.member.kick(),
       2: () => this.#mute(muteTime),
@@ -84,7 +84,7 @@ export class NewGroupBannedWords extends plugin {
     }
     if (punishments[data.penaltyType]) {
       punishments[data.penaltyType]()
-      const keyWordTran = await GroupBannedWords.keyWordTran(data.rawItem)
+      const keyWordTran = await groupBannedWords.keyWordTran(data.rawItem)
       const senderCard = e.sender.card || e.sender.nickname
       const wordNum = keyWordTran.length - 2
       const replaceWord = "*".repeat(wordNum < 0 ? 0 : wordNum)
@@ -139,7 +139,7 @@ export class NewGroupBannedWords extends plugin {
       }
     }
     try {
-      let res = GroupBannedWords.addBannedWords(
+      let res = groupBannedWords.addBannedWords(
         e.group_id, word[3].trim(), word[1], word[2], e.user_id
       )
       e.reply([
@@ -160,7 +160,7 @@ export class NewGroupBannedWords extends plugin {
     word = word.replace(/#?删除违禁词/, "").trim()
     if (!word) return e.reply("需要删除的屏蔽词为空")
     try {
-      let msg = await GroupBannedWords.delBannedWords(e.group_id, word)
+      let msg = await groupBannedWords.delBannedWords(e.group_id, word)
       e.reply([ "✅ 成功删除：", msg ])
     } catch (error) {
       common.handleException(e, error)
@@ -172,7 +172,7 @@ export class NewGroupBannedWords extends plugin {
     word = word.replace(/#?查看违禁词/, "").trim()
     if (!word) return e.reply("需要查询的屏蔽词为空")
     try {
-      const { words, matchType, penaltyType, addedBy, date } = GroupBannedWords.queryBannedWords(e.group_id, word)
+      const { words, matchType, penaltyType, addedBy, date } = groupBannedWords.queryBannedWords(e.group_id, word)
       e.reply([
         "✅ 查询屏蔽词\n",
         "屏蔽词：",
@@ -188,19 +188,19 @@ export class NewGroupBannedWords extends plugin {
   }
 
   async list(e) {
-    const groupBannedWords = GroupBannedWords.initTextArr(e.group_id)
-    if (_.isEmpty(groupBannedWords)) {
+    const bannedWords = groupBannedWords.initTextArr(e.group_id)
+    if (_.isEmpty(bannedWords)) {
       return e.reply("❎ 没有违禁词")
     }
     let isRaw = /(原始)|(raw)/.test(e.msg)
     const msg = []
-    for (const [ , v ] of groupBannedWords) {
+    for (const [ , v ] of bannedWords) {
       const { matchType, penaltyType, addedBy, date, rawItem } = v
       msg.push([
         "屏蔽词：",
-        isRaw ? rawItem : await GroupBannedWords.keyWordTran(rawItem),
-        `\n匹配模式：${GroupBannedWords.matchTypeMap[matchType]}\n`,
-        `处理方式：${GroupBannedWords.penaltyTypeMap[penaltyType]}\n`,
+        isRaw ? rawItem : await bannedWords.keyWordTran(rawItem),
+        `\n匹配模式：${bannedWords.matchTypeMap[matchType]}\n`,
+        `处理方式：${bannedWords.penaltyTypeMap[penaltyType]}\n`,
         `添加人：${addedBy ?? "未知"}\n`,
         `添加时间：${date ?? "未知"}`
       ])
@@ -211,14 +211,14 @@ export class NewGroupBannedWords extends plugin {
   async muteTime(e) {
     if (!common.checkPermission(e, "admin", "admin")) return false
     let time = e.msg.match(/\d+/)[0]
-    GroupBannedWords.setMuteTime(e.group_id, time)
+    groupBannedWords.setMuteTime(e.group_id, time)
     e.reply(`✅ 群${e.group_id}违禁词禁言时间已设置为${time}s`)
   }
 
   // 增删查头衔屏蔽词
   async ProhibitedTitle(e) {
   // 获取现有的头衔屏蔽词
-    let shieldingWords = GroupBannedWords.getTitleBannedWords(e.group_id)
+    let shieldingWords = groupBannedWords.getTitleBannedWords(e.group_id)
     // 判断是否需要查看头衔屏蔽词
     if (/查看/.test(e.msg)) {
     // 返回已有的头衔屏蔽词列表
@@ -249,7 +249,7 @@ export class NewGroupBannedWords extends plugin {
     if (isAddition) {
     // 添加新的屏蔽词
       if (!_.isEmpty(newWords)) {
-        GroupBannedWords.addTitleBannedWords(e.group_id, newWords)
+        groupBannedWords.addTitleBannedWords(e.group_id, newWords)
         e.reply(`✅ 成功添加：${newWords.join(",")}`)
       }
       // 提示已有的屏蔽词
@@ -259,7 +259,7 @@ export class NewGroupBannedWords extends plugin {
     } else {
     // 删除已有的屏蔽词
       if (!_.isEmpty(existingWords)) {
-        GroupBannedWords.delTitleBannedWords(e.group_id, existingWords)
+        groupBannedWords.delTitleBannedWords(e.group_id, existingWords)
         e.reply(`✅ 成功删除：${existingWords.join(",")}`)
       }
       // 提示不在屏蔽词中的词
@@ -272,7 +272,7 @@ export class NewGroupBannedWords extends plugin {
   // 修改头衔匹配模式
   async ProhibitedTitlePattern(e) {
     if (!common.checkPermission(e, "admin", "admin")) return false
-    let res = GroupBannedWords.setTitleFilterModeChange(e.group_id)
+    let res = groupBannedWords.setTitleFilterModeChange(e.group_id)
     e.reply(`✅ 已修改匹配模式为${res ? "精确" : "模糊"}匹配`)
   }
 }

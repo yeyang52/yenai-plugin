@@ -9,10 +9,10 @@ import md5 from "md5"
 let Vote = {}
 let time = 180 // 投票超时时间 单位秒
 
-export class NewGroupVerify extends plugin {
+export class GroupVoteBan extends plugin {
   constructor() {
     super({
-      name: "椰奶投票禁言",
+      name: "椰奶群管-投票禁言",
       dsc: "投票禁言某人",
       event: "message.group",
       priority: 5000,

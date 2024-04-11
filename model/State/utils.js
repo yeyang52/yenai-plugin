@@ -20,21 +20,21 @@ export function addData(arr, data, maxLen = 60) {
 /**
  * 将文件大小从字节转化为可读性更好的格式，例如B、KB、MB、GB、TB。
  * @param {number} size - 带转化的字节数。
- * @param {boolean} [isByte] - 如果为 true，则最终的文件大小显示保留 B 的后缀.
- * @param {boolean} [isSuffix] - 如果为 true，则在所得到的大小后面加上 kb、mb、gb、tb 等后缀.
+ * @param {boolean} [showByte] - 如果为 true，则最终的文件大小显示保留 B 的后缀.
+ * @param {boolean} [showSuffix] - 如果为 true，则在所得到的大小后面加上 kb、mb、gb、tb 等后缀.
  * @returns {string} 文件大小格式转换后的字符串.
  */
-export function getFileSize(size, isByte = true, isSuffix = true) { // 把字节转换成正常文件大小
+export function getFileSize(size, showByte = true, showSuffix = true) { // 把字节转换成正常文件大小
   if (size == null || size == undefined) return 0
   let num = 1024.00 // byte
-  if (isByte && size < num) {
+  if (showByte && size < num) {
     return size.toFixed(2) + "B"
   }
   if (size < Math.pow(num, 2)) {
-    return (size / num).toFixed(2) + `K${isSuffix ? "b" : ""}`
+    return (size / num).toFixed(2) + `K${showSuffix ? "b" : ""}`
   } // kb
   if (size < Math.pow(num, 3)) {
-    return (size / Math.pow(num, 2)).toFixed(2) + `M${isSuffix ? "b" : ""}`
+    return (size / Math.pow(num, 2)).toFixed(2) + `M${showSuffix ? "b" : ""}`
   } // M
   if (size < Math.pow(num, 4)) {
     return (size / Math.pow(num, 3)).toFixed(2) + "G"

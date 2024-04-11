@@ -25,47 +25,75 @@
  * // 输出: "1h 1m 5s"
  */
 export default function formatDuration(time, format, repair = true) {
-  const second = parseInt(time % 60)
-  const minute = parseInt((time / 60) % 60)
-  const hour = parseInt((time / (60 * 60)) % 24)
-  const day = parseInt(time / (24 * 60 * 60))
-  const timeObj = {
+  const timeObj = computeTimeObject(time, repair)
+  if (typeof format === "function") {
+    return format(timeObj)
+  }
+
+  if (format === "default") {
+    return formatDefault(timeObj)
+  }
+
+  if (typeof format === "string") {
+    return formatTemplate(format, timeObj)
+  }
+
+  return timeObj
+}
+// 默认格式化逻辑拆分到单独的函数，提高代码可维护性
+function formatDefault(timeObj) {
+  const { day, hour, minute, second } = timeObj
+  let result = ""
+
+  if (day > 0) {
+    result += `${day}天`
+  }
+  if (hour > 0) {
+    result += `${hour}小时`
+  }
+  if (minute > 0) {
+    result += `${minute}分`
+  }
+  if (second > 0) {
+    result += `${second}秒`
+  }
+
+  return result
+}
+
+// 字符串模板格式化逻辑拆分到单独的函数
+function formatTemplate(format, timeObj) {
+  const replaceRegexes = [
+    { pattern: /dd/g, value: timeObj.day },
+    { pattern: /hh/g, value: timeObj.hour },
+    { pattern: /mm/g, value: timeObj.minute },
+    { pattern: /ss/g, value: timeObj.second }
+  ]
+
+  // 优化字符串替换逻辑
+  for (const { pattern, value } of replaceRegexes) {
+    format = format.replace(pattern, value)
+  }
+
+  return format
+}
+
+/**
+ * 计算并返回表示时间的对象。
+ * @param {number} time - 要计算的时间（以秒为单位）。
+ * @param {boolean} [repair] - 修复小时、分钟和秒的显示格式的可选参数。如果设置为true，并且小时、分钟或秒小于10，则在值前面添加零。
+ * @returns {{day: string, hour: string, minute: string, second: string}} - 包含天、小时、分钟和秒的时间对象。
+ */
+function computeTimeObject(time, repair = true) {
+  const second = parseInt(time % 60, 10)
+  const minute = Math.floor(time / 60)
+  const hour = Math.floor(minute / 60)
+  const day = Math.floor(time / (24 * 60 * 60))
+
+  return {
     day,
     hour: repair && hour < 10 ? `0${hour}` : hour,
     minute: repair && minute < 10 ? `0${minute}` : minute,
     second: repair && second < 10 ? `0${second}` : second
   }
-  if (typeof format === "function") {
-    return format(timeObj)
-  }
-
-  if (format == "default") {
-    let result = ""
-
-    if (day > 0) {
-      result += `${day}天`
-    }
-    if (hour > 0) {
-      result += `${timeObj.hour}小时`
-    }
-    if (minute > 0) {
-      result += `${timeObj.minute}分`
-    }
-    if (second > 0) {
-      result += `${timeObj.second}秒`
-    }
-    return result
-  }
-
-  if (typeof format === "string") {
-    format = format
-      .replace(/dd/g, day)
-      .replace(/hh/g, timeObj.hour)
-      .replace(/mm/g, timeObj.minute)
-      .replace(/ss/g, timeObj.second)
-
-    return format
-  }
-
-  return timeObj
 }

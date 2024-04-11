@@ -5,11 +5,10 @@ import { sleep } from "../../tools/index.js"
 // 全局
 let temp = {}
 const ops = [ "+", "-" ]
-export class NewGroupVerify extends plugin {
+export class GroupVerify extends plugin {
   constructor() {
     super({
-      name: "椰奶入群验证",
-      dsc: "重新验证和绕过验证",
+      name: "椰奶群管-入群验证",
       event: "message.group",
       priority: 5,
       rule: [

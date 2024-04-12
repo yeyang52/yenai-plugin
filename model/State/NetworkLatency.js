@@ -73,7 +73,11 @@ async function getNetworkLatency(url, timeoutTime = 5000) {
 
   try {
     const startTime = Date.now()
-    let { status } = await request.get(url, { signal: controller.signal, origError: true })
+    let { status } = await request.get(url, {
+      signal: controller.signal,
+      origError: true,
+      closeLogError: true
+    })
     const endTime = Date.now()
     let delay = endTime - startTime
 
@@ -108,10 +112,13 @@ async function getNetworkLatency(url, timeoutTime = 5000) {
   } catch (error) {
     if (error.name === "AbortError") {
       return "<span style='color:#F44336'>timeout</span>"
-    } else {
-      logger.error("网络请求过程中发生错误:", error)
-      return "<span style='color:#F44336'>error</span>"
     }
+    if (error.message.includes("ECONNRESET")) {
+      logger.error("网络请求发生了 ECONNRESET 错误:", error.message)
+      return "<span style='color:#F44336'>ECONNRESET</span>"
+    }
+    logger.error("网络请求过程中发生错误:", error)
+    return "<span style='color:#F44336'>error</span>"
   } finally {
     clearTimeout(timeout)
   }

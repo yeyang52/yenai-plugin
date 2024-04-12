@@ -52,7 +52,8 @@ export async function getData(e) {
     // 硬盘速率
     fsStats: Monitor.DiskSpeed,
     copyright: getCopyright(),
-    isBotIndex
+    isBotIndex,
+    network: Monitor.getNetwork
   }
 }
 

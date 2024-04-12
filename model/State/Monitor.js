@@ -125,16 +125,21 @@ export default new class monitor {
    * @returns {object}
    */
   get getNetwork() {
-    let network = _.cloneDeep(this.network)?.[0]
-    if (!network || network.rx_sec == null || network.tx_sec == null) {
+    let network = _.cloneDeep(this.network)
+    if (!network || network.length === 0) {
       return false
     }
-    network.rx_sec = getFileSize(network.rx_sec, false, false)
-    network.tx_sec = getFileSize(network.tx_sec, false, false)
-    // return network
-    return {
-      first: network.iface,
-      tail: `↑${network.tx_sec}/s | ↓${network.rx_sec}/s`
+    let data = []
+    for (let v of network) {
+      if (v.rx_sec != null && v.tx_sec != null) {
+        let _rx = getFileSize(v.rx_sec, false, false)
+        let _tx = getFileSize(v.tx_sec, false, false)
+        data.push({
+          first: v.iface,
+          tail: `↑${_tx}/s | ↓${_rx}/s`
+        })
+      }
     }
+    return data.length === 0 ? false : data
   }
 }()

@@ -99,10 +99,9 @@
     <script src="{{_res_path}}state/state_chart.js"></script>
 </div>
 
-{{/if}}
-{{if otherInfo}}
-<div class="box" data-boxInfo="其他">
-    {{each otherInfo}}
+{{if network}}
+<div class="box" data-boxInfo="网络速率">
+    {{each network}}
     <div class="speed">
         <p>{{$value.first}}</p>
         <p>{{@$value.tail}}</p>
@@ -114,6 +113,18 @@
 {{if psTest}}
 <div class="box" data-boxInfo="网络测试">
     {{each psTest}}
+    <div class="speed">
+        <p>{{$value.first}}</p>
+        <p>{{@$value.tail}}</p>
+    </div>
+    {{/each}}
+</div>
+{{/if}}
+
+{{/if}}
+{{if otherInfo}}
+<div class="box" data-boxInfo="其他">
+    {{each otherInfo}}
     <div class="speed">
         <p>{{$value.first}}</p>
         <p>{{@$value.tail}}</p>

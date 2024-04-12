@@ -2,7 +2,6 @@ import _ from "lodash"
 import { osInfo } from "./DependencyChecker.js"
 import { formatDuration } from "../../tools/index.js"
 import os from "os"
-import Monitor from "./Monitor.js"
 import fs from "fs"
 import { Version } from "../../components/index.js"
 
@@ -13,8 +12,6 @@ export default function otherInfi() {
     first: "系统",
     tail: osInfo?.distro
   })
-  // 网络
-  otherInfo.push(Monitor.getNetwork)
   // 插件数量
   otherInfo.push({
     first: "插件",

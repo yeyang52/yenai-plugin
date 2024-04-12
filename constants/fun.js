@@ -1,20 +1,5 @@
-/** 点赞成功回复的图片 */
-export const successImgs = [
-  "https://xiaobai.klizi.cn/API/ce/xin.php?qq=",
-  "https://xiaobai.klizi.cn/API/ce/zan.php?qq="
-]
-
 /** 点赞失败回复的图片 */
 export const faildsImgs = [ "https://xiaobai.klizi.cn/API/ce/paa.php?qq=" ]
-
-export const heisiType = {
-  "白丝": { type: "baisi", page: 17 },
-  "黑丝": { type: "heisi", page: 43 },
-  "巨乳": { type: "juru", page: 8 },
-  "jk": { type: "jk", page: 6 },
-  "网红": { type: "mcn", page: 36 },
-  "美足": { type: "meizu", page: 9 }
-}
 
 export const xiurenTypeId = {
   "秀人": {

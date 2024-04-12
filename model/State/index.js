@@ -8,8 +8,9 @@ import getFsSize from "./FsSize.js"
 import getGPU from "./GPU.js"
 import Monitor from "./Monitor.js"
 import getNetworTestList from "./NetworkLatency.js"
-import getNodeInfo from "./NodeInfo.js"
+import getNode from "./NodeInfo.js"
 import getRAM from "./RAM.js"
+import getSWAP from "./SWAP.js"
 import getOtherInfo, { getCopyright } from "./OtherInfo.js"
 
 export { osInfo, si }
@@ -24,7 +25,9 @@ export async function getData(e) {
     // GPU板块
     getGPU(),
     // Node板块
-    getNodeInfo()
+    getNode(),
+    // SWAP
+    getSWAP()
   ]))
   let promiseTaskList = [
     getFastFetch(e),
@@ -41,7 +44,7 @@ export async function getData(e) {
   return {
     BotStatusList: await getBotState(BotList),
     chartData: JSON.stringify(common.checkIfEmpty(Monitor.chartData, [ "echarts_theme", "cpu", "ram" ]) ? undefined : Monitor.chartData),
-    visualData,
+    visualData: _.compact(visualData),
     otherInfo: getOtherInfo(),
     psTest: _.isEmpty(psTest) ? undefined : psTest,
     FastFetch,

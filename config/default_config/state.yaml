@@ -19,3 +19,6 @@ statusPowerShellStart: false
 
 #背景图片api 默认 https://api.sretna.cn/layout/pe.php
 backdrop: 'https://api.sretna.cn/layout/pe.php'
+
+# 关闭node的那个圈圈
+closedNodeInfo: true

@@ -1,6 +1,6 @@
 import _ from "lodash"
 import { Config } from "../components/index.js"
-import { heisiType, pandadiuType, xiurenTypeId } from "../constants/fun.js"
+import { pandadiuType, xiurenTypeId } from "../constants/fun.js"
 import { common, funApi, uploadRecord } from "../model/index.js"
 
 /** 开始执行文案 */
@@ -140,18 +140,6 @@ export class Fun extends plugin {
     const type = e.msg.match(reg)
     await funApi.pandadiu(type[1], type[2])
       .then(res => common.recallSendForwardMsg(e, res))
-      .catch(err => common.handleException(e, err))
-  }
-
-  // 黑丝
-  async heisiwu(e) {
-    if (!common.checkSeSePermission(e, "sesepro")) return false
-
-    e.reply(START_EXECUTION)
-    // 获取类型
-    const { type, page } = heisiType[e.msg.match(/#?来点(.*)/)[1]]
-    await funApi.heisiwu(type, page)
-      .then(res => common.recallSendForwardMsg(e, _.take(res, 20)))
       .catch(err => common.handleException(e, err))
   }
 

@@ -29,16 +29,16 @@ export default async function getGPU() {
     }
     let {
       vendor, temperatureGpu, utilizationGpu,
-      memoryTotal, memoryUsed, powerDraw
+      memoryTotal, memoryUsed /* powerDraw */
     } = graphics
     temperatureGpu && (temperatureGpu = temperatureGpu + "℃")
-    powerDraw && (powerDraw = powerDraw + "W")
+    // powerDraw && (powerDraw = powerDraw + "W")
     return {
       ...Circle(utilizationGpu / 100),
       inner: Math.round(utilizationGpu) + "%",
       title: "GPU",
       info: [
-          `${vendor} ${temperatureGpu} ${powerDraw}`,
+          `${vendor} ${temperatureGpu}`,
           `总共 ${(memoryTotal / 1024).toFixed(2)}G`,
           `已用 ${(memoryUsed / 1024).toFixed(2)}G`
       ]

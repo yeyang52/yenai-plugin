@@ -1,8 +1,10 @@
 import { getFileSize, Circle } from "./utils.js"
 import os from "os"
+import { Config } from "../../components/index.js"
 
 /** 获取nodejs内存情况 */
 export default function getNodeInfo() {
+  if (Config.state.closedNodeInfo) return false
   let memory = process.memoryUsage()
   // 总共
   let rss = getFileSize(memory.rss)

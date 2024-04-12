@@ -85,10 +85,10 @@ function formatTemplate(format, timeObj) {
  * @returns {{day: string, hour: string, minute: string, second: string}} - 包含天、小时、分钟和秒的时间对象。
  */
 function computeTimeObject(time, repair = true) {
-  const second = parseInt(time % 60, 10)
-  const minute = Math.floor(time / 60)
-  const hour = Math.floor(minute / 60)
-  const day = Math.floor(time / (24 * 60 * 60))
+  const second = parseInt(time % 60)
+  const minute = parseInt((time / 60) % 60)
+  const hour = parseInt((time / (60 * 60)) % 24)
+  const day = parseInt(time / (24 * 60 * 60))
 
   return {
     day,

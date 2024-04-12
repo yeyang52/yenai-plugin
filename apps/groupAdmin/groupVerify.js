@@ -204,15 +204,15 @@ Bot.on?.("notice.group.decrease", async(e) => {
 // 发送验证信息
 /**
  *
- * @param user_id
- * @param group_id
+ * @param userId
+ * @param groupId
  * @param e
  */
-async function verify(user_id, group_id, e) {
+async function verify(userId, groupId, e) {
   if (!e.group.is_admin && !e.group.is_owner) return
-  user_id = Number(user_id)
-  group_id = Number(group_id)
-  logger.mark(`[Yenai-Plugin][进群验证]进行${user_id}的验证`)
+  userId = Number(userId)
+  groupId = Number(groupId)
+  logger.mark(`[Yenai-Plugin][进群验证]进行${userId}的验证`)
 
   const { times, range, time, remindAtLastMinute } = Config.groupverify
   const operator = ops[_.random(0, 1)]
@@ -227,22 +227,22 @@ async function verify(user_id, group_id, e) {
   const verifyCode = String(operator === "-" ? m - n : m + n)
   logger.mark(`[Yenai-Plugin][进群验证]答案：${verifyCode}`)
   const kickTimer = setTimeout(async() => {
-    e.reply([ segment.at(user_id), "\n验证超时，移出群聊，请重新申请" ])
+    e.reply([ segment.at(userId), "\n验证超时，移出群聊，请重新申请" ])
 
-    delete temp[user_id + group_id]
+    delete temp[userId + groupId]
 
     clearTimeout(kickTimer)
 
-    return await e.group.kickMember(user_id)
+    return await e.group.kickMember(userId)
   }, time * 1000)
 
   const shouldRemind = remindAtLastMinute && time >= 120
 
   const remindTimer = setTimeout(async() => {
-    if (shouldRemind && temp[user_id + group_id].remindTimer) {
+    if (shouldRemind && temp[userId + groupId].remindTimer) {
       const msg = ` \n验证仅剩最后一分钟\n请发送「${m} ${operator} ${n}」的运算结果\n否则将会被移出群聊`
 
-      await e.reply([ segment.at(user_id), msg ])
+      await e.reply([ segment.at(userId), msg ])
     }
     clearTimeout(remindTimer)
   }, Math.abs(time * 1000 - 60000))
@@ -250,8 +250,8 @@ async function verify(user_id, group_id, e) {
   const msg = ` 欢迎！\n请在「${time}」秒内发送\n「${m} ${operator} ${n}」的运算结果\n否则将会被移出群聊`
 
   // 消息发送成功才写入
-  if (await e.reply([ segment.at(user_id), msg ])) {
-    temp[user_id + group_id] = {
+  if (await e.reply([ segment.at(userId), msg ])) {
+    temp[userId + groupId] = {
       remainTimes: times,
       nums: [ m, n ],
       operator,
@@ -259,5 +259,9 @@ async function verify(user_id, group_id, e) {
       kickTimer,
       remindTimer
     }
+  } else {
+    // 删除定时器
+    clearTimeout(remindTimer)
+    clearTimeout(kickTimer)
   }
 }

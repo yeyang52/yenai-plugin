@@ -5,24 +5,46 @@
 {{/block}}
 
 {{block 'main'}}
-{{each BotStatusList}}
-
 <script>
     var chartData = JSON.parse('{{@chartData}}')
     var Config = JSON.parse('{{@Config}}')
     var _res_path = '{{_res_path}}'
 </script>
-
+{{each BotStatusList}}
 <div class="box" data-boxInfo="Bot{{isBotIndex ? $index + 1 : ''}}信息">
     <div class="tb">
-        <div class="avatar">
+        <!-- <div class="avatar">
             <img src="{{$value.avatar}}" onerror="this.src= '{{$value.defaultAvatar}}'; this.onerror = null;">
+        </div> -->
+        <div class="avatar-box">
+            <div class="avatar">
+                <img src="{{$value.avatar}}" onerror="this.src= '{{$value.defaultAvatar}}'; this.onerror = null;">
+            </div>
+            <div class="info">
+                <div class="onlineStatus">
+                    <img src="{{_res_path}}state/icon/{{$value.onlineStatus}}.png">
+                </div>
+                <div class="platform">{{$value.platform}}</div>
+            </div>
         </div>
         <div class="header">
             <h1>{{$value.nickname}}</h1>
             <hr noshade>
-            <p> Bot 已运行 {{$value.botRunTime}}</p>
-            <table>
+            <p>
+                <span>{{$value.botVersion}}</span>
+                <span>Bot已运行 {{$value.botRunTime}}</span>
+            </p>
+            <p>
+                <span>收 {{$value.recv || 0}}</span>
+                <span>发 {{$value.sent || 0}}</span>
+                <span>图片 {{$value.screenshot || 0}}</span>
+            </p>
+            <p>
+                <span>好友 {{$value.friendQuantity}}</span>
+                <span>群 {{$value.groupQuantity}}</span>
+                <span>群员 {{$value.groupMemberQuantity}}</span>
+            </p>
+            <!-- <table>
                 <tr>
                     <td>收</td>
                     <td class="dyeing">{{$value.recv || 0}}</td>
@@ -39,8 +61,7 @@
                     <td>群员</td>
                     <td class="dyeing">{{$value.groupMemberQuantity}}</td>
                 </tr>
-            </table>
-            <p>{{$value.onlineStatus}}({{$value.platform}}) | {{$value.botVersion}}</p>
+            </table> -->
         </div>
     </div>
 </div>

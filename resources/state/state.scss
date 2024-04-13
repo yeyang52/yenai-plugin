@@ -73,31 +73,172 @@ body {
     justify-content: flex-start;
     align-items: center;
 
-    .avatar {
-        position: relative;
-        height: 100px;
-        width: 100px;
-        border-radius: 50%;
-        margin: 0 20px;
-        flex-shrink: 0;
+    .avatar-box {
         display: flex;
-        justify-content: flex-start;
+        justify-content: center;
         align-items: center;
+        flex-direction: column;
 
-        img {
-            width: 100%;
+        .avatar {
+            position: relative;
+            height: 100px;
+            width: 100px;
             border-radius: 50%;
+            margin: 0 20px;
+
+            img {
+                width: 100%;
+                border-radius: 50%;
+            }
+
+            &::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                z-index: -1;
+                margin: -3px;
+                border-radius: 50%;
+                box-shadow: 1px 1px 3px 0 #000;
+                background: linear-gradient(135deg, #fff1eb, #ace0f9);
+            }
         }
 
-        &::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            z-index: -1;
-            margin: -3px;
-            border-radius: 50%;
-            box-shadow: 1px 1px 3px 0 #000;
-            background: linear-gradient(135deg, #fff1eb, #ace0f9);
+        .info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+
+            .onlineStatus {
+                width: 15px;
+                height: 15px;
+                margin-right: 5px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+
+            .platform {
+                line-height: 15px;
+                font-size: 11px;
+                text-shadow: 1px 1px 3px #949090;
+            }
+
+
+        }
+
+    }
+
+    .header {
+        font-size: 14px;
+        width: 100%;
+        color: #000;
+
+        hr {
+            margin: 5px 0px;
+        }
+
+        span {
+            border-radius: 5px;
+            box-shadow: -2px 2px 3px rgba(8, 8, 8, 0.5);
+            padding: 0 5px;
+            margin-right: 5px;
+        }
+
+        p {
+            margin-top: 5px;
+
+            &:nth-child(3) {
+                span:nth-child(1) {
+                    background: #d799de;
+                }
+
+                span:nth-child(2) {
+                    background: #CBC7C8;
+                }
+            }
+
+            --purple:#B4A0D8;
+            --orange:#e0be92;
+            --blue:#aad5e6;
+
+            &:nth-child(4) {
+                span:nth-child(1) {
+                    background: var(--purple);
+                }
+
+                span:nth-child(2) {
+                    background: var(--orange);
+                }
+
+                span:nth-child(3) {
+                    background: var(--blue);
+                }
+            }
+
+            &:nth-child(5) {
+                span:nth-child(1) {
+                    background: var(--blue);
+                }
+
+                span:nth-child(2) {
+                    background: var(--purple);
+                }
+
+                span:nth-child(3) {
+                    background: var(--orange);
+                }
+            }
+        }
+
+        table {
+            background: #67abdb;
+            border-radius: 5px;
+            box-shadow: #000 1px 1px 3px;
+            margin: auto;
+            margin-top: 5px;
+
+            td {
+                line-height: 14px;
+
+                &.dyeing {
+                    // color: rgb(135, 206, 235);
+                    // text-shadow: 1px 1px 1px #000;
+                    padding-left: 5px;
+                    text-align: center;
+                }
+
+                &.dyeing:not(:last-child) {
+                    border-right: 2px solid #2f4f4f;
+                    padding-right: 10px;
+                }
+
+
+
+                &:nth-child(odd):not(:first-child) {
+                    padding-left: 10px
+                }
+            }
+
+        }
+
+        h1 {
+            @extend %text-overflow-mission;
+            display: inline-block;
+            // background-image: linear-gradient(271.14deg,
+            //         #001bff 0.98%,
+            //         #00f0ff 25.79%,
+            //         #fce84a 47.33%,
+            //         #f34628 65.77%,
+            //         #b275ff 91.4%);
+            background-color: #000;
+            background-clip: text;
+            color: transparent;
         }
     }
 }
@@ -107,66 +248,6 @@ hr {
     height: 2px;
     background-image: linear-gradient(135deg, #bdc3c7 10%, #2c3e50);
     border-radius: 10px;
-}
-
-.header {
-    width: 100%;
-    overflow: hidden;
-
-    hr {
-        margin: 5px 0px;
-    }
-
-    p {
-        font-size: 14px;
-        color: #2f4f4f;
-
-        span {
-            color: rgb(135, 206, 235);
-            text-shadow: 1px 1px 1px #000;
-        }
-    }
-
-    table {
-        color: #2f4f4f;
-        font-size: 14px;
-
-        td {
-            line-height: 14px;
-
-            &.dyeing {
-                // color: rgb(135, 206, 235);
-                // text-shadow: 1px 1px 1px #000;
-                padding-left: 5px;
-                text-align: center;
-            }
-
-            &.dyeing:not(:last-child) {
-                border-right: 2px solid #2f4f4f;
-                padding-right: 10px;
-            }
-
-
-
-            &:nth-child(odd):not(:first-child) {
-                padding-left: 10px
-            }
-        }
-
-    }
-
-    h1 {
-        @extend %text-overflow-mission;
-        display: inline-block;
-        background-image: linear-gradient(271.14deg,
-                #001bff 0.98%,
-                #00f0ff 25.79%,
-                #fce84a 47.33%,
-                #f34628 65.77%,
-                #b275ff 91.4%);
-        background-clip: text;
-        color: transparent;
-    }
 }
 
 

@@ -1,6 +1,5 @@
 import { Circle } from "./utils.js"
-import { si } from "./index.js"
-import { initDependence } from "./DependencyChecker.js"
+import { si, initDependence } from "./DependencyChecker.js"
 
 let isGPU = false;
 

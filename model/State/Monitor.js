@@ -1,8 +1,7 @@
 import { Config, Data } from "../../components/index.js"
 import _ from "lodash"
-import { si } from "./index.js"
-import { initDependence } from "./DependencyChecker.js"
-import { addData, getFileSize } from "./utils.js"
+import { si, initDependence } from "./DependencyChecker.js"
+import { addData } from "./utils.js"
 
 export default new class monitor {
   constructor() {
@@ -29,8 +28,7 @@ export default new class monitor {
       // 内存
       ram: [],
       // 主题
-      echarts_theme: Data.readJSON("resources/state/theme_westeros.json"),
-      backdrop: Config.state.backdrop
+      echarts_theme: Data.readJSON("resources/state/theme_westeros.json")
     }
     this.valueObject = {
       networkStats: "rx_sec,tx_sec,iface",
@@ -104,42 +102,5 @@ export default new class monitor {
       addData(this.chartData.cpu, [ Date.now(), currentLoad ])
     }
     return data
-  }
-
-  // 获取读取速率
-  get DiskSpeed() {
-    if (!this.fsStats ||
-      this.fsStats.rx_sec == null ||
-      this.fsStats.wx_sec == null
-    ) {
-      return false
-    }
-    return {
-      rx_sec: getFileSize(this.fsStats.rx_sec, false, false),
-      wx_sec: getFileSize(this.fsStats.wx_sec, false, false)
-    }
-  }
-
-  /**
-   *  获取网速
-   * @returns {object}
-   */
-  get getNetwork() {
-    let network = _.cloneDeep(this.network)
-    if (!network || network.length === 0) {
-      return false
-    }
-    let data = []
-    for (let v of network) {
-      if (v.rx_sec != null && v.tx_sec != null) {
-        let _rx = getFileSize(v.rx_sec, false, false)
-        let _tx = getFileSize(v.tx_sec, false, false)
-        data.push({
-          first: v.iface,
-          tail: `↑${_tx}/s | ↓${_rx}/s`
-        })
-      }
-    }
-    return data.length === 0 ? false : data
   }
 }()

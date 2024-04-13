@@ -1,6 +1,7 @@
 import _ from "lodash"
 import { getFileSize } from "./utils.js"
-import { si } from "./index.js"
+import { si } from "./DependencyChecker.js"
+import Monitor from "./Monitor.js"
 
 /**
  *  获取硬盘
@@ -28,4 +29,18 @@ export default async function getFsSize() {
     }
     return item
   })
+}
+/**
+ * 获取磁盘读写速度
+ * @returns {object | boolean} 返回一个对象，包含读速度（rx_sec）和写速度（wx_sec），如果无法获取则返回false。
+ */
+export function getDiskSpeed() {
+  let fsStats = Monitor.fsStats
+  if (!fsStats || fsStats.rx_sec == null || fsStats.wx_sec == null) {
+    return false
+  }
+  return {
+    rx_sec: getFileSize(fsStats.rx_sec, false, false),
+    wx_sec: getFileSize(fsStats.wx_sec, false, false)
+  }
 }

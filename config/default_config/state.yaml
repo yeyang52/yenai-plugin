@@ -19,6 +19,25 @@ statusPowerShellStart: false
 
 #背景图片api 默认 https://api.sretna.cn/layout/pe.php
 backdrop: 'https://api.sretna.cn/layout/pe.php'
+# 当api请求失败时使用的默认背景图，请放置在resources/state/img目录下，修改为你的文件名
+backdropDefault: 'default_bg.jpg'
 
 # 关闭node的那个圈圈
 closedNodeInfo: true
+
+# 关闭图表
+closedChart: false
+
+# Bot昵称的颜色
+BotNameColor: 'none'
+# Bot昵称渐变色 设置了该值BotNameColor值将无效 如要使用BotNameColor请将该值设为none或false
+# 该值请参考https://developer.mozilla.org/zh-CN/docs/Web/CSS/gradient/linear-gradient
+# xxdeg 为渐变角度 后为渐变颜色
+BotNameColorGradient: '271.14deg,#001bff 0.98%,#00f0ff 25.79%,#fce84a 47.33%,#f34628 65.77%,#b275ff 91.4%'
+
+#以下为主硬件进度条和磁盘进度条的颜色 highColor - 严重 mediumColor - 警告 lowColor - 正常
+highColor: '#d73403'
+
+mediumColor: '#ffa500'
+
+lowColor: '#87CEEB'

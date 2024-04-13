@@ -1,5 +1,7 @@
-import request from "../../lib/request/request.js"
 import { Config } from "../../components/index.js"
+import request from "../../lib/request/request.js"
+import Monitor from "./Monitor.js"
+import { getFileSize } from "./utils.js"
 
 const defList = [
   { name: "Baidu", url: "https://baidu.com" },
@@ -12,7 +14,7 @@ const defList = [
  * 获取网络测试列表。
  * @returns {Promise<Array>} 返回一个Promise，该Promise解析为网络测试结果的数组。
  */
-export default function getNetworkTestList() {
+export function getNetworkTestList() {
   const { psTestSites, psTestTimeout } = Config.state
   if (!psTestSites) {
     return Promise.resolve([])
@@ -122,4 +124,23 @@ async function getNetworkLatency(url, timeoutTime = 5000) {
   } finally {
     clearTimeout(timeout)
   }
+}
+/** 获取当前网速 */
+export function getNetwork() {
+  let network = Monitor.network
+  if (!network || network.length === 0) {
+    return false
+  }
+  let data = []
+  for (let v of network) {
+    if (v.rx_sec != null && v.tx_sec != null) {
+      let _rx = getFileSize(v.rx_sec, false, false)
+      let _tx = getFileSize(v.tx_sec, false, false)
+      data.push({
+        first: v.iface,
+        tail: `↑${_tx}/s | ↓${_rx}/s`
+      })
+    }
+  }
+  return data.length === 0 ? false : data
 }

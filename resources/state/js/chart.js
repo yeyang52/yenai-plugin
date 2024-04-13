@@ -1,25 +1,6 @@
 /* eslint-disable no-undef */
 
-const backdrop = chartData.backdrop
-// 背景api
-if (backdrop) {
-  let container = document.getElementById("container")
-  const img = new Image()
-  let timer = setTimeout(function() {
-    img.src = ""
-    console.log("图像加载超时")
-  }, 5000)
-  img.onload = function() {
-    clearTimeout(timer)
-    container.style.backgroundImage = "url(" + backdrop + ")"
-  }
-  img.onerror = function() {
-    clearTimeout(timer)
-    console.log("图像加载出错")
-  }
-  img.src = backdrop
-}
-
+// 图表
 echarts.registerTheme("westeros", chartData.echarts_theme)
 const chart = echarts.init(document.getElementById("Chart"), "westeros", {
   renderer: "svg"

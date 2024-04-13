@@ -1,5 +1,5 @@
 import { Circle, getFileSize } from "./utils.js"
-import { si } from "./index.js"
+import { si } from "./DependencyChecker.js"
 export default async function getSwapInfo() {
   const swapData = await si.get({
     mem: "swaptotal,swapused,swapfree"

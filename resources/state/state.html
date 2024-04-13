@@ -1,10 +1,18 @@
 {{extend defaultLayout}}
 
 {{block 'css'}}
-<link rel="stylesheet" href="{{_res_path}}state/state.css">
+<link rel="stylesheet" href="{{_res_path}}state/state.css" />
 {{/block}}
+
 {{block 'main'}}
 {{each BotStatusList}}
+
+<script>
+    var chartData = JSON.parse('{{@chartData}}')
+    var Config = JSON.parse('{{@Config}}')
+    var _res_path = '{{_res_path}}'
+</script>
+
 <div class="box" data-boxInfo="Bot{{isBotIndex ? $index + 1 : ''}}信息">
     <div class="tb">
         <div class="avatar">
@@ -54,7 +62,6 @@
                     <circle id="circle" stroke="{{group.color}}" style="stroke-dashoffset:{{group.per}}"></circle>
                 </svg>
             </div>
-            <!-- </div> -->
             <article>
                 <summary>{{group.title}}</summary>
                 {{each group.info info}}
@@ -91,37 +98,30 @@
 
 {{if chartData}}
 <div class="box" data-boxInfo="图表">
-    <div id="Chart" style="height: 300px;"></div>
-    <script src="{{_res_path}}state/echarts.min.js"></script>
-    <script>
-        var chartData = JSON.parse('{{@chartData}}')
-    </script>
-    <script src="{{_res_path}}state/state_chart.js"></script>
+    <div id="Chart" style="height: 300px"></div>
+    <script src="{{_res_path}}state/js/echarts.min.js"></script>
+    <script src="{{_res_path}}state/js/chart.js"></script>
 </div>
+{{/if}}
 
-{{if network}}
-<div class="box" data-boxInfo="网络速率">
-    {{each network}}
+{{if network || psTest}}
+<div class="box" data-boxInfo="网络">
+    {{if network}} {{each network}}
     <div class="speed">
         <p>{{$value.first}}</p>
         <p>{{@$value.tail}}</p>
     </div>
-    {{/each}}
-</div>
-{{/if}}
-
-{{if psTest}}
-<div class="box" data-boxInfo="网络测试">
-    {{each psTest}}
+    {{/each}} {{/if}} {{if network && psTest}}
+    <hr style="margin: 5px 0" />
+    {{/if}} {{if psTest}} {{each psTest}}
     <div class="speed">
         <p>{{$value.first}}</p>
         <p>{{@$value.tail}}</p>
     </div>
-    {{/each}}
+    {{/each}} {{/if}}
 </div>
 {{/if}}
 
-{{/if}}
 {{if otherInfo}}
 <div class="box" data-boxInfo="其他">
     {{each otherInfo}}
@@ -134,5 +134,7 @@
 {{/if}}
 
 {{@FastFetch}}
+
+<script src="{{_res_path}}state/js/style.js"></script>
 
 {{/block}}

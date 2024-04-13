@@ -42,5 +42,5 @@ module.exports = {
     "jsdoc/require-param-type": 0,
     "import/extensions": [ "error", "ignorePackages" ]
   },
-  ignorePatterns: [ "resources/state/echarts.min.js" ]
+  ignorePatterns: [ "echarts.min.js" ]
 }

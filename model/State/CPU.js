@@ -1,5 +1,5 @@
 import os from "os"
-import { si, osInfo } from "./index.js"
+import { si, osInfo } from "./DependencyChecker.js"
 import { Circle } from "./utils.js"
 
 /** 获取CPU占用 */

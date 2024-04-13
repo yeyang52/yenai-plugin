@@ -1,7 +1,8 @@
 import plugin from "../../../lib/plugins/plugin.js"
 import { Config } from "../components/index.js"
 import { puppeteer } from "../model/index.js"
-import { getData, si } from "../model/State/index.js"
+import { getData } from "../model/State/index.js"
+import { si } from "../model/State/DependencyChecker.js"
 import Monitor from "../model/State/Monitor.js"
 
 let interval = false

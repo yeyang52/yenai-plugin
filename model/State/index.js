@@ -1,59 +1,55 @@
 import _ from "lodash"
+import { Config } from "../../components/index.js"
 import common from "../../lib/common/common.js"
 import getBotState from "./BotState.js"
 import getCPU from "./CPU.js"
-import { osInfo, si } from "./DependencyChecker.js"
 import getFastFetch from "./FastFetch.js"
-import getFsSize from "./FsSize.js"
+import getFsSize, { getDiskSpeed } from "./FsSize.js"
 import getGPU from "./GPU.js"
 import Monitor from "./Monitor.js"
-import getNetworTestList from "./NetworkLatency.js"
+import { getNetworkTestList, getNetwork } from "./Network.js"
 import getNode from "./NodeInfo.js"
+import getOtherInfo, { getCopyright } from "./OtherInfo.js"
 import getRAM from "./RAM.js"
 import getSWAP from "./SWAP.js"
-import getOtherInfo, { getCopyright } from "./OtherInfo.js"
-
-export { osInfo, si }
 
 export async function getData(e) {
   // 可视化数据
-  let visualData = _.compact(await Promise.all([
-    // CPU板块
+  const visualData = _.compact(await Promise.all([
     getCPU(),
-    // 内存板块
     getRAM(),
-    // GPU板块
     getGPU(),
-    // Node板块
     getNode(),
-    // SWAP
     getSWAP()
   ]))
-  let promiseTaskList = [
+
+  const promiseTaskList = [
     getFastFetch(e),
-    getFsSize()
+    getFsSize(),
+    getNetworkTestList()
   ]
 
-  let NetworTestList = getNetworTestList()
-  promiseTaskList.push(NetworTestList)
-
-  let [ FastFetch, HardDisk, psTest ] = await Promise.all(promiseTaskList)
+  const [ FastFetch, HardDisk, psTest ] = await Promise.all(promiseTaskList)
   /** bot列表 */
-  let BotList = _getBotList(e)
-  let isBotIndex = /pro/.test(e.msg) && BotList.length > 1
+  const BotList = _getBotList(e)
+  const isBotIndex = /pro/.test(e.msg) && BotList.length > 1
+  const chartData = JSON.stringify(common.checkIfEmpty(Monitor.chartData, [ "echarts_theme", "cpu", "ram" ]) ? undefined : Monitor.chartData)
+  // 配置
+  const { closedChart } = Config.state
   return {
     BotStatusList: await getBotState(BotList),
-    chartData: JSON.stringify(common.checkIfEmpty(Monitor.chartData, [ "echarts_theme", "cpu", "ram" ]) ? undefined : Monitor.chartData),
+    chartData: closedChart ? false : chartData,
     visualData: _.compact(visualData),
     otherInfo: getOtherInfo(),
     psTest: _.isEmpty(psTest) ? undefined : psTest,
+    fsStats: getDiskSpeed(),
+    copyright: getCopyright(),
+    network: getNetwork(),
+    Config: JSON.stringify(Config.state),
+    _Config: Config.state,
     FastFetch,
     HardDisk,
-    // 硬盘速率
-    fsStats: Monitor.DiskSpeed,
-    copyright: getCopyright(),
-    isBotIndex,
-    network: Monitor.getNetwork
+    isBotIndex
   }
 }
 

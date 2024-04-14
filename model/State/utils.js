@@ -2,6 +2,7 @@ import _ from "lodash"
 
 export let si = false
 export let osInfo = null
+export let colorthief = null
 /**
  * 异步初始化系统信息依赖
  * 该函数尝试导入'systeminformation'模块，并获取操作系统信息。
@@ -29,6 +30,33 @@ export async function initDependence() {
 }
 
 await initDependence()
+
+export async function getImgColor(path) {
+  importColorThief()
+  const mainColor = await colorthief.getColor(path)
+  return {
+    mainColor: `rgb(${mainColor[0]},${mainColor[1]},${mainColor[2]})`,
+    path
+  }
+}
+export async function getImgPalette(path) {
+  importColorThief()
+  const palette = await colorthief.getPalette(path)
+  const [ _1, _2 ] = palette
+  return {
+    similarColor1: `rgb(${_1[0]},${_1[1]},${_1[2]})`,
+    similarColor2: `rgb(${_2[0]},${_2[1]},${_2[2]})`,
+    path
+  }
+}
+
+export async function importColorThief() {
+  if (!colorthief) {
+    colorthief = await import("colorthief")
+    return colorthief
+  }
+  return colorthief
+}
 
 /**
  * 向数组中添加数据，如果数组长度超过允许的最大值，则删除最早添加的数据

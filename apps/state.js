@@ -41,17 +41,21 @@ export class NewState extends plugin {
 
     // 防止多次触发
     if (interval) { return false } else interval = true
+    try {
+      // 获取数据
+      let data = await getData(e)
 
-    // 获取数据
-    let data = await getData(e)
-
-    // 渲染图片
-    await puppeteer.render("state/state", {
-      ...data
-    }, {
-      e,
-      scale: 1.4
-    })
+      // 渲染图片
+      await puppeteer.render("state/state", {
+        ...data
+      }, {
+        e,
+        scale: 1.4
+      })
+    } catch (error) {
+      logger.error(error)
+      interval = false
+    }
 
     interval = false
   }

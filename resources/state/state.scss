@@ -11,6 +11,8 @@
     --medium-color: #ffa500;
     --low-color: #87CEEB;
     --avatar-main-color: #fff1eb;
+    --avatar-similar-color1: #fff1eb;
+    --avatar-similar-color2: #ace0f9;
 }
 
 .container {
@@ -86,23 +88,23 @@ body {
             width: 100px;
             border-radius: 50%;
             margin: 0 20px;
-            box-shadow: 0 0 12px 4px var(--avatar-main-color), ;
+            // box-shadow: 0 0 12px 4px var(--avatar-main-color);
 
             img {
                 width: 100%;
                 border-radius: 50%;
             }
 
-            // &::before {
-            //     content: '';
-            //     position: absolute;
-            //     inset: 0;
-            //     z-index: -1;
-            //     margin: -3px;
-            //     border-radius: 50%;
-            //     // box-shadow: 0 0 12px 7px var(--avatar-main-color);
-            //     background: linear-gradient(135deg, var(--avatar-similar-color1), var(--avatar-similar-color2));
-            // }
+            &::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                z-index: -1;
+                margin: -3px;
+                border-radius: 50%;
+                // box-shadow: 0 0 12px 7px var(--avatar-main-color);
+                background: linear-gradient(135deg, var(--avatar-similar-color2), var(--avatar-similar-color1));
+            }
         }
 
         .info {

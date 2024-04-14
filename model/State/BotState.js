@@ -2,6 +2,7 @@ import { formatDuration } from "../../tools/index.js"
 import { Plugin_Path } from "../../components/index.js"
 import { createRequire } from "module"
 import common from "../../../../lib/common/common.js"
+import { importColorThief, getImgPalette } from "./utils.js"
 const require = createRequire(import.meta.url)
 
 export default async function getBotState(botList) {
@@ -61,29 +62,13 @@ async function getAvatarColor(url, path) {
     } else {
       path = defaultAvatar
     }
-    let avatar = await getImgColor(path)
+    let avatar = await getImgPalette(path)
     return avatar
   } catch {
     return {
-      mainColor: "#fff",
+      similarColor1: "#fff1eb",
+      similarColor2: "#ace0f9",
       path: url
     }
   }
-}
-let getColor = null
-async function getImgColor(path) {
-  const mainColor = await getColor(path)
-  return {
-    mainColor: `rgb(${mainColor[0]},${mainColor[1]},${mainColor[2]})`,
-    path
-  }
-}
-
-async function importColorThief() {
-  if (!getColor) {
-    const colorthief = await import("colorthief")
-    getColor = colorthief.getColor
-    return getColor
-  }
-  return getColor
 }

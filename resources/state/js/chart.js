@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+const chartBoxElement = document.querySelector(".box[data-boxInfo=图表]")
 if (chartData) {
 // 图表
   echarts.registerTheme("westeros", chartData.echarts_theme)
@@ -90,9 +91,10 @@ if (chartData) {
     .filter(item => item.data.length !== 0)
     .map(item => item.name)
   if (option.legend.data.length === 0) {
-    const element = document.querySelector(".box[data-boxInfo=图表]")
-    element.remove()
+    chartBoxElement.remove()
   } else {
     chart.setOption(option)
   }
+} else {
+  chartBoxElement.remove()
 }

@@ -1,6 +1,6 @@
-import { getFileSize, Circle } from "./utils.js"
 import os from "os"
 import { Config } from "../../components/index.js"
+import { Circle, getFileSize } from "./utils.js"
 
 /** 获取nodejs内存情况 */
 export default function getNodeInfo() {

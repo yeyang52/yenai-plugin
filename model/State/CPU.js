@@ -1,6 +1,5 @@
 import os from "os"
-import { si, osInfo } from "./DependencyChecker.js"
-import { Circle } from "./utils.js"
+import { si, osInfo, Circle } from "./utils.js"
 
 /** 获取CPU占用 */
 export default async function getCpuInfo() {
@@ -10,15 +9,16 @@ export default async function getCpuInfo() {
   })
   if (currentLoad == null || currentLoad == undefined) return false
   // 核心
-  let cores = os.cpus()
+  const cores = os.cpus()
+  const availableParallelism = os.availableParallelism()
   // cpu制造者
-  let cpuModel = cores[0]?.model.slice(0, cores[0]?.model.indexOf(" ")) || ""
+  const cpuModel = cores[0]?.model.slice(0, cores[0]?.model.indexOf(" ")) || ""
   return {
     ...Circle(currentLoad / 100),
     inner: Math.round(currentLoad) + "%",
     title: "CPU",
     info: [
-        `${cpuModel} ${cores.length}核 ${osInfo?.arch}`,
+        `${cpuModel} ${availableParallelism}核 ${osInfo?.arch}`,
         `平均${cpuCurrentSpeed.avg}GHz`,
         `最大${cpuCurrentSpeed.max}GHz`
     ]

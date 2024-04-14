@@ -1,9 +1,9 @@
 import plugin from "../../../lib/plugins/plugin.js"
 import { Config } from "../components/index.js"
-import { puppeteer } from "../model/index.js"
-import { getData } from "../model/State/index.js"
-import { si } from "../model/State/DependencyChecker.js"
 import Monitor from "../model/State/Monitor.js"
+import { getData } from "../model/State/index.js"
+import { si } from "../model/State/utils.js"
+import { puppeteer } from "../model/index.js"
 
 let interval = false
 export class NewState extends plugin {

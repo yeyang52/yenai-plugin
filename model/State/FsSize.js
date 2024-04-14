@@ -1,6 +1,5 @@
 import _ from "lodash"
-import { getFileSize } from "./utils.js"
-import { si } from "./DependencyChecker.js"
+import { getFileSize, si } from "./utils.js"
 import Monitor from "./Monitor.js"
 
 /**

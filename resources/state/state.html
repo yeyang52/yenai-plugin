@@ -13,12 +13,9 @@
 {{each BotStatusList}}
 <div class="box" data-boxInfo="Bot{{isBotIndex ? $index + 1 : ''}}信息">
     <div class="tb">
-        <!-- <div class="avatar">
-            <img src="{{$value.avatar}}" onerror="this.src= '{{$value.defaultAvatar}}'; this.onerror = null;">
-        </div> -->
         <div class="avatar-box">
-            <div class="avatar">
-                <img src="{{$value.avatar}}" onerror="this.src= '{{$value.defaultAvatar}}'; this.onerror = null;">
+            <div class="avatar" style="--avatar-shadow-color:{{$value.avatarShadowColor}}">
+                <img src="{{$value.avatar}}">
             </div>
             <div class="info">
                 <div class="onlineStatus">

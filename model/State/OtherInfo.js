@@ -1,9 +1,9 @@
-import _ from "lodash"
-import { osInfo } from "./DependencyChecker.js"
-import { formatDuration } from "../../tools/index.js"
-import os from "os"
 import fs from "fs"
+import _ from "lodash"
+import os from "os"
 import { Version } from "../../components/index.js"
+import { formatDuration } from "../../tools/index.js"
+import { osInfo } from "./utils.js"
 
 export default function otherInfi() {
   let otherInfo = []

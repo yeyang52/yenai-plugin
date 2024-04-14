@@ -22,6 +22,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "cheerio": "1.0.0-rc.12",
+    "colorthief": "^2.4.0",
     "jimp": "^0.22.7",
     "systeminformation": "^5.17.12"
   },

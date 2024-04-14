@@ -10,6 +10,7 @@
     --high-color: #d73403;
     --medium-color: #ffa500;
     --low-color: #87CEEB;
+    --avatar-shadow-color: #fff
 }
 
 .container {
@@ -85,22 +86,23 @@ body {
             width: 100px;
             border-radius: 50%;
             margin: 0 20px;
+            box-shadow: 0 0 12px 7px var(--avatar-shadow-color);
 
             img {
                 width: 100%;
                 border-radius: 50%;
             }
 
-            &::before {
-                content: '';
-                position: absolute;
-                inset: 0;
-                z-index: -1;
-                margin: -3px;
-                border-radius: 50%;
-                box-shadow: 1px 1px 3px 0 #000;
-                background: linear-gradient(135deg, #fff1eb, #ace0f9);
-            }
+            // &::before {
+            //     content: '';
+            //     position: absolute;
+            //     inset: 0;
+            //     z-index: -1;
+            //     margin: -3px;
+            //     border-radius: 50%;
+            //     box-shadow: 1px 1px 3px 0 #000;
+            //     background: linear-gradient(135deg, #fff1eb, #ace0f9);
+            // }
         }
 
         .info {

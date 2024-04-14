@@ -1,7 +1,6 @@
 import { Config, Data } from "../../components/index.js"
 import _ from "lodash"
-import { si, initDependence } from "./DependencyChecker.js"
-import { addData } from "./utils.js"
+import { si, initDependence, addData } from "./utils.js"
 
 export default new class monitor {
   constructor() {

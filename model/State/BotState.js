@@ -1,7 +1,6 @@
 import { formatDuration } from "../../tools/index.js"
 import { Plugin_Path } from "../../components/index.js"
 import { createRequire } from "module"
-import common from "../../lib/common/common.js"
 import { importColorThief, getImgPalette } from "./utils.js"
 const require = createRequire(import.meta.url)
 
@@ -11,8 +10,7 @@ export default async function getBotState(botList) {
     if (!bot?.uin) return ""
     // 头像
     const avatarUrl = bot.avatar || (Number(bot.uin) ? `https://q1.qlogo.cn/g?b=qq&s=0&nk=${bot.uin}` : "default")
-    const avatarPath = Plugin_Path + `/temp/state/avatar_${i}`
-    const avatar = await getAvatarColor(avatarUrl, avatarPath)
+    const avatar = await getAvatarColor(avatarUrl)
 
     const nickname = bot.nickname || "未知"
     const platform = bot.apk ? `${bot.apk.display} v${extractVersion(bot.apk.version)}` : bot.version?.version || "未知"
@@ -53,16 +51,14 @@ function extractVersion(versionString) {
   return version
 }
 
-async function getAvatarColor(url, path) {
+async function getAvatarColor(url) {
   const defaultAvatar = `${Plugin_Path}/resources/state/img/default_avatar.jpg`
   try {
     await importColorThief()
-    if (url != "default") {
-      path = await common.downFile(url, path, { imgAutoSuffix: true })
-    } else {
-      path = defaultAvatar
+    if (url == "default") {
+      url = defaultAvatar
     }
-    let avatar = await getImgPalette(path)
+    let avatar = await getImgPalette(url)
     return avatar
   } catch {
     return {

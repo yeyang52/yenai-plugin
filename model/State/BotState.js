@@ -1,7 +1,7 @@
 import { formatDuration } from "../../tools/index.js"
 import { Plugin_Path } from "../../components/index.js"
 import { createRequire } from "module"
-import common from "../../../../lib/common/common.js"
+import common from "../../lib/common/common.js"
 import { importColorThief, getImgPalette } from "./utils.js"
 const require = createRequire(import.meta.url)
 
@@ -10,8 +10,9 @@ export default async function getBotState(botList) {
     const bot = Bot[i]
     if (!bot?.uin) return ""
     // 头像
-    const avatarUrl = bot.avatar || (Number(bot.uin) ? `https://q1.qlogo.cn/g?b=qq&s=0&nk=${bot.uin}` : "default")
-    const avatarPath = Plugin_Path + `/temp/state/avatar_${i}.png`
+    // const avatarUrl = bot.avatar || (Number(bot.uin) ? `https://q1.qlogo.cn/g?b=qq&s=0&nk=${bot.uin}` : "default")
+    const avatarUrl = "https://q1.qlogo.cn/g?b=qq&s=0&nk=3545187491"
+    const avatarPath = Plugin_Path + `/temp/state/avatar_${i}`
     const avatar = await getAvatarColor(avatarUrl, avatarPath)
 
     const nickname = bot.nickname || "未知"
@@ -58,7 +59,7 @@ async function getAvatarColor(url, path) {
   try {
     await importColorThief()
     if (url != "default") {
-      await common.downFile(url, path)
+      path = await common.downFile(url, path, { imgAutoSuffix: true })
     } else {
       path = defaultAvatar
     }

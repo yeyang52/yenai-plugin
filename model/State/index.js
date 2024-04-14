@@ -33,7 +33,7 @@ export async function getData(e) {
   /** bot列表 */
   const BotList = _getBotList(e)
   const isBotIndex = /pro/.test(e.msg) && BotList.length > 1
-  const chartData = JSON.stringify(common.checkIfEmpty(Monitor.chartData, [ "echarts_theme", "cpu", "ram" ]) ? undefined : Monitor.chartData)
+  const chartData = JSON.stringify(common.checkIfEmpty(Monitor.chartData, [ "echarts_theme", "cpu", "ram" ]) ? "" : Monitor.chartData)
   // 配置
   const { closedChart } = Config.state
   return {

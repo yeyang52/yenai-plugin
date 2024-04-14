@@ -1,18 +1,17 @@
 import { formatDuration } from "../../tools/index.js"
-import { Plugin_Name, Plugin_Path } from "../../components/index.js"
+import { Plugin_Path } from "../../components/index.js"
 import { createRequire } from "module"
 import common from "../../../../lib/common/common.js"
 const require = createRequire(import.meta.url)
 
 export default async function getBotState(botList) {
-  const defaultAvatar = `../../../../../plugins/${Plugin_Name}/resources/state/img/default_avatar.jpg`
   const dataPromises = botList.map(async(i) => {
     const bot = Bot[i]
     if (!bot?.uin) return ""
     // 头像
-    const avatarUrl = bot.avatar || (Number(bot.uin) ? `https://q1.qlogo.cn/g?b=qq&s=0&nk=${bot.uin}` : defaultAvatar)
+    const avatarUrl = bot.avatar || (Number(bot.uin) ? `https://q1.qlogo.cn/g?b=qq&s=0&nk=${bot.uin}` : "default")
     const avatarPath = Plugin_Path + `/temp/state/avatar_${i}.png`
-    const avatarShadowColor = await getAvatarColor(avatarUrl, avatarPath)
+    const avatar = await getAvatarColor(avatarUrl, avatarPath)
 
     const nickname = bot.nickname || "未知"
     const platform = bot.apk ? `${bot.apk.display} v${extractVersion(bot.apk.version)}` : bot.version?.version || "未知"
@@ -27,11 +26,9 @@ export default async function getBotState(botList) {
     const groupMemberQuantity = Array.from(bot.gml?.values() || []).reduce((acc, curr) => acc + curr.size, 0)
     const botRunTime = formatDuration(Date.now() / 1000 - bot.stat?.start_time, "dd天hh:mm:ss", true)
     const botVersion = bot.version ? `${bot.version.name}${bot.apk ? ` ${bot.version.version}` : ""}` : `ICQQ v${require("icqq/package.json").version}`
-    console.log(avatarShadowColor)
+
     return {
-      avatar: avatarPath,
-      avatarShadowColor,
-      defaultAvatar,
+      avatar,
       nickname,
       botRunTime,
       onlineStatus,
@@ -56,12 +53,37 @@ function extractVersion(versionString) {
 }
 
 async function getAvatarColor(url, path) {
+  const defaultAvatar = `${Plugin_Path}/resources/state/img/default_avatar.jpg`
   try {
-    let { getColor } = await import("colorthief")
-    await common.downFile(url, path)
-    let color = await getColor(path)
-    return `rgb(${color[0]},${color[1]},${color[2]})`
+    await importColorThief()
+    if (url != "default") {
+      await common.downFile(url, path)
+    } else {
+      path = defaultAvatar
+    }
+    let avatar = await getImgColor(path)
+    return avatar
   } catch {
-    return "#fff"
+    return {
+      mainColor: "#fff",
+      path: url
+    }
   }
+}
+let getColor = null
+async function getImgColor(path) {
+  const mainColor = await getColor(path)
+  return {
+    mainColor: `rgb(${mainColor[0]},${mainColor[1]},${mainColor[2]})`,
+    path
+  }
+}
+
+async function importColorThief() {
+  if (!getColor) {
+    const colorthief = await import("colorthief")
+    getColor = colorthief.getColor
+    return getColor
+  }
+  return getColor
 }

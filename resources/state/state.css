@@ -119,7 +119,7 @@
   --high-color: #d73403;
   --medium-color: #ffa500;
   --low-color: #87CEEB;
-  --avatar-shadow-color: #fff ;
+  --avatar-main-color: #fff1eb;
 }
 
 .container {
@@ -171,7 +171,7 @@ body {
   width: 100px;
   border-radius: 50%;
   margin: 0 20px;
-  box-shadow: 0 0 12px 7px var(--avatar-shadow-color);
+  box-shadow: 0 0 12px 3px var(--avatar-main-color);
 }
 .tb .avatar-box .avatar img {
   width: 100%;

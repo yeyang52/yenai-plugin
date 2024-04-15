@@ -65,12 +65,10 @@ export class ThumbUp extends plugin {
       if (res.code) {
         if (res.code == 1) {
           failsMsg = `${doType}失败，请检查是否开启陌生人点赞或添加好友`
+        } else if (res.code == 51 && isSelf) {
+          failsMsg = generateFailMsg(doType, res.msg).replace("他", "你")
         } else {
-          if (doType == "超") {
-            failsMsg = generateFailMsg(doType, res.msg)
-          } else {
-            failsMsg = res.msg
-          }
+          failsMsg = generateFailMsg(doType, res.msg)
         }
         break
       } else {

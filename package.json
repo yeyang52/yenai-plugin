@@ -23,15 +23,15 @@
   "dependencies": {
     "cheerio": "1.0.0-rc.12",
     "colorthief": "^2.4.0",
-    "jimp": "^0.22.7",
-    "systeminformation": "^5.17.12"
+    "jimp": "^0.22.12",
+    "systeminformation": "^5.22.7"
   },
   "devDependencies": {
-    "all-contributors-cli": "^6.24.0",
+    "all-contributors-cli": "^6.26.1",
     "eslint": "^8.57.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-jsdoc": "^48.2.1",
+    "eslint-plugin-jsdoc": "^48.2.3",
     "eslint-plugin-promise": "^6.1.1",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2"

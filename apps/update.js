@@ -1,4 +1,5 @@
 import { update as Update } from "../../other/update.js"
+import { common } from "../model/index.js"
 export class YenaiUpdate extends plugin {
   constructor() {
     super({
@@ -15,6 +16,8 @@ export class YenaiUpdate extends plugin {
   }
 
   async update(e = this.e) {
+    if (!common.checkPermission(e, "master")) return
+    e.isMaster = true
     e.msg = `#${e.msg.includes("强制") ? "强制" : ""}更新yenai-plugin`
     const up = new Update(e)
     up.e = e

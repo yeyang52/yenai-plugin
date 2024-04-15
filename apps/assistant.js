@@ -2,8 +2,7 @@ import _ from "lodash"
 import moment from "moment"
 import fs from "node:fs"
 import yaml from "yaml"
-import plugin from "../../../lib/plugins/plugin.js"
-import { Version } from "../components/index.js"
+import { Config, Version } from "../components/index.js"
 import { status } from "../constants/other.js"
 import { common, QQApi } from "../model/index.js"
 import { sleep } from "../tools/index.js"
@@ -891,7 +890,7 @@ export class Assistant extends plugin {
         if (match?.[0]) { this.blackResult = Number(match[0]) || String(match[0]) }
       }
     }
-    if (!this.blackResult) { return this.e.reply(`❎ ${name}失败，没有键入用户或群号`) }
+    if (!this.blackResult || common.getPermission({ ...e, get isMaster() { return Config.masterQQ.includes(this.user_id) || Config.masterQQ.includes(String(this.user_id)) }, user_id: this.blackResult }, "master") === true) { return this.e.reply(`❎ ${name}失败，没有键入用户或群号`) }
     try {
       const yamlContentBuffer = await fs.promises.readFile(configPath)
       const yamlContent = yamlContentBuffer.toString("utf-8")

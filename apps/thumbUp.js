@@ -81,10 +81,9 @@ export class ThumbUp extends plugin {
     const avatar = `https://q1.qlogo.cn/g?b=qq&s=100&nk=${userId}`
     const successFn = _.sample([ "ganyu", "zan" ])
 
+    if (e.message?.[0]?.text == "#全部赞我")failsMsg = "return"
     /** 判断点赞是否成功 */
-    let msg = (e.message?.[0]?.text == "#全部赞我")
-      ? []
-      : await generateResponseMsg(n > 0, successMsg, failsMsg, avatar, successFn)
+    let msg = await generateResponseMsg(n > 0, successMsg, failsMsg, avatar, successFn)
 
     /** 回复 */
     if (msg.length) { return e.reply(msg, true, { at: userId }) }
@@ -107,6 +106,7 @@ async function generateResponseMsg(isSuccess, successMsg, failsMsg, avatar, succ
     return [ `\n${successMsg}`, imageSegment ]
   } else {
     const imageSegment = segment.image((await memes.crawl(avatar)))
+    if (failsMsg == "return") return []
     return [ `\n${failsMsg}`, imageSegment ]
   }
 }

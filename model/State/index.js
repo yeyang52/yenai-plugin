@@ -14,30 +14,40 @@ import getRAM from "./RAM.js"
 import getSWAP from "./SWAP.js"
 
 export async function getData(e) {
-  // 可视化数据
-  const visualData = _.compact(await Promise.all([
+  e.isPro = e.msg.includes("pro")
+  /** bot列表 */
+  const BotList = _getBotList(e)
+  const visualDataPromise = Promise.all([
     getCPU(),
     getRAM(),
     getGPU(),
     getNode(),
     getSWAP()
-  ]))
-
+  ])
   const promiseTaskList = [
+    visualDataPromise,
     getFastFetch(e),
     getFsSize(),
-    getNetworkTestList()
+    getNetworkTestList(),
+    getBotState(BotList)
   ]
 
-  const [ FastFetch, HardDisk, psTest ] = await Promise.all(promiseTaskList)
-  /** bot列表 */
-  const BotList = _getBotList(e)
+  const [
+    visualData,
+    FastFetch,
+    HardDisk, psTest, BotStatusList
+  ] = await Promise.all(promiseTaskList)
+
   const isBotIndex = /pro/.test(e.msg) && BotList.length > 1
-  const chartData = JSON.stringify(common.checkIfEmpty(Monitor.chartData, [ "echarts_theme", "cpu", "ram" ]) ? "" : Monitor.chartData)
+  const chartData = JSON.stringify(
+    common.checkIfEmpty(Monitor.chartData, [ "echarts_theme", "cpu", "ram" ])
+      ? ""
+      : Monitor.chartData
+  )
   // 配置
   const { closedChart } = Config.state
   return {
-    BotStatusList: await getBotState(BotList),
+    BotStatusList,
     chartData: closedChart ? false : chartData,
     visualData: _.compact(visualData),
     otherInfo: getOtherInfo(),
@@ -57,7 +67,7 @@ function _getBotList(e) {
   /** bot列表 */
   let BotList = [ e.self_id ]
 
-  if (e.msg.includes("pro")) {
+  if (e.isPro) {
     if (Array.isArray(Bot?.uin)) {
       BotList = Bot.uin
     } else if (Bot?.adapter && Bot.adapter.includes(e.self_id)) {

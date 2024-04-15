@@ -28,6 +28,13 @@ closedNodeInfo: true
 # 关闭图表
 closedChart: false
 
+# 是否显示FastFetch 参数:true, false, pro ,default
+# true - 开启 
+# false - 关闭 
+# pro - 只有状态pro显示 
+# default - win默认只有pro显示，liunx等其他正常也会显示
+showFastFetch: default
+
 # Bot昵称的颜色
 BotNameColor: '#000'
 # Bot昵称渐变色 设置了该值BotNameColor值将无效 如要使用BotNameColor请将该值设为none或false
@@ -42,3 +49,4 @@ highColor: '#d73403'
 mediumColor: '#ffa500'
 
 lowColor: '#87CEEB'
+

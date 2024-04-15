@@ -42,7 +42,7 @@ export default async function getBotState(botList) {
     }
   })
 
-  return await Promise.all(dataPromises)
+  return Promise.all(dataPromises)
 }
 function extractVersion(versionString) {
   const regex = /\d+\.\d+\.\d+/

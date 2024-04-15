@@ -72,7 +72,7 @@ export class ThumbUp extends plugin {
             failsMsg = res.msg
           }
         }
-        continue
+        break
       } else {
         n += 10
       }

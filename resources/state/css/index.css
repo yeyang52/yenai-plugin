@@ -109,7 +109,7 @@
   white-space: nowrap;
 }
 
-.speed p, .HardDisk_li .mount, .tb .header h1 {
+.speed p, .HardDisk_li .mount, .botInfo .header h1 {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -125,7 +125,7 @@
 }
 
 .container {
-  background-image: url("./img/default_bg.jpg");
+  background-image: url("../img/default_bg.jpg");
   background-color: #e9e9e9;
   background-position: center top;
   background-repeat: no-repeat;
@@ -156,30 +156,30 @@ body {
   position: relative;
 }
 
-.tb {
+.botInfo {
   display: flex;
   justify-content: flex-start;
   align-items: center;
 }
-.tb .avatar-box {
+.botInfo .avatar-box {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 }
-.tb .avatar-box .avatar {
+.botInfo .avatar-box .avatar {
   position: relative;
   height: 100px;
   width: 100px;
   border-radius: 50%;
   margin: 0 20px;
 }
-.tb .avatar-box .avatar img {
+.botInfo .avatar-box .avatar img {
   width: 100%;
   height: 100%;
   border-radius: 50%;
 }
-.tb .avatar-box .avatar::before {
+.botInfo .avatar-box .avatar::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -188,13 +188,13 @@ body {
   border-radius: 50%;
   background: linear-gradient(135deg, var(--avatar-similar-color2), var(--avatar-similar-color1));
 }
-.tb .avatar-box .info {
+.botInfo .avatar-box .info {
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 10px;
 }
-.tb .avatar-box .info .onlineStatus {
+.botInfo .avatar-box .info .onlineStatus {
   width: 15px;
   height: 15px;
   margin-right: 5px;
@@ -202,81 +202,81 @@ body {
   align-items: center;
   justify-content: center;
 }
-.tb .avatar-box .info .onlineStatus img {
+.botInfo .avatar-box .info .onlineStatus img {
   width: 100%;
   height: 100%;
 }
-.tb .avatar-box .info .platform {
+.botInfo .avatar-box .info .platform {
   line-height: 15px;
   font-size: 11px;
-  text-shadow: 1px 1px 3px #949090;
+  font-style: italic;
 }
-.tb .header {
+.botInfo .header {
   font-size: 14px;
   width: 100%;
   color: #000;
 }
-.tb .header hr {
+.botInfo .header hr {
   margin: 5px 0px;
 }
-.tb .header span {
+.botInfo .header span {
   border-radius: 5px;
   box-shadow: -2px 2px 3px rgba(8, 8, 8, 0.5);
   padding: 0 5px;
   margin-right: 5px;
 }
-.tb .header p {
+.botInfo .header p {
   margin-top: 5px;
   --purple:#B4A0D8;
   --orange:#e0be92;
   --blue:#aad5e6;
 }
-.tb .header p:nth-child(3) span:nth-child(1) {
+.botInfo .header p:nth-child(3) span:nth-child(1) {
   background: #d799de;
 }
-.tb .header p:nth-child(3) span:nth-child(2) {
+.botInfo .header p:nth-child(3) span:nth-child(2) {
   background: #CBC7C8;
 }
-.tb .header p:nth-child(4) span:nth-child(1) {
+.botInfo .header p:nth-child(4) span:nth-child(1) {
   background: var(--purple);
 }
-.tb .header p:nth-child(4) span:nth-child(2) {
+.botInfo .header p:nth-child(4) span:nth-child(2) {
   background: var(--orange);
 }
-.tb .header p:nth-child(4) span:nth-child(3) {
+.botInfo .header p:nth-child(4) span:nth-child(3) {
   background: var(--blue);
 }
-.tb .header p:nth-child(5) span:nth-child(1) {
+.botInfo .header p:nth-child(5) span:nth-child(1) {
   background: var(--blue);
 }
-.tb .header p:nth-child(5) span:nth-child(2) {
+.botInfo .header p:nth-child(5) span:nth-child(2) {
   background: var(--purple);
 }
-.tb .header p:nth-child(5) span:nth-child(3) {
+.botInfo .header p:nth-child(5) span:nth-child(3) {
   background: var(--orange);
 }
-.tb .header table {
+.botInfo .header table {
   background: #67abdb;
   border-radius: 5px;
   box-shadow: #000 1px 1px 3px;
   margin: auto;
   margin-top: 5px;
 }
-.tb .header table td {
+.botInfo .header table td {
   line-height: 14px;
 }
-.tb .header table td.dyeing {
+.botInfo .header table td.dyeing {
   padding-left: 5px;
   text-align: center;
 }
-.tb .header table td.dyeing:not(:last-child) {
+.botInfo .header table td.dyeing:not(:last-child) {
   border-right: 2px solid #2f4f4f;
   padding-right: 10px;
 }
-.tb .header table td:nth-child(odd):not(:first-child) {
+.botInfo .header table td:nth-child(odd):not(:first-child) {
   padding-left: 10px;
 }
-.tb .header h1 {
+.botInfo .header h1 {
   display: inline-block;
   background-color: #000;
   -webkit-background-clip: text;
@@ -350,4 +350,4 @@ hr {
   flex-shrink: 1;
   margin-left: 20px;
   text-align: right;
-}/*# sourceMappingURL=state.css.map */
+}/*# sourceMappingURL=index.css.map */

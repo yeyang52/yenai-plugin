@@ -1,7 +1,7 @@
 {{extend defaultLayout}}
 
 {{block 'css'}}
-<link rel="stylesheet" href="{{_res_path}}state/state.css" />
+<link rel="stylesheet" href="{{_res_path}}state/css/index.css" />
 {{/block}}
 
 {{block 'main'}}
@@ -12,7 +12,7 @@
 </script>
 {{each BotStatusList}}
 <div class="box" data-boxInfo="Bot{{isBotIndex ? $index + 1 : ''}}信息">
-    <div class="tb">
+    <div class="botInfo">
         <div class="avatar-box">
             <div class="avatar" style="
                 --avatar-similar-color1: {{$value.avatar.similarColor1}};
@@ -120,7 +120,7 @@
 {{if chartData}}
 <div class="box" data-boxInfo="图表">
     <div id="Chart" style="height: 300px"></div>
-    <script src="{{_res_path}}state/js/echarts.min.js"></script>
+    <script src="{{_res_path}}state/js/modules/echarts.min.js"></script>
     <script src="{{_res_path}}state/js/chart.js"></script>
 </div>
 {{/if}}

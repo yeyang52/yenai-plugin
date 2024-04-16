@@ -46,7 +46,7 @@ export class NewState extends plugin {
       let data = await getData(e)
 
       // 渲染图片
-      await puppeteer.render("state/state", {
+      await puppeteer.render("state/index", {
         ...data
       }, {
         e,

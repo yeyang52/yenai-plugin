@@ -101,10 +101,10 @@ function generateFailMsg(doType, originalMsg) {
 async function generateResponseMsg(isSuccess, successMsg, failsMsg, avatar, successFn) {
   if (isSuccess) {
     const imageSegment = segment.image((await memes[successFn](avatar)))
-    return [ `\n${successMsg}`, imageSegment ]
+    return [ `${successMsg}`, imageSegment ] // Removed the leading newline character
   } else {
     const imageSegment = segment.image((await memes.crawl(avatar)))
     if (failsMsg == "return") return []
-    return [ `\n${failsMsg}`, imageSegment ]
+    return [ `${failsMsg}`, imageSegment ] // Removed the leading newline character
   }
 }

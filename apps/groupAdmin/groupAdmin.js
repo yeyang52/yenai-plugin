@@ -162,16 +162,16 @@ export class GroupAdmin extends plugin {
   async SetAdmin(e) {
     if (!common.checkPermission(e, "master", "owner")) return
     let qq = e.message.find(item => item.type == "at")?.qq
-    let type = /设置管理/.test(e.msg)
+    const type = /设置管理/.test(e.msg)
     if (!qq) qq = e.msg.replace(/#|(设置|取消)管理/g, "").trim()
 
     if (!qq || !(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号")
-    let Member = e.group.pickMember(Number(qq))
-    // 判断是否有这个人
-    if (!Member.info) return e.reply("❎ 这个群没有这个人哦~")
+    const Member = e.group.pickMember(qq)
+    const Memberinfo = Member?.info || await Member?.getInfo?.()
+    if (!Memberinfo) return e.reply("❎ 这个群没有这个人哦~")
 
-    let res = await e.group.setAdmin(qq, type)
-    let name = Member.card || Member.nickname
+    const res = await e.group.setAdmin(qq, type)
+    const name = Memberinfo.card || Memberinfo.nickname
     if (!res) return e.reply("❎ 未知错误")
     type ? e.reply(`✅ 已经把「${name}」设置为管理啦！！`) : e.reply(`✅ 已取消「${name}」的管理`)
   }

@@ -39,7 +39,7 @@ export function getDiskSpeed() {
     return false
   }
   return {
-    rx_sec: getFileSize(fsStats.rx_sec, false, false),
-    wx_sec: getFileSize(fsStats.wx_sec, false, false)
+    rx_sec: getFileSize(fsStats.rx_sec, { showByte: false, showSuffix: false }),
+    wx_sec: getFileSize(fsStats.wx_sec, { showByte: false, showSuffix: false })
   }
 }

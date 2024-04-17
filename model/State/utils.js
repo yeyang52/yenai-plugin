@@ -76,28 +76,46 @@ export function addData(arr, data, maxLen = 60) {
 }
 
 /**
- * 将文件大小从字节转化为可读性更好的格式，例如B、KB、MB、GB、TB。
- * @param {number} size - 带转化的字节数。
- * @param {boolean} [showByte] - 如果为 true，则最终的文件大小显示保留 B 的后缀.
- * @param {boolean} [showSuffix] - 如果为 true，则在所得到的大小后面加上 kb、mb、gb、tb 等后缀.
- * @returns {string} 文件大小格式转换后的字符串.
+ * 将字节大小转换成易读的文件大小格式
+ * @param {number} size - 要转换的字节大小
+ * @param {object} options - 转换选项
+ * @param {number} options.decimalPlaces - 小数点保留位数，默认为2
+ * @param {boolean} options.showByte - 是否在大小小于1KB时显示字节单位B，默认为true
+ * @param {boolean} options.showSuffix - 是否在单位后面显示缩写，默认为true
+ * @returns {string} 转换后的文件大小字符串
  */
-export function getFileSize(size, showByte = true, showSuffix = true) { // 把字节转换成正常文件大小
-  if (size == null || size == undefined) return 0
-  let num = 1024.00 // byte
-  if (showByte && size < num) {
-    return size.toFixed(2) + "B"
+export function getFileSize(size, { decimalPlaces = 2, showByte = true, showSuffix = true } = {}) {
+  // 检查 size 是否为 null 或 undefined
+  if (size === null || size === undefined) return 0
+
+  // 检查 decimalPlaces 是否为整数
+  if (typeof decimalPlaces !== "number" || !Number.isInteger(decimalPlaces)) {
+    throw new Error("decimalPlaces 必须是一个整数")
   }
-  if (size < Math.pow(num, 2)) {
-    return (size / num).toFixed(2) + `K${showSuffix ? "b" : ""}`
-  } // kb
-  if (size < Math.pow(num, 3)) {
-    return (size / Math.pow(num, 2)).toFixed(2) + `M${showSuffix ? "b" : ""}`
-  } // M
-  if (size < Math.pow(num, 4)) {
-    return (size / Math.pow(num, 3)).toFixed(2) + "G"
-  } // G
-  return (size / Math.pow(num, 4)).toFixed(2) + "T" // T
+
+  const units = [ "B", "K", "M", "G", "T" ]
+  const powers = [ 0, 1, 2, 3, 4 ]
+  const num = 1024.00 // byte
+
+  // 提前计算 powers of 1024
+  const precalculated = powers.map(power => Math.pow(num, power))
+
+  let unitIndex = 0
+  while (size >= precalculated[unitIndex + 1] && unitIndex < precalculated.length - 1) {
+    unitIndex++
+  }
+
+  // 使用一个函数来构建返回的字符串
+  const buildSizeString = (value, unit) => {
+    const suffix = ` ${unit}${showSuffix ? "B" : ""}`
+    return value.toFixed(decimalPlaces) + suffix
+  }
+
+  if (showByte && size < num) {
+    return buildSizeString(size, "B")
+  }
+
+  return buildSizeString(size / precalculated[unitIndex], units[unitIndex])
 }
 
 /**

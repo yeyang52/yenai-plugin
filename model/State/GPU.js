@@ -37,8 +37,8 @@ export default async function getGPU() {
       title: "GPU",
       info: [
           `${vendor} ${temperatureGpu}`,
-          `总共 ${(memoryTotal / 1024).toFixed(2)}G`,
-          `已用 ${(memoryUsed / 1024).toFixed(2)}G`
+          `总共 ${(memoryTotal / 1024).toFixed(2)} GB`,
+          `已用 ${(memoryUsed / 1024).toFixed(2)} GB`
       ]
     }
   } catch (e) {

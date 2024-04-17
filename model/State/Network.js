@@ -134,8 +134,8 @@ export function getNetwork() {
   let data = []
   for (let v of network) {
     if (v.rx_sec != null && v.tx_sec != null) {
-      let _rx = getFileSize(v.rx_sec, false, false)
-      let _tx = getFileSize(v.tx_sec, false, false)
+      let _rx = getFileSize(v.rx_sec, { showByte: false, showSuffix: false })
+      let _tx = getFileSize(v.tx_sec, { showByte: false, showSuffix: false })
       data.push({
         first: v.iface,
         tail: `↑${_tx}/s | ↓${_rx}/s`

@@ -209,7 +209,6 @@ body {
 .botInfo .avatar-box .info .platform {
   line-height: 15px;
   font-size: 11px;
-  font-style: italic;
 }
 .botInfo .header {
   font-size: 14px;
@@ -306,6 +305,7 @@ hr {
   position: relative;
   border-radius: 5px;
   overflow: hidden;
+  border: 1px solid #929292;
 }
 .memory .progress .current {
   background: #90ee90;
@@ -314,9 +314,9 @@ hr {
 }
 .memory .progress .word {
   position: absolute;
-  line-height: 25px;
   left: 50%;
-  transform: translate(-50%, 0);
+  top: 50%;
+  transform: translate(-50%, -50%);
   white-space: nowrap;
 }
 

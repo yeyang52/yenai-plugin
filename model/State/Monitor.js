@@ -70,7 +70,11 @@ export default new class monitor {
     if (!Config.state.statusTask) return
 
     if (Config.state.statusPowerShellStart) si.powerShellStart()
+    // 初始化数据
     this.getData()
+    // 获取两次数据保证重启后就有数据
+    setTimeout(() => this.getData(), 2000)
+    setTimeout(() => this.getData(), 4000)
     // 网速
     const Timer = setInterval(async() => {
       let data = await this.getData()

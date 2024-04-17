@@ -108,7 +108,7 @@ export async function xiuren(type) {
  */
 export async function coser() {
   let cheerio = await _importDependency()
-  const domain = "https://t2cy.com"
+  const domain = "https://a2cy.com"
   const homeUrl = `${domain}/acg/cos/index_${_.random(1, 30)}.html`
   logger.debug("[Yenai-Plugin][coser]作品索引页：" + homeUrl)
   const home = await request.get(homeUrl).then(res => res.text())

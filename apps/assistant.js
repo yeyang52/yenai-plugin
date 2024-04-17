@@ -890,7 +890,12 @@ export class Assistant extends plugin {
         if (match?.[0]) { this.blackResult = Number(match[0]) || String(match[0]) }
       }
     }
-    if (!this.blackResult || common.getPermission({ ...e, get isMaster() { return Config.masterQQ.includes(this.user_id) || Config.masterQQ.includes(String(this.user_id)) }, user_id: this.blackResult }, "master") === true) { return this.e.reply(`❎ ${name}失败，没有键入用户或群号`) }
+    if (!this.blackResult || common.getPermission(new Proxy({
+      get isMaster() { return Config.masterQQ.includes(this.user_id) || Config.masterQQ.includes(String(this.user_id)) },
+      user_id: this.blackResult
+    }, {
+      get: (target, prop, receiver) => target[prop] ?? e[prop]
+    }), "master") === true) { return this.e.reply(`❎ ${name}失败，没有键入用户或群号`) }
     try {
       const yamlContentBuffer = await fs.promises.readFile(configPath)
       const yamlContent = yamlContentBuffer.toString("utf-8")

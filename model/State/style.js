@@ -22,7 +22,7 @@ export async function getBackground() {
     clearTimeout()
   }
 }
-console.log(await getBackground())
+
 function arrayBufferToBase64(arrayBuffer) {
   return Buffer.from(arrayBuffer).toString("base64")
 }

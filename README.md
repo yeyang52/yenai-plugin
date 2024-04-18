@@ -9,8 +9,6 @@
 
 <br><img src="https://count.getloli.com/get/@:yenai-plugin?theme=rule34" /><br>
 
-<!-- <img src="https://counter.seku.su/cmoe?name=yenai-plugin&theme=r34" /><br> -->
-
 
 [![deploy_docs](https://github.com/yeyang52/yenai-plugin/actions/workflows/deploy-docs.yml/badge.svg)](https://github.com/yeyang52/yenai-plugin/actions/workflows/deploy-docs.yml)
 [![Vercel](https://therealsujitk-vercel-badge.vercel.app/?app=yenai-plugin-eta)](https://vercel.com/yeyang52/yenai-plugin)
@@ -66,8 +64,6 @@ pnpm install
 
 <details>
   <summary>事件通知</summary>
-
-- [x] ~~闪照监听~~ (目前企鹅闪照功能被ban)
 
 - [x] 撤回监听
 

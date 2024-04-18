@@ -10,7 +10,6 @@ export default async function getCpuInfo() {
   if (currentLoad == null || currentLoad == undefined) return false
   // 核心
   const cores = os.cpus()
-  const availableParallelism = os.availableParallelism()
   // cpu制造者
   const cpuModel = cores[0]?.model.slice(0, cores[0]?.model.indexOf(" ")) || ""
   return {
@@ -18,7 +17,7 @@ export default async function getCpuInfo() {
     inner: Math.round(currentLoad) + "%",
     title: "CPU",
     info: [
-        `${cpuModel} ${availableParallelism}核 ${osInfo?.arch}`,
+        `${cpuModel} ${cores.length}核 ${osInfo?.arch}`,
         `平均${cpuCurrentSpeed.avg}GHz`,
         `最大${cpuCurrentSpeed.max}GHz`
     ]

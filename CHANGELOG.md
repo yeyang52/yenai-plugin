@@ -32,10 +32,6 @@
 
 
 # 1.4.0
-* 增加开发依赖`eslint` `eslint-config-standard` `eslint-plugin-import` `eslint-plugin-jsdoc` `eslint-plugin-promise` `husky` `lint-staged`
-* 使用`husky`和`lint-staged`进行提交时eslint检测和自动格式化
-* 分离一些文件代码，让文件不再臃肿，便于维护
-* 增加贡献指南，请遵守贡献指南进行贡献，感谢您的贡献
 * **优化了** 部分正则
   * `#全体禁言/解禁` 可通过 `#全员禁言/解禁`触发
   * `#修改头衔` 可通过 `#设置头衔`触发

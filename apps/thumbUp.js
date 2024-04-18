@@ -78,13 +78,14 @@ export class ThumbUp extends plugin {
     let successMsg = `给${isSelf ? "你" : userId}${doType}了${n}下哦，记得回我~ ${isFriend ? "" : `(如${doType}失败请添加好友)`}`
     const avatar = `https://q1.qlogo.cn/g?b=qq&s=100&nk=${userId}`
     const successFn = _.sample([ "ganyu", "zan" ])
+    const mention = segment.at(userId)
 
     if (e.message?.[0]?.text == "#全部赞我")failsMsg = "return"
     /** 判断点赞是否成功 */
-    let msg = await generateResponseMsg(n > 0, successMsg, failsMsg, avatar, successFn)
+    let msg = await generateResponseMsg(n > 0, successMsg, failsMsg, avatar, successFn, mention)
 
     /** 回复 */
-    if (msg.length) { return e.reply(msg, true, { at: userId }) }
+    if (msg.length) { return e.reply(msg, true) }
   }
 }
 // 工具函数：生成失败消息
@@ -98,13 +99,13 @@ function generateFailMsg(doType, originalMsg) {
   return failsMsg
 }
 // 工具函数：生成响应消息
-async function generateResponseMsg(isSuccess, successMsg, failsMsg, avatar, successFn) {
+async function generateResponseMsg(isSuccess, successMsg, failsMsg, avatar, successFn, mention) {
   if (isSuccess) {
     const imageSegment = segment.image((await memes[successFn](avatar)))
-    return [ `${successMsg}`, imageSegment ] // Removed the leading newline character
+    return [ mention, `\n${successMsg}`, imageSegment ]
   } else {
     const imageSegment = segment.image((await memes.crawl(avatar)))
     if (failsMsg == "return") return []
-    return [ `${failsMsg}`, imageSegment ] // Removed the leading newline character
+    return [ mention, `\n${failsMsg}`, imageSegment ]
   }
 }

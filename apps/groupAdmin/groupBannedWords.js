@@ -198,7 +198,7 @@ export class GroupBannedWords extends plugin {
       const { matchType, penaltyType, addedBy, date, rawItem } = v
       msg.push([
         "屏蔽词：",
-        isRaw ? rawItem : await bannedWords.keyWordTran(rawItem),
+        isRaw ? rawItem : await groupBannedWords.keyWordTran(rawItem),
         `\n匹配模式：${bannedWords.matchTypeMap[matchType]}\n`,
         `处理方式：${bannedWords.penaltyTypeMap[penaltyType]}\n`,
         `添加人：${addedBy ?? "未知"}\n`,

@@ -44,24 +44,6 @@
                 <span>群 {{$value.groupQuantity}}</span>
                 <span>群员 {{$value.groupMemberQuantity}}</span>
             </p>
-            <!-- <table>
-                <tr>
-                    <td>收</td>
-                    <td class="dyeing">{{$value.recv || 0}}</td>
-                    <td>发</td>
-                    <td class="dyeing">{{$value.sent || 0}}</td>
-                    <td>图片</td>
-                    <td class="dyeing">{{$value.screenshot || 0}}</td>
-                </tr>
-                <tr>
-                    <td>好友</td>
-                    <td class="dyeing">{{$value.friendQuantity}}</td>
-                    <td>群</td>
-                    <td class="dyeing">{{$value.groupQuantity}}</td>
-                    <td>群员</td>
-                    <td class="dyeing">{{$value.groupMemberQuantity}}</td>
-                </tr>
-            </table> -->
         </div>
     </div>
 </div>
@@ -72,7 +54,6 @@
         <li class="li">
             <div class="container-box" data-num="{{group.inner}}" id="box">
                 <div class="circle-outer"></div>
-                <!-- 添加svg -->
                 <svg>
                     <!-- <defs>
                         <radialGradient id="gradient{{i}}" cx="50%" cy="50%" r="60%" fx="50%" fy="50%">
@@ -80,6 +61,9 @@
                             <stop offset="100%" stop-color="var({{group.color}}-light)" />
                         </radialGradient>
                     </defs> -->
+                    {{if group.title == "RAM" && group?.buffcache?.isBuff}}
+                        <circle id="circle" stroke="group.buffcache?.color" style="stroke-dashoffset:{{group.buffcache?.per}}"></circle>
+                    {{/if}}
                     <circle id="circle" stroke="{{group.color}}" style="stroke-dashoffset:{{group.per}}"></circle>
                 </svg>
             </div>

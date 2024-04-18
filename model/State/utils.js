@@ -86,7 +86,7 @@ export function addData(arr, data, maxLen = 60) {
  */
 export function getFileSize(size, { decimalPlaces = 2, showByte = true, showSuffix = true } = {}) {
   // 检查 size 是否为 null 或 undefined
-  if (size === null || size === undefined) return 0
+  if (size === null || size === undefined) return 0 + "B"
 
   // 检查 decimalPlaces 是否为整数
   if (typeof decimalPlaces !== "number" || !Number.isInteger(decimalPlaces)) {
@@ -106,13 +106,13 @@ export function getFileSize(size, { decimalPlaces = 2, showByte = true, showSuff
   }
 
   // 使用一个函数来构建返回的字符串
-  const buildSizeString = (value, unit) => {
-    const suffix = ` ${unit}${showSuffix ? "B" : ""}`
+  const buildSizeString = (value, unit, _showSuffix = showSuffix) => {
+    const suffix = ` ${unit}${_showSuffix ? "B" : ""}`
     return value.toFixed(decimalPlaces) + suffix
   }
 
   if (showByte && size < num) {
-    return buildSizeString(size, "B")
+    return buildSizeString(size, "B", false)
   }
 
   return buildSizeString(size / precalculated[unitIndex], units[unitIndex])

@@ -137,3 +137,27 @@ export function Circle(res) {
     color: `var(${color})`
   }
 }
+
+export async function createAbortCont(timeoutMs) {
+  let AbortController
+
+  try {
+    AbortController = globalThis.AbortController || (await import("abort-controller")).AbortController
+  } catch (error) {
+    logger.error("无法加载AbortController:", error)
+    throw new Error("网络请求控制器加载失败")
+  }
+
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => {
+    controller.abort()
+  }, timeoutMs)
+
+  // 可选：返回一个清理函数，以便在不需要超时时清除定时器
+  return {
+    controller,
+    clearTimeout: () => {
+      clearTimeout(timeoutId)
+    }
+  }
+}

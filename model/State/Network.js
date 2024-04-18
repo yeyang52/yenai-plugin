@@ -1,7 +1,7 @@
 import { Config } from "../../components/index.js"
 import request from "../../lib/request/request.js"
 import Monitor from "./Monitor.js"
-import { getFileSize } from "./utils.js"
+import { getFileSize, createAbortCont } from "./utils.js"
 
 const defList = [
   { name: "Baidu", url: "https://baidu.com" },
@@ -12,28 +12,28 @@ const defList = [
 ]
 /**
  * 获取网络测试列表。
+ * @param e
  * @returns {Promise<Array>} 返回一个Promise，该Promise解析为网络测试结果的数组。
  */
-export function getNetworkTestList() {
+export function getNetworkTestList(e) {
   const { psTestSites, psTestTimeout } = Config.state
   if (!psTestSites) {
     return Promise.resolve([])
   }
-  // 验证配置项
-  if (typeof psTestSites !== "boolean" && psTestSites !== "default" && !Array.isArray(psTestSites)) {
-    throw new Error("[yenai-plugin][state]参数错误，请检查psTestSites是否填写正确")
+  const parsedData = parseConfig(psTestSites, psTestTimeout)
+
+  if (!parsedData.show || (parsedData.show === "pro" && !e.isPro)) {
+    return Promise.resolve([])
   }
 
-  let testList = psTestSites === true || psTestSites === "default" ? defList : psTestSites
-
   // 如果testList为空直接返回空数组的Promise
-  if (testList.length === 0) {
+  if (parsedData.list.length === 0) {
     return Promise.resolve([])
   }
 
   // 使用Promise.all集中处理所有Promise
   let currentRequests = 0
-  return Promise.all(testList.map((site) => {
+  return Promise.all(parsedData.list.map((site) => {
     currentRequests++
     return handleSite(site, psTestTimeout).finally(() => {
       if (--currentRequests === 0) {
@@ -52,6 +52,28 @@ const handleSite = (site, TestTimeout) => {
       return { first: site.name, tail: "Error" } // 捕获错误并返回一个错误标记
     })
 }
+
+function parseConfig(psTestSites, psTestTimeout) {
+  let data = {
+    show: "pro",
+    list: [],
+    timeout: psTestTimeout ?? 5000
+  }
+
+  if (Array.isArray(psTestSites)) {
+    data.list = psTestSites
+  } else if (typeof psTestSites === "object") {
+    data = { ...data, ...psTestSites }
+  } else if (
+    (typeof psTestSites === "boolean" && psTestSites === true) ||
+    (typeof psTestSites === "string" && psTestSites === "default")
+  ) {
+    data.show = true
+    data.list = defList // Assuming defList is defined elsewhere
+  }
+
+  return data
+}
 /**
  * 网络测试
  * @param {string} url 测试的url
@@ -59,19 +81,7 @@ const handleSite = (site, TestTimeout) => {
  * @returns {string}
  */
 async function getNetworkLatency(url, timeoutTime = 5000) {
-  // 使用try-catch处理import可能抛出的异常
-  let AbortController
-  try {
-    AbortController = globalThis.AbortController || await import("abort-controller")
-  } catch (error) {
-    logger.error("无法加载AbortController:", error)
-    throw new Error("网络请求控制器加载失败")
-  }
-
-  const controller = new AbortController()
-  const timeout = setTimeout(() => {
-    controller.abort()
-  }, timeoutTime)
+  let { controller, clearTimeout } = await createAbortCont(timeoutTime)
 
   try {
     const startTime = Date.now()
@@ -122,7 +132,7 @@ async function getNetworkLatency(url, timeoutTime = 5000) {
     logger.error("网络请求过程中发生错误:", error)
     return "<span style='color:#F44336'>error</span>"
   } finally {
-    clearTimeout(timeout)
+    clearTimeout()
   }
 }
 /** 获取当前网速 */

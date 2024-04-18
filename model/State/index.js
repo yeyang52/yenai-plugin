@@ -12,6 +12,7 @@ import getNode from "./NodeInfo.js"
 import getOtherInfo, { getCopyright } from "./OtherInfo.js"
 import getRAM from "./RAM.js"
 import getSWAP from "./SWAP.js"
+import { getBackground } from "./style.js"
 
 export async function getData(e) {
   e.isPro = e.msg.includes("pro")
@@ -28,14 +29,15 @@ export async function getData(e) {
     visualDataPromise,
     getFastFetch(e),
     getFsSize(),
-    getNetworkTestList(),
-    getBotState(BotList)
+    getNetworkTestList(e),
+    getBotState(BotList),
+    getBackground()
   ]
 
   const [
     visualData,
     FastFetch,
-    HardDisk, psTest, BotStatusList
+    HardDisk, psTest, BotStatusList, backdrop
   ] = await Promise.all(promiseTaskList)
 
   const isBotIndex = /pro/.test(e.msg) && BotList.length > 1
@@ -44,8 +46,12 @@ export async function getData(e) {
       ? ""
       : Monitor.chartData
   )
+
   // 配置
   const { closedChart } = Config.state
+  const style = {
+    backdrop
+  }
   return {
     BotStatusList,
     chartData: closedChart ? false : chartData,
@@ -59,7 +65,8 @@ export async function getData(e) {
     _Config: Config.state,
     FastFetch,
     HardDisk,
-    isBotIndex
+    isBotIndex,
+    style
   }
 }
 

@@ -7,18 +7,18 @@ export default async function getMemUsage() {
   })
   const usedPercentage = (used / total).toFixed(2)
   const activePercentage = (active / total).toFixed(2)
-  const buffcachePercentage = (buffcache / total).toFixed(2)
+  // const buffcachePercentage = (buffcache / total).toFixed(2)
 
   const buffcacheMem = getFileSize(buffcache)
   const totalMem = getFileSize(total)
   const activeMem = getFileSize(active)
 
   const isBuff = buffcache && buffcache != 0
-  const buffcacheInner = isBuff ? `/${Math.round(buffcachePercentage * 100)}` : ""
+  // const buffcacheInner = isBuff ? `/${Math.round(buffcachePercentage * 100)}` : ""
 
   return {
     ...Circle(activePercentage),
-    inner: `${Math.round(activePercentage * 100)}${buffcacheInner}%`,
+    inner: `${Math.round(activePercentage * 100)}%`,
     title: "RAM",
     info: [
         `总共 ${totalMem}`,
@@ -27,7 +27,7 @@ export default async function getMemUsage() {
     ],
     buffcache: {
       ...Circle(usedPercentage),
-      color: "#969696",
+      color: "#bcbbbbb0",
       isBuff
     }
   }

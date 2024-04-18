@@ -108,6 +108,9 @@
     article {
         width: 100px;
         text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
 
         summary {
             font-size: 20px;

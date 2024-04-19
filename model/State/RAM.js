@@ -21,9 +21,8 @@ export default async function getMemUsage() {
     inner: `${Math.round(activePercentage * 100)}%`,
     title: "RAM",
     info: [
-        `总共 ${totalMem}`,
-        `主动使用 ${activeMem}`,
-        `缓冲区/缓存 ${buffcacheMem}`
+        `${activeMem} / ${totalMem}`,
+        isBuff ? `缓冲区/缓存 ${buffcacheMem}` : ""
     ],
     buffcache: {
       ...Circle(usedPercentage),

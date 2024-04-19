@@ -101,14 +101,14 @@
   align-items: center;
 }
 .mainHardware article summary {
-  font-size: 20px;
+  font-size: 22px;
   margin-top: 5px;
-  margin-bottom: 5px;
 }
 .mainHardware article p {
-  font-size: 12px;
+  font-size: 11px;
   color: #2f4f4f;
   white-space: nowrap;
+  margin-top: 5px;
 }
 
 .speed p, .HardDisk_li .mount, .botInfo .header h1 {

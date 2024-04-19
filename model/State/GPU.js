@@ -36,9 +36,8 @@ export default async function getGPU() {
       inner: Math.round(utilizationGpu) + "%",
       title: "GPU",
       info: [
-          `${vendor} ${temperatureGpu}`,
-          `总共 ${(memoryTotal / 1024).toFixed(2)} GB`,
-          `已用 ${(memoryUsed / 1024).toFixed(2)} GB`
+        `${(memoryUsed / 1024).toFixed(2)} GB / ${(memoryTotal / 1024).toFixed(2)} GB`,
+        `${vendor} ${temperatureGpu}`
       ]
     }
   } catch (e) {

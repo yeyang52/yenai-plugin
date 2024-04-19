@@ -88,7 +88,7 @@ async function getNetworkLatency(url, timeoutTime = 5000) {
     let { status } = await request.get(url, {
       signal: controller.signal,
       origError: true,
-      closeLogError: true
+      outErrorLog: false
     })
     const endTime = Date.now()
     let delay = endTime - startTime

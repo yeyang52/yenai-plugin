@@ -21,9 +21,9 @@ export async function getData(e) {
   const visualDataPromise = Promise.all([
     getCPU(),
     getRAM(),
+    getSWAP(),
     getGPU(),
-    getNode(),
-    getSWAP()
+    getNode()
   ])
   const promiseTaskList = [
     visualDataPromise,

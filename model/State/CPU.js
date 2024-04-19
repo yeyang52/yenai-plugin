@@ -7,9 +7,10 @@ export default async function getCpuInfo() {
     cpu: "manufacturer,speed,cores",
     fullLoad: "*"
   })
-  const { manufacturer, speed, cores } = cpu
+  let { manufacturer, speed, cores } = cpu
   if (currentLoad == null || currentLoad == undefined) return false
   fullLoad = Math.round(fullLoad)
+  manufacturer = manufacturer?.split(" ")?.[0] || ""
   return {
     ...Circle(currentLoad / 100),
     inner: Math.round(currentLoad) + "%",

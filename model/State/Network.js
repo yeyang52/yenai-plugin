@@ -22,11 +22,12 @@ export function getNetworkTestList(e) {
   }
   const parsedData = parseConfig(psTestSites, psTestTimeout)
 
-  if (!parsedData.show || (parsedData.show === "pro" && !e.isPro)) {
+  if (!parsedData.show) {
     return Promise.resolve([])
   }
-
-  // 如果testList为空直接返回空数组的Promise
+  if (parsedData.show === "pro" && !e.isPro) {
+    return Promise.resolve([])
+  }
   if (parsedData.list.length === 0) {
     return Promise.resolve([])
   }
@@ -35,7 +36,7 @@ export function getNetworkTestList(e) {
   let currentRequests = 0
   return Promise.all(parsedData.list.map((site) => {
     currentRequests++
-    return handleSite(site, psTestTimeout).finally(() => {
+    return handleSite(site).finally(() => {
       if (--currentRequests === 0) {
         logger.debug("[yenai-plugin][state]已完成所有网络测试")
       }
@@ -44,15 +45,20 @@ export function getNetworkTestList(e) {
 }
 
 // 封装处理每个测试站点逻辑到一个单独的函数
-const handleSite = (site, TestTimeout) => {
-  return getNetworkLatency(site.url, TestTimeout)
+const handleSite = (site) => {
+  return getNetworkLatency(site.url, site.timeout, site.useProxy)
     .then(res => ({ first: site.name, tail: res }))
     .catch(error => {
       logger.error(`[yenai-plugin][state]Error testing site: ${site.name}`, error)
       return { first: site.name, tail: "Error" } // 捕获错误并返回一个错误标记
     })
 }
-
+/**
+ * 解析配置参数并返回配置对象。
+ * @param {Array | string | boolean} psTestSites - 预期应该是对象包含show,list,timeout
+ * @param {number} psTestTimeout - 保留老配置文件psTestTimeout
+ * @returns {object} 包含配置信息的对象。
+ */
 function parseConfig(psTestSites, psTestTimeout) {
   let data = {
     show: "pro",
@@ -69,7 +75,7 @@ function parseConfig(psTestSites, psTestTimeout) {
     (typeof psTestSites === "string" && psTestSites === "default")
   ) {
     data.show = true
-    data.list = defList // Assuming defList is defined elsewhere
+    data.list = defList
   }
 
   return data
@@ -78,9 +84,10 @@ function parseConfig(psTestSites, psTestTimeout) {
  * 网络测试
  * @param {string} url 测试的url
  * @param {number} [timeoutTime] 超时时间
+ * @param {boolean} useProxy 是否使用代理
  * @returns {string}
  */
-async function getNetworkLatency(url, timeoutTime = 5000) {
+async function getNetworkLatency(url, timeoutTime = 5000, useProxy = false) {
   let { controller, clearTimeout } = await createAbortCont(timeoutTime)
 
   try {
@@ -88,7 +95,8 @@ async function getNetworkLatency(url, timeoutTime = 5000) {
     let { status } = await request.get(url, {
       signal: controller.signal,
       origError: true,
-      outErrorLog: false
+      outErrorLog: false,
+      agent: !!useProxy
     })
     const endTime = Date.now()
     let delay = endTime - startTime

@@ -3,6 +3,7 @@
 # name: 显示名称
 # url: 要访问的网址
 # timeout: 测试超时时间
+# useProxy: 是否使用插件配置中的代理访问
 psTestSites:
     show: pro
     list:
@@ -10,6 +11,9 @@ psTestSites:
           url: https://baidu.com
         - name: Google
           url: https://google.com
+        - name: Google(proxy)
+          url: https://google.com
+          useProxy: true
     timeout: 5000
 
 #监控任务

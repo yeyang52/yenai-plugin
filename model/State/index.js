@@ -13,7 +13,7 @@ import getOtherInfo, { getCopyright } from "./OtherInfo.js"
 import getRAM from "./RAM.js"
 import getSWAP from "./SWAP.js"
 import { getBackground } from "./style.js"
-
+import moment from "moment"
 export async function getData(e) {
   e.isPro = e.msg.includes("pro")
   /** bot列表 */
@@ -47,6 +47,8 @@ export async function getData(e) {
       : Monitor.chartData
   )
 
+  const time = moment().format("YYYY-MM-DD HH:mm:ss")
+
   // 配置
   const { closedChart } = Config.state
   const style = {
@@ -66,7 +68,9 @@ export async function getData(e) {
     FastFetch,
     HardDisk,
     isBotIndex,
-    style
+    style,
+    time,
+    isPro: e.isPro
   }
 }
 

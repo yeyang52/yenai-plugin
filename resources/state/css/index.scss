@@ -46,6 +46,16 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.18);
     font-weight: 700;
     position: relative;
+
+    .time {
+        position: absolute;
+        right: 20px;
+        top: -30px;
+        font-size: 11px;
+        color: #0e0e0e;
+        text-shadow: 1px 1px 1px #fff;
+        font-style: italic;
+    }
 }
 
 .botInfo {
@@ -248,7 +258,7 @@ hr {
         background: #c1c1c1;
         margin: 0 5px;
         position: relative;
-        border-radius: 5px;
+        border-radius: 8px;
         overflow: hidden;
         border: 1px solid #929292;
 

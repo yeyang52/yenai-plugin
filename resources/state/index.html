@@ -3,7 +3,7 @@
 {{block 'css'}}
 <link rel="stylesheet" href="{{_res_path}}state/css/index.css" />
 <style>
-    .container{
+    .container {
         background-image:url({{style.backdrop}})
     }
 </style>
@@ -54,6 +54,7 @@
 </div>
 {{/each}}
 <div class="box" data-boxInfo="主硬件">
+    <div class="time">{{time}} {{isPro ? '状态Pro' : ''}}</div>
     <ul class="mainHardware">
         {{each visualData group i}}
         <li class="li">
@@ -67,7 +68,8 @@
                         </radialGradient>
                     </defs> -->
                     {{if group.title == "RAM" && group?.buffcache?.isBuff}}
-                        <circle id="circle" stroke="{{group.buffcache?.color}}" style="stroke-dashoffset:{{group.buffcache?.per}}"></circle>
+                    <circle id="circle" stroke="{{group.buffcache?.color}}"
+                        style="stroke-dashoffset:{{group.buffcache?.per}}"></circle>
                     {{/if}}
                     <circle id="circle" stroke="{{group.color}}" style="stroke-dashoffset:{{group.per}}"></circle>
                 </svg>

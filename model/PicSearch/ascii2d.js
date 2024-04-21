@@ -72,7 +72,7 @@ const callAscii2dUrlApi = async(imgUrl) => {
   let res = await request.cfGet(`${domain}/search/url/${imgUrl}`).catch(
     err => {
       if (err.stack?.includes("legacy sigalg disallowed or unsupported")) {
-        throw new ReplyError(`Error Tls版本过低 请尝试将配置文件的‘cfTLSVersion’字段改为‘TLS1.2’\n详情请参考：https://www.yenai.ren/faq.html#openssl-%E9%94%99%E8%AF%AF\n错误信息：${err.stack}`)
+        throw new ReplyError(`Error Tls版本过低 请尝试将配置文件的‘cfTLSVersion’字段改为‘TLS1.2’\n详情请参考：https://yenai.trss.me/faq.html#openssl-%E9%94%99%E8%AF%AF\n错误信息：${err.stack}`)
       } else {
         throw err
       }

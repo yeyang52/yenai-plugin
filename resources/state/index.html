@@ -40,14 +40,14 @@
                 <span>Bot已运行 {{$value.botRunTime}}</span>
             </p>
             <p>
-                <span>收 {{$value.recv || 0}}</span>
-                <span>发 {{$value.sent || 0}}</span>
-                <span>图片 {{$value.screenshot || 0}}</span>
+                <span>收 {{$value.messageCount.recv}}</span>
+                <span>发 {{$value.messageCount.sent}}</span>
+                <span>图片 {{$value.messageCount.screenshot}}</span>
             </p>
             <p>
-                <span>好友 {{$value.friendQuantity}}</span>
-                <span>群 {{$value.groupQuantity}}</span>
-                <span>群员 {{$value.groupMemberQuantity}}</span>
+                <span>好友 {{$value.countContacts.friend}}</span>
+                <span>群 {{$value.countContacts.group}}</span>
+                <span>群员 {{$value.countContacts.groupMember}}</span>
             </p>
         </div>
     </div>

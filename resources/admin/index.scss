@@ -19,23 +19,19 @@ body {
   margin-bottom: 20px;
   padding: 5px 15px;
   overflow: hidden;
-  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.15);
   position: relative;
-  background: rgba(35, 38, 57, 0.8);
-  backdrop-filter: blur(7px);
-  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.3);
   border-radius: 26px;
-  box-shadow: 30px 30px 30px -10px rgba(0, 0, 0, 0.15),
-    inset 15px 15px 10px rgba(255, 255, 255, 0.75),
-    -15px -15px 35px rgba(255, 255, 255, 0.55),
-    inset -1px -1px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(51, 51, 52, 0.5), inset 3px 3px 10px 0px rgba(255, 255, 255, 0.8);
 }
 
 .cfg-group {
-  color: #e7f1ff;
+  color: #ec7d9b;
   font-size: 22px;
   font-weight: bold;
   padding: 10px 20px;
+  text-shadow: 1px 1px 1px #040404a4;
 }
 
 .cfg-li {
@@ -48,14 +44,14 @@ body {
 }
 
 .cfg-line {
-  color: #4e5769;
+  color: #31223a;
   line-height: 36px;
   padding-left: 20px;
   font-weight: bold;
   border-radius: 16px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
   /* background: url("imgs/cfg-right.jpg") right top #cbc4be no-repeat; */
-  background-image: linear-gradient(90deg, #e7f1ffb5 65%, #acb6e5);
+  background-image: linear-gradient(90deg, #FFF1EF 65%, #f7c8cc);
   background-size: auto 36px;
 }
 
@@ -75,18 +71,18 @@ body {
   text-align: center;
   line-height: 36px;
   font-size: 20px;
-  color: #495366;
+  color: #07333F;
   font-weight: bold;
   border-radius: 0 16px 16px 0;
 
   &.status-off {
-    color: #a95151;
+    color: #b74545;
   }
 }
 
 .cfg-desc {
   font-size: 16px;
-  color: white;
+  color: rgb(73, 71, 71);
   margin: 5px 0 5px 20px;
 }
 

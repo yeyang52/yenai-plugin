@@ -41,26 +41,26 @@ export const helpList = [
       {
         icon: 3,
         title: "#改头像 <图片>",
-        desc: "顾名思义"
+        desc: "ο(=•ω＜=)ρ⌒☆"
       },
       {
         icon: 4,
         title: "#改状态 <状态> ",
-        desc: "顾名思义"
+        desc: "ο(=•ω＜=)ρ⌒☆"
       },
       {
         icon: 5,
         title: "#改昵称 <昵称> ",
-        desc: "顾名思义"
+        desc: "ο(=•ω＜=)ρ⌒☆"
       },
       {
         icon: 6,
         title: "#改签名 <签名> ",
-        desc: "顾名思义"
+        desc: "ο(=•ω＜=)ρ⌒☆"
       },
       {
         title: "#改性别 <性别> ",
-        desc: "顾名思义",
+        desc: "ο(=•ω＜=)ρ⌒☆",
         icon: 7
       },
       {
@@ -75,7 +75,7 @@ export const helpList = [
       },
       {
         title: "#改群头像 <图片>",
-        desc: "顾名思义",
+        desc: "ο(=•ω＜=)ρ⌒☆",
         icon: 10
       },
       {
@@ -98,6 +98,21 @@ export const helpList = [
         desc: "获取Bot的所有好友",
         icon: 14
       },
+      {
+        title: "#拉黑 #取消拉黑",
+        desc: "可带at或直接键入qq，拉黑后面可带\"群\"",
+        icon: 13
+      }, {
+        title: "#拉白 #取消拉白",
+        desc: "用法与 #拉黑 相同",
+        icon: 14
+      }
+    ]
+  },
+  {
+    group: "说说功能",
+    auth: "master",
+    list: [
       {
         title: "#取说说列表 <页数> ",
         desc: "获取Bot的说说列表",
@@ -122,13 +137,16 @@ export const helpList = [
         title: "#清空留言",
         desc: "一键清空留言",
         icon: 19
-      }, {
-        title: "#开启|关闭戳一戳",
-        desc: "QQ的戳一戳开关",
-        icon: 5
-      }, {
+      }
+    ]
+  },
+  {
+    group: "申请处理",
+    auth: "master",
+    list: [
+      {
         title: "#同意|拒绝全部好友申请",
-        desc: "顾名思义",
+        desc: "ο(=•ω＜=)ρ⌒☆",
         icon: 6
       }, {
         title: "#查看好友申请",
@@ -156,6 +174,17 @@ export const helpList = [
         title: "#查看全部请求",
         desc: "查看所有请求",
         icon: 20
+      }
+    ]
+  },
+  {
+    group: "QQ设置",
+    auth: "master",
+    list: [
+      {
+        title: "#开启|关闭戳一戳",
+        desc: "QQ的戳一戳开关",
+        icon: 5
       }, {
         title: "#(开启|关闭)好友添加",
         desc: "是否开启好友添加",
@@ -164,14 +193,6 @@ export const helpList = [
         title: "#更改好友申请方式[0123]",
         desc: "带0参数为帮助",
         icon: 12
-      }, {
-        title: "#拉黑 #取消拉黑",
-        desc: "可带at或直接键入qq，拉黑后面可带\"群\"",
-        icon: 13
-      }, {
-        title: "#拉白 #取消拉白",
-        desc: "用法与 #拉黑 相同",
-        icon: 14
       }
     ]
   },

@@ -1,8 +1,12 @@
 .help-title, .help-group {
-  background-image: linear-gradient(180deg, #d51a2f, #0cacaa);
+  background-image: linear-gradient(180deg, #7a7a9f, #403544);
   -webkit-background-clip: text;
           background-clip: text;
   color: transparent;
+}
+
+:root {
+  --table-color: #865E58;
 }
 
 body {
@@ -40,7 +44,7 @@ body {
 }
 
 .help-group {
-  font-size: 20px;
+  font-size: 25px;
   font-weight: bold;
   padding: 15px 15px 10px 20px;
   display: inline-block;
@@ -54,7 +58,7 @@ body {
   display: table;
   overflow: hidden;
   width: 100%;
-  color: #d63d2f;
+  color: var(--table-color);
 }
 .help-table .tr {
   display: table-row;

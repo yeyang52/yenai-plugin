@@ -1,6 +1,7 @@
 import plugin from "../../../lib/plugins/plugin.js"
 import { Config } from "../components/index.js"
 import Monitor from "../model/State/Monitor.js"
+import { getBackground } from "../model/State/style.js"
 import { getData } from "../model/State/index.js"
 import { si } from "../model/State/utils.js"
 import { puppeteer } from "../model/index.js"
@@ -27,7 +28,8 @@ export class NewState extends plugin {
 
   async monitor(e) {
     await puppeteer.render("state/monitor", {
-      chartData: JSON.stringify(Monitor.chartData)
+      chartData: JSON.stringify(Monitor.chartData),
+      backdrop: await getBackground()
     }, {
       e,
       scale: 1.4

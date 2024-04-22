@@ -3,20 +3,24 @@
 {{block 'css'}}
 <link rel="stylesheet" href="{{_res_path}}state/css/index.css">
 <script src="{{_res_path}}state/js/modules/echarts.min.js"></script>
+<style>
+    .container {
+        background-image:url({{backdrop}})
+    }
+    .head-box {
+        margin-top: 0;
+    }
+</style>
 {{/block}}
 {{block 'main'}}
+<div class="info-box">
+    <div class="head-box">
+        <div class="title">椰奶监控</div>
+        <div class="label">CPU & RAM & Network & FsStats</div>
+    </div>
+</div>
 <script>
     var chartData = JSON.parse('{{@chartData}}')
-    const backdrop = chartData.backdrop
-    // 背景api
-    if (backdrop) {
-        var container = document.getElementById('container')
-        const img = new Image();
-        img.onload = function () {
-            container.style.backgroundImage = 'url(' + backdrop + ')';
-        }
-        img.src = backdrop;
-    }
     echarts.registerTheme('westeros', chartData.echarts_theme)
     var formatByte = (num = 1) => {
         return (value) => {

@@ -284,6 +284,6 @@ Bot.on?.("notice.group", async(e) => {
     default:
       return false
   }
-  await common.sendMasterMsg(msg)
-  if (forwardMsg) await common.sendMasterMsg(forwardMsg)
+  await common.sendMasterMsg(msg, bot.uin)
+  if (forwardMsg) await common.sendMasterMsg(forwardMsg, bot.uin)
 })

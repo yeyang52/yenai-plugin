@@ -170,8 +170,8 @@ Bot.on?.("message", async(e) => {
     return false
   }
   // 发送消息
-  await common.sendMasterMsg(msg)
-  if (forwardMsg) await common.sendMasterMsg(forwardMsg)
+  await common.sendMasterMsg(msg, e.bot.uin)
+  if (forwardMsg) await common.sendMasterMsg(forwardMsg, e.bot.uin)
 })
 // 特殊消息处理
 /**

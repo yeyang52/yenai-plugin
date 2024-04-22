@@ -80,5 +80,5 @@ segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
       }
       break
   }
-  await common.sendMasterMsg(msg)
+  await common.sendMasterMsg(msg, e.bot.uin)
 })

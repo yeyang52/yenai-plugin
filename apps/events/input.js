@@ -10,5 +10,5 @@ Bot.on?.("internal.input", async(e) => {
     `[事件(${e.self_id}) - 对方${e.end ? "输入完毕" : "正在输入"}]\n`,
     `好友账号：${e.user_id}`
   ]
-  await common.sendMasterMsg(msg)
+  await common.sendMasterMsg(msg, e.bot.uin)
 })

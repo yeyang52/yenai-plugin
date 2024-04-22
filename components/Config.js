@@ -53,6 +53,10 @@ class Config {
     return cfg.masterQQ
   }
 
+  get master() {
+    return cfg.master
+  }
+
   /** 获取全局设置 */
   get whole() {
     return this.getDefOrConfig("whole")

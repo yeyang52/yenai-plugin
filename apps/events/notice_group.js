@@ -252,7 +252,7 @@ Bot.on?.("notice.group", async(e) => {
         special = msgType[res[0].type].type
       } else {
         // 正常处理
-        forwardMsg = await bot.makeForwardMsg([
+        forwardMsg = await Bot.makeForwardMsg([
           {
             message: res,
             nickname: e.group.pickMember(e.user_id).card,

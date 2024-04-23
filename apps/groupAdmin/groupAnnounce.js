@@ -1,6 +1,6 @@
 import { QQApi, common } from "../../model/index.js"
-// API请求错误文案
-const API_ERROR = "❎ 出错辣，请稍后重试"
+import { API_ERROR } from "../../constants/errorMsg.js"
+
 export class GroupAnnounce extends plugin {
   constructor() {
     super({

@@ -1,126 +1,153 @@
 {
-  "projectName": "yenai-plugin",
-  "projectOwner": "yeyang52",
-  "repoType": "github",
-  "repoHost": "https://github.com",
-  "files": [
-    "README.md"
-  ],
-  "imageSize": 100,
-  "commit": false,
-  "commitConvention": "none",
-  "contributors": [
-    {
-      "login": "TimeRainStarSky",
-      "name": "时雨◎星空",
-      "avatar_url": "https://avatars.githubusercontent.com/u/63490117?v=4",
-      "profile": "https://github.com/TimeRainStarSky",
-      "contributions": [
-        "code"
-      ]
-    },
-    {
-      "login": "Saury-loser",
-      "name": "花海里的秋刀鱼",
-      "avatar_url": "https://avatars.githubusercontent.com/u/106982493?v=4",
-      "profile": "https://github.com/Saury-loser",
-      "contributions": [
-        "code"
-      ]
-    },
-    {
-      "login": "Georgebillion",
-      "name": "Georgebillion",
-      "avatar_url": "https://avatars.githubusercontent.com/u/40432824?v=4",
-      "profile": "https://github.com/Georgebillion",
-      "contributions": [
-        "ideas"
-      ]
-    },
-    {
-      "login": "xfdown",
-      "name": "小飞",
-      "avatar_url": "https://avatars.githubusercontent.com/u/42599406?v=4",
-      "profile": "https://github.com/xfdown",
-      "contributions": [
-        "ideas"
-      ]
-    },
-    {
-      "login": "liuzj288",
-      "name": "liuzj288",
-      "avatar_url": "https://avatars.githubusercontent.com/u/13833404?v=4",
-      "profile": "https://github.com/liuzj288",
-      "contributions": [
-        "code"
-      ]
-    },
-    {
-      "login": "OKKOM2020",
-      "name": "OKKOM2020",
-      "avatar_url": "https://avatars.githubusercontent.com/u/88592811?v=4",
-      "profile": "https://github.com/OKKOM2020",
-      "contributions": [
-        "doc"
-      ]
-    },
-    {
-      "login": "kmiit",
-      "name": "大可鸭",
-      "avatar_url": "https://avatars.githubusercontent.com/u/61952405?v=4",
-      "profile": "https://github.com/kmiit",
-      "contributions": [
-        "code"
-      ]
-    },
-    {
-      "login": "SmallK111407",
-      "name": "SunRyK",
-      "avatar_url": "https://avatars.githubusercontent.com/u/108290923?v=4",
-      "profile": "https://github.com/SmallK111407",
-      "contributions": [
-        "code"
-      ]
-    },
-    {
-      "login": "ikechan8370",
-      "name": "ikechan8370",
-      "avatar_url": "https://avatars.githubusercontent.com/u/21212372?v=4",
-      "profile": "https://github.com/ikechan8370",
-      "contributions": [
-        "code"
-      ]
-    },
-    {
-      "login": "fsqhn",
-      "name": "fsqhn",
-      "avatar_url": "https://avatars.githubusercontent.com/u/13745793?v=4",
-      "profile": "https://github.com/fsqhn",
-      "contributions": [
-        "code"
-      ]
-    },
-    {
-      "login": "Zyy955",
-      "name": "Zyy955",
-      "avatar_url": "https://avatars.githubusercontent.com/u/74231782?v=4",
-      "profile": "https://github.com/Zyy955",
-      "contributions": [
-        "code"
-      ]
-    },
-    {
-      "login": "Denfenglai",
-      "name": "等风来",
-      "avatar_url": "https://avatars.githubusercontent.com/u/129082426?v=4",
-      "profile": "https://github.com/Denfenglai",
-      "contributions": [
-        "code"
-      ]
-    }
-  ],
-  "contributorsPerLine": 7,
-  "skipCi": true,
-  "linkToUsage": false,
-  "commitType": "docs"
+    "projectName": "yenai-plugin",
+    "projectOwner": "yeyang52",
+    "repoType": "github",
+    "repoHost": "https://github.com",
+    "files": [
+        "README.md"
+    ],
+    "imageSize": 100,
+    "commit": false,
+    "commitConvention": "none",
+    "contributors": [
+        {
+            "login": "TimeRainStarSky",
+            "name": "时雨◎星空",
+            "avatar_url": "https://avatars.githubusercontent.com/u/63490117?v=4",
+            "profile": "https://github.com/TimeRainStarSky",
+            "contributions": [
+                "code"
+            ]
+        },
+        {
+            "login": "Saury-loser",
+            "name": "花海里的秋刀鱼",
+            "avatar_url": "https://avatars.githubusercontent.com/u/106982493?v=4",
+            "profile": "https://github.com/Saury-loser",
+            "contributions": [
+                "code"
+            ]
+        },
+        {
+            "login": "Georgebillion",
+            "name": "Georgebillion",
+            "avatar_url": "https://avatars.githubusercontent.com/u/40432824?v=4",
+            "profile": "https://github.com/Georgebillion",
+            "contributions": [
+                "ideas"
+            ]
+        },
+        {
+            "login": "xfdown",
+            "name": "小飞",
+            "avatar_url": "https://avatars.githubusercontent.com/u/42599406?v=4",
+            "profile": "https://github.com/xfdown",
+            "contributions": [
+                "ideas"
+            ]
+        },
+        {
+            "login": "liuzj288",
+            "name": "liuzj288",
+            "avatar_url": "https://avatars.githubusercontent.com/u/13833404?v=4",
+            "profile": "https://github.com/liuzj288",
+            "contributions": [
+                "code"
+            ]
+        },
+        {
+            "login": "OKKOM2020",
+            "name": "OKKOM2020",
+            "avatar_url": "https://avatars.githubusercontent.com/u/88592811?v=4",
+            "profile": "https://github.com/OKKOM2020",
+            "contributions": [
+                "doc"
+            ]
+        },
+        {
+            "login": "kmiit",
+            "name": "大可鸭",
+            "avatar_url": "https://avatars.githubusercontent.com/u/61952405?v=4",
+            "profile": "https://github.com/kmiit",
+            "contributions": [
+                "code"
+            ]
+        },
+        {
+            "login": "SmallK111407",
+            "name": "🐶k",
+            "avatar_url": "https://avatars.githubusercontent.com/u/108290923?v=4",
+            "profile": "https://github.com/SmallK111407",
+            "contributions": [
+                "code"
+            ]
+        },
+        {
+            "login": "ikechan8370",
+            "name": "ikechan8370",
+            "avatar_url": "https://avatars.githubusercontent.com/u/21212372?v=4",
+            "profile": "https://github.com/ikechan8370",
+            "contributions": [
+                "code"
+            ]
+        },
+        {
+            "login": "fsqhn",
+            "name": "fsqhn",
+            "avatar_url": "https://avatars.githubusercontent.com/u/13745793?v=4",
+            "profile": "https://github.com/fsqhn",
+            "contributions": [
+                "code"
+            ]
+        },
+        {
+            "login": "Loli-Lain",
+            "name": "Lain.",
+            "avatar_url": "https://avatars.githubusercontent.com/u/74231782?v=4",
+            "profile": "https://github.com/Loli-Lain",
+            "contributions": [
+                "code"
+            ]
+        },
+        {
+            "login": "Denfenglai",
+            "name": "等风来",
+            "avatar_url": "https://avatars.githubusercontent.com/u/129082426?v=4",
+            "profile": "https://github.com/Denfenglai",
+            "contributions": [
+                "code"
+            ]
+        },
+        {
+            "login": "8852690",
+            "name": "Sora",
+            "avatar_url": "https://avatars.githubusercontent.com/u/59615518?v=4",
+            "profile": "https://fuxuan.org/",
+            "contributions": [
+                "code"
+            ]
+        },
+        {
+            "login": "batvbs",
+            "name": "batvbs",
+            "avatar_url": "https://avatars.githubusercontent.com/u/60730393?v=4",
+            "profile": "https://github.com/batvbs",
+            "contributions": [
+                "code"
+            ]
+        },
+        {
+            "login": "ifeif",
+            "name": "ifeif",
+            "avatar_url": "https://avatars.githubusercontent.com/u/36729028?v=4",
+            "profile": "https://github.com/ifeif",
+            "contributions": [
+                "code"
+            ]
+        }
+    ],
+    "contributorsPerLine": 7,
+    "skipCi": true,
+    "linkToUsage": false,
+    "commitType": "docs"
 }

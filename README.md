@@ -18,7 +18,7 @@
 ![JavaScript](https://img.shields.io/badge/-JavaScript-eed718?style=flat&logo=javascript&logoColor=ffffff)
 [![license](https://img.shields.io/github/license/yeyang52/yenai-plugin.svg?style=flat&logo=gnu)](https://github.com/yeyang52/yenai-plugin/blob/master/LICENSE) 
 [![YunzaiBot](https://img.shields.io/badge/Yunzai-V3.0.0-black?style=flat&logo=dependabot)](https://gitee.com/Le-niao/Yunzai-Bot) 
-[![Group](https://img.shields.io/badge/Group-254974507-red?style=flat&logo=GroupMe&logoColor=white)](https://jq.qq.com/?_wv=1027&k=o8FTig5Z) 
+[![Group](https://img.shields.io/badge/Group-914247840-red?style=flat&logo=GroupMe&logoColor=white)](https://jq.qq.com/?_wv=1027&k=o8FTig5Z) 
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/yeyang52/yenai-plugin)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/yeyang52/yenai-plugin)
@@ -46,7 +46,7 @@
 // 使用github
 git clone --depth=1 https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 
-// 使用gitee(可能更新不及时)
+// 使用gitee
 git clone --depth=1 https://gitee.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 ```
 
@@ -200,13 +200,25 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 - [x] [whatanime](https://trace.moe)
 - [x] [ascii2d](https://ascii2d.net)
 
-  </details>
+</details>
+
+<details>
+  <summary>哔咔功能</summary>
+
+- [x] 哔咔搜索
+- [x] 哔咔看本子
+
+</details>
 
 
 <details>
   <summary>图片状态</summary>
 
- <img src="resources/img/状态.png" alt="状态" width = "300" />
+ <img src="resources/img/state.jpg" alt="状态" width = "300" />
+
+ 状态Pro
+
+<img src="resources/img/statePro.jpg" alt="状态" width = "300" />
 
 </details>
 <br>
@@ -223,11 +235,12 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 - [Ascii2D](https://ascii2d.net/)
 - [trace.moe](https://trace.moe) ([GitHub](https://github.com/soruly/trace.moe))
 - [vilipix](https://www.vilipix.com/)
+- [trss.me](https://trss.me)
 
 ### 贡献者 ✨
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-15-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 感谢这些了不起的人 ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
@@ -246,11 +259,16 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/kmiit"><img src="https://avatars.githubusercontent.com/u/61952405?v=4?s=100" width="100px;" alt="大可鸭"/><br /><sub><b>大可鸭</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=kmiit" title="Code">💻</a></td>
     </tr>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/SmallK111407"><img src="https://avatars.githubusercontent.com/u/108290923?v=4?s=100" width="100px;" alt="SunRyK"/><br /><sub><b>SunRyK</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=SmallK111407" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/SmallK111407"><img src="https://avatars.githubusercontent.com/u/108290923?v=4?s=100" width="100px;" alt="🐶k"/><br /><sub><b>🐶k</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=SmallK111407" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ikechan8370"><img src="https://avatars.githubusercontent.com/u/21212372?v=4?s=100" width="100px;" alt="ikechan8370"/><br /><sub><b>ikechan8370</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=ikechan8370" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/fsqhn"><img src="https://avatars.githubusercontent.com/u/13745793?v=4?s=100" width="100px;" alt="fsqhn"/><br /><sub><b>fsqhn</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=fsqhn" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Zyy955"><img src="https://avatars.githubusercontent.com/u/74231782?v=4?s=100" width="100px;" alt="Zyy955"/><br /><sub><b>Zyy955</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=Zyy955" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Loli-Lain"><img src="https://avatars.githubusercontent.com/u/74231782?v=4?s=100" width="100px;" alt="Lain."/><br /><sub><b>Lain.</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=Loli-Lain" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Denfenglai"><img src="https://avatars.githubusercontent.com/u/129082426?v=4?s=100" width="100px;" alt="等风来"/><br /><sub><b>等风来</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=Denfenglai" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://fuxuan.org/"><img src="https://avatars.githubusercontent.com/u/59615518?v=4?s=100" width="100px;" alt="Sora"/><br /><sub><b>Sora</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=8852690" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/batvbs"><img src="https://avatars.githubusercontent.com/u/60730393?v=4?s=100" width="100px;" alt="batvbs"/><br /><sub><b>batvbs</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=batvbs" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ifeif"><img src="https://avatars.githubusercontent.com/u/36729028?v=4?s=100" width="100px;" alt="ifeif"/><br /><sub><b>ifeif</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=ifeif" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
@@ -262,7 +280,7 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 
 本段遵循 [all-contributors](https://github.com/all-contributors/all-contributors) 规范，欢迎任何形式的贡献！
 
-## 如何贡献
+## 如何贡献 🤔
 
 请查看我们的[贡献指南](CONTRIBUTING.md)，了解如何开始贡献
 
@@ -271,6 +289,7 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 - [Yunzai-Bot插件索引](https://gitee.com/Hikari666/Yunzai-Bot-plugins-index)
 - [码云镜像库](https://gitee.com/yeyang52/yenai-plugin)
 - [Miao-Yunzai](https://gitee.com/yoimiya-kokomi/Miao-Yunzai)
+- [TRSS-Yunzai](https://gitee.com/TimeRainStarSky/Yunzai)
 
 ## 免责声明 ❗
 

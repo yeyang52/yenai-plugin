@@ -14,7 +14,7 @@ export default async function getBotState(botList) {
     const avatar = await getAvatarColor(avatarUrl)
 
     const nickname = bot.nickname || "未知"
-    const platform = bot.apk ? `${bot.apk.display} v${bot.apk.ver}` : bot.version?.version || "未知"
+    const platform = bot.apk ? `${bot.apk.display} v${bot.apk.version}` : bot.version?.version || "未知"
     const messageCount = await getMessageCount(bot)
     const countContacts = getCountContacts(bot)
     const onlineStatus = bot.status ?? 11

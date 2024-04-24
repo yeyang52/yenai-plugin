@@ -5,29 +5,37 @@ import { formatDuration } from "../../tools/index.js"
 import { getImgPalette, importColorThief } from "./utils.js"
 const require = createRequire(import.meta.url)
 
-export default async function getBotState(botList) {
+export default async function getBotState(e, botList) {
   const dataPromises = botList.map(async(i) => {
     const bot = Bot[i]
     if (!bot?.uin) return ""
+
+    const { nickname = "未知", status = 11, apk, version } = bot
+
     // 头像
-    const avatarUrl = bot.avatar || (Number(bot.uin) ? `https://q1.qlogo.cn/g?b=qq&s=0&nk=${bot.uin}` : "default")
+    const avatarUrl = bot.avatar ?? (Number(bot.uin) ? `https://q1.qlogo.cn/g?b=qq&s=0&nk=${bot.uin}` : "default")
     const avatar = await getAvatarColor(avatarUrl)
 
-    const nickname = bot.nickname || "未知"
-    const platform = bot.apk ? `${bot.apk.display} v${bot.apk.version}` : bot.version?.version || "未知"
+    const verKey = e.isPro ? "version" : "ver"
+    const platform = apk
+      ? `${apk.display} v${apk[verKey]}`
+      : version?.version ?? "未知"
+
     const messageCount = await getMessageCount(bot)
+
     const countContacts = getCountContacts(bot)
-    const onlineStatus = bot.status ?? 11
+
     const botRunTime = formatDuration(Date.now() / 1000 - bot.stat?.start_time, "dd天hh:mm:ss", true)
-    const botVersion = bot.version
-      ? `${bot.version.name}${bot.apk ? ` ${bot.version.version}` : ""}`
+
+    const botVersion = version
+      ? `${version.name}${apk ? ` ${version.version}` : ""}`
       : `ICQQ v${require("icqq/package.json").version}`
 
     return {
       avatar,
       nickname,
       botRunTime,
-      onlineStatus,
+      status,
       platform,
       botVersion,
       messageCount,

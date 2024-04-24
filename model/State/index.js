@@ -30,7 +30,7 @@ export async function getData(e) {
     getFastFetch(e),
     getFsSize(),
     getNetworkTestList(e),
-    getBotState(BotList),
+    getBotState(e, BotList),
     getBackground()
   ]
 

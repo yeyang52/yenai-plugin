@@ -43,17 +43,17 @@
 
 1. 推荐使用git进行安装，以方便后续升级。在Yunzai目录打开终端，运行
 
-```
-// 使用github
-git clone --depth=1 https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
+```sh
+# 使用github
+git clone -b master --depth=1 https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 
-// 使用gitee
-git clone --depth=1 https://gitee.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
+# 使用gitee
+git clone -b master --depth=1 https://gitee.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 ```
 
 2. 安装依赖(可选：不安装依赖将无法使用一些功能)
 
-```
+```sh
 pnpm install
 ```
 
@@ -95,6 +95,8 @@ Tip：具体可使用 **#椰奶设置** 查看
 - [x] 增 删 查 说说
 
 - [x] 开启/关闭戳一戳
+
+- [x] 增 删 黑/白名单
 
 
 </details>
@@ -189,7 +191,9 @@ Tip：详情请参考[此教程](https://docs.qq.com/doc/p/108e5d788607d988ac62e
 
 - [x] 加群申请处理
 
-- [ ] 黑名单/白名单
+- [x] 白名单
+
+- [ ] 黑名单
 
 Tip：具体可使用 **#椰奶群管帮助** 查看
   </details>

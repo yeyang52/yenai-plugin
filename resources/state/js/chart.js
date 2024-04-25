@@ -14,7 +14,7 @@ if (chartData) {
       value /= 1024
       unitIndex++
     }
-    return value.toFixed(0) + units[unitIndex] // 返回带有动态单位标签的字符串
+    return value.toFixed(1) + units[unitIndex] // 返回带有动态单位标签的字符串
   }
   let option = {
     animation: false,

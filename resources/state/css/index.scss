@@ -137,7 +137,7 @@ body {
             border-radius: 5px;
             box-shadow: -2px 2px 3px rgba(8, 8, 8, 0.5);
             padding: 0px 5px;
-            margin-right: 5px;
+            margin-right: 8px;
 
             img {
                 width: 14px;
@@ -148,6 +148,7 @@ body {
 
         p {
             margin-top: 5px;
+            display: flex;
 
             &:nth-child(3) {
                 span:nth-child(1) {

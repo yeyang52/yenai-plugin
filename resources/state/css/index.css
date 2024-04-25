@@ -232,7 +232,7 @@ body {
   border-radius: 5px;
   box-shadow: -2px 2px 3px rgba(8, 8, 8, 0.5);
   padding: 0px 5px;
-  margin-right: 5px;
+  margin-right: 8px;
 }
 .botInfo .header span img {
   width: 14px;
@@ -241,6 +241,7 @@ body {
 }
 .botInfo .header p {
   margin-top: 5px;
+  display: flex;
   --purple:#B4A0D8;
   --orange:#e0be92;
   --blue:#aad5e6;

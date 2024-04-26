@@ -5,11 +5,11 @@ let FriendsReg = /^#发好友\s?(\d+)\s?([^]*)$/
 let GroupMsgReg = /^#发群聊\s?(\d+)\s?([^]*)$/
 let GroupListMsgReg = /^#发群列表\s?(\d+(,\d+){0,})\s?([^]*)$/
 
-export class sendMsg extends plugin {
+export class SendMsg extends plugin {
   constructor() {
     super({
       name: "椰奶助手-发消息",
-      event: "message.group",
+      event: "message",
       priority: 500,
       rule: [
         {
@@ -26,6 +26,10 @@ export class sendMsg extends plugin {
         }
       ]
     })
+  }
+
+  get Bot() {
+    return this.e.bot ?? Bot
   }
 
   /**

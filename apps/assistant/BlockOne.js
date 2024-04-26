@@ -7,7 +7,7 @@ export class BlockOne extends plugin {
   constructor() {
     super({
       name: "椰奶助手-拉黑白名单",
-      event: "message.group",
+      event: "message",
       priority: 500,
       rule: [
         {

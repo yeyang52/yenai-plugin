@@ -7,7 +7,7 @@ export class Qzone extends plugin {
   constructor() {
     super({
       name: "椰奶助手-空间",
-      event: "message.group",
+      event: "message",
       priority: 500,
       rule: [
         {

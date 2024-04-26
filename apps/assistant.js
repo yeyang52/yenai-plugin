@@ -64,7 +64,7 @@ export class Assistant extends plugin {
           fnc: "SetGroupName"
         },
         {
-          reg: "^#获取(群|好友)列表$",
+          reg: "^#(获取)?(群|好友)列表$",
           fnc: "GlOrFl"
         },
         {
@@ -84,7 +84,7 @@ export class Assistant extends plugin {
           fnc: "FriendType"
         },
         {
-          reg: "#设置机型.*", // 更改好友申请方式
+          reg: "#设置机型.*",
           fnc: "setModel"
         },
         {
@@ -531,10 +531,14 @@ export class Assistant extends plugin {
 
     if (e.isGroup) {
       // 群聊判断权限
-      if (!e.isMaster && !e.member.is_owner && !e.member.is_admin) { return logger.warn(`${e.logFnc}该群员权限不足`) }
+      if (!common.checkPermission(e, "all", "admin")) {
+        return logger.warn(`${e.logFnc}该群员权限不足`)
+      }
     } else {
       // 私聊判断是否为Bot消息
-      if (source.sender.user_id != this.Bot.uin) { return logger.warn(`${e.logFnc}引用不是Bot消息`) }
+      if (source.sender.user_id != this.Bot.uin) {
+        return logger.warn(`${e.logFnc}引用不是Bot消息`)
+      }
     }
     if (source.message[0].type === "file" && e.isGroup) {
       // 删除文件

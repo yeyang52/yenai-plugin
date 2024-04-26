@@ -33,3 +33,11 @@ const documentElement = document.documentElement
 documentElement.style.setProperty("--high-color", highColor)
 documentElement.style.setProperty("--medium-color", mediumColor)
 documentElement.style.setProperty("--low-color", lowColor)
+
+const mainHardwareElement = document.querySelectorAll(".mainHardware li")
+const containerElement = document.querySelector(".container")
+if (mainHardwareElement.length === 4) {
+  containerElement.style.width = "650px"
+} else if (mainHardwareElement.length === 5) {
+  containerElement.style.width = "700px"
+}

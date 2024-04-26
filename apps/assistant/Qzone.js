@@ -15,7 +15,7 @@ export class Qzone extends plugin {
           fnc: "Qzonelist"
         },
         {
-          reg: "^#删说说(\\d+)$",
+          reg: "^#删除?说说(\\d+)$",
           fnc: "Qzonedel"
         },
         {

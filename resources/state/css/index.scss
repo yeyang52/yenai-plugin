@@ -23,6 +23,8 @@
         repeat: no-repeat;
         size: cover;
     }
+
+    width: 620px;
 }
 
 li {
@@ -67,6 +69,7 @@ body {
         justify-content: center;
         align-items: center;
         flex-direction: column;
+        margin-right: 5px;
 
         .avatar {
             position: relative;
@@ -133,22 +136,25 @@ body {
             margin: 5px 0px;
         }
 
-        span {
-            border-radius: 5px;
-            box-shadow: -2px 2px 3px rgba(8, 8, 8, 0.5);
-            padding: 0px 5px;
-            margin-right: 8px;
-
-            img {
-                width: 14px;
-                height: 14px;
-                vertical-align: -2px
-            }
-        }
-
         p {
-            margin-top: 5px;
+            margin-top: 10px;
             display: flex;
+            flex-wrap: wrap;
+            row-gap: 10px;
+
+            span {
+                border-radius: 5px;
+                box-shadow: -2px 2px 3px rgba(8, 8, 8, 0.5);
+                padding: 0px 5px;
+                margin-right: 8px;
+                white-space: nowrap;
+
+                img {
+                    width: 14px;
+                    height: 14px;
+                    vertical-align: -2px
+                }
+            }
 
             &:nth-child(3) {
                 span:nth-child(1) {
@@ -165,30 +171,21 @@ body {
             --blue:#aad5e6;
 
             &:nth-child(4) {
-                span:nth-child(1) {
+
+                span:nth-child(1),
+                span:nth-child(4) {
                     background: var(--purple);
+
                 }
 
-                span:nth-child(2) {
+                span:nth-child(2),
+                span:nth-child(5) {
                     background: var(--orange);
                 }
 
-                span:nth-child(3) {
+                span:nth-child(3),
+                span:nth-child(6) {
                     background: var(--blue);
-                }
-            }
-
-            &:nth-child(5) {
-                span:nth-child(1) {
-                    background: var(--blue);
-                }
-
-                span:nth-child(2) {
-                    background: var(--purple);
-                }
-
-                span:nth-child(3) {
-                    background: var(--orange);
                 }
             }
         }

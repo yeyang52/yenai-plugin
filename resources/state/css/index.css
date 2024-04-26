@@ -132,6 +132,7 @@
   background-position: center top;
   background-repeat: no-repeat;
   background-size: cover;
+  width: 620px;
 }
 
 li {
@@ -176,6 +177,7 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  margin-right: 5px;
 }
 .botInfo .avatar-box .avatar {
   position: relative;
@@ -228,23 +230,26 @@ body {
 .botInfo .header hr {
   margin: 5px 0px;
 }
-.botInfo .header span {
+.botInfo .header p {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 10px;
+  --purple:#B4A0D8;
+  --orange:#e0be92;
+  --blue:#aad5e6;
+}
+.botInfo .header p span {
   border-radius: 5px;
   box-shadow: -2px 2px 3px rgba(8, 8, 8, 0.5);
   padding: 0px 5px;
   margin-right: 8px;
+  white-space: nowrap;
 }
-.botInfo .header span img {
+.botInfo .header p span img {
   width: 14px;
   height: 14px;
   vertical-align: -2px;
-}
-.botInfo .header p {
-  margin-top: 5px;
-  display: flex;
-  --purple:#B4A0D8;
-  --orange:#e0be92;
-  --blue:#aad5e6;
 }
 .botInfo .header p:nth-child(3) span:nth-child(1) {
   background: #d799de;
@@ -252,23 +257,17 @@ body {
 .botInfo .header p:nth-child(3) span:nth-child(2) {
   background: #CBC7C8;
 }
-.botInfo .header p:nth-child(4) span:nth-child(1) {
+.botInfo .header p:nth-child(4) span:nth-child(1),
+.botInfo .header p:nth-child(4) span:nth-child(4) {
   background: var(--purple);
 }
-.botInfo .header p:nth-child(4) span:nth-child(2) {
+.botInfo .header p:nth-child(4) span:nth-child(2),
+.botInfo .header p:nth-child(4) span:nth-child(5) {
   background: var(--orange);
 }
-.botInfo .header p:nth-child(4) span:nth-child(3) {
+.botInfo .header p:nth-child(4) span:nth-child(3),
+.botInfo .header p:nth-child(4) span:nth-child(6) {
   background: var(--blue);
-}
-.botInfo .header p:nth-child(5) span:nth-child(1) {
-  background: var(--blue);
-}
-.botInfo .header p:nth-child(5) span:nth-child(2) {
-  background: var(--purple);
-}
-.botInfo .header p:nth-child(5) span:nth-child(3) {
-  background: var(--orange);
 }
 .botInfo .header table {
   background: #67abdb;

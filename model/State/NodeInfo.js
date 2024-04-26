@@ -20,8 +20,7 @@ export default function getNodeInfo() {
     title: "Node",
     info: [
         `总 ${rss}`,
-        `堆 ${heapTotal}`,
-        `栈 ${heapUsed}`
+        `${heapTotal} / ${heapUsed}`
     ]
   }
 }

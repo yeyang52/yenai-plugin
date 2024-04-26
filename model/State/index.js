@@ -1,4 +1,5 @@
 import _ from "lodash"
+import moment from "moment"
 import { Config } from "../../components/index.js"
 import common from "../../lib/common/common.js"
 import getBotState from "./BotState.js"
@@ -7,13 +8,14 @@ import getFastFetch from "./FastFetch.js"
 import getFsSize, { getDiskSpeed } from "./FsSize.js"
 import getGPU from "./GPU.js"
 import Monitor from "./Monitor.js"
-import { getNetworkTestList, getNetwork } from "./Network.js"
+import { getNetwork, getNetworkTestList } from "./Network.js"
 import getNode from "./NodeInfo.js"
 import getOtherInfo, { getCopyright } from "./OtherInfo.js"
 import getRAM from "./RAM.js"
 import getSWAP from "./SWAP.js"
 import { getBackground } from "./style.js"
-import moment from "moment"
+import { getChartCfg } from "./utils.js"
+
 export async function getData(e) {
   e.isPro = e.msg.includes("pro")
   /** bot列表 */
@@ -54,6 +56,7 @@ export async function getData(e) {
   const style = {
     backdrop
   }
+
   return {
     BotStatusList,
     chartData: closedChart ? false : chartData,
@@ -70,7 +73,8 @@ export async function getData(e) {
     isBotIndex,
     style,
     time,
-    isPro: e.isPro
+    isPro: e.isPro,
+    chartCfg: JSON.stringify(getChartCfg())
   }
 }
 

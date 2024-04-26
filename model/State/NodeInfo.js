@@ -20,7 +20,7 @@ export default function getNodeInfo() {
     title: "Node",
     info: [
         `总 ${rss}`,
-        `${heapTotal} / ${heapUsed}`
+        `${heapTotal} | ${heapUsed}`
     ]
   }
 }

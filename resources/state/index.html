@@ -12,6 +12,7 @@
 {{block 'main'}}
 <script>
     var chartData = JSON.parse('{{@chartData}}')
+    var chartCfg = JSON.parse('{{@chartCfg}}')
     var Config = JSON.parse('{{@Config}}')
     var _res_path = '{{_res_path}}'
 </script>
@@ -124,6 +125,8 @@
 </div>
 {{/if}}
 
+<script src="{{_res_path}}state/js/style.js"></script>
+
 {{if chartData}}
 <div class="box" data-boxInfo="图表">
     <div id="Chart" style="height: 300px"></div>
@@ -162,7 +165,5 @@
 {{/if}}
 
 {{@FastFetch}}
-
-<script src="{{_res_path}}state/js/style.js"></script>
 
 {{/block}}

@@ -1,4 +1,4 @@
-import { Config, Data } from "../../components/index.js"
+import { Config } from "../../components/index.js"
 import _ from "lodash"
 import { si, initDependence, addData } from "./utils.js"
 
@@ -25,9 +25,7 @@ export default new class monitor {
       // cpu
       cpu: [],
       // 内存
-      ram: [],
-      // 主题
-      echarts_theme: Data.readJSON("resources/state/theme_westeros.json")
+      ram: []
     }
     this.valueObject = {
       networkStats: "rx_sec,tx_sec,iface",
@@ -35,6 +33,7 @@ export default new class monitor {
       mem: "active",
       fsStats: "wx_sec,rx_sec"
     }
+    this.chartDataKey = "yenai:state:chartData"
 
     this.init()
   }
@@ -65,16 +64,13 @@ export default new class monitor {
 
   async init() {
     if (!await initDependence()) return
-
+    await this.getRedisChartData()
     // 给有问题的用户关闭定时器
     if (!Config.state.statusTask) return
 
     if (Config.state.statusPowerShellStart) si.powerShellStart()
     // 初始化数据
     this.getData()
-    // 获取两次数据保证重启后就有数据
-    setTimeout(() => this.getData(), 2000)
-    setTimeout(() => this.getData(), 4000)
     // 网速
     const Timer = setInterval(async() => {
       let data = await this.getData()
@@ -104,6 +100,24 @@ export default new class monitor {
     if (_.isNumber(currentLoad)) {
       addData(this.chartData.cpu, [ Date.now(), currentLoad ])
     }
+    this.setRedisChartData()
     return data
+  }
+
+  async getRedisChartData() {
+    let data = await redis.get(this.chartDataKey)
+    if (data) {
+      this.chartData = JSON.parse(data)
+      return true
+    }
+    return false
+  }
+
+  async setRedisChartData() {
+    try {
+      await redis.set(this.chartDataKey, JSON.stringify(this.chartData), { EX: 86400 })
+    } catch (error) {
+      console.log(error)
+    }
   }
 }()

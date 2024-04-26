@@ -2,7 +2,7 @@
 const chartBoxElement = document.querySelector(".box[data-boxInfo=图表]")
 if (chartData) {
 // 图表
-  echarts.registerTheme("westeros", chartData.echarts_theme)
+  echarts.registerTheme("westeros", chartCfg.echarts_theme)
   const chart = echarts.init(document.getElementById("Chart"), "westeros", {
     renderer: "svg"
   })

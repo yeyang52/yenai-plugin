@@ -1,4 +1,5 @@
 import _ from "lodash"
+import { Data } from "../../components/index.js"
 
 export let si = false
 export let osInfo = null
@@ -159,5 +160,12 @@ export async function createAbortCont(timeoutMs) {
     clearTimeout: () => {
       clearTimeout(timeoutId)
     }
+  }
+}
+export function getChartCfg() {
+  const echarts_theme = Data.readJSON("resources/state/theme_westeros.json")
+
+  return {
+    echarts_theme
   }
 }

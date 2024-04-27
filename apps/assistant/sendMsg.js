@@ -1,8 +1,8 @@
 import { common } from "../../model/index.js"
 import { sleep } from "../../tools/index.js"
 
-let FriendsReg = /^#发好友\s?(\d+)\s?([^]*)$/
-let GroupMsgReg = /^#发群聊\s?(\d+)\s?([^]*)$/
+let FriendsReg = /^#(\d*)\s?发好友\s?(\d+)\s?([^]*)$/
+let GroupMsgReg = /^#(\d*)\s?发群聊\s?(\d+)\s?([^]*)$/
 let GroupListMsgReg = /^#发群列表\s?(\d+(,\d+){0,})\s?([^]*)$/
 
 export class SendMsg extends plugin {
@@ -10,7 +10,7 @@ export class SendMsg extends plugin {
     super({
       name: "椰奶助手-发消息",
       event: "message",
-      priority: 500,
+      priority: -1,
       rule: [
         {
           reg: FriendsReg, // 发好友
@@ -38,18 +38,27 @@ export class SendMsg extends plugin {
    */
   async SendFriendMsg(e) {
     if (!common.checkPermission(e, "master")) return
+
     let regRet = FriendsReg.exec(e.msg)
-    let qq = regRet[1]
-    e.message[0].text = regRet[2]
+
+    let botId = regRet[1]
+    let qq = regRet[2]
+    let msg = regRet[3]
+
     if (!/^\d+$/.test(qq)) return e.reply("❎ QQ号不正确，人家做不到的啦>_<~")
+    if (!msg) return e.reply("❎ 消息不能为空")
 
-    if (!this.Bot.fl.get(Number(qq))) return e.reply("❎ 好友列表查无此人")
+    let bot
+    if (botId) {
+      if (!Bot[botId]) return e.reply("❎ Bot账号错误")
+      bot = Bot[botId]
+    } else {
+      bot = this.Bot
+    }
 
-    if (!e.message[0].text) e.message.shift()
+    if (!bot.fl.get(Number(qq))) return e.reply("❎ 好友列表查无此人")
 
-    if (e.message.length === 0) return e.reply("❎ 消息不能为空")
-
-    await this.Bot.pickFriend(qq).sendMsg(e.message)
+    await bot.pickFriend(qq).sendMsg(msg)
       .then(() => e.reply("✅ 私聊消息已送达"))
       .catch(err => common.handleException(e, err, { MsgTemplate: "❎ 发送失败\n错误信息为:{error}" }))
   }
@@ -60,29 +69,38 @@ export class SendMsg extends plugin {
    */
   async SendGroupMsg(e) {
     if (!common.checkPermission(e, "master")) return
+
     let regRet = GroupMsgReg.exec(e.msg)
 
-    let gpid = regRet[1]
+    let botId = regRet[1]
+    let gpid = regRet[2]
+    let msg = regRet[3]
 
-    e.message[0].text = regRet[2]
+    if (!/^\d+$/.test(gpid)) return e.reply("❎ 群号不正确，人家做不到的啦>_<~")
+    if (!msg) return e.reply("❎ 消息不能为空")
 
-    if (!e.message[0].text) e.message.shift()
+    let bot
+    if (botId) {
+      if (!Bot[botId]) return e.reply("❎ Bot账号错误")
+      bot = Bot[botId]
+    } else {
+      bot = this.Bot
+    }
 
-    if (e.message.length === 0) return e.reply("❎ 消息不能为空")
+    if (!bot.gl.get(Number(gpid))) return e.reply("❎ 群聊列表查无此群")
 
-    if (!/^\d+$/.test(gpid)) return e.reply("❎ 您输入的群号不合法")
-
-    if (!this.Bot.gl.get(Number(gpid))) return e.reply("❎ 群聊列表查无此群")
-
-    await this.Bot.pickGroup(gpid).sendMsg(e.message)
+    await bot.pickGroup(gpid).sendMsg(msg)
       .then(() => e.reply("✅ 群聊消息已送达"))
       .catch((err) => common.handleException(e, err, { MsgTemplate: "❎ 发送失败\n错误信息为:{error}" }))
   }
 
-  // 发送群列表
+  /**
+   * 发群列表
+   * @param e
+   */
   async SendGroupListMsg(e) {
     if (!common.checkPermission(e, "master")) return
-    // 获取参数
+
     let regRet = GroupListMsgReg.exec(e.msg)
     let gpid = regRet[1]
     e.message[0].text = regRet[3]
@@ -94,7 +112,6 @@ export class SendMsg extends plugin {
     let groupidList = []
     let sendList = []
 
-    // 获取群列表
     let listMap = Array.from(this.Bot.gl.values())
 
     listMap.forEach((item) => {

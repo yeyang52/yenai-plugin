@@ -56,7 +56,7 @@ export class NewHandle extends plugin {
    * @param e
    */
   async PrivateAdd(e) {
-    if (!e.isMaster) return false
+    if (!common.checkPermission(e, "master")) return false
     let yes = !!/同意/.test(e.msg)
 
     const systemMsg = (await (e.bot ?? Bot).getSystemMsg())
@@ -160,7 +160,7 @@ export class NewHandle extends plugin {
       }
       return true
     } else {
-      if (!e.isMaster) return false
+      if (!common.checkPermission(e, "master")) return false
       if (/添加好友申请/.test(sourceMsg[0])) {
         let qq = sourceMsg[1].match(/[1-9]\d*/g)
         if ((e.bot ?? Bot).fl.get(Number(qq))) return e.reply("❎ 已经同意过该申请了哦~")
@@ -205,7 +205,7 @@ export class NewHandle extends plugin {
 
   // 回复好友消息
   async Replys(e) {
-    if (!e.isMaster) return false
+    if (!common.checkPermission(e, "master")) return false
     let qq = ""
     let group = ""
     let msgs = e.message[0].text.split(" ")
@@ -261,7 +261,7 @@ export class NewHandle extends plugin {
 
   // 加群员为好友
   async addFriend(e) {
-    if (!e.isMaster) return false
+    if (!common.checkPermission(e, "master")) return false
     if (!e.source) return false
     let source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
     let msg = source.raw_message.split("\n")
@@ -344,7 +344,7 @@ export class NewHandle extends plugin {
 
   // 群邀请列表
   async GroupInvite(e) {
-    if (!e.isMaster) return false
+    if (!common.checkPermission(e, "master")) return false
     let SystemMsg = (await (e.bot ?? Bot).getSystemMsg()).filter(item => item.request_type == "group" && item.sub_type == "invite")
     if (_.isEmpty(SystemMsg)) return e.reply("暂无群邀请哦(。-ω-)zzz", true)
     let yes = /同意/.test(e.msg)
@@ -400,7 +400,7 @@ export class NewHandle extends plugin {
 
   // 全部请求
   async SystemMsgAll(e) {
-    if (!e.isMaster) return false
+    if (!common.checkPermission(e, "master")) return false
     let SystemMsg = await (e.bot ?? Bot).getSystemMsg()
     let FriendAdd = []; let onewayFriend = []; let GroupAdd = []; let GroupInvite = []
     for (let i of SystemMsg) {

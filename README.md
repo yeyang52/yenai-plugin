@@ -24,6 +24,9 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/yeyang52/yenai-plugin)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/yeyang52/yenai-plugin)
 ![Lines of code](https://img.shields.io/tokei/lines/github/yeyang52/yenai-plugin)
+
+[![Gitee star](https://gitee.com/yeyang52/yenai-plugin/badge/star.svg?theme=dark)](https://gitee.com/yeyang52/yenai-plugin/stargazers)
+[![Gitee fork](https://gitee.com/yeyang52/yenai-plugin/badge/fork.svg?theme=dark)](https://gitee.com/yeyang52/yenai-plugin/members)
 [![GitHub stars](https://img.shields.io/github/stars/yeyang52/yenai-plugin)](https://github.com/yeyang52/yenai-plugin/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/yeyang52/yenai-plugin)](https://github.com/yeyang52/yenai-plugin/network)
 [![GitHub issues](https://img.shields.io/github/issues/yeyang52/yenai-plugin)](https://github.com/yeyang52/yenai-plugin/issues)
@@ -43,11 +46,12 @@
 
 1. 推荐使用git进行安装，以方便后续升级。在Yunzai目录打开终端，运行
 
+- 使用github
 ```sh
-# 使用github
 git clone -b master --depth=1 https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
-
-# 使用gitee
+```
+- 使用gitee
+```sh
 git clone -b master --depth=1 https://gitee.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 ```
 
@@ -311,3 +315,4 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 
 
 ![Alt](https://repobeats.axiom.co/api/embed/42b5a7769074be124bd9ab02456897e37d1581f1.svg "Repobeats analytics image")
+[![椰羊/Yenai-Plugin](https://gitee.com/yeyang52/yenai-plugin/widgets/widget_card.svg?colors=4183c4,ffffff,ffffff,e3e9ed,666666,9b9b9b)](https://gitee.com/yeyang52/yenai-plugin)

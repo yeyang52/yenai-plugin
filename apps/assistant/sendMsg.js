@@ -43,10 +43,7 @@ export class SendMsg extends plugin {
 
     let botId = regRet[1]
     let qq = regRet[2]
-    let msg = regRet[3]
-
-    if (!/^\d+$/.test(qq)) return e.reply("❎ QQ号不正确，人家做不到的啦>_<~")
-    if (!msg) return e.reply("❎ 消息不能为空")
+    e.message[0].text = regRet[3]
 
     let bot
     if (botId) {
@@ -56,9 +53,15 @@ export class SendMsg extends plugin {
       bot = this.Bot
     }
 
+    if (!/^\d+$/.test(qq)) return e.reply("❎ QQ号不正确，人家做不到的啦>_<~")
+
+    if (!e.message[0].text) e.message.shift()
+
+    if (e.message.length === 0) return e.reply("❎ 消息不能为空")
+
     if (!bot.fl.get(Number(qq))) return e.reply("❎ 好友列表查无此人")
 
-    await bot.pickFriend(qq).sendMsg(msg)
+    await bot.pickFriend(qq).sendMsg(e.message)
       .then(() => e.reply("✅ 私聊消息已送达"))
       .catch(err => common.handleException(e, err, { MsgTemplate: "❎ 发送失败\n错误信息为:{error}" }))
   }
@@ -74,10 +77,7 @@ export class SendMsg extends plugin {
 
     let botId = regRet[1]
     let gpid = regRet[2]
-    let msg = regRet[3]
-
-    if (!/^\d+$/.test(gpid)) return e.reply("❎ 群号不正确，人家做不到的啦>_<~")
-    if (!msg) return e.reply("❎ 消息不能为空")
+    e.message[0].text = regRet[3]
 
     let bot
     if (botId) {
@@ -87,9 +87,15 @@ export class SendMsg extends plugin {
       bot = this.Bot
     }
 
+    if (!/^\d+$/.test(gpid)) return e.reply("❎ 群号不合法")
+
+    if (!e.message[0].text) e.message.shift()
+
+    if (e.message.length === 0) return e.reply("❎ 消息不能为空")
+
     if (!bot.gl.get(Number(gpid))) return e.reply("❎ 群聊列表查无此群")
 
-    await bot.pickGroup(gpid).sendMsg(msg)
+    await bot.pickGroup(gpid).sendMsg(e.message)
       .then(() => e.reply("✅ 群聊消息已送达"))
       .catch((err) => common.handleException(e, err, { MsgTemplate: "❎ 发送失败\n错误信息为:{error}" }))
   }

@@ -198,7 +198,7 @@ export class Assistant extends plugin {
    */
   async SetGroupAvatar(e) {
     if (e.isPrivate) {
-      if (!e.isMaster) return logger.mark(`${e.logFnc}不为主人`)
+      if (!common.checkPermission(e, "admin", "admin")) return
       e.group_id = e.msg.replace(/#|改群头像/g, "").trim()
 
       if (!e.group_id) return e.reply("❎ 群号不能为空")
@@ -531,7 +531,7 @@ export class Assistant extends plugin {
 
     if (e.isGroup) {
       // 群聊判断权限
-      if (!common.checkPermission(e, "all", "admin")) {
+      if (!common.checkPermission(e, "admin")) {
         return logger.warn(`${e.logFnc}该群员权限不足`)
       }
     } else {

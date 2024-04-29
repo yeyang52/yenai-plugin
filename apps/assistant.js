@@ -2,7 +2,9 @@ import _ from "lodash"
 import { status } from "../constants/other.js"
 import { common, QQApi } from "../model/index.js"
 import { sleep } from "../tools/index.js"
+import { Config } from "../components/index.js"
 import { API_ERROR } from "../constants/errorMsg.js"
+import cfg from "../../../lib/config/config.js"
 
 // 命令正则
 
@@ -90,6 +92,10 @@ export class Assistant extends plugin {
         {
           reg: "^#?(查?看|取)头像",
           fnc: "LookAvatar"
+        },
+        {
+          reg: "^#?(设置|修改)日志等级(.*)",
+          fnc: "logs"
         }
       ]
     })
@@ -623,5 +629,21 @@ export class Assistant extends plugin {
     }
     await this.reply("❎ 获取头像错误", true)
     return false
+  }
+
+  // 设置日志等级
+  async logs() {
+    if (!common.checkPermission(this.e, "master")) return
+
+    const logs = [ "trace", "debug", "info", "warn", "fatal", "mark", "error", "off" ]
+    const level = this.e.msg.replace(/^#?(设置|修改)日志等级/, "").trim()
+
+    if (!logs.includes(level)) return this.e.reply("❎ 请输入正确的参数，可选：\ntrace,debug,info,warn,fatal,mark,error,off")
+
+    const { log_level } = cfg.bot
+    if (log_level === level) return this.e.reply(`❎ 日志等级已是${level}了`)
+
+    Config.modify("bot", "log_level", level, "config", true)
+    this.e.reply(`✅ 已将日志等级设置为${level}`)
   }
 }

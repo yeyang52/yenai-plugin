@@ -1,5 +1,10 @@
 #代理绝大部分请求
 proxyAddress: http://127.0.0.1:7890
 #开启或关闭使用代理
-switchProxy: false
-
+switchProxy: true
+#代理黑名单，可以使用*和?通配符
+blacklist:
+    - "*.baidu.com"
+#代理白名单，在全局关闭的情况下可用
+whitelist:
+    - "*.google.com"

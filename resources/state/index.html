@@ -21,8 +21,8 @@
     <div class="botInfo">
         <div class="avatar-box">
             <div class="avatar" style="
-                --avatar-similar-color1: {{$value.avatar.similarColor1}};
-                --avatar-similar-color2: {{$value.avatar.similarColor2}};
+                --avatar-similar-color1: {{$value.avatar?.similarColor1}};
+                --avatar-similar-color2: {{$value.avatar?.similarColor2}};
                 ">
                 <img src="{{$value.avatar.path}}">
             </div>

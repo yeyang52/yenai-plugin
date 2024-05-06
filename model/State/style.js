@@ -10,12 +10,13 @@ export async function getBackground() {
   try {
     const buffer = await requset.get(backdrop, {
       statusCode: "arrayBuffer",
-      signal: controller.signal
+      signal: controller.signal,
+      outErrorLog: false
     })
     const buffBase64 = arrayBufferToBase64(buffer)
     return `data:image/jpeg;base64,${buffBase64}`
   } catch (err) {
-    logger.error(`Error state background image: ${err}`)
+    logger.error(`Error requset state background image: ${err.message}`)
     const Plugin_Path = "../../../../../plugins/yenai-plugin"
     return `${Plugin_Path}/resources/state/img/${backdropDefault}`
   } finally {

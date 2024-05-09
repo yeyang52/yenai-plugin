@@ -90,7 +90,7 @@ export class Assistant extends plugin {
           fnc: "setModel"
         },
         {
-          reg: "^#?(查?看|取)头像",
+          reg: "^#?(查?看|取)(群)?头像",
           fnc: "LookAvatar"
         },
         {
@@ -617,13 +617,18 @@ export class Assistant extends plugin {
 
   // 查看头像
   async LookAvatar() {
-    const id = this.e.msg.replace(/^#?((查?看头像)|取头像)/, "").trim() || this.e.at ||
-      this.e.message.find(item => item.type == "at")?.qq || this.e.user_id
     try {
-      let url = await this.e.group?.pickMember(id)?.getAvatarUrl()
-      if (!url) url = await this.e.bot.pickFriend(id).getAvatarUrl()
-      const msgTest = this.e.msg.includes("取头像")
-      if (url) return await this.e.reply(msgTest ? `${url}` : segment.image(url))
+      let id, url
+      if (this.e.msg.includes("群")) {
+        id = this.e.msg.replace(/^#?(查?看|取)(群)?头像/, "").trim() || this.e.group_id
+        url = await this.e.bot.pickGroup(id).getAvatarUrl()
+      } else {
+        id = this.e.msg.replace(/^#?(查?看|取)(群)?头像/, "").trim() || this.e.at || this.e.message.find(item => item.type == "at")?.qq || this.e.user_id
+        url = await this.e.group?.pickMember(id)?.getAvatarUrl()
+        if (!url) url = await this.e.bot.pickFriend(id).getAvatarUrl()
+      }
+      const msgTest = this.e.msg.includes("取")
+      if (url) return await this.e.reply(msgTest ? `${url}` : segment.image(url), true)
     } catch (error) {
       logger.error("获取头像错误", error)
     }

@@ -248,8 +248,8 @@ export const helpList = [
         title: "#桌游排行",
         desc: "桌游排行"
       }, {
-        title: "#看头像 <@QQ>",
-        desc: "查看该用户的高清头像图片",
+        title: "#(看|取)(群)?头像 <@QQ>",
+        desc: "查看用户/群的高清头像图片",
         icon: 16
       }
     ]

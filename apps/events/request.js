@@ -29,14 +29,14 @@ Bot.on?.("request", async(e) => {
           if (cfg.other.autoQuit <= 0) {
             msg.push("----------------\n可引用该消息回复\"同意\"或\"拒绝\"")
           } else {
-            msg.push("已自动处理该邀请")
+            msg.push("Tip：已被 Yunzai 自动处理")
           }
           break
         case "add":
           if (Config.groupAdd.openGroup.includes(e.group_id)) {
             let msg = [
-`${Config.groupAdd.msg}\n`,
-segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
+              `${Config.groupAdd.msg}\n`,
+              segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
               `QQ号：${e.user_id}\n`,
               `昵称：${e.nickname}\n`,
               `${e.comment}`

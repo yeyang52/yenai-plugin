@@ -12,7 +12,7 @@ export class NewState extends plugin {
     super({
       name: "椰奶状态",
       event: "message",
-      priority: 50,
+      priority: -1000,
       rule: [
         {
           reg: "^#?(椰奶)?状态(pro)?$",
@@ -20,10 +20,14 @@ export class NewState extends plugin {
         }, {
           reg: "^#椰奶监控$",
           fnc: "monitor"
+        }, {
+          reg: "^#?原图$",
+          fnc: "origImg"
         }
       ]
 
     })
+    this.redisOrigImgKey = "yenai:state:origImg:"
   }
 
   async monitor(e) {
@@ -49,17 +53,40 @@ export class NewState extends plugin {
       let data = await getData(e)
 
       // 渲染图片
-      await puppeteer.render("state/index", {
+      let retMsgId = await puppeteer.render("state/index", {
         ...data
       }, {
         e,
-        scale: 1.4
+        scale: 1.4,
+        retMsgId: true
       })
+      console.log(retMsgId)
+      if (retMsgId) {
+        const redisData = data.style.backdrop
+        redis.set(this.redisOrigImgKey + retMsgId.message_id, redisData, { EX: 86400 })
+      }
     } catch (error) {
       logger.error(error)
       interval = false
     }
 
     interval = false
+  }
+
+  async origImg(e) {
+    if (!e.source) return false
+    let source
+    if (e.isGroup) {
+      source = (await e.group.getChatHistory(e.source.seq, 1)).pop()
+    } else {
+      source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
+    }
+    const data = await redis.get(this.redisOrigImgKey + source.message_id)
+    if (!data) return false
+    let url = data
+      .replace("data:image/jpeg;base64,", "base64://")
+      .replace("../../../../../", "")
+    e.reply(segment.image(url))
+    return true
   }
 }

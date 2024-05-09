@@ -42,6 +42,9 @@ export class groupWhiteListCtrl extends plugin {
     this.reply(`✅ 已${type === "add" ? "加入" : "删除"}${qq}到群管白名单`)
   }
 
+  /**
+   * 开关白名单自动解禁
+   */
   async noBan() {
     if (!common.checkPermission(this.e, "master")) return
     let type = !!/开启/.test(this.e.msg)

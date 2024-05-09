@@ -2,3 +2,7 @@
 whiteQQ: []
 #白名单禁言自动解禁
 noBan: false
+# 投票禁言开关
+VoteBan: true
+# 投票禁言超时时间 单位：秒
+outTime: 180

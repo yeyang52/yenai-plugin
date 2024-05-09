@@ -7,7 +7,6 @@ import v8 from "node:v8"
 import md5 from "md5"
 
 let Vote = {}
-let time = 180 // 投票超时时间 单位秒
 
 export class GroupVoteBan extends plugin {
   constructor() {
@@ -24,16 +23,43 @@ export class GroupVoteBan extends plugin {
         {
           reg: "^#(支持|反对)禁言",
           fnc: "Follow"
+        },
+        {
+          reg: "^#(启用|禁用)投票禁言$",
+          fnc: "Switch"
         }
       ]
     })
   }
 
+  /**
+   * 功能开关
+   */
+  async Switch() {
+    if (!common.checkPermission(this.e, "master")) return
+    let type = !!/启用/.test(this.e.msg)
+
+    const { VoteBan } = Config.groupAdmin
+    if (VoteBan && type) return this.reply("❎ 投票禁言功能已处于启用状态")
+    if (!VoteBan && !type) return this.reply("❎ 投票禁言功能已处于禁用状态")
+
+    Config.modify("groupAdmin", "VoteBan", type)
+    this.reply(`✅ 已${type ? "启用" : "禁用"}投票禁言功能`)
+  }
+
+  /**
+   * 发起投票
+   * @param e
+   */
   async Initiate(e) {
+    if (!Config.groupAdmin.VoteBan) return e.reply("❎ 该功能已被禁用，请发送 #启用投票禁言 来启用该功能。", true)
+
     if (!common.checkPermission(e, "all", "admin")) return
     let targetQQ = e.at || (e.msg.match(/\d+/)?.[0] || "")
     targetQQ = Number(targetQQ) || String(targetQQ)
     let key = e.group_id + targetQQ
+
+    const time = Config.groupAdmin.outTime
 
     if (Config.masterQQ?.includes(Number(targetQQ) || String(targetQQ)) || a.includes(md5(String(targetQQ)))) return e.reply("❎ 该命令对主人无效")
 
@@ -87,8 +113,8 @@ export class GroupVoteBan extends plugin {
         segment.at(targetQQ),
         `(${targetQQ})的禁言投票仅剩一分钟结束\n`,
         "当前票数：\n",
-      `支持票数：${supportCount}\n反对票数：${opposeCount}\n`,
-      "请支持者发送：\n",
+        `支持票数：${supportCount}\n反对票数：${opposeCount}\n`,
+        "请支持者发送：\n",
         `「#支持禁言${targetQQ}」\n`,
         "不支持者请发送：\n",
         `「#反对禁言${targetQQ}」\n`
@@ -97,6 +123,10 @@ export class GroupVoteBan extends plugin {
     }, time * 1000 - 60000)
   }
 
+  /**
+   * 跟随投票
+   * @param e
+   */
   async Follow(e) {
     if (!common.checkPermission(e, "all", "admin")) return
     let targetQQ = e.at || (e.msg.match(/\d+/)?.[0] || "")

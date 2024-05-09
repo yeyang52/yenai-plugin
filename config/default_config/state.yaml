@@ -16,13 +16,17 @@ psTestSites:
           useProxy: true
     timeout: 5000
 
-#监控任务
+# 监控任务
 statusTask: true
 
-#如果出现内存异常的情况可将此配置项开启，如果打开后报错请将监控任务关闭
+# 如果出现内存异常的情况可将此配置项开启，如果打开后报错请将监控任务关闭
 statusPowerShellStart: false
 
-#背景图片api 默认 http://dir.dengfenglai.icu
+# 背景图片api
+# CF跳板(会损失一点访问时间，但后期API地址可以自动更新)
+# http://dir.dengfenglai.icu
+# 默认地址(直连，但是不确定是否会GG)
+# https://t.mwm.moe/mp/
 backdrop: "http://dir.dengfenglai.icu"
 # 当api请求失败时使用的默认背景图，请放置在resources/state/img目录下，修改为你的文件名
 backdropDefault: "default_bg.jpg"

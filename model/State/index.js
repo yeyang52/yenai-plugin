@@ -1,6 +1,6 @@
 import _ from "lodash"
 import moment from "moment"
-import { Config } from "../../components/index.js"
+import { Config, Data } from "../../components/index.js"
 import common from "../../lib/common/common.js"
 import getBotState from "./BotState.js"
 import getCPU from "./CPU.js"
@@ -13,13 +13,12 @@ import getNode from "./NodeInfo.js"
 import getOtherInfo, { getCopyright } from "./OtherInfo.js"
 import getRAM from "./RAM.js"
 import getSWAP from "./SWAP.js"
-import { getBackground } from "./style.js"
-import { getChartCfg } from "./utils.js"
+import getStyle from "./style.js"
 
 export async function getData(e) {
   e.isPro = e.msg.includes("pro")
   /** bot列表 */
-  const BotList = _getBotList(e)
+
   const visualDataPromise = Promise.all([
     getCPU(),
     getRAM(),
@@ -32,30 +31,24 @@ export async function getData(e) {
     getFastFetch(e),
     getFsSize(),
     getNetworkTestList(e),
-    getBotState(e, BotList),
-    getBackground()
+    getBotState(e),
+    getStyle()
   ]
 
   const [
     visualData,
     FastFetch,
-    HardDisk, psTest, BotStatusList, backdrop
+    HardDisk, psTest, BotStatusList, style
   ] = await Promise.all(promiseTaskList)
 
-  const isBotIndex = /pro/.test(e.msg) && BotList.length > 1
   const chartData = JSON.stringify(
     common.checkIfEmpty(Monitor.chartData, [ "echarts_theme", "cpu", "ram" ])
       ? ""
       : Monitor.chartData
   )
 
-  const time = moment().format("YYYY-MM-DD HH:mm:ss")
-
   // 配置
   const { closedChart } = Config.state
-  const style = {
-    backdrop
-  }
 
   return {
     BotStatusList,
@@ -67,27 +60,18 @@ export async function getData(e) {
     copyright: getCopyright(),
     network: getNetwork(),
     Config: JSON.stringify(Config.state),
-    _Config: Config.state,
     FastFetch,
     HardDisk,
-    isBotIndex,
     style,
-    time,
+    time: moment().format("YYYY-MM-DD HH:mm:ss"),
     isPro: e.isPro,
     chartCfg: JSON.stringify(getChartCfg())
   }
 }
+export function getChartCfg() {
+  const echarts_theme = Data.readJSON("resources/state/theme_westeros.json")
 
-function _getBotList(e) {
-  /** bot列表 */
-  let BotList = [ e.self_id ]
-
-  if (e.isPro) {
-    if (Array.isArray(Bot?.uin)) {
-      BotList = Bot.uin
-    } else if (Bot?.adapter && Bot.adapter.includes(e.self_id)) {
-      BotList = Bot.adapter
-    }
+  return {
+    echarts_theme
   }
-  return BotList
 }

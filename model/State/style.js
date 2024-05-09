@@ -1,6 +1,12 @@
 import { Config } from "../../components/index.js"
 import requset from "../../lib/request/request.js"
 import { createAbortCont } from "./utils.js"
+
+export default async function getStyle() {
+  return {
+    backdrop: await getBackground()
+  }
+}
 export async function getBackground() {
   const { backdrop, backdropDefault } = Config.state
   if (!backdrop?.startsWith("http")) {

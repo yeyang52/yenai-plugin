@@ -17,14 +17,14 @@
     var _res_path = '{{_res_path}}'
 </script>
 {{each BotStatusList}}
-<div class="box" data-boxInfo="Bot{{isBotIndex ? $index + 1 : ''}}信息">
+<div class="box">
     <div class="botInfo">
         <div class="avatar-box">
             <div class="avatar" style="
                 --avatar-similar-color1: {{$value.avatar?.similarColor1}};
                 --avatar-similar-color2: {{$value.avatar?.similarColor2}};
                 ">
-                <img src="{{$value.avatar.path}}">
+                <img src="{{$value.avatar?.path}}">
             </div>
             <div class="info">
                 <div class="onlineStatus">
@@ -37,31 +37,35 @@
             <h1>{{$value.nickname}}</h1>
             <hr noshade>
             <p>
-                <span>{{$value.botVersion}}</span>
-                <span>Bot已运行 {{$value.botRunTime}}</span>
+                <span style="background: #d799de">
+                    {{$value.botVersion}}
+                </span>
+                <span style="background: #CBC7C8">
+                    Bot已运行 {{$value.botRunTime}}
+                </span>
             </p>
             <p>
-                <span>
+                <span style="background: #B4A0D8">
                     <img src="../../../../../plugins/yenai-plugin/resources/state/icon/friend.png">
                     {{$value.countContacts.friend}}
                 </span>
-                <span>
+                <span style="background: #e0be92">
                     <img src="../../../../../plugins/yenai-plugin/resources/state/icon/group.png">
                     {{$value.countContacts.group}}
                 </span>
-                <span>
+                <span style="background: #aad5e6">
                     <img src="../../../../../plugins/yenai-plugin/resources/state/icon/groupMember.png">
                     {{$value.countContacts.groupMember}}
                 </span>
-                <span>
+                <span style="background: #B4A0D8">
                     <img src="../../../../../plugins/yenai-plugin/resources/state/icon/recv.png">
                     {{$value.messageCount.recv}}
                 </span>
-                <span>
+                <span style="background: #e0be92">
                     <img src="../../../../../plugins/yenai-plugin/resources/state/icon/sent.png">
                     {{$value.messageCount.sent}}
                 </span>
-                <span>
+                <span style="background: #aad5e6">
                     <img src="../../../../../plugins/yenai-plugin/resources/state/icon/screenshot.png">
                     {{$value.messageCount.screenshot}}
                 </span>

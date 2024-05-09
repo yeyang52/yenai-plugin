@@ -2,10 +2,11 @@ import { createRequire } from "module"
 import moment from "moment"
 import { Plugin_Path } from "../../components/index.js"
 import { formatDuration } from "../../tools/index.js"
-import { getImgPalette, importColorThief } from "./utils.js"
+import { getImgPalette } from "./utils.js"
 const require = createRequire(import.meta.url)
 
-export default async function getBotState(e, botList) {
+export default async function getBotState(e) {
+  const botList = _getBotList(e)
   const dataPromises = botList.map(async(i) => {
     const bot = Bot[i]
     if (!bot?.uin) return ""
@@ -55,7 +56,6 @@ export default async function getBotState(e, botList) {
 async function getAvatarColor(url) {
   const defaultAvatar = `${Plugin_Path}/resources/state/img/default_avatar.jpg`
   try {
-    await importColorThief()
     if (url == "default") {
       url = defaultAvatar
     }
@@ -90,4 +90,18 @@ function getCountContacts(bot) {
     group,
     groupMember
   }
+}
+
+function _getBotList(e) {
+  /** bot列表 */
+  let BotList = [ e.self_id ]
+
+  if (e.isPro) {
+    if (Array.isArray(Bot?.uin)) {
+      BotList = Bot.uin
+    } else if (Bot?.adapter && Bot.adapter.includes(e.self_id)) {
+      BotList = Bot.adapter
+    }
+  }
+  return BotList
 }

@@ -2,38 +2,25 @@
 
 const {
   BotNameColor, BotNameColorGradient, highColor, mediumColor,
-  lowColor /* backdrop, backdropDefault */
+  lowColor
 } = Config
-// 背景api
-// if (backdrop) {
-//   let container = document.getElementById("container")
-//   const img = new Image()
-//   let timer = setTimeout(function() {
-//     img.src = ""
-//   }, 5000)
-//   img.onload = function() {
-//     clearTimeout(timer)
-//     container.style.backgroundImage = "url(" + backdrop + ")"
-//   }
-//   img.onerror = function() {
-//     container.style.backgroundImage = `url(${_res_path}/state/img/${backdropDefault})`
-//     clearTimeout(timer)
-//   }
-//   img.src = backdrop
-// }
-const BotNameElement = document.querySelector(".header h1")
 // 修改BotNameColor
+const BotNameElement = document.querySelector(".header h1")
 if (BotNameColorGradient && BotNameColorGradient !== "none") {
   BotNameElement.style.backgroundImage = `linear-gradient(${BotNameColorGradient})`
+  BotNameElement.style.color = "transparent"
+  BotNameElement.style.backgroundClip = "text"
 } else if (BotNameColor && BotNameColor !== "none") {
-  BotNameElement.style.backgroundColor = BotNameColor
+  BotNameElement.style.color = BotNameColor
   BotNameElement.style.backgroundImage = "none"
 }
+// 进度条颜色
 const documentElement = document.documentElement
 documentElement.style.setProperty("--high-color", highColor)
 documentElement.style.setProperty("--medium-color", mediumColor)
 documentElement.style.setProperty("--low-color", lowColor)
 
+// 根据圆环数量调整宽度
 const mainHardwareElement = document.querySelectorAll(".mainHardware li")
 const containerElement = document.querySelector(".container")
 if (mainHardwareElement.length === 4) {

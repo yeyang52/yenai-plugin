@@ -38,7 +38,7 @@ export function getNetworkTestList(e) {
     currentRequests++
     return handleSite(site).finally(() => {
       if (--currentRequests === 0) {
-        logger.debug("[yenai-plugin][state]已完成所有网络测试")
+        logger.debug("[Yenai-Plugin][状态]已完成所有网络测试")
       }
     })
   }))
@@ -49,8 +49,16 @@ const handleSite = (site) => {
   return getNetworkLatency(site.url, site.timeout, site.useProxy)
     .then(res => ({ first: site.name, tail: res }))
     .catch(error => {
-      logger.error(`[yenai-plugin][state]Error testing site: ${site.name}`, error)
-      return { first: site.name, tail: "Error" } // 捕获错误并返回一个错误标记
+      let errorMsg = "error"
+      if (error.name === "AbortError") {
+        errorMsg = "timeout"
+      }
+      if (error.message.includes("ECONNRESET")) {
+        logger.error(`[Yenai-Plugin][状态]请求 ${site.name} 发生了 ECONNRESET 错误:`, error.message)
+        errorMsg = "econnreset"
+      }
+      logger.error(`[Yenai-Plugin][状态]请求 ${site.name} 过程中发生错误:`, error.message)
+      return { first: site.name, tail: `<span style='color:#F44336'>${errorMsg}</span>` }
     })
 }
 /**
@@ -129,16 +137,6 @@ async function getNetworkLatency(url, timeoutTime = 5000, useProxy = false) {
               : ""
 
     return `<span style='color:${statusColor}'>${status}</span> | <span style='color:${color}'>${delay}ms</span>`
-  } catch (error) {
-    if (error.name === "AbortError") {
-      return "<span style='color:#F44336'>timeout</span>"
-    }
-    if (error.message.includes("ECONNRESET")) {
-      logger.error("网络请求发生了 ECONNRESET 错误:", error.message)
-      return "<span style='color:#F44336'>ECONNRESET</span>"
-    }
-    logger.error("网络请求过程中发生错误:", error)
-    return "<span style='color:#F44336'>error</span>"
   } finally {
     clearTimeout()
   }

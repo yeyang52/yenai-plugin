@@ -190,7 +190,7 @@ export class GroupAdminOther extends plugin {
         "-----------加退群人数--------\n",
         `申请人数：${joinData.total}\n`,
         `入群人数：${applyData.total}\n`,
-        `退群人数：${exitData.total}\n`
+        `退群人数：${exitData.total}`
       ]
     )
   }

@@ -1,7 +1,7 @@
 ---
 name: 功能建议
 about: 提出一个新功能的建议
-title: ''
+title: '[功能建议]：'
 labels: enhancement
 assignees: ''
 

@@ -1,7 +1,7 @@
 ---
 name: 文档反馈
 about: 提供对文档的反馈和建议
-title: ''
+title: '[文档反馈]：'
 labels: documentation
 assignees: ''
 

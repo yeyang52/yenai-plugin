@@ -2,7 +2,16 @@
 whiteQQ: []
 #白名单禁言自动解禁
 noBan: false
+
 # 投票禁言开关
 VoteBan: true
 # 投票禁言超时时间 单位：秒
 outTime: 180
+# 投票最低所需票数 不建议太低
+minNum: 3
+# 投票成功禁言时间 单位：秒
+BanTime: 3600
+# 是否允许管理员一票否决
+veto: true
+# 是否允许投票禁言管理员(Bot为群主的情况下)
+voteAdmin: false

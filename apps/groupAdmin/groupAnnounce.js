@@ -28,7 +28,7 @@ export class GroupAnnounce extends plugin {
   async AddAnnounce(e) {
     if (!common.checkPermission(e, "admin", "admin")) { return true }
     // 获取发送的内容
-    let msg = e.msg.replace(/#|发群公告/g, "").trim()
+    let msg = e.msg.replace(/#发群公告/g, "").trim()
     if (!msg) return e.reply("❎ 公告不能为空")
 
     let result = await new QQApi(e).setAnnounce(e.group_id, msg)
@@ -49,7 +49,7 @@ export class GroupAnnounce extends plugin {
   // 删群公告
   async DelAnnounce(e) {
     if (!common.checkPermission(e, "admin", "admin")) { return true }
-    let msg = e.msg.replace(/#|删群公告/g, "").trim()
+    let msg = e.msg.replace(/#删群公告/g, "").trim()
     if (!msg) return e.reply("❎ 序号不可为空")
     let result = await new QQApi(e).delAnnounce(e.group_id, msg)
     if (!result) return e.reply(API_ERROR)

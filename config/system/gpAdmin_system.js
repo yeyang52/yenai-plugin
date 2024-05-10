@@ -198,8 +198,24 @@ export const helpList = [
         icon: 16
       }
     ]
-  },
-  {
+  }, {
+    group: "投票禁言(更多配置请看config/groupAdmin.yaml)",
+    list: [
+      {
+        title: "#(启用|禁用)投票禁言",
+        desc: "是否允许群员投票",
+        icon: 4
+      }, {
+        title: "#投票禁言<@QQ>",
+        desc: "投票禁言不听话的群员",
+        icon: 6
+      }, {
+        title: "#(支持|反对)禁言<@QQ>",
+        desc: "跟随投票",
+        icon: 12
+      }
+    ]
+  }, {
     group: "其他",
     list: [
       {
@@ -214,14 +230,6 @@ export const helpList = [
         title: "#开启|关闭白名单解禁",
         desc: "白名单被禁言时自动解禁",
         icon: 8
-      }, {
-        title: "#投票禁言<@QQ>",
-        desc: "投票禁言不听话的群员",
-        icon: 6
-      }, {
-        title: "#(启用|禁用)投票禁言",
-        desc: "是否允许群员投票",
-        icon: 4
       }
     ]
   },

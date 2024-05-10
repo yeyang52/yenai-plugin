@@ -1,0 +1,106 @@
+name: Bug 报告
+description: 创建一份报告来帮助我们改进
+title: "[bug]："
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢对项目的支持与关注。在提出问题之前，请确保你已查看相关开发或使用文档：
+        - https://yenai.trss.me
+        
+  - type: checkboxes
+    attributes:
+      label: 这个问题是否已经存在？
+      options:
+        - label: 我已经搜索过[现有的问题](https://gitee.com/yeyang52/yenai-plugin/issues)并未发现相同问题
+          required: true
+          
+  - type: input
+    attributes:
+      label: Yunzai版本
+      description: 您使用的哪个版本的Yunzai
+      placeholder: Miao-Yunzai
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Node.js版本
+      description: 使用`node -v`获取
+
+  - type: input
+    attributes:
+      label: 协议端名称
+      description: 您是使用的哪个协议出现的问题？
+      placeholder: ICQQ
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: 操作系统
+      description: 您的Yunzai使用的是哪个操作系统
+      placeholder: 如Windows 10, MacOS Mojave, Ubuntu 20.04等
+
+  - type: textarea
+    attributes:
+      label: 复现步骤
+      description: 请尽量详细地描述你的操作过程。
+      placeholder: |
+        1. 第一步
+        2. 第二步
+        3. 第三步
+        ...
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 预期行为
+      description: 描述您期望在完成上述步骤后，系统应有的正确行为或输出。
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 实际行为
+      description: 描述系统实际的行为或输出。
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 错误日志或截图
+      description: 如果有的话，请附上相关错误日志或截图。
+      value: |
+        [在这里上传截图或错误日志]
+
+  - type: dropdown
+    attributes:
+      label: 特殊配置
+      description: 是否有进行任何特别的插件配置或修改。
+      options:
+        - 未修改
+        - 修改过
+    validations:
+      required: true
+
+  - type: dropdown
+    attributes:
+      label: 复现频率
+      description: 问题出现的频率
+      options:
+        - 仅这一次
+        - 偶尔出现
+        - 经常出现
+        - 每次出现
+    validations:
+      required: true
+
+  - type: checkboxes
+    attributes:
+      label: Yenai-Plugin是否为当前最新版本？
+      options:
+        - label: 我最近已使用过 \#椰奶更新 命令进行更新最新版本
+          required: true

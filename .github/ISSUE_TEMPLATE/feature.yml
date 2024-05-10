@@ -1,0 +1,40 @@
+name: 功能建议
+description: 对本插件提出一个功能建议
+title: "[功能建议]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢提出功能建议，我们将仔细考虑！
+  
+  - type: input
+    attributes:
+      label: 问题描述
+      description: 请简要描述您想要的新功能。
+    validations:
+      required: true
+      
+  - type: input
+    attributes:
+      label: 实现方式
+      description: 请简要描述您希望实现这个新功能的方式。
+    validations:
+      required: true
+      
+  - type: input
+    attributes:
+      label: 当前的问题
+      description: 如果没有这个新功能，您当前面临的问题是什么？
+      
+  - type: input
+    attributes:
+      label: 其他说明
+      description: 如果您有任何其他信息或说明，请在这里添加。
+      
+  - type: checkboxes
+    attributes:
+      label: 意向参与贡献
+      options:
+        - label: 我有意向参与具体功能的开发实现并将代码贡献到本插件
+          required: false

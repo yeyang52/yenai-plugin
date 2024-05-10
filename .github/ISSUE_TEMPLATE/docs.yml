@@ -1,0 +1,24 @@
+name: 文档反馈
+description: 提供对文档的反馈和建议
+title: "[文档反馈]: "
+labels: ["documentation"]
+body:  
+  - type: input
+    attributes:
+      label: 文档位置
+      description: 请指明文档位置（链接、文件名等）。。
+    validations:
+      required: true
+      
+  - type: input
+    attributes:
+      label: 反馈内容
+      description: 请简要描述您对文档的反馈和建议。
+    validations:
+      required: true
+      
+  - type: input
+    attributes:
+      label: 其他说明
+      description: 如果您有任何其他信息或说明，请在这里添加。
+      

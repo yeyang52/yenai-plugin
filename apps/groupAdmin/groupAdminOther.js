@@ -34,6 +34,10 @@ export class GroupAdminOther extends plugin {
     })
   }
 
+  get Bot() {
+    return this.e.bot ?? Bot
+  }
+
   // 谁是龙王
   async dragonKing(e) {
     // 浏览器截图
@@ -60,7 +64,7 @@ export class GroupAdminOther extends plugin {
   async Group_xj(e) {
     let screenshot = await puppeteer.Webpage({
       url: `https://qqweb.qq.com/m/business/qunlevel/index.html?gc=${e.group_id}&from=0&_wv=1027`,
-      cookie: common.getck("qun.qq.com", this.Bot, true),
+      cookie: common.getck("qqweb.qq.com", this.Bot, true),
       emulate: "QQTheme",
       font: true
     })

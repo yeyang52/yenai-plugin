@@ -180,11 +180,6 @@ export const helpList = [
         icon: 2,
         title: "#群星级",
         desc: "查看群星级"
-      },
-      {
-        title: "#今天谁生日",
-        desc: "今天可换为昨天或后天或日期",
-        icon: 12
       }, {
         title: "#哪个叼毛是龙王",
         desc: "查看谁是龙王",

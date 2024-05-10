@@ -61,7 +61,7 @@ export class NewPicSearch extends plugin {
   async WhatAnime(e) {
     if (!await this._Authentication(e)) return
     if (!await this.handelImg(e, "WhatAnime")) return
-    await PicSearch.WhatAnime(e.img[0].replace("/c2cpicdw.qpic.cn/offpic_new/", "/gchat.qpic.cn/gchatpic_new/"))
+    await PicSearch.WhatAnime(e.img[0].replace("/c2cpicdw.qpic.cn", "/gchat.qpic.cn"))
       .then(async res => {
         for (let i of res) {
           await e.reply(i)

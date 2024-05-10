@@ -6,7 +6,7 @@ body:
   - type: input
     attributes:
       label: 文档位置
-      description: 请指明文档位置（链接、文件名等）。。
+      description: 请指明文档位置（链接、文件名等）。
     validations:
       required: true
       

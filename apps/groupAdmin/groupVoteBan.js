@@ -77,7 +77,7 @@ export class GroupVoteBan extends plugin {
     if (Config.groupAdmin[type] === value) return this.reply(`❎ 当前${text}已经是${value}了`)
 
     Config.modify("groupAdmin", type, value)
-    this.reply(`✅ 已把${type}设置成${value}了`)
+    this.reply(`✅ 已把${text}设置成${value}了`)
   }
 
   /**

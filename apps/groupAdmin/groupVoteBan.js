@@ -7,6 +7,7 @@ import v8 from "node:v8"
 import md5 from "md5"
 
 let Vote = {}
+const SettingReg = /^#?投票设置(超时时间|最低票数|禁言时间)?(\d*)$/
 
 export class GroupVoteBan extends plugin {
   constructor() {
@@ -27,6 +28,10 @@ export class GroupVoteBan extends plugin {
         {
           reg: "^#(启用|禁用)投票禁言$",
           fnc: "Switch"
+        },
+        {
+          reg: SettingReg, // 投票设置
+          fnc: "Settings"
         }
       ]
     })
@@ -47,6 +52,32 @@ export class GroupVoteBan extends plugin {
 
     Config.modify("groupAdmin", "VoteBan", type)
     this.reply(`✅ 已${type ? "启用" : "禁用"}投票禁言功能`)
+  }
+
+  /**
+   * 投票设置
+   */
+  async Settings() {
+    if (!common.checkPermission(this.e, "master")) return
+
+    const regRet = SettingReg.exec(this.e.msg)
+    const text = regRet[1]
+    const value = Number(regRet[2])
+
+    if (!text || !value) return this.reply("投票禁言配置参数:\n\n超时时间: 投票限时，单位:秒\n最低票数: 投票成功的最低票数\n禁言时间: 禁言的时长，单位:秒\n\n例: #投票设置禁言时间8600\n\n更多配置请看:\nconfig/groupAdmin.yaml", true)
+    let type
+    if (text === "超时时间") {
+      type = "outTime"
+    } else if (text === "最低票数") {
+      type = "minNum"
+    } else if (text === "禁言时间") {
+      type = "BanTime"
+    }
+
+    if (Config.groupAdmin[type] === value) return this.reply(`❎ 当前${text}已经是${value}了`)
+
+    Config.modify("groupAdmin", type, value)
+    this.reply(`✅ 已把${type}设置成${value}了`)
   }
 
   /**

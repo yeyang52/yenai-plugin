@@ -27,11 +27,11 @@ body:
       label: 当前的问题
       description: 如果没有这个新功能，您当前面临的问题是什么？
       
-  - type: input
+  - type: textarea
     attributes:
       label: 其他说明
-      description: 如果您有任何其他信息或说明，请在这里添加。
-      
+      description: 如果您有任何其他信息或说明，请在这里补充。
+
   - type: checkboxes
     attributes:
       label: 意向参与贡献

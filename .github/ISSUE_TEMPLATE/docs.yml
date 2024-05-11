@@ -17,8 +17,7 @@ body:
     validations:
       required: true
       
-  - type: input
+  - type: textarea
     attributes:
       label: 其他说明
-      description: 如果您有任何其他信息或说明，请在这里添加。
-      
+      description: 如果您有任何其他信息或说明，请在这里补充。

@@ -76,6 +76,11 @@ body:
       placeholder: |
         在这里上传截图或错误日志
 
+  - type: textarea
+    attributes:
+      label: 其他说明
+      description: 如果您有任何其他信息或说明，请在这里补充。
+
   - type: dropdown
     attributes:
       label: 特殊配置

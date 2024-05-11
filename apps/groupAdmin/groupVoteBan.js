@@ -65,14 +65,11 @@ export class GroupVoteBan extends plugin {
     const value = Number(regRet[2])
 
     if (!text || !value) return this.reply("投票禁言配置参数:\n\n超时时间: 投票限时，单位:秒\n最低票数: 投票成功的最低票数\n禁言时间: 禁言的时长，单位:秒\n\n例: #投票设置禁言时间8600\n\n更多配置请看:\nconfig/groupAdmin.yaml", true)
+
     let type
-    if (text === "超时时间") {
-      type = "outTime"
-    } else if (text === "最低票数") {
-      type = "minNum"
-    } else if (text === "禁言时间") {
-      type = "BanTime"
-    }
+    if (text === "超时时间") type = "outTime"
+    else if (text === "最低票数") type = "minNum"
+    else if (text === "禁言时间") type = "BanTime"
 
     if (Config.groupAdmin[type] === value) return this.reply(`❎ 当前${text}已经是${value}了`)
 

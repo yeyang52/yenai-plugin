@@ -1,22 +1,28 @@
 #!/bin/bash
 
+print_info() {
+  while read -r i; do
+    echo -n "<div class='speed'><p>$i</p></div>"
+  done
+}
+
 echo -n "<div class='box' data-boxInfo='fastFetch'>"
-if type fastfetch &>/dev/null; then
+
+if command -v neofetch &>/dev/null; then
+  neofetch --stdout | sed -n 's|: |</p><p>|p' | print_info
+elif command -v fastfetch &>/dev/null; then
   if [ "$(uname)" = Linux ]; then
-    fastfetch --pipe
+    fastfetch --pipe | sed -n 's|: |</p><p>|p' | print_info
   else
-    fastfetch --stdout
+    fastfetch --stdout | sed -n 's|: |</p><p>|p' | print_info
   fi
 else
-  bash <(curl -L https://gitee.com/TimeRainStarSky/neofetch/raw/master/neofetch) --stdout
-fi | \
-sed -n 's|: |</p><p>|p' | \
-while read i; do
-  echo -n "<div class='speed'><p>$i</p></div>"
-done
+  curl -sSL https://gitee.com/TimeRainStarSky/neofetch/raw/master/neofetch | bash --stdout | sed -n 's|: |</p><p>|p' | print_info
+fi
+
 echo "</div>"
 
-if type getprop &>/dev/null; then
+if command -v getprop &>/dev/null; then
   echo -n "<div class='box' data-boxInfo='安卓'>"
   echo "设备代号：$(getprop ro.product.device)
   设备型号：$(getprop ro.product.marketname) ($(getprop ro.product.name))
@@ -24,10 +30,6 @@ if type getprop &>/dev/null; then
   安卓版本：$(getprop ro.build.version.release) (SDK $(getprop ro.build.version.sdk))
   系统版本：$(getprop ro.build.version.incremental) ($(getprop ro.build.display.id))
   编译时间：$(date -d "@$(getprop ro.build.date.utc)" "+%F %T")
-  基带版本：$(getprop gsm.version.baseband|cut -d ',' -f1)" | \
-  sed -n 's|：|</p><p>|p' | \
-  while read i; do
-    echo -n "<div class='speed'><p>$i</p></div>"
-  done
+  基带版本：$(getprop gsm.version.baseband|cut -d ',' -f1)" | sed -n 's|：|</p><p>|p' | print_info
   echo "</div>"
 fi

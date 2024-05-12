@@ -18,7 +18,6 @@ elif command -v fastfetch &>/dev/null; then
   fi
 else
   bash <(curl -sL https://gitee.com/TimeRainStarSky/neofetch/raw/master/neofetch) --stdout | sed -n 's|: |</p><p>|p' | print_info
-
 fi
 
 echo "</div>"

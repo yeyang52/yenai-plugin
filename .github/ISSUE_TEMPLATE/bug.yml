@@ -43,7 +43,7 @@ body:
     attributes:
       label: 操作系统
       description: 您的Yunzai使用的是哪个操作系统
-      placeholder: 如Windows 10, MacOS Mojave, Ubuntu 20.04等
+      placeholder: 如Windows 10, MacOS, Mojave, Ubuntu 20.04等
 
   - type: textarea
     attributes:

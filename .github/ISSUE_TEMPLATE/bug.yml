@@ -21,6 +21,7 @@ body:
       label: Yunzai版本
       description: 您使用的哪个版本的Yunzai
       placeholder: Miao-Yunzai
+      value: Miao-Yunzai
     validations:
       required: true
 
@@ -34,6 +35,7 @@ body:
       label: 协议端名称
       description: 您是使用的哪个协议出现的问题？
       placeholder: ICQQ
+      value: ICQQ
     validations:
       required: true
 
@@ -46,7 +48,7 @@ body:
   - type: textarea
     attributes:
       label: 复现步骤
-      description: 请尽量详细地描述你的操作过程。
+      description: 请尽量详细地描述你的操作过程，以便我们更好地理解问题。
       placeholder: |
         1. 第一步
         2. 第二步
@@ -59,8 +61,6 @@ body:
     attributes:
       label: 预期行为
       description: 描述您期望在完成上述步骤后，系统应有的正确行为或输出。
-    validations:
-      required: true
 
   - type: textarea
     attributes:
@@ -72,7 +72,7 @@ body:
   - type: textarea
     attributes:
       label: 错误日志或截图
-      description: 如果有的话，请附上相关错误日志或截图。
+      description: 如果有的话，请附上相关错误日志或截图。请确保不包含敏感信息。
       placeholder: |
         在这里上传截图或错误日志
 
@@ -81,16 +81,12 @@ body:
       label: 其他说明
       description: 如果您有任何其他信息或说明，请在这里补充。
 
-  - type: dropdown
+  - type: input
     attributes:
       label: 特殊配置
-      description: 是否有进行任何特别的插件配置或修改。
-      options:
-        - 未修改
-        - 修改过
-    validations:
-      required: true
-
+      description: 是否有进行任何特别的插件配置或修改？
+      placeholder: 修改过xx配置文件xx字段为xx
+  
   - type: dropdown
     attributes:
       label: 复现频率
@@ -106,6 +102,7 @@ body:
   - type: checkboxes
     attributes:
       label: Yenai-Plugin是否为当前最新版本？
+      description: 请确保您已使用最新版本的Yenai-Plugin，以避免已知问题。
       options:
-        - label: 我最近已使用过`#椰奶更新`命令进行更新最新版本
+        - label: 我最近已使用过`#椰奶更新`命令进行更新至最新版本
           required: true

@@ -18,11 +18,11 @@ export class Assistant extends plugin {
       priority: 2000,
       rule: [
         {
-          reg: "^#改头像",
+          reg: "^#(改|换)头像",
           fnc: "SetAvatar"
         },
         {
-          reg: "^#改昵称",
+          reg: "^#(改|换)昵称",
           fnc: "SetNickname"
         },
         {
@@ -58,7 +58,7 @@ export class Assistant extends plugin {
           fnc: "SetGroupCard"
         },
         {
-          reg: "^#改群头像",
+          reg: "^#(改|换)群头像",
           fnc: "SetGroupAvatar"
         },
         {
@@ -153,7 +153,7 @@ export class Assistant extends plugin {
    */
   async SetNickname(e) {
     if (!common.checkPermission(e, "master")) return
-    let name = e.msg.replace(/#|改昵称/g, "").trim()
+    let name = e.msg.replace(/#(改|换)昵称/g, "").trim()
 
     await this.Bot.setNickname(name)
       .then(() => e.reply("✅ 昵称修改成功"))
@@ -184,7 +184,7 @@ export class Assistant extends plugin {
       if (!this.Bot.gl.get(Number(msg[1]))) return e.reply("❎ 群聊列表查无此群")
     } else {
       group = e.group_id
-      card = e.msg.replace(/#|改群名片/g, "").trim()
+      card = e.msg.replace(/#改群名片/g, "").trim()
     }
 
     if (!card) {
@@ -205,7 +205,7 @@ export class Assistant extends plugin {
   async SetGroupAvatar(e) {
     if (e.isPrivate) {
       if (!common.checkPermission(e, "admin", "admin")) return
-      e.group_id = e.msg.replace(/#|改群头像/g, "").trim()
+      e.group_id = e.msg.replace(/#(改|换)群头像/g, "").trim()
 
       if (!e.group_id) return e.reply("❎ 群号不能为空")
 
@@ -277,7 +277,7 @@ export class Assistant extends plugin {
     } else {
       if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return logger.mark(`${e.logFnc}该群员权限不足`)
       group = e.group_id
-      card = e.msg.replace(/#|改群昵称/g, "").trim()
+      card = e.msg.replace(/#改群昵称/g, "").trim()
     }
 
     if (!card) return e.reply("❎ 昵称不能为空")
@@ -302,7 +302,7 @@ export class Assistant extends plugin {
    */
   async SetSignature(e) {
     if (!common.checkPermission(e, "master")) return
-    let signs = e.msg.replace(/#|改签名/g, "").trim()
+    let signs = e.msg.replace(/#改签名/g, "").trim()
     await this.Bot.setSignature(signs)
       .then(() => e.reply("✅ 签名修改成功"))
       .catch((err) => {
@@ -317,7 +317,7 @@ export class Assistant extends plugin {
    */
   async SetOnlineStatus(e) {
     if (!common.checkPermission(e, "master")) return
-    let signs = e.msg.replace(/#|改状态/g, "").trim()
+    let signs = e.msg.replace(/#改状态/g, "").trim()
 
     if (!signs) return e.reply("❎ 状态不为空，可选值：我在线上，离开，隐身，忙碌，Q我吧，请勿打扰")
 
@@ -339,7 +339,7 @@ export class Assistant extends plugin {
    */
   async QuitGroup(e) {
     if (!common.checkPermission(e, "master")) return
-    let quits = e.msg.replace(/#|退群/g, "").trim()
+    let quits = e.msg.replace(/#退群/g, "").trim()
 
     if (!quits) return e.reply("❎ 群号不能为空")
 
@@ -366,7 +366,7 @@ export class Assistant extends plugin {
    */
   async DeleteFriend(e) {
     if (!common.checkPermission(e, "master")) return
-    let quits = e.msg.replace(/#|删好友/g, "").trim()
+    let quits = e.msg.replace(/#删好友/g, "").trim()
 
     if (e.message[1]) {
       quits = e.message[1].qq
@@ -391,7 +391,7 @@ export class Assistant extends plugin {
    */
   async SetGender(e) {
     if (!common.checkPermission(e, "master")) return
-    let sex = e.msg.replace(/#|改性别/g, "").trim()
+    let sex = e.msg.replace(/#改性别/g, "").trim()
 
     if (!sex) return e.reply("❎ 性别不能为空 可选值：男，女，无\n（改为无，为无性别）")
 
@@ -610,7 +610,7 @@ export class Assistant extends plugin {
 
   async setModel(e) {
     if (!common.checkPermission(e, "master")) return
-    let model = e.msg.replace(/#|设置机型/g, "")
+    let model = e.msg.replace(/#设置机型/g, "")
     let res = await new QQApi(e).setModel(model).catch(err => logger.error(err))
     e.reply(_.get(res, [ "13031", "data", "rsp", "iRet" ]) == 0 ? "设置成功" : "设置失败")
   }

@@ -18,8 +18,8 @@
 ![Nodejs](https://img.shields.io/badge/-Node.js-3C873A?style=flat&logo=Node.js&logoColor=white) 
 ![JavaScript](https://img.shields.io/badge/-JavaScript-eed718?style=flat&logo=javascript&logoColor=ffffff)
 [![license](https://img.shields.io/github/license/yeyang52/yenai-plugin.svg?style=flat&logo=gnu)](https://github.com/yeyang52/yenai-plugin/blob/master/LICENSE) 
+[![Gitmoji](https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg?style=flat-square)](https://gitmoji.dev)
 [![YunzaiBot](https://img.shields.io/badge/Yunzai-V3.0.0-black?style=flat&logo=dependabot)](https://gitee.com/Le-niao/Yunzai-Bot) 
-[![Group](https://img.shields.io/badge/Group-914247840-red?style=flat&logo=GroupMe&logoColor=white)](https://jq.qq.com/?_wv=1027&k=o8FTig5Z) 
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/yeyang52/yenai-plugin)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/yeyang52/yenai-plugin)

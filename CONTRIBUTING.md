@@ -40,7 +40,7 @@ pnpm install
 
 1. 在进行 Git 提交之前，确保您的代码已经通过 ESLint 的检查。
 
-2. 运行以下命令进行 Git 提交：
+2. 运行以下命令进行 Git 提交，请您遵守[gitmoji](https://gitmoji.dev/)规范来提交commit：
 
 ```sh
 git add .

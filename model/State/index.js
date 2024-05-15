@@ -13,7 +13,7 @@ import getNode from "./NodeInfo.js"
 import getOtherInfo, { getCopyright } from "./OtherInfo.js"
 import getRAM from "./RAM.js"
 import getSWAP from "./SWAP.js"
-import getStyle from "./style.js"
+import getStyle, { getBackground } from "./style.js"
 
 export async function getData(e) {
   e.isPro = e.msg.includes("pro")
@@ -68,7 +68,16 @@ export async function getData(e) {
     chartCfg: JSON.stringify(getChartCfg())
   }
 }
-export function getChartCfg() {
+
+export async function getMonitorData() {
+  return {
+    chartData: JSON.stringify(Monitor.chartData),
+    backdrop: await getBackground(),
+    chartCfg: JSON.stringify(getChartCfg())
+  }
+}
+
+function getChartCfg() {
   const echarts_theme = Data.readJSON("resources/state/theme_westeros.json")
 
   return {

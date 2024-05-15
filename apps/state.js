@@ -58,7 +58,9 @@ export class NewState extends plugin {
       })
       if (retMsgId) {
         const redisData = data.style.backdrop
-        redis.set(this.redisOrigImgKey + retMsgId.message_id, redisData, { EX: 86400 })
+        const message_id = [ e.message_id ]
+        if (Array.isArray(retMsgId.message_id)) { message_id.push(...retMsgId.message_id) } else { message_id.push(retMsgId.message_id) }
+        for (const i of message_id) { redis.set(this.redisOrigImgKey + i, redisData, { EX: 86400 }) }
       }
     } catch (error) {
       logger.error(error)
@@ -69,14 +71,14 @@ export class NewState extends plugin {
   }
 
   async origImg(e) {
-    if (!e.source) return false
-    let source
-    if (e.isGroup) {
-      source = (await e.group.getChatHistory(e.source.seq, 1)).pop()
-    } else {
-      source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
-    }
-    const data = await redis.get(this.redisOrigImgKey + source.message_id)
+    const message_id = e.reply_id || (e.source
+      ? (e.group?.getChatHistory
+          ? (await e.group.getChatHistory(e.source.seq, 1))[0].message_id
+          : (await e.friend.getChatHistory(e.source.time, 1))[0].message_id
+        )
+      : false)
+    if (!message_id) return false
+    const data = await redis.get(this.redisOrigImgKey + message_id)
     if (!data) return false
     let url = data
       .replace("data:image/jpeg;base64,", "base64://")

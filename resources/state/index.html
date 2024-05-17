@@ -45,30 +45,30 @@
                 </span>
             </p>
             <p>
-                <span style="background: #B4A0D8">
+                {{if $value.countContacts.friend}}<span style="background: #B4A0D8">
                     <img src="../../../../../plugins/yenai-plugin/resources/state/icon/friend.png">
                     {{$value.countContacts.friend}}
-                </span>
-                <span style="background: #e0be92">
+                </span>{{/if}}
+                {{if $value.countContacts.group}}<span style="background: #e0be92">
                     <img src="../../../../../plugins/yenai-plugin/resources/state/icon/group.png">
                     {{$value.countContacts.group}}
-                </span>
-                <span style="background: #aad5e6">
+                </span>{{/if}}
+                {{if $value.countContacts.groupMember}}<span style="background: #aad5e6">
                     <img src="../../../../../plugins/yenai-plugin/resources/state/icon/groupMember.png">
                     {{$value.countContacts.groupMember}}
-                </span>
-                <span style="background: #B4A0D8">
+                </span>{{/if}}
+                {{if $value.messageCount.recv}}<span style="background: #B4A0D8">
                     <img src="../../../../../plugins/yenai-plugin/resources/state/icon/recv.png">
                     {{$value.messageCount.recv}}
-                </span>
-                <span style="background: #e0be92">
+                </span>{{/if}}
+                {{if $value.messageCount.sent}}<span style="background: #e0be92">
                     <img src="../../../../../plugins/yenai-plugin/resources/state/icon/sent.png">
                     {{$value.messageCount.sent}}
-                </span>
-                <span style="background: #aad5e6">
+                </span>{{/if}}
+                {{if $value.messageCount.screenshot}}<span style="background: #aad5e6">
                     <img src="../../../../../plugins/yenai-plugin/resources/state/icon/screenshot.png">
                     {{$value.messageCount.screenshot}}
-                </span>
+                </span>{{/if}}
             </p>
         </div>
     </div>

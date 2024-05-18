@@ -54,7 +54,7 @@ export async function getData(e) {
     BotStatusList,
     chartData: closedChart ? false : chartData,
     visualData: _.compact(visualData),
-    otherInfo: getOtherInfo(),
+    otherInfo: getOtherInfo(e),
     psTest: _.isEmpty(psTest) ? undefined : psTest,
     fsStats: getDiskSpeed(),
     copyright: getCopyright(),

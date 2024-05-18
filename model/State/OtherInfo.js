@@ -7,7 +7,7 @@ import { Version } from "../../components/index.js"
 import { formatDuration } from "../../tools/index.js"
 import { osInfo } from "./utils.js"
 
-export default function otherInfo() {
+export default function otherInfo(e) {
   let otherInfo = []
   // 其他信息
   otherInfo.push({
@@ -17,7 +17,7 @@ export default function otherInfo() {
   // 插件数量
   otherInfo.push({
     first: "插件",
-    tail: getPluginNum()
+    tail: getPluginNum(e)
   })
   otherInfo.push({
     first: "系统运行",
@@ -31,7 +31,7 @@ function getSystime() {
   return formatDuration(os.uptime(), "dd天hh小时mm分", false)
 }
 
-function getPluginNum() {
+function getPluginNum(e) {
   // 获取插件数量插件包目录包含package.json才被视为一个插件包
   const dir = "./plugins"
   const dirArr = fs.readdirSync(dir, { withFileTypes: true })
@@ -49,8 +49,8 @@ function getPluginNum() {
     ?.length
   const pluginsStr = `${plugins ?? 0} plugins | ${js ?? 0} js`
   const { priority, task } = loader
-  const loaderStr = `${priority?.length} fun | ${task?.length} task`
-  return pluginsStr + " | " + loaderStr
+  const loaderStr = `${priority?.length} fnc | ${task?.length} task`
+  return e.isPro ? `${pluginsStr} | ${loaderStr}` : pluginsStr
 }
 
 export function getCopyright() {

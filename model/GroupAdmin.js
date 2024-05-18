@@ -10,6 +10,7 @@ import { Config } from "../components/index.js"
 import { QQApi } from "./index.js"
 import { Time_unit, ROLE_MAP } from "../constants/other.js"
 import formatDuration from "../tools/formatDuration.js"
+import schedule from "node-schedule"
 
 // 无管理文案
 const ROLE_ERROR = "❎ 该命令需要管理员权限"
@@ -276,10 +277,23 @@ segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
       name,
       fnc: () => {
         this.Bot.pickGroup(group).muteAll(type)
-      }
+      },
+      job: schedule.scheduleJob(cron, async() => {
+        try {
+          if (task.log == true) {
+            logger.mark(`开始定时任务：${task.name}`)
+          }
+          await task.fnc()
+          if (task.log == true) {
+            logger.mark(`定时任务完成：${task.name}`)
+          }
+        } catch (err) {
+          logger.error(`定时任务报错：${task.name}`)
+          logger.error(err)
+        }
+      })
     }
-    loader.task.push(_.cloneDeep(task))
-    loader.createTask()
+    loader.task.push(task)
     redisTask.push({ cron, group, type, botId: this.Bot.uin })
     redis.set(this.MuteTaskKey, JSON.stringify(redisTask))
     return true

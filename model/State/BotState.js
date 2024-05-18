@@ -46,12 +46,6 @@ export default async function getBotState(e) {
 
   return Promise.all(dataPromises)
 }
-// function extractVersion(versionString) {
-//   const regex = /\d+\.\d+\.\d+/
-//   const match = versionString.match(regex)
-//   const version = match ? match[0] : versionString
-//   return version
-// }
 
 async function getAvatarColor(url) {
   const defaultAvatar = `${Plugin_Path}/resources/state/img/default_avatar.jpg`
@@ -71,13 +65,23 @@ async function getAvatarColor(url) {
 }
 async function getMessageCount(bot) {
   const nowDate = moment().format("MMDD")
-  const sent = await redis.get(`Yz:count:send:msg:bot:${bot.uin}:total`) || bot.stat?.sent_msg_cnt
-  const recv = await redis.get(`Yz:count:receive:msg:bot:${bot.uin}:total`) || bot.stat?.recv_msg_cnt
-  const screenshot = await redis.get(`Yz:count:send:image:bot:${bot.uin}:total`) || await redis.get(`Yz:count:screenshot:day:${nowDate}`)
+  const keys = [
+      `Yz:count:send:msg:bot:${bot.uin}:total`,
+      `Yz:count:receive:msg:bot:${bot.uin}:total`,
+      `Yz:count:send:image:bot:${bot.uin}:total`,
+      `Yz:count:screenshot:day:${nowDate}`
+  ]
+
+  const values = await redis.mGet(keys) || []
+
+  const sent = values[0] || bot.stat?.sent_msg_cnt || 0
+  const recv = values[1] || bot.stat?.recv_msg_cnt || 0
+  const screenshot = values[2] || values[3] || 0
+
   return {
-    sent: sent || 0,
-    recv: recv || 0,
-    screenshot: screenshot || 0
+    sent,
+    recv,
+    screenshot
   }
 }
 

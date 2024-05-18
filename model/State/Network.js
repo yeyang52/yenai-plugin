@@ -44,22 +44,29 @@ export function getNetworkTestList(e) {
   }))
 }
 
-// 封装处理每个测试站点逻辑到一个单独的函数
 const handleSite = (site) => {
   return getNetworkLatency(site.url, site.timeout, site.useProxy)
     .then(res => ({ first: site.name, tail: res }))
     .catch(error => {
-      let errorMsg = "error"
-      if (error.name === "AbortError") {
-        errorMsg = "timeout"
-      }
-      if (error.message.includes("ECONNRESET")) {
-        logger.error(`[Yenai-Plugin][状态]请求 ${site.name} 发生了 ECONNRESET 错误:`, error.message)
-        errorMsg = "econnreset"
-      }
-      logger.error(`[Yenai-Plugin][状态]请求 ${site.name} 过程中发生错误:`, error.message)
-      return { first: site.name, tail: `<span style='color:#F44336'>${errorMsg}</span>` }
+      const errorMsg = handleError(error, site.name)
+      const errorSpan = `<span style='color:#F44336'>${errorMsg}</span>`
+      return { first: site.name, tail: errorSpan }
     })
+}
+
+const handleError = (error, siteName) => {
+  let errorMsg = "error"
+  const prefix = "[Yenai-Plugin][状态]"
+  if (error.name === "AbortError") {
+    logger.warn(`${prefix}请求 ${siteName} 超时`)
+    errorMsg = "timeout"
+  } else if (error.message.includes("ECONNRESET")) {
+    logger.warn(`${prefix}请求 ${siteName} 发生了 ECONNRESET 错误:`, error.message)
+    errorMsg = "econnreset"
+  } else {
+    logger.error(`${prefix}请求 ${siteName} 过程中发生错误:`, error.message)
+  }
+  return errorMsg
 }
 /**
  * 解析配置参数并返回配置对象。

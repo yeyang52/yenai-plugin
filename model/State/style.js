@@ -34,7 +34,7 @@ export async function getBackground() {
     const buffBase64 = arrayBufferToBase64(buffer)
     return `data:image/jpeg;base64,${buffBase64}`
   } catch (err) {
-    logger.error(`[Yenai-Plugin][状态]背景图请求失败，使用默认背景图“${backdropDefault}”，错误原因: ${err.message}`)
+    logger.warn(`[Yenai-Plugin][状态]背景图请求失败，使用默认背景图 “${backdropDefault}” ，错误原因: ${err.message}`)
     const Plugin_Path = "../../../../../plugins/yenai-plugin"
     return `${Plugin_Path}/resources/state/img/${backdropDefault}`
   } finally {

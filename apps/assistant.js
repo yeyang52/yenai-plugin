@@ -15,7 +15,7 @@ export class Assistant extends plugin {
     super({
       name: "椰奶小助手",
       event: "message",
-      priority: 2000,
+      priority: 1000,
       rule: [
         {
           reg: "^#(改|换)头像",
@@ -348,7 +348,7 @@ export class Assistant extends plugin {
     if (!this.Bot.gl.get(Number(quits))) return e.reply("❎ 群聊列表查无此群")
 
     if (quits == e.group_id) {
-      e.reply("✅ 3秒后退出本群聊")
+      e.reply("⚠️ 3秒后退出本群聊")
       await sleep(3000)
     }
 

@@ -166,7 +166,7 @@ export class GroupAdmin extends plugin {
     if (!qq) qq = e.msg.replace(/#|(设置|取消)管理/g, "").trim()
 
     if (!qq || !(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号")
-    const Member = e.group.pickMember(qq)
+    const Member = e.group.pickMember(Number(qq) || qq)
     const Memberinfo = Member?.info || await Member?.getInfo?.()
     if (!Memberinfo) return e.reply("❎ 这个群没有这个人哦~")
 
@@ -184,7 +184,7 @@ export class GroupAdmin extends plugin {
     let text = e.msg.replace(/#?(修改|设置)头衔/g, "")
     let res = await e.group.setTitle(qq, text)
     if (res) {
-      let Member = e.group.pickMember(Number(qq))
+      let Member = e.group.pickMember(Number(qq) || qq)
       let name = Member.card || Member.nickname
       e.reply(`✅ 已经将「${name}」的头衔设置为「${text}」`)
     } else {

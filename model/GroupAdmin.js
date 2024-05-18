@@ -279,7 +279,7 @@ segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
       }
     }
     loader.task.push(_.cloneDeep(task))
-    loader.creatTask()
+    loader.createTask()
     redisTask.push({ cron, group, type, botId: this.Bot.uin })
     redis.set(this.MuteTaskKey, JSON.stringify(redisTask))
     return true

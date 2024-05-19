@@ -99,15 +99,7 @@ export class NewPicSearch extends plugin {
   }
 
   async handelImg(e, funName) {
-    if (e.source) {
-      let source
-      if (e.isGroup) {
-        source = (await e.group.getChatHistory(e.source.seq, 1)).pop()
-      } else {
-        source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
-      }
-      e.img = [ source.message.find(item => item.type == "image")?.url ]
-    }
+    e.img = e.img || await common.takeSourceMsg(e, { img: true })
     if (!_.isEmpty(e.img)) return true
     e.sourceFunName = funName
     this.setContext("MonitorImg")
@@ -115,11 +107,11 @@ export class NewPicSearch extends plugin {
     return false
   }
 
-  async MonitorImg() {
+  async MonitorImg(e) {
     if (!this.e.img) {
       this.e.reply("❎ 未检测到图片操作已取消")
     } else {
-      this[this.getContext().MonitorImg.sourceFunName](this.e)
+      this[e.sourceFunName](this.e)
     }
     this.finish("MonitorImg")
   }

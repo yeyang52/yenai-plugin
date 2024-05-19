@@ -111,13 +111,16 @@ export class Assistant extends plugin {
    */
   async SetAvatar(e) {
     if (!common.checkPermission(e, "master")) return
-    if (!e.img) {
+
+    const sourceImg = await common.takeSourceMsg(e, { img: true })
+
+    if (!e.img && !sourceImg) {
       this.setContext("_avatarContext")
       e.reply("⚠ 请发送图片")
       return
     }
 
-    await this.Bot.setAvatar(e.img[0])
+    await this.Bot.setAvatar(sourceImg?.[0] || e.img[0])
       .then(() => e.reply("✅ 头像修改成功"))
       .catch((err) => {
         e.reply("❎ 头像修改失败")
@@ -204,29 +207,27 @@ export class Assistant extends plugin {
    */
   async SetGroupAvatar(e) {
     if (e.isPrivate) {
-      if (!common.checkPermission(e, "admin", "admin")) return
       e.group_id = e.msg.replace(/#(改|换)群头像/g, "").trim()
 
       if (!e.group_id) return e.reply("❎ 群号不能为空")
 
       if (!(/^\d+$/.test(e.group_id))) return e.reply("❎ 您的群号不合法")
 
-      if (!this.Bot.gl.get(Number(e.group_id))) return e.reply("❎ 群聊列表查无此群")
       e.group_id = Number(e.group_id)
-    } else if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) {
-      return logger.mark(`${e.logFnc}该群员权限不足`)
+
+      if (!this.Bot.gl.get(e.group_id)) return e.reply("❎ 群聊列表查无此群")
     }
-    let groupObj = this.Bot.pickGroup(e.group_id)
-    if (!groupObj.is_admin && !groupObj.is_owner) {
-      return e.reply("❎ 没有管理员人家做不到啦~>_<")
-    }
-    if (!e.img) {
+    if (!common.checkPermission(e, "admin", "admin")) return
+
+    const sourceImg = await common.takeSourceMsg(e, { img: true })
+
+    if (!sourceImg && !e.img) {
       this.setContext("_GroupAvatarContext")
       e.reply("⚠ 请发送图片")
       return
     }
 
-    this.Bot.pickGroup(e.group_id).setAvatar(e.img[0])
+    this.Bot.pickGroup(e.group_id).setAvatar(sourceImg?.[0] || e.img[0])
       .then(() => e.reply("✅ 群头像修改成功"))
       .catch((err) => {
         e.reply("✅ 群头像修改失败")
@@ -415,23 +416,8 @@ export class Assistant extends plugin {
    * @param e
    */
   async ImageLink(e) {
-    let img = []
-    if (e.source) {
-      let source
-      if (e.isGroup) {
-        source = (await e.group.getChatHistory(e.source.seq, 1)).pop()
-      } else {
-        source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
-      }
-      for (let i of source.message) {
-        if (i.type == "image") {
-          img.push(i.url)
-        }
-      }
-    } else {
-      img = e.img
-    }
-
+    const sourceImg = await common.takeSourceMsg(e, { img: true })
+    const img = sourceImg || e.img
     if (_.isEmpty(img)) {
       this.setContext("_ImageLinkContext")
       await this.reply("⚠ 请发送图片")
@@ -527,12 +513,7 @@ export class Assistant extends plugin {
   // 引用撤回
   async RecallMsgown(e) {
     if (!e.source) return false
-    let source
-    if (e.isGroup) {
-      source = (await e.group.getChatHistory(e.source.seq, 1)).pop()
-    } else {
-      source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
-    }
+    const source = await common.takeSourceMsg(e)
     let target = e.isGroup ? e.group : e.friend
 
     if (e.isGroup) {

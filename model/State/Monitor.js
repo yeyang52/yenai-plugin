@@ -1,6 +1,6 @@
 import { Config } from "../../components/index.js"
 import _ from "lodash"
-import { si, initDependence, addData } from "./utils.js"
+import { si, initDependence } from "./utils.js"
 
 export default new class monitor {
   constructor() {
@@ -41,8 +41,8 @@ export default new class monitor {
   set network(value) {
     if (_.isNumber(value[0]?.tx_sec) && _.isNumber(value[0]?.rx_sec)) {
       this._network = value
-      addData(this.chartData.network.upload, [ Date.now(), value[0].tx_sec ])
-      addData(this.chartData.network.download, [ Date.now(), value[0].rx_sec ])
+      this._addData(this.chartData.network.upload, [ Date.now(), value[0].tx_sec ])
+      this._addData(this.chartData.network.download, [ Date.now(), value[0].rx_sec ])
     }
   }
 
@@ -53,8 +53,8 @@ export default new class monitor {
   set fsStats(value) {
     if (_.isNumber(value?.wx_sec) && _.isNumber(value?.rx_sec)) {
       this._fsStats = value
-      addData(this.chartData.fsStats.writeSpeed, [ Date.now(), value.wx_sec ])
-      addData(this.chartData.fsStats.readSpeed, [ Date.now(), value.rx_sec ])
+      this._addData(this.chartData.fsStats.writeSpeed, [ Date.now(), value.wx_sec ])
+      this._addData(this.chartData.fsStats.readSpeed, [ Date.now(), value.rx_sec ])
     }
   }
 
@@ -79,14 +79,14 @@ export default new class monitor {
   }
 
   async getData() {
-    let data = await si.get(this.valueObject)
+    const data = await si.get(this.valueObject)
     _.forIn(data, (value, key) => {
       if (_.isEmpty(value)) {
         logger.debug(`获取${key}数据失败，停止获取对应数据`)
         delete this.valueObject[key]
       }
     })
-    let {
+    const {
       fsStats,
       networkStats,
       mem: { active },
@@ -95,10 +95,10 @@ export default new class monitor {
     this.fsStats = fsStats
     this.network = networkStats
     if (_.isNumber(active)) {
-      addData(this.chartData.ram, [ Date.now(), active ])
+      this._addData(this.chartData.ram, [ Date.now(), active ])
     }
     if (_.isNumber(currentLoad)) {
-      addData(this.chartData.cpu, [ Date.now(), currentLoad ])
+      this._addData(this.chartData.cpu, [ Date.now(), currentLoad ])
     }
     this.setRedisChartData()
     return data
@@ -119,5 +119,22 @@ export default new class monitor {
     } catch (error) {
       console.log(error)
     }
+  }
+
+  /**
+   * 向数组中添加数据，如果数组长度超过允许的最大值，则删除最早添加的数据
+   * @param {Array} arr - 要添加数据的数组
+   * @param {*} data - 要添加的新数据
+   * @param {number} [maxLen] - 数组允许的最大长度，默认值为60
+   * @returns {void}
+   */
+  _addData(arr, data, maxLen = 60) {
+    if (data === null || data === undefined) return
+    // 如果数组长度超过允许的最大值，删除第一个元素
+    if (arr.length >= maxLen) {
+      _.pullAt(arr, 0)
+    }
+    // 添加新数据
+    arr.push(data)
   }
 }()

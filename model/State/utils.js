@@ -1,5 +1,3 @@
-import _ from "lodash"
-
 export let si = false
 export let osInfo = null
 export let colorthief = null
@@ -56,23 +54,6 @@ export async function importColorThief() {
     return colorthief
   }
   return colorthief
-}
-
-/**
- * 向数组中添加数据，如果数组长度超过允许的最大值，则删除最早添加的数据
- * @param {Array} arr - 要添加数据的数组
- * @param {*} data - 要添加的新数据
- * @param {number} [maxLen] - 数组允许的最大长度，默认值为60
- * @returns {void}
- */
-export function addData(arr, data, maxLen = 60) {
-  if (data === null || data === undefined) return
-  // 如果数组长度超过允许的最大值，删除第一个元素
-  if (arr.length >= maxLen) {
-    _.pullAt(arr, 0)
-  }
-  // 添加新数据
-  arr.push(data)
 }
 
 /**

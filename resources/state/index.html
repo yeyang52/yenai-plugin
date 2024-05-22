@@ -16,6 +16,7 @@
     var Config = JSON.parse('{{@Config}}')
     var _res_path = '{{_res_path}}'
 </script>
+<script src="{{_res_path}}state/js/style.js" defer></script>
 {{each BotStatusList}}
 <div class="box">
     <div class="botInfo">
@@ -45,30 +46,22 @@
                 </span>
             </p>
             <p>
-                {{if $value.countContacts.friend}}<span style="background: #B4A0D8">
-                    <img src="../../../../../plugins/yenai-plugin/resources/state/icon/friend.png">
-                    {{$value.countContacts.friend}}
-                </span>{{/if}}
-                {{if $value.countContacts.group}}<span style="background: #e0be92">
-                    <img src="../../../../../plugins/yenai-plugin/resources/state/icon/group.png">
-                    {{$value.countContacts.group}}
-                </span>{{/if}}
-                {{if $value.countContacts.groupMember}}<span style="background: #aad5e6">
-                    <img src="../../../../../plugins/yenai-plugin/resources/state/icon/groupMember.png">
-                    {{$value.countContacts.groupMember}}
-                </span>{{/if}}
-                {{if $value.messageCount.recv}}<span style="background: #B4A0D8">
-                    <img src="../../../../../plugins/yenai-plugin/resources/state/icon/recv.png">
-                    {{$value.messageCount.recv}}
-                </span>{{/if}}
-                {{if $value.messageCount.sent}}<span style="background: #e0be92">
-                    <img src="../../../../../plugins/yenai-plugin/resources/state/icon/sent.png">
-                    {{$value.messageCount.sent}}
-                </span>{{/if}}
-                {{if $value.messageCount.screenshot}}<span style="background: #aad5e6">
-                    <img src="../../../../../plugins/yenai-plugin/resources/state/icon/screenshot.png">
-                    {{$value.messageCount.screenshot}}
-                </span>{{/if}}
+                {{each $value.countContacts v i}}
+                {{if v}}
+                <span>
+                    <img src="../../../../../plugins/yenai-plugin/resources/state/icon/{{i}}.png">
+                    {{v}}
+                </span>
+                {{/if}}
+                {{/each}}
+                {{each $value.messageCount v i}}
+                {{if v}}
+                <span>
+                    <img src="../../../../../plugins/yenai-plugin/resources/state/icon/{{i}}.png">
+                    {{v}}
+                </span>
+                {{/if}}
+                {{/each}}
             </p>
         </div>
     </div>
@@ -128,8 +121,6 @@
     {{/if}}
 </div>
 {{/if}}
-
-<script src="{{_res_path}}state/js/style.js"></script>
 
 {{if chartData}}
 <div class="box" data-boxInfo="图表">

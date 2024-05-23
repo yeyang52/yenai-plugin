@@ -86,7 +86,7 @@ export class Assistant extends plugin {
           fnc: "FriendType"
         },
         {
-          reg: "#设置机型.*",
+          reg: "^#设置机型",
           fnc: "setModel"
         },
         {
@@ -94,7 +94,7 @@ export class Assistant extends plugin {
           fnc: "LookAvatar"
         },
         {
-          reg: "^#?(设置|修改)日志等级(.*)",
+          reg: "^#?(设置|修改)日志等级",
           fnc: "logs"
         }
       ]
@@ -196,7 +196,7 @@ export class Assistant extends plugin {
     this.Bot.pickGroup(group).setCard(this.Bot.uin, card)
       .then(() => e.reply("✅ 群名片修改成功"))
       .catch(err => {
-        e.reply("✅ 群名片修改失败")
+        e.reply("❎ 群名片修改失败")
         logger.error(err)
       })
   }
@@ -230,7 +230,7 @@ export class Assistant extends plugin {
     this.Bot.pickGroup(e.group_id).setAvatar(sourceImg?.[0] || e.img[0])
       .then(() => e.reply("✅ 群头像修改成功"))
       .catch((err) => {
-        e.reply("✅ 群头像修改失败")
+        e.reply("❎ 群头像修改失败")
         logger.error(err)
       })
   }
@@ -250,7 +250,7 @@ export class Assistant extends plugin {
     this.Bot.pickGroup(e.group_id).setAvatar(this.e.img[0])
       .then(() => this.e.reply("✅ 群头像修改成功"))
       .catch((err) => {
-        this.e.reply("✅ 群头像修改失败")
+        this.e.reply("❎ 群头像修改失败")
         logger.error(err)
       })
 
@@ -289,7 +289,7 @@ export class Assistant extends plugin {
       this.Bot.pickGroup(group).setName(card)
         .then(() => e.reply("✅ 群昵称修改成功"))
         .catch(err => {
-          e.reply("✅ 群昵称修改失败")
+          e.reply("❎ 群昵称修改失败")
           logger.error(err)
         })
     } else {
@@ -484,7 +484,10 @@ export class Assistant extends plugin {
     }
   }
 
-  // 获取群|好友列表
+  /**
+   * 获取群|好友列表
+   * @param e
+   */
   async GlOrFl(e) {
     if (!common.checkPermission(e, "master")) return
     let msg = []
@@ -510,7 +513,10 @@ export class Assistant extends plugin {
     common.getforwardMsg(e, msg)
   }
 
-  // 引用撤回
+  /**
+   * 引用撤回
+   * @param e
+   */
   async RecallMsgown(e) {
     if (!e.source) return false
     const source = await common.takeSourceMsg(e)
@@ -554,7 +560,10 @@ export class Assistant extends plugin {
     if (e.isGroup) await e.recall()
   }
 
-  // 开关好友添加
+  /**
+   * 开关好友添加
+   * @param e
+   */
   async FriendSwitch(e) {
     if (!common.checkPermission(e, "master")) return
     let res = await new QQApi(e).addFriendSwitch(/开启/.test(e.msg) ? 1 : 2)
@@ -562,7 +571,10 @@ export class Assistant extends plugin {
     e.reply(res.ActionStatus)
   }
 
-  // 好友申请方式
+  /**
+   * 好友申请方式
+   * @param e
+   */
   async FriendType(e) {
     if (!common.checkPermission(e, "master")) return
     let regRet = friendTypeReg.exec(e.msg)
@@ -589,6 +601,10 @@ export class Assistant extends plugin {
     e.reply(`✅ 已${/开启/.test(e.msg) ? "开启" : "关闭"}戳一戳功能`)
   }
 
+  /**
+   * 设置机型
+   * @param e
+   */
   async setModel(e) {
     if (!common.checkPermission(e, "master")) return
     let model = e.msg.replace(/#设置机型/g, "")
@@ -596,7 +612,10 @@ export class Assistant extends plugin {
     e.reply(_.get(res, [ "13031", "data", "rsp", "iRet" ]) == 0 ? "设置成功" : "设置失败")
   }
 
-  // 查看头像
+  /**
+   * 查看头像
+   * @param
+   */
   async LookAvatar() {
     try {
       let id, url
@@ -617,7 +636,10 @@ export class Assistant extends plugin {
     return false
   }
 
-  // 设置日志等级
+  /**
+   * 设置日志等级
+   * @param
+   */
   async logs() {
     if (!common.checkPermission(this.e, "master")) return
 

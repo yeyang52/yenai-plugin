@@ -54,7 +54,7 @@ export default class YamlReader {
     this.save()
   }
 
-  /* 删除key */
+  /* 删除数组数据 */
   delete(keyPath) {
     this.document.deleteIn(keyPath.split("."))
     this.save()

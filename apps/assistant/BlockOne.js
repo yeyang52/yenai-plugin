@@ -27,14 +27,14 @@ export class BlockOne extends plugin {
     this._getType("拉")
     this._getBlackResult(/^#拉[黑白](群聊?)?/)
     const { masterQQ } = Config
-    if (!this.blackResult || common.getPermission(new Proxy({
+    if (!this.blackResult || (this.name == "拉黑" && common.getPermission(new Proxy({
       get isMaster() {
         return masterQQ.includes(this.user_id) || masterQQ.includes(String(this.user_id))
       },
       user_id: this.blackResult
     }, {
       get: (target, prop, receiver) => target[prop] ?? e[prop]
-    }), "master") === true) {
+    }), "master") === true)) {
       return this.e.reply(`❎ ${this.name}失败，没有键入用户或群号`)
     }
     try {
@@ -95,14 +95,14 @@ export class BlockOne extends plugin {
 
   _getType(name) {
     this.name = name
-    if (/拉白/.test(this.e.msg)) {
+    if (/^#(取消|(删|移)除)?拉白(群聊?)?/.test(this.e.msg)) {
       this.type += "white"
       this.name += "白"
     } else {
       this.type += "black"
       this.name += "黑"
     }
-    if (/群/.test(this.e.msg)) {
+    if (/^#(取消|(删|移)除)?拉[黑白](群聊?)/.test(this.e.msg)) {
       this.type += "Group"
       this.name += "群"
     } else {

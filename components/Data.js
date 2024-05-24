@@ -59,7 +59,7 @@ let Data = {
    * @param root
    * @param space
    */
-  writeJSON(file, data, root = "", space = "\t") {
+  writeJSON(file, data, root = "", space = 2) {
     // 检查并创建目录
     Data.createDir(file, root, true)
     root = getRoot(root)

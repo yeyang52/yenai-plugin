@@ -323,7 +323,12 @@ segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
    */
   async delMuteTask(group, type) {
     let redisTask = JSON.parse(await redis.get(this.MuteTaskKey)) || []
-    loader.task = loader.task.filter(item => item.name !== `椰奶群定时${type ? "禁言" : "解禁"}${group}`)
+    const name = `椰奶群定时${type ? "禁言" : "解禁"}${group}`
+    // 终止任务
+    const task = loader.task.find(i => i.name === name)
+    task?.job?.cancel()
+
+    loader.task = loader.task.filter(item => item.name !== name)
     redisTask = redisTask.filter(item => item.group !== group && item.type !== type)
     redis.set(this.MuteTaskKey, JSON.stringify(redisTask))
     return true

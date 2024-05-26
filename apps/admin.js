@@ -216,7 +216,7 @@ const rodom = async function() {
 }
 
 const getStatus = function(rote, alone) {
-  let badge = alone != undefined ? "<span class=\"badge\";>群单独</span>" : ""
+  let badge = alone != undefined ? "<span class=\"badge\">群单独</span>" : ""
   if (rote) {
     return badge + "<div class=\"cfg-status\" >已开启</div>"
   } else {

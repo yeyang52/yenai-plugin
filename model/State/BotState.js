@@ -14,7 +14,7 @@ export default async function getBotState(e) {
     const { nickname = "未知", status = 11, apk, version } = bot
 
     // 头像
-    const avatarUrl = bot.avatar ?? (Number(bot.uin) ? `https://q1.qlogo.cn/g?b=qq&s=3&nk=${bot.uin}` : "default")
+    const avatarUrl = bot.avatar ?? (Number(bot.uin) ? `https://q1.qlogo.cn/g?b=qq&s=0&nk=${bot.uin}` : "default")
     const avatar = await getAvatarColor(avatarUrl)
 
     const verKey = e.isPro ? "version" : "ver"

@@ -16,7 +16,6 @@
     var Config = JSON.parse('{{@Config}}')
     var _res_path = '{{_res_path}}'
 </script>
-<script src="{{_res_path}}state/js/style.js" defer></script>
 {{each BotStatusList}}
 <div class="box">
     <div class="botInfo">
@@ -121,6 +120,8 @@
     {{/if}}
 </div>
 {{/if}}
+
+<script src="{{_res_path}}state/js/style.js"></script>
 
 {{if chartData}}
 <div class="box" data-boxInfo="图表">

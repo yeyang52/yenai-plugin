@@ -9,7 +9,7 @@ export default async function getBotState(e) {
   const botList = _getBotList(e)
   const dataPromises = botList.map(async(i) => {
     const bot = Bot[i]
-    if (!bot?.uin) return ""
+    if (!bot?.uin) return false
 
     const { nickname = "未知", status = 11, apk, version } = bot
 
@@ -44,7 +44,7 @@ export default async function getBotState(e) {
     }
   })
 
-  return Promise.all(dataPromises)
+  return Promise.all(dataPromises).then(r => r.filter(Boolean))
 }
 
 async function getAvatarColor(url) {

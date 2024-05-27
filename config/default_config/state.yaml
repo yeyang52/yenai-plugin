@@ -22,14 +22,17 @@ statusTask: true
 # 如果出现内存异常的情况可将此配置项开启，如果打开后报错请将监控任务关闭
 statusPowerShellStart: false
 
-# 背景图片api
+# 背景图片api，设置为false则一直使用默认背景
 # CF跳板(会损失一点访问时间，但后期API地址可以自动更新)
 # http://dir.dengfenglai.icu
 # 默认地址(直连，但是不确定是否会GG)
 # https://t.mwm.moe/mp/
 backdrop: "http://dir.dengfenglai.icu"
-# 当api请求失败时使用的默认背景图，请放置在resources/state/img目录下，修改为你的文件名
-backdropDefault: "default_bg.jpg"
+
+# 当api请求失败时使用的默认背景图，请放置在resources/state/img/bg目录下
+# random - 随机选择state/img/bg目录里的一张图片
+# default_bg.jpg 可直接指定bg目录里一张图片，注意请带上后缀名
+backdropDefault: "random"
 
 # 关闭node的那个圈圈
 closedNodeInfo: true

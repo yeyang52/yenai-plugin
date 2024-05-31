@@ -89,7 +89,10 @@ export class Fun extends plugin {
     e.reply(results, true)
   }
 
-  // github
+  /**
+   * Github略缩图
+   * @param e
+   */
   async GH(e) {
     const api = "https://opengraph.githubassets.com"
 
@@ -106,7 +109,10 @@ export class Fun extends plugin {
     }
   }
 
-  // coser
+  /**
+   * Coser
+   * @param e
+   */
   async coser(e) {
     if (!common.checkSeSePermission(e)) return false
 
@@ -116,7 +122,10 @@ export class Fun extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  // cos/acg搜索
+  /**
+   * cos/acg搜索
+   * @param e
+   */
   async acg(e) {
     if (!common.checkSeSePermission(e)) return false
     e.reply(START_EXECUTION)
@@ -127,7 +136,10 @@ export class Fun extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  // 萌堆
+  /**
+   * 萌堆
+   * @param e
+   */
   async mengdui(e) {
     if (!common.checkSeSePermission(e, "sesepro")) return false
     // 开始执行
@@ -138,6 +150,10 @@ export class Fun extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
+  /**
+   * 秀人
+   * @param e
+   */
   async xiuren(e) {
     if (!common.checkSeSePermission(e, "pro")) return false
     // 开始执行

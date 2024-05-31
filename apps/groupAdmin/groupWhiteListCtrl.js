@@ -22,6 +22,7 @@ export class groupWhiteListCtrl extends plugin {
 
   /**
    * 加白名单
+   * @param
    */
   async whiteQQ() {
     if (!common.checkPermission(this.e, "master")) return
@@ -44,6 +45,7 @@ export class groupWhiteListCtrl extends plugin {
 
   /**
    * 开关白名单自动解禁
+   * @param
    */
   async noBan() {
     if (!common.checkPermission(this.e, "master")) return

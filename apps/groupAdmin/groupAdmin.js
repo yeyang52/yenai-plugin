@@ -4,7 +4,7 @@ import { Time_unit } from "../../constants/other.js"
 import { GroupAdmin as Ga, GroupBannedWords, common } from "../../model/index.js"
 import { cronValidate, translateChinaNum } from "../../tools/index.js"
 
-// 正则
+/** 正则 */
 const Numreg = "[零一壹二两三四五六七八九十百千万亿\\d]+"
 const TimeUnitReg = Object.keys(Time_unit).join("|")
 
@@ -12,8 +12,9 @@ const TimeUnitReg = Object.keys(Time_unit).join("|")
 const noactivereg = new RegExp(`^#(查看|清理|确认清理|获取)(${Numreg})个?(${TimeUnitReg})没发言的人(第(${Numreg})页)?$`)
 /** 我要自闭正则 */
 const Autisticreg = new RegExp(`^#?我要(自闭|禅定)(${Numreg})?个?(${TimeUnitReg})?$`, "i")
-// 获取定时任务
+/** 获取定时任务 */
 const redisTask = await Ga.getRedisMuteTask() || false
+
 export class GroupAdmin extends plugin {
   constructor() {
     super({
@@ -46,7 +47,7 @@ export class GroupAdmin extends plugin {
           fnc: "adminsetTitle"
         },
         {
-          reg: "^#申请头衔",
+          reg: "^#(申请|我要)头衔",
           fnc: "SetGroupSpecialTitle"
         },
         {
@@ -148,7 +149,10 @@ export class GroupAdmin extends plugin {
     e.reply(`✅ 已${type ? "开启" : "关闭"}全体禁言`)
   }
 
-  // 踢群员
+  /**
+   * 踢群员
+   * @param e
+   */
   async kickMember(e) {
     if (!common.checkPermission(e, "admin", "admin")) { return true }
     let qq = e.message.find(item => item.type == "at")?.qq
@@ -158,7 +162,10 @@ export class GroupAdmin extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  // 设置管理
+  /**
+   * 设置管理
+   * @param e
+   */
   async SetAdmin(e) {
     if (!common.checkPermission(e, "master", "owner")) return
     let qq = e.message.find(item => item.type == "at")?.qq
@@ -176,7 +183,10 @@ export class GroupAdmin extends plugin {
     type ? e.reply(`✅ 已经把「${name}」设置为管理啦！！`) : e.reply(`✅ 已取消「${name}」的管理`)
   }
 
-  // 修改头衔
+  /**
+   * 设置头衔
+   * @param e
+   */
   async adminsetTitle(e) {
     if (!common.checkPermission(e, "master", "owner")) return
     let qq = e.message.find(item => item.type == "at")?.qq
@@ -192,10 +202,13 @@ export class GroupAdmin extends plugin {
     }
   }
 
-  // 申请头衔
+  /**
+   * 申请头衔
+   * @param e
+   */
   async SetGroupSpecialTitle(e) {
     if (!common.checkPermission(e, "all", "owner")) return
-    let Title = e.msg.replace(/#|申请头衔/g, "")
+    let Title = e.msg.replace(/#(申请|我要)头衔/g, "")
     // 屏蔽词处理
     let TitleFilterModeChange = GroupBannedWords.getTitleFilterModeChange(e.group_id)
     let TitleBannedWords = GroupBannedWords.getTitleBannedWords(e.group_id)
@@ -216,7 +229,10 @@ export class GroupAdmin extends plugin {
     e.reply(`✅ 已将你的头衔更换为「${Title}」`, true)
   }
 
-  // 获取禁言列表
+  /**
+   * 获取禁言列表
+   * @param e
+   */
   async Mutelist(e) {
     new Ga(e).getMuteList(e.group_id, true)
       .then(res => common.getforwardMsg(e, res, {
@@ -226,7 +242,10 @@ export class GroupAdmin extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  // 解除全部禁言
+  /**
+   * 解除全部禁言
+   * @param e
+   */
   async relieveAllMute(e) {
     if (!common.checkPermission(e, "admin", "admin")) { return true }
     new Ga(e).releaseAllMute()
@@ -234,7 +253,10 @@ export class GroupAdmin extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  // 查看和清理多久没发言的人
+  /**
+   * 查看和清理多久没发言的人
+   * @param e
+   */
   async noactive(e) {
     if (!common.checkPermission(e, "admin", "admin")) { return true }
 
@@ -278,7 +300,10 @@ export class GroupAdmin extends plugin {
     })
   }
 
-  // 查看和清理从未发言的人
+  /**
+   * 查看和清理从未发言的人
+   * @param e
+   */
   async neverspeak(e) {
     if (!common.checkPermission(e, "admin", "admin")) { return true }
     let list = null
@@ -313,7 +338,10 @@ export class GroupAdmin extends plugin {
       .catch(err => common.handleException(e, err))
   }
 
-  // 查看不活跃排行榜和入群记录
+  /**
+   * 查看不活跃排行榜和入群记录
+   * @param e
+   */
   async RankingList(e) {
     let num = e.msg.match(new RegExp(Numreg))
     num = num ? translateChinaNum(num[0]) : 10
@@ -326,7 +354,10 @@ export class GroupAdmin extends plugin {
     common.getforwardMsg(e, msg, { isxml: true })
   }
 
-  // 发送通知
+  /**
+   * 发送通知
+   * @param e
+   */
   async Send_notice(e) {
     if (!common.checkPermission(e, "admin", "admin")) return
 
@@ -337,7 +368,10 @@ export class GroupAdmin extends plugin {
     e.reply(e.message)
   }
 
-  // 设置定时群禁言
+  /**
+   * 设置定时群禁言
+   * @param e
+   */
   async timeMute(e) {
     if (!common.checkPermission(e, "admin", "admin")) return
     let type = /禁言/.test(e.msg)
@@ -402,7 +436,10 @@ export class GroupAdmin extends plugin {
     e.reply(res || `${isAdd}精失败`)
   }
 
-  // 我要自闭
+  /**
+   * 我要自闭
+   * @param e
+   */
   async Autistic(e) {
     // 判断是否有管理
     if (!e.group.is_admin && !e.group.is_owner) return

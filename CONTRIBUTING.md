@@ -25,6 +25,7 @@ git clone https://github.com/yeyang52/yenai-plugin
 
 ```sh
 pnpm install
+pnpm husky
 ```
 ## 开发过程
 

@@ -125,23 +125,13 @@ export class NewHandle extends plugin {
    * @param e
    */
   async Handle(e) {
-    if (!e.source) return false
-    if (e.source.user_id != (e.bot ?? Bot).uin) return false
-    let yes = !!/同意/.test(e.msg)
-    let source
-    if (e.isGroup) {
-      source = (await e.group.getChatHistory(e.source.seq, 1)).pop()
-    } else {
-      source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
-    }
-    if (!source) return e.reply("❎ 获取消息失败")
-    let sourceMsg = source.raw_message?.split("\n")
+    const source = await common.takeSourceMsg(e)
+    if (!source || source.user_id != (e.bot ?? Bot).uin) return false
+    const sourceMsg = source.raw_message?.split("\n")
     if (!sourceMsg) return e.reply("❎ 获取原消息失败，请使用\"同意xxx\"进行处理")
+    const yes = /同意/.test(e.msg)
     if (e.isGroup) {
       if (!common.checkPermission(e, "admin", "admin")) return
-
-      let source = (await e.group.getChatHistory(e.source.seq, 1)).pop()
-      let yes = /同意/.test(e.msg)
       logger.mark(`${e.logFnc}${yes ? "同意" : "拒绝"}加群通知`)
       let userId = await redis.get(`yenai:groupAdd:${source.message_id}`)
       if (!userId) return e.reply("找不到原消息了，手动同意叭~")
@@ -163,7 +153,7 @@ export class NewHandle extends plugin {
       if (!common.checkPermission(e, "master")) return false
       if (/添加好友申请/.test(sourceMsg[0])) {
         let qq = sourceMsg[1].match(/[1-9]\d*/g)
-        if ((e.bot ?? Bot).fl.get(Number(qq))) return e.reply("❎ 已经同意过该申请了哦~")
+        if ((e.bot ?? Bot).fl.get(Number(qq) || qq)) return e.reply("❎ 已经同意过该申请了哦~")
 
         logger.mark(`${e.logFnc}${yes ? "同意" : "拒绝"}好友申请`)
 
@@ -209,8 +199,8 @@ export class NewHandle extends plugin {
     let qq = ""
     let group = ""
     let msgs = e.message[0].text.split(" ")
-    if (e.source) {
-      let source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
+    const source = await common.takeSourceMsg(e)
+    if (source) {
       let res
       try {
         res = source.raw_message.split("\n")
@@ -262,8 +252,8 @@ export class NewHandle extends plugin {
   // 加群员为好友
   async addFriend(e) {
     if (!common.checkPermission(e, "master")) return false
-    if (!e.source) return false
-    let source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
+    const source = await common.takeSourceMsg(e)
+    if (!source) return false
     let msg = source.raw_message.split("\n")
     if (!/临时消息/.test(msg[0]) || !/来源群号/.test(msg[1]) || !/发送人QQ/.test(msg[2])) return false
     let group = msg[1].match(/\d+/g)

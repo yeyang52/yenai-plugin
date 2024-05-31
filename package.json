@@ -7,8 +7,7 @@
   "scripts": {
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
-    "lint": "lint-staged --allow-empty",
-    "prepare": "husky"
+    "lint": "lint-staged --allow-empty"
   },
   "repository": {
     "type": "git",

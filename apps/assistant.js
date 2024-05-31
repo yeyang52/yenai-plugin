@@ -614,7 +614,6 @@ export class Assistant extends plugin {
 
   /**
    * 查看头像
-   * @param
    */
   async LookAvatar() {
     try {
@@ -638,7 +637,6 @@ export class Assistant extends plugin {
 
   /**
    * 设置日志等级
-   * @param
    */
   async logs() {
     if (!common.checkPermission(this.e, "master")) return

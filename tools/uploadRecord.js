@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 /* eslint-disable no-void */
 import querystring from "querystring"
 import fetch from "node-fetch"
@@ -11,11 +12,9 @@ let core = null
 let Contactable = null
 
 try {
-  Contactable = (await import("oicq")).default
-  core = (await import("oicq")).core
+  Contactable = (await import("icqq"))?.default
+  core = (await import("icqq"))?.core
 } catch (error) {
-  Contactable = (await import("icqq").catch(() => {}))?.default
-  core = (await import("icqq").catch(() => {}))?.core
 }
 
 /**

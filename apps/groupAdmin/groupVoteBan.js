@@ -39,7 +39,6 @@ export class GroupVoteBan extends plugin {
 
   /**
    * 功能开关
-   * @param
    */
   async Switch() {
     if (!common.checkPermission(this.e, "master")) return
@@ -57,7 +56,6 @@ export class GroupVoteBan extends plugin {
 
   /**
    * 投票设置
-   * @param
    */
   async Settings() {
     if (!common.checkPermission(this.e, "master")) return

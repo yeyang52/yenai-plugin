@@ -99,7 +99,7 @@ export class Assistant_Other extends plugin {
   }
 
   async imageOcr(e) {
-    const imageOcr = e.bot.imageOcr || Bot.imageOcr
+    const imageOcr = e.bot.imageOcr?.bind(e.bot) || Bot.imageOcr
     if (!imageOcr) return this.reply("❎ 当前协议暂不支持OCR")
     const sourceImg = await common.takeSourceMsg(e, { img: true })
     const img = sourceImg || e.img

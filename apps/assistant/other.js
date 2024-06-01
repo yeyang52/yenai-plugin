@@ -99,14 +99,15 @@ export class Assistant_Other extends plugin {
   }
 
   async imageOcr(e) {
+    const imageOcr = e.bot.imageOcr || Bot.imageOcr
+    if (!imageOcr) return this.reply("❎ 当前协议暂不支持OCR")
     const sourceImg = await common.takeSourceMsg(e, { img: true })
     const img = sourceImg || e.img
     if (_.isEmpty(img)) {
       this.setContext("_imageOcrContext")
-      await this.reply("⚠ 请发送图片")
-      return
+      return this.reply("⚠ 请发送图片")
     }
-    let res = await e.bot.imageOcr(img[0])
+    let res = await imageOcr(img[0])
     let r = res.wordslist.map(i => i.words).join("\n")
     e.reply(r)
     return true
@@ -116,13 +117,11 @@ export class Assistant_Other extends plugin {
     e.img = this.e.img
     if (this.e.msg === "取消") {
       this.finish("_imageOcrContext")
-      await this.reply("✅ 已取消")
-      return
+      return this.reply("✅ 已取消")
     }
     if (!e.img) {
       this.setContext("_imageOcrContext")
-      await this.reply("⚠ 请发送图片或取消")
-      return
+      return this.reply("⚠ 请发送图片或取消")
     }
     this.imageOcr(e)
     this.finish("_imageOcrContext")

@@ -14,15 +14,15 @@ export class SendMsg extends plugin {
       rule: [
         {
           reg: FriendsReg, // 发好友
-          fnc: "SendFriendMsg"
+          fnc: "sendFriendMsg"
         },
         {
           reg: GroupMsgReg, // 发群聊
-          fnc: "SendGroupMsg"
+          fnc: "sendGroupMsg"
         },
         {
           reg: GroupListMsgReg, // 发群列表
-          fnc: "SendGroupListMsg"
+          fnc: "sendGroupListMsg"
         }
       ]
     })
@@ -36,7 +36,7 @@ export class SendMsg extends plugin {
    * 发好友
    * @param e
    */
-  async SendFriendMsg(e) {
+  async sendFriendMsg(e) {
     if (!common.checkPermission(e, "master")) return
 
     let regRet = FriendsReg.exec(e.msg)
@@ -57,20 +57,38 @@ export class SendMsg extends plugin {
 
     if (!e.message[0].text) e.message.shift()
 
-    if (e.message.length === 0) return e.reply("❎ 消息不能为空")
-
     if (!bot.fl.get(Number(qq))) return e.reply("❎ 好友列表查无此人")
 
+    if (e.message.length === 0) {
+      e._qq = qq
+      e._bot = bot
+      this.setContext("_sendFriendMsgContext")
+      e.reply("⚠ 请发送需要发送的消息\n可发送‘#取消’进行取消")
+      return
+    }
+
     await bot.pickFriend(qq).sendMsg(e.message)
-      .then(() => e.reply("✅ 私聊消息已送达"))
+      .then(() => e.reply(`✅ ${qq} 私聊消息已送达`))
       .catch(err => common.handleException(e, err, { MsgTemplate: "❎ 发送失败\n错误信息为:{error}" }))
+  }
+
+  async _sendFriendMsgContext(e) {
+    if (this.e.msg === "#取消") {
+      this.finish("_sendFriendMsgContext")
+      return this.e.reply("✅ 已取消")
+    }
+    const { _bot, _qq } = e
+    _bot.pickFriend(_qq).sendMsg(this.e.message)
+      .then(() => this.e.reply(`✅ ${_qq} 私聊消息已送达`))
+      .catch(err => common.handleException(this.e, err, { MsgTemplate: "❎ 发送失败\n错误信息为:{error}" }))
+    this.finish("_sendFriendMsgContext")
   }
 
   /**
    * 发群聊
    * @param e
    */
-  async SendGroupMsg(e) {
+  async sendGroupMsg(e) {
     if (!common.checkPermission(e, "master")) return
 
     let regRet = GroupMsgReg.exec(e.msg)
@@ -85,26 +103,44 @@ export class SendMsg extends plugin {
       bot = Bot[botId]
     } else {
       bot = this.Bot
-    }
+    };
 
     if (!/^\d+$/.test(gpid)) return e.reply("❎ 群号不合法")
 
     if (!e.message[0].text) e.message.shift()
 
-    if (e.message.length === 0) return e.reply("❎ 消息不能为空")
-
     if (!bot.gl.get(Number(gpid))) return e.reply("❎ 群聊列表查无此群")
 
+    if (e.message.length === 0) {
+      e._gpid = gpid
+      e._bot = bot
+      this.setContext("_sendGroupMsgContext")
+      e.reply("⚠ 请发送需要发送的消息\n可发送‘#取消’进行取消")
+      return
+    }
+
     await bot.pickGroup(gpid).sendMsg(e.message)
-      .then(() => e.reply("✅ 群聊消息已送达"))
+      .then(() => e.reply(`✅ ${gpid} 群聊消息已送达`))
       .catch((err) => common.handleException(e, err, { MsgTemplate: "❎ 发送失败\n错误信息为:{error}" }))
+  }
+
+  async _sendGroupMsgContext(e) {
+    if (this.e.msg === "#取消") {
+      this.finish("_sendGroupMsgContext")
+      return this.e.reply("✅ 已取消")
+    }
+    const { _bot, _gpid } = e
+    await _bot.pickGroup(_gpid).sendMsg(this.e.message)
+      .then(() => this.e.reply(`✅ ${_gpid} 群聊消息已送达`))
+      .catch((err) => common.handleException(this.e, err, { MsgTemplate: "❎ 发送失败\n错误信息为:{error}" }))
+    this.finish("_sendGroupMsgContext")
   }
 
   /**
    * 发群列表
    * @param e
    */
-  async SendGroupListMsg(e) {
+  async sendGroupListMsg(e) {
     if (!common.checkPermission(e, "master")) return
 
     let regRet = GroupListMsgReg.exec(e.msg)

@@ -5,10 +5,12 @@ noBan: false
 
 # 投票禁言开关
 VoteBan: true
+# 投票踢人开关
+VoteKick: false
 # 投票禁言超时时间 单位：秒
 outTime: 180
 # 投票最低所需票数 不建议太低
-minNum: 3
+minNum: 4
 # 投票成功禁言时间 单位：秒
 BanTime: 3600
 # 是否允许管理员一票否决

@@ -236,10 +236,6 @@ export const helpList = [
         title: "#搜索菜单",
         desc: "各大引擎搜索"
       }, {
-        icon: 7,
-        title: "#铃声搜索",
-        desc: "铃声多多"
-      }, {
         icon: 1,
         title: "#桌游搜索<关键词>",
         desc: "桌游搜索"
@@ -292,6 +288,11 @@ export const helpList = [
         icon: 8,
         title: "#椰奶设置",
         desc: "查看椰奶设置"
+      },
+      {
+        icon: 9,
+        title: "#投票设置",
+        desc: "设置投票参数"
       },
       {
         icon: 1,

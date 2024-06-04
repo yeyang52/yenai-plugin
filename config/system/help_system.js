@@ -99,13 +99,9 @@ export const helpList = [
         icon: 14
       },
       {
-        title: "#拉黑 #取消拉黑",
-        desc: "可带at或直接键入qq，拉黑后面可带\"群\"",
+        title: "#拉(黑|白) #取消拉(黑|白)",
+        desc: "可带at或直接键入qq，后面可带\"群\"",
         icon: 13
-      }, {
-        title: "#拉白 #取消拉白",
-        desc: "用法与 #拉黑 相同",
-        icon: 14
       }
     ]
   },
@@ -243,10 +239,6 @@ export const helpList = [
         icon: 19,
         title: "#桌游排行",
         desc: "桌游排行"
-      }, {
-        title: "#(看|取)(群)?头像 <@QQ>",
-        desc: "查看用户/群的高清头像图片",
-        icon: 16
       }
     ]
   },
@@ -277,6 +269,32 @@ export const helpList = [
         title: "#设置SauceNAOApiKey<key>",
         desc: "SauceNAOApiKey",
         icon: 9
+      }
+    ]
+  },
+  {
+    group: "其他",
+    list: [
+      {
+        title: "#取直链",
+        desc: "取一条图片直链",
+        icon: 5
+      }, {
+        title: "#取face",
+        desc: "取表情id",
+        icon: 11
+      }, {
+        title: "#ocr",
+        desc: "图片取文字",
+        icon: 3
+      }, {
+        title: "#(看|取)(群)?头像 <@QQ>",
+        desc: "查看用户/群的高清头像图片",
+        icon: 16
+      }, {
+        title: "#设置日志等级 <参数>",
+        desc: "设置控制台日志等级",
+        icon: 6
       }
     ]
   },

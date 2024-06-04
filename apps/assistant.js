@@ -2,9 +2,7 @@ import _ from "lodash"
 import { status } from "../constants/other.js"
 import { common, QQApi } from "../model/index.js"
 import { sleep } from "../tools/index.js"
-import { Config } from "../components/index.js"
 import { API_ERROR } from "../constants/errorMsg.js"
-import cfg from "../../../lib/config/config.js"
 
 // 命令正则
 
@@ -80,14 +78,6 @@ export class Assistant extends plugin {
         {
           reg: "^#设置机型",
           fnc: "setModel"
-        },
-        {
-          reg: "^#?(查?看|取)(群)?头像",
-          fnc: "LookAvatar"
-        },
-        {
-          reg: "^#?(设置|修改)日志等级",
-          fnc: "logs"
         }
       ]
     })
@@ -529,46 +519,5 @@ export class Assistant extends plugin {
     let model = e.msg.replace(/#设置机型/g, "")
     let res = await new QQApi(e).setModel(model).catch(err => logger.error(err))
     e.reply(_.get(res, [ "13031", "data", "rsp", "iRet" ]) == 0 ? "设置成功" : "设置失败")
-  }
-
-  /**
-   * 查看头像
-   */
-  async LookAvatar() {
-    try {
-      let id, url
-      if (this.e.msg.includes("群")) {
-        id = this.e.msg.replace(/^#?(查?看|取)(群)?头像/, "").trim() || this.e.group_id
-        url = await this.e.bot.pickGroup(id).getAvatarUrl()
-      } else {
-        id = this.e.msg.replace(/^#?(查?看|取)(群)?头像/, "").trim() || this.e.at || this.e.message.find(item => item.type == "at")?.qq || this.e.user_id
-        url = await this.e.group?.pickMember(id)?.getAvatarUrl()
-        if (!url) url = await this.e.bot.pickFriend(id).getAvatarUrl()
-      }
-      const msgTest = this.e.msg.includes("取")
-      if (url) return await this.e.reply(msgTest ? `${url}` : segment.image(url), true)
-    } catch (error) {
-      logger.error("获取头像错误", error)
-    }
-    await this.reply("❎ 获取头像错误", true)
-    return false
-  }
-
-  /**
-   * 设置日志等级
-   */
-  async logs() {
-    if (!common.checkPermission(this.e, "master")) return
-
-    const logs = [ "trace", "debug", "info", "warn", "fatal", "mark", "error", "off" ]
-    const level = this.e.msg.replace(/^#?(设置|修改)日志等级/, "").trim()
-
-    if (!logs.includes(level)) return this.e.reply("❎ 请输入正确的参数，可选：\ntrace,debug,info,warn,fatal,mark,error,off")
-
-    const { log_level } = cfg.bot
-    if (log_level === level) return this.e.reply(`❎ 日志等级已是${level}了`)
-
-    Config.modify("bot", "log_level", level, "config", true)
-    this.e.reply(`✅ 已将日志等级设置为${level}`)
   }
 }

@@ -199,18 +199,18 @@ export const helpList = [
       }
     ]
   }, {
-    group: "投票禁言(更多配置请看config/groupAdmin.yaml)",
+    group: "群投票(更多配置请看config/groupAdmin.yaml)",
     list: [
       {
-        title: "#(启用|禁用)投票禁言",
+        title: "#(启用|禁用)投票(禁言|踢人)",
         desc: "是否允许群员投票",
         icon: 4
       }, {
-        title: "#投票禁言<@QQ>",
-        desc: "投票禁言不听话的群员",
+        title: "#投票(禁言|踢人)<@QQ>",
+        desc: "投票裁决不听话的群员",
         icon: 6
       }, {
-        title: "#(支持|反对)禁言<@QQ>",
+        title: "#(支持|反对)投票<@QQ>",
         desc: "跟随投票",
         icon: 12
       }, {

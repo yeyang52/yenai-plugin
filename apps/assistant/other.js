@@ -1,5 +1,7 @@
-import { common } from "../../model/index.js"
 import _ from "lodash"
+import { Config } from "../../components/index.js"
+import { common } from "../../model/index.js"
+import cfg from "../../../../lib/config/config.js"
 
 export class Assistant_Other extends plugin {
   constructor() {
@@ -17,10 +19,17 @@ export class Assistant_Other extends plugin {
           fnc: "Face"
         },
         {
-          reg: "^#ocr",
+          reg: "^#(ocr|提?取文字)",
           fnc: "imageOcr"
+        },
+        {
+          reg: "^#?(查?看|取)(群)?头像",
+          fnc: "LookAvatar"
+        },
+        {
+          reg: "^#?(设置|修改)日志等级",
+          fnc: "logs"
         }
-
       ]
     })
   }
@@ -98,19 +107,29 @@ export class Assistant_Other extends plugin {
     }
   }
 
+  /**
+   * 图片提取文字
+   * @param e
+   */
   async imageOcr(e) {
-    const imageOcr = e.bot.imageOcr?.bind(e.bot) || Bot.imageOcr
-    if (!imageOcr) return this.reply("❎ 当前协议暂不支持OCR")
-    const sourceImg = await common.takeSourceMsg(e, { img: true })
-    const img = sourceImg || e.img
-    if (_.isEmpty(img)) {
-      this.setContext("_imageOcrContext")
-      return this.reply("⚠ 请发送图片")
+    try {
+      const imageOcr = e.bot?.imageOcr?.bind(e.bot) || Bot.imageOcr
+      if (!imageOcr) return this.reply("❎ 当前协议暂不支持OCR")
+      const sourceImg = await common.takeSourceMsg(e, { img: true })
+      const img = sourceImg || e.img
+      if (_.isEmpty(img)) {
+        this.setContext("_imageOcrContext")
+        return this.reply("⚠ 请发送图片")
+      }
+      let res = await imageOcr(img[0])
+      let r = res?.wordslist?.map(i => i.words).join("\n")
+      if (!r) return e.reply("❎ 发生错误,请稍后再试。")
+      e.reply(r, true)
+      return true
+    } catch (error) {
+      e.reply("❎ 发生错误,请稍后再试。")
+      logger.error("获取OCR错误:", error)
     }
-    let res = await imageOcr(img[0])
-    let r = res.wordslist.map(i => i.words).join("\n")
-    e.reply(r)
-    return true
   }
 
   async _imageOcrContext(e) {
@@ -125,5 +144,46 @@ export class Assistant_Other extends plugin {
     }
     this.imageOcr(e)
     this.finish("_imageOcrContext")
+  }
+
+  /**
+   * 查看头像
+   */
+  async LookAvatar() {
+    try {
+      let id, url
+      if (this.e.msg.includes("群")) {
+        id = this.e.msg.replace(/^#?(查?看|取)(群)?头像/, "").trim() || this.e.group_id
+        url = await this.e.bot.pickGroup(id).getAvatarUrl()
+      } else {
+        id = this.e.msg.replace(/^#?(查?看|取)(群)?头像/, "").trim() || this.e.at || this.e.message.find(item => item.type == "at")?.qq || this.e.user_id
+        url = await this.e.group?.pickMember(id)?.getAvatarUrl()
+        if (!url) url = await this.e.bot.pickFriend(id).getAvatarUrl()
+      }
+      const msgTest = this.e.msg.includes("取")
+      if (url) return await this.e.reply(msgTest ? `${url}` : segment.image(url), true)
+    } catch (error) {
+      logger.error("获取头像错误", error)
+    }
+    await this.reply("❎ 获取头像错误", true)
+    return false
+  }
+
+  /**
+   * 设置日志等级
+   */
+  async logs() {
+    if (!common.checkPermission(this.e, "master")) return
+
+    const logs = [ "trace", "debug", "info", "warn", "fatal", "mark", "error", "off" ]
+    const level = this.e.msg.replace(/^#?(设置|修改)日志等级/, "").trim()
+
+    if (!logs.includes(level)) return this.e.reply("❎ 请输入正确的参数，可选：\ntrace,debug,info,warn,fatal,mark,error,off")
+
+    const { log_level } = cfg.bot
+    if (log_level === level) return this.e.reply(`❎ 日志等级已是${level}了`)
+
+    Config.modify("bot", "log_level", level, "config", true)
+    this.e.reply(`✅ 已将日志等级设置为${level}`)
   }
 }

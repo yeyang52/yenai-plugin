@@ -212,22 +212,19 @@ Bot.on?.("notice.group", async(e) => {
       // 开启或关闭
       if (!Config.getGroup(e.group_id).groupRecall) return false
       // 是否为机器人撤回
-      if (e.user_id == bot.uin) return false
+      if (e.user_id == bot.uin || e.operator_id == bot.uin) return false
       // 是否为主人撤回
       if (Config.masterQQ.includes(e.user_id)) return false
       // 读取
-      let res = JSON.parse(
-        await redis.get(`notice:messageGroup:${e.message_id}`)
-      )
+      const data = JSON.parse(await redis.get(`notice:messageGroup:${e.message_id}`))
       // 无数据 return出去
-      if (!res) return false
-      // 不同消息处理
-      let special = ""
-      let msgType = {
+      if (!data) return false
+      const { type, url, file } = data[0]
+      const msgType = {
         flash: {
           msg: () => e.group.makeForwardMsg([
             {
-              message: segment.image(res[0].url),
+              message: segment.image(url),
               nickname: e.group.pickMember(e.user_id).card,
               user_id: e.user_id
             }
@@ -235,26 +232,28 @@ Bot.on?.("notice.group", async(e) => {
           type: "[闪照]"
         },
         record: {
-          msg: () => segment.record(res[0].url),
+          msg: () => segment.record(url),
           type: "[语音]"
         },
         video: {
-          msg: () => segment.video(res[0].file),
+          msg: () => segment.video(file),
           type: "[视频]"
         },
         xml: {
-          msg: () => res,
+          msg: () => data,
           type: "[合并消息]"
         }
       }
-      if (msgType[res[0].type]) {
-        forwardMsg = await msgType[res[0].type].msg()
-        special = msgType[res[0].type].type
+      let special = ""
+
+      if (msgType[type]) {
+        forwardMsg = await msgType[type].msg()
+        special = msgType[type].type
       } else {
         // 正常处理
         forwardMsg = await Bot.makeForwardMsg([
           {
-            message: res,
+            message: data,
             nickname: e.group.pickMember(e.user_id).card,
             user_id: e.user_id
           }
@@ -263,8 +262,7 @@ Bot.on?.("notice.group", async(e) => {
       // 判断是否管理撤回
       let isManage = ""
       if (e.operator_id != e.user_id) {
-        isManage = `撤回管理：${e.group.pickMember(e.operator_id).card}(${e.operator_id
-            })\n`
+        isManage = `撤回管理：${e.group.pickMember(e.operator_id).card}(${e.operator_id})\n`
       }
       isManage ? logger.info("[Yenai-Plugin]群聊管理撤回") : logger.info("[Yenai-Plugin]群聊撤回")
       // 发送的消息

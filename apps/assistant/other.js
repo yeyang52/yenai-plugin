@@ -51,11 +51,11 @@ export class Assistant_Other extends plugin {
       // 大于两张图片以转发消息发送
       let msg = []
       for (let i of img) {
-        msg.push([ segment.image(i), "直链:", i ])
+        msg.push([ segment.image(i), "直链:\n", i ])
       }
       common.getforwardMsg(e, msg)
     } else {
-      await e.reply([ segment.image(img[0]), "直链:", img[0] ])
+      await e.reply([ segment.image(img[0]), "直链:\n", img[0] ])
     }
     return true
   }
@@ -123,11 +123,11 @@ export class Assistant_Other extends plugin {
       }
       let res = await imageOcr(img[0])
       let r = res?.wordslist?.map(i => i.words).join("\n")
-      if (!r) return e.reply("❎ 发生错误,请稍后再试。")
+      if (!r) return e.reply("❎ 获取失败,请稍后再试")
       e.reply(r, true)
       return true
     } catch (error) {
-      e.reply("❎ 发生错误,请稍后再试。")
+      e.reply("❎ 获取失败,请稍后再试")
       logger.error("获取OCR错误:", error)
     }
   }

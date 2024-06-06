@@ -12,8 +12,8 @@ const SettingReg = /^#?投票设置(超时时间|最低票数|禁言时间)?(\d*
 export class GroupVote extends plugin {
   constructor() {
     super({
-      name: "椰奶群管-投票禁言",
-      dsc: "投票禁言某人",
+      name: "椰奶群管-投票",
+      dsc: "群员投票处决某人",
       event: "message.group",
       priority: 5000,
       rule: [
@@ -86,23 +86,20 @@ export class GroupVote extends plugin {
    */
   async Initiate(e) {
     if (!common.checkPermission(e, "all", "admin")) return
+
     const { VoteBan, VoteKick, outTime, minNum, BanTime, voteAdmin, veto } = Config.groupAdmin
+    const isBan = /禁言/.test(this.e.msg)
+    const disableMsg = isBan ? "❎ 该功能已被禁用，请发送 #启用投票禁言 来启用该功能。" : "❎ 该功能已被禁用，请发送 #启用投票踢人 来启用该功能。"
 
-    const isBan = !!/禁言/.test(this.e.msg)
-
-    if (isBan && !VoteBan) return e.reply("❎ 该功能已被禁用，请发送 #启用投票禁言 来启用该功能。", true)
-    if (!isBan && !VoteKick) return e.reply("❎ 该功能已被禁用，请发送 #启用投票踢人 来启用该功能。", true)
+    if ((isBan && !VoteBan) || (!isBan && !VoteKick)) return e.reply(disableMsg, true)
 
     let targetQQ = e.at || (e.msg.match(/\d+/)?.[0] || "")
     targetQQ = Number(targetQQ) || String(targetQQ)
-    let key = e.group_id + targetQQ
+    const key = e.group_id + targetQQ
 
     if (e.user_id === targetQQ) return e.reply("❎ 您不能对自己进行投票")
-
-    if (Config.masterQQ?.includes(Number(targetQQ) || String(targetQQ)) || a.includes(md5(String(targetQQ)))) return e.reply("❎ 该命令对主人无效")
-
+    if (Config.masterQQ?.includes(targetQQ) || a.includes(md5(String(targetQQ)))) return e.reply("❎ 该命令对主人无效")
     if (!targetQQ) return e.reply("❎ 请艾特或输入被投票人的QQ")
-
     if (Vote[key]) return e.reply("❎ 已有相同投票，请勿重复发起")
 
     const group = e.bot.pickGroup(e.group_id, true)
@@ -111,12 +108,10 @@ export class GroupVote extends plugin {
 
     if (!targetMemberInfo) return e.reply("❎ 该群没有这个人")
     if (targetMemberInfo.role === "owner") return e.reply("❎ 权限不足，该命令对群主无效")
-    if (targetMemberInfo.role === "admin") {
-      if (!voteAdmin) return e.reply("❎ 该命令对管理员无效")
-      if (!group.is_owner) return e.reply("❎ Bot权限不足，需要群主权限")
+    if (targetMemberInfo.role === "admin" && (!voteAdmin || !group.is_owner)) {
+      return e.reply("❎ 该命令对管理员无效或Bot权限不足，需要群主权限")
     }
 
-    /** 写入数据 */
     Vote[key] = {
       supportCount: 1,
       opposeCount: 0,
@@ -124,60 +119,46 @@ export class GroupVote extends plugin {
       type: isBan ? "Ban" : "Kick"
     }
 
-    let res = await e.reply([
-      segment.at(targetQQ),
-      `(${targetQQ})的${isBan ? "禁言" : "踢出"}投票已发起\n`,
-      "发起人:",
-      segment.at(e.user_id),
-      `(${e.user_id})\n`,
-      "请支持者发送：\n",
-      `「#支持投票${targetQQ}」\n`,
-      "不支持者请发送：\n",
-      `「#反对投票${targetQQ}」\n`,
-      `超时时间：${outTime}秒\n`,
-      isBan ? `禁言时间：${BanTime}秒\n` : "投票成功将会被移出群聊\n",
-      `规则：支持票大于反对票且参与人高于${minNum}人即可成功投票\n`,
-      veto ? "管理员拥有一票权" : ""
-    ], true)
+    const voteMsg = [
+      segment.at(targetQQ), `(${targetQQ})的${isBan ? "禁言" : "踢出"}投票已发起\n`,
+      "发起人:", segment.at(e.user_id), `(${e.user_id})\n`,
+      "请支持者发送：\n", `「#支持投票${targetQQ}」\n`,
+      "不支持者请发送：\n", `「#反对投票${targetQQ}」\n`,
+    `超时时间：${outTime}秒\n`, isBan ? `禁言时间：${BanTime}秒\n` : "投票成功将会被移出群聊\n",
+    `规则：支持票大于反对票且参与人高于${minNum}人即可成功投票`,
+    veto ? "\n管理员拥有一票权" : ""
+    ]
 
-    if (!res) return false
+    if (!await e.reply(voteMsg, true)) return false
 
-    setTimeout(async() => {
+    const voteEnd = async() => {
       if (!Vote[key]) return
       const { supportCount, opposeCount } = Vote[key]
+      const success = supportCount > opposeCount && supportCount >= minNum
 
-      let msg = `投票结束，投票结果：\n支持票数：${supportCount}\n反对票数：${opposeCount}\n`
-
-      if (supportCount > opposeCount && supportCount >= minNum) {
-        msg += "支持票数大于反对票\n投票成功。"
-        if (isBan) {
-          await e.group.muteMember(targetQQ, BanTime)
-        } else {
-          await e.group.kickMember(targetQQ)
-        }
-      } else {
-        msg += `反对票数大于支持票数或支持票数小于${minNum}，投票失败。`
-      }
+      const msg = `投票结束，投票结果：\n支持票数：${supportCount}\n反对票数：${opposeCount}\n` +
+      (success ? `支持票数大于反对票\n投票成功。${isBan ? "禁言" : "踢出"}目标` : `反对票数大于支持票数或支持票数小于${minNum}，投票失败。`)
       delete Vote[key]
-      return e.reply(msg, true)
-    }, outTime * 1000)
 
+      if (success) {
+        isBan ? await e.group.muteMember(targetQQ, BanTime) : await e.group.kickMember(targetQQ)
+      }
+      return e.reply(msg, true)
+    }
+
+    setTimeout(voteEnd, outTime * 1000)
     setTimeout(async() => {
       const { supportCount, opposeCount } = Vote[key]
-      const msg = [
-        segment.at(targetQQ),
-        `(${targetQQ})的${isBan ? "禁言" : "踢出"}投票仅剩一分钟结束\n`,
-        "当前票数：\n",
-        `支持票数：${supportCount}\n反对票数：${opposeCount}\n`,
-        "请支持者发送：\n",
-        `「#支持投票${targetQQ}」\n`,
-        "不支持者请发送：\n",
-        `「#反对投票${targetQQ}」`,
-        `发起人：${e.user_id}`
+      const reminderMsg = [
+        segment.at(targetQQ), `(${targetQQ})的${isBan ? "禁言" : "踢出"}投票仅剩一分钟结束\n`,
+        "当前票数：\n", `支持票数：${supportCount}\n反对票数：${opposeCount}\n`,
+        "请支持者发送：\n", `「#支持投票${targetQQ}」\n`,
+        "不支持者请发送：\n", `「#反对投票${targetQQ}」\n`,
+      `发起人：${e.user_id}`
       ]
 
-      await e.reply(msg)
-    }, outTime * 1000 - 60000)
+      await e.reply(reminderMsg)
+    }, (outTime - 60) * 1000)
   }
 
   /**
@@ -187,48 +168,38 @@ export class GroupVote extends plugin {
   async Follow(e) {
     if (!common.checkPermission(e, "all", "admin")) return
 
-    const { BanTime } = Config.groupAdmin
+    const { BanTime, veto } = Config.groupAdmin
 
     let targetQQ = e.at || (e.msg.match(/\d+/)?.[0] || "")
     targetQQ = Number(targetQQ) || String(targetQQ)
-    let key = e.group_id + targetQQ
+    const key = e.group_id + targetQQ
 
     if (!targetQQ) return e.reply("❎ 请艾特或输入需要进行跟票的被禁言人QQ")
-
-    if (Config.masterQQ?.includes(Number(targetQQ) || String(targetQQ)) || a.includes(md5(String(targetQQ)))) return e.reply("❎ 该命令对主人无效")
-
+    if (Config.masterQQ?.includes(targetQQ) || a.includes(md5(String(targetQQ)))) return e.reply("❎ 该命令对主人无效")
     if (e.user_id === targetQQ) return e.reply("❎ 您不能对自己进行投票")
-
     if (!Vote[key]) return e.reply("❎ 未找到对应投票")
 
-    const { List, type } = Vote[key]
+    const { List, type, supportCount, opposeCount } = Vote[key]
 
-    if (Config.groupAdmin.veto) {
-      if (e.member.is_admin || e.member.is_owner) {
-        if (/支持/.test(e.msg)) {
-          await e.reply("投票结束，管理员介入，执行操作。", true)
-          if (type === "Ban") {
-            await e.group.muteMember(targetQQ, BanTime)
-          } else {
-            await e.group.kickMember(targetQQ)
-          }
-        } else {
-          await e.reply("投票取消，管理员介入。", true)
-        }
-        delete Vote[key]
-        return true
+    if (veto && (e.member.is_admin || e.member.is_owner)) {
+      const msg = /支持/.test(e.msg)
+        ? "投票结束，管理员介入，执行操作。"
+        : "投票取消，管理员介入。"
+
+      await e.reply(msg, true)
+      if (/支持/.test(e.msg)) {
+        type === "Ban" ? await e.group.muteMember(targetQQ, BanTime) : await e.group.kickMember(targetQQ)
       }
+      delete Vote[key]
+      return true
     }
 
-    if (List.includes(e.user_id)) return e.reply("❎ 你已参与过投票，请勿重复参与")
+    if (List.includes(e.user_id)) return e.reply("❎ 你已参与过投票，请勿重复参与");
 
-    if (/支持/.test(e.msg)) {
-      Vote[key].supportCount += 1
-    } else {
-      Vote[key].opposeCount += 1
-    }
+    /支持/.test(e.msg) ? Vote[key].supportCount++ : Vote[key].opposeCount++
     List.push(e.user_id)
-    return e.reply(`投票成功，当前票数\n支持：${Vote[key].supportCount} 反对：${Vote[key].opposeCount}`, true)
+
+    return e.reply(`投票成功，当前票数\n支持：${supportCount} 反对：${opposeCount}`, true)
   }
 }
 

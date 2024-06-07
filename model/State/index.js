@@ -57,7 +57,7 @@ export async function getData(e) {
     otherInfo: getOtherInfo(e),
     psTest: _.isEmpty(psTest) ? undefined : psTest,
     fsStats: getDiskSpeed(),
-    copyright: getCopyright(),
+    copyright: await getCopyright(),
     network: getNetwork(),
     Config: JSON.stringify(Config.state),
     FastFetch,

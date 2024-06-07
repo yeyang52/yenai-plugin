@@ -5,7 +5,7 @@ import path from "path"
 import loader from "../../../../lib/plugins/loader.js"
 import { Version } from "../../components/index.js"
 import { formatDuration } from "../../tools/index.js"
-import { osInfo } from "./utils.js"
+import { osInfo, si } from "./utils.js"
 
 export default function otherInfo(e) {
   let otherInfo = []
@@ -53,6 +53,16 @@ function getPluginNum(e) {
   return e.isPro ? `${pluginsStr} | ${loaderStr}` : pluginsStr
 }
 
-export function getCopyright() {
-  return `Created By ${Version.name}<span class="version">${Version.yunzai}</span> & Yenai-Plugin<span class="version">${Version.ver}</span> & Node <span class="version">${process.version}</span>`
+export async function getCopyright() {
+  const { node, v8, git, redis } = await si.versions("node,v8,git,redis")
+  let v = `Created By ${Version.name}<span class="version">${Version.yunzai}</span> & Yenai-Plugin<span class="version">v${Version.ver}</span>`
+  v += "<br>"
+  v += `Node <span class="version">v${node}</span> & V8 <span class="version">v${v8}</span>`
+  if (git) {
+    v += ` & Git <span class="version">v${git}</span>`
+  }
+  if (redis) {
+    v += ` & Redis <span class="version">v${redis}</span>`
+  }
+  return v
 }

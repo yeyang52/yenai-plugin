@@ -17,7 +17,19 @@ import getStyle, { getBackground } from "./style.js"
 
 export async function getData(e) {
   e.isPro = e.msg.includes("pro")
-  /** bot列表 */
+  e.isDebug = e.msg.includes("debug")
+  const timeStr = []
+  const _nameMap1 = [ "CPU", "RAM", "SWAP", "GPU", "Node" ]
+  const _nameMap2 = [ "visualData", "FastFetch", "FsSize", "NetworkTest", "BotState", "Style" ]
+  function timePromiseExecution(promiseFn, name) {
+    const start = Date.now()
+    return promiseFn.then((result) => {
+      const end = Date.now()
+      logger.debug(`Promise ${name}: ${end - start} ms`)
+      timeStr.push(`${name}: ${end - start} ms`)
+      return result
+    })
+  }
 
   const visualDataPromise = Promise.all([
     getCPU(),
@@ -25,7 +37,7 @@ export async function getData(e) {
     getSWAP(),
     getGPU(),
     getNode()
-  ])
+  ].map((v, i) => timePromiseExecution(v, _nameMap1[i])))
   const promiseTaskList = [
     visualDataPromise,
     getFastFetch(e),
@@ -33,14 +45,20 @@ export async function getData(e) {
     getNetworkTestList(e),
     getBotState(e),
     getStyle()
-  ]
-
+  ].map((v, i) => timePromiseExecution(v, _nameMap2[i]))
+  const start = Date.now()
   const [
     visualData,
     FastFetch,
     HardDisk, psTest, BotStatusList, style
-  ] = await Promise.all(promiseTaskList)
+  ] = await Promise.all(promiseTaskList).then(res => {
+    const end = Date.now()
+    logger.debug(`Promise all: ${end - start} ms`)
+    timeStr.push(`all: ${end - start} ms`)
+    return res
+  })
 
+  e.isDebug && e.reply(timeStr.join("\n"))
   const chartData = JSON.stringify(
     common.checkIfEmpty(Monitor.chartData, [ "echarts_theme", "cpu", "ram" ])
       ? ""

@@ -12,7 +12,7 @@ export class NewState extends plugin {
       priority: -1000,
       rule: [
         {
-          reg: "^#?(椰奶)?状态(pro)?$",
+          reg: "^#?(椰奶)?状态(pro)?(debug)?$",
           fnc: "state"
         },
         {

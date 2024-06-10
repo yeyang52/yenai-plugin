@@ -4,7 +4,6 @@ import Monitor from "./Monitor.js"
 
 /**
  *  获取硬盘
- * @returns {*}
  */
 export async function getFsSize() {
   // 去重

@@ -66,7 +66,6 @@ export class NewState extends plugin {
       logger.error(error)
       interval = false
     }
-
     interval = false
   }
 

@@ -21,6 +21,10 @@ export async function getData(e) {
   const timeStr = []
   const _nameMap1 = [ "CPU", "RAM", "SWAP", "GPU", "Node" ]
   const _nameMap2 = [ "visualData", "FastFetch", "FsSize", "NetworkTest", "BotState", "Style" ]
+  const startUsage = {
+    mem: process.memoryUsage(),
+    cpu: process.cpuUsage()
+  }
   function timePromiseExecution(promiseFn, name) {
     const start = Date.now()
     return promiseFn.then((result) => {
@@ -57,8 +61,19 @@ export async function getData(e) {
     timeStr.push(`all: ${end - start} ms`)
     return res
   })
-
-  e.isDebug && e.reply(timeStr.join("\n"))
+  const endUsage = {
+    mem: process.memoryUsage(),
+    cpu: process.cpuUsage()
+  }
+  e.isDebug && e.reply([
+    timeStr.join("\n"),
+    `\nstartCpuUsageUser: ${startUsage.cpu.user}\n`,
+    `endCpuUsageUser: ${endUsage.cpu.user}\n`,
+    `startCpuUsageSystem: ${startUsage.cpu.system}\n`,
+    `endCpuUsageSystem: ${endUsage.cpu.system}\n`,
+    `startMemUsageUser: ${startUsage.mem.rss}\n`,
+    `endMemUsageUser: ${endUsage.mem.rss}`
+  ])
   const chartData = JSON.stringify(
     common.checkIfEmpty(Monitor.chartData, [ "echarts_theme", "cpu", "ram" ])
       ? ""

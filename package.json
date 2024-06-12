@@ -24,17 +24,18 @@
     "colorthief": "^2.4.0",
     "jimp": "^0.22.12",
     "node-fetch": "^3.3.2",
-    "systeminformation": "^5.22.9"
+    "systeminformation": "^5.22.11"
   },
   "devDependencies": {
     "all-contributors-cli": "^6.26.1",
     "eslint": "^8.57.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-jsdoc": "^48.2.7",
+    "eslint-plugin-jsdoc": "^48.2.9",
     "eslint-plugin-promise": "^6.2.0",
+    "gitmoji-cli": "^9.2.0",
     "husky": "^9.0.11",
-    "lint-staged": "^15.2.5"
+    "lint-staged": "^15.2.6"
   },
   "optionalDependencies": {
     "abort-controller": "^3.0.0"

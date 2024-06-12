@@ -427,8 +427,8 @@ export class Assistant extends plugin {
    * @param e
    */
   async RecallMsgown(e) {
-    if (!e.source) return false
     const source = await common.takeSourceMsg(e)
+    if (!source) return false
     let target = e.isGroup ? e.group : e.friend
 
     if (e.isGroup) {

@@ -424,8 +424,8 @@ export class GroupAdmin extends plugin {
    */
   async essenceMessage(e) {
     if (!common.checkPermission(e, "admin", "admin")) return
-    if (!e.source) return e.reply("请对要加精的消息进行引用")
-    let source = (await e.group.getChatHistory(e.source.seq, 1)).pop()
+    const source = await common.takeSourceMsg(e)
+    if (!source) return e.reply("请对要加精的消息进行引用")
     let isAdd = e.msg.match(/加|设|移/)?.[0]
     let res
     if (isAdd == "加" || isAdd == "设") {

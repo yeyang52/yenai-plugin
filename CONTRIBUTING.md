@@ -45,9 +45,9 @@ pnpm husky
 
 ```sh
 git add .
-git commit
+pnpm run commit
 ```
-在提交时，Husky 会自动运行预定义的 Git 钩子脚本，包括对代码规范的检测。
+在提交时，Husky 会自动运行预定义的 Git 钩子脚本，包括对代码规范的检测，同时会使用[gitmoji-cli](https://github.com/carloscuesta/gitmoji)进行交互式提交。
 
 3. 如果提交的代码不符合项目的规范要求，您将会收到相应的错误提示。请根据提示信息进行修改和调整，直到提交的代码符合要求。
 

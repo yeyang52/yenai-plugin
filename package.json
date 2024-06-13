@@ -7,7 +7,8 @@
   "scripts": {
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
-    "lint": "lint-staged --allow-empty"
+    "lint": "lint-staged --allow-empty",
+    "commit": "gitmoji --commit"
   },
   "repository": {
     "type": "git",

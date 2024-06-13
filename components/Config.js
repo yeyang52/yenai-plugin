@@ -67,11 +67,6 @@ class Config {
     return this.getDefOrConfig("groupverify")
   }
 
-  /** 头衔屏蔽词 */
-  get groupTitle() {
-    return this.getDefOrConfig("groupTitle")
-  }
-
   /** 加群通知 */
   get groupAdd() {
     return this.getDefOrConfig("groupAdd")

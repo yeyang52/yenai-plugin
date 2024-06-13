@@ -6,5 +6,5 @@ echo "           遵循 Gitmoji"
 echo "           https://gitmoji.dev/"
 echo -e "\e[1;36m----------------------------------------------\e[0m"
 
-exec < /dev/tty
+# exec < /dev/tty
 pnpm gitmoji --hook $1 $2

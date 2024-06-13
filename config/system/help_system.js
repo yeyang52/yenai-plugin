@@ -196,20 +196,6 @@ export const helpList = [
     group: "娱乐功能",
     list: [
       {
-        icon: 7,
-        title: "#椰羊收益曲线",
-        desc: "查看角色收益曲线"
-      },
-      {
-        icon: 13,
-        title: "#椰羊参考面板",
-        desc: "查看角色参考面板"
-      },
-      {
-        icon: 9,
-        title: "#收益曲线帮助",
-        desc: "=-="
-      }, {
         icon: 20,
         title: "#唱歌",
         desc: "随机唱鸭"

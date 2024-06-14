@@ -5,7 +5,6 @@ import path from "path"
 import fs from "node:fs/promises"
 import _ from "lodash"
 import moment from "moment"
-import loader from "../../../lib/plugins/loader.js"
 import { Config } from "../components/index.js"
 import { QQApi } from "./index.js"
 import { Time_unit, ROLE_MAP } from "../constants/other.js"
@@ -14,8 +13,8 @@ import schedule from "node-schedule"
 
 // 无管理文案
 const ROLE_ERROR = "❎ 该命令需要管理员权限"
-
-export default class {
+let _task = []
+export default class GroupAdmin {
   constructor(e) {
     this.e = e
     this.Bot = e.bot ?? Bot
@@ -269,14 +268,16 @@ segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
    * @returns {Promise<boolean>} - 返回操作结果。如果设置成功，则返回 true；否则，返回 false。
    */
   async setMuteTask(group, cron, type) {
-    let name = `椰奶群定时${type ? "禁言" : "解禁"}${group}`
-    if (loader.task.find(item => item.name == name)) return false
     let redisTask = JSON.parse(await redis.get(this.MuteTaskKey)) || []
+    if (_task.find(i => i.group === group && i.type === type)) return false
+    const bot = this.Bot
     let task = {
       cron,
-      name,
+      group,
+      type,
+      bot,
       fnc: () => {
-        this.Bot.pickGroup(group).muteAll(type)
+        bot.pickGroup(group).muteAll(type)
       },
       job: schedule.scheduleJob(cron, async() => {
         try {
@@ -293,25 +294,40 @@ segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
         }
       })
     }
-    loader.task.push(task)
+    _task.push(task)
     redisTask.push({ cron, group, type, botId: this.Bot.uin })
     redis.set(this.MuteTaskKey, JSON.stringify(redisTask))
     return true
   }
 
-  /**
-   * @description 从 Redis 中获取群禁言/解禁任务列表，并将其转换为定时任务列表
-   * @returns {Promise<Array>} - 返回转换后的定时任务列表，列表中的每一项都包含 cron、name 和 fnc 三个属性。其中，cron 表示任务的执行时间；name 表示任务的名称；fnc 表示任务的执行函数。
-   */
-  static async getRedisMuteTask() {
-    return JSON.parse(await redis.get("yenai:MuteTasks"))?.map(item => {
-      return {
-        cron: item.cron,
-        name: `椰奶群定时${item.type ? "禁言" : "解禁"}${item.group}`,
+  static async loadRedisMuteTask() {
+    const data = JSON.parse(await redis.get("yenai:MuteTasks"))
+    if (!data) return false
+    data.forEach((i) => {
+      const { cron, group, type, botId } = i
+      const task = {
+        cron,
+        group,
+        type,
         fnc: () => {
-          (Bot[item.botId] ?? Bot).pickGroup(item.group).muteAll(item.type)
-        }
+          (Bot[botId] ?? Bot).pickGroup(group).muteAll(type)
+        },
+        job: schedule.scheduleJob(cron, async() => {
+          try {
+            if (task.log == true) {
+              logger.mark(`开始定时任务：${task.name}`)
+            }
+            await task.fnc()
+            if (task.log == true) {
+              logger.mark(`定时任务完成：${task.name}`)
+            }
+          } catch (err) {
+            logger.error(`定时任务报错：${task.name}`)
+            logger.error(err)
+          }
+        })
       }
+      _task.push(task)
     })
   }
 
@@ -323,42 +339,54 @@ segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
    */
   async delMuteTask(group, type) {
     let redisTask = JSON.parse(await redis.get(this.MuteTaskKey)) || []
-    const name = `椰奶群定时${type ? "禁言" : "解禁"}${group}`
     // 终止任务
-    const task = loader.task.find(i => i.name === name)
+    const task = _task.find(i => i.group == group && i.type == type)
     task?.job?.cancel()
-
-    loader.task = loader.task.filter(item => item.name !== name)
-    redisTask = redisTask.filter(item => item.group !== group && item.type !== type)
+    const f = i => !(i.group == group && i.type == type)
+    _task = _task.filter(f)
+    redisTask = redisTask.filter(f)
     redis.set(this.MuteTaskKey, JSON.stringify(redisTask))
     return true
   }
 
   /** 获取定时任务 */
   getMuteTask() {
-    let RegEx = /椰奶群定时(禁言|解禁)(\d+)/
-    let taskList = _.cloneDeep(loader.task)
-    let MuteList = taskList.filter(item => /椰奶群定时禁言\d+/.test(item.name))
-    let noMuteList = taskList.filter(item => /椰奶群定时解禁\d+/.test(item.name))
-    noMuteList.forEach(noitem => {
-      let index = MuteList.findIndex(item => noitem.name.match(RegEx)[2] == item.name.match(RegEx)[2])
-      if (index !== -1) {
-        MuteList[index].nocron = noitem.cron
+    let taskList = _.cloneDeep(_task)
+    console.log(taskList)
+    const taskGroups = new Map()
+    for (const item of taskList) {
+      if (item.type) {
+        if (!taskGroups.has(item.group)) {
+          taskGroups.set(item.group, { ...item })
+        } else {
+          const muteItem = taskGroups.get(item.group)
+          muteItem.cron = item.cron
+        }
       } else {
-        noitem.nocron = noitem.cron
-        delete noitem.cron
-        MuteList.push(noitem)
+        if (!taskGroups.has(item.group)) {
+          const data = { ...item }
+          data.nocron = data.cron
+          delete data.cron
+          taskGroups.set(item.group, { ...item })
+        } else {
+          const muteItem = taskGroups.get(item.group)
+          muteItem.nocron = item.cron
+        }
       }
-    })
-    return MuteList.map(item => {
-      let analysis = item.name.match(RegEx)
-      return [
-        segment.image(`https://p.qlogo.cn/gh/${analysis[2]}/${analysis[2]}/100`),
-        `\n群号：${analysis[2]}`,
-        item.cron ? `\n禁言时间："${item.cron}"` : "",
-        item.nocron ? `\n解禁时间："${item.nocron}"` : ""
-      ]
-    })
+    }
+    console.log(taskGroups)
+    const result = []
+    for (const [ group, item ] of taskGroups) {
+      const imageSegment = segment.image(`https://p.qlogo.cn/gh/${group}/${group}/100`)
+      result.push([
+        imageSegment,
+          `\n群号：${group}`,
+          item.cron ? `\n禁言时间："${item.cron}"` : "",
+          item.nocron ? `\n解禁时间："${item.nocron}"` : ""
+      ])
+    }
+
+    return result
   }
 
   /**

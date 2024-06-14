@@ -3,9 +3,6 @@ import chokidar from "chokidar"
 import fs from "node:fs"
 import YamlReader from "./YamlReader.js"
 import cfg from "../../../lib/config/config.js"
-import loader from "../../../lib/plugins/loader.js"
-import _ from "lodash"
-import moment from "moment"
 
 const Path = process.cwd()
 const Plugin_Name = "yenai-plugin"
@@ -225,24 +222,6 @@ class Config {
       let index = yaml.jsonData[key].indexOf(value)
       yaml.delete(`${key}.${index}`)
     }
-  }
-
-  async change_picApi() {
-    let tmp = {}
-
-    logger.debug("[Yenai-Plugin]api接口修改，重载fun.js")
-    tmp = await import(`../apps/fun.js?${moment().format("x")}`)
-
-    _.forEach(tmp, (p) => {
-      /* eslint-disable new-cap */
-      let plugin = new p()
-      for (let i in loader.priority) {
-        if (loader.priority[i].key == Plugin_Name && loader.priority[i].name == "椰奶娱乐") {
-          loader.priority[i].class = p
-          loader.priority[i].priority = plugin.priority
-        }
-      }
-    })
   }
 
   async change_pixiv() {

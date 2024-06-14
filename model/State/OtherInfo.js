@@ -2,11 +2,15 @@ import fs from "fs"
 import _ from "lodash"
 import os from "os"
 import path from "path"
-import loader from "../../../../lib/plugins/loader.js"
 import { Version } from "../../components/index.js"
 import { formatDuration } from "../../tools/index.js"
 import { osInfo, si } from "./utils.js"
+let loader = null
+try {
+  loader = (await import("../../../../lib/plugins/loader.js")).default
+} catch {
 
+}
 export default function otherInfo(e) {
   let otherInfo = []
   // 其他信息
@@ -48,9 +52,12 @@ function getPluginNum(e) {
     ?.filter(item => item.endsWith(".js"))
     ?.length
   const pluginsStr = `${plugins ?? 0} plugins | ${js ?? 0} js`
-  const { priority, task } = loader
-  const loaderStr = `${priority?.length} fnc | ${task?.length} task`
-  return e.isPro ? `${pluginsStr} | ${loaderStr}` : pluginsStr
+  if (loader && e.isPro) {
+    const { priority, task } = loader
+    const loaderStr = `${priority?.length} fnc | ${task?.length} task`
+    return `${pluginsStr} | ${loaderStr}`
+  }
+  return pluginsStr
 }
 
 export async function getCopyright() {

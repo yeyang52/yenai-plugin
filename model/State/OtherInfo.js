@@ -7,6 +7,7 @@ import { formatDuration } from "../../tools/index.js"
 import { osInfo, si } from "./utils.js"
 let loader = null
 try {
+  // eslint-disable-next-line import/no-unresolved
   loader = (await import("../../../../lib/plugins/loader.js")).default
 } catch {
 
@@ -48,9 +49,15 @@ function getPluginNum(e) {
   const plugins = plugin?.length
   // 获取js插件数量，以.js结尾的文件视为一个插件
   const jsDir = path.join(dir, "example")
-  const js = fs.readdirSync(jsDir)
-    ?.filter(item => item.endsWith(".js"))
-    ?.length
+  let js = 0
+  try {
+    js = fs.readdirSync(jsDir)
+      ?.filter(item => item.endsWith(".js"))
+      ?.length
+  } catch (error) {
+    logger.debug(error)
+  }
+
   const pluginsStr = `${plugins ?? 0} plugins | ${js ?? 0} js`
   if (loader && e.isPro) {
     const { priority, task } = loader

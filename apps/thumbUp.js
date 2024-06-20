@@ -10,7 +10,7 @@ export class ThumbUp extends plugin {
       priority: 500,
       rule: [
         {
-          reg: "^#?((我要|给我)?(资料卡)?(点赞)?(赞|超|操|草|抄|吵|炒)我)$|((赞|超|操|草|抄|吵|炒)(他|她|它|TA|ta|Ta))$",
+          reg: "^#?((我要|给我)?(资料卡)?(点赞)|(赞|超|操|草|抄|吵|炒)(我|他|她|它|TA|ta|Ta))$",
           fnc: "thumbUp"
         }
       ]

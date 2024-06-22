@@ -1,6 +1,13 @@
-import { update } from "../../other/update.js"
+/* eslint-disable import/no-unresolved */
 import { Version, Plugin_Name } from "../components/index.js"
 import { puppeteer } from "../model/index.js"
+let update = null
+try {
+  update = (await import("../../other/update.js").catch(e => null))?.update
+  update ||= (await import("../../system/apps/update.ts")).update
+} catch (e) {
+  // logger.error("[yenai-plugin]未获取到更新js #椰奶更新 将无法使用")
+}
 export class NewVersion extends plugin {
   constructor() {
     super({

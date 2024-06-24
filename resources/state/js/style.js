@@ -5,15 +5,17 @@ const {
   lowColor
 } = Config
 // 修改BotNameColor
-const BotNameElement = document.querySelector(".header h1")
-if (BotNameColorGradient && BotNameColorGradient !== "none") {
-  BotNameElement.style.backgroundImage = `linear-gradient(${BotNameColorGradient})`
-  BotNameElement.style.color = "transparent"
-  BotNameElement.style.backgroundClip = "text"
-} else if (BotNameColor && BotNameColor !== "none") {
-  BotNameElement.style.color = BotNameColor
-  BotNameElement.style.backgroundImage = "none"
-}
+const botNameElements = document.querySelectorAll(".header h1")
+botNameElements.forEach(BotNameElement => {
+  if (BotNameColorGradient && BotNameColorGradient !== "none") {
+    BotNameElement.style.backgroundImage = `linear-gradient(${BotNameColorGradient})`
+    BotNameElement.style.color = "transparent"
+    BotNameElement.style.backgroundClip = "text"
+  } else if (BotNameColor && BotNameColor !== "none") {
+    BotNameElement.style.color = BotNameColor
+    BotNameElement.style.backgroundImage = "none"
+  }
+})
 // 进度条颜色
 const documentElement = document.documentElement
 documentElement.style.setProperty("--high-color", highColor)

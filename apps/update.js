@@ -3,7 +3,7 @@ import { common } from "../model/index.js"
 let Update = null
 try {
   Update = (await import("../../other/update.js").catch(e => null))?.update
-  Update ||= (await import("../../system-plugin/apps/update.ts")).update
+  Update ||= (await import("../../system/apps/update.ts")).update
 } catch (e) {
   logger.error("[yenai-plugin]未获取到更新js #椰奶更新 将无法使用")
 }

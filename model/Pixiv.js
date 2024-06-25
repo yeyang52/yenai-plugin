@@ -11,7 +11,7 @@ import PixivApi from "./Pixiv/api.js"
 export default new class Pixiv {
   constructor() {
     this.ranktype = rankType
-    this.domain = "http://api.obfs.dev/api/pixiv"
+    this.domain = "https://hibiapi.dengfenglai.icu/api/pixiv"
     this.PixivClient = new PixivApi(Config.pixiv.refresh_token)
   }
 

@@ -80,5 +80,5 @@ Bot.on?.("request", async(e) => {
       }
       break
   }
-  await common.sendMasterMsg(msg, e.bot.uin)
+  await common.sendMasterMsg(msg, (e.bot ?? Bot).uin)
 })

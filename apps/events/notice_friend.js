@@ -86,8 +86,8 @@ Bot.on?.("notice.friend", async(e) => {
     default:
       return false
   }
-  await common.sendMasterMsg(msg, e.bot.uin)
-  if (forwardMsg) await common.sendMasterMsg(forwardMsg, e.bot.uin)
+  await common.sendMasterMsg(msg, (e.bot ?? Bot).uin)
+  if (forwardMsg) await common.sendMasterMsg(forwardMsg, (e.bot ?? Bot).uin)
 }
 )
 

@@ -1,0 +1,16 @@
+name: 其他问题及意见反馈
+description: 插件使用上的问题反馈、功能失效等。
+title: "[问题反馈]: "
+labels: ["question"]
+body:  
+  - type: input
+    attributes:
+      label: 反馈内容
+      description: 请简要描述您需要反馈的内容。
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 其他说明
+      description: 如果您有任何其他信息或补充说明，请在这里添加。

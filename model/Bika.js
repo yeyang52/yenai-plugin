@@ -4,7 +4,7 @@ import { Config } from "../components/index.js"
 
 export default new (class {
   constructor() {
-    this.domain = "https://api.obfs.dev/api/bika"
+    this.domain = "https://hibiapi.dengfenglai.icu/api/bika"
     this.hearder = {
       headers: {
         "x-image-quality": Config.bika.imageQuality

@@ -4,7 +4,7 @@ import { Config } from "../components/index.js"
 
 export default new (class {
   constructor() {
-    this.domain = "https://hibiapi.dengfenglai.icu/api/bika"
+    this.domain = `${Config.bika.hibiAPI}/api/bika`
     this.hearder = {
       headers: {
         "x-image-quality": Config.bika.imageQuality
@@ -28,6 +28,7 @@ export default new (class {
    * @returns {Array<string>} 返回搜索结果信息数组
    */
   async search(keyword, page = 1, type = "advanced", sort = "ld") {
+    sort = Config.bika.searchSort || sort
     let types = [
       {
         alias: [ "关键词", "advanced", "高级" ],

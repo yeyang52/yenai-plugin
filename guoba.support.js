@@ -35,7 +35,7 @@ export function supportGuoba() {
       // 配置项 schemas
       schemas: [
         {
-          component: "whole.Divider",
+          component: "Divider",
           label: "消息通知"
         },
         {

@@ -61,14 +61,14 @@ export default new (class {
       let { title, tags, categories, author, description = "未知", likesCount, thumb, _id, finished } = item
       msg.push(_id)
       msg.push([
-          `${index + 1}、${title}\n`,
-          `作者：${author}\n`,
-          `描述：${_.truncate(description)}\n`,
-          `分类：${categories.join("，")}\n`,
-          `喜欢：${likesCount}\n`,
-          `完结：${finished}\n`,
-          tags ? `tag：${_.truncate(tags.join(","))}\n` : "",
-          await this._requestBikaImg(thumb.fileServer, thumb.path)
+        `${index + 1}、${title}\n`,
+        `作者：${author}\n`,
+        `描述：${_.truncate(description)}\n`,
+        `分类：${categories.join("，")}\n`,
+        `喜欢：${likesCount}\n`,
+        `完结：${finished}\n`,
+        tags ? `tag：${_.truncate(tags.join(","))}\n` : "",
+        Config.bika.hideSearchImg ? "" : await this._requestBikaImg(thumb.fileServer, thumb.path)
       ])
     }
     return msg

@@ -173,9 +173,9 @@ Bot.on?.("message", async(e) => {
   await common.sendMasterMsg(msg, (e.bot ?? Bot).uin)
   if (forwardMsg) await common.sendMasterMsg(forwardMsg, (e.bot ?? Bot).uin)
 })
-// 特殊消息处理
+
 /**
- *
+ * 特殊消息处理
  * @param msg
  */
 function getMsgType(msg) {

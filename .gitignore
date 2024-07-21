@@ -6,3 +6,4 @@ test.*
 .vscode/
 temp/
 *.css.map
+pnpm-lock.yaml

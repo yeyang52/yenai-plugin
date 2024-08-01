@@ -2,6 +2,10 @@ import { funApi, common, memes } from "../model/index.js"
 import _ from "lodash"
 import { Config } from "../components/index.js"
 
+Bot.on("message.group", e => {
+  if (e?.message?.[0]?.text == "#全部赞我") { (new ThumbUp()).thumbUp(e) }
+})
+
 export class ThumbUp extends plugin {
   constructor(e) {
     super({
@@ -15,7 +19,6 @@ export class ThumbUp extends plugin {
         }
       ]
     })
-    if (e?.message?.[0]?.text == "#全部赞我") { this.thumbUp(e) }
   }
 
   /**
@@ -23,6 +26,7 @@ export class ThumbUp extends plugin {
    * @param e
    */
   async thumbUp(e) {
+    const message = e.msg || e.message?.[0]?.text
     const DO_ZAN = "赞"
     const DO_CHAO = "超"
     let doType = DO_ZAN
@@ -31,12 +35,12 @@ export class ThumbUp extends plugin {
 
     // 使用数组和includes方法的正确用法
     const forbiddenWords = [ "超", "操", "草", "抄", "吵", "炒" ]
-    if (forbiddenWords.some(word => e.msg.includes(word))) {
+    if (forbiddenWords.some(word => message.includes(word))) {
       doType = DO_CHAO
     }
 
     const atWords = [ "他", "她", "它", "TA", "ta", "Ta" ]
-    if (e.at && atWords.some(word => e.msg.includes(word))) {
+    if (e.at && atWords.some(word => message.includes(word))) {
       userId = e.at
       isSelf = false
     }
@@ -44,7 +48,7 @@ export class ThumbUp extends plugin {
     let isFriend = await (e.bot ?? Bot).fl.get(userId)
     let allowLikeByStrangers = Config.whole.Strangers_love
     if (!isFriend && !allowLikeByStrangers) {
-      return (e.message?.[0]?.text == "#全部赞我") ? false : e.reply(`不加好友不${doType}🙄`, true)
+      return (message == "#全部赞我") ? false : e.reply(`不加好友不${doType}🙄`, true)
     }
 
     /** 执行点赞 */
@@ -80,7 +84,7 @@ export class ThumbUp extends plugin {
     const successFn = _.sample([ "ganyu", "zan" ])
     const mention = segment.at(userId)
 
-    if (e.message?.[0]?.text == "#全部赞我")failsMsg = "return"
+    if (message == "#全部赞我")failsMsg = "return"
     /** 判断点赞是否成功 */
     let msg = await generateResponseMsg(n > 0, successMsg, failsMsg, avatar, successFn, mention)
 

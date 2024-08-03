@@ -47,15 +47,18 @@
 1. 推荐使用git进行安装，以方便后续升级。在Yunzai目录打开终端，运行
 
 - 使用github
+
 ```sh
 git clone -b master --depth=1 https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 ```
+
 - 使用gitee
+
 ```sh
 git clone -b master --depth=1 https://gitee.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 ```
 
-2. 安装依赖(可选：不安装依赖将无法使用一些功能)
+1. 安装依赖(可选：不安装依赖将无法使用一些功能)
 
 ```sh
 pnpm install
@@ -150,7 +153,7 @@ Tip：具体可使用 **#椰奶设置** 查看
 
 - [x] 查看相关作品
 
-Tip：详情请参考[此教程](https://docs.qq.com/doc/p/108e5d788607d988ac62e1512552c8bd2d870321)
+Tip：详情请参考[此教程](https://yenai.trss.me/features/Pixiv.html)
 
 </details>
 
@@ -306,7 +309,6 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 💬：914247840
 
 ❤️：[打赏](https://yenai.trss.me/donate.html)
-
 
 ![Alt](https://repobeats.axiom.co/api/embed/42b5a7769074be124bd9ab02456897e37d1581f1.svg "Repobeats analytics image")
 [![椰羊/Yenai-Plugin](https://gitee.com/yeyang52/yenai-plugin/widgets/widget_card.svg?colors=4183c4,ffffff,ffffff,e3e9ed,666666,9b9b9b)](https://gitee.com/yeyang52/yenai-plugin)

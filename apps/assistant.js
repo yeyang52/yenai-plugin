@@ -156,7 +156,6 @@ export class Assistant extends plugin {
     if (!common.checkPermission(e, "master")) return
     let group = ""
     let card = ""
-
     if (e.isPrivate) {
       let msg = e.msg.split(" ")
 
@@ -172,10 +171,7 @@ export class Assistant extends plugin {
       card = e.msg.replace(/#改群名片/g, "").trim()
     }
 
-    if (!card) {
-      return e.reply("❎ 名片不能为空")
-    }
-    this.Bot.pickGroup(group).setCard(this.Bot.uin, card)
+    this.Bot.pickGroup(group).setCard(e.at || this.Bot.uin, card)
       .then(() => e.reply("✅ 群名片修改成功"))
       .catch(err => {
         e.reply("❎ 群名片修改失败")

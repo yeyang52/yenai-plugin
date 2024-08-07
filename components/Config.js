@@ -31,18 +31,16 @@ class Config {
   }
 
   /**
-   * 群配置
-   * @param groupId
+   * 单独配置
+   * @param botId Bot账号
+   * @param groupId 群号
    */
-  getGroup(groupId = "") {
+  getAlone(botId = "", groupId = "") {
     let config = this.getConfig("whole")
     let group = this.getConfig("group")
+    let bot = this.getConfig("bot")
     let defCfg = this.getdefSet("whole")
-
-    if (group[groupId]) {
-      return { ...defCfg, ...config, ...group[groupId] }
-    }
-    return { ...defCfg, ...config }
+    return { ...defCfg, ...config, ...group[groupId], ...bot[botId] }
   }
 
   /** 主人QQ */
@@ -178,16 +176,32 @@ class Config {
    * 群单独设置
    * @param {string | number} groupId 群号
    * @param {string} key 设置项
-   * @param {unknown} value
-   * @param isDel
+   * @param {unknown} value 修改的value值
+   * @param isDel 是否删除
    */
-  aloneModify(groupId, key, value, isDel) {
+  groupModify(groupId, key, value, isDel) {
     let path = `${Plugin_Path}/config/config/group.yaml`
     let yaml = new YamlReader(path)
     let groupCfg = yaml.jsonData[groupId] ?? {}
     isDel ? delete groupCfg[key] : groupCfg[key] = value
     yaml.set(groupId, groupCfg)
     delete this.config["config.group"]
+  }
+
+  /**
+   * Bot单独设置
+   * @param {string | number} botId 机器人账号
+   * @param {string} key 设置项
+   * @param {unknown} value 修改的value值
+   * @param isDel 是否删除
+   */
+  botModify(botId, key, value, isDel) {
+    let path = `${Plugin_Path}/config/config/bot.yaml`
+    let yaml = new YamlReader(path)
+    let botCfg = yaml.jsonData[botId] ?? {}
+    isDel ? delete botCfg[key] : botCfg[key] = value
+    yaml.set(botId, botCfg)
+    delete this.config["config.bot"]
   }
 
   /**

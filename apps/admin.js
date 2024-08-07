@@ -54,8 +54,10 @@ const NumberCfgType = {
   }
 }
 
-/** 支持单独设置的项 */
-const aloneKeys = [ "群消息", "群临时消息", "群撤回", "群邀请", "群管理变动", "群聊列表变动", "群成员变动", "加群通知", "禁言", "闪照", "匿名", "涩涩", "涩涩pro" ]
+/** 支持群单独设置的项 */
+const groupAloneKeys = [ "群消息", "群临时消息", "群撤回", "群管理变动", "群聊列表变动", "群成员变动", "加群通知", "禁言", "闪照", "匿名", "涩涩", "涩涩pro" ]
+/** 支持Bot单独设置的项 */
+const botAloneKeys = [ "好友消息", "好友撤回", "好友申请", "好友列表变动", "输入", "群邀请" ]
 
 const SwitchCfgReg = new RegExp(`^#椰奶设置(${Object.keys(SwitchCfgType).join("|")})(单独)?(开启|关闭|取消)$`)
 const NumberCfgReg = new RegExp(`^#椰奶设置(${Object.keys(NumberCfgType).join("|")})(\\d+)秒?$`)
@@ -94,17 +96,21 @@ export class Admin extends plugin {
     let regRet = SwitchCfgReg.exec(e.msg)
     let key = regRet[1]
     let is = regRet[3] == "开启"
-    if (!e.group_id && regRet[2]) {
+    if (!e.group_id && regRet[2] && groupAloneKeys.includes(key)) {
       return e.reply("❎ 请在要单独设置的群聊发送单独设置命令")
     }
-    if (!aloneKeys.includes(key) && regRet[2]) {
+    if ((!groupAloneKeys.includes(key) && !botAloneKeys.includes(key)) && regRet[2]) {
       return e.reply("❎ 该设置项不支持单独设置")
     }
 
     // 单独设置
     if (regRet[2]) {
       let isdel = regRet[3] == "取消"
-      Config.aloneModify(e.group_id, SwitchCfgType[key], is, isdel)
+      if (groupAloneKeys.includes(key)) {
+        Config.groupModify(e.group_id, SwitchCfgType[key], is, isdel)
+      } else {
+        Config.botModify(e.self_id, SwitchCfgType[key], is, isdel)
+      }
     } else {
       let _key = SwitchCfgType[key]
       Config.modify(_key?.name ?? "whole", _key?.key ?? _key, is)
@@ -154,14 +160,16 @@ export class Admin extends plugin {
   async index_Settings(e) {
     let data = {}
     const special = [ "deltime", "renderScale" ]
-    let _cfg = Config.getGroup(e.group_id)
+    let _cfg = Config.getAlone(e.self_id, e.group_id)
     for (let key in _cfg) {
       if (special.includes(key)) {
         data[key] = Number(Config.whole[key])
       } else {
         let groupCfg = Config.getConfig("group")[e.group_id]
-        let isAlone = groupCfg ? groupCfg[key] : undefined
-        data[key] = getStatus(_cfg[key], isAlone)
+        let botCfg = Config.getConfig("bot")[e.self_id]
+        let gpAlone = groupCfg ? groupCfg[key] : undefined
+        let btAlone = botCfg ? botCfg[key] : undefined
+        data[key] = getStatus(_cfg[key], gpAlone, btAlone)
       }
     }
     // 渲染图像
@@ -178,7 +186,7 @@ export class Admin extends plugin {
   async SeSe_Settings(e) {
     let set = setu.getSeSeConfig(e)
     let { proxy, pixiv, bika } = Config
-    let { sese, sesepro } = Config.getGroup(e.group_id)
+    let { sese, sesepro } = Config.getAlone(e.self_id, e.group_id)
     let { sese: _sese, sesepro: _sesepro } = Config.getConfig("group")[e.group_id] ?? {}
     let data = {
       sese: getStatus(sese, _sese),
@@ -215,8 +223,14 @@ const rodom = async function() {
   return imgs
 }
 
-const getStatus = function(rote, alone) {
-  let badge = alone != undefined ? "<span class=\"badge\">群单独</span>" : ""
+const getStatus = function(rote, gpAlone, btAlone) {
+  let badge = ""
+  if (gpAlone != undefined) {
+    badge = "<span class=\"badge\">群单独</span>"
+  }
+  if (btAlone != undefined) {
+    badge = "<span class=\"badge\">Bot单独</span>"
+  }
   if (rote) {
     return badge + "<div class=\"cfg-status\" >已开启</div>"
   } else {

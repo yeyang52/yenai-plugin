@@ -2,7 +2,7 @@ import { common } from "../../model/index.js"
 import { Config } from "../../components/index.js"
 
 Bot.on?.("internal.input", async(e) => {
-  if (!Config.whole.input) return false
+  if (!Config.getAlone(e.self_id).input) return false
   // 判断是否主人消息
   if (Config.masterQQ.includes(e.user_id)) return false
   let msg = [

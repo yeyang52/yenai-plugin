@@ -1,0 +1,13 @@
+#Bot单独设置 会覆盖掉全局设置 全局设置可用#椰奶设置查看 或 在whole.yaml查看
+123456:
+  privateMessage: false #好友消息
+  PrivateRecall: false #好友撤回
+  friendRequest: false #好友申请
+  friendNumberChange: false #好友列表变动
+  input: false #对方正在输入
+  groupInviteRequest: false #群邀请
+
+#请严格按照yaml格式设置 不需要的设置项可删除
+456789:
+  privateMessage: false #好友消息
+  PrivateRecall: false  #好友撤回

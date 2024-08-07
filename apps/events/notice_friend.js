@@ -5,8 +5,9 @@ Bot.on?.("notice.friend", async(e) => {
   let msg
   let forwardMsg
   switch (e.sub_type) {
+    /** 好友列表增加 */
     case "increase": {
-      if (!Config.whole.friendNumberChange) return false
+      if (!Config.getAlone(e.self_id).friendNumberChange) return false
       logger.info("[Yenai-Plugin]新增好友")
       msg = [
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
@@ -16,8 +17,9 @@ Bot.on?.("notice.friend", async(e) => {
       ]
       break
     }
+    /** 好友列表减少 */
     case "decrease": {
-      if (!Config.whole.friendNumberChange) return false
+      if (!Config.getAlone(e.self_id).friendNumberChange) return false
       logger.info("[Yenai-Plugin]好友减少")
       msg = [
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
@@ -27,8 +29,9 @@ Bot.on?.("notice.friend", async(e) => {
       ]
       break
     }
+    /** 撤回 */
     case "recall": {
-      if (!Config.whole.PrivateRecall) return false
+      if (!Config.getAlone(e.self_id).PrivateRecall) return false
 
       if (e.user_id == (e.bot ?? Bot).uin) return false
       // 主人撤回
@@ -74,7 +77,7 @@ Bot.on?.("notice.friend", async(e) => {
       break
     }
     case "poke": {
-      if (!Config.whole.privateMessage) return false
+      if (!Config.getAlone(e.self_id).privateMessage) return false
       logger.info("[Yenai-Plugin]好友戳一戳")
       msg = [
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),

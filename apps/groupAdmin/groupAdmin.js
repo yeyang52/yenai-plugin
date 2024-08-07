@@ -169,7 +169,7 @@ export class GroupAdmin extends plugin {
     const type = /设置管理/.test(e.msg)
     if (!qq) qq = e.msg.replace(/#|(设置|取消)管理/g, "").trim()
     if (!qq || !(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号")
-    let Member;
+    let Member
     try {
       Member = e.group.pickMember(Number(qq) || qq, true)
     } catch {
@@ -177,7 +177,7 @@ export class GroupAdmin extends plugin {
     }
     const Memberinfo = Member?.info || await Member?.getInfo?.()
     const res = await e.group.setAdmin(qq, type)
-    const name = Memberinfo.card || Memberinfo.nickname  || (Number(qq) || qq)
+    const name = Memberinfo.card || Memberinfo.nickname || (Number(qq) || qq)
     if (!res) return e.reply("❎ 未知错误")
     type ? e.reply(`✅ 已经把「${name}」设置为管理啦！！`) : e.reply(`✅ 已取消「${name}」的管理`)
   }

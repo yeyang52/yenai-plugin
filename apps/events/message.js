@@ -13,7 +13,7 @@ Bot.on?.("message", async(e) => {
   // 判断群聊还是私聊
   if (e.message_type == "group") {
     // 关闭撤回停止存储
-    if (Config.getGroup(e.group_id).groupRecall) {
+    if (Config.getAlone(e.self_id, e.group_id).groupRecall) {
       // logger.debug(`[Yenai-Plugin]存储群消息${e.group_id}=>${e.message_id}`)
       // 写入
       await redis.set(
@@ -24,7 +24,7 @@ Bot.on?.("message", async(e) => {
     }
   } else if (e.message_type == "private") {
     // 关闭撤回停止存储
-    if (Config.whole.PrivateRecall) {
+    if (Config.getAlone(e.self_id).PrivateRecall) {
       // logger.debug(`[Yenai-Plugin]存储私聊消息${e.user_id}=>${e.message_id}`)
       // 写入
       await redis.set(
@@ -41,7 +41,7 @@ Bot.on?.("message", async(e) => {
     e.message[0].type == "flash" &&
     e.message_type === "group"
   ) {
-    if (!Config.getGroup(e.group_id).flashPhoto) return false
+    if (!Config.getAlone(e.self_id, e.group_id).flashPhoto) return false
     logger.info("[Yenai-Plugin]群聊闪照")
     msg = [
       segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`),
@@ -81,7 +81,7 @@ Bot.on?.("message", async(e) => {
       `闪照链接:${e.message[0].url}`
     ]
   } else if (e.message_type === "private" && e.sub_type === "friend") {
-    if (!Config.whole.privateMessage) return false
+    if (!Config.getAlone(e.self_id).privateMessage) return false
 
     // 特殊消息处理
     const arr = getMsgType(e.message)
@@ -109,7 +109,7 @@ Bot.on?.("message", async(e) => {
       )
     }
   } else if (e.message_type === "private" && e.sub_type === "group") {
-    if (!Config.getGroup(e.group_id).grouptemporaryMessage) return false
+    if (!Config.getAlone(e.self_id, e.group_id).grouptemporaryMessage) return false
     // 特殊消息处理
     const arr = getMsgType(e.message)
     if (arr) {
@@ -136,7 +136,7 @@ Bot.on?.("message", async(e) => {
       )
     }
   } else if (e.message_type === "group") {
-    if (!Config.getGroup(e.group_id).groupMessage) return false
+    if (!Config.getAlone(e.self_id, e.group_id).groupMessage) return false
     // 特殊消息处理
     const arr = getMsgType(e.message)
     if (arr) {
@@ -155,7 +155,7 @@ Bot.on?.("message", async(e) => {
       ...e.message
     ]
   } else if (e.message_type === "discuss") {
-    if (!Config.getGroup(e.group_id).groupMessage) return false
+    if (!Config.getAlone(e.self_id, e.group_id).groupMessage) return false
     logger.info("[Yenai-Plugin]讨论组消息")
     msg = [
       segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),

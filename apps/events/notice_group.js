@@ -10,7 +10,7 @@ Bot.on?.("notice.group", async(e) => {
   switch (e.sub_type) {
     case "increase": {
       if (e.user_id === bot.uin) {
-        if (!Config.getGroup(e.group_id).groupNumberChange) return false
+        if (!Config.getAlone(e.self_id, e.group_id).groupNumberChange) return false
 
         logger.info("[Yenai-Plugin]新增群聊")
 
@@ -20,7 +20,7 @@ Bot.on?.("notice.group", async(e) => {
             `新增群号：${e.group_id}`
         ]
       } else {
-        if (!Config.getGroup(e.group_id).groupMemberNumberChange) return false
+        if (!Config.getAlone(e.self_id, e.group_id).groupMemberNumberChange) return false
 
         logger.info("[Yenai-Plugin]新增群员")
 
@@ -36,7 +36,7 @@ Bot.on?.("notice.group", async(e) => {
     }
     case "decrease": {
       if (e.dismiss) {
-        if (!Config.getGroup(e.group_id).groupNumberChange) return false
+        if (!Config.getAlone(e.self_id, e.group_id).groupNumberChange) return false
 
         logger.info("[Yenai-Plugin]群聊被解散")
 
@@ -52,7 +52,7 @@ Bot.on?.("notice.group", async(e) => {
         e.user_id === bot.uin &&
         e.operator_id !== bot.uin
       ) {
-        if (!Config.getGroup(e.group_id).groupNumberChange) return false
+        if (!Config.getAlone(e.self_id, e.group_id).groupNumberChange) return false
 
         logger.info("[Yenai-Plugin]机器人被踢")
 
@@ -68,7 +68,7 @@ Bot.on?.("notice.group", async(e) => {
         e.user_id === bot.uin &&
         e.operator_id === bot.uin
       ) {
-        if (!Config.getGroup(e.group_id).groupNumberChange) return false
+        if (!Config.getAlone(e.self_id, e.group_id).groupNumberChange) return false
 
         logger.info("[Yenai-Plugin]机器人退群")
 
@@ -80,7 +80,7 @@ Bot.on?.("notice.group", async(e) => {
             `退出群号：${e.group_id}`
         ]
       } else if (e.operator_id === e.user_id) {
-        if (!Config.getGroup(e.group_id).groupMemberNumberChange) return false
+        if (!Config.getAlone(e.self_id, e.group_id).groupMemberNumberChange) return false
 
         logger.info("[Yenai-Plugin]群员退群")
 
@@ -95,7 +95,7 @@ Bot.on?.("notice.group", async(e) => {
             `退出群号：${e.group_id}`
         ]
       } else if (e.operator_id !== e.user_id) {
-        if (!Config.getGroup(e.group_id).groupMemberNumberChange) return false
+        if (!Config.getAlone(e.self_id, e.group_id).groupMemberNumberChange) return false
 
         logger.info("[Yenai-Plugin]群员被踢")
 
@@ -115,7 +115,7 @@ Bot.on?.("notice.group", async(e) => {
     }
     // 群管理变动
     case "admin": {
-      if (!Config.getGroup(e.group_id).groupAdminChange) return false
+      if (!Config.getAlone(e.self_id, e.group_id).groupAdminChange) return false
 
       e.set ? logger.info("[Yenai-Plugin]机器人被设置管理") : logger.info("[Yenai-Plugin]机器人被取消管理")
       if (e.user_id === bot.uin) {
@@ -161,7 +161,7 @@ Bot.on?.("notice.group", async(e) => {
         e.reply("已解除白名单用户的禁言")
       }
 
-      if (!Config.getGroup(e.group_id).botBeenBanned) return false
+      if (!Config.getAlone(e.self_id, e.group_id).botBeenBanned) return false
 
       if (e.user_id != bot.uin) return false
 
@@ -192,7 +192,7 @@ Bot.on?.("notice.group", async(e) => {
     }
     // 群转让
     case "transfer": {
-      if (!Config.getGroup(e.group_id).groupNumberChange) return false
+      if (!Config.getAlone(e.self_id, e.group_id).groupNumberChange) return false
 
       logger.info("[Yenai-Plugin]群聊转让")
 
@@ -210,7 +210,7 @@ Bot.on?.("notice.group", async(e) => {
     // 群撤回
     case "recall": {
       // 开启或关闭
-      if (!Config.getGroup(e.group_id).groupRecall) return false
+      if (!Config.getAlone(e.self_id, e.group_id).groupRecall) return false
       // 是否为机器人撤回
       if (e.user_id == bot.uin || e.operator_id == bot.uin) return false
       // 是否为主人撤回

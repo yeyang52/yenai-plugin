@@ -425,29 +425,30 @@ export class Assistant extends plugin {
   async RecallMsgown(e) {
     const source = await common.takeSourceMsg(e)
     if (!source) return false
-    let target = e.isGroup ? e.group : e.friend
+    let target = e.group ?? e.friend
 
     if (e.isGroup) {
-      // 群聊判断权限
-      if (!common.checkPermission(e, "admin")) {
-        return logger.warn(`${e.logFnc}该群员权限不足`)
-      }
+      /** 群聊判断权限 */
+      if (!common.checkPermission(e, "admin")) return logger.warn(`${e.logFnc}该群员权限不足`)
     } else {
-      // 私聊判断是否为Bot消息
+      /** 私聊判断是否为Bot消息 */
       if (source.sender.user_id != this.Bot.uin) {
         return logger.warn(`${e.logFnc}引用不是Bot消息`)
       }
     }
     if (source.message[0].type === "file" && e.isGroup) {
-      // 删除文件
-      logger.info(`${e.logFnc}执行删除文件`)
+      /** 删除文件 */
+      logger.mark(`${e.logFnc}执行删除文件`)
       await this.Bot.acquireGfs(e.group_id).rm(source.message[0].fid)
     } else {
-      // 撤回消息
-      logger.info(`${e.logFnc}执行撤回消息`)
+      /** 撤回消息 */
+      logger.mark(`${e.logFnc}执行撤回消息`)
       await target.recallMsg(source.message_id)
     }
+
     await sleep(300)
+
+    /** 检验是否撤回成功 */
     let recallcheck = await this.Bot.getMsg(source.message_id)
     if (recallcheck && recallcheck.message_id == source.message_id) {
       let msg
@@ -462,7 +463,8 @@ export class Assistant extends plugin {
       }
       return e.reply(msg, true, { recallMsg: 5 })
     }
-    if (e.isGroup) await e.recall()
+    if (e.isGroup) e.recall()
+    return true
   }
 
   /**

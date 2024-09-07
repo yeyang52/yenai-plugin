@@ -1,11 +1,14 @@
-#是否允许私聊使用
+# 是否允许私聊使用
 allowPM: true
-#pixiv图片直连，国内需配合代理使用
+# pixiv图片直连，国内需配合代理使用
 pixivDirectConnection: false
-#pixiv图片反代，开启直连后反代服务则无效
+# pixiv图片反代，开启直连后反代服务则无效
 pixivImageProxy: i.pixiv.re
-#每名用户每日次数限制（0 则无限制）
+# 每名用户每日次数限制（0 则无限制）
 limit: 30
+
+# 使用的hibiapi地址 https://github.com/mixmoe/HibiAPI
+hibiAPI: https://hibiapi.dengfenglai.icu
 
 # Pixiv 登录凭证刷新令牌 (Refresh Token)
 # 获取方法请参考: https://github.com/mixmoe/HibiAPI/issues/53

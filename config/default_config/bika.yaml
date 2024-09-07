@@ -1,16 +1,16 @@
-#是否允许私聊使用
+# 是否允许私聊使用
 allowPM: true
-#每名用户每日使用次数限制 0则无限制
+# 每名用户每日使用次数限制 0则无限制
 limit: 30
-#哔咔图片直连，直接使用哔咔原图发送不使用图片反代，国内则需使用代理
+# 哔咔图片直连，直接使用哔咔原图发送不使用图片反代，国内则需使用代理
 bikaDirectConnection: false
-#哔咔图片反代
+# 哔咔图片反代
 bikaImageProxy: s3.go2778.com/static
-#哔咔图片质量，可选值 ['low', 'medium', 'high', 'original'] 质量依次从低到高
+# 哔咔图片质量，可选值 ['low', 'medium', 'high', 'original'] 质量依次从低到高
 imageQuality: medium
-#使用的hibiapi地址https://github.com/mixmoe/HibiAPI
+# 使用的hibiapi地址 https://github.com/mixmoe/HibiAPI
 hibiAPI: https://hibiapi.dengfenglai.icu
-#哔咔搜索排序方式：dd（最新发布）、da（最早发布）、ld（最多喜欢）、vd（最多浏览）
+# 哔咔搜索排序方式：dd（最新发布）、da（最早发布）、ld（最多喜欢）、vd（最多浏览）
 searchSort: ld
-#隐藏哔咔搜索简略图
+# 隐藏哔咔搜索简略图
 hideSearchImg: false

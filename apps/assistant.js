@@ -153,7 +153,7 @@ export class Assistant extends plugin {
    * @param e
    */
   async SetGroupCard(e) {
-    if (!common.checkPermission(e, "master")) return
+    if (!common.checkPermission(e, "master", e.at ? "admin" : "all")) return
     let group = ""
     let card = ""
     if (e.isPrivate) {

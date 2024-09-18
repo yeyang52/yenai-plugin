@@ -39,6 +39,8 @@ export class Assistant_Other extends plugin {
    * @param e
    */
   async ImageLink(e) {
+    const sourceFile = await common.takeSourceMsg(e, { file: true })
+    if (sourceFile) return e.reply(`下载链接:\n${sourceFile}`)
     const sourceImg = await common.takeSourceMsg(e, { img: true })
     const img = sourceImg || e.img
     if (_.isEmpty(img)) {

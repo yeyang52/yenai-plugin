@@ -23,11 +23,8 @@ statusTask: true
 statusPowerShellStart: false
 
 # 背景图片api，设置为false则一直使用默认背景
-# CF跳板(会损失一点访问时间，但后期API地址可以自动更新)
-# http://dir.dengfenglai.icu
-# 默认地址(直连，但是不确定是否会GG)
-# https://t.mwm.moe/mp/
-backdrop: "http://dir.dengfenglai.icu"
+# 默认地址 https://t.alcy.cc/mp
+backdrop: "https://t.alcy.cc/mp"
 
 # 当api请求失败时使用的默认背景图，请放置在resources/state/img/bg目录下
 # random - 随机选择state/img/bg目录里的一张图片

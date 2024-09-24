@@ -52,7 +52,7 @@ export class Assistant extends plugin {
           fnc: "SetGroupAvatar"
         },
         {
-          reg: "^#改群昵称",
+          reg: "^#改群(昵|名)称?",
           fnc: "SetGroupName"
         },
         {
@@ -426,13 +426,14 @@ export class Assistant extends plugin {
     const source = await common.takeSourceMsg(e)
     if (!source) return false
     let target = e.group ?? e.friend
+    let sender = source.sender.user_id
 
     if (e.isGroup) {
       /** 群聊判断权限 */
-      if (!common.checkPermission(e, "admin")) return logger.warn(`${e.logFnc}该群员权限不足`)
+      if (!common.checkPermission(e, sender == this.Bot.uin ? "all" : "admin")) return logger.warn(`${e.logFnc}该群员权限不足`)
     } else {
       /** 私聊判断是否为Bot消息 */
-      if (source.sender.user_id != this.Bot.uin) {
+      if (sender != this.Bot.uin) {
         return logger.warn(`${e.logFnc}引用不是Bot消息`)
       }
     }

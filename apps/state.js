@@ -56,11 +56,10 @@ export class NewState extends plugin {
         scale: 1.4,
         retMsgId: true
       })
+
+      // redis保存消息id
       if (retMsgId) {
-        const redisData = data.style.backdrop
-        const message_id = [ e.message_id ]
-        if (Array.isArray(retMsgId.message_id)) { message_id.push(...retMsgId.message_id) } else { message_id.push(retMsgId.message_id) }
-        for (const i of message_id) { redis.set(this.redisOrigImgKey + i, redisData, { EX: 86400 }) }
+        this.saveMsgId(e, retMsgId, data)
       }
     } catch (error) {
       logger.error(error)
@@ -84,5 +83,18 @@ export class NewState extends plugin {
       .replace("../../../../../", "")
     e.reply(segment.image(url))
     return true
+  }
+
+  saveMsgId(e, retMsgId, data) {
+    const redisData = data.style.backdrop
+    const message_id = [ e.message_id ]
+    if (Array.isArray(retMsgId.message_id)) {
+      message_id.push(...retMsgId.message_id)
+    } else {
+      message_id.push(retMsgId.message_id)
+    }
+    for (const i of message_id) {
+      redis.set(this.redisOrigImgKey + i, redisData, { EX: 86400 })
+    }
   }
 }

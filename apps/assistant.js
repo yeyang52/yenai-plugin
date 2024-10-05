@@ -20,7 +20,7 @@ export class Assistant extends plugin {
           fnc: "SetAvatar"
         },
         {
-          reg: "^#(改|换)昵称",
+          reg: "^#(改|换)(昵|名)称?",
           fnc: "SetNickname"
         },
         {
@@ -138,7 +138,7 @@ export class Assistant extends plugin {
    */
   async SetNickname(e) {
     if (!common.checkPermission(e, "master")) return
-    let name = e.msg.replace(/#(改|换)昵称/g, "").trim()
+    let name = e.msg.replace(/#(改|换)(昵|名)称?/g, "").trim()
 
     await this.Bot.setNickname(name)
       .then(() => e.reply("✅ 昵称修改成功"))
@@ -256,7 +256,7 @@ export class Assistant extends plugin {
     } else {
       if (!e.member.is_admin && !e.member.is_owner && !e.isMaster) return logger.mark(`${e.logFnc}该群员权限不足`)
       group = e.group_id
-      card = e.msg.replace(/#改群昵称/g, "").trim()
+      card = e.msg.replace(/#改群(昵|名)称?/g, "").trim()
     }
 
     if (!card) return e.reply("❎ 昵称不能为空")

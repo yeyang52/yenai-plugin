@@ -28,5 +28,5 @@ const containerElement = document.querySelector(".container")
 if (mainHardwareElement.length === 4) {
   containerElement.style.width = "650px"
 } else if (mainHardwareElement.length === 5) {
-  containerElement.style.width = "700px"
+  containerElement.style.width = "750px"
 }

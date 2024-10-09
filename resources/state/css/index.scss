@@ -55,6 +55,27 @@ body {
         color: #0e0e0e;
         text-shadow: 1px 1px 2px #fff;
     }
+
+    &[data-boxInfo="主硬件"] {
+        box-shadow: none;
+        backdrop-filter: none;
+        background: none;
+        border: none;
+        padding: 0px;
+
+        li {
+            background: rgba(255, 255, 255, 0.45);
+            box-shadow: 0 8px 32px 0 rgba(51, 51, 52, 0.5), inset 3px 3px 10px 0px rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            padding: 5px;
+        }
+    }
 }
 
 .botInfo {

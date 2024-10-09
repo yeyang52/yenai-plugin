@@ -19,11 +19,20 @@ export async function getData(e) {
   e.isPro = e.msg.includes("pro")
   e.isDebug = e.msg.includes("debug")
   const timeStr = []
-  const _nameMap1 = [ "CPU", "RAM", "SWAP", "GPU", "Node" ]
+  // 配置
+  const { closedChart, systemResources } = Config.state
+  // const _nameMap1 = [ "CPU", "RAM", "SWAP", "GPU", "Node" ]
   const _nameMap2 = [ "visualData", "FastFetch", "FsSize", "NetworkTest", "BotState", "Style" ]
   const startUsage = {
     mem: process.memoryUsage(),
     cpu: process.cpuUsage()
+  }
+  const mapFun = {
+    "CPU": getCPU,
+    "RAM": getRAM,
+    "SWAP": getSWAP,
+    "GPU": getGPU,
+    "Node": getNode
   }
   function timePromiseExecution(promiseFn, name) {
     const start = Date.now()
@@ -34,14 +43,9 @@ export async function getData(e) {
       return result
     })
   }
-
-  const visualDataPromise = Promise.all([
-    getCPU(),
-    getRAM(),
-    getSWAP(),
-    getGPU(),
-    getNode()
-  ].map((v, i) => timePromiseExecution(v, _nameMap1[i])))
+  const visualDataPromise = Promise.all(
+    systemResources.map((v, i) => timePromiseExecution(mapFun[v](), systemResources[i]))
+  )
   const promiseTaskList = [
     visualDataPromise,
     getFastFetch(e),
@@ -79,9 +83,6 @@ export async function getData(e) {
       ? ""
       : Monitor.chartData
   )
-
-  // 配置
-  const { closedChart } = Config.state
 
   return {
     BotStatusList,

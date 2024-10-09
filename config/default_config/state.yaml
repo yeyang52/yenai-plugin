@@ -31,8 +31,13 @@ backdrop: "https://t.alcy.cc/mp"
 # default_bg.jpg 可直接指定bg目录里一张图片，注意请带上后缀名
 backdropDefault: "random"
 
-# 关闭node的那个圈圈
-closedNodeInfo: true
+# 显示的系统资源可选值: [CPU, RAM, SWAP, GPU, Node] 注意如果gpu获取不到将不会显示
+systemResources: 
+  - CPU
+  - RAM
+  - SWAP
+  - GPU 
+  # - Node
 
 # 关闭图表
 closedChart: false

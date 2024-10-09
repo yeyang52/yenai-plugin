@@ -24,6 +24,7 @@
   width: 100%;
   display: flex;
   justify-content: space-around;
+  gap: 20px;
   /* 添加百分比显示文字 */
   /* 合并代码 */
 }
@@ -120,7 +121,7 @@
 :root {
   --high-color: #d73403;
   --medium-color: #ffa500;
-  --low-color: #87CEEB;
+  --low-color: #84A0DF;
   --avatar-main-color: #fff1eb;
   --avatar-similar-color1: #fff1eb;
   --avatar-similar-color2: #ace0f9;
@@ -164,6 +165,27 @@ body {
   font-size: 11px;
   color: #0e0e0e;
   text-shadow: 1px 1px 2px #fff;
+}
+.box[data-boxInfo=主硬件] {
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+          backdrop-filter: none;
+  background: none;
+  border: none;
+  padding: 0px;
+}
+.box[data-boxInfo=主硬件] li {
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 8px 32px 0 rgba(51, 51, 52, 0.5), inset 3px 3px 10px 0px rgba(255, 255, 255, 0.8);
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  padding: 5px;
 }
 
 .botInfo {
@@ -291,10 +313,7 @@ body {
 }
 .botInfo .header h1 {
   display: inline-block;
-  background-color: #000;
-  -webkit-background-clip: text;
-          background-clip: text;
-  color: transparent;
+  color: #000;
 }
 
 hr {

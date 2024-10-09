@@ -64,27 +64,27 @@ if (chartData) {
           data: [ { type: "max", name: "Max", label: { formatter: by } } ]
         },
         data: chartData.network.download
-      },
-      {
-        name: "读",
-        type: "line",
-        // areaStyle: {},
-        showSymbol: false,
-        markPoint: {
-          data: [ { type: "max", name: "Max", label: { formatter: by } } ]
-        },
-        data: chartData.fsStats.readSpeed
-      },
-      {
-        name: "写",
-        type: "line",
-        // areaStyle: {},
-        showSymbol: false,
-        markPoint: {
-          data: [ { type: "max", name: "Max", label: { formatter: by } } ]
-        },
-        data: chartData.fsStats.writeSpeed
       }
+      // {
+      //   name: "读",
+      //   type: "line",
+      //   // areaStyle: {},
+      //   showSymbol: false,
+      //   markPoint: {
+      //     data: [ { type: "max", name: "Max", label: { formatter: by } } ]
+      //   },
+      //   data: chartData.fsStats.readSpeed
+      // },
+      // {
+      //   name: "写",
+      //   type: "line",
+      //   // areaStyle: {},
+      //   showSymbol: false,
+      //   markPoint: {
+      //     data: [ { type: "max", name: "Max", label: { formatter: by } } ]
+      //   },
+      //   data: chartData.fsStats.writeSpeed
+      // }
     ]
   }
   option.legend.data = option.series

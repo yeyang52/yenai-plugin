@@ -1,8 +1,8 @@
 # 1.4.8-alpha
 * 删除状态图表`读写`显示 四条数据不便于查看
-* 删除状态`closedNodeInfo`设置项由新增设置项`systemResources`替代
-* 状态新增`systemResources`设置项
+* 状态新增**systemResources**设置项
   * 可自定义显示的系统资源也可自定义显示顺序
+  * 删除状态**closedNodeInfo**设置项可用该设置项替代
 
 # 1.4.7
 * 新增`#投票踢人`命令ⁿᵉʷ

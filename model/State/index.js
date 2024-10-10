@@ -1,6 +1,6 @@
 import _ from "lodash"
 import moment from "moment"
-import { Config, Data } from "../../components/index.js"
+import { Config } from "../../components/index.js"
 import common from "../../lib/common/common.js"
 import getBotState from "./BotState.js"
 import getCPU from "./CPU.js"
@@ -79,24 +79,14 @@ export async function getData(e) {
     HardDisk,
     style,
     time: moment().format("YYYY-MM-DD HH:mm:ss"),
-    isPro: e.isPro,
-    chartCfg: JSON.stringify(getChartCfg())
+    isPro: e.isPro
   }
 }
 
 export async function getMonitorData() {
   return {
     chartData: JSON.stringify(Monitor.chartData),
-    backdrop: await getBackground(),
-    chartCfg: JSON.stringify(getChartCfg())
-  }
-}
-
-function getChartCfg() {
-  const echarts_theme = Data.readJSON("resources/state/theme_westeros.json")
-
-  return {
-    echarts_theme
+    backdrop: await getBackground()
   }
 }
 

@@ -12,7 +12,6 @@
 {{block 'main'}}
 <script>
     var chartData = JSON.parse('{{@chartData}}')
-    var chartCfg = JSON.parse('{{@chartCfg}}')
     var Config = JSON.parse('{{@Config}}')
     var _res_path = '{{_res_path}}'
 </script>
@@ -127,6 +126,7 @@
 <div class="box" data-boxInfo="图表">
     <div id="Chart" style="height: 300px"></div>
     <script src="{{_res_path}}state/js/modules/echarts.min.js"></script>
+    <script src="{{_res_path}}state/js/modules/westeros.js"></script>
     <script src="{{_res_path}}state/js/chart.js"></script>
 </div>
 {{/if}}

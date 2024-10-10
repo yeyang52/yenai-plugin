@@ -18,15 +18,12 @@ import getStyle, { getBackground } from "./style.js"
 export async function getData(e) {
   e.isPro = e.msg.includes("pro")
   e.isDebug = e.msg.includes("debug")
-  const timeStr = []
   // 配置
   const { closedChart, systemResources } = Config.state
   // const _nameMap1 = [ "CPU", "RAM", "SWAP", "GPU", "Node" ]
   const _nameMap2 = [ "visualData", "FastFetch", "FsSize", "NetworkTest", "BotState", "Style" ]
-  const startUsage = {
-    mem: process.memoryUsage(),
-    cpu: process.cpuUsage()
-  }
+  const debugFun = buildDebug(e.isPro)
+
   const mapFun = {
     "CPU": getCPU,
     "RAM": getRAM,
@@ -34,50 +31,34 @@ export async function getData(e) {
     "GPU": getGPU,
     "Node": getNode
   }
-  function timePromiseExecution(promiseFn, name) {
-    const start = Date.now()
-    return promiseFn.then((result) => {
-      const end = Date.now()
-      logger.debug(`Promise ${name}: ${end - start} ms`)
-      timeStr.push(`${name}: ${end - start} ms`)
-      return result
-    })
-  }
   const visualDataPromise = Promise.all(
-    systemResources.map((v, i) => timePromiseExecution(mapFun[v](), systemResources[i]))
+    debugFun.add(systemResources.map(i => mapFun[i]()), systemResources)
   )
-  const promiseTaskList = [
+  const promiseTaskList = debugFun.add([
     visualDataPromise,
     getFastFetch(e),
     getFsSize(),
     getNetworkTestList(e),
     getBotState(e),
     getStyle()
-  ].map((v, i) => timePromiseExecution(v, _nameMap2[i]))
+  ], _nameMap2)
   const start = Date.now()
   const [
     visualData,
     FastFetch,
-    HardDisk, psTest, BotStatusList, style
+    HardDisk,
+    psTest,
+    BotStatusList,
+    style
   ] = await Promise.all(promiseTaskList).then(res => {
     const end = Date.now()
     logger.debug(`Promise all: ${end - start} ms`)
-    timeStr.push(`all: ${end - start} ms`)
+    debugFun.addMsg(`all: ${end - start} ms`)
     return res
   })
-  const endUsage = {
-    mem: process.memoryUsage(),
-    cpu: process.cpuUsage()
-  }
-  e.isDebug && e.reply([
-    timeStr.join("\n"),
-    `\nstartCpuUsageUser: ${startUsage.cpu.user}\n`,
-    `endCpuUsageUser: ${endUsage.cpu.user}\n`,
-    `startCpuUsageSystem: ${startUsage.cpu.system}\n`,
-    `endCpuUsageSystem: ${endUsage.cpu.system}\n`,
-    `startMemUsageUser: ${startUsage.mem.rss}\n`,
-    `endMemUsageUser: ${endUsage.mem.rss}`
-  ])
+
+  e.isDebug && debugFun.send(e)
+
   const chartData = JSON.stringify(
     common.checkIfEmpty(Monitor.chartData, [ "echarts_theme", "cpu", "ram" ])
       ? ""
@@ -116,5 +97,46 @@ function getChartCfg() {
 
   return {
     echarts_theme
+  }
+}
+
+function buildDebug(isDebug) {
+  const debugMessages = []
+  const startUsage = isDebug && {
+    mem: process.memoryUsage(),
+    cpu: process.cpuUsage()
+  }
+  function timePromiseExecution(promiseFn, name) {
+    const startTime = Date.now()
+    return promiseFn.then((result) => {
+      const endTime = Date.now()
+      logger.debug(`Promise ${name}: ${endTime - startTime} ms`)
+      debugMessages.push(`${name}: ${endTime - startTime} ms`)
+      return result
+    })
+  }
+  return {
+    add(promises, nameMap) {
+      return promises.map((v, i) => timePromiseExecution(v, nameMap[i]))
+    },
+    addMsg(message) {
+      return debugMessages.push(message)
+    },
+    send(e) {
+      const endUsage = {
+        mem: process.memoryUsage(),
+        cpu: process.cpuUsage()
+      }
+      e.reply([
+        debugMessages.join("\n"),
+        `\nstartCpuUsageUser: ${startUsage.cpu.user}\n`,
+        `endCpuUsageUser: ${endUsage.cpu.user}\n`,
+        `startCpuUsageSystem: ${startUsage.cpu.system}\n`,
+        `endCpuUsageSystem: ${endUsage.cpu.system}\n`,
+        `startMemUsageUser: ${startUsage.mem.rss}\n`,
+        `endMemUsageUser: ${endUsage.mem.rss}`
+      ])
+      debugMessages.length = 0
+    }
   }
 }

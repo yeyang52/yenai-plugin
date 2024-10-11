@@ -198,15 +198,22 @@ export default class GroupAdmin {
   async BatchKickMember(groupId, arr) {
     let res = await new QQApi(this.e).deleteGroupMember(groupId, arr)
     let msg = [ "以下为每次清理的结果" ]
-    res.forEach(i => {
+    for (let i of res) {
       if (i.ec != 0) {
         msg.push(`错误：${JSON.stringify(res)}`)
+        msg.push(
+          `检测到批量删除出错，尝试单个删除，该方法可能导致风控，请注意...`
+        );
+        for (let a of arr) {
+          msg.push(await this.kickMember(groupId, a, this.Bot.uin));
+          await Bot.sleep(Math.random() * 5 + 1); // 随机睡1-6秒
+        };
       } else {
         msg.push("成功清理如下人员\n" + i.ul.map((item, index) =>
       `${index + 1}、${item}`
         ).join("\n"))
       }
-    })
+    }
     return msg
   }
 

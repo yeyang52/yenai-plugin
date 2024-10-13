@@ -13,7 +13,6 @@ PrivateRecall: false #好友撤回
 friendRequest: false #好友申请
 friendNumberChange: false #好友列表变动
 #其他通知
-flashPhoto: false #闪照
 botBeenBanned: false #禁言
 input: false #对方正在输入
 #其他设置

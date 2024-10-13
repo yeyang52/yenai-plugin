@@ -518,10 +518,12 @@ export default new class Pixiv {
    * @returns {Promise}
    */
   async _requestPixivImg(url) {
-    url = url.replace("i.pximg.net", this.proxy)
-    logger.debug(`pixiv getImg URL: ${url}`)
-    let headers = /s.pximg.net/.test(url) ? undefined : this.headers
-    return request.proxyRequestImg(url, { headers })
+    // url = url.replace("i.pximg.net", this.proxy)
+    const _url = new URL(url)
+    _url.host = this.proxy
+    logger.debug(`pixiv getImg URL: ${_url}`)
+    let headers = /s.pximg.net/.test(_url) ? undefined : this.headers
+    return request.proxyRequestImg(_url, { headers })
   }
 
   /**

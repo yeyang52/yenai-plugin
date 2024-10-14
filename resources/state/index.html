@@ -157,6 +157,21 @@
         <p>{{@$value.tail}}</p>
     </div>
     {{/each}}
+    <div class="speed">
+        <p>redis运行</p>
+        <p>{{redis.uptime}}</p>
+    </div>
+</div>
+{{/if}}
+
+{{if redis.data}}
+<div class="box" data-boxInfo="redis">
+    {{each redis.data}}
+    <div class="speed">
+        <p>{{$value.first}}</p>
+        <p>{{@$value.tail}}</p>
+    </div>
+    {{/each}}
 </div>
 {{/if}}
 

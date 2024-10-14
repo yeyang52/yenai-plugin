@@ -24,7 +24,7 @@
  * const result = formatDuration(3665, customFormat);
  * // 输出: "1h 1m 5s"
  */
-export default function formatDuration(time, format, repair = true) {
+export default function formatDuration(time, format = "default", repair = true) {
   const timeObj = computeTimeObject(time, repair)
   if (typeof format === "function") {
     return format(timeObj)

@@ -14,6 +14,8 @@ import getOtherInfo, { getCopyright } from "./OtherInfo.js"
 import getRAM from "./RAM.js"
 import getSWAP from "./SWAP.js"
 import getStyle, { getBackground } from "./style.js"
+import { getFileSize } from "./utils.js"
+import getRedisInfo from "./redis.js"
 
 export async function getData(e) {
   e.isPro = e.msg.includes("pro")
@@ -21,8 +23,8 @@ export async function getData(e) {
   // 配置
   const { closedChart, systemResources } = Config.state
   // const _nameMap1 = [ "CPU", "RAM", "SWAP", "GPU", "Node" ]
-  const _nameMap2 = [ "visualData", "FastFetch", "FsSize", "NetworkTest", "BotState", "Style" ]
-  const debugFun = buildDebug(e.isPro)
+  const _nameMap2 = [ "visualData", "FastFetch", "FsSize", "NetworkTest", "BotState", "Style", "redis" ]
+  const debugFun = buildDebug(e.isDebug)
 
   const mapFun = {
     "CPU": getCPU,
@@ -40,7 +42,8 @@ export async function getData(e) {
     getFsSize(),
     getNetworkTestList(e),
     getBotState(e),
-    getStyle()
+    getStyle(),
+    getRedisInfo(e.isPro)
   ], _nameMap2)
   const start = Date.now()
   const [
@@ -49,7 +52,8 @@ export async function getData(e) {
     HardDisk,
     psTest,
     BotStatusList,
-    style
+    style,
+    redis
   ] = await Promise.all(promiseTaskList).then(res => {
     const end = Date.now()
     logger.debug(`Promise all: ${end - start} ms`)
@@ -67,6 +71,7 @@ export async function getData(e) {
 
   return {
     BotStatusList,
+    redis,
     chartData: closedChart ? false : chartData,
     visualData: _.compact(visualData),
     otherInfo: getOtherInfo(e),
@@ -119,12 +124,12 @@ function buildDebug(isDebug) {
       }
       e.reply([
         debugMessages.join("\n"),
-        `\nstartCpuUsageUser: ${startUsage.cpu.user}\n`,
-        `endCpuUsageUser: ${endUsage.cpu.user}\n`,
-        `startCpuUsageSystem: ${startUsage.cpu.system}\n`,
-        `endCpuUsageSystem: ${endUsage.cpu.system}\n`,
-        `startMemUsageUser: ${startUsage.mem.rss}\n`,
-        `endMemUsageUser: ${endUsage.mem.rss}`
+        `\nstartCpuUsageUser: ${getFileSize(startUsage.cpu.user)}\n`,
+        `endCpuUsageUser: ${getFileSize(endUsage.cpu.user)}\n`,
+        `startCpuUsageSystem: ${getFileSize(startUsage.cpu.system)}\n`,
+        `endCpuUsageSystem: ${getFileSize(endUsage.cpu.system)}\n`,
+        `startMemUsageUser: ${getFileSize(startUsage.mem.rss)}\n`,
+        `endMemUsageUser: ${getFileSize(endUsage.mem.rss)}`
       ])
       debugMessages.length = 0
     }

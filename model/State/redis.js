@@ -1,10 +1,11 @@
 import { formatDuration } from "../../tools/index.js"
+import { getFileSize } from "./utils.js"
 
 export default async function getRedisInfo(isPro) {
   if (!isPro) return false
   try {
     let data = parseInfo(await redis.info())
-    const { used_memory_human, used_memory_peak_human, used_memory_lua_human } = data.Memory
+    const { used_memory_human, used_memory_peak_human, used_memory_lua_human, used_memory_dataset } = data.Memory
     const { connected_clients } = data.Clients
     const { total_connections_received, total_commands_processed } = data.Stats
     let res = [
@@ -19,6 +20,10 @@ export default async function getRedisInfo(isPro) {
       {
         first: "redisLua占用内存",
         tail: used_memory_lua_human
+      },
+      {
+        first: "redis数据集大小",
+        tail: getFileSize(used_memory_dataset)
       },
       {
         first: "redis客户端连接数",

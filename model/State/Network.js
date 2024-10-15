@@ -55,14 +55,14 @@ const handleSite = (site) => {
 }
 
 const handleError = (error, siteName) => {
-  let errorMsg = "error"
+  let errorMsg = "Error"
   const prefix = "[Yenai-Plugin][状态]"
   if (error.name === "AbortError") {
     logger.warn(`${prefix}请求 ${siteName} 超时`)
-    errorMsg = "timeout"
+    errorMsg = "Timeout"
   } else if (error.message.includes("ECONNRESET")) {
     logger.warn(`${prefix}请求 ${siteName} 发生了 ECONNRESET 错误:`, error.message)
-    errorMsg = "econnreset"
+    errorMsg = "Econnreset"
   } else {
     logger.error(`${prefix}请求 ${siteName} 过程中发生错误:`, error.message)
   }

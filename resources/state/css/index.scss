@@ -98,31 +98,31 @@ body {
                 }
             }
         }
-    }
 
-    .keyspace {
-        margin-top: 10px;
+        .keyspace {
+            margin-top: 10px;
 
-        .data {
-            display: flex;
-            flex-direction: column;
-            font-size: 12px;
-            margin: 5px 10px;
-
-            .row {
+            .data {
                 display: flex;
-                flex: 1;
-            }
+                flex-direction: column;
+                font-size: 12px;
+                margin: 5px 10px;
 
-            .header-row {
-                font-size: 13px;
-                color: #494d53;
-            }
+                .row {
+                    display: flex;
+                    flex: 1;
+                }
 
-            .cell {
-                flex: 1;
-                padding: 5px;
-                text-align: left;
+                .header-row {
+                    font-size: 13px;
+                    color: #494d53;
+                }
+
+                .cell {
+                    flex: 1;
+                    padding: 5px;
+                    text-align: left;
+                }
             }
         }
     }

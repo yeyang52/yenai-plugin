@@ -23,8 +23,6 @@
 </div>
 <script>
     var chartData = JSON.parse('{{@chartData}}')
-    var chartCfg = JSON.parse('{{@chartCfg}}')
-    // echarts.registerTheme('westeros', chartCfg.echarts_theme)
     var formatByte = (num = 1) => {
         return (value) => {
             value = value?.value ?? value

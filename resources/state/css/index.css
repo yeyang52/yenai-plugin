@@ -165,6 +165,63 @@ body {
   color: #0e0e0e;
   text-shadow: 1px 1px 2px #fff;
 }
+.box[data-boxInfo=redis] .title {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  padding-top: 5px;
+  border-bottom: 2px solid rgba(180, 180, 182, 0.6745098039);
+}
+.box[data-boxInfo=redis] .title .icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 5px;
+}
+.box[data-boxInfo=redis] .info {
+  display: flex;
+  gap: 20px;
+}
+.box[data-boxInfo=redis] .info .redisBox {
+  flex: 1;
+}
+.box[data-boxInfo=redis] .info .redisBox .data {
+  padding: 10px;
+  padding-bottom: 5px;
+}
+.box[data-boxInfo=redis] .info .redisBox .data .item {
+  background-color: rgba(244, 244, 245, 0.5803921569);
+  margin: 5px;
+  padding: 5px;
+  font-size: 13px;
+  border-radius: 5px;
+  border: 1px solid rgba(180, 180, 182, 0.6745098039);
+  color: #4f5255;
+}
+.box[data-boxInfo=redis] .info .redisBox .data .item .number {
+  color: #46971d;
+}
+.box .keyspace {
+  margin-top: 10px;
+}
+.box .keyspace .data {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  margin: 5px 10px;
+}
+.box .keyspace .data .row {
+  display: flex;
+  flex: 1;
+}
+.box .keyspace .data .header-row {
+  font-size: 13px;
+  color: #494d53;
+}
+.box .keyspace .data .cell {
+  flex: 1;
+  padding: 5px;
+  text-align: left;
+}
 
 .botInfo {
   display: flex;

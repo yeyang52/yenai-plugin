@@ -55,6 +55,77 @@ body {
         color: #0e0e0e;
         text-shadow: 1px 1px 2px #fff;
     }
+
+    &[data-boxInfo="redis"] {
+        .title {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            padding-top: 5px;
+            border-bottom: 2px solid #b4b4b6ac;
+
+            .icon {
+                width: 18px;
+                height: 18px;
+                margin-right: 5px;
+            }
+        }
+
+        .info {
+            display: flex;
+            gap: 20px;
+
+            .redisBox {
+                flex: 1;
+
+                .data {
+                    padding: 10px;
+                    padding-bottom: 5px;
+
+                    .item {
+                        background-color: #f4f4f594;
+                        margin: 5px;
+                        padding: 5px;
+                        font-size: 13px;
+                        border-radius: 5px;
+                        border: 1px solid #b4b4b6ac;
+                        color: #4f5255;
+
+                        .number {
+                            color: #46971d
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .keyspace {
+        margin-top: 10px;
+
+        .data {
+            display: flex;
+            flex-direction: column;
+            font-size: 12px;
+            margin: 5px 10px;
+
+            .row {
+                display: flex;
+                flex: 1;
+            }
+
+            .header-row {
+                font-size: 13px;
+                color: #494d53;
+            }
+
+            .cell {
+                flex: 1;
+                padding: 5px;
+                text-align: left;
+            }
+        }
+    }
 }
 
 .botInfo {

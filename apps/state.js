@@ -94,7 +94,7 @@ export class NewState extends plugin {
       message_id.push(retMsgId.message_id)
     }
     for (const i of message_id) {
-      redis.set(this.redisOrigImgKey + i, redisData, { EX: 86400 })
+      redis.set(this.redisOrigImgKey + i, redisData, { EX: 60 * 60 * 2 })
     }
   }
 }

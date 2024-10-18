@@ -11,8 +11,6 @@ psTestSites:
           url: https://baidu.com
         - name: Google
           url: https://google.com
-        - name: Google(proxy)
-          url: https://google.com
           useProxy: true
     timeout: 5000
 

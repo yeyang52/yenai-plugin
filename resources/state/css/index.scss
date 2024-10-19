@@ -159,10 +159,12 @@ body {
                 position: absolute;
                 inset: 0;
                 z-index: -1;
-                margin: -3px;
+                margin: -5px;
                 border-radius: 50%;
                 // box-shadow: 0 0 12px 7px var(--avatar-main-color);
-                background: linear-gradient(135deg, var(--avatar-similar-color2), var(--avatar-similar-color1));
+                // background: rgba(255, 255, 255, 0.45);
+                box-shadow: -2px 2px 5px 1px rgba(8, 8, 8, 0.5);
+                // backdrop-filter: blur(10px);
             }
         }
 

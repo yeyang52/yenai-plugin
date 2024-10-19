@@ -5,14 +5,14 @@
 # timeout: 测试超时时间
 # useProxy: 是否使用插件配置中的代理访问
 psTestSites:
-    show: pro
-    list:
-        - name: Baidu
-          url: https://baidu.com
-        - name: Google
-          url: https://google.com
-          useProxy: true
-    timeout: 5000
+  show: pro
+  list:
+    - name: Baidu
+      url: https://baidu.com
+    - name: Google
+      url: https://google.com
+      useProxy: true
+  timeout: 5000
 
 # 监控任务
 statusTask: true
@@ -30,11 +30,11 @@ backdrop: "https://t.alcy.cc/mp"
 backdropDefault: "random"
 
 # 显示的系统资源可选值: [CPU, RAM, SWAP, GPU, Node] 注意如果gpu获取不到将不会显示
-systemResources: 
+systemResources:
   - CPU
   - RAM
   - SWAP
-  - GPU 
+  - GPU
   # - Node
 
 # 关闭图表
@@ -46,6 +46,12 @@ closedChart: false
 # pro - 只有状态pro显示
 # default - win默认只有pro显示，liunx等其他正常也会显示
 showFastFetch: default
+
+# 是否显示redis信息 可选参数:true, false, pro
+# true - 全部显示
+# false - 关闭
+# pro - 只有状态pro显示
+showRedisInfo: true
 
 # Bot昵称的颜色
 BotNameColor: "#000"

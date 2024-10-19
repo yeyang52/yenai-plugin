@@ -252,9 +252,9 @@ body {
   position: absolute;
   inset: 0;
   z-index: -1;
-  margin: -3px;
+  margin: -5px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--avatar-similar-color2), var(--avatar-similar-color1));
+  box-shadow: -2px 2px 5px 1px rgba(8, 8, 8, 0.5);
 }
 .botInfo .avatar-box .info {
   display: flex;

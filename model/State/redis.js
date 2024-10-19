@@ -1,7 +1,9 @@
 import { formatDuration } from "../../tools/index.js"
-
+import { Config } from "../../components/index.js"
 export default async function getRedisInfo(isPro) {
-  if (!isPro) return false
+  const { showRedisInfo } = Config.state
+  if (!showRedisInfo) return false
+  if (showRedisInfo === "pro" && !isPro) return false
   try {
     let data = parseInfo(await redis.info())
     const { used_memory_human, used_memory_peak_human, used_memory_lua_human } = data.Memory

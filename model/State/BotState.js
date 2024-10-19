@@ -2,7 +2,7 @@ import { createRequire } from "module"
 import moment from "moment"
 import { Plugin_Path } from "../../components/index.js"
 import { formatDuration } from "../../tools/index.js"
-import { getImgPalette } from "./utils.js"
+// import { getImgPalette } from "./utils.js"
 const require = createRequire(import.meta.url)
 
 export default async function getBotState(e) {
@@ -53,8 +53,10 @@ async function getAvatarColor(url) {
     if (url == "default") {
       url = defaultAvatar
     }
-    let avatar = await getImgPalette(url)
-    return avatar
+    // let avatar = await getImgPalette(url)
+    return {
+      path: url
+    }
   } catch {
     return {
       similarColor1: "#fff1eb",

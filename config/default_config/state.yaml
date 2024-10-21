@@ -72,6 +72,6 @@ lowColor: "#84A0DF"
 # 图表配置
 chartsCfg:
   # 标题颜色
-  titleColor: "#657fba"
+  titleColor: "#84A0DF"
   # 标题文字
   titleText: "Network"

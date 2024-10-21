@@ -25,7 +25,11 @@ if (chartData) {
     title: {
       text: titleText,
       textStyle: {
-        color: titleColor
+        color: titleColor,
+        textShadowBlur: 1,
+        textShadowColor: "#000",
+        textShadowOffsetX: 1,
+        textShadowOffsetY: 1
       }
     },
     legend: {},

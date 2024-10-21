@@ -68,3 +68,10 @@ highColor: "#d73403"
 mediumColor: "#ffa500"
 #正常
 lowColor: "#84A0DF"
+
+# 图表配置
+chartsCfg:
+  # 标题颜色
+  titleColor: "#657fba"
+  # 标题文字
+  titleText: "Network"

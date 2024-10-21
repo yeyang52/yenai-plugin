@@ -26,7 +26,7 @@ documentElement.style.setProperty("--low-color", lowColor)
 const mainHardwareElement = document.querySelectorAll(".mainHardware li")
 const containerElement = document.querySelector(".container")
 if (mainHardwareElement.length === 4) {
-  containerElement.style.width = "650px"
+  containerElement.style.width = "700px"
 } else if (mainHardwareElement.length === 5) {
   containerElement.style.width = "750px"
 }

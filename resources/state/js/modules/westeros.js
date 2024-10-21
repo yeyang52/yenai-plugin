@@ -216,7 +216,7 @@
       axisLine: {
         show: true,
         lineStyle: {
-          color: "#008acd"
+          color: "#000"
         }
       },
       axisTick: {
@@ -244,13 +244,13 @@
     },
     valueAxis: {
       axisLine: {
-        show: true,
+        show: false,
         lineStyle: {
           color: "#008acd"
         }
       },
       axisTick: {
-        show: true,
+        show: false,
         lineStyle: {
           color: "#333333"
         }
@@ -260,7 +260,7 @@
         color: "#333333"
       },
       splitLine: {
-        show: false,
+        show: true,
         lineStyle: {
           color: ["#aaaaaa"]
         }
@@ -276,7 +276,7 @@
       axisLine: {
         show: true,
         lineStyle: {
-          color: "#008acd"
+          color: "#000"
         }
       },
       axisTick: {
@@ -306,7 +306,7 @@
       axisLine: {
         show: true,
         lineStyle: {
-          color: "#008acd"
+          color: "#000"
         }
       },
       axisTick: {

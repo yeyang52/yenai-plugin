@@ -80,6 +80,7 @@ export async function getData(e) {
     copyright: await getCopyright(),
     network: getNetwork(),
     Config: JSON.stringify(Config.state),
+    rawConfig: Config.state,
     FastFetch,
     HardDisk,
     style,

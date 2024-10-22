@@ -3,8 +3,8 @@ const chartBoxElement = document.querySelector(".box[data-boxInfo=图表]")
 if (chartData) {
 // 图表
   // echarts.registerTheme("westeros", chartCfg.echarts_theme)
-  const { titleColor, titleText } = Config.chartsCfg
-  const chart = echarts.init(document.getElementById("Chart"), "westeros", {
+  const { titleColor, titleText, themeCfg } = Config.chartsCfg
+  const chart = echarts.init(document.getElementById("Chart"), themeCfg, {
     renderer: "svg"
   })
   const by = (value) => {

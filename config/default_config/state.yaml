@@ -71,7 +71,7 @@ lowColor: "#84A0DF"
 
 # 图表配置
 chartsCfg:
-  themeCfg: "macarons"
+  themeCfg: "westeros"
   # 标题颜色
   titleColor: "#84A0DF"
   # 标题文字

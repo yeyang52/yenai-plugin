@@ -56,7 +56,7 @@ if (chartData) {
       {
         name: "上行",
         type: "line",
-        // areaStyle: {},
+        areaStyle: {},
         showSymbol: false,
         markPoint: {
           data: [ { type: "max", name: "Max", label: { formatter: by } } ]
@@ -66,7 +66,7 @@ if (chartData) {
       {
         name: "下行",
         type: "line",
-        // areaStyle: {},
+        areaStyle: {},
         showSymbol: false,
         markPoint: {
           data: [ { type: "max", name: "Max", label: { formatter: by } } ]

@@ -151,7 +151,6 @@ async function getNetworkLatency(url, timeoutTime = 5000, useProxy = false) {
 /** 获取当前网速 */
 export function getNetwork() {
   let network = Monitor.network
-  console.log(network)
   if (!network || network.length === 0) {
     return false
   }

@@ -28,7 +28,7 @@ export default new class monitor {
       ram: []
     }
     this.valueObject = {
-      networkStats: "(*) rx_sec,tx_sec,iface,operstate",
+      networkStats: "rx_sec,tx_sec,iface",
       currentLoad: "currentLoad",
       mem: "active",
       fsStats: "wx_sec,rx_sec"
@@ -39,11 +39,10 @@ export default new class monitor {
   }
 
   set network(value) {
-    let data = value.find(v => v.operstate == "up" && _.isNumber(v.tx_sec) && _.isNumber(v.rx_sec))
-    if (data) {
+    if (_.isNumber(value[0]?.tx_sec) && _.isNumber(value[0]?.rx_sec)) {
       this._network = value
-      this._addData(this.chartData.network.upload, [ Date.now(), data.tx_sec ])
-      this._addData(this.chartData.network.download, [ Date.now(), data.rx_sec ])
+      this._addData(this.chartData.network.upload, [ Date.now(), value[0].tx_sec ])
+      this._addData(this.chartData.network.download, [ Date.now(), value[0].rx_sec ])
     }
   }
 

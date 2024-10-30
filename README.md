@@ -86,7 +86,7 @@ pnpm install
 - [x] Bot被禁言
 
 Tip：具体可使用 **#椰奶设置** 查看
-  </details>
+</details>
 
 <details>
   <summary>助手功能</summary>
@@ -107,6 +107,7 @@ Tip：具体可使用 **#椰奶设置** 查看
 
 
 </details>
+
 <details>
   <summary>事件处理</summary>
 
@@ -126,6 +127,7 @@ Tip：具体可使用 **#椰奶设置** 查看
   
 
 </details>
+
 <details>
   <summary>娱乐功能</summary>
 

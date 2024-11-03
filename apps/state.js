@@ -9,7 +9,7 @@ export class NewState extends plugin {
     super({
       name: "椰奶状态",
       event: "message",
-      priority: -1000,
+      priority: -Infinity,
       rule: [
         {
           reg: "^#?(椰奶)?状态(pro)?(debug)?$",

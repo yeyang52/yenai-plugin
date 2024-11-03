@@ -23,7 +23,7 @@ export async function getData(e) {
   // 配置
   const { closedChart, systemResources } = Config.state
   // const _nameMap1 = [ "CPU", "RAM", "SWAP", "GPU", "Node" ]
-  const _nameMap2 = [ "visualData", "FastFetch", "FsSize", "NetworkTest", "BotState", "Style", "redis" ]
+  const _nameMap2 = [ "visualData", "FastFetch", "FsSize", "NetworkTest", "BotState", "Style", "Redis" ]
   const debugFun = buildDebug(e.isDebug)
 
   const mapFun = {

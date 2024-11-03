@@ -1,6 +1,6 @@
 import { Config } from "../../components/index.js"
 import _ from "lodash"
-import { si, initDependence } from "./utils.js"
+import si from "systeminformation"
 
 export default new class monitor {
   constructor() {
@@ -63,7 +63,6 @@ export default new class monitor {
   }
 
   async init() {
-    if (!await initDependence()) return
     await this.getRedisChartData()
     // 给有问题的用户关闭定时器
     if (!Config.state.statusTask) return

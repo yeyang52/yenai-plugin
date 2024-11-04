@@ -23,6 +23,7 @@
         repeat: no-repeat;
         size: cover;
     }
+
     width: 650px;
 }
 
@@ -55,6 +56,15 @@ body {
         font-size: 11px;
         color: #0e0e0e;
         text-shadow: 1px 1px 2px #fff;
+    }
+
+    &.fastFetch {
+        font-size: 16px;
+
+        .speed {
+            line-height: 22px;
+            height: 22px;
+        }
     }
 
     &[data-boxInfo="redis"] {

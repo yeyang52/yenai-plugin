@@ -6,8 +6,6 @@ import { getFileSize, createAbortCont } from "./utils.js"
 const defList = [
   { name: "Baidu", url: "https://baidu.com" },
   { name: "Google", url: "https://google.com" },
-  { name: "Github", url: "https://github.com" },
-  { name: "Gitee", url: "https://gitee.com" },
   { name: "TRSS", url: "https://trss.me" }
 ]
 /**
@@ -115,6 +113,7 @@ async function getNetworkLatency(url, timeoutTime = 5000, useProxy = false) {
     })
     const endTime = Date.now()
     let delay = endTime - startTime
+    logger.debug(`[Yenai-Plugin][状态][网络测试][${url}] ${logger.blue(status)} ${logger.green(delay + "ms")}`)
 
     const COLOR_DELAY_GOOD = "#188038"
     const COLOR_DELAY_AVERAGE = "#d68100"

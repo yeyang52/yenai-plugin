@@ -132,6 +132,7 @@
   background-position: center top;
   background-repeat: no-repeat;
   background-size: cover;
+  width: 650px;
 }
 
 li {
@@ -164,6 +165,13 @@ body {
   font-size: 11px;
   color: #0e0e0e;
   text-shadow: 1px 1px 2px #fff;
+}
+.box.fastFetch {
+  font-size: 16px;
+}
+.box.fastFetch .speed {
+  line-height: 22px;
+  height: 22px;
 }
 .box[data-boxInfo=redis] .title {
   display: flex;

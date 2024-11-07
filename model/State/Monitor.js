@@ -66,7 +66,6 @@ export default new class monitor {
 
   async init() {
     await this.getRedisChartData()
-    console.log(this.Config)
     // 给有问题的用户关闭定时器
     if (!this.Config?.open) return
 

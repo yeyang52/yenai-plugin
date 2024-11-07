@@ -9,6 +9,7 @@ psTestSites:
   list:
     - name: Baidu
       url: https://baidu.com
+      useProxy: false
     - name: Google
       url: https://google.com
       useProxy: true

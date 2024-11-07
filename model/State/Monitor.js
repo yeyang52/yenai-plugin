@@ -35,6 +35,8 @@ export default new class monitor {
     }
     this.chartDataKey = "yenai:state:chartData"
 
+    this.Config = Config.state.monitor
+    this.getDataInterval = 60 * 1000
     this.init()
   }
 
@@ -64,24 +66,25 @@ export default new class monitor {
 
   async init() {
     await this.getRedisChartData()
+    console.log(this.Config)
     // 给有问题的用户关闭定时器
-    if (!Config.state.statusTask) return
+    if (!this.Config?.open) return
 
-    if (Config.state.statusPowerShellStart) si.powerShellStart()
+    if (this.Config?.statusPowerShellStart) si.powerShellStart()
     // 初始化数据
     this.getData()
     // 网速
     const Timer = setInterval(async() => {
       let data = await this.getData()
       if (_.isEmpty(data)) clearInterval(Timer)
-    }, 60000)
+    }, this.Config.getDataInterval ?? 60 * 1000)
   }
 
   async getData() {
     const data = await si.get(this.valueObject)
     _.forIn(data, (value, key) => {
       if (_.isEmpty(value)) {
-        logger.debug(`获取${key}数据失败，停止获取对应数据`)
+        logger.debug(`[Yenai-Plugin][monitor]获取${key}数据失败，停止获取对应数据`)
         delete this.valueObject[key]
       }
     })
@@ -128,6 +131,7 @@ export default new class monitor {
    * @returns {void}
    */
   _addData(arr, data, maxLen = 60) {
+    maxLen = maxLen || (this.Config?.saveDataNumber ?? 60)
     if (data === null || data === undefined) return
     // 如果数组长度超过允许的最大值，删除第一个元素
     if (arr.length >= maxLen) {

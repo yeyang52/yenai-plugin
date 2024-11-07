@@ -14,11 +14,16 @@ psTestSites:
       useProxy: true
   timeout: 5000
 
-# 监控任务
-statusTask: true
-
-# 如果出现内存异常的情况可将此配置项开启，如果打开后报错请将监控任务关闭
-statusPowerShellStart: false
+# 监控任务 该配置均需重启生效
+monitor:
+  # 是否开启监控任务
+  open: true
+  # 获取数据的间隔时间，单位为毫秒 间隔越短获取的数据越精确
+  getDataInterval: 60000
+  # 存储的数据数量，当数据量超出此值时会将最旧的数据删除
+  saveDataNumber: 60
+  # 如果出现内存异常的情况可将此配置项开启，如果打开后报错请将监控任务关闭
+  statusPowerShellStart: false
 
 # 背景图片api，设置为false则一直使用默认背景
 # 默认地址 https://t.alcy.cc/mp

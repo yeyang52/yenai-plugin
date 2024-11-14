@@ -51,6 +51,10 @@ export class NewHandle extends plugin {
     })
   }
 
+  get Bot() {
+    return this.e?.bot ?? Bot
+  }
+
   /**
    * 同意拒绝好友申请
    * @param e
@@ -59,7 +63,7 @@ export class NewHandle extends plugin {
     if (!common.checkPermission(e, "master")) return false
     let yes = !!/同意/.test(e.msg)
 
-    const systemMsg = (await (e.bot ?? Bot).getSystemMsg())
+    const systemMsg = (await this.Bot.getSystemMsg())
     let FriendAdd = systemMsg.filter(
       item => item.request_type == "friend" &&
       (item.sub_type === "add" || item.sub_type === "single")
@@ -126,17 +130,24 @@ export class NewHandle extends plugin {
    */
   async Handle(e) {
     const source = await common.takeSourceMsg(e)
-    if (!source || source.user_id != (e.bot ?? Bot).uin) return false
+
+    if (!source || source.user_id != this.Bot.uin) return false
+
     const sourceMsg = source.raw_message?.split("\n")
+
     if (!sourceMsg) return e.reply("❎ 获取原消息失败，请使用\"同意xxx\"进行处理")
+
     const yes = /同意/.test(e.msg)
     if (e.isGroup) {
       if (!common.checkPermission(e, "admin", "admin")) return
+
       logger.mark(`${e.logFnc}${yes ? "同意" : "拒绝"}加群通知`)
+
       let userId = await redis.get(`yenai:groupAdd:${source.message_id}`)
+
       if (!userId) return e.reply("找不到原消息了，手动同意叭~")
 
-      let member = (await (e.bot ?? Bot).getSystemMsg())
+      let member = (await this.Bot.getSystemMsg())
         .find(item => item.request_type == "group" && item.sub_type == "add" && item.group_id == e.group_id && item.user_id == userId)
 
       if (_.isEmpty(member)) return e.reply("呜呜呜，没找到这个淫的加群申请(つд⊂)")
@@ -153,24 +164,24 @@ export class NewHandle extends plugin {
       if (!common.checkPermission(e, "master")) return false
       if (/添加好友申请/.test(sourceMsg[0])) {
         let qq = sourceMsg[1].match(/[1-9]\d*/g)
-        if ((e.bot ?? Bot).fl.get(Number(qq) || qq)) return e.reply("❎ 已经同意过该申请了哦~")
+        if (this.Bot.fl.get(Number(qq) || qq)) return e.reply("❎ 已经同意过该申请了哦~")
 
         logger.mark(`${e.logFnc}${yes ? "同意" : "拒绝"}好友申请`)
 
-        await (e.bot ?? Bot).pickFriend(qq)
+        await this.Bot.pickFriend(qq)
           .setFriendReq("", yes)
           .then(() => e.reply(`✅ 已${yes ? "同意" : "拒绝"}${qq}的好友申请`))
           .catch(() => e.reply("❎ 请检查是否已同意该申请"))
       } else if (/邀请机器人进群/.test(sourceMsg[0])) {
         let groupid = sourceMsg[1].match(/[1-9]\d*/g)
-        if ((e.bot ?? Bot).fl.get(Number(groupid))) { return e.reply("❎ 已经同意过该申请了哦~") }
+        if (this.Bot.fl.get(Number(groupid))) { return e.reply("❎ 已经同意过该申请了哦~") }
 
         let qq = sourceMsg[3].match(/[1-9]\d*/g)
         let seq = sourceMsg[6].match(/[1-9]\d*/g)
 
-        logger.mark(`${e.logFnc}${yes ? "同意" : "拒绝"}群邀请`);
+        logger.mark(`${e.logFnc}${yes ? "同意" : "拒绝"}群邀请`)
 
-        (e.bot ?? Bot).pickUser(qq)
+        this.Bot.pickUser(qq)
           .setGroupInvite(groupid, seq, yes)
           .then(() => e.reply(`✅ 已${yes ? "同意" : "拒绝"}${qq}的群邀请`))
           .catch(() => e.reply("❎ 请检查是否已同意该邀请"))
@@ -178,7 +189,7 @@ export class NewHandle extends plugin {
         let groupId = sourceMsg[1].match(/\d+/g)
         let qq = sourceMsg[3].match(/\d+/g)
 
-        let member = (await (e.bot ?? Bot).getSystemMsg()).find(item => item.sub_type == "add" && item.group_id == groupId && item.user_id == qq)
+        let member = (await this.Bot.getSystemMsg()).find(item => item.sub_type == "add" && item.group_id == groupId && item.user_id == qq)
         if (_.isEmpty(member)) return e.reply("没有找到这个人的加群申请哦")
 
         let result = member.approve(yes)
@@ -232,18 +243,18 @@ export class NewHandle extends plugin {
     if (e.message.length === 0) return e.reply("❎ 消息不能为空")
     if (group) {
       logger.mark(`${e.logFnc}回复临时消息`)
-      return (e.bot ?? Bot).sendTempMsg(group, qq, e.message)
+      return this.Bot.sendTempMsg(group, qq, e.message)
         .then(() => e.reply("✅ 已把消息发给它了哦~"))
         .catch((err) => common.handleException(e, err, { MsgTemplate: "❎ 发送失败\n错误信息为:{error}" }))
     }
 
     if (!/^\d+$/.test(qq)) return e.reply("❎ QQ号不正确，人家做不到的啦>_<~")
 
-    if (!(e.bot ?? Bot).fl.get(Number(qq))) return e.reply("❎ 好友列表查无此人")
+    if (!this.Bot.fl.get(Number(qq))) return e.reply("❎ 好友列表查无此人")
 
-    logger.mark(`${e.logFnc}回复好友消息`);
+    logger.mark(`${e.logFnc}回复好友消息`)
 
-    (e.bot ?? Bot).pickFriend(qq)
+    this.Bot.pickFriend(qq)
       .sendMsg(e.message)
       .then(() => e.reply("✅ 已把消息发给它了哦~"))
       .catch((err) => common.handleException(e, err, { MsgTemplate: "❎ 发送失败\n错误信息为:{error}" }))
@@ -258,18 +269,18 @@ export class NewHandle extends plugin {
     if (!/临时消息/.test(msg[0]) || !/来源群号/.test(msg[1]) || !/发送人QQ/.test(msg[2])) return false
     let group = msg[1].match(/\d+/g)
     let qq = msg[2].match(/\d+/g)
-    if ((e.bot ?? Bot).fl.get(Number(qq))) return e.reply("❎ 已经有这个人的好友了哦~")
-    if (!(e.bot ?? Bot).gl.get(Number(group))) { return e.reply("❎ 群聊列表查无此群") }
-    logger.mark(`${e.logFnc}主动添加好友`);
+    if (this.Bot.fl.get(Number(qq))) return e.reply("❎ 已经有这个人的好友了哦~")
+    if (!this.Bot.gl.get(Number(group))) { return e.reply("❎ 群聊列表查无此群") }
+    logger.mark(`${e.logFnc}主动添加好友`)
 
-    (e.bot ?? Bot).addFriend(group, qq)
+    this.Bot.addFriend(group, qq)
       .then(() => e.reply(`✅ 已向${qq}发送了好友请求`))
       .catch(() => e.reply("❎ 发送请求失败"))
   }
 
   // 入群请求
   async GroupAdd(e) {
-    let SystemMsg = (await (e.bot ?? Bot).getSystemMsg())
+    let SystemMsg = (await this.Bot.getSystemMsg())
       .filter(item => item.request_type == "group" && item.sub_type == "add" && item.group_id == e.group_id)
     if (_.isEmpty(SystemMsg)) return e.reply("暂无加群申请(。-ω-)zzz", true)
     // 查看
@@ -335,7 +346,7 @@ export class NewHandle extends plugin {
   // 群邀请列表
   async GroupInvite(e) {
     if (!common.checkPermission(e, "master")) return false
-    let SystemMsg = (await (e.bot ?? Bot).getSystemMsg()).filter(item => item.request_type == "group" && item.sub_type == "invite")
+    let SystemMsg = (await this.Bot.getSystemMsg()).filter(item => item.request_type == "group" && item.sub_type == "invite")
     if (_.isEmpty(SystemMsg)) return e.reply("暂无群邀请哦(。-ω-)zzz", true)
     let yes = /同意/.test(e.msg)
     // 查看
@@ -391,7 +402,7 @@ export class NewHandle extends plugin {
   // 全部请求
   async SystemMsgAll(e) {
     if (!common.checkPermission(e, "master")) return false
-    let SystemMsg = await (e.bot ?? Bot).getSystemMsg()
+    let SystemMsg = await this.Bot.getSystemMsg()
     let FriendAdd = []; let onewayFriend = []; let GroupAdd = []; let GroupInvite = []
     for (let i of SystemMsg) {
       if (i.request_type == "friend") {

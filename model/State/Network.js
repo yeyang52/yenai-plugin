@@ -1,4 +1,4 @@
-import { Config } from "../../components/index.js"
+import { Config, Plugin_Path } from "../../components/index.js"
 import request from "../../lib/request/request.js"
 import Monitor from "./Monitor.js"
 import { getFileSize, createAbortCont } from "./utils.js"
@@ -154,13 +154,25 @@ export function getNetwork() {
     return false
   }
   let data = []
+  const resPath = Plugin_Path + "/resources/state/icon/"
+  const txImg = `<img src="${resPath + "tx.svg"}">`
+  const rxImg = `<img src="${resPath + "rx.svg"}">`
+
   for (let v of network) {
     if (v.rx_sec != null && v.tx_sec != null) {
       let _rx = getFileSize(v.rx_sec, { showByte: false, showSuffix: false })
       let _tx = getFileSize(v.tx_sec, { showByte: false, showSuffix: false })
       data.push({
         first: v.iface,
-        tail: `↑${_tx}/s | ↓${_rx}/s`
+        tail: `↑ ${_tx}/s | ↓ ${_rx}/s`
+      })
+    }
+    if (v.rx_bytes != null && v.tx_bytes != null) {
+      let _rxB = getFileSize(v.rx_bytes)
+      let _txB = getFileSize(v.tx_bytes)
+      data.push({
+        first: "流量",
+        tail: `${txImg} ${_txB} | ${rxImg} ${_rxB}`
       })
     }
   }

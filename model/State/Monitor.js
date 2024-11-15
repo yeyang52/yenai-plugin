@@ -28,7 +28,7 @@ export default new class monitor {
       ram: []
     }
     this.valueObject = {
-      networkStats: "rx_sec,tx_sec,iface",
+      networkStats: "rx_sec,tx_sec,iface,rx_bytes,tx_bytes",
       currentLoad: "currentLoad",
       mem: "active",
       fsStats: "wx_sec,rx_sec"

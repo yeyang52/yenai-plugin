@@ -426,4 +426,8 @@ hr {
   flex-shrink: 1;
   margin-left: 20px;
   text-align: right;
+}
+.speed p img {
+  height: 100%;
+  vertical-align: sub;
 }/*# sourceMappingURL=index.css.map */

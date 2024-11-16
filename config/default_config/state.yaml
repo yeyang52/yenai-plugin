@@ -25,6 +25,8 @@ monitor:
   saveDataNumber: 60
   # 如果出现内存异常的情况可将此配置项开启，如果打开后报错请将监控任务关闭
   statusPowerShellStart: false
+  # 开启redis存储数据
+  openRedisSaveData: true
 
 # 背景图片api，设置为false则一直使用默认背景
 # 默认地址 https://t.alcy.cc/mp

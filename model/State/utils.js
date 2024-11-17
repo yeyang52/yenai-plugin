@@ -1,34 +1,3 @@
-// export let colorthief = null
-
-// await initDependence()
-
-// export async function getImgColor(path) {
-//   importColorThief()
-//   const mainColor = await colorthief.getColor(path)
-//   return {
-//     mainColor: `rgb(${mainColor[0]},${mainColor[1]},${mainColor[2]})`,
-//     path
-//   }
-// }
-// export async function getImgPalette(path) {
-//   await importColorThief()
-//   const palette = await colorthief.getPalette(path)
-//   const [ _1, _2 ] = palette
-//   return {
-//     similarColor1: `rgb(${_1[0]},${_1[1]},${_1[2]})`,
-//     similarColor2: `rgb(${_2[0]},${_2[1]},${_2[2]})`,
-//     path
-//   }
-// }
-
-// export async function importColorThief() {
-//   if (!colorthief) {
-//     colorthief = await import("colorthief")
-//     return colorthief
-//   }
-//   return colorthief
-// }
-
 /**
  * 将字节大小转换成易读的文件大小格式
  * @param {number} size - 要转换的字节大小
@@ -113,5 +82,56 @@ export async function createAbortCont(timeoutMs) {
     clearTimeout: () => {
       clearTimeout(timeoutId)
     }
+  }
+}
+
+export class BuildDebug {
+  constructor(e) {
+    this.e = e
+    this.isDebug = e.isDebug
+    this.debugMessages = []
+    this.startUsage = e.isDebug && {
+      mem: process.memoryUsage(),
+      cpu: process.cpuUsage()
+    }
+  }
+
+  add(promises, nameMap) {
+    return promises.map((v, i) => this._timePromiseExecution(v, nameMap[i]))
+  }
+
+  addMsg(message) {
+    return this.debugMessages.push(message)
+  }
+
+  send() {
+    const endUsage = {
+      mem: process.memoryUsage(),
+      cpu: process.cpuUsage()
+    }
+    const msg = [
+      "-----------椰奶状态debug------------",
+      "------------模块执行时间------------",
+      ...this.debugMessages,
+      "-----------内存CPU使用情况----------",
+      `开始CPU情况(user): ${getFileSize(this.startUsage.cpu.user)}`,
+      `结束CPU情况(user): ${getFileSize(endUsage.cpu.user)}`,
+      `开始CPU情况(system): ${getFileSize(this.startUsage.cpu.system)}`,
+      `结束CPU情况(system): ${getFileSize(endUsage.cpu.system)}`,
+      `开始内存情况(user): ${getFileSize(this.startUsage.mem.rss)}`,
+      `结束内存情况(user): ${getFileSize(endUsage.mem.rss)}`,
+      "---------------END---------------"
+    ]
+    this.e.reply(msg.join("\n"))
+  }
+
+  _timePromiseExecution(promiseFn, name) {
+    const startTime = Date.now()
+    return promiseFn.then((result) => {
+      const endTime = Date.now()
+      logger.debug(`[Yenai-Plugin][state] Promise ${name}: ${endTime - startTime} ms`)
+      this.debugMessages.push(`${name}: ${endTime - startTime} ms`)
+      return result
+    })
   }
 }

@@ -13,28 +13,27 @@ import getNode from "./NodeInfo.js"
 import getOtherInfo, { getCopyright } from "./OtherInfo.js"
 import getRAM from "./RAM.js"
 import getSWAP from "./SWAP.js"
-import getStyle, { getBackground } from "./style.js"
-import { getFileSize } from "./utils.js"
 import getRedisInfo from "./redis.js"
+import getStyle from "./style.js"
+import { BuildDebug } from "./utils.js"
 
 export async function getData(e) {
   e.isPro = e.msg.includes("pro")
   e.isDebug = e.msg.includes("debug")
   // 配置
   const { closedChart, systemResources } = Config.state
-  // const _nameMap1 = [ "CPU", "RAM", "SWAP", "GPU", "Node" ]
-  const _nameMap2 = [ "visualData", "FastFetch", "FsSize", "NetworkTest", "BotState", "Style", "Redis" ]
-  const debugFun = buildDebug(e.isDebug)
-
-  const mapFun = {
+  const NAME_MAP = [ "visualData", "FastFetch", "FsSize", "NetworkTest", "BotState", "Style", "Redis" ]
+  const MAP_FUN = {
     "CPU": getCPU,
     "RAM": getRAM,
     "SWAP": getSWAP,
     "GPU": getGPU,
     "Node": getNode
   }
+  const debugFun = new BuildDebug(e)
+
   const visualDataPromise = Promise.all(
-    debugFun.add(systemResources.map(i => mapFun[i]()), systemResources)
+    debugFun.add(systemResources.map(i => MAP_FUN[i]()), systemResources)
   )
   const promiseTaskList = debugFun.add([
     visualDataPromise,
@@ -44,7 +43,8 @@ export async function getData(e) {
     getBotState(e),
     getStyle(),
     getRedisInfo(e.isPro)
-  ], _nameMap2)
+  ], NAME_MAP)
+
   const start = Date.now()
   const [
     visualData,
@@ -56,12 +56,12 @@ export async function getData(e) {
     redis
   ] = await Promise.all(promiseTaskList).then(res => {
     const end = Date.now()
-    logger.debug(`Promise all: ${end - start} ms`)
+    logger.debug(`[Yenai-Plugin][state] Promise all: ${end - start} ms`)
     debugFun.addMsg(`all: ${end - start} ms`)
     return res
   })
 
-  e.isDebug && debugFun.send(e)
+  e.isDebug && debugFun.send()
 
   const chartData = JSON.stringify(
     common.checkIfEmpty(Monitor.chartData, [ "echarts_theme", "cpu", "ram" ])
@@ -92,47 +92,6 @@ export async function getData(e) {
 export async function getMonitorData() {
   return {
     chartData: JSON.stringify(Monitor.chartData),
-    backdrop: await getBackground()
-  }
-}
-
-function buildDebug(isDebug) {
-  const debugMessages = []
-  const startUsage = isDebug && {
-    mem: process.memoryUsage(),
-    cpu: process.cpuUsage()
-  }
-  function timePromiseExecution(promiseFn, name) {
-    const startTime = Date.now()
-    return promiseFn.then((result) => {
-      const endTime = Date.now()
-      logger.debug(`Promise ${name}: ${endTime - startTime} ms`)
-      debugMessages.push(`${name}: ${endTime - startTime} ms`)
-      return result
-    })
-  }
-  return {
-    add(promises, nameMap) {
-      return promises.map((v, i) => timePromiseExecution(v, nameMap[i]))
-    },
-    addMsg(message) {
-      return debugMessages.push(message)
-    },
-    send(e) {
-      const endUsage = {
-        mem: process.memoryUsage(),
-        cpu: process.cpuUsage()
-      }
-      e.reply([
-        debugMessages.join("\n"),
-        `\nstartCpuUsageUser: ${getFileSize(startUsage.cpu.user)}\n`,
-        `endCpuUsageUser: ${getFileSize(endUsage.cpu.user)}\n`,
-        `startCpuUsageSystem: ${getFileSize(startUsage.cpu.system)}\n`,
-        `endCpuUsageSystem: ${getFileSize(endUsage.cpu.system)}\n`,
-        `startMemUsageUser: ${getFileSize(startUsage.mem.rss)}\n`,
-        `endMemUsageUser: ${getFileSize(endUsage.mem.rss)}`
-      ])
-      debugMessages.length = 0
-    }
+    ...await getStyle()
   }
 }

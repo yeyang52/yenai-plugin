@@ -1,4 +1,4 @@
-import { Config } from "../../components/index.js"
+import { Config, Plugin_Path } from "../../components/index.js"
 import request from "../../lib/request/request.js"
 import Monitor from "./Monitor.js"
 import { getFileSize, createAbortCont } from "./utils.js"
@@ -6,8 +6,6 @@ import { getFileSize, createAbortCont } from "./utils.js"
 const defList = [
   { name: "Baidu", url: "https://baidu.com" },
   { name: "Google", url: "https://google.com" },
-  { name: "Github", url: "https://github.com" },
-  { name: "Gitee", url: "https://gitee.com" },
   { name: "TRSS", url: "https://trss.me" }
 ]
 /**
@@ -55,14 +53,14 @@ const handleSite = (site) => {
 }
 
 const handleError = (error, siteName) => {
-  let errorMsg = "error"
+  let errorMsg = "Error"
   const prefix = "[Yenai-Plugin][状态]"
   if (error.name === "AbortError") {
     logger.warn(`${prefix}请求 ${siteName} 超时`)
-    errorMsg = "timeout"
+    errorMsg = "Timeout"
   } else if (error.message.includes("ECONNRESET")) {
     logger.warn(`${prefix}请求 ${siteName} 发生了 ECONNRESET 错误:`, error.message)
-    errorMsg = "econnreset"
+    errorMsg = "Econnreset"
   } else {
     logger.error(`${prefix}请求 ${siteName} 过程中发生错误:`, error.message)
   }
@@ -115,6 +113,7 @@ async function getNetworkLatency(url, timeoutTime = 5000, useProxy = false) {
     })
     const endTime = Date.now()
     let delay = endTime - startTime
+    logger.debug(`[Yenai-Plugin][状态][网络测试][${url}] ${logger.blue(status)} ${logger.green(delay + "ms")}`)
 
     const COLOR_DELAY_GOOD = "#188038"
     const COLOR_DELAY_AVERAGE = "#d68100"
@@ -155,13 +154,25 @@ export function getNetwork() {
     return false
   }
   let data = []
+  const resPath = Plugin_Path + "/resources/state/icon/"
+  const txImg = `<img src="${resPath + "tx.svg"}">`
+  const rxImg = `<img src="${resPath + "rx.svg"}">`
+
   for (let v of network) {
     if (v.rx_sec != null && v.tx_sec != null) {
       let _rx = getFileSize(v.rx_sec, { showByte: false, showSuffix: false })
       let _tx = getFileSize(v.tx_sec, { showByte: false, showSuffix: false })
       data.push({
         first: v.iface,
-        tail: `↑${_tx}/s | ↓${_rx}/s`
+        tail: `↑ ${_tx}/s | ↓ ${_rx}/s`
+      })
+    }
+    if (v.rx_bytes != null && v.tx_bytes != null) {
+      let _rxB = getFileSize(v.rx_bytes)
+      let _txB = getFileSize(v.tx_bytes)
+      data.push({
+        first: "流量",
+        tail: `${txImg} ${_txB} | ${rxImg} ${_rxB}`
       })
     }
   }

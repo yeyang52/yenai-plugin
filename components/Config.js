@@ -3,6 +3,7 @@ import chokidar from "chokidar"
 import fs from "node:fs"
 import YamlReader from "./YamlReader.js"
 import cfg from "../../../lib/config/config.js"
+import _ from "lodash"
 
 const Path = process.cwd()
 const Plugin_Name = "yenai-plugin"
@@ -109,7 +110,7 @@ class Config {
   getDefOrConfig(name) {
     let def = this.getdefSet(name)
     let config = this.getConfig(name)
-    return { ...def, ...config }
+    return _.merge(def, config)
   }
 
   /**

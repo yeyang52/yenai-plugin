@@ -1,6 +1,6 @@
 import _ from "lodash"
 import moment from "moment"
-import { Config, Data } from "../../components/index.js"
+import { Config } from "../../components/index.js"
 import common from "../../lib/common/common.js"
 import getBotState from "./BotState.js"
 import getCPU from "./CPU.js"
@@ -14,77 +14,64 @@ import getOtherInfo, { getCopyright } from "./OtherInfo.js"
 import getRAM from "./RAM.js"
 import getSWAP from "./SWAP.js"
 import getStyle, { getBackground } from "./style.js"
+import { getFileSize } from "./utils.js"
+import getRedisInfo from "./redis.js"
 
 export async function getData(e) {
   e.isPro = e.msg.includes("pro")
   e.isDebug = e.msg.includes("debug")
-  const timeStr = []
-  const _nameMap1 = [ "CPU", "RAM", "SWAP", "GPU", "Node" ]
-  const _nameMap2 = [ "visualData", "FastFetch", "FsSize", "NetworkTest", "BotState", "Style" ]
-  const startUsage = {
-    mem: process.memoryUsage(),
-    cpu: process.cpuUsage()
-  }
-  function timePromiseExecution(promiseFn, name) {
-    const start = Date.now()
-    return promiseFn.then((result) => {
-      const end = Date.now()
-      logger.debug(`Promise ${name}: ${end - start} ms`)
-      timeStr.push(`${name}: ${end - start} ms`)
-      return result
-    })
-  }
+  // 配置
+  const { closedChart, systemResources } = Config.state
+  // const _nameMap1 = [ "CPU", "RAM", "SWAP", "GPU", "Node" ]
+  const _nameMap2 = [ "visualData", "FastFetch", "FsSize", "NetworkTest", "BotState", "Style", "Redis" ]
+  const debugFun = buildDebug(e.isDebug)
 
-  const visualDataPromise = Promise.all([
-    getCPU(),
-    getRAM(),
-    getSWAP(),
-    getGPU(),
-    getNode()
-  ].map((v, i) => timePromiseExecution(v, _nameMap1[i])))
-  const promiseTaskList = [
+  const mapFun = {
+    "CPU": getCPU,
+    "RAM": getRAM,
+    "SWAP": getSWAP,
+    "GPU": getGPU,
+    "Node": getNode
+  }
+  const visualDataPromise = Promise.all(
+    debugFun.add(systemResources.map(i => mapFun[i]()), systemResources)
+  )
+  const promiseTaskList = debugFun.add([
     visualDataPromise,
     getFastFetch(e),
     getFsSize(),
     getNetworkTestList(e),
     getBotState(e),
-    getStyle()
-  ].map((v, i) => timePromiseExecution(v, _nameMap2[i]))
+    getStyle(),
+    getRedisInfo(e.isPro)
+  ], _nameMap2)
   const start = Date.now()
   const [
     visualData,
     FastFetch,
-    HardDisk, psTest, BotStatusList, style
+    HardDisk,
+    psTest,
+    BotStatusList,
+    style,
+    redis
   ] = await Promise.all(promiseTaskList).then(res => {
     const end = Date.now()
     logger.debug(`Promise all: ${end - start} ms`)
-    timeStr.push(`all: ${end - start} ms`)
+    debugFun.addMsg(`all: ${end - start} ms`)
     return res
   })
-  const endUsage = {
-    mem: process.memoryUsage(),
-    cpu: process.cpuUsage()
-  }
-  e.isDebug && e.reply([
-    timeStr.join("\n"),
-    `\nstartCpuUsageUser: ${startUsage.cpu.user}\n`,
-    `endCpuUsageUser: ${endUsage.cpu.user}\n`,
-    `startCpuUsageSystem: ${startUsage.cpu.system}\n`,
-    `endCpuUsageSystem: ${endUsage.cpu.system}\n`,
-    `startMemUsageUser: ${startUsage.mem.rss}\n`,
-    `endMemUsageUser: ${endUsage.mem.rss}`
-  ])
+
+  e.isDebug && debugFun.send(e)
+
   const chartData = JSON.stringify(
     common.checkIfEmpty(Monitor.chartData, [ "echarts_theme", "cpu", "ram" ])
       ? ""
       : Monitor.chartData
   )
 
-  // 配置
-  const { closedChart } = Config.state
-
   return {
     BotStatusList,
+    redis,
     chartData: closedChart ? false : chartData,
     visualData: _.compact(visualData),
     otherInfo: getOtherInfo(e),
@@ -93,27 +80,59 @@ export async function getData(e) {
     copyright: await getCopyright(),
     network: getNetwork(),
     Config: JSON.stringify(Config.state),
+    rawConfig: Config.state,
     FastFetch,
     HardDisk,
     style,
     time: moment().format("YYYY-MM-DD HH:mm:ss"),
-    isPro: e.isPro,
-    chartCfg: JSON.stringify(getChartCfg())
+    isPro: e.isPro
   }
 }
 
 export async function getMonitorData() {
   return {
     chartData: JSON.stringify(Monitor.chartData),
-    backdrop: await getBackground(),
-    chartCfg: JSON.stringify(getChartCfg())
+    backdrop: await getBackground()
   }
 }
 
-function getChartCfg() {
-  const echarts_theme = Data.readJSON("resources/state/theme_westeros.json")
-
+function buildDebug(isDebug) {
+  const debugMessages = []
+  const startUsage = isDebug && {
+    mem: process.memoryUsage(),
+    cpu: process.cpuUsage()
+  }
+  function timePromiseExecution(promiseFn, name) {
+    const startTime = Date.now()
+    return promiseFn.then((result) => {
+      const endTime = Date.now()
+      logger.debug(`Promise ${name}: ${endTime - startTime} ms`)
+      debugMessages.push(`${name}: ${endTime - startTime} ms`)
+      return result
+    })
+  }
   return {
-    echarts_theme
+    add(promises, nameMap) {
+      return promises.map((v, i) => timePromiseExecution(v, nameMap[i]))
+    },
+    addMsg(message) {
+      return debugMessages.push(message)
+    },
+    send(e) {
+      const endUsage = {
+        mem: process.memoryUsage(),
+        cpu: process.cpuUsage()
+      }
+      e.reply([
+        debugMessages.join("\n"),
+        `\nstartCpuUsageUser: ${getFileSize(startUsage.cpu.user)}\n`,
+        `endCpuUsageUser: ${getFileSize(endUsage.cpu.user)}\n`,
+        `startCpuUsageSystem: ${getFileSize(startUsage.cpu.system)}\n`,
+        `endCpuUsageSystem: ${getFileSize(endUsage.cpu.system)}\n`,
+        `startMemUsageUser: ${getFileSize(startUsage.mem.rss)}\n`,
+        `endMemUsageUser: ${getFileSize(endUsage.mem.rss)}`
+      ])
+      debugMessages.length = 0
+    }
   }
 }

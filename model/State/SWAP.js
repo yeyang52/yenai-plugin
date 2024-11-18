@@ -1,5 +1,5 @@
-import { Circle, getFileSize, si } from "./utils.js"
-
+import { Circle, getFileSize } from "./utils.js"
+import si from "systeminformation"
 export default async function getSwapInfo() {
   const swapData = await si.get({
     mem: "swaptotal,swapused,swapfree"

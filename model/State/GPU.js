@@ -1,9 +1,8 @@
-import { Circle, si, initDependence } from "./utils.js"
-
+import { Circle } from "./utils.js"
+import si from "systeminformation"
 let isGPU = false;
 
 (async function initGetIsGPU() {
-  if (!await initDependence()) return
   const { controllers } = await si.graphics()
   // 初始化GPU获取
   if (controllers?.find(item =>

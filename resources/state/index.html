@@ -12,7 +12,6 @@
 {{block 'main'}}
 <script>
     var chartData = JSON.parse('{{@chartData}}')
-    var chartCfg = JSON.parse('{{@chartCfg}}')
     var Config = JSON.parse('{{@Config}}')
     var _res_path = '{{_res_path}}'
 </script>
@@ -48,7 +47,7 @@
                 {{each $value.countContacts v i}}
                 {{if v}}
                 <span>
-                    <img src="../../../../../plugins/yenai-plugin/resources/state/icon/{{i}}.png">
+                    <img src="{{_res_path}}state/icon/{{i}}.png">
                     {{v}}
                 </span>
                 {{/if}}
@@ -56,7 +55,7 @@
                 {{each $value.messageCount v i}}
                 {{if v}}
                 <span>
-                    <img src="../../../../../plugins/yenai-plugin/resources/state/icon/{{i}}.png">
+                    <img src="{{_res_path}}state/icon/{{i}}.png">
                     {{v}}
                 </span>
                 {{/if}}
@@ -127,7 +126,59 @@
 <div class="box" data-boxInfo="图表">
     <div id="Chart" style="height: 300px"></div>
     <script src="{{_res_path}}state/js/modules/echarts.min.js"></script>
+    <script src="{{_res_path}}state/js/modules/theme/{{rawConfig.chartsCfg.themeCfg}}.js"></script>
     <script src="{{_res_path}}state/js/chart.js"></script>
+</div>
+{{/if}}
+
+{{if redis}}
+<div class="box" data-boxInfo="redis">
+    <div class="info">
+        <div class="mem redisBox">
+            <div class="title">
+                <img src="{{_res_path}}state/icon/内存.png" class="icon">
+                内存
+            </div>
+            <div class="data">
+                <div class="item">已用内存: <span class="number">{{redis.used_memory_human}}</span></div>
+                <div class="item">内存占用峰值: <span class="number">{{redis.used_memory_peak_human}}</span></div>
+                <div class="item">Lua占用内存: <span class="number">{{redis.used_memory_lua_human}}</span></div>
+            </div>
+        </div>
+        <div class="stats redisBox">
+            <div class="title">
+                <img src="{{_res_path}}state/icon/温度计.png" class="icon">
+                状态
+            </div>
+            <div class="data">
+                <div class="item">客户端连接数: <span class="number">{{redis.connected_clients}}</span></div>
+                <div class="item">历史连接数: <span class="number">{{redis.total_connections_received}}</span></div>
+                <div class="item">历史命令数: <span class="number">{{redis.total_commands_processed}}</span></div>
+            </div>
+        </div>
+    </div>
+    <div class="keyspace">
+        <div class="title">
+            <img src="{{_res_path}}state/icon/统计图.png" class="icon">
+            键值统计
+        </div>
+        <div class="data">
+            <div class="row header-row">
+                <div class="cell">DB</div>
+                <div class="cell">Keys</div>
+                <div class="cell">Expires</div>
+                <div class="cell">Avg ttl</div>
+            </div>
+            {{each redis.Keyspace v k}}
+            <div class="row">
+                <div class="cell">{{k}}</div>
+                <div class="cell">{{v.keys}}</div>
+                <div class="cell">{{v.expires}}</div>
+                <div class="cell">{{v.avg_ttl}}</div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
 </div>
 {{/if}}
 
@@ -157,6 +208,12 @@
         <p>{{@$value.tail}}</p>
     </div>
     {{/each}}
+    {{if redis}}
+    <div class="speed">
+        <p>redis运行</p>
+        <p>{{redis.uptime}}</p>
+    </div>
+    {{/if}}
 </div>
 {{/if}}
 

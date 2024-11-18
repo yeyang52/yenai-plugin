@@ -2,8 +2,9 @@
 const chartBoxElement = document.querySelector(".box[data-boxInfo=图表]")
 if (chartData) {
 // 图表
-  echarts.registerTheme("westeros", chartCfg.echarts_theme)
-  const chart = echarts.init(document.getElementById("Chart"), "westeros", {
+  // echarts.registerTheme("westeros", chartCfg.echarts_theme)
+  const { titleColor, titleText, themeCfg } = Config.chartsCfg
+  const chart = echarts.init(document.getElementById("Chart"), themeCfg, {
     renderer: "svg"
   })
   const by = (value) => {
@@ -22,12 +23,19 @@ if (chartData) {
       fontFamily: "FZB, Number, \"汉仪文黑-65W\", YS, PingFangSC-Medium, \"PingFang SC\""
     },
     title: {
-      text: "Chart"
+      text: titleText,
+      textStyle: {
+        color: titleColor,
+        textShadowBlur: 1,
+        textShadowColor: "#000",
+        textShadowOffsetX: 1,
+        textShadowOffsetY: 1
+      }
     },
     legend: {},
     grid: {
       left: "1%",
-      right: "1.5%",
+      right: "5%",
       bottom: "0",
       containLabel: true
     },
@@ -48,7 +56,7 @@ if (chartData) {
       {
         name: "上行",
         type: "line",
-        // areaStyle: {},
+        areaStyle: {},
         showSymbol: false,
         markPoint: {
           data: [ { type: "max", name: "Max", label: { formatter: by } } ]
@@ -58,33 +66,33 @@ if (chartData) {
       {
         name: "下行",
         type: "line",
-        // areaStyle: {},
+        areaStyle: {},
         showSymbol: false,
         markPoint: {
           data: [ { type: "max", name: "Max", label: { formatter: by } } ]
         },
         data: chartData.network.download
-      },
-      {
-        name: "读",
-        type: "line",
-        // areaStyle: {},
-        showSymbol: false,
-        markPoint: {
-          data: [ { type: "max", name: "Max", label: { formatter: by } } ]
-        },
-        data: chartData.fsStats.readSpeed
-      },
-      {
-        name: "写",
-        type: "line",
-        // areaStyle: {},
-        showSymbol: false,
-        markPoint: {
-          data: [ { type: "max", name: "Max", label: { formatter: by } } ]
-        },
-        data: chartData.fsStats.writeSpeed
       }
+      // {
+      //   name: "读",
+      //   type: "line",
+      //   // areaStyle: {},
+      //   showSymbol: false,
+      //   markPoint: {
+      //     data: [ { type: "max", name: "Max", label: { formatter: by } } ]
+      //   },
+      //   data: chartData.fsStats.readSpeed
+      // },
+      // {
+      //   name: "写",
+      //   type: "line",
+      //   // areaStyle: {},
+      //   showSymbol: false,
+      //   markPoint: {
+      //     data: [ { type: "max", name: "Max", label: { formatter: by } } ]
+      //   },
+      //   data: chartData.fsStats.writeSpeed
+      // }
     ]
   }
   option.legend.data = option.series

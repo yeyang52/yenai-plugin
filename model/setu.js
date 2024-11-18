@@ -64,7 +64,7 @@ export default new class setu {
         `画师：${author}\n`,
         `Pid：${pid}\n`,
         `R18：${r18}\n`,
-        `AI：${aiType ? aiType == 1 ? "是" : "否" : "未知"}\n`,
+        `AI：${aiType ? (aiType == 2 ? "是" : "否") : "未知"}\n`,
         `tag：${_.truncate(tags.join(","))}\n`,
         await Pixiv._requestPixivImg(urls?.original || urls?.regular || urls?.small)
       ]

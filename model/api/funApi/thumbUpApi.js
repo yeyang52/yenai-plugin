@@ -44,7 +44,13 @@ export default class ThumbUpApi {
     try {
       res = { ...await friend.thumbUp(times) }
     } catch (err) {
-      if (err?.error) { res = { ...err.error } } else if (err?.stack) { res = { code: 1, msg: err.stack } } else { res = { ...err } }
+      if (err?.error) {
+        res = { ...err.error }
+      } else if (err?.message) {
+        res = { code: 1, msg: err.message }
+      } else {
+        res = { ...err }
+      }
     }
     if (res.retcode && !res.code) { res.code = res.retcode }
     if (res.message && !res.msg) { res.msg = res.message }

@@ -15,14 +15,13 @@ import getRAM from "./RAM.js"
 import getSWAP from "./SWAP.js"
 import getRedisInfo from "./redis.js"
 import getStyle from "./style.js"
-import { BuildDebug } from "./utils.js"
+import { BuildDebug } from "./debug.js"
 
 export async function getData(e) {
   e.isPro = e.msg.includes("pro")
   e.isDebug = e.msg.includes("debug")
   // 配置
   const { closedChart, systemResources } = Config.state
-  const NAME_MAP = [ "visualData", "FastFetch", "FsSize", "NetworkTest", "BotState", "Style", "Redis" ]
   const MAP_FUN = {
     "CPU": getCPU,
     "RAM": getRAM,
@@ -33,19 +32,22 @@ export async function getData(e) {
   const debugFun = new BuildDebug(e)
 
   const visualDataPromise = Promise.all(
-    debugFun.add(systemResources.map(i => MAP_FUN[i]()), systemResources)
+    debugFun.adds(systemResources.map(i => MAP_FUN[i]()), systemResources)
   )
-  const promiseTaskList = debugFun.add([
-    visualDataPromise,
+  const debugTaskList = debugFun.adds([
     getFastFetch(e),
     getFsSize(),
     getNetworkTestList(e),
     getBotState(e),
     getStyle(),
     getRedisInfo(e.isPro)
-  ], NAME_MAP)
+  ], [ "FastFetch", "FsSize", "NetworkTest", "BotState", "Style", "Redis" ])
 
-  const start = Date.now()
+  const promiseTaskList = [
+    visualDataPromise,
+    ...debugTaskList
+  ]
+
   const [
     visualData,
     FastFetch,
@@ -54,12 +56,7 @@ export async function getData(e) {
     BotStatusList,
     style,
     redis
-  ] = await Promise.all(promiseTaskList).then(res => {
-    const end = Date.now()
-    logger.debug(`[Yenai-Plugin][state] Promise all: ${end - start} ms`)
-    debugFun.addMsg(`all: ${end - start} ms`)
-    return res
-  })
+  ] = await debugFun.add(Promise.all(promiseTaskList), "all")
 
   e.isDebug && debugFun.send()
 

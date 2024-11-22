@@ -3,10 +3,12 @@
 {{block 'css'}}
 <link rel="stylesheet" href="{{_res_path}}state/css/index.css">
 <script src="{{_res_path}}state/js/modules/echarts.min.js"></script>
+<script src="{{_res_path}}state/js/modules/theme/westeros.js"></script>
 <style>
     .container {
         background-image:url({{backdrop}})
     }
+
     .head-box {
         margin-top: 0;
     }
@@ -21,8 +23,6 @@
 </div>
 <script>
     var chartData = JSON.parse('{{@chartData}}')
-    var chartCfg = JSON.parse('{{@chartCfg}}')
-    echarts.registerTheme('westeros', chartCfg.echarts_theme)
     var formatByte = (num = 1) => {
         return (value) => {
             value = value?.value ?? value

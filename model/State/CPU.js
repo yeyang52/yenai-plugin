@@ -1,5 +1,5 @@
-import { si, Circle } from "./utils.js"
-
+import { Circle } from "./utils.js"
+import si from "systeminformation"
 /** 获取CPU占用 */
 export default async function getCpuInfo() {
   let { currentLoad: { currentLoad }, cpu, fullLoad } = await si.get({

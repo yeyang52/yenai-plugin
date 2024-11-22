@@ -1,111 +1,103 @@
 import { Config } from "../../components/index.js"
 import _ from "lodash"
-import { si, initDependence } from "./utils.js"
+import si from "systeminformation"
+
+const CHART_DATA_KEY = "yenai:state:chartData"
+const DEFAULT_INTERVAL = 60 * 1000
+const DEFAULT_SAVE_DATA_NUMBER = 60
 
 export default new class monitor {
   constructor() {
-    // 网络
-    this._network = null
-    // 读写速率
-    this._fsStats = null
-    // 记录60条数据一分钟记录一次
+    this.checkDataNum = 0
+    this.network = null
+    this.fsStats = null
     this.chartData = {
       network: {
-        // 上行
-        upload: [],
-        // 下行
-        download: []
+        upload: [], // 上行
+        download: [] // 下行
       },
       fsStats: {
-        // 读
-        readSpeed: [],
-        // 写
-        writeSpeed: []
+        readSpeed: [], // 读
+        writeSpeed: [] // 写
       },
-      // cpu
-      cpu: [],
-      // 内存
-      ram: []
+      cpu: [], // cpu
+      ram: [] // 内存
     }
     this.valueObject = {
-      networkStats: "rx_sec,tx_sec,iface",
+      networkStats: "rx_sec,tx_sec,iface,rx_bytes,tx_bytes",
       currentLoad: "currentLoad",
       mem: "active",
       fsStats: "wx_sec,rx_sec"
     }
-    this.chartDataKey = "yenai:state:chartData"
 
+    this.config = Config.state.monitor
+    this.getDataInterval = this.config.getDataInterval ?? DEFAULT_INTERVAL
+    this.saveDataNumber = this.config.saveDataNumber ?? DEFAULT_SAVE_DATA_NUMBER
     this.init()
   }
 
-  set network(value) {
-    if (_.isNumber(value[0]?.tx_sec) && _.isNumber(value[0]?.rx_sec)) {
-      this._network = value
-      this._addData(this.chartData.network.upload, [ Date.now(), value[0].tx_sec ])
-      this._addData(this.chartData.network.download, [ Date.now(), value[0].rx_sec ])
-    }
-  }
-
-  get network() {
-    return this._network
-  }
-
-  set fsStats(value) {
-    if (_.isNumber(value?.wx_sec) && _.isNumber(value?.rx_sec)) {
-      this._fsStats = value
-      this._addData(this.chartData.fsStats.writeSpeed, [ Date.now(), value.wx_sec ])
-      this._addData(this.chartData.fsStats.readSpeed, [ Date.now(), value.rx_sec ])
-    }
-  }
-
-  get fsStats() {
-    return this._fsStats
-  }
-
   async init() {
-    if (!await initDependence()) return
     await this.getRedisChartData()
-    // 给有问题的用户关闭定时器
-    if (!Config.state.statusTask) return
+    if (!this.config?.open) return
 
-    if (Config.state.statusPowerShellStart) si.powerShellStart()
-    // 初始化数据
-    this.getData()
-    // 网速
-    const Timer = setInterval(async() => {
-      let data = await this.getData()
-      if (_.isEmpty(data)) clearInterval(Timer)
-    }, 60000)
+    if (this.config?.statusPowerShellStart) si.powerShellStart()
+    const cb = (data) => this.handleData(data)
+    this.timer = si.observe(this.valueObject, this.getDataInterval, cb)
   }
 
-  async getData() {
-    const data = await si.get(this.valueObject)
-    _.forIn(data, (value, key) => {
-      if (_.isEmpty(value)) {
-        logger.debug(`获取${key}数据失败，停止获取对应数据`)
-        delete this.valueObject[key]
-      }
-    })
+  handleData(data) {
+    this.checkData(data)
+
+    const now = Date.now()
+
     const {
-      fsStats,
-      networkStats,
-      mem: { active },
-      currentLoad: { currentLoad }
+      fsStats = {},
+      networkStats = [],
+      mem: { active } = {},
+      currentLoad: { currentLoad } = {}
     } = data
-    this.fsStats = fsStats
-    this.network = networkStats
-    if (_.isNumber(active)) {
-      this._addData(this.chartData.ram, [ Date.now(), active ])
+
+    const addDataIfNumber = (chart, value) => {
+      if (_.isNumber(value)) {
+        this._addData(chart, [ now, value ])
+      }
     }
-    if (_.isNumber(currentLoad)) {
-      this._addData(this.chartData.cpu, [ Date.now(), currentLoad ])
+
+    addDataIfNumber(this.chartData.ram, active)
+    addDataIfNumber(this.chartData.cpu, currentLoad)
+
+    if (_.isNumber(fsStats?.wx_sec) && _.isNumber(fsStats?.rx_sec)) {
+      this.fsStats = fsStats
+      addDataIfNumber(this.chartData.fsStats.writeSpeed, fsStats.wx_sec)
+      addDataIfNumber(this.chartData.fsStats.readSpeed, fsStats.rx_sec)
     }
+
+    if (networkStats.length > 0 && _.isNumber(networkStats[0]?.tx_sec) && _.isNumber(networkStats[0]?.rx_sec)) {
+      this.network = networkStats
+      addDataIfNumber(this.chartData.network.upload, networkStats[0].tx_sec)
+      addDataIfNumber(this.chartData.network.download, networkStats[0].rx_sec)
+    }
+
     this.setRedisChartData()
     return data
   }
 
+  checkData(data) {
+    if (this.checkDataNum < 5) {
+      if (_.isEmpty(data)) clearInterval(this.timer)
+      _.forIn(data, (value, key) => {
+        if (_.isEmpty(value)) {
+          logger.debug(`[Yenai-Plugin][monitor]获取${key}数据失败，停止获取对应数据`)
+          delete this.valueObject[key]
+        }
+      })
+      this.checkDataNum++
+    }
+  }
+
   async getRedisChartData() {
-    let data = await redis.get(this.chartDataKey)
+    if (!this.config.openRedisSaveData) return false
+    let data = await redis.get(CHART_DATA_KEY)
     if (data) {
       this.chartData = JSON.parse(data)
       return true
@@ -114,10 +106,11 @@ export default new class monitor {
   }
 
   async setRedisChartData() {
+    if (!this.config.openRedisSaveData) return false
     try {
-      await redis.set(this.chartDataKey, JSON.stringify(this.chartData), { EX: 86400 })
+      await redis.set(CHART_DATA_KEY, JSON.stringify(this.chartData), { EX: 60 * 60 * 12 })
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   }
 
@@ -128,7 +121,7 @@ export default new class monitor {
    * @param {number} [maxLen] - 数组允许的最大长度，默认值为60
    * @returns {void}
    */
-  _addData(arr, data, maxLen = 60) {
+  _addData(arr, data, maxLen = this.saveDataNumber) {
     if (data === null || data === undefined) return
     // 如果数组长度超过允许的最大值，删除第一个元素
     if (arr.length >= maxLen) {

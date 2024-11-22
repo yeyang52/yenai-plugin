@@ -1,16 +1,14 @@
-import { _importDependency } from "./utils.js"
 import request from "../../../lib/request/request.js"
 import { puppeteer } from "../../index.js"
-
+import { load } from "cheerio"
 /**
  *
  * @param keyword
  */
 export default async function bgg(keyword) {
-  let cheerio = await _importDependency()
   let url = "https://www.gstonegames.com/game/?hot_sort=1&keyword=" + encodeURIComponent(keyword)
   const home = await request.get(url).then((res) => res.text())
-  const $ = cheerio.load(home)
+  const $ = load(home)
 
   // 获取集石第一个搜索结果的地址
   const firstGameLink = $(".goods-list.fl").first().find("a").attr("href")
@@ -30,7 +28,7 @@ export default async function bgg(keyword) {
 
   const detailshtml = await request.get(href).then((res) => res.text())
 
-  const details$ = cheerio.load(detailshtml)
+  const details$ = load(detailshtml)
 
   // 获取游戏类型
   const gametype = details$(
@@ -70,7 +68,7 @@ export default async function bgg(keyword) {
   // 访问bgg
   const bgghtml = await request.get(bgglink).then((res) => res.text())
 
-  const bgg$ = cheerio.load(bgghtml)
+  const bgg$ = load(bgghtml)
 
   // 开扒
   let scriptdataA = bgg$("script").eq(2).text()

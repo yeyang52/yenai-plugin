@@ -41,11 +41,23 @@ for (let i in jsFiles) {
   let name = jsFiles[i].replace(".js", "")
 
   if (ret[i].status != "fulfilled") {
-    logger.error(`载入插件错误：${logger.red(name)}`)
-    logger.error(ret[i].reason)
+    handleError(name, ret[i].reason)
     continue
   }
   apps[name] = ret[i].value[Object.keys(ret[i].value)[0]]
 }
 
 export { apps }
+
+function handleError(name, err) {
+  if (err.message.includes("Cannot find package")) {
+    const pack = err.message.match(/'(.+?)'/g)[0].replace(/'/g, "")
+    logger.warn(`[Yenai-pluign] ${logger.yellow(name)} 缺少依赖: ${logger.red(pack)}`)
+    logger.warn(`[Yenai-pluign] 首次安装请运行 ${logger.red("pnpm i")} 安装依赖`)
+    logger.warn(`[Yenai-pluign] 如仍然报错 ${logger.red("进入椰奶插件目录")} 使用 ${logger.red(`pnpm add ${pack} -w`)} 进行安装`)
+    logger.debug(err.stack)
+  } else {
+    logger.error(`[Yenai-pluign] 载入插件错误：${logger.red(name)}`)
+    logger.error(decodeURI(err.stack))
+  }
+}

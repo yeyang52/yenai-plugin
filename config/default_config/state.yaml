@@ -5,22 +5,28 @@
 # timeout: 测试超时时间
 # useProxy: 是否使用插件配置中的代理访问
 psTestSites:
-    show: pro
-    list:
-        - name: Baidu
-          url: https://baidu.com
-        - name: Google
-          url: https://google.com
-        - name: Google(proxy)
-          url: https://google.com
-          useProxy: true
-    timeout: 5000
+  show: pro
+  list:
+    - name: Baidu
+      url: https://baidu.com
+      useProxy: true
+    - name: Google
+      url: https://google.com
+      useProxy: true
+  timeout: 5000
 
-# 监控任务
-statusTask: true
-
-# 如果出现内存异常的情况可将此配置项开启，如果打开后报错请将监控任务关闭
-statusPowerShellStart: false
+# 监控任务 该配置均需重启生效
+monitor:
+  # 是否开启监控任务
+  open: true
+  # 获取数据的间隔时间，单位为毫秒 间隔越短获取的数据越精确
+  getDataInterval: 60000
+  # 存储的数据数量，当数据量超出此值时会将最旧的数据删除
+  saveDataNumber: 60
+  # 如果出现内存异常的情况可将此配置项开启，如果打开后报错请将监控任务关闭
+  statusPowerShellStart: false
+  # 开启redis存储数据
+  openRedisSaveData: true
 
 # 背景图片api，设置为false则一直使用默认背景
 # 默认地址 https://t.alcy.cc/mp
@@ -31,8 +37,13 @@ backdrop: "https://t.alcy.cc/mp"
 # default_bg.jpg 可直接指定bg目录里一张图片，注意请带上后缀名
 backdropDefault: "random"
 
-# 关闭node的那个圈圈
-closedNodeInfo: true
+# 显示的系统资源可选值: [CPU, RAM, SWAP, GPU, Node] 注意如果gpu获取不到将不会显示
+systemResources:
+  - CPU
+  - RAM
+  - SWAP
+  - GPU
+  # - Node
 
 # 关闭图表
 closedChart: false
@@ -43,6 +54,12 @@ closedChart: false
 # pro - 只有状态pro显示
 # default - win默认只有pro显示，liunx等其他正常也会显示
 showFastFetch: default
+
+# 是否显示redis信息 可选参数:true, false, pro
+# true - 全部显示
+# false - 关闭
+# pro - 只有状态pro显示
+showRedisInfo: true
 
 # Bot昵称的颜色
 BotNameColor: "#000"
@@ -59,3 +76,11 @@ highColor: "#d73403"
 mediumColor: "#ffa500"
 #正常
 lowColor: "#84A0DF"
+
+# 图表配置
+chartsCfg:
+  themeCfg: "westeros"
+  # 标题颜色
+  titleColor: "#84A0DF"
+  # 标题文字
+  titleText: "Network"

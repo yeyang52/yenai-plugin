@@ -4,8 +4,11 @@ import os from "os"
 import path from "path"
 import { Version } from "../../components/index.js"
 import { formatDuration } from "../../tools/index.js"
-import { osInfo, si } from "./utils.js"
+import si from "systeminformation"
+
+const osInfo = await si.osInfo()
 let loader = null
+
 try {
   // eslint-disable-next-line import/no-unresolved
   loader = (await import("../../../../lib/plugins/loader.js")).default

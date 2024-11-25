@@ -76,6 +76,10 @@ export class Admin extends plugin {
           fnc: "noticeSet"
         },
         {
+          reg: "^#椰奶设置$",
+          fnc: "sendImg"
+        },
+        {
           reg: "^#椰奶(启用|禁用)全部通知$",
           fnc: "setAllNotice"
         }
@@ -145,7 +149,7 @@ export class Admin extends plugin {
     return this.modifyCfg("notice", `bot:${this.e.self_id}:${this.e.group_id}.${key}`, value, rawKey)
   }
 
-  async sendImg(e, type = "index") {
+  async sendImg(e, type = "notice") {
     const data = this.getNoticeSetData(e)
     return await puppeteer.render(`admin/${type}`, {
       ...data,

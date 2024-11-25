@@ -20,27 +20,14 @@ default:
   notificationsAll: false #全部通知
   msgSaveDeltime: 600 #消息删除保存时间用于撤回消息通知
 
-# 群单独配置
+# 群单独配置 noMerge
 123456:
   groupMessage: false #群消息
-  grouptemporaryMessage: false #群临时消息
-  groupRecall: false #群撤回
-  groupInviteRequest: false #群邀请
-  groupAdminChange: false #群管理变动
-  groupNumberChange: false #群聊列表变动
-  groupMemberNumberChange: false #群成员变动
-  botBeenBanned: false #禁言
-  flashPhoto: false #闪照
 
-#请严格按照yaml格式设置 不需要的设置项可删除
-456789:
-  groupMessage: false #群消息
-  grouptemporaryMessage: false #群临时消息
-
-#bot单独配置
+# bot单独配置 noMerge
 bot:7891011:
   privateMessage: false #好友消息
 
-#bot群单独设置
+#bot群单独设置 noMerge
 bot:13456:123456:
   groupMessage: false #群消息

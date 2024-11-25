@@ -43,7 +43,7 @@ class Config {
     }
 
     for (const item of doc2.contents.items) {
-      if (!existingKeys.has(item.key.value)) {
+      if (!existingKeys.has(item.key.value) && !item.key.commentBefore.includes("noMerge")) {
         doc1.contents.items.push(item)
       }
     }

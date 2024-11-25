@@ -5,20 +5,20 @@ import { Config } from "../components/index.js"
 import { common, setu, puppeteer } from "../model/index.js"
 
 /** 设置项 */
-const OtherCfgType = {
-  全部通知: "notificationsAll",
-  状态: "state",
-  陌生人点赞: "Strangers_love"
-}
-const SeSeCfgType = {
-  涩涩: "sese",
-  涩涩pro: "sesepro",
-  代理: {
-    name: "proxy",
-    key: "switchProxy"
-  }
-}
-const NoticeCfgType = {
+// const OtherCfgType = {
+//   全部通知: "notificationsAll",
+//   状态: "state",
+//   陌生人点赞: "Strangers_love"
+// }
+// const SeSeCfgType = {
+//   涩涩: "sese",
+//   涩涩pro: "sesepro",
+//   代理: {
+//     name: "proxy",
+//     key: "switchProxy"
+//   }
+// }
+const NoticeCfgTypeMap = {
   好友消息: "privateMessage",
   群消息: "groupMessage",
   群临时消息: "grouptemporaryMessage",
@@ -36,11 +36,13 @@ const NoticeCfgType = {
   群成员变动: "groupMemberNumberChange",
   // 其他通知
   禁言: "botBeenBanned",
-  输入: "input"
-}
-/** 分开开关和数字 */
-const SwitchCfgType = {
-  ...NoticeCfgType, ...OtherCfgType, ...SeSeCfgType
+  输入: "input",
+  删除缓存时间: {
+    type: "number",
+    key: "msgSaveDeltime",
+    limit: ">120"
+  },
+  全部通知: "notificationsAll"
 }
 const NumberCfgType = {
   渲染精度: {
@@ -48,7 +50,7 @@ const NumberCfgType = {
     limit: "50-200"
   },
   删除缓存时间: {
-    key: "deltime",
+    key: "msgSaveDeltime",
     limit: ">120"
   }
 }
@@ -58,7 +60,8 @@ const groupAloneKeys = [ "群消息", "群临时消息", "群撤回", "群管理
 /** 支持Bot单独设置的项 */
 const botAloneKeys = [ "好友消息", "好友撤回", "好友申请", "好友列表变动", "输入", "群邀请" ]
 
-const SwitchCfgReg = new RegExp(`^#椰奶设置(${Object.keys(SwitchCfgType).join("|")})(单独)?(开启|关闭|取消)$`)
+const noticeCfgReg = new RegExp(`^#椰奶通知设置(${Object.keys(NoticeCfgTypeMap).join("|")})(群单独|bot单独|bot群单独)?(开启|关闭|取消|(\\d+)秒)$`)
+
 const NumberCfgReg = new RegExp(`^#椰奶设置(${Object.keys(NumberCfgType).join("|")})(\\d+)秒?$`)
 
 export class Admin extends plugin {
@@ -69,61 +72,125 @@ export class Admin extends plugin {
       priority: 100,
       rule: [
         {
-          reg: SwitchCfgReg,
-          fnc: "ConfigSwitch"
-        },
-        {
-          reg: NumberCfgReg,
-          fnc: "ConfigNumber"
-        },
-        {
-          reg: "^#椰奶(sese|涩涩)?设置$",
-          fnc: "Settings"
+          reg: noticeCfgReg,
+          fnc: "noticeSet"
         },
         {
           reg: "^#椰奶(启用|禁用)全部通知$",
-          fnc: "SetAllNotice"
+          fnc: "setAllNotice"
         }
       ]
     })
   }
 
-  // 更改配置
-  async ConfigSwitch(e) {
+  async noticeSet(e) {
     if (!common.checkPermission(e, "master")) return
-    // 解析消息
-    let regRet = SwitchCfgReg.exec(e.msg)
-    let key = regRet[1]
-    let is = regRet[3] == "开启"
-    if (!e.group_id && regRet[2] && groupAloneKeys.includes(key)) {
-      return e.reply("❎ 请在要单独设置的群聊发送单独设置命令")
+    let regRet = noticeCfgReg.exec(e.msg)
+    const rawKey = regRet[1]
+    let value = regRet[3]
+    const alone = regRet[2]
+    const aloneFunMap = {
+      群单独: this.groupAloneSet,
+      bot单独: this.botAloneSet,
+      bot群单独: this.botAndGroupAloneSet
     }
-    if ((!groupAloneKeys.includes(key) && !botAloneKeys.includes(key)) && regRet[2]) {
-      return e.reply("❎ 该设置项不支持单独设置")
+    let key = NoticeCfgTypeMap[rawKey]
+    if (typeof key == "object" && key.type == "number") {
+      key = key.key
+      if (!regRet[4]) return
+      value = checkNumberValue(regRet[4])
+    } else {
+      if (!/(开启)|(关闭)/.test(value)) return
+      value = value == "开启"
     }
+    if (alone) {
+      const fun = aloneFunMap[alone]
+      const res = fun.call(this, key, value, rawKey)
+      if (!res) return
+    } else {
+      this.setDefault(key, value)
+    }
+    this.sendImg(e, "notice")
+  }
 
-    // 单独设置
-    if (regRet[2]) {
-      let isdel = regRet[3] == "取消"
-      if (groupAloneKeys.includes(key)) {
-        Config.groupModify(e.group_id, SwitchCfgType[key], is, isdel)
-      } else {
-        Config.botModify(e.self_id, SwitchCfgType[key], is, isdel)
+  setDefault(key, value) {
+    return Config.modify("notice", `default.${key}`, value)
+  }
+
+  groupAloneSet(key, value, rawKey) {
+    if (!groupAloneKeys.includes(rawKey)) {
+      this.e.reply("❎ 该设置项不支持群单独设置")
+      return false
+    }
+    return this.modifyCfg("notice", `${this.e.group_id}.${key}`, value, rawKey)
+  }
+
+  modifyCfg(name, key, value, comment) {
+    return Config.modify(name, key, value, "config", false, comment)
+  }
+
+  botAloneSet(key, value, rawKey) {
+    if (!botAloneKeys.includes(rawKey)) {
+      this.e.reply("❎ 该设置项不支持bot单独设置")
+      return false
+    }
+    return this.modifyCfg("notice", `bot:${this.e.self_id}.${key}`, value, rawKey)
+  }
+
+  botAndGroupAloneSet(key, value, rawKey) {
+    if (!groupAloneKeys.includes(rawKey)) {
+      this.e.reply("❎ 该设置项不支持bot群单独设置")
+      return false
+    }
+    return this.modifyCfg("notice", `bot:${this.e.self_id}:${this.e.group_id}.${key}`, value, rawKey)
+  }
+
+  async sendImg(e, type = "index") {
+    const data = this.getNoticeSetData(e)
+    return await puppeteer.render(`admin/${type}`, {
+      ...data,
+      bg: await rodom()
+    }, {
+      e,
+      scale: 1.4
+    })
+  }
+
+  getNoticeSetData(e) {
+    const _cfg = Config.getNotice(e.self_id, e.group_id)
+    const _c = Config.getConfig("notice")
+    const groupAlone = _c[e.group_id]
+    const botAlone = _c["bot:" + e.self_id]
+    const botAndGtoupAlone = _c[`bot:${e.self_id}:${e.group_id}`]
+    const map = new Map()
+    const getAloneType = (obj, type) => {
+      if (!obj) return
+      for (let k in obj) {
+        map.set(k, type)
       }
-    } else {
-      let _key = SwitchCfgType[key]
-      Config.modify(_key?.name ?? "whole", _key?.key ?? _key, is)
+    }
+    getAloneType(botAlone, "bot单独")
+    getAloneType(groupAlone, "群单独")
+    getAloneType(botAndGtoupAlone, "bot群单独")
+    let data = {}
+    const special = [ "msgSaveDeltime" ]
+    for (let key in _cfg) {
+      if (special.includes(key)) {
+        data[key] = Number(_cfg[key])
+      } else {
+        data[key] = getStatus(_cfg[key], map.get(key))
+      }
+    }
+    return data
+  }
 
-      // 单独处理
-      if (key == "涩涩pro" && is) Config.modify("whole", "sese", is)
-      if (key == "涩涩" && !is) Config.modify("whole", "sesepro", is)
+  async setAllNotice(e) {
+    if (!common.checkPermission(e, "master")) return
+    let yes = /启用/.test(e.msg)
+    for (let i in NoticeCfgTypeMap) {
+      Config.modify("notice", `default.${NoticeCfgTypeMap[i]}`, yes)
     }
-    // 渲染图片
-    if (Object.keys(SeSeCfgType).includes(key)) {
-      this.SeSe_Settings(e)
-    } else {
-      this.index_Settings(e)
-    }
+    this.sendImg(e, "notice")
   }
 
   // 修改数字设置
@@ -133,16 +200,6 @@ export class Admin extends plugin {
     let type = NumberCfgType[regRet[1]]
     let number = checkNumberValue(regRet[2], type.limit)
     Config.modify(type.name ?? "whole", type.key, number)
-    this.index_Settings(e)
-  }
-
-  // 修改全部通知设置
-  async SetAllNotice(e) {
-    if (!common.checkPermission(e, "master")) return
-    let yes = /启用/.test(e.msg)
-    for (let i in NoticeCfgType) {
-      Config.modify("whole", NoticeCfgType[i], yes)
-    }
     this.index_Settings(e)
   }
 
@@ -159,7 +216,7 @@ export class Admin extends plugin {
   async index_Settings(e) {
     let data = {}
     const special = [ "deltime", "renderScale" ]
-    let _cfg = Config.getAlone(e.self_id, e.group_id)
+    let _cfg = Config.getNotice(e.self_id, e.group_id)
     for (let key in _cfg) {
       if (special.includes(key)) {
         data[key] = Number(Config.whole[key])
@@ -185,7 +242,7 @@ export class Admin extends plugin {
   async SeSe_Settings(e) {
     let set = setu.getSeSeConfig(e)
     let { proxy, pixiv, bika } = Config
-    let { sese, sesepro } = Config.getAlone(e.self_id, e.group_id)
+    let { sese, sesepro } = Config.getNotice(e.self_id, e.group_id)
     let { sese: _sese, sesepro: _sesepro } = Config.getConfig("group")[e.group_id] ?? {}
     let data = {
       sese: getStatus(sese, _sese),
@@ -222,18 +279,15 @@ const rodom = async function() {
   return imgs
 }
 
-const getStatus = function(rote, gpAlone, btAlone) {
-  let badge = ""
-  if (gpAlone != undefined) {
-    badge = "<span class=\"badge\">群单独</span>"
-  }
-  if (btAlone != undefined) {
-    badge = "<span class=\"badge\">Bot单独</span>"
+const getStatus = function(rote, badge) {
+  let _badge = ""
+  if (badge) {
+    _badge = `<span class="badge">${badge}</span>`
   }
   if (rote) {
-    return badge + "<div class=\"cfg-status\" >已开启</div>"
+    return _badge + "<div class=\"cfg-status\" >已开启</div>"
   } else {
-    return badge + "<div class=\"cfg-status status-off\">已关闭</div>"
+    return _badge + "<div class=\"cfg-status status-off\">已关闭</div>"
   }
 }
 

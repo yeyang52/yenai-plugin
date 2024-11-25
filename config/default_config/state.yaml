@@ -1,3 +1,6 @@
+# 设置为默认状态
+defaultState: false
+
 # 测试访问的网址列表（可空）设置为true或default将使用默认配置
 # show: 是否显示 true - 显示 - false - 不显示 pro - 只有pro显示
 # name: 显示名称

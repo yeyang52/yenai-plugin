@@ -46,7 +46,7 @@ export class ThumbUp extends plugin {
     }
     /** 判断是否为好友 */
     let isFriend = await (e.bot ?? Bot).fl.get(userId)
-    let allowLikeByStrangers = Config.whole.Strangers_love
+    let allowLikeByStrangers = Config.other.strangeThumbUp
     if (!isFriend && !allowLikeByStrangers) {
       return (message == "#全部赞我") ? false : e.reply(`不加好友不${doType}🙄`, true)
     }

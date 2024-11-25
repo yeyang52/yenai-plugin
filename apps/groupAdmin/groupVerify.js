@@ -34,7 +34,7 @@ export class GroupVerify extends plugin {
         }
       ]
     })
-    this.verifycfg = Config.groupverify
+    this.verifycfg = Config.groupAdmin.groupVerify
   }
 
   // 重新验证
@@ -130,7 +130,7 @@ export class GroupVerify extends plugin {
 // 进群监听
 Bot.on?.("notice.group.increase", async(e) => {
   logger.mark(`[Yenai-Plugin][进群验证]收到${e.user_id}的进群事件`)
-  let { openGroup, DelayTime } = Config.groupverify
+  let { openGroup, DelayTime } = Config.groupAdmin.groupVerify
 
   if (!openGroup.includes(e.group_id)) return
   if (!e.group.is_admin && !e.group.is_owner) return
@@ -144,7 +144,7 @@ Bot.on?.("notice.group.increase", async(e) => {
 
 // 答案监听
 Bot.on?.("message.group", async(e) => {
-  let { openGroup, mode, SuccessMsgs } = Config.groupverify
+  let { openGroup, mode, SuccessMsgs } = Config.groupAdmin.groupVerify
 
   if (!openGroup.includes(e.group_id)) return
 
@@ -214,7 +214,7 @@ async function verify(userId, groupId, e) {
   groupId = Number(groupId)
   logger.mark(`[Yenai-Plugin][进群验证]进行${userId}的验证`)
 
-  const { times, range, time, remindAtLastMinute } = Config.groupverify
+  const { times, range, time, remindAtLastMinute } = Config.groupAdmin.groupVerify
   const operator = ops[_.random(0, 1)]
 
   let [ m, n ] = [ _.random(range.min, range.max), _.random(range.min, range.max) ]

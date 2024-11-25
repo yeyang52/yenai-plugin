@@ -37,7 +37,7 @@ export class NewState extends plugin {
   }
 
   async state(e) {
-    if (!/椰奶/.test(e.msg) && !Config.whole.state) return false
+    if (!/椰奶/.test(e.msg) && !Config.state.defaultState) return false
 
     // 防止多次触发
     if (interval) { return false } else interval = true

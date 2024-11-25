@@ -26,22 +26,38 @@ class Config {
     for (let file of files) {
       if (!fs.existsSync(`${path}${file}`)) {
         fs.copyFileSync(`${pathDef}${file}`, `${path}${file}`)
+      } else {
+        this.mergeCfg(`${path}${file}`, `${pathDef}${file}`, file)
       }
       this.watch(`${path}${file}`, file.replace(".yaml", ""), "config")
     }
   }
 
-  /**
-   * 单独配置
-   * @param botId Bot账号
-   * @param groupId 群号
-   */
-  getAlone(botId = "", groupId = "") {
-    let config = this.getConfig("whole")
-    let group = this.getConfig("group")
-    let bot = this.getConfig("bot")
-    let defCfg = this.getdefSet("whole")
-    return { ...defCfg, ...config, ...group[groupId], ...bot[botId] }
+  async mergeCfg(cfgPath, defPath, name) {
+    if (await redis.get(`yenai-plugin:mergeCfg:${name}`)) return
+    const doc1 = YAML.parseDocument(fs.readFileSync(cfgPath, "utf8"))
+    const doc2 = YAML.parseDocument(fs.readFileSync(defPath, "utf8"))
+    const existingKeys = new Map()
+    for (const item of doc1.contents.items) {
+      existingKeys.set(item.key.value, item)
+    }
+
+    for (const item of doc2.contents.items) {
+      if (!existingKeys.has(item.key.value)) {
+        doc1.contents.items.push(item)
+      }
+    }
+    let yaml = doc1.toString()
+    fs.writeFileSync(cfgPath, yaml, "utf8")
+    // 每天只合并一次避免影响效率
+    redis.set(`yenai-plugin:mergeCfg:${name}`, "1", { EX: 60 * 60 * 24 })
+  }
+
+  getNotice(botId = "", groupId = "") {
+    const config = this.getDefOrConfig("notice")
+    const bot = `bot:${botId}`
+    const botGroup = `bot:${botId}:${groupId}`
+    return { ...config.default, ...config[groupId], ...config[bot], ...config[botGroup] }
   }
 
   /** 主人QQ */
@@ -53,19 +69,9 @@ class Config {
     return cfg.master
   }
 
-  /** 获取全局设置 */
-  get whole() {
-    return this.getDefOrConfig("whole")
-  }
-
-  /** 进群验证配置 */
-  get groupverify() {
-    return this.getDefOrConfig("groupverify")
-  }
-
-  /** 加群通知 */
-  get groupAdd() {
-    return this.getDefOrConfig("groupAdd")
+  /** 获取其他设置 */
+  get other() {
+    return this.getDefOrConfig("other")
   }
 
   /** 代理 */
@@ -160,6 +166,7 @@ class Config {
 
     if (this.watcher[key]) return
 
+    // eslint-disable-next-line import/no-named-as-default-member
     const watcher = chokidar.watch(file)
     watcher.on("change", path => {
       delete this.config[key]
@@ -212,11 +219,13 @@ class Config {
    * @param {string | number} value 修改的value值
    * @param {'config'|'default_config'} type 配置文件或默认
    * @param {boolean} bot 是否修改Bot的配置
+   * @param comment
    */
-  modify(name, key, value, type = "config", bot = false) {
+  modify(name, key, value, type = "config", bot = false, comment = null) {
     let path = `${bot ? Path : Plugin_Path}/config/${type}/${name}.yaml`
-    new YamlReader(path).set(key, value)
+    new YamlReader(path).set(key, value, comment)
     delete this.config[`${type}.${name}`]
+    return true
   }
 
   /**

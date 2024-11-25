@@ -13,7 +13,7 @@ Bot.on?.("message", async(e) => {
   let forwardMsg = null
   switch (e.message_type) {
     case "group": {
-      if (!Config.getAlone(e.self_id, e.group_id).groupMessage) return false
+      if (!Config.getNotice(e.self_id, e.group_id).groupMessage) return false
       // 特殊消息处理
       const arr = getMsgType(e.message)
       if (arr) {
@@ -35,7 +35,7 @@ Bot.on?.("message", async(e) => {
     }
     case "private": {
       if (e.sub_type === "friend") {
-        if (!Config.getAlone(e.self_id).privateMessage) return false
+        if (!Config.getNotice(e.self_id).privateMessage) return false
 
         // 特殊消息处理
         const arr = getMsgType(e.message)
@@ -63,7 +63,7 @@ Bot.on?.("message", async(e) => {
           )
         }
       } else if (e.sub_type === "group") {
-        if (!Config.getAlone(e.self_id, e.group_id).grouptemporaryMessage) return false
+        if (!Config.getNotice(e.self_id, e.group_id).grouptemporaryMessage) return false
         // 特殊消息处理
         const arr = getMsgType(e.message)
         if (arr) {

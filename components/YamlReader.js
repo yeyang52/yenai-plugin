@@ -20,6 +20,7 @@ export default class YamlReader {
     // parseDocument 将会保留注释
     this.document = YAML.parseDocument(fs.readFileSync(this.yamlPath, "utf8"))
     if (this.isWatch && !this.watcher) {
+      // eslint-disable-next-line import/no-named-as-default-member
       this.watcher = chokidar.watch(this.yamlPath).on("change", () => {
         if (this.isSave) {
           this.isSave = false
@@ -49,8 +50,12 @@ export default class YamlReader {
   }
 
   /* 修改某个key的值 */
-  set(keyPath, value) {
-    this.document.setIn([ keyPath ], value)
+  set(keyPath, value, comment = null) {
+    this.document.setIn(keyPath.split("."), value)
+    if (comment) {
+      let seq = this.document.getIn(keyPath.split("."), true)
+      if (!seq.comment) seq.comment = comment
+    }
     this.save()
   }
 

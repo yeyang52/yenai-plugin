@@ -12,12 +12,12 @@ Bot.on?.("message", async(e) => {
   if (e.user_id == (e.bot ?? Bot).uin) return false
   // 判断是否主人消息
   if (Config.masterQQ.includes(e.user_id)) return false
-
-  const deltime = Config.whole.deltime
+  const _config = Config.getNotice(e.self_id, e.group_id)
+  const deltime = _config.msgSaveDeltime
   // 判断群聊还是私聊
   if (e.message_type == "group") {
     // 关闭撤回停止存储
-    if (Config.getAlone(e.self_id, e.group_id).groupRecall) {
+    if (_config.groupRecall) {
       // logger.debug(`[Yenai-Plugin]存储群消息${e.group_id}=>${e.message_id}`)
       // 写入
       await redis.set(
@@ -28,7 +28,7 @@ Bot.on?.("message", async(e) => {
     }
   } else if (e.message_type == "private") {
     // 关闭撤回停止存储
-    if (Config.getAlone(e.self_id).PrivateRecall) {
+    if (_config.PrivateRecall) {
       // logger.debug(`[Yenai-Plugin]存储私聊消息${e.user_id}=>${e.message_id}`)
       // 写入
       await redis.set(
@@ -43,7 +43,7 @@ Bot.on?.("message", async(e) => {
 Bot.on?.("notice.group.recall", async(e) => {
   const bot = e.bot ?? Bot
   // 开启或关闭
-  if (!Config.getAlone(e.self_id, e.group_id).groupRecall) return false
+  if (!Config.getNotice(e.self_id, e.group_id).groupRecall) return false
   // 是否为机器人撤回
   if (e.user_id == bot.uin || e.operator_id == bot.uin) return false
   // 是否为主人撤回
@@ -92,7 +92,7 @@ Bot.on?.("notice.group.recall", async(e) => {
 })
 
 Bot.on?.("notice.friend.recall", async(e) => {
-  if (!Config.getAlone(e.self_id).PrivateRecall) return false
+  if (!Config.getNotice(e.self_id).PrivateRecall) return false
 
   if (e.user_id == (e.bot ?? Bot).uin) return false
 

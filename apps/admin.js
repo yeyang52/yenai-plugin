@@ -4,12 +4,19 @@ import _ from "lodash"
 import { Config } from "../components/index.js"
 import { common, setu, puppeteer } from "../model/index.js"
 
-/** 设置项 */
-// const OtherCfgType = {
-//   全部通知: "notificationsAll",
-//   状态: "state",
-//   陌生人点赞: "Strangers_love"
-// }
+const indexCfgTypeMap = {
+  状态: {
+    file: "state",
+    key: "defaultState",
+    type: "boolean"
+  },
+  陌生人点赞: "strangeThumbUp",
+  渲染精度: {
+    type: "number",
+    key: "renderScale",
+    limit: "50-200"
+  }
+}
 // const SeSeCfgType = {
 //   涩涩: "sese",
 //   涩涩pro: "sesepro",
@@ -44,25 +51,14 @@ const NoticeCfgTypeMap = {
   },
   全部通知: "notificationsAll"
 }
-const NumberCfgType = {
-  渲染精度: {
-    key: "renderScale",
-    limit: "50-200"
-  },
-  删除缓存时间: {
-    key: "msgSaveDeltime",
-    limit: ">120"
-  }
-}
 
 /** 支持群单独设置的项 */
-const groupAloneKeys = [ "群消息", "群临时消息", "群撤回", "群管理变动", "群聊列表变动", "群成员变动", "加群通知", "禁言", "匿名", "涩涩", "涩涩pro" ]
+const groupAloneKeys = [ "群消息", "群临时消息", "群撤回", "群管理变动", "群聊列表变动", "群成员变动", "加群通知", "禁言", "匿名" ]
 /** 支持Bot单独设置的项 */
 const botAloneKeys = [ "好友消息", "好友撤回", "好友申请", "好友列表变动", "输入", "群邀请" ]
 
 const noticeCfgReg = new RegExp(`^#椰奶通知设置(${Object.keys(NoticeCfgTypeMap).join("|")})(群单独|bot单独|bot群单独)?(开启|关闭|取消|(\\d+)秒)$`)
-
-const NumberCfgReg = new RegExp(`^#椰奶设置(${Object.keys(NumberCfgType).join("|")})(\\d+)秒?$`)
+const indexCfgReg = new RegExp(`^#椰奶设置(${Object.keys(indexCfgTypeMap).join("|")})(开启|关闭|(\\d+)秒)$`)
 
 export class Admin extends plugin {
   constructor() {
@@ -72,11 +68,15 @@ export class Admin extends plugin {
       priority: 100,
       rule: [
         {
+          reg: indexCfgReg,
+          fnc: "indexSet"
+        },
+        {
           reg: noticeCfgReg,
           fnc: "noticeSet"
         },
         {
-          reg: "^#椰奶设置$",
+          reg: "^#椰奶(通知)?设置$",
           fnc: "sendImg"
         },
         {
@@ -85,6 +85,26 @@ export class Admin extends plugin {
         }
       ]
     })
+  }
+
+  async indexSet(e) {
+    if (!common.checkPermission(e, "master")) return
+    let regRet = indexCfgReg.exec(e.msg)
+    const rawkey = regRet[1]
+    let value = regRet[2]
+    let file = "other"
+    let key = indexCfgTypeMap[rawkey]
+    if (typeof key == "object") {
+      key = key.key
+      if (key.type === "number" && !regRet[3]) return
+      if (key.file) file = key.file
+      value = checkNumberValue(regRet[3])
+    } else {
+      if (!/(开启)|(关闭)/.test(value)) return
+      value = value == "开启"
+    }
+    Config.modify(file, key, value)
+    this.sendImg(e, "index")
   }
 
   async noticeSet(e) {
@@ -149,8 +169,9 @@ export class Admin extends plugin {
     return this.modifyCfg("notice", `bot:${this.e.self_id}:${this.e.group_id}.${key}`, value, rawKey)
   }
 
-  async sendImg(e, type = "notice") {
-    const data = this.getNoticeSetData(e)
+  async sendImg(e, type = "index") {
+    if (e.msg.includes("通知"))type = "notice"
+    const data = this[`get${_.startCase(type)}SetData`](e)
     return await puppeteer.render(`admin/${type}`, {
       ...data,
       bg: await rodom()
@@ -158,6 +179,14 @@ export class Admin extends plugin {
       e,
       scale: 1.4
     })
+  }
+
+  getIndexSetData(e) {
+    return {
+      strangeThumbUp: getStatus(Config.other.strangeThumbUp),
+      defaultState: getStatus(Config.state.defaultState),
+      renderScale: Config.other.renderScale
+    }
   }
 
   getNoticeSetData(e) {
@@ -195,51 +224,6 @@ export class Admin extends plugin {
       Config.modify("notice", `default.${NoticeCfgTypeMap[i]}`, yes)
     }
     this.sendImg(e, "notice")
-  }
-
-  // 修改数字设置
-  async ConfigNumber(e) {
-    if (!common.checkPermission(e, "master")) return
-    let regRet = e.msg.match(NumberCfgReg)
-    let type = NumberCfgType[regRet[1]]
-    let number = checkNumberValue(regRet[2], type.limit)
-    Config.modify(type.name ?? "whole", type.key, number)
-    this.index_Settings(e)
-  }
-
-  async Settings(e) {
-    if (!common.checkPermission(e, "master")) return
-    if (/sese|涩涩/.test(e.msg)) {
-      this.SeSe_Settings(e)
-    } else {
-      this.index_Settings(e)
-    }
-  }
-
-  // 渲染发送图片
-  async index_Settings(e) {
-    let data = {}
-    const special = [ "deltime", "renderScale" ]
-    let _cfg = Config.getNotice(e.self_id, e.group_id)
-    for (let key in _cfg) {
-      if (special.includes(key)) {
-        data[key] = Number(Config.whole[key])
-      } else {
-        let groupCfg = Config.getConfig("group")[e.group_id]
-        let botCfg = Config.getConfig("bot")[e.self_id]
-        let gpAlone = groupCfg ? groupCfg[key] : undefined
-        let btAlone = botCfg ? botCfg[key] : undefined
-        data[key] = getStatus(_cfg[key], gpAlone, btAlone)
-      }
-    }
-    // 渲染图像
-    return await puppeteer.render("admin/index", {
-      ...data,
-      bg: await rodom()
-    }, {
-      e,
-      scale: 1.4
-    })
   }
 
   // 查看涩涩设置

@@ -51,7 +51,12 @@ export default class YamlReader {
 
   /* 修改某个key的值 */
   set(keyPath, value, comment = null) {
-    this.document.setIn(keyPath.split("."), value)
+    if (!comment || this.get(keyPath) !== undefined) {
+      this.document.setIn(keyPath.split("."), value)
+    } else {
+      this.document.addIn(keyPath.split("."), value)
+    }
+
     if (comment) {
       let seq = this.document.getIn(keyPath.split("."), true)
       if (!seq.comment) seq.comment = comment

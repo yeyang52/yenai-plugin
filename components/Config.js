@@ -27,30 +27,38 @@ class Config {
       if (!fs.existsSync(`${path}${file}`)) {
         fs.copyFileSync(`${pathDef}${file}`, `${path}${file}`)
       } else {
-        this.mergeCfg(`${path}${file}`, `${pathDef}${file}`, file)
+        this.other.autoMaegeCfg && this.mergeCfg(`${path}${file}`, `${pathDef}${file}`, file)
       }
       this.watch(`${path}${file}`, file.replace(".yaml", ""), "config")
     }
   }
 
   async mergeCfg(cfgPath, defPath, name) {
-    if (await redis.get(`yenai-plugin:mergeCfg:${name}`)) return
-    const doc1 = YAML.parseDocument(fs.readFileSync(cfgPath, "utf8"))
-    const doc2 = YAML.parseDocument(fs.readFileSync(defPath, "utf8"))
-    const existingKeys = new Map()
-    for (const item of doc1.contents.items) {
-      existingKeys.set(item.key.value, item)
-    }
-
-    for (const item of doc2.contents.items) {
-      if (!existingKeys.has(item.key.value) && !item.key.commentBefore.includes("noMerge")) {
-        doc1.contents.items.push(item)
+    if (await redis.get(`yenai:mergeCfg:${name}`)) return
+    const userDoc = YAML.parseDocument(fs.readFileSync(cfgPath, "utf8"))
+    const defDoc = YAML.parseDocument(fs.readFileSync(defPath, "utf8"))
+    let isUpdate = false
+    const maege = (user, def) => {
+      const existingKeys = new Map()
+      for (const item of user) {
+        existingKeys.set(item.key.value, item.value)
+      }
+      for (const item of def) {
+        if (item?.key?.commentBefore?.includes?.("noMerge")) continue
+        if (!existingKeys.has(item.key.value)) {
+          user.push(item)
+          isUpdate = true
+        } else if (YAML.isMap(item.value)) {
+          const userV = existingKeys.get(item.key.value).items
+          maege(userV, item.value.items)
+        }
       }
     }
-    let yaml = doc1.toString()
-    fs.writeFileSync(cfgPath, yaml, "utf8")
-    // 每天只合并一次避免影响效率
-    redis.set(`yenai-plugin:mergeCfg:${name}`, "1", { EX: 60 * 60 * 24 })
+    maege(userDoc.contents.items, defDoc.contents.items)
+    let yaml = userDoc.toString()
+    isUpdate && fs.writeFileSync(cfgPath, yaml, "utf8")
+    // 每小时只合并一次避免影响启动效率
+    redis.set(`yenai:mergeCfg:${name}`, "1", { EX: 60 * 60 * 1 })
   }
 
   getNotice(botId = "", groupId = "") {

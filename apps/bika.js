@@ -1,6 +1,6 @@
 import { Bika, common, Pixiv } from "../model/index.js"
 import { Config } from "../components/index.js"
-import { Admin } from "./admin.js"
+// import { Admin } from "./admin.js"
 import translateChinaNum from "../tools/translateChinaNum.js"
 
 // 汉字数字匹配正则
@@ -160,7 +160,7 @@ export class NewBika extends plugin {
     if (!imageQualityType[quality] && !Object.values(imageQualityType).includes(quality)) return e.reply(`错误参数，支持的参数为${Object.keys(imageQualityType).join("，")}`)
     let type = imageQualityType[quality] ?? quality
     Config.modify("bika", "imageQuality", type)
-    new Admin().SeSe_Settings(e)
+    // new Admin().SeSe_Settings(e)
   }
 
   /**
@@ -174,7 +174,7 @@ export class NewBika extends plugin {
     if (now && isSwitch) return e.reply("❎ bika图片直连已处于开启状态")
     if (!now && !isSwitch) return e.reply("❎ bika图片直连已处于关闭状态")
     Config.modify("bika", "bikaDirectConnection", isSwitch)
-    new Admin().SeSe_Settings(e)
+    // new Admin().SeSe_Settings(e)
   }
 
   async _Authentication(e) {

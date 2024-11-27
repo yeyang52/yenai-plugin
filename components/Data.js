@@ -241,7 +241,7 @@ let Data = {
   readDirRecursive(directory, extension, excludeDir) {
     let files = fs.readdirSync(directory)
 
-    let jsFiles = files.filter(file => path.extname(file) === `.${extension}`)
+    let jsFiles = files.filter(file => path.extname(file) === `.${extension}` && !file.startsWith("_"))
 
     files.filter(file => fs.statSync(path.join(directory, file)).isDirectory())
       .forEach(subdirectory => {

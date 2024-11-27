@@ -1,7 +1,7 @@
 import plugin from "../../../lib/plugins/plugin.js"
 import { Config } from "../components/index.js"
 import { Pixiv, common, setu } from "../model/index.js"
-import { Admin } from "./admin.js"
+// import { Admin } from "./admin.js"
 import { ImageRPSS } from "../constants/pixiv.js"
 import translateChinaNum from "../tools/translateChinaNum.js"
 // 文案
@@ -240,7 +240,7 @@ export class NewPixiv extends plugin {
     }
     logger.mark(`${e.logFnc}切换为${proxy}`)
     Config.modify("pixiv", "pixivImageProxy", proxy)
-    new Admin().SeSe_Settings(e)
+    // new Admin().SeSe_Settings(e)
   }
 
   /**
@@ -250,7 +250,7 @@ export class NewPixiv extends plugin {
   async directConnection(e) {
     let isSwitch = /开启/.test(e.msg)
     Config.modify("pixiv", "pixivDirectConnection", isSwitch)
-    new Admin().SeSe_Settings(e)
+    // new Admin().SeSe_Settings(e)
   }
 
   /**

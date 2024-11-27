@@ -172,7 +172,7 @@ export class Admin extends plugin {
   async sendImg(e, type = "index") {
     if (e.msg.includes("通知"))type = "notice"
     const data = this[`get${_.startCase(type)}SetData`](e)
-    return await puppeteer.render(`admin/${type}`, {
+    return await puppeteer.render("admin/index", {
       ...data,
       bg: await rodom()
     }, {
@@ -183,9 +183,29 @@ export class Admin extends plugin {
 
   getIndexSetData(e) {
     return {
-      strangeThumbUp: getStatus(Config.other.strangeThumbUp),
-      defaultState: getStatus(Config.state.defaultState),
-      renderScale: Config.other.renderScale
+      label: "#椰奶设置",
+      list: {
+        系统设置: [
+          {
+            key: "陌生人点赞",
+            value: getStatus(Config.other.strangeThumbUp),
+            hint: "#椰奶设置陌生人点赞 + 开启/关闭",
+            desc: "不活跃的号可能会点赞失败"
+          },
+          {
+            key: "椰奶作为默认状态",
+            value: getStatus(Config.state.defaultState),
+            hint: "#椰奶设置状态 + 开启/关闭",
+            desc: "开启后将使用椰奶版状态作为yunzai的默认状态"
+          },
+          {
+            key: "渲染精度",
+            value: getStatus(Config.other.renderScale),
+            hint: "#椰奶设置渲染精度100",
+            desc: "可选值50~200，建议100。设置高精度会提高图片的精细度，但因图片较大可能会影响渲染与发送速度"
+          }
+        ]
+      }
     }
   }
 
@@ -209,12 +229,117 @@ export class Admin extends plugin {
     const special = [ "msgSaveDeltime" ]
     for (let key in _cfg) {
       if (special.includes(key)) {
-        data[key] = Number(_cfg[key])
+        data[key] = getStatus(Number(_cfg[key]))
       } else {
         data[key] = getStatus(_cfg[key], map.get(key))
       }
     }
-    return data
+    return {
+      list: {
+        消息相关: [
+          {
+            key: "好友消息",
+            value: data.privateMessage,
+            hint: "#椰奶通知设置好友消息 + 开启/关闭",
+            desc: "好友的消息转发给主人，包括戳一戳"
+          },
+          {
+            key: "群消息",
+            value: data.groupMessage,
+            hint: "#椰奶通知设置群消息 + 开启/关闭",
+            desc: "\"所有群聊\"的消息转发给主人"
+          },
+          {
+            key: "群临时消息",
+            value: data.grouptemporaryMessage,
+            hint: "#椰奶通知设置群临时消息 + 开启/关闭",
+            desc: "群聊临时消息"
+          },
+          {
+            key: "群撤回",
+            value: data.groupRecall,
+            hint: "#椰奶通知设置群撤回 + 开启/关闭",
+            desc: "群撤回监听"
+          },
+          {
+            key: "好友撤回",
+            value: data.PrivateRecall,
+            hint: "#椰奶通知设置好友撤回 + 开启/关闭"
+          }
+        ],
+        申请通知: [
+          {
+            key: "好友申请",
+            value: data.friendRequest,
+            hint: "#椰奶通知设置好友申请 + 开启/关闭",
+            desc: "可以同意或拒绝"
+          },
+          {
+            key: "加群申请",
+            value: data.addGroupApplication,
+            hint: "#椰奶通知设置加群申请 + 开启/关闭",
+            desc: "加群申请通知"
+          },
+          {
+            key: "群聊邀请",
+            value: data.groupInviteRequest,
+            hint: "#椰奶通知设置群邀请 + 开启/关闭"
+          }
+        ],
+        列表变动: [
+          {
+            key: "好友列表变动",
+            value: data.friendNumberChange,
+            hint: "#椰奶通知设置好友列表变动 + 开启/关闭",
+            desc: "好友的增加或减少发送给主人"
+          },
+          {
+            key: "群聊列表变动",
+            value: data.groupNumberChange,
+            hint: "#椰奶通知设置群聊列表变动 + 开启/关闭",
+            desc: "群聊的增加或减少发送给主人"
+          },
+          {
+            key: "群成员变动",
+            value: data.groupMemberNumberChange,
+            hint: "#椰奶通知设置群成员变动 + 开启/关闭",
+            desc: "群成员的增加或减少发送给主人"
+          },
+          {
+            key: "群管理变动",
+            value: data.groupAdminChange,
+            hint: "#椰奶通知设置群管理变动 + 开启/关闭"
+          }
+        ],
+        其他通知: [
+          {
+            key: "私聊输入",
+            value: data.input,
+            hint: "#椰奶通知设置输入 + 开启/关闭",
+            desc: "对方正在输入事件"
+          },
+          {
+            key: "Bot被禁言",
+            value: data.botBeenBanned,
+            hint: "#椰奶通知设置禁言 + 开启/关闭"
+          }
+        ],
+        系统设置: [
+          {
+            key: "通知全部主人",
+            value: data.notificationsAll,
+            hint: "#椰奶通知设置全部通知 + 开启/关闭",
+            desc: "将通知发送给设置的全部主人，关闭则发给第一个主人"
+          },
+          {
+            key: "删除缓存时间",
+            value: data.msgSaveDeltime,
+            hint: "#椰奶设置删除缓存时间 + 时间(秒)",
+            desc: "不建议设置太久"
+          }
+        ]
+      }
+    }
   }
 
   async setAllNotice(e) {
@@ -271,6 +396,9 @@ const getStatus = function(rote, badge) {
   let _badge = ""
   if (badge) {
     _badge = `<span class="badge">${badge}</span>`
+  }
+  if (typeof rote === "number") {
+    return `<div class="cfg-status">${rote}</div>`
   }
   if (rote) {
     return _badge + "<div class=\"cfg-status\" >已开启</div>"

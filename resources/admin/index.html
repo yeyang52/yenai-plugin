@@ -12,41 +12,27 @@
 
 <div class="info_box">
     <div class="head-box type{{bgType}}">
-        <div class="label">#椰奶设置</div>
-        <div class="title">椰奶管理面板</div>
+        <div class="label">{{label ?? "#椰奶设置"}}</div>
+        <div class="title">{{title ?? "椰奶管理面板"}}</div>
     </div>
 </div>
+{{each list}}
 <div class="cfg-box">
-    <div class="cfg-group">系统设置</div>
+    <div class="cfg-group">{{$index}}</div>
+    {{each $value v k}}
     <ul class="cfg-ul">
         <li class="cfg-li">
             <div class="cfg-line">
-                陌生人点赞
-                <span class="cfg-hint">#椰奶设置陌生人点赞 + 开启/关闭 </span>
-                {{@strangeThumbUp}}
+                {{v.key}}
+                <span class="cfg-hint">{{v.hint}}</span>
+                {{@v.value}}
             </div>
-            <div class="cfg-desc">不活跃的号可能会点赞失败</div>
-        </li>
-        <li class="cfg-li">
-            <div class="cfg-line">
-                椰奶作为默认状态
-                <span class="cfg-hint">#椰奶设置状态 + 开启/关闭 </span>
-                {{@defaultState}}
-            </div>
-            <div class="cfg-desc">
-                开启后将使用椰奶版状态作为yunzai的默认状态
-            </div>
-        </li>
-        <li class="cfg-li">
-            <div class="cfg-line">
-                渲染精度
-                <span class="cfg-hint">#椰奶设置渲染精度100</span>
-                <div class="cfg-status">{{@renderScale}}</div>
-            </div>
-            <div class="cfg-desc">
-                可选值50~200，建议100。设置高精度会提高图片的精细度，但因图片较大可能会影响渲染与发送速度
-            </div>
+            {{if v.desc}}
+            <div class="cfg-desc">{{v.desc}}</div>
+            {{/if}}
         </li>
     </ul>
+    {{/each}}
 </div>
+{{/each}}
 {{/block}}

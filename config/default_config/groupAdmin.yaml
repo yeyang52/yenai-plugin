@@ -20,7 +20,8 @@ voteAdmin: false
 
 groupVerify:
   #开启的群聊
-  openGroup: []
+  openGroup:
+    - 123456
   # 如需要分群，请按照下列格式添加 <以群号为字段> 的成功提示即可，0 字段代表默认回复
   SuccessMsgs:
     254974507: ✅ 验证成功，欢迎入群，群里有非常多的大佬给你透哦~~

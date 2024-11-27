@@ -103,7 +103,7 @@ export class GroupVerify extends plugin {
     let isopen = this.verifycfg.openGroup.includes(e.group_id)
     if (isopen && type == "add") return e.reply("❎ 本群验证已处于开启状态")
     if (!isopen && type == "del") return e.reply("❎ 本群暂未开启验证")
-    Config.modifyarr("groupverify", "openGroup", e.group_id, type)
+    Config.modifyarr("groupAdmin", "groupVerify.openGroup", e.group_id, type)
     e.reply(`✅ 已${type == "add" ? "开启" : "关闭"}本群验证`)
   }
 
@@ -111,7 +111,7 @@ export class GroupVerify extends plugin {
   async setmode(e) {
     if (!common.checkPermission(e, "master")) return
     let value = this.verifycfg.mode == "模糊" ? "精确" : "模糊"
-    Config.modify("groupverify", "mode", value)
+    Config.modify("groupAdmin", "groupVerify.mode", value)
     e.reply(`✅ 已切换验证模式为${value}验证`)
   }
 
@@ -119,7 +119,7 @@ export class GroupVerify extends plugin {
   async setovertime(e) {
     if (!common.checkPermission(e, "master")) return
     let overtime = e.msg.match(/\d+/g)
-    Config.modify("groupverify", "time", Number(overtime))
+    Config.modify("groupAdmin", "groupVerify.time", Number(overtime))
     e.reply(`✅ 已将验证超时时间设置为${overtime}秒`)
     if (overtime < 60) {
       e.reply("建议至少一分钟(60秒)哦ε(*´･ω･)з")

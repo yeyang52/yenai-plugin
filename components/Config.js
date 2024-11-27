@@ -189,38 +189,6 @@ class Config {
   }
 
   /**
-   * 群单独设置
-   * @param {string | number} groupId 群号
-   * @param {string} key 设置项
-   * @param {unknown} value 修改的value值
-   * @param isDel 是否删除
-   */
-  groupModify(groupId, key, value, isDel) {
-    let path = `${Plugin_Path}/config/config/group.yaml`
-    let yaml = new YamlReader(path)
-    let groupCfg = yaml.jsonData[groupId] ?? {}
-    isDel ? delete groupCfg[key] : groupCfg[key] = value
-    yaml.set(groupId, groupCfg)
-    delete this.config["config.group"]
-  }
-
-  /**
-   * Bot单独设置
-   * @param {string | number} botId 机器人账号
-   * @param {string} key 设置项
-   * @param {unknown} value 修改的value值
-   * @param isDel 是否删除
-   */
-  botModify(botId, key, value, isDel) {
-    let path = `${Plugin_Path}/config/config/bot.yaml`
-    let yaml = new YamlReader(path)
-    let botCfg = yaml.jsonData[botId] ?? {}
-    isDel ? delete botCfg[key] : botCfg[key] = value
-    yaml.set(botId, botCfg)
-    delete this.config["config.bot"]
-  }
-
-  /**
    * 修改设置
    * @param {string} name 文件名
    * @param {string} key 修改的key值
@@ -251,7 +219,7 @@ class Config {
     if (category == "add") {
       yaml.addIn(key, value)
     } else {
-      let index = yaml.jsonData[key].indexOf(value)
+      let index = yaml.get(key).indexOf(value)
       yaml.delete(`${key}.${index}`)
     }
   }

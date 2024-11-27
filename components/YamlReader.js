@@ -77,12 +77,12 @@ export default class YamlReader {
   }
 
   // 彻底删除某个key
-  deleteKey(keyPath) {
-    let keys = keyPath.split(".")
-    keys = this.mapParentKeys(keys)
-    this.document.deleteIn(keys)
-    this.save()
-  }
+  // deleteKey(keyPath) {
+  //   let keys = keyPath.split(".")
+  //   keys = this.mapParentKeys(keys)
+  //   this.document.deleteIn(keys)
+  //   this.save()
+  // }
 
   save() {
     this.isSave = true

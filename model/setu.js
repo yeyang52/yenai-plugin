@@ -182,7 +182,7 @@ export default new class setu {
   setGroupRecallTimeAndCd(groupId, num, type) {
     let data = Data.readJSON("setu.json", this.root)
 
-    if (!data[groupId]) data[groupId] = _.cloneDeep(this.def)
+    if (!data[groupId]) data[groupId] = structuredClone(this.def)
 
     type ? data[groupId].recall = Number(num) : data[groupId].cd = Number(num)
 
@@ -217,7 +217,7 @@ export default new class setu {
   setR18(groupID, isopen) {
     let data = Data.readJSON(`setu${groupID ? "" : "_s"}.json`, this.root)
     if (groupID) {
-      if (!data[groupID]) data[groupID] = _.cloneDeep(this.def)
+      if (!data[groupID]) data[groupID] = structuredClone(this.def)
       data[groupID].r18 = isopen ? 1 : 0
     } else {
       data.r18 = isopen ? 1 : 0
@@ -237,7 +237,7 @@ export default new class setu {
    * @returns {*}
    */
   getSeSeConfig(e) {
-    let set = _.cloneDeep(this.def)
+    let set = structuredClone(this.def)
     set.cd = this.getCfgCd(e.user_id, e.group_id)
     set.r18 = this.getR18(e.group_id)
     set.recall = this.getRecallTime(e.group_id)

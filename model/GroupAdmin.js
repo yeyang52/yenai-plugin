@@ -356,7 +356,7 @@ segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
 
   /** 获取定时任务 */
   getMuteTask() {
-    let taskList = _.cloneDeep(_task)
+    let taskList = structuredClone(_task)
     console.log(taskList)
     const taskGroups = new Map()
     for (const item of taskList) {

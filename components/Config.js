@@ -124,7 +124,7 @@ class Config {
   getDefOrConfig(name) {
     let def = this.getdefSet(name)
     let config = this.getConfig(name)
-    return _.merge(def, config)
+    return _.merge({}, def, config)
   }
 
   /**

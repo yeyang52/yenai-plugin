@@ -6,8 +6,12 @@ import { Version } from "../../components/index.js"
 import { formatDuration } from "../../tools/index.js"
 import si from "systeminformation"
 
-const osInfo = await si.osInfo()
-let loader = null
+let osInfo = null
+let loader = null;
+
+(async() => {
+  osInfo = await si.osInfo()
+})()
 
 try {
   // eslint-disable-next-line import/no-unresolved

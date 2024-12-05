@@ -14,3 +14,7 @@ defSet:
   r18: 0 #1开启0关闭
   recall: 120 #撤回时间
   cd: 300 
+
+friendSet:
+  r18: 0
+  

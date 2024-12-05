@@ -21,10 +21,6 @@ export class Qzone extends plugin {
         {
           reg: "^#发说说",
           fnc: "Qzonesay"
-        },
-        {
-          reg: "^#(清空说说|清空留言)$",
-          fnc: "QzonedelAll"
         }
       ]
     })

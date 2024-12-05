@@ -123,16 +123,6 @@ export const helpList = [
         title: "#删说说 <序号>",
         desc: "用取说说列表获取序号",
         icon: 17
-      },
-      {
-        title: "#清空说说",
-        desc: "一键清空",
-        icon: 18
-      },
-      {
-        title: "#清空留言",
-        desc: "一键清空留言",
-        icon: 19
       }
     ]
   },

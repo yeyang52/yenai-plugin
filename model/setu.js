@@ -1,12 +1,13 @@
 import { common, Pixiv } from "./index.js"
-import { Data, Plugin_Path, Config } from "../components/index.js"
+import { Data, Plugin_Path, Config, YamlReader } from "../components/index.js"
 import _ from "lodash"
 import { setuMsg } from "../constants/msg.js"
 import request from "../lib/request/request.js"
 import formatDuration from "../tools/formatDuration.js"
 export default new class setu {
   constructor() {
-    this.root = `${Plugin_Path}/config/setu`
+    this.root = `${Plugin_Path}/config/config/setu.yaml`
+    this.cfgPath = `${Plugin_Path}/config/config/setu.yaml`
     // 默认配置
     this.def = Config.setu.defSet
     // 存cd的变量
@@ -176,17 +177,19 @@ export default new class setu {
    * 设置群cd和撤回时间
    * @param {number} groupId 群号
    * @param {number} num 设置时间
-   * @param {boolean} type 为true设置撤回时间反之设置CD
-   * @returns {boolean}
+   * @param {'recall'|'cd'} type 设置的类型 recall-撤回时间 cd-群cd
    */
-  setGroupRecallTimeAndCd(groupId, num, type) {
-    let data = Data.readJSON("setu.json", this.root)
+  setGroupRecallTimeAndCd(groupId, num, type = "cd") {
+    // let data = Data.readJSON("setu.json", this.root)
 
-    if (!data[groupId]) data[groupId] = structuredClone(this.def)
+    // if (!data[groupId]) data[groupId] = structuredClone(this.def)
 
-    type ? data[groupId].recall = Number(num) : data[groupId].cd = Number(num)
+    // data[groupId][type] = +num
 
-    return Data.writeJSON("setu.json", data, this.root)
+    // return Data.writeJSON("setu.json", data, this.root)
+    let y = new YamlReader(this.cfgPath)
+    const comment = type === "cd" ? "群cd" : "撤回时间"
+    y.set(`${groupId}.${type}`, +num, comment)
   }
 
   /**

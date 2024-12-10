@@ -1,26 +1,27 @@
 /* eslint-disable no-undef */
 
 const {
-  BotNameColor, BotNameColorGradient, highColor, mediumColor,
-  lowColor
-} = Config
+  BotNameColor, progressBarColor
+} = Config.style
 // 修改BotNameColor
 const botNameElements = document.querySelectorAll(".header h1")
 botNameElements.forEach(BotNameElement => {
-  if (BotNameColorGradient && BotNameColorGradient !== "none") {
+  const BotNameColorGradient = BotNameColor.match(/gradient:(.*)/)?.[1]
+  if (BotNameColorGradient) {
     BotNameElement.style.backgroundImage = `linear-gradient(${BotNameColorGradient})`
     BotNameElement.style.color = "transparent"
     BotNameElement.style.backgroundClip = "text"
-  } else if (BotNameColor && BotNameColor !== "none") {
+  } else {
     BotNameElement.style.color = BotNameColor
     BotNameElement.style.backgroundImage = "none"
   }
 })
+const { high, medium, low } = progressBarColor
 // 进度条颜色
 const documentElement = document.documentElement
-documentElement.style.setProperty("--high-color", highColor)
-documentElement.style.setProperty("--medium-color", mediumColor)
-documentElement.style.setProperty("--low-color", lowColor)
+documentElement.style.setProperty("--high-color", high)
+documentElement.style.setProperty("--medium-color", medium)
+documentElement.style.setProperty("--low-color", low)
 
 // 根据圆环数量调整宽度
 const mainHardwareElement = document.querySelectorAll(".mainHardware li")

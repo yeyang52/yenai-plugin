@@ -116,7 +116,7 @@ export class SeSe extends plugin {
   async setGroupRecallAndCD(e) {
     let num = e.msg.match(new RegExp(NumReg))
     num = translateChinaNum(num[0])
-    let type = /撤回间隔/.test(e.msg)
+    let type = /撤回间隔/.test(e.msg) ? "recall" : "cd"
     setu.setGroupRecallTimeAndCd(e.group_id, num, type)
     // new Admin().SeSe_Settings(e)
   }

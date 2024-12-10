@@ -4,7 +4,7 @@ allowPM: true
 excludeAI: false
 #获取张数大于前面的数时则使用对应的图片大小 可选值: ['mini', 'thumb', 'small', 'regular', 'original']
 imgSize:
-  6: 'regular'
+  6: "regular"
   # 9: 'small'
   # 15: 'thumb'
 #每名用户每日次数限制（0 则无限制）
@@ -13,8 +13,13 @@ limit: 30
 defSet:
   r18: 0 #1开启0关闭
   recall: 120 #撤回时间
-  cd: 300 
+  cd: 300
 
 friendSet:
   r18: 0
-  
+
+12346:
+  r18: 1
+
+456789:
+  cd: 60

@@ -10,10 +10,10 @@ export default async function getStyle() {
   }
 }
 export async function getBackground() {
-  const { backdrop, backdropDefault } = Config.state
+  const { backdrop, backdropDefault } = Config.state.style
   let { controller, clearTimeout } = await createAbortCont(5000)
   try {
-    if (!backdrop) throw Error("配置项backdrop为假")
+    if (!backdrop) throw Error("配置项backdrop为空")
     const startTime = Date.now()
 
     const buffer = await requset.get(backdrop, {

@@ -16,7 +16,7 @@ import getSWAP from "./SWAP.js"
 import getRedisInfo from "./redis.js"
 import getStyle from "./style.js"
 import { BuildDebug } from "./debug.js"
-
+import getProcessLoad from "./processLoad.js"
 export async function getData(e) {
   e.isPro = e.msg.includes("pro")
   e.isDebug = e.msg.includes("debug")
@@ -40,8 +40,9 @@ export async function getData(e) {
     getNetworkTestList(e),
     getBotState(e),
     getStyle(),
-    getRedisInfo(e.isPro)
-  ], [ "FastFetch", "FsSize", "NetworkTest", "BotState", "Style", "Redis" ])
+    getRedisInfo(e.isPro),
+    getProcessLoad(e)
+  ], [ "FastFetch", "FsSize", "NetworkTest", "BotState", "Style", "Redis", "processLoad" ])
 
   const promiseTaskList = [
     visualDataPromise,
@@ -55,7 +56,8 @@ export async function getData(e) {
     psTest,
     BotStatusList,
     style,
-    redis
+    redis,
+    processLoad
   ] = await debugFun.add(Promise.all(promiseTaskList), "all")
 
   e.isDebug && debugFun.send()
@@ -81,6 +83,7 @@ export async function getData(e) {
     FastFetch,
     HardDisk,
     style,
+    processLoad,
     time: moment().format("YYYY-MM-DD HH:mm:ss"),
     isPro: e.isPro
   }

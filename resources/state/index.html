@@ -200,6 +200,17 @@
 </div>
 {{/if}}
 
+{{if processLoad}}
+<div class="box" data-boxInfo="进程负载">
+    {{each processLoad}}
+    <div class="speed">
+        <p>{{$value.first}}</p>
+        <p>{{$value.tail}}</p>
+    </div>
+    {{/each}}
+</div>
+{{/if}}
+
 {{if otherInfo}}
 <div class="box" data-boxInfo="其他">
     {{each otherInfo}}

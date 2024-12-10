@@ -31,22 +31,23 @@ monitor:
   # 开启redis存储数据
   openRedisSaveData: true
 
-# 背景图片api，设置为false则一直使用默认背景
-# 默认地址 https://t.alcy.cc/mp
-backdrop: "https://t.alcy.cc/mp"
-
-# 当api请求失败时使用的默认背景图，请放置在resources/state/img/bg目录下
-# random - 随机选择state/img/bg目录里的一张图片
-# default_bg.jpg 可直接指定bg目录里一张图片，注意请带上后缀名
-backdropDefault: "random"
-
 # 显示的系统资源可选值: [CPU, RAM, SWAP, GPU, Node] 注意如果gpu获取不到将不会显示
 systemResources:
   - CPU
   - RAM
   - SWAP
   - GPU
-  # - Node
+
+# 进程负载
+processLoad:
+  # 是否显示 true - 显示 - false - 不显示 pro - 只有pro显示
+  show: pro
+  # 是否显示进程pid
+  showPid: false
+  # 进程名
+  list:
+    - node
+    - redis
 
 # 关闭图表
 closedChart: false
@@ -64,22 +65,6 @@ showFastFetch: default
 # pro - 只有状态pro显示
 showRedisInfo: true
 
-# Bot昵称的颜色
-BotNameColor: "#000"
-# Bot昵称渐变色 设置了该值BotNameColor值将无效 如要使用BotNameColor请将该值设为none或false
-# 该值请参考https://developer.mozilla.org/zh-CN/docs/Web/CSS/gradient/linear-gradient
-# xxdeg 为渐变角度 后为渐变颜色
-# 原来花里胡哨的渐变271.14deg,#001bff 0.98%,#00f0ff 25.79%,#fce84a 47.33%,#f34628 65.77%,#b275ff 91.4%
-BotNameColorGradient: "none"
-
-#主硬件进度条和磁盘进度条的颜色
-#严重
-highColor: "#d73403"
-#警告
-mediumColor: "#ffa500"
-#正常
-lowColor: "#84A0DF"
-
 # 图表配置
 chartsCfg:
   themeCfg: "westeros"
@@ -87,3 +72,20 @@ chartsCfg:
   titleColor: "#84A0DF"
   # 标题文字
   titleText: "Network"
+
+# 样式
+style:
+  # 远程背景图片api，设置为false则一直使用默认背景
+  backdrop: "https://t.alcy.cc/mp"
+  # 当api请求失败时使用的默认背景图，请放置在resources/state/img/bg目录下
+  # random - 随机选择背景目录里的一张图片
+  # default_bg.jpg 可直接指定bg目录里一张图片，注意请带上后缀名
+  backdropDefault: "random"
+  # Bot昵称的颜色
+  # 支持渐变色请以gradient:开头 如 gradient:271.14deg,#001bff 0.98%,#00f0ff 25.79%,#fce84a 47.33%,#f34628 65.77%,#b275ff 91.4%
+  BotNameColor: "#000"
+  #主硬件进度条和磁盘进度条的颜色
+  progressBarColor:
+    high: "#d73403"
+    medium: "#ffa500"
+    low: "#84A0DF"

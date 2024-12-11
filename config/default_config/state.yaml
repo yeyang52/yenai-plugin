@@ -44,6 +44,14 @@ processLoad:
   show: pro
   # 是否显示进程pid
   showPid: false
+  # 显示最大的mem占用或cpu占用的进程
+  showMax:
+    # 是否显示 true - 显示 - false - 不显示
+    show: true
+    # 显示数量
+    showNum: 5
+    # 排序方式 cpu mem cpuu cpus memVsz memRss
+    order: mem
   # 进程名
   list:
     - node

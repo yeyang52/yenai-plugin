@@ -203,10 +203,14 @@
 {{if processLoad}}
 <div class="box" data-boxInfo="进程负载">
     {{each processLoad}}
+    {{if $value == "hr"}}
+    <hr style="margin: 5px 0" />
+    {{else}}
     <div class="speed">
         <p>{{$value.first}}</p>
         <p>{{$value.tail}}</p>
     </div>
+    {{/if}}
     {{/each}}
 </div>
 {{/if}}

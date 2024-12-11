@@ -1,27 +1,37 @@
 import si from "systeminformation"
 import { Config } from "../../components/index.js"
+import _ from "lodash"
 
 export default async function(e) {
-  const { show, list, showPid } = Config.state.processLoad
-  if (!list && !list.length == 0) return false
-  if (!show) {
-    return false
-  }
-  if (show === "pro" && !e.isPro) {
+  const { show, list, showPid, showMax } = Config.state.processLoad
+  if (!show || (show === "pro" && !e.isPro)) {
     return false
   }
   try {
-    let data = await si.processLoad(list.join(","))
-    return data.map(item => {
-      let name = item.proc
-      if (showPid) {
-        name += `(${item.pid})`
-      }
-      item.cpu = item.cpu.toFixed(1)
-      item.mem = item.mem.toFixed(1)
+    let task = []
+    if (showMax.show) {
+      task.push(
+        si.processes()
+          .then(r => _.orderBy(r.list, showMax.order, "desc")
+            .slice(0, showMax.showNum)
+          )
+      )
+    }
+    if (list && list.length != 0) {
+      task.push(si.processLoad(list.join(",")))
+    }
+    if (showMax.show && (list && list.length != 0)) {
+      task.splice(1, 0, "hr")
+    }
+    let result = await Promise.all(task)
+    return _.flatten(result).map(item => {
+      if (item === "hr") return item
+      const { proc, name, pid, cpu, mem } = item
+      const displayName = `${proc || name}${showPid ? ` (${pid})` : ""}`
+
       return {
-        first: name,
-        tail: `CPU ${item.cpu}% | MEM ${item.mem}%`
+        first: displayName,
+        tail: `CPU ${cpu.toFixed(1)}% | MEM ${mem.toFixed(1)}%`
       }
     })
   } catch (error) {

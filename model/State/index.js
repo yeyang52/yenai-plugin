@@ -17,6 +17,11 @@ import getRedisInfo from "./redis.js"
 import getStyle from "./style.js"
 import { BuildDebug } from "./debug.js"
 import getProcessLoad from "./processLoad.js"
+import si from "systeminformation"
+
+global.yenai_debug ||= {}
+global.yenai_debug.si = si
+
 export async function getData(e) {
   e.isPro = e.msg.includes("pro")
   e.isDebug = e.msg.includes("debug")

@@ -49,8 +49,11 @@ processLoad:
     # 是否显示 true - 显示 - false - 不显示
     show: true
     # 显示数量
-    showNum: 5
-    # 排序方式 cpu mem cpuu cpus memVsz memRss
+    showNum: 6
+    # 排序方式
+    # cpu - 以cpu占用进行排序显示
+    # mem - 以mem占用进行排序显示
+    # cpu_mem - cpu占用和mem占用最多的各显示一半
     order: mem
   # 进程名
   list:

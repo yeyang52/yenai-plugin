@@ -3,6 +3,11 @@ import { Config } from "../../components/index.js"
 import _ from "lodash"
 import { getFileSize } from "./utils.js"
 
+let memTotal = 0;
+(async() => {
+  memTotal = (await si.mem()).total
+})()
+
 export default async function(e) {
   const { show, list, showPid, showMax } = Config.state.processLoad
   if (!show || (show === "pro" && !e.isPro)) {
@@ -41,6 +46,7 @@ export default async function(e) {
           )
       )
     }
+
     if (list?.length) {
       task.push(si.processLoad(list.join(",")))
     }
@@ -51,12 +57,12 @@ export default async function(e) {
 
     return _.flatten(result).map(item => {
       if (item === "hr") return item
-      const { proc, name, pid, cpu, memRss, mem } = item
+      const { proc, name, pid, cpu, mem } = item
       const displayName = `${proc || name}${showPid ? ` (${pid})` : ""}`
-      const MEM = memRss === undefined ? mem.toFixed(1) + "%" : getFileSize(memRss)
+      const MEM = memTotal * (mem / 100)
       return {
         first: displayName,
-        tail: `CPU ${cpu.toFixed(1)}% | MEM ${MEM}`
+        tail: `CPU ${cpu.toFixed(1)}% | MEM ${getFileSize(MEM)}`
       }
     })
   } catch (error) {

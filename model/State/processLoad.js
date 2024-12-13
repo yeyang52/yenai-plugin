@@ -4,7 +4,7 @@ import _ from "lodash"
 import { getFileSize } from "./utils.js"
 
 export default async function(e) {
-  const { show, list, showPid, showMax } = Config.state.processLoad
+  const { show, list, showPid, showMax, showCmd } = Config.state.processLoad
   if (!show || (show === "pro" && !e.isPro)) {
     return false
   }
@@ -41,12 +41,13 @@ export default async function(e) {
       const l = list.map(i => i.startsWith("$") ? eval(i.replace("$", "")) : i)
       const r = {}
       for (const i of ps.list) {
-        if ((l.includes(i.name) || l.includes(i.command)) && !result.includes(i)) {
-          if (i.command in r) {
-            r[i.command].pid += `,${i.pid}`
-            r[i.command].cpu += i.cpu
-            r[i.command].memRss += i.memRss
-          } else r[i.command] = i
+        if ((l.includes(i.name) || l.includes(i.command) || (process.platform === "win32" && l.includes(i.name.replace(/.exe$/, "")))) && !result.includes(i)) {
+          const k = showCmd ? i.command : i.name
+          if (k in r) {
+            r[k].pid += `,${i.pid}`
+            r[k].cpu += i.cpu
+            r[k].memRss += i.memRss
+          } else r[k] = i
         }
       }
       result.push("hr", ...Object.values(r))
@@ -54,8 +55,8 @@ export default async function(e) {
 
     return result.map(item => {
       if (item === "hr") return item
-      const { command, pid, cpu, memRss } = item
-      const displayName = `${command}${showPid ? ` (${pid})` : ""}`
+      const { name, command, pid, cpu, memRss } = item
+      const displayName = `${showCmd ? command : name}${showPid ? ` (${pid})` : ""}`
       return {
         first: displayName,
         tail: `CPU ${cpu.toFixed(1)}% | MEM ${getFileSize(memRss * 1024)}`

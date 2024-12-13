@@ -44,6 +44,8 @@ processLoad:
   show: pro
   # 是否显示进程pid
   showPid: false
+  # 是否显示进程命令
+  showCmd: false
   # 显示最大的mem占用或cpu占用的进程
   showMax:
     # 是否显示 true - 显示 - false - 不显示
@@ -60,7 +62,7 @@ processLoad:
     - node
     - redis-server
     - chromium
-    - $process.env.SHELL.split("/").at(-1)
+    - "$(process.env.SHELL || process.env.COMSPEC || 'sh').split(/\\/|\\\\/).at(-1)"
     - $process.title
 
 # 关闭图表

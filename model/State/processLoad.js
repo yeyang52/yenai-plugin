@@ -3,66 +3,62 @@ import { Config } from "../../components/index.js"
 import _ from "lodash"
 import { getFileSize } from "./utils.js"
 
-let memTotal = 0;
-(async() => {
-  memTotal = (await si.mem()).total
-})()
-
 export default async function(e) {
   const { show, list, showPid, showMax } = Config.state.processLoad
   if (!show || (show === "pro" && !e.isPro)) {
     return false
   }
   try {
-    let task = []
+    const ps = await si.processes()
+    const result = []
     if (showMax.show) {
-      const orderFun = (type) => {
-        const MapFun = {
-          cpu(list, slices) {
-            return _.orderBy(list, "cpu", "desc").slice(0, slices)
-          },
-          mem(list, slices) {
-            return _.orderBy(list, "mem", "desc").slice(0, slices)
-          },
-          cpu_mem(list, slices) {
-            const cpuOrder = _.orderBy(list, "cpu", "desc")
-            const memOrder = _.orderBy(list, "mem", "desc")
+      switch (showMax.order) {
+        case "cpu":
+          result.push(..._.orderBy(ps.list, "cpu", "desc").slice(0, showMax.showNum))
+          break
+        case "mem":
+          result.push(..._.orderBy(ps.list, "mem", "desc").slice(0, showMax.showNum))
+          break
+        case "cpu_mem": {
+          const cpuOrder = _.orderBy(ps.list, "cpu", "desc")
+          const memOrder = _.orderBy(ps.list, "mem", "desc")
 
-            const cpuNum = Math.ceil(slices / 2)
-            const memNum = slices - cpuNum
+          const cpuNum = Math.ceil(showMax.showNum / 2)
+          const memNum = showMax.showNum - cpuNum
 
-            return [
-              ...cpuOrder.slice(0, cpuNum),
-              "hr",
-              ...memOrder.slice(0, memNum)
-            ]
-          }
-        }
-        return MapFun[type] ?? MapFun.mem
-      }
-      task.push(
-        si.processes()
-          .then(r => orderFun(showMax.order)(r.list, showMax.showNum)
+          result.push(
+            ...cpuOrder.slice(0, cpuNum),
+            "hr",
+            ...memOrder.slice(0, memNum)
           )
-      )
+          break
+        }
+      }
     }
 
     if (list?.length) {
-      task.push(si.processLoad(list.join(",")))
+      // eslint-disable-next-line no-eval
+      const l = list.map(i => i.startsWith("$") ? eval(i.replace("$", "")) : i)
+      const r = {}
+      for (const i of ps.list) {
+        if ((l.includes(i.name) || l.includes(i.command)) && !result.includes(i)) {
+          if (i.command in r) {
+            r[i.command].pid += `,${i.pid}`
+            r[i.command].cpu += i.cpu
+            r[i.command].memRss += i.memRss
+          } else r[i.command] = i
+        }
+      }
+      result.push("hr", ...Object.values(r))
     }
-    if (showMax.show && list?.length) {
-      task.splice(1, 0, "hr")
-    }
-    let result = await Promise.all(task)
 
-    return _.flatten(result).map(item => {
+    return result.map(item => {
       if (item === "hr") return item
-      const { proc, name, pid, cpu, mem } = item
-      const displayName = `${proc || name}${showPid ? ` (${pid})` : ""}`
-      const MEM = memTotal * (mem / 100)
+      const { command, pid, cpu, memRss } = item
+      const displayName = `${command}${showPid ? ` (${pid})` : ""}`
       return {
         first: displayName,
-        tail: `CPU ${cpu.toFixed(1)}% | MEM ${getFileSize(MEM)}`
+        tail: `CPU ${cpu.toFixed(1)}% | MEM ${getFileSize(memRss * 1024)}`
       }
     })
   } catch (error) {

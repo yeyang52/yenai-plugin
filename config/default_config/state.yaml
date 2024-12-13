@@ -12,7 +12,7 @@ psTestSites:
   list:
     - name: Baidu
       url: https://baidu.com
-      useProxy: true
+      useProxy: false
     - name: Google
       url: https://google.com
       useProxy: true
@@ -54,11 +54,14 @@ processLoad:
     # cpu - 以cpu占用进行排序显示
     # mem - 以mem占用进行排序显示
     # cpu_mem - cpu占用和mem占用最多的各显示一半
-    order: mem
+    order: cpu_mem
   # 进程名
   list:
     - node
-    - redis
+    - redis-server
+    - chromium
+    - $process.env.SHELL.split("/").at(-1)
+    - $process.title
 
 # 关闭图表
 closedChart: false

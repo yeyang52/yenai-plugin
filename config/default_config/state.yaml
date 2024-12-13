@@ -43,7 +43,7 @@ processLoad:
   # 是否显示 true - 显示 - false - 不显示 pro - 只有pro显示
   show: pro
   # 是否显示进程pid
-  showPid: false
+  # showPid: false
   # 是否显示进程命令
   showCmd: false
   # 显示最大的mem占用或cpu占用的进程

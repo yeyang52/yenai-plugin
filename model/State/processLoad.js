@@ -4,7 +4,7 @@ import _ from "lodash"
 import { getFileSize } from "./utils.js"
 
 export default async function(e) {
-  const { show, list, showPid, showMax, showCmd } = Config.state.processLoad
+  const { show, list, showMax, showCmd } = Config.state.processLoad
   if (!show || (show === "pro" && !e.isPro)) {
     return false
   }
@@ -56,10 +56,12 @@ export default async function(e) {
     return result.map(item => {
       if (item === "hr") return item
       const { name, command, pid, cpu, memRss } = item
-      const displayName = `${showCmd ? command : name}${showPid ? ` (${pid})` : ""}`
+      // const displayName = `${showCmd ? command : name}${showPid ? ` (${pid})` : ""}`
       return {
-        first: displayName,
-        tail: `CPU ${cpu.toFixed(1)}% | MEM ${getFileSize(memRss * 1024)}`
+        name: showCmd ? command : name,
+        pid,
+        cpu: cpu.toFixed(1) + "%",
+        mem: getFileSize(memRss * 1024)
       }
     })
   } catch (error) {

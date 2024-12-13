@@ -67,6 +67,30 @@ body {
         }
     }
 
+    &[data-boxInfo="进程负载"] {
+        .form {
+            display: flex;
+            flex-direction: column;
+            font-size: 14px;
+
+            .row {
+                display: flex;
+                flex: 1;
+            }
+
+            .header-row {
+                font-size: 15px;
+                color: #494d53;
+            }
+
+            .cell {
+                flex: 1;
+                padding: 5px;
+                text-align: left;
+            }
+        }
+    }
+
     &[data-boxInfo="redis"] {
         .title {
             display: flex;

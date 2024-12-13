@@ -11,9 +11,9 @@
 
 {{block 'main'}}
 <script>
-    var chartData = JSON.parse('{{@chartData}}')
-    var Config = JSON.parse('{{@Config}}')
-    var _res_path = '{{_res_path}}'
+    var chartData = JSON.parse(`{{@chartData}}`)
+    var Config = JSON.parse(`{{@Config}}`)
+    var _res_path = `{{_res_path}}`
 </script>
 {{each BotStatusList}}
 <div class="box">
@@ -202,16 +202,28 @@
 
 {{if processLoad}}
 <div class="box" data-boxInfo="进程负载">
-    {{each processLoad}}
-    {{if $value == "hr"}}
-    <hr style="margin: 5px 0" />
-    {{else}}
-    <div class="speed">
-        <p>{{$value.first}}</p>
-        <p>{{$value.tail}}</p>
+    <div class="form">
+        <div class="row header-row">
+            <div class="cell">name</div>
+            <div class="cell">pid</div>
+            <div class="cell">cpu</div>
+            <div class="cell">mem</div>
+        </div>
+        {{each processLoad v}}
+        {{if v === "hr"}}
+        <hr style="margin: 5px 0" />
+        {{else}}
+        <div class="row">
+            <div class="cell">{{v.name}}</div>
+            {{if v.pid !== false}}
+            <div class="cell">{{v.pid}}</div>
+            {{/if}}
+            <div class="cell">{{v.cpu}}</div>
+            <div class="cell">{{v.mem}}</div>
+        </div>
+        {{/if}}
+        {{/each}}
     </div>
-    {{/if}}
-    {{/each}}
 </div>
 {{/if}}
 

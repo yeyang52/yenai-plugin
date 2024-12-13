@@ -17,8 +17,9 @@ export default class YamlReader {
   }
 
   initYaml() {
+    this.data = fs.readFileSync(this.yamlPath, "utf8")
     // parseDocument 将会保留注释
-    this.document = YAML.parseDocument(fs.readFileSync(this.yamlPath, "utf8"))
+    this.document = YAML.parseDocument(this.data)
     if (this.isWatch && !this.watcher) {
       this.watcher = chokidar.watch(this.yamlPath).on("change", () => {
         if (this.isSave) {
@@ -75,8 +76,10 @@ export default class YamlReader {
   }
 
   save() {
+    const yaml = this.document.toString()
+    // 数据不变不写💩
+    if (yaml === this.data) return
     this.isSave = true
-    let yaml = this.document.toString()
     fs.writeFileSync(this.yamlPath, yaml, "utf8")
   }
 }

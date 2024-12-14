@@ -250,7 +250,7 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 ### 贡献者 ✨
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-17-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 感谢这些了不起的人 ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
@@ -280,6 +280,7 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ifeif"><img src="https://avatars.githubusercontent.com/u/36729028?v=4?s=100" width="100px;" alt="ifeif"/><br /><sub><b>ifeif</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=ifeif" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Jin1c-3"><img src="https://avatars.githubusercontent.com/u/126029323?v=4?s=100" width="100px;" alt="青青"/><br /><sub><b>青青</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=Jin1c-3" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/KBVsent"><img src="https://avatars.githubusercontent.com/u/137363396?v=4?s=100" width="100px;" alt="時壹"/><br /><sub><b>時壹</b></sub></a><br /><a href="https://github.com/yeyang52/yenai-plugin/commits?author=KBVsent" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

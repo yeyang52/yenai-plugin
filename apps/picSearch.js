@@ -81,7 +81,7 @@ export class NewPicSearch extends plugin {
   }
 
   async _Authentication(e) {
-    if (!this.e.isMaster) { return true }
+    if (this.e.isMaster) { return true }
     const { allowPM, limit, isMasterUse } = Config.picSearch
     if (isMasterUse) {
       e.reply("主人没有开放这个功能哦(＊／ω＼＊)")

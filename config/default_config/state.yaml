@@ -64,6 +64,9 @@ processLoad:
     - chromium
     - "$(process.env.SHELL || process.env.COMSPEC || 'sh').split(/\\/|\\\\/).at(-1)"
     - $process.title
+  # 过滤的进程名 该list中的进程名将会被过滤掉 精确匹配
+  filterList:
+    - System Idle Process
 
 # 关闭图表
 closedChart: false

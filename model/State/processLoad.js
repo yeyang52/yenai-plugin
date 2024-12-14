@@ -4,12 +4,16 @@ import _ from "lodash"
 import { getFileSize } from "./utils.js"
 
 export default async function(e) {
-  const { show, list, showMax, showCmd } = Config.state.processLoad
+  const { show, list, showMax, showCmd, filterList } = Config.state.processLoad
   if (!show || (show === "pro" && !e.isPro)) {
     return false
   }
   try {
-    const ps = await si.processes()
+    const ps = await si.processes().then(i => {
+      i.list = i.list.filter(i => !filterList.includes(i.name))
+      return i
+    })
+
     const result = []
     if (showMax.show) {
       switch (showMax.order) {
@@ -37,17 +41,22 @@ export default async function(e) {
     }
 
     if (list?.length) {
-      // eslint-disable-next-line no-eval
-      const l = list.map(i => i.startsWith("$") ? eval(i.replace("$", "")) : i)
+      const l = list.map(i => i.startsWith("$") ? globalThis.eval(i.replace("$", "")) : i)
       const r = {}
       for (const i of ps.list) {
-        if ((l.includes(i.name) || l.includes(i.command) || (process.platform === "win32" && l.includes(i.name.replace(/.exe$/, "")))) && !result.includes(i)) {
-          const k = showCmd ? i.command : i.name
-          if (k in r) {
-            r[k].pid += `,${i.pid}`
-            r[k].cpu += i.cpu
-            r[k].memRss += i.memRss
-          } else r[k] = i
+        const { name, command } = i
+        const nameWithoutExe = process.platform === "win32" ? name.replace(/.exe$/, "") : name
+        if (l.includes(name) || l.includes(command) || l.includes(nameWithoutExe)) {
+          if (!result.includes(i)) {
+            const k = showCmd ? i.command : i.name
+            if (k in r) {
+              r[k].pid += `,${i.pid}`
+              r[k].cpu += i.cpu
+              r[k].memRss += i.memRss
+            } else {
+              r[k] = i
+            }
+          }
         }
       }
       result.push("hr", ...Object.values(r))

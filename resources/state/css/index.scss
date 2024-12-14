@@ -69,7 +69,7 @@ body {
 
     &[data-boxInfo="进程负载"] {
         .title {
-            border-bottom: #494d53 1px solid;
+            border-bottom: #929292 1px solid;
             padding: 5px 0;
         }
 
@@ -82,20 +82,17 @@ body {
 
             .list {
                 display: flex;
-                justify-content: space-between;
+                justify-content: space-around;
                 margin: 10px 0;
                 font-size: 17px;
 
                 div {
                     border: 1px solid rgba(180, 180, 182, 0.6745098039);
                     border-radius: 5px;
-                    padding: 5px;
+                    padding: 5px 10px;
                     color: #4f5255;
                     background-color: rgba(244, 244, 245, 0.5803921569);
 
-                    span {
-                        color: #46971d
-                    }
                 }
             }
         }
@@ -110,9 +107,9 @@ body {
                 flex-direction: column;
                 font-size: 16px;
 
+
                 .row {
                     display: flex;
-                    flex: 1;
                 }
 
                 .header-row {
@@ -128,6 +125,11 @@ body {
 
                     &:first-child {
                         flex: 2;
+                    }
+
+                    &:nth-child(3),
+                    &:nth-child(4) {
+                        text-align: center;
                     }
                 }
             }
@@ -386,9 +388,9 @@ body {
 }
 
 hr {
-    border: 0;
-    height: 2px;
-    background-image: linear-gradient(135deg, #bdc3c7 10%, #2c3e50);
+    // border: 0;
+    // height: 2px;
+    // background-image: linear-gradient(135deg, #bdc3c7 10%, #2c3e50);
     border-radius: 10px;
 }
 

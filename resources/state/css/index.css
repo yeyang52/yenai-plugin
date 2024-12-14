@@ -174,7 +174,7 @@ body {
   height: 22px;
 }
 .box[data-boxInfo=进程负载] .title {
-  border-bottom: #494d53 1px solid;
+  border-bottom: #929292 1px solid;
   padding: 5px 0;
 }
 .box[data-boxInfo=进程负载] .info .title {
@@ -182,19 +182,16 @@ body {
 }
 .box[data-boxInfo=进程负载] .info .list {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   margin: 10px 0;
   font-size: 17px;
 }
 .box[data-boxInfo=进程负载] .info .list div {
   border: 1px solid rgba(180, 180, 182, 0.6745098039);
   border-radius: 5px;
-  padding: 5px;
+  padding: 5px 10px;
   color: #4f5255;
   background-color: rgba(244, 244, 245, 0.5803921569);
-}
-.box[data-boxInfo=进程负载] .info .list div span {
-  color: #46971d;
 }
 .box[data-boxInfo=进程负载] .process .title {
   margin: 10px 0;
@@ -206,7 +203,6 @@ body {
 }
 .box[data-boxInfo=进程负载] .process .form .row {
   display: flex;
-  flex: 1;
 }
 .box[data-boxInfo=进程负载] .process .form .header-row {
   font-size: 17px;
@@ -219,6 +215,9 @@ body {
 }
 .box[data-boxInfo=进程负载] .process .form .cell:first-child {
   flex: 2;
+}
+.box[data-boxInfo=进程负载] .process .form .cell:nth-child(3), .box[data-boxInfo=进程负载] .process .form .cell:nth-child(4) {
+  text-align: center;
 }
 .box[data-boxInfo=redis] .title {
   display: flex;
@@ -407,9 +406,6 @@ body {
 }
 
 hr {
-  border: 0;
-  height: 2px;
-  background-image: linear-gradient(135deg, #bdc3c7 10%, #2c3e50);
   border-radius: 10px;
 }
 

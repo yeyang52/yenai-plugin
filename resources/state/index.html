@@ -203,17 +203,17 @@
 {{if processLoad}}
 <div class="box" data-boxInfo="进程负载">
     <div class="info">
-        <div class="title">Info</div>
+        <div class="title">信息</div>
         <div class="list">
-            <div>all: <span>{{processLoad.all}}</span></div>
-            <div>running: <span>{{processLoad.running}}</span></div>
-            <div>blocked: <span>{{processLoad.blocked}}</span></div>
-            <div>sleeping: <span>{{processLoad.sleeping}}</span></div>
-            <div>unknown: <span>{{processLoad.unknown}}</span></div>
+            <div>全部: <span style="color: #333333;">{{processLoad.all}}</span></div>
+            <div>运行中: <span style="color: #54ad57;">{{processLoad.running}}</span></div>
+            <div>阻塞: <span style="color: #cc8823;">{{processLoad.blocked}}</span></div>
+            <div>休眠: <span style="color: #3698e8;">{{processLoad.sleeping}}</span></div>
+            <div>未知: <span style="color: #e54c41;">{{processLoad.unknown}}</span></div>
         </div>
     </div>
     <div class="process">
-        <div class="title">Process List</div>
+        <div class="title">进程列表</div>
         <div class="form">
             <div class="row header-row">
                 <div class="cell">Name</div>

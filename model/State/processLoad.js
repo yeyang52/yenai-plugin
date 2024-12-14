@@ -53,7 +53,7 @@ export default async function(e) {
       result.push("hr", ...Object.values(r))
     }
 
-    return result.map(item => {
+    ps.list = result.map(item => {
       if (item === "hr") return item
       const { name, command, pid, cpu, memRss } = item
       // const displayName = `${showCmd ? command : name}${showPid ? ` (${pid})` : ""}`
@@ -64,6 +64,7 @@ export default async function(e) {
         mem: getFileSize(memRss * 1024)
       }
     })
+    return ps
   } catch (error) {
     logger.error(error)
     return false

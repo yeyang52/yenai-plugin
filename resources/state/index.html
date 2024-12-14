@@ -202,28 +202,42 @@
 
 {{if processLoad}}
 <div class="box" data-boxInfo="进程负载">
-    <div class="form">
-        <div class="row header-row">
-            <div class="cell">Name</div>
-            <div class="cell">Pid</div>
-            <div class="cell">CPU</div>
-            <div class="cell">MEM</div>
+    <div class="info">
+        <div class="title">Info</div>
+        <div class="list">
+            <div>all: <span>{{processLoad.all}}</span></div>
+            <div>running: <span>{{processLoad.running}}</span></div>
+            <div>blocked: <span>{{processLoad.blocked}}</span></div>
+            <div>sleeping: <span>{{processLoad.sleeping}}</span></div>
+            <div>unknown: <span>{{processLoad.unknown}}</span></div>
         </div>
-        {{each processLoad v}}
-        {{if v === "hr"}}
-        <hr style="margin: 5px 0" />
-        {{else}}
-        <div class="row">
-            <div class="cell">{{v.name}}</div>
-            {{if v.pid !== false}}
-            <div class="cell">{{v.pid}}</div>
-            {{/if}}
-            <div class="cell">{{v.cpu}}</div>
-            <div class="cell">{{v.mem}}</div>
-        </div>
-        {{/if}}
-        {{/each}}
     </div>
+    <div class="process">
+        <div class="title">Process List</div>
+        <div class="form">
+            <div class="row header-row">
+                <div class="cell">Name</div>
+                <div class="cell">Pid</div>
+                <div class="cell">CPU</div>
+                <div class="cell">MEM</div>
+            </div>
+            {{each processLoad.list v}}
+            {{if v === "hr"}}
+            <hr style="margin: 5px 0" />
+            {{else}}
+            <div class="row">
+                <div class="cell">{{v.name}}</div>
+                {{if v.pid !== false}}
+                <div class="cell">{{v.pid}}</div>
+                {{/if}}
+                <div class="cell">{{v.cpu}}</div>
+                <div class="cell">{{v.mem}}</div>
+            </div>
+            {{/if}}
+            {{/each}}
+        </div>
+    </div>
+
 </div>
 {{/if}}
 

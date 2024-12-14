@@ -71,7 +71,7 @@ body {
         .form {
             display: flex;
             flex-direction: column;
-            font-size: 14px;
+            font-size: 16px;
 
             .row {
                 display: flex;
@@ -79,7 +79,7 @@ body {
             }
 
             .header-row {
-                font-size: 15px;
+                font-size: 17px;
                 color: #494d53;
             }
 
@@ -87,6 +87,11 @@ body {
                 flex: 1;
                 padding: 5px;
                 text-align: left;
+                @extend %text-overflow-mission;
+
+                &:first-child {
+                    flex: 2;
+                }
             }
         }
     }

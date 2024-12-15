@@ -203,7 +203,10 @@
 {{if processLoad}}
 <div class="box" data-boxInfo="进程负载">
     <div class="info">
-        <div class="title">信息</div>
+        <div class="title">
+            <img src="{{_res_path}}state/icon/进程信息.png" class="icon">
+            进程信息
+        </div>
         <div class="list">
             <div>全部: <span style="color: #333333;">{{processLoad.all}}</span></div>
             <div>运行中: <span style="color: #54ad57;">{{processLoad.running}}</span></div>
@@ -213,7 +216,10 @@
         </div>
     </div>
     <div class="process">
-        <div class="title">进程列表</div>
+        <div class="title">
+            <img src="{{_res_path}}state/icon/进程列表.png" class="icon">
+            进程列表
+        </div>
         <div class="form">
             <div class="row header-row">
                 <div class="cell">Name</div>

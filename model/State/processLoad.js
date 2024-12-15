@@ -45,8 +45,8 @@ export default async function(e) {
       const r = {}
       for (const i of ps.list) {
         const { name, command } = i
-        const nameWithoutExe = process.platform === "win32" ? name.replace(/.exe$/, "") : name
-        if (l.includes(name) || l.includes(command) || l.includes(nameWithoutExe)) {
+        const nameWithoutExe = process.platform === "win32" && l.includes(name.replace(/.exe$/, ""))
+        if (l.includes(name) || l.includes(command) || nameWithoutExe) {
           if (!result.includes(i)) {
             const k = showCmd ? i.command : i.name
             if (k in r) {
@@ -61,13 +61,15 @@ export default async function(e) {
       }
       result.push("hr", ...Object.values(r))
     }
-
+    const processChild = getProcessChild(ps.list, result.map(i => i.pid))
     ps.list = result.map(item => {
       if (item === "hr") return item
       const { name, command, pid, cpu, memRss } = item
-      // const displayName = `${showCmd ? command : name}${showPid ? ` (${pid})` : ""}`
+      const childNum = processChild[pid]?.length
+      const child = childNum > 0 ? `(${childNum})` : ""
+      const handleName = (showCmd ? command : name) + child
       return {
-        name: showCmd ? command : name,
+        name: handleName,
         pid,
         cpu: cpu.toFixed(1) + "%",
         mem: getFileSize(memRss * 1024)
@@ -78,4 +80,18 @@ export default async function(e) {
     logger.error(error)
     return false
   }
+}
+function getProcessChild(list, pids) {
+  const processMap = {}
+  list.forEach(process => {
+    if (pids.includes(process.parentPid)) {
+      if (processMap[process.parentPid]) {
+        processMap[process.parentPid].push(process)
+      } else {
+        processMap[process.parentPid] = [ process ]
+      }
+    }
+  })
+
+  return processMap
 }

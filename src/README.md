@@ -90,8 +90,3 @@ yarn install
 ::: warning
 Yenai-plugin仅适配[Yunzai-Bot V3](https://gitee.com/Le-niao/Yunzai-Bot)
 :::
-
-::: warning
-Yenai-plugin作者[椰羊](https://github.com/yeyang52)于**2023-07-04**起停止维护该插件，感谢一路陪伴❤️
-:::
-

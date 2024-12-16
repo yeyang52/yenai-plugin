@@ -34,7 +34,6 @@ class Config {
   }
 
   async mergeCfg(cfgPath, defPath, name) {
-    if (await redis.get(`yenai:mergeCfg:${name}`)) return
     const userDoc = YAML.parseDocument(fs.readFileSync(cfgPath, "utf8"))
     const defDoc = YAML.parseDocument(fs.readFileSync(defPath, "utf8"))
     let isUpdate = false
@@ -46,6 +45,7 @@ class Config {
       for (const item of def) {
         if (item?.key?.commentBefore?.includes?.("noMerge")) continue
         if (!existingKeys.has(item.key.value)) {
+          logger.info(`[Yenai-Plugin][合并配置][${name}][${item.key.value}]`)
           user.push(item)
           isUpdate = true
         } else if (YAML.isMap(item.value)) {
@@ -54,11 +54,22 @@ class Config {
         }
       }
     }
+    const clear = (user, def) => {
+      const defKeys = new Set(def.map(item => item.key.value))
+      for (let i = user.length - 1; i >= 0; i--) {
+        if (!defKeys.has(user[i].key.value)) {
+          logger.info(`[Yenai-Plugin][清除无效配置][${name}][${user[i].key.value}]`)
+          user.splice(i, 1)
+          isUpdate = true
+        } else if (YAML.isMap(user[i].value)) {
+          clear(user[i].value.items, def.find(item => item.key.value === user[i].key.value).value.items)
+        }
+      }
+    }
     maege(userDoc.contents.items, defDoc.contents.items)
+    this.other.autoClearCfg && clear(userDoc.contents.items, defDoc.contents.items)
     let yaml = userDoc.toString()
     isUpdate && fs.writeFileSync(cfgPath, yaml, "utf8")
-    // 每小时只合并一次避免影响启动效率
-    redis.set(`yenai:mergeCfg:${name}`, "1", { EX: 60 * 60 * 1 })
   }
 
   getNotice(botId = "", groupId = "") {

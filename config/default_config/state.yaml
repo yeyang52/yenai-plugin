@@ -108,3 +108,5 @@ style:
     high: "#d73403"
     medium: "#ffa500"
     low: "#84A0DF"
+  # redis信息值颜色
+  redisInfoValColor: "#485ab6"

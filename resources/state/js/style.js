@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 
 const {
-  BotNameColor, progressBarColor
+  BotNameColor, progressBarColor, redisInfoValColor
 } = Config.style
 // 修改BotNameColor
 const botNameElements = document.querySelectorAll(".header h1")
@@ -31,3 +31,10 @@ if (mainHardwareElement.length === 4) {
 } else if (mainHardwareElement.length === 5) {
   containerElement.style.width = "750px"
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+  const redisValElement = document.querySelectorAll(".redisBox .number")
+  redisValElement.forEach(element => {
+    element.style.color = redisInfoValColor ?? "#485ab6"
+  })
+})

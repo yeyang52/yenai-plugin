@@ -53,8 +53,10 @@ export default async function(e) {
               r[k].pid += `,${i.pid}`
               r[k].cpu += i.cpu
               r[k].memRss += i.memRss
+              r[k].childNums++
             } else {
               r[k] = i
+              r[k].childNums = 0
             }
           }
         }
@@ -64,8 +66,8 @@ export default async function(e) {
     const processChild = getProcessChild(ps.list, result.map(i => i.pid))
     ps.list = result.map(item => {
       if (item === "hr") return item
-      const { name, command, pid, cpu, memRss } = item
-      const childNum = processChild[pid]?.length
+      const { name, command, pid, cpu, memRss, childNums } = item
+      const childNum = childNums ?? processChild[pid]?.length
       const child = childNum > 0 ? `(${childNum})` : ""
       const handleName = (showCmd ? command : name) + child
       return {
@@ -83,7 +85,9 @@ export default async function(e) {
 }
 function getProcessChild(list, pids) {
   const processMap = {}
+  pids = pids.map(i => +i ?? i)
   list.forEach(process => {
+    process.parentPid = +process.parentPid ?? process.parentPid
     if (pids.includes(process.parentPid)) {
       if (processMap[process.parentPid]) {
         processMap[process.parentPid].push(process)

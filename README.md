@@ -1,4 +1,5 @@
 > 如果您觉得我们的项目有帮助，请给我们一个星星（Starred）！您的支持对我们非常重要，将激励我们不断改进和提供更好的内容。谢谢！🙏
+
 > ⚠️注意，该分支为yenai-plugin v2版本 配置文件进行重构无法直接从v1进行迁移 该版本还未完善，请谨慎使用
 
 <img src="resources/img/logo.gif" alt="看板娘" width = "200" align="right">

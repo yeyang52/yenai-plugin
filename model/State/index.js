@@ -47,7 +47,7 @@ export async function getData(e) {
     getStyle(),
     getRedisInfo(e.isPro),
     getProcessLoad(e)
-  ], [ "FastFetch", "FsSize", "NetworkTest", "BotState", "Style", "Redis", "processLoad" ])
+  ], [ "FastFetch", "FsSize", "NetworkTest", "BotState", "Style", "Redis", "ProcessLoad" ])
 
   const promiseTaskList = [
     visualDataPromise,
@@ -80,7 +80,7 @@ export async function getData(e) {
     visualData: _.compact(visualData),
     otherInfo: getOtherInfo(e),
     psTest: _.isEmpty(psTest) ? undefined : psTest,
-    fsStats: getDiskSpeed(),
+    disksIO: getDiskSpeed(),
     copyright: await getCopyright(),
     network: getNetwork(),
     Config: JSON.stringify(Config.state),

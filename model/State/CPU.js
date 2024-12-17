@@ -1,10 +1,12 @@
 import { Circle } from "./utils.js"
 import si from "systeminformation"
-/** 获取CPU占用 */
+let cpu = null;
+(async() => {
+  cpu = await si.cpu()
+})()
 export default async function getCpuInfo() {
-  let { currentLoad: { currentLoad }, cpu, fullLoad } = await si.get({
+  let { currentLoad: { currentLoad }, fullLoad } = await si.get({
     currentLoad: "currentLoad",
-    cpu: "manufacturer,speed,cores",
     fullLoad: "*"
   })
   let { manufacturer, speed, cores } = cpu

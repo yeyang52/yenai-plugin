@@ -111,10 +111,10 @@
         </li>
         {{/each}}
     </ul>
-    {{if fsStats}}
+    {{if disksIO}}
     <div class="speed">
-        <p>fsStats</p>
-        <p>读 {{fsStats.rx_sec}}/s | 写 {{fsStats.wx_sec}}/s</p>
+        <p>disksIO</p>
+        <p>读 {{disksIO.rIO_sec}}/s | 写 {{disksIO.wIO_sec}}/s</p>
     </div>
     {{/if}}
 </div>

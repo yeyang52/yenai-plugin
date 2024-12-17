@@ -18,7 +18,7 @@
 <div class="info-box">
     <div class="head-box">
         <div class="title">椰奶监控</div>
-        <div class="label">CPU & RAM & Network & FsStats</div>
+        <div class="label">CPU & RAM & Network & DisksIO</div>
     </div>
 </div>
 <script>
@@ -189,20 +189,20 @@
     </script>
 </div>
 <div class="box">
-    <div id="fsStats" style="height: 300px;"></div>
+    <div id="disksIO" style="height: 300px;"></div>
     <script>
-        let { readSpeed, writeSpeed } = chartData.fsStats
-        let fsStatsElement = document.getElementById("fsStats");
+        let { readSpeed, writeSpeed } = chartData.disksIO
+        let disksIOElement = document.getElementById("disksIO");
         if (readSpeed.length == 0 && writeSpeed.length == 0) {
-            fsStatsElement.parentNode.parentNode.removeChild(fsStatsElement.parentNode);
+            disksIOElement.parentNode.parentNode.removeChild(disksIOElement.parentNode);
         }
-        const fsStatsChart = echarts.init(fsStatsElement, 'westeros', {
+        const disksIOChart = echarts.init(disksIOElement, 'westeros', {
             renderer: 'svg'
         })
-        fsStatsChart.setOption(publicOption)
-        fsStatsChart.setOption({
+        disksIOChart.setOption(publicOption)
+        disksIOChart.setOption({
             title: {
-                text: 'FsStats'
+                text: 'disksIO'
             },
             series: [
                 {

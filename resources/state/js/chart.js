@@ -81,7 +81,7 @@ if (chartData) {
       //   markPoint: {
       //     data: [ { type: "max", name: "Max", label: { formatter: by } } ]
       //   },
-      //   data: chartData.fsStats.readSpeed
+      //   data: chartData.disksIO.readSpeed
       // },
       // {
       //   name: "写",
@@ -91,7 +91,7 @@ if (chartData) {
       //   markPoint: {
       //     data: [ { type: "max", name: "Max", label: { formatter: by } } ]
       //   },
-      //   data: chartData.fsStats.writeSpeed
+      //   data: chartData.disksIO.writeSpeed
       // }
     ]
   }

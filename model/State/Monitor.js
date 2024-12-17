@@ -10,13 +10,13 @@ export default new class monitor {
   constructor() {
     this.checkDataNum = 0
     this.network = null
-    this.fsStats = null
+    this.disksIO = null
     this.chartData = {
       network: {
         upload: [], // 上行
         download: [] // 下行
       },
-      fsStats: {
+      disksIO: {
         readSpeed: [], // 读
         writeSpeed: [] // 写
       },
@@ -27,7 +27,7 @@ export default new class monitor {
       networkStats: "rx_sec,tx_sec,iface,rx_bytes,tx_bytes",
       currentLoad: "currentLoad",
       mem: "active",
-      fsStats: "wx_sec,rx_sec"
+      disksIO: "wIO_sec,rIO_sec"
     }
 
     this.config = Config.state.monitor
@@ -51,7 +51,7 @@ export default new class monitor {
     const now = Date.now()
 
     const {
-      fsStats = {},
+      disksIO = {},
       networkStats = [],
       mem: { active } = {},
       currentLoad: { currentLoad } = {}
@@ -66,10 +66,10 @@ export default new class monitor {
     addDataIfNumber(this.chartData.ram, active)
     addDataIfNumber(this.chartData.cpu, currentLoad)
 
-    if (_.isNumber(fsStats?.wx_sec) && _.isNumber(fsStats?.rx_sec)) {
-      this.fsStats = fsStats
-      addDataIfNumber(this.chartData.fsStats.writeSpeed, fsStats.wx_sec)
-      addDataIfNumber(this.chartData.fsStats.readSpeed, fsStats.rx_sec)
+    if (_.isNumber(disksIO?.wIO_sec) && _.isNumber(disksIO?.rIO_sec)) {
+      this.disksIO = disksIO
+      addDataIfNumber(this.chartData.disksIO.writeSpeed, disksIO.wIO_sec)
+      addDataIfNumber(this.chartData.disksIO.readSpeed, disksIO.rIO_sec)
     }
 
     if (networkStats.length > 0 && _.isNumber(networkStats[0]?.tx_sec) && _.isNumber(networkStats[0]?.rx_sec)) {
@@ -99,7 +99,7 @@ export default new class monitor {
     if (!this.config.openRedisSaveData) return false
     let data = await redis.get(CHART_DATA_KEY)
     if (data) {
-      this.chartData = JSON.parse(data)
+      _.merge(this.chartData, JSON.parse(data))
       return true
     }
     return false

@@ -54,20 +54,7 @@ class Config {
         }
       }
     }
-    const clear = (user, def) => {
-      const defKeys = new Set(def.map(item => item.key.value))
-      for (let i = user.length - 1; i >= 0; i--) {
-        if (!defKeys.has(user[i].key.value)) {
-          logger.info(`[Yenai-Plugin][清除无效配置][${name}][${user[i].key.value}]`)
-          user.splice(i, 1)
-          isUpdate = true
-        } else if (YAML.isMap(user[i].value)) {
-          clear(user[i].value.items, def.find(item => item.key.value === user[i].key.value).value.items)
-        }
-      }
-    }
     maege(userDoc.contents.items, defDoc.contents.items)
-    this.other.autoClearCfg && clear(userDoc.contents.items, defDoc.contents.items)
     let yaml = userDoc.toString()
     isUpdate && fs.writeFileSync(cfgPath, yaml, "utf8")
   }

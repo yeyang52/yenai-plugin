@@ -136,6 +136,7 @@ export class SeSe extends plugin {
     let cd = translateChinaNum(regRet[3])
     if (!qq) return e.reply("❎ 请输入要设置QQ", true)
     if (!cd) return e.reply("❎ CD为空，请检查", true)
-    setu.setUserCd(e, qq ?? regRet[2], cd)
+    setu.setUserCd(qq ?? regRet[2], cd)
+    e.reply(`✅ 设置用户${qq}的cd成功，cd时间为${cd}秒`)
   }
 }

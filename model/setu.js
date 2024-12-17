@@ -1,23 +1,16 @@
 import { common, Pixiv } from "./index.js"
-import { Data, Plugin_Path, Config, YamlReader } from "../components/index.js"
+import { Plugin_Path, Config, YamlReader } from "../components/index.js"
 import _ from "lodash"
 import { setuMsg } from "../constants/msg.js"
 import request from "../lib/request/request.js"
 import formatDuration from "../tools/formatDuration.js"
 export default new class setu {
   constructor() {
-    this.root = `${Plugin_Path}/config/config/setu.yaml`
     this.cfgPath = `${Plugin_Path}/config/config/setu.yaml`
     // 默认配置
     this.def = Config.setu.defSet
     // 存cd的变量
     this.temp = {}
-    // 初始化
-    this.init()
-  }
-
-  async init() {
-    Data.createDir("config/setu")
   }
 
   /** 开始执行文案 */
@@ -95,8 +88,8 @@ export default new class setu {
    */
   setCdTime(userId, groupId, cd = this.getCfgCd(userId, groupId)) {
     let present = parseInt(Date.now() / 1000)
-    userId = userId - 0
-    groupId = groupId - 0
+    userId = +userId
+    groupId = +groupId
     if (!cd) return false
     if (groupId) {
       this.temp[userId + groupId] = present + cd
@@ -142,8 +135,8 @@ export default new class setu {
    * @returns {*}
    */
   getCfgCd(userId, groupId) {
-    let data = Data.readJSON(`setu${groupId ? "" : "_s"}.json`, this.root)
-    let CD = groupId ? data[groupId]?.cd : data[userId]
+    let data = Config.setu
+    let CD = groupId ? data[groupId]?.cd : data.friendSet[userId]
     if (CD !== undefined) return CD
     return this.def.cd // 默认300
   }
@@ -154,8 +147,8 @@ export default new class setu {
    * @returns {string}  0或1
    */
   getR18(groupID) {
-    let data = Data.readJSON(`setu${groupID ? "" : "_s"}.json`, this.root)
-    let R18 = groupID ? data[groupID]?.r18 : data.r18
+    let data = Config.setu
+    let R18 = groupID ? data[groupID]?.r18 : data.friendSet.r18
     if (R18 !== undefined) return R18
     return this.def.r18
   }
@@ -167,7 +160,7 @@ export default new class setu {
    */
   getRecallTime(groupId) {
     if (!groupId) return 0
-    let data = Data.readJSON("setu.json", this.root)
+    let data = Config.setu
     let recalltime = data[groupId]?.recall
     if (recalltime !== undefined) return recalltime
     return this.def.recall // 默认120
@@ -180,13 +173,6 @@ export default new class setu {
    * @param {'recall'|'cd'} type 设置的类型 recall-撤回时间 cd-群cd
    */
   setGroupRecallTimeAndCd(groupId, num, type = "cd") {
-    // let data = Data.readJSON("setu.json", this.root)
-
-    // if (!data[groupId]) data[groupId] = structuredClone(this.def)
-
-    // data[groupId][type] = +num
-
-    // return Data.writeJSON("setu.json", data, this.root)
     let y = new YamlReader(this.cfgPath)
     const comment = type === "cd" ? "群cd" : "撤回时间"
     y.set(`${groupId}.${type}`, +num, comment)
@@ -194,22 +180,13 @@ export default new class setu {
 
   /**
    * 设置CD
-   * @param {*} e oicq
    * @param {string} qq 设置的qq
    * @param {string} cd 设置的cd
    */
-  setUserCd(e, qq, cd) {
-    let data = Data.readJSON("setu_s.json", this.root)
-
-    data[qq] = Number(cd)
-    if (Data.writeJSON("setu_s.json", data, this.root)) {
-      e.reply(`✅ 设置用户${qq}的cd成功，cd时间为${cd}秒`)
-      delete this.temp[qq]
-      return true
-    } else {
-      e.reply("❎ 设置失败")
-      return false
-    }
+  setUserCd(qq, cd) {
+    let y = new YamlReader(this.cfgPath)
+    y.set(`friendSet.${qq}`, +cd)
+    delete this.temp[qq]
   }
 
   /**
@@ -218,20 +195,14 @@ export default new class setu {
    * @param {boolean} isopen 开启或关闭
    */
   setR18(groupID, isopen) {
-    let data = Data.readJSON(`setu${groupID ? "" : "_s"}.json`, this.root)
+    let y = new YamlReader(this.cfgPath)
     if (groupID) {
-      if (!data[groupID]) data[groupID] = structuredClone(this.def)
-      data[groupID].r18 = isopen ? 1 : 0
+      y.set(`${groupID}.r18`, isopen ? 1 : 0)
     } else {
-      data.r18 = isopen ? 1 : 0
+      y.set("friendSet.r18", isopen ? 1 : 0)
     }
-    if (Data.writeJSON(`setu${groupID ? "" : "_s"}.json`, data, this.root)) {
-      logger.mark(`[Yenai-Plugin][R18][${groupID ? "群聊" : "私聊"}]已${isopen ? "开启" : "关闭"}${groupID}的涩涩模式`)
-      return true
-    } else {
-      logger.mark(`[Yenai-Plugin][R18][${groupID ? "群聊" : "私聊"}]设置失败`)
-      return false
-    }
+    logger.mark(`[Yenai-Plugin][setu][${groupID ? "群聊" : "私聊"}]已${isopen ? "开启" : "关闭"}${groupID ?? "私聊"}的涩涩模式`)
+    return true
   }
 
   /**

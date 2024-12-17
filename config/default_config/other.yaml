@@ -4,8 +4,6 @@ strangeThumbUp: false
 renderScale: 100
 #是否开启检测到默认配置文件更新自动合并用户配置文件
 autoMaegeCfg: true
-# 是否自动清理无效配置项
-autoClearCfg: false
 
 sese: false
 sesepro: false

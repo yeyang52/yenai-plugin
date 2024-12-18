@@ -137,9 +137,13 @@ const handleMsg = (msg, variable, regex = /{{(.*?)}}/g) => {
     regex.lastIndex = 0
     let reg = regex.exec(item)
     if (!reg) return item
-    if (!variable.isFriend && /^\s?noFriend:/.test(reg[1])) {
-      let s = reg[1].split("noFriend:")
-      return handleMsg(s[1], variable, /{(.*?)}/g)
+    if (/^\s?noFriend:/.test(reg[1])) {
+      if (variable.isFriend) {
+        let s = reg[1].split("noFriend:")
+        return handleMsg(s[1], variable, /{(.*?)}/g)
+      } else {
+        return ""
+      }
     } else {
       return variable[reg[1]]
     }
@@ -164,8 +168,7 @@ function parseMessage(msg, regex) {
     if (lastIndex < msg.length) {
       result.push(msg.slice(lastIndex))
     }
-
-    return result
+    return result.filter(Boolean)
   } catch (error) {
     logger.error("[Yenai-Plugin][点赞]自定义回复消息错误", error)
     return false

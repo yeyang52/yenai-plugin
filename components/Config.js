@@ -34,8 +34,14 @@ class Config {
   }
 
   async mergeCfg(cfgPath, defPath, name) {
+    // 默认文件未变化不合并
+    let defData = fs.readFileSync(defPath, "utf8")
+    let redisData = await redis.get(`yenai:mergeCfg:${name}`)
+    if (defData == redisData) return
+    redis.set(`yenai:mergeCfg:${name}`, defData)
+
     const userDoc = YAML.parseDocument(fs.readFileSync(cfgPath, "utf8"))
-    const defDoc = YAML.parseDocument(fs.readFileSync(defPath, "utf8"))
+    const defDoc = YAML.parseDocument(defData)
     let isUpdate = false
     const maege = (user, def) => {
       const existingKeys = new Map()

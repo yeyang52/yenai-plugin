@@ -12,7 +12,7 @@ thumbUp:
   # 点赞成功消息 设置为空或false则不会回复
   # 支持变量 变量写法: {{at}}
   # at at用户
-  # userId 使用赞他会显示successMsg 使用赞我则会返回"你"
+  # userId 使用赞他会显示艾特的userId 使用赞我则会返回"你"
   # doType 赞我则返回"赞" 超我则会返回"超"
   # thumbUpNum 点赞数量
   # noFriend 非好友才会显示的语句请在":"后设置要显示的语句里面的变量请使用单括号 {{noFriend:msg}}
@@ -22,7 +22,7 @@ thumbUp:
   # 支持变量:
   # doType 赞我则返回"赞" 超我则会返回"超"
   # at at用户
-  # userId 使用赞他会显示successMsg 使用赞我则会返回"你"
+  # userId 使用赞他会显示艾特的userId 使用赞我则会返回"你"
   # img 根据头像生成的图片
   failsMsg: "{{at}}今天已经{{doType}}过了，还搁这讨{{doType}}呢！！！{{img}}"
   # 关闭陌生人点赞非好友回复 变量同failsMsg

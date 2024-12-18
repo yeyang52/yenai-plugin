@@ -102,9 +102,10 @@ export class ThumbUp extends plugin {
     }
 
     async function getfailsMsg() {
+      const isImg = cfg.failsMsg.includes("{{img}}")
       return handleMsg(cfg.failsMsg, {
         ...variableMain,
-        img: segment.image((await memes.crawl(avatar)))
+        img: isImg ? segment.image((await memes.crawl(avatar))) : false
       })
     }
 

@@ -8,7 +8,7 @@ const indexCfgTypeMap = {
     key: "defaultState",
     type: "boolean"
   },
-  陌生人点赞: "strangeThumbUp",
+  陌生人点赞: "thumbUp.strangeThumbUp",
   渲染精度: {
     type: "number",
     key: "renderScale",
@@ -68,7 +68,7 @@ export class Admin_Index extends plugin {
         系统设置: [
           {
             key: "陌生人点赞",
-            value: getStatus(Config.other.strangeThumbUp),
+            value: getStatus(Config.other.thumbUp.strangeThumbUp),
             hint: "#椰奶设置陌生人点赞 + 开启/关闭",
             desc: "不活跃的号可能会点赞失败"
           },

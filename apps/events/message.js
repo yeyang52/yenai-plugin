@@ -93,6 +93,7 @@ Bot.on?.("message", async(e) => {
       break
     }
   }
+  if (!msg) return
   // 发送消息
   await common.sendMasterMsg(msg, (e.bot ?? Bot).uin)
   if (forwardMsg) await common.sendMasterMsg(forwardMsg, (e.bot ?? Bot).uin)

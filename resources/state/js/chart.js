@@ -3,7 +3,7 @@ const chartBoxElement = document.querySelector(".box[data-boxInfo=图表]")
 if (chartData) {
 // 图表
   // echarts.registerTheme("westeros", chartCfg.echarts_theme)
-  const { titleColor, titleText, themeCfg } = Config.chartsCfg
+  const { titleColor, titleText, themeCfg, color } = Config.chartsCfg
   const chart = echarts.init(document.getElementById("Chart"), themeCfg, {
     renderer: "svg"
   })
@@ -22,6 +22,7 @@ if (chartData) {
     textStyle: {
       fontFamily: "FZB, Number, \"汉仪文黑-65W\", YS, PingFangSC-Medium, \"PingFang SC\""
     },
+    color,
     title: {
       text: titleText,
       textStyle: {

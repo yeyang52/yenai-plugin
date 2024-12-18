@@ -91,6 +91,10 @@ chartsCfg:
   titleColor: "#84A0DF"
   # 标题文字
   titleText: "Network"
+  # 调色盘
+  color:
+    - "#2ec7c9"
+    - "#b6a2de"
 
 # 样式
 style:

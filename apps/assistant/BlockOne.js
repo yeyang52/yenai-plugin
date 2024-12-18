@@ -80,7 +80,7 @@ export class BlockOne extends plugin {
 
   _getBlackResult(reg) {
     if (this.e.at) {
-      this.blackResult = this.e.at
+      this.blackResult = Number(this.e.at) || String(this.e.at)
     } else {
       if (Version.name == "TRSS-Yunzai") {
         /** TRSS-Yunzai匹配所有字符 */

@@ -44,10 +44,17 @@ export class Admin_Index extends plugin {
     let file = "other"
     let key = indexCfgTypeMap[rawkey]
     if (typeof key == "object") {
-      key = key.key
-      if (key.type === "number" && !regRet[3]) return
-      if (key.file) file = key.file
-      value = checkNumberValue(regRet[3])
+      const _k = key
+      key = _k.key
+      if (_k.file) {
+        file = _k.file
+      }
+      if (key.type === "number") {
+        if (!regRet[3]) return
+        value = checkNumberValue(regRet[3])
+      } else {
+        value = value == "开启"
+      }
     } else {
       if (!/(开启)|(关闭)/.test(value)) return
       value = value == "开启"
@@ -83,6 +90,14 @@ export class Admin_Index extends plugin {
             value: getStatus(Config.other.renderScale),
             hint: "#椰奶设置渲染精度100",
             desc: "可选值50~200，建议100。设置高精度会提高图片的精细度，但因图片较大可能会影响渲染与发送速度"
+          }
+        ],
+        其他设置: [
+          {
+            key: "通知设置",
+            value: "<div class=\"cfg-status\">>>></div>",
+            hint: "#椰奶通知设置",
+            desc: "通知设置页面"
           }
         ]
       }

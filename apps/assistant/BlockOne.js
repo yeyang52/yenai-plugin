@@ -1,23 +1,41 @@
 import { Config, Version, YamlReader } from "../../components/index.js"
 import { common } from "../../model/index.js"
 
+Bot.on("message", async(e) => {
+  if (!e.msg)e.msg = e.raw_message
+  if (!/^#(取消|(删|移)除)?拉[黑白](群聊?)?/.test(e.msg)) return false
+  if (typeof e.isMaster === "undefined") {
+    const { masterQQ } = Config
+    e.isMaster = masterQQ.includes(e.user_id) || masterQQ.includes(String(e.user_id))
+  }
+  if (!e.isMaster) return false
+  logger.info(`[Yenai-Plugin][拉黑白名单]${e.msg}`)
+  const blockOne = new BlockOne(e)
+  if (/(取消|(删|移)除)/.test(e.msg)) {
+    await blockOne.CancelBlockOne(e)
+  } else {
+    await blockOne.BlockOne(e)
+  }
+})
+
 export class BlockOne extends plugin {
-  constructor() {
+  constructor(e) {
     super({
       name: "椰奶助手-拉黑白名单",
       event: "message",
-      priority: 500,
-      rule: [
-        {
-          reg: "^#拉[黑白](群聊?)?",
-          fnc: "BlockOne"
-        },
-        {
-          reg: "^#(取消|(删|移)除)拉[黑白](群聊?)?",
-          fnc: "CancelBlockOne"
-        }
-      ]
+      priority: 500
+      // rule: [
+      //   {
+      //     reg: "^#拉[黑白](群聊?)?",
+      //     fnc: "BlockOne"
+      //   },
+      //   {
+      //     reg: "^#(取消|(删|移)除)拉[黑白](群聊?)?",
+      //     fnc: "CancelBlockOne"
+      //   }
+      // ]
     })
+    this.e = e
     this.configPath = "config/config/other.yaml"
     this.type = ""
   }
@@ -46,9 +64,13 @@ export class BlockOne extends plugin {
         } else {
           yaml.addIn(this.type, this.blackResult)
         }
-        await this.e.reply(`✅ 已把这个坏淫${this.name}掉惹！！！`)
+        if (this.thisGroup) {
+          await this.e.reply(`✅ 未输入群号已将当前群进行${this.name}处理`)
+        } else {
+          await this.e.reply(`✅ 已将${this.blackResult}进行${this.name}处理`)
+        }
       } else {
-        await this.e.reply(`❎ 已把这个坏淫${this.name}过辣`)
+        await this.e.reply(`❎ ${this.blackResult}已经进行过${this.name}处理`)
       }
     } catch (error) {
       await this.e.reply(`❎ 额...${this.name}失败哩，可能这个淫比较腻害>_<`)
@@ -68,9 +90,13 @@ export class BlockOne extends plugin {
       if (Array.isArray(data) && data.includes(this.blackResult)) {
         const item = data.indexOf(this.blackResult)
         yaml.delete(`${this.type}.${item}`)
-        await this.e.reply(`✅ 已把这个坏淫${this.name}掉惹！！！`)
+        if (this.thisGroup) {
+          await this.e.reply(`✅ 未输入群号已将当前群进行${this.name}处理`)
+        } else {
+          await this.e.reply(`✅ 已将${this.blackResult}进行${this.name}处理`)
+        }
       } else {
-        await this.e.reply(`❎ ${this.name}失败，找不到辣>_<`)
+        await this.e.reply(`❎ 取消失败${this.blackResult}未在${this.name}名单内`)
       }
     } catch (error) {
       await this.e.reply(`❎ 额...${this.name}失败哩，可能这个淫比较腻害>_<`)
@@ -88,7 +114,13 @@ export class BlockOne extends plugin {
         this.blackResult = Number(blackId) || String(blackId)
       } else {
         const match = this.e.msg.match(/\d+/)
-        if (match?.[0]) { this.blackResult = Number(match[0]) || String(match[0]) }
+        if (match?.[0]) {
+          this.blackResult = Number(match[0]) || String(match[0])
+        }
+      }
+      if (!this.blackResult && this.e.msg.includes("群")) {
+        this.blackResult = this.e.group_id
+        this.thisGroup = true
       }
     }
   }

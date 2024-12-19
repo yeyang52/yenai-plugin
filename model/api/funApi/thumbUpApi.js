@@ -42,7 +42,12 @@ export default class ThumbUpApi {
     if (!friend?.thumbUp) throw new ReplyError("当前协议端不支持点赞，详情查看\nhttps://gitee.com/TimeRainStarSky/Yunzai")
     let res
     try {
-      res = { ...await friend.thumbUp(times) }
+      res = await friend.thumbUp(times)
+      if (typeof res === "boolean") {
+        return { code: res ? 0 : 1, msg: res ? "点赞成功" : "点赞失败" }
+      } else {
+        return { ...res }
+      }
     } catch (err) {
       if (err?.error) {
         res = { ...err.error }

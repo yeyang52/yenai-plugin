@@ -148,7 +148,7 @@ const handleMsg = (msg, variable, regex = /{{(.*?)}}/g) => {
       return variable[reg[1]]
     }
   })
-  return _.flatten(res)
+  return _.flatten(res).filter(Boolean)
 }
 
 function parseMessage(msg, regex) {
@@ -168,7 +168,7 @@ function parseMessage(msg, regex) {
     if (lastIndex < msg.length) {
       result.push(msg.slice(lastIndex))
     }
-    return result.filter(Boolean)
+    return result
   } catch (error) {
     logger.error("[Yenai-Plugin][点赞]自定义回复消息错误", error)
     return false

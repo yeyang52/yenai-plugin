@@ -381,7 +381,9 @@ export function supportGuoba() {
 
       // 设置配置的方法（前端点确定后调用的方法）
       setConfigData(data, { Result }) {
-        for (let key in data) Config.modify(...key.split("."), data[key])
+        for (let key in data) {
+          Config.modify(...key.split(/\.(.+)/, 2), data[key])
+        }
 
         return Result.ok({}, "保存成功辣ε(*´･ω･)з")
       }

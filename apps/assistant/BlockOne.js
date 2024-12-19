@@ -1,10 +1,11 @@
 import { Config, Version, YamlReader } from "../../components/index.js"
 import { common } from "../../model/index.js"
 
-Bot.on("message", async(e) => {
-  if (!e.msg)e.msg = e.raw_message
+Bot.on("message", async(_e) => {
+  const e = { ..._e }
+  if (!e.msg) e.msg = e.raw_message
   if (!/^#(取消|(删|移)除)?拉[黑白](群聊?)?/.test(e.msg)) return false
-  if (typeof e.isMaster === "undefined") {
+  if (e.isMaster === undefined) {
     const { masterQQ } = Config
     e.isMaster = masterQQ.includes(e.user_id) || masterQQ.includes(String(e.user_id))
   }

@@ -86,7 +86,11 @@ showRedisInfo: true
 
 # 图表配置
 chartsCfg:
-  themeCfg: "westeros"
+  # 显示模式
+  # true - 显示
+  # false - 不显示
+  # pro - pro显示
+  show: true
   # 标题颜色
   titleColor: "#84A0DF"
   # 标题文字

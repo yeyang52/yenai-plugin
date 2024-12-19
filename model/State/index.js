@@ -26,7 +26,7 @@ export async function getData(e) {
   e.isPro = e.msg.includes("pro")
   e.isDebug = e.msg.includes("debug")
   // 配置
-  const { closedChart, systemResources } = Config.state
+  const { chartsCfg, systemResources } = Config.state
   const MAP_FUN = {
     "CPU": getCPU,
     "RAM": getRAM,
@@ -76,7 +76,7 @@ export async function getData(e) {
   return {
     BotStatusList,
     redis,
-    chartData: closedChart ? false : chartData,
+    chartData: getShowchart(e, chartsCfg.show) ? chartData : false,
     visualData: _.compact(visualData),
     otherInfo: getOtherInfo(e),
     psTest: _.isEmpty(psTest) ? undefined : psTest,
@@ -99,4 +99,10 @@ export async function getMonitorData() {
     chartData: JSON.stringify(Monitor.chartData),
     ...await getStyle()
   }
+}
+
+function getShowchart(e, cfg) {
+  if (cfg === true) return true
+  if (cfg === "pro" && e.isPro) return true
+  return false
 }

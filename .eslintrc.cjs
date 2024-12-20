@@ -42,5 +42,19 @@ module.exports = {
     "jsdoc/require-param-type": 0,
     "import/extensions": [ "error", "ignorePackages" ]
   },
+  settings: {
+    "import/resolver": {
+      "custom-alias": {
+        alias: {
+          "#yenai.common": "./lib/common/common.js",
+          "#yenai.request": "./lib/request/request.js",
+          "#yenai.puppeteer": "./lib/puppeteer/puppeteer.js",
+          "#yenai.model": "./model/index.js",
+          "#yenai.components": "./components/index.js"
+        },
+        extensions: [ ".js", ".json", ".jsx", ".ts", ".tsx" ]
+      }
+    }
+  },
   ignorePatterns: [ "echarts.min.js", "westeros.js", "theme/" ]
 }

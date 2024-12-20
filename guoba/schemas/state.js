@@ -99,7 +99,7 @@ export default [
           required: true
         },
         {
-          field: "userProxy",
+          field: "useProxy",
           label: "是否使用代理",
           bottomHelpMessage: "",
           component: "Switch"

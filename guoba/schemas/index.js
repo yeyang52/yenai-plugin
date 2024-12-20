@@ -5,13 +5,19 @@ import state from "./state.js"
 import bika from "./bika.js"
 import pixiv from "./pixiv.js"
 import picSearch from "./picSearch.js"
+import proxy from "./proxy.js"
+import other from "./other.js"
+import groupAdmin from "./groupAdmin.js"
 export const schemas = [
   ...notice,
-  ...thumbUp,
   ...state,
+  ...thumbUp,
+  ...groupAdmin,
+  ...proxy,
   ...bika,
   ...pixiv,
-  ...picSearch
+  ...picSearch,
+  ...other
 ]
 
 export function getConfigData() {
@@ -23,7 +29,9 @@ export function getConfigData() {
     bika: Config.bika,
     picSearch: Config.picSearch,
     other: Config.other,
-    state: Config.state
+    state: Config.state,
+    proxy: Config.proxy,
+    groupAdmin: Config.groupAdmin
   }
 }
 

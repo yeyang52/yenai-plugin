@@ -1,4 +1,4 @@
-import puppeteer from "../lib/puppeteer/puppeteer.js"
+import puppeteer from "#yenai.puppeteer"
 import uploadRecord from "../tools/uploadRecord.js"
 import Bika from "./Bika.js"
 import common from "../lib/common/common.js"

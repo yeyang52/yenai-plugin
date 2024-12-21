@@ -1,0 +1,25 @@
+# 陌生人点赞
+strangeThumbUp: true
+# 点赞成功消息 设置为空或false则不会回复
+# 支持变量 变量写法: {{at}}
+# at at用户
+# userId 使用赞他会显示successMsg 使用赞我则会返回"你"
+# doType 赞我则返回"赞" 超我则会返回"超"
+# thumbUpNum 点赞数量
+# noFriend 非好友才会显示的语句请在":"后设置要显示的语句里面的变量请使用单括号 {{noFriend:msg}}
+# img 根据头像生成的图片
+successMsg: "{{at}}给{{userId}}{{doType}}了{{thumbUpNum}}下哦，记得回我~
+  {{noFriend:(如{doType}失败请添加好友)}}{{img}}"
+# 已经点过赞消息
+# 支持变量:
+# doType 赞我则返回"赞" 超我则会返回"超"
+# at at用户
+# userId 使用赞他会显示successMsg 使用赞我则会返回"你"
+# img 根据头像生成的图片
+failsMsg: "{{at}}死鬼今天已经{{doType}}过了，还搁这讨{{doType}}呢！！！{{img}}"
+# 关闭陌生人点赞非好友回复 变量同failsMsg
+noFriendMsg: "{{at}}不加好友不{{doType}}🙄"
+# 撤回时间 单位秒 为0时不撤回
+recall: 20
+# 关闭全部赞我
+cloneAllThumbUp: false

@@ -4,11 +4,6 @@ export default [
     label: "群管设置"
   },
   {
-    field: "groupAdmin.noBan",
-    label: "白名单禁言自动解禁",
-    component: "Switch"
-  },
-  {
     field: "groupAdmin.whiteQQ",
     label: "白名单QQ",
     component: "GTags",
@@ -17,6 +12,11 @@ export default [
       allowDel: true,
       valueFormatter: ((value) => Number.parseInt(value)).toString()
     }
+  },
+  {
+    field: "groupAdmin.noBan",
+    label: "白名单禁言自动解禁",
+    component: "Switch"
   },
   {
     field: "groupAdmin.groupAddNotice.openGroup",
@@ -45,24 +45,24 @@ export default [
   },
   {
     field: "groupAdmin.outTime",
-    label: "投票禁言超时时间",
+    label: "禁言超时时间",
     component: "InputNumber"
   },
   {
     field: "groupAdmin.minNum",
-    label: "投票最低所需票数",
+    label: "最低所需票数",
     bottomHelpMessage: "不建议太低",
     component: "InputNumber"
   },
   {
     field: "groupAdmin.BanTime",
-    label: "投票成功禁言时间",
+    label: "成功禁言时间",
     bottomHelpMessage: "单位：秒",
     component: "InputNumber"
   },
   {
     field: "groupAdmin.veto",
-    label: "投票管理员一票否决",
+    label: "管理员一票否决",
     component: "Switch"
   },
   {
@@ -78,10 +78,31 @@ export default [
   {
     field: "groupAdmin.groupVerify.openGroup",
     label: "开启的群聊",
-    component: "GTags",
+    component: "GSelectGroup"
+  },
+  {
+    field: "groupAdmin.groupVerify.SuccessMsgs",
+    label: "验证成功消息",
+    bottomHelpMessage: "0 字段代表默认回复",
+    component: "GSubForm",
     componentProps: {
-      allowAdd: true,
-      allowDel: true
+      multiple: true,
+      schemas: [
+        {
+          field: "groupId",
+          label: "群号",
+          bottomHelpMessage: "",
+          component: "Input",
+          required: true
+        },
+        {
+          field: "msg",
+          label: "消息",
+          bottomHelpMessage: "",
+          component: "Input",
+          required: true
+        }
+      ]
     }
   },
   {
@@ -125,7 +146,7 @@ export default [
   },
   {
     field: "groupAdmin.groupVerify.range.max",
-    label: "延迟发生验证时间",
+    label: "延迟发送验证时间",
     bottomHelpMessage: "收到进群事件后延迟多少秒再发送验证信息(秒) 确保验证消息在最下面",
     component: "InputNumber"
   }

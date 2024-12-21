@@ -2,7 +2,7 @@ import { funApi, common, memes } from "../model/index.js"
 import _ from "lodash"
 import { Config } from "../components/index.js"
 
-!Config.other.thumbUp.cloneAllThumbUp && Bot.on("message.group", e => {
+!Config.thumbUp.cloneAllThumbUp && Bot.on("message.group", e => {
   if (e?.message?.[0]?.text == "#全部赞我") { (new ThumbUp()).thumbUp(e) }
 })
 
@@ -29,7 +29,7 @@ export class ThumbUp extends plugin {
     const message = e.msg || e.message?.[0]?.text
     const DO_ZAN = "赞"
     const DO_CHAO = "超"
-    const cfg = Config.other.thumbUp
+    const cfg = Config.thumbUp
     let doType = DO_ZAN
     let userId = e.user_id
     let isSelf = true

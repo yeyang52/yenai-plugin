@@ -113,5 +113,123 @@ export default [
     helpMessage: "删除撤回消息保存的时间",
     bottomHelpMessage: "不建议设置太久",
     component: "InputNumber"
-  }
+  },
+  getGroupAlone({ field: "notice.groupAlone", label: "群单独配置" }),
+  {
+    field: "notice.botAlone",
+    label: "Bot单独配置",
+    component: "GSubForm",
+    componentProps: {
+      multiple: true,
+      schemas: [
+        {
+          field: "bot_id",
+          label: "Bot ID",
+          component: "Input",
+          required: true
+        },
+        {
+          field: "privateMessage",
+          label: "好友消息",
+          component: "Switch"
+        },
+        {
+          field: "PrivateRecall",
+          label: "好友撤回",
+          component: "Switch"
+        },
+        {
+          field: "friendRequest",
+          label: "好友申请",
+          component: "Switch"
+        },
+        {
+          field: "friendNumberChange",
+          label: "好友列表变动",
+          component: "Switch"
+        },
+        {
+          field: "input",
+          label: "输入",
+          component: "Switch"
+        },
+        {
+          field: "groupInviteRequest",
+          label: "群邀请",
+          component: "Switch"
+        }
+      ]
+    }
+  },
+  getGroupAlone({
+    field: "notice.botAndGroupAlone",
+    label: "Bot群单独配置",
+    schemas: [
+      {
+        field: "bot_id",
+        label: "Bot ID",
+        component: "Input",
+        required: true
+      }
+    ]
+  })
 ]
+function getGroupAlone({ field, label, schemas = [] }) {
+  return {
+    field,
+    label,
+    component: "GSubForm",
+    componentProps: {
+      multiple: true,
+      schemas: [
+        ...schemas,
+        {
+          field: "group_id",
+          label: "群号",
+          component: "Input",
+          required: true
+        },
+        {
+          field: "groupMessage",
+          label: "群消息",
+          component: "Switch"
+        },
+        {
+          field: "grouptemporaryMessage",
+          label: "群临时消息",
+          component: "Switch"
+        },
+        {
+          field: "groupRecall",
+          label: "群撤回",
+          component: "Switch"
+        },
+        {
+          field: "groupAdminChange",
+          label: "群管理变动",
+          component: "Switch"
+        },
+        {
+          field: "groupNumberChange",
+          label: "群聊列表变动",
+          component: "Switch"
+        },
+        {
+          field: "groupMemberNumberChange",
+          label: "群成员变动",
+          component: "Switch"
+        },
+        {
+          field: "addGroupApplication",
+          label: "加群申请",
+          component: "Switch"
+        },
+        {
+          field: "botBeenBanned",
+          label: "Bot被禁言",
+          component: "Switch"
+        }
+      ]
+    }
+  }
+}

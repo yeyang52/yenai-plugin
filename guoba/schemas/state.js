@@ -7,7 +7,7 @@ export default [
   {
     field: "state.defaultState",
     label: "默认状态",
-    bottomHelpMessage: "是否将椰奶状态作为默认状态",
+    bottomHelpMessage: "将椰奶状态作为Yunzai默认状态",
     component: "Switch"
   },
   {
@@ -74,6 +74,7 @@ export default [
   {
     field: "state.psTestSites.timeout",
     label: "超时时间",
+    bottomHelpMessage: "单位：ms(毫秒)",
     component: "InputNumber"
   },
   {
@@ -113,19 +114,19 @@ export default [
   },
   {
     field: "state.monitor.open",
-    label: "是否开启监控任务",
+    label: "开启监控任务",
     bottomHelpMessage: "网络 CPU RAM DiskIO",
     component: "Switch"
   },
   {
     field: "state.monitor.getDataInterval",
-    label: "监控任务获取数据间隔",
+    label: "获取数据间隔",
     bottomHelpMessage: "间隔多久获取一次数据 时间越短越精确 单位毫秒",
     component: "InputNumber"
   },
   {
     field: "state.monitor.saveDataNumber",
-    label: "监控任务存储的数据数量",
+    label: "存储数据最大数",
     bottomHelpMessage: "当数据量超出此值时会将最旧的数据删除",
     component: "InputNumber"
   },
@@ -137,8 +138,8 @@ export default [
   },
   {
     field: "state.monitor.openRedisSaveData",
-    label: "redis存储数据监控数据",
-    bottomHelpMessage: "是否使用redis存储监控数据 重启后数据会保留",
+    label: "redis存储监控数据",
+    bottomHelpMessage: "使用redis存储监控数据 重启后数据会保留",
     component: "Switch"
   },
   {
@@ -147,7 +148,7 @@ export default [
   },
   {
     field: "state.processLoad.show",
-    label: "进程负载显示模式",
+    label: "显示模式",
     component: "RadioGroup",
     required: true,
     componentProps: {
@@ -192,12 +193,12 @@ export default [
   },
   {
     field: "state.processLoad.showCmd",
-    label: "是否显示进程命令",
+    label: "显示进程命令",
     component: "Switch"
   },
   {
     field: "state.processLoad.showMax.show",
-    label: "是否显示最大占用的进程",
+    label: "显示最大占用进程",
     bottomHelpMessage: "是否使用redis存储监控数据 重启后数据会保留",
     component: "Switch"
   },
@@ -268,7 +269,7 @@ export default [
   {
     field: "state.style.backdropDefault",
     label: "本地背景图",
-    bottomHelpMessage: "当api请求失败时使用的默认背景图，请放置在resources/state/img/bg目录下 random - 随机选择背景目录里的一张图片 default_bg.jpg - 可直接指定bg目录里一张图片，注意请带上后缀名",
+    bottomHelpMessage: "当api请求失败时使用的默认背景图，请放置在yenai-plguin/resources/state/img/bg目录下",
     component: "Select",
     componentProps: {
       options: [

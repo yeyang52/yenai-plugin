@@ -29,7 +29,7 @@ const NoticeCfgTypeMap = {
   全部通知: "notificationsAll"
 }
 /** 支持群单独设置的项 */
-const groupAloneKeys = [ "群消息", "群临时消息", "群撤回", "群管理变动", "群聊列表变动", "群成员变动", "加群通知", "禁言", "匿名" ]
+const groupAloneKeys = [ "群消息", "群临时消息", "群撤回", "群管理变动", "群聊列表变动", "群成员变动", "加群申请", "禁言" ]
 /** 支持Bot单独设置的项 */
 const botAloneKeys = [ "好友消息", "好友撤回", "好友申请", "好友列表变动", "输入", "群邀请" ]
 const noticeCfgReg = new RegExp(`^#椰奶通知设置(${Object.keys(NoticeCfgTypeMap).join("|")})(群单独|bot单独|bot群单独)?(开启|关闭|取消|(\\d+)秒)$`)

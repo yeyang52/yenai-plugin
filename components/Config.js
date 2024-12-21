@@ -86,6 +86,11 @@ class Config {
     return this.getDefOrConfig("other")
   }
 
+  /** 获取点赞设置 */
+  get thumbUp() {
+    return this.getDefOrConfig("thumbUp")
+  }
+
   /** 代理 */
   get proxy() {
     return this.getDefOrConfig("proxy")

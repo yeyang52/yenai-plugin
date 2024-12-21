@@ -10,15 +10,15 @@ export default [
     component: "Switch"
   },
   {
+    field: "picSearch.limit",
+    label: "搜图次数限制",
+    bottomHelpMessage: "每名用户每日次数限制（0 则无限制）",
+    component: "InputNumber"
+  },
+  {
     field: "picSearch.allowPM",
     label: "搜图私聊使用",
     bottomHelpMessage: "搜图是否允许私聊使用",
-    component: "Switch"
-  },
-  {
-    field: "picSearch.ascii2dUsePuppeteer",
-    label: "Puppeteer绕cf",
-    bottomHelpMessage: "是否使用 Puppeteer 请求 ascii2d 以绕过 cf js challenge",
     component: "Switch"
   },
   {
@@ -28,34 +28,48 @@ export default [
     component: "Switch"
   },
   {
-    field: "picSearch.hideImgWhenWhatanimeR18",
-    label: "whatanime R18 隐藏图",
-    bottomHelpMessage: "whatanime 得到 R18 结果时隐藏结果缩略图",
+    component: "Divider",
+    label: "Ascii2d相关配置"
+  },
+  {
+    field: "picSearch.ascii2dUsePuppeteer",
+    label: "Puppeteer绕cf",
+    bottomHelpMessage: "是否使用 Puppeteer 请求 ascii2d 以绕过 cf js challenge",
     component: "Switch"
   },
   {
-    field: "picSearch.whatanimeSendVideo",
-    label: "whatanime预览视频",
-    bottomHelpMessage: "whatanime 发送预览视频，R18 结果不会发送",
-    component: "Switch"
+    field: "picSearch.cfTLSVersion",
+    label: "TLS 版本",
+    bottomHelpMessage: "绕过 Cloudflare Challenge 所使用的 TLS 版本，建议可选值：[\"TLSv1.1\", \"TLSv1.2\"]node >= 18 无法使用 TLSv1.1，现已不推荐更改",
+    component: "Input"
+  },
+  {
+    field: "picSearch.ascii2dResultMaxQuantity",
+    label: "ascii2d结果数量",
+    bottomHelpMessage: "ascii2d搜图返回结果的最大数量",
+    component: "InputNumber"
+  },
+  {
+    field: "picSearch.Ascii2dHost",
+    label: "Ascii2d Host",
+    bottomHelpMessage: "Ascii2d 403解决方案使用cf反代 https://github.com/Tsuk1ko/cq-picsearcher-bot/wiki/ascii2d-403-%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88",
+    component: "Input"
+  },
+  {
+    component: "Divider",
+    label: "Saucenao相关配置"
   },
   {
     field: "picSearch.useAscii2dWhenLowAcc",
-    label: "saucenao 相似度过低使用ascii2d",
-    bottomHelpMessage: "是否在 saucenao 相似度过低时自动使用 ascii2d",
+    label: "相似度过低使用ascii2d",
+    bottomHelpMessage: "在 saucenao 相似度过低时自动使用 ascii2d",
     component: "Switch"
   },
   {
     field: "picSearch.useAscii2dWhenFailed",
-    label: "saucenao 搜索失败使用ascii2d",
-    bottomHelpMessage: "是否在 saucenao 搜索失败时自动使用 ascii2d",
+    label: "搜索失败使用ascii2d",
+    bottomHelpMessage: "在 saucenao 搜索失败时自动使用 ascii2d",
     component: "Switch"
-  },
-  {
-    field: "picSearch.limit",
-    label: "搜图次数限制",
-    bottomHelpMessage: "每名用户每日次数限制（0 则无限制）",
-    component: "InputNumber"
   },
   {
     field: "picSearch.SauceNAOApiKey",
@@ -85,21 +99,19 @@ export default [
     }
   },
   {
-    field: "picSearch.cfTLSVersion",
-    label: "TLS 版本",
-    bottomHelpMessage: "绕过 Cloudflare Challenge 所使用的 TLS 版本，建议可选值：[\"TLSv1.1\", \"TLSv1.2\"]node >= 18 无法使用 TLSv1.1，现已不推荐更改",
-    component: "Input"
+    component: "Divider",
+    label: "Whatanime相关配置"
   },
   {
-    field: "picSearch.ascii2dResultMaxQuantity",
-    label: "ascii2d结果数量",
-    bottomHelpMessage: "ascii2d搜图返回结果的最大数量",
-    component: "InputNumber"
+    field: "picSearch.hideImgWhenWhatanimeR18",
+    label: "whatanime R18 隐藏图",
+    bottomHelpMessage: "whatanime 得到 R18 结果时隐藏结果缩略图",
+    component: "Switch"
   },
   {
-    field: "picSearch.Ascii2dHost",
-    label: "Ascii2d Host",
-    bottomHelpMessage: "Ascii2d 403解决方案使用cf反代 https://github.com/Tsuk1ko/cq-picsearcher-bot/wiki/ascii2d-403-%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88",
-    component: "Input"
+    field: "picSearch.whatanimeSendVideo",
+    label: "whatanime预览视频",
+    bottomHelpMessage: "whatanime 发送预览视频，R18 结果不会发送",
+    component: "Switch"
   }
 ]

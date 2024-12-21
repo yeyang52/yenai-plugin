@@ -8,14 +8,14 @@ body:
       value: |
         感谢对项目的支持与关注。在提出问题之前，请确保你已查看相关开发或使用文档：
         - [Yenai-Plugin文档](https://yenai.trss.me)
-        
+
   - type: checkboxes
     attributes:
       label: 这个问题是否已经存在？
       options:
         - label: 我已经搜索过[现有的问题](https://gitee.com/yeyang52/yenai-plugin/issues)并未发现相同问题
           required: true
-          
+
   - type: input
     attributes:
       label: Yunzai版本
@@ -86,7 +86,7 @@ body:
       label: 特殊配置
       description: 是否有进行任何特别的插件配置或修改？
       placeholder: 修改过xx配置文件xx字段为xx
-  
+
   - type: dropdown
     attributes:
       label: 复现频率
@@ -99,10 +99,9 @@ body:
     validations:
       required: true
 
-  - type: checkboxes
+  - type: input
     attributes:
-      label: Yenai-Plugin是否为当前最新版本？
+      label: Yenai-Plugin版本
       description: 请确保您已使用最新版本的Yenai-Plugin，以避免已知问题。
-      options:
-        - label: 我最近已使用过`#椰奶更新`命令进行更新至最新版本
-          required: true
+      placeholder: latest
+      value: latest

@@ -81,10 +81,6 @@ export class GroupAdmin extends plugin {
           fnc: "timeMute"
         },
         {
-          reg: "^#(查看|获取)?群?发言(榜单|排行)((7|七)天)?",
-          fnc: "SpeakRank"
-        },
-        {
           reg: "^#?(开启|关闭)加群通知$",
           fnc: "handleGroupAdd"
         },

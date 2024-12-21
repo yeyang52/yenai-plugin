@@ -1,21 +1,6 @@
 /** 点赞失败回复的图片 */
 export const faildsImgs = [ "https://xiaobai.klizi.cn/API/ce/paa.php?qq=" ]
 
-export const xiurenTypeId = {
-  "秀人": {
-    id: 117,
-    maxPage: 88
-  },
-  "足控": {
-    id: 229,
-    maxPage: 8
-  },
-  "雅拉伊": {
-    id: 306,
-    maxPage: 18
-  }
-}
-
 export const pandadiuType = {
   "制服": {
     id: 66,

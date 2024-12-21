@@ -29,6 +29,10 @@ export class GroupAdminOther extends plugin {
         {
           reg: "^#((今|昨|前|明|后)天|\\d{4}-\\d{1,2}-\\d{1,2})谁生日$",
           fnc: "groupBirthday"
+        },
+        {
+          reg: "^#(查看|获取)?群?发言(榜单|排行)((7|七)天)?",
+          fnc: "SpeakRank"
         }
       ]
     })

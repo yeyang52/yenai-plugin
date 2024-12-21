@@ -1,4 +1,4 @@
-import { pandadiuType, xiurenTypeId } from "../../../constants/fun.js"
+import { pandadiuType } from "../../../constants/fun.js"
 import _ from "lodash"
 import request from "../../../lib/request/request.js"
 import { load } from "cheerio"
@@ -32,72 +32,6 @@ export async function pandadiu(type = "cos", keywords = "") {
     title,
     ..._.take(imgs, 30)
   ]
-}
-/**
- *
- * @param keywords
- * @param isSearch
- */
-export async function mengdui(keywords, isSearch) {
-  const domain = "https://b6u8.com"
-  let href = ""
-  if (isSearch) {
-    const mengduipage = JSON.parse(await redis.get("yenai:mengduipage")) || {}
-    const randomPage = _.random(1, mengduipage[keywords] || 1)
-    const url = `${domain}/search.php?mdact=community&q=${keywords}&page=${randomPage}`
-    const home = await request.get(url).then(res => res.text())
-    const $ = load(home)
-    href = _.sample(_.map($("div.md-wide > ul > li > a"), item => item.attribs.href))
-    if (!href) throw new ReplyError($("div.no-tips > p:nth-of-type(1)").text().trim())
-    const maxPage = $("div.pagebar.md-flex-wc.mb20 > a:not(:last-child)").length
-    mengduipage[keywords] = maxPage
-    await redis.set("yenai:mengduipage", JSON.stringify(mengduipage))
-  } else {
-    let random = keywords
-    if (!random) {
-      do {
-        random = _.random(1, 11687)
-      } while (
-        _.inRange(random, 7886, 10136)
-      )
-    }
-    href = `${domain}/post/${random}.html`
-  }
-  const details = await request.get(href).then(res => res.text())
-  const $ = load(details)
-  const imgs = _.map($("div.md-text.mb20.f-16 > p > img"), item => segment.image(item.attribs.src))
-  const title = $("h1").text().trim()
-  const number = `序号：${href.match(/(\d+).html/)[1]}`
-  return [ title, number, ..._.take(imgs, 30) ]
-}
-
-/**
- *
- * @param type
- */
-export async function xiuren(type) {
-  // 可扩展
-  let handleType = xiurenTypeId[type]
-  let homeUrl = `https://www.lisiku1.com/forum-${handleType.id}-${_.random(1, handleType.maxPage)}.html`
-  let html = await request.get(homeUrl).then(res => res.text())
-  let $ = load(html)
-  let href = _.sample(
-    _.map(
-      $("#moderate > div > div.kind_show > div > div:nth-child(1) > a"),
-      (item) => item.attribs.href
-    )
-  )
-  let imgPageUrl = "https://www.lisiku1.com/" + href
-  let imgPage = await request.get(imgPageUrl).then((res) =>
-    res.text()
-  )
-  let $1 = load(imgPage)
-  let imgList = _.map(
-    $1(
-      "td > img"
-    ), item => segment.image("https://www.lisiku1.com/" + item.attribs.src)
-  )
-  return imgList
 }
 
 /**

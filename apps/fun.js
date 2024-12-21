@@ -1,4 +1,4 @@
-import { pandadiuType, xiurenTypeId } from "../constants/fun.js"
+import { pandadiuType } from "../constants/fun.js"
 import { common, funApi, uploadRecord } from "../model/index.js"
 
 /** 开始执行文案 */
@@ -34,10 +34,6 @@ export class Fun extends plugin {
         {
           reg: `^#(${Object.keys(pandadiuType).join("|")})?acg`,
           fnc: "acg"
-        },
-        {
-          reg: `^#来点(${Object.keys(xiurenTypeId).join("|")})$`,
-          fnc: "xiuren"
         }
       ]
     })
@@ -132,33 +128,6 @@ export class Fun extends plugin {
     const reg = new RegExp(`^#(${Object.keys(pandadiuType).join("|")})?acg(.*)$`)
     const type = e.msg.match(reg)
     await funApi.pandadiu(type[1], type[2])
-      .then(res => common.recallSendForwardMsg(e, res))
-      .catch(err => common.handleException(e, err))
-  }
-
-  /**
-   * 萌堆
-   * @param e
-   */
-  async mengdui(e) {
-    if (!common.checkSeSePermission(e, "sesepro")) return false
-    // 开始执行
-    e.reply(START_EXECUTION)
-    let regRet = e.msg.match(/#?来点神秘图(s)?(.*)/)
-    await funApi.mengdui(regRet[2], regRet[1])
-      .then(res => common.recallSendForwardMsg(e, res))
-      .catch(err => common.handleException(e, err))
-  }
-
-  /**
-   * 秀人
-   * @param e
-   */
-  async xiuren(e) {
-    if (!common.checkSeSePermission(e, "pro")) return false
-    // 开始执行
-    e.reply(START_EXECUTION)
-    await funApi.xiuren(e.msg.replace(/#?来点/, ""))
       .then(res => common.recallSendForwardMsg(e, res))
       .catch(err => common.handleException(e, err))
   }

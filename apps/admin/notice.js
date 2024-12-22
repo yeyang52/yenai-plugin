@@ -1,6 +1,7 @@
-import { Config } from "../../components/index.js"
-import { common } from "../../model/index.js"
+import { Config, YamlReader } from "#yenai.components"
+import { common } from "#yenai.model"
 import { getStatus, checkNumberValue, sendImg } from "./_utils.js"
+import _ from "lodash"
 
 const NoticeCfgTypeMap = {
   好友消息: "privateMessage",
@@ -20,19 +21,22 @@ const NoticeCfgTypeMap = {
   群成员变动: "groupMemberNumberChange",
   // 其他通知
   禁言: "botBeenBanned",
-  输入: "input",
   删除缓存时间: {
     type: "number",
     key: "msgSaveDeltime",
-    limit: ">120"
+    limit: ">120",
+    toString() {
+      return this.key
+    }
   },
   全部通知: "notificationsAll"
 }
+const invertByNoticeCfgTypeMap = _.invert(NoticeCfgTypeMap)
 /** 支持群单独设置的项 */
 const groupAloneKeys = [ "群消息", "群临时消息", "群撤回", "群管理变动", "群聊列表变动", "群成员变动", "加群申请", "禁言" ]
 /** 支持Bot单独设置的项 */
-const botAloneKeys = [ "好友消息", "好友撤回", "好友申请", "好友列表变动", "输入", "群邀请" ]
-const noticeCfgReg = new RegExp(`^#椰奶通知设置(${Object.keys(NoticeCfgTypeMap).join("|")})(群单独|bot单独|bot群单独)?(开启|关闭|取消|(\\d+)秒)$`)
+const botAloneKeys = [ "好友消息", "好友撤回", "好友申请", "好友列表变动", "群邀请" ]
+const noticeCfgReg = new RegExp(`^#椰奶通知设置(${Object.keys(NoticeCfgTypeMap).join("|")})(群单独|bot单独|bot群单独|单独)?(开启|关闭|取消|(\\d+)秒)$`)
 export class Admin_Notice extends plugin {
   constructor() {
     super({
@@ -61,7 +65,7 @@ export class Admin_Notice extends plugin {
     let regRet = noticeCfgReg.exec(e.msg)
     const rawKey = regRet[1]
     let value = regRet[3]
-    const alone = regRet[2]
+    let alone = regRet[2]
     const aloneFunMap = {
       群单独: this.groupAloneSet,
       bot单独: this.botAloneSet,
@@ -72,11 +76,19 @@ export class Admin_Notice extends plugin {
       key = key.key
       if (!regRet[4]) return
       value = checkNumberValue(regRet[4])
+    } else if (value == "取消") {
+      value = "_delete_"
     } else {
-      if (!/(开启)|(关闭)/.test(value)) return
       value = value == "开启"
     }
     if (alone) {
+      if (alone === "单独") {
+        if (e.isGroup) {
+          alone = "群单独"
+        } else {
+          alone = "bot单独"
+        }
+      }
       const fun = aloneFunMap[alone]
       const res = fun.call(this, key, value, rawKey)
       if (!res) return
@@ -109,11 +121,15 @@ export class Admin_Notice extends plugin {
       this.e.reply("❎ 该设置项不支持群单独设置")
       return false
     }
-    return this.modifyCfg("notice", `${this.e.group_id}.${key}`, value, rawKey)
+    return this.modifyCfg("notice", `${YamlReader.CONFIG_INTEGER_KEY + this.e.group_id}.${key}`, value, rawKey)
   }
 
   modifyCfg(name, key, value, comment) {
-    return Config.modify(name, key, value, "config", false, comment)
+    if (value == "_delete_") {
+      return Config.deleteKey(name, key)
+    } else {
+      return Config.modify(name, key, value, "config", false, comment)
+    }
   }
 
   botAloneSet(key, value, rawKey) {
@@ -133,31 +149,41 @@ export class Admin_Notice extends plugin {
   }
 
   getNoticeSetData(e) {
-    const _cfg = Config.getNotice(e.self_id, e.group_id)
+    const _cfg = Config.getDefOrConfig("notice").default
     const _c = Config.getConfig("notice")
     const groupAlone = _c[e.group_id]
     const botAlone = _c["bot:" + e.self_id]
     const botAndGtoupAlone = _c[`bot:${e.self_id}:${e.group_id}`]
-    const map = new Map()
+    const map = {}
+    const specialList = []
     const getAloneType = (obj, type) => {
-      if (!obj) return
+      if (_.isEmpty(obj)) return
+      map[type] = []
+      specialList.push(type)
       for (let k in obj) {
-        map.set(k, type)
+        const key = invertByNoticeCfgTypeMap[k]
+        if (!key) continue
+        map[type].push({
+          key,
+          value: getStatus(obj[k])
+        })
       }
+      if (!map[type]?.length) delete map[type]
     }
-    getAloneType(botAlone, "bot单独")
-    getAloneType(groupAlone, "群单独")
-    getAloneType(botAndGtoupAlone, "bot群单独")
+    getAloneType(botAlone, `Bot:${e.self_id} 单独配置`)
+    getAloneType(groupAlone, `群:${e.group_id} 单独配置`)
+    getAloneType(botAndGtoupAlone, `Bot:${e.self_id} & 群:${e.group_id} 单独配置`)
     let data = {}
     const special = [ "msgSaveDeltime" ]
     for (let key in _cfg) {
       if (special.includes(key)) {
         data[key] = getStatus(Number(_cfg[key]))
       } else {
-        data[key] = getStatus(_cfg[key], map.get(key))
+        data[key] = getStatus(_cfg[key])
       }
     }
     return {
+      specialList,
       list: {
         消息相关: [
           {
@@ -236,12 +262,6 @@ export class Admin_Notice extends plugin {
         ],
         其他通知: [
           {
-            key: "私聊输入",
-            value: data.input,
-            hint: "#椰奶通知设置输入 + 开启/关闭",
-            desc: "对方正在输入事件"
-          },
-          {
             key: "Bot被禁言",
             value: data.botBeenBanned,
             hint: "#椰奶通知设置禁言 + 开启/关闭"
@@ -260,7 +280,8 @@ export class Admin_Notice extends plugin {
             hint: "#椰奶设置删除缓存时间 + 时间(秒)",
             desc: "不建议设置太久"
           }
-        ]
+        ],
+        ...map
       }
     }
   }

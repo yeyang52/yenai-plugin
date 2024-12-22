@@ -149,11 +149,6 @@ export default [
           component: "Switch"
         },
         {
-          field: "input",
-          label: "输入",
-          component: "Switch"
-        },
-        {
           field: "groupInviteRequest",
           label: "群邀请",
           component: "Switch"

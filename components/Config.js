@@ -213,6 +213,13 @@ class Config {
     return true
   }
 
+  deleteKey(name, key, type = "config", bot = false) {
+    let path = `${bot ? Path : Plugin_Path}/config/${type}/${name}.yaml`
+    new YamlReader(path).deleteKey(key)
+    delete this.config[`${type}.${name}`]
+    return true
+  }
+
   /**
    * 修改配置数组
    * @param {string} name 文件名

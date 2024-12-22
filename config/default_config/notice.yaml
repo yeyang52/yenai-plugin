@@ -15,7 +15,6 @@ default:
   friendNumberChange: false #好友列表变动
   #其他通知
   botBeenBanned: false #禁言
-  input: false #对方正在输入
   #其他设置
   notificationsAll: false #全部通知
   msgSaveDeltime: 600 #消息删除保存时间用于撤回消息通知

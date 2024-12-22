@@ -17,7 +17,7 @@
     </div>
 </div>
 {{each list}}
-<div class="cfg-box">
+<div class="cfg-box  {{specialList?.includes?.($index)? "cfg-special":""}}">
     <div class="cfg-group">{{$index}}</div>
     {{each $value v k}}
     <ul class="cfg-ul">

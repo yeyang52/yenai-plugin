@@ -93,4 +93,8 @@ body {
   color: #fff;
   font-size: 14px;
   line-height: 18px;
+}
+
+.cfg-special {
+  border: #454444 4px dashed;
 }/*# sourceMappingURL=index.css.map */

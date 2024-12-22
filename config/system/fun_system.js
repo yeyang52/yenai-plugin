@@ -1,6 +1,6 @@
 /** 涩涩帮助 */
 export const helpCfg = {
-  title: "椰奶涩涩帮助",
+  title: "椰奶娱乐帮助",
   subTitle: "Yunzai-Bot & Yenai-Plugin",
   columnCount: 3,
   colWidth: 265,
@@ -128,11 +128,6 @@ export const helpList = [
         title: "#acg刻晴",
         desc: "acgcos",
         icon: 9
-      },
-      {
-        title: "#来点xxx",
-        desc: "xxx",
-        icon: 1
       }
     ]
   }

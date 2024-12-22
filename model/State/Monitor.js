@@ -67,8 +67,8 @@ export default new class monitor {
     addDataIfNumber(this.chartData.cpu, currentLoad)
 
     if (_.isNumber(disksIO?.wIO_sec) && _.isNumber(disksIO?.rIO_sec)) {
-      disksIO.wIO_sec = disksIO.wIO_sec * 1024 * 1024
-      disksIO.rIO_sec = disksIO.rIO_sec * 1024 * 1024
+      disksIO.wIO_sec = disksIO.wIO_sec * 1024
+      disksIO.rIO_sec = disksIO.rIO_sec * 1024
       this.disksIO = disksIO
       addDataIfNumber(this.chartData.disksIO.writeSpeed, disksIO.wIO_sec)
       addDataIfNumber(this.chartData.disksIO.readSpeed, disksIO.rIO_sec)

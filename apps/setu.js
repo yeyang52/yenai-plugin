@@ -119,6 +119,7 @@ export class SeSe extends plugin {
     let type = /撤回间隔/.test(e.msg) ? "recall" : "cd"
     setu.setGroupRecallTimeAndCd(e.group_id, num, type)
     // new Admin().SeSe_Settings(e)
+    e.reply("OK")
   }
 
   // 开启r18
@@ -126,6 +127,7 @@ export class SeSe extends plugin {
     let isopen = !!/开启/.test(e.msg)
     setu.setR18(e.group_id, isopen)
     // new Admin().SeSe_Settings(e)
+    e.reply("OK")
   }
 
   // 指令设置

@@ -175,7 +175,7 @@ export default new class setu {
   setGroupRecallTimeAndCd(groupId, num, type = "cd") {
     let y = new YamlReader(this.cfgPath)
     const comment = type === "cd" ? "群cd" : "撤回时间"
-    y.set(`${groupId}.${type}`, +num, comment)
+    y.set(`${YamlReader.CONFIG_INTEGER_KEY + groupId}.${type}`, +num, comment)
   }
 
   /**
@@ -197,7 +197,7 @@ export default new class setu {
   setR18(groupID, isopen) {
     let y = new YamlReader(this.cfgPath)
     if (groupID) {
-      y.set(`${groupID}.r18`, isopen ? 1 : 0)
+      y.set(`${YamlReader.CONFIG_INTEGER_KEY + groupID}.r18`, isopen ? 1 : 0)
     } else {
       y.set("friendSet.r18", isopen ? 1 : 0)
     }

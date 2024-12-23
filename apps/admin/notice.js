@@ -36,7 +36,7 @@ const invertByNoticeCfgTypeMap = _.invert(NoticeCfgTypeMap)
 const groupAloneKeys = [ "群消息", "群临时消息", "群撤回", "群管理变动", "群聊列表变动", "群成员变动", "加群申请", "禁言" ]
 /** 支持Bot单独设置的项 */
 const botAloneKeys = [ "好友消息", "好友撤回", "好友申请", "好友列表变动", "群邀请" ]
-const noticeCfgReg = new RegExp(`^#椰奶通知设置(${Object.keys(NoticeCfgTypeMap).join("|")})(群单独|bot单独|bot群单独|单独)?(开启|关闭|取消|(\\d+)秒)$`)
+const noticeCfgReg = new RegExp(`^#椰奶通知设置(${Object.keys(NoticeCfgTypeMap).join("|")})(群单独|bot单独|bot群单独|单独)?(开启|关闭|取消|(\\d+)秒?)$`)
 export class Admin_Notice extends plugin {
   constructor() {
     super({
@@ -73,14 +73,14 @@ export class Admin_Notice extends plugin {
     }
     let key = NoticeCfgTypeMap[rawKey]
     if (typeof key == "object" && key.type == "number") {
-      key = key.key
       if (!regRet[4]) return
-      value = checkNumberValue(regRet[4])
+      value = checkNumberValue(+regRet[4])
     } else if (value == "取消") {
       value = "_delete_"
     } else {
       value = value == "开启"
     }
+    key = key.toString()
     if (alone) {
       if (alone === "单独") {
         if (e.isGroup) {
@@ -101,11 +101,10 @@ export class Admin_Notice extends plugin {
   async setAllNotice(e) {
     if (!common.checkPermission(e, "master")) return
     let yes = /启用/.test(e.msg)
-    const exclude = ["msgSaveDeltime", "notificationsAll"]
-    for (let i in NoticeCfgTypeMap) {
-      const key = NoticeCfgTypeMap[i].toString()
-      if (exclude.includes(key)) continue
-      Config.modify("notice", `default.${key}`, yes)
+    const exclude = [ "msgSaveDeltime", "notificationsAll" ]
+    for (let i in invertByNoticeCfgTypeMap) {
+      if (exclude.includes(i)) continue
+      Config.modify("notice", `default.${i}`, yes)
     }
     this.sendImg(e, "notice")
   }

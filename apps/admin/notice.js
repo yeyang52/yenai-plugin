@@ -101,8 +101,11 @@ export class Admin_Notice extends plugin {
   async setAllNotice(e) {
     if (!common.checkPermission(e, "master")) return
     let yes = /启用/.test(e.msg)
+    const exclude = ["msgSaveDeltime", "notificationsAll"]
     for (let i in NoticeCfgTypeMap) {
-      Config.modify("notice", `default.${NoticeCfgTypeMap[i]}`, yes)
+      const key = NoticeCfgTypeMap[i].toString()
+      if (exclude.includes(key)) continue
+      Config.modify("notice", `default.${key}`, yes)
     }
     this.sendImg(e, "notice")
   }

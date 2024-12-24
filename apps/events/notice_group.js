@@ -28,7 +28,7 @@ Bot.on?.("notice.group", async(e) => {
           `[通知(${e.self_id}) - 新增群员]\n`,
             `群号：${e.group_id}\n`,
             `新成员账号：${e.user_id}\n`,
-            `新成员昵称：${e.nickname}`
+            `新成员昵称：${e.nickname ?? "未知"}`
         ]
       }
       break

@@ -103,7 +103,7 @@ export class GroupVerify extends plugin {
     let isopen = this.verifycfg.openGroup.includes(e.group_id)
     if (isopen && type == "add") return e.reply("❎ 本群验证已处于开启状态")
     if (!isopen && type == "del") return e.reply("❎ 本群暂未开启验证")
-    Config.modifyarr("groupAdmin", "groupVerify.openGroup", e.group_id, type)
+    Config.modifyArr("groupAdmin", "groupVerify.openGroup", e.group_id, type)
     e.reply(`✅ 已${type == "add" ? "开启" : "关闭"}本群验证`)
   }
 

@@ -12,31 +12,21 @@ Bot.on?.("message", async(e) => {
   if (e.user_id == (e.bot ?? Bot).uin) return false
   // 判断是否主人消息
   if (Config.masterQQ.includes(e.user_id)) return false
-  const _config = Config.getNotice(e.self_id, e.group_id)
-  const deltime = _config.msgSaveDeltime
+  const cfg = Config.getNotice(e.self_id, e.group_id)
+  const deltime = cfg.msgSaveDeltime
   // 判断群聊还是私聊
-  if (e.message_type == "group") {
-    // 关闭撤回停止存储
-    if (_config.groupRecall) {
-      // logger.debug(`[Yenai-Plugin]存储群消息${e.group_id}=>${e.message_id}`)
-      // 写入
-      await redis.set(
-        redisKeyPreGroup + e.message_id,
-        JSON.stringify(e.message),
-        { EX: deltime }
-      )
-    }
-  } else if (e.message_type == "private") {
-    // 关闭撤回停止存储
-    if (_config.PrivateRecall) {
-      // logger.debug(`[Yenai-Plugin]存储私聊消息${e.user_id}=>${e.message_id}`)
-      // 写入
-      await redis.set(
-        redisKeyPrePrivate + e.message_id,
-        JSON.stringify(e.message),
-        { EX: deltime }
-      )
-    }
+  if (e.message_type == "group" && cfg.groupRecall) {
+    redis.set(
+      redisKeyPreGroup + e.message_id,
+      JSON.stringify(e.message),
+      { EX: deltime }
+    )
+  } else if (e.message_type == "private" && cfg.PrivateRecall) {
+    redis.set(
+      redisKeyPrePrivate + e.message_id,
+      JSON.stringify(e.message),
+      { EX: deltime }
+    )
   }
 })
 
@@ -52,14 +42,13 @@ Bot.on?.("notice.group.recall", async(e) => {
   const rawMsg = JSON.parse(await redis.get(redisKeyPreGroup + e.message_id))
   // 无数据 return出去
   if (!rawMsg) return false
-  const { type } = rawMsg[0]
-  const msgType = getSpecialMsgType(rawMsg)
+  const msgType = getSpecialMsgType(rawMsg)[rawMsg[0]]
   let special = ""
   let forwardMsg = null
   let msg = null
-  if (msgType[type]) {
-    forwardMsg = await msgType[type].msg()
-    special = msgType[type].type
+  if (msgType) {
+    forwardMsg = await msgType.msg()
+    special = msgType.type
   } else {
     // 正常处理
     forwardMsg = await Bot.makeForwardMsg([
@@ -140,6 +129,10 @@ function getSpecialMsgType(rawMsg) {
     xml: {
       msg: () => rawMsg,
       type: "[合并消息]"
+    },
+    json: {
+      msg: () => rawMsg,
+      type: "[JSON]"
     }
   }
 }

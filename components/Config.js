@@ -229,7 +229,7 @@ class Config {
    * @param {'config'|'default_config'} type 配置文件或默认
    * @param {boolean} bot  是否修改Bot的配置
    */
-  modifyarr(name, key, value, category = "add", type = "config", bot = false) {
+  modifyArr(name, key, value, category = "add", type = "config", bot = false) {
     let path = `${bot ? Path : Plugin_Path}/config/${type}/${name}.yaml`
     let yaml = new YamlReader(path)
     if (category == "add") {

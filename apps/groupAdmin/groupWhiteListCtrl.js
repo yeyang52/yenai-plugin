@@ -38,7 +38,7 @@ export class groupWhiteListCtrl extends plugin {
     if (isWhite && type === "add") return this.reply("❎ 此人已在群管白名单内")
     if (!isWhite && type === "del") return this.reply("❎ 此人未在群管白名单中")
 
-    Config.modifyarr("groupAdmin", "whiteQQ", qq, type)
+    Config.modifyArr("groupAdmin", "whiteQQ", qq, type)
     this.reply(`✅ 已${type === "add" ? "加入" : "删除"}${qq}到群管白名单`)
   }
 

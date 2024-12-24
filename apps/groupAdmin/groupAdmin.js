@@ -300,7 +300,9 @@ export class GroupAdmin extends plugin {
    * @param e
    */
   async neverspeak(e) {
-    if (!common.checkPermission(e, "admin", "admin")) { return true }
+    let role = "admin"
+    if (e.msg.includes("查看")) role = "all"
+    if (!common.checkPermission(e, "admin", role)) { return true }
     let list = null
     try {
       list = await new Ga(e).getNeverSpeak(e.group_id)
@@ -406,10 +408,10 @@ export class GroupAdmin extends plugin {
   async handleGroupAdd(e) {
     if (!common.checkPermission(e, "admin", "admin")) return
     let type = /开启/.test(e.msg) ? "add" : "del"
-    let isopen = Config.groupAdd.openGroup.includes(e.group_id)
+    let isopen = Config.groupAdmin.groupAddNotice.openGroup.includes(e.group_id)
     if (isopen && type == "add") return e.reply("❎ 本群加群申请通知已处于开启状态")
     if (!isopen && type == "del") return e.reply("❎ 本群暂未开启加群申请通知")
-    Config.modifyarr("groupAdd", "openGroup", e.group_id, type)
+    Config.modifyArr("groupAdmin", "groupAddNotice.openGroup", e.group_id, type)
     e.reply(`✅ 已${type == "add" ? "开启" : "关闭"}「${e.group_id}」的加群申请通知`)
   }
 

@@ -2,10 +2,9 @@ import { common } from "../../model/index.js"
 import { Config } from "../../components/index.js"
 
 Bot.on?.("notice.friend", async(e) => {
-  let msg
-  let forwardMsg
+  let msg = null
+  let forwardMsg = null
   switch (e.sub_type) {
-    /** 好友列表增加 */
     case "increase": {
       if (!Config.getNotice(e.self_id).friendNumberChange) return false
       logger.info("[Yenai-Plugin]新增好友")
@@ -44,5 +43,4 @@ Bot.on?.("notice.friend", async(e) => {
   }
   await common.sendMasterMsg(msg, (e.bot ?? Bot).uin)
   if (forwardMsg) await common.sendMasterMsg(forwardMsg, (e.bot ?? Bot).uin)
-}
-)
+})

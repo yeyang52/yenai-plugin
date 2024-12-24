@@ -9,12 +9,13 @@ const ROLE_MAP = {
 
 Bot.on?.("request", async(e) => {
   let msg = ""
+  const _cfg = Config.getNotice(e.self_id, e.group_id)
   switch (e.request_type) {
     case "group":
       switch (e.sub_type) {
         // 群邀请
         case "invite":
-          if (!Config.getNotice(e.self_id).groupInviteRequest) return false
+          if (!_cfg.groupInviteRequest) return false
           if (cfg.masterQQ.includes(e.user_id)) return false
           logger.info("[Yenai-Plugin]邀请机器人进群")
           msg = [
@@ -34,6 +35,7 @@ Bot.on?.("request", async(e) => {
           }
           break
         case "add":
+          // 发送至群的通知
           if (Config.groupAdmin.groupAddNotice.openGroup.includes(e.group_id)) {
             let msg = [
               `${Config.groupAdmin.groupAddNotice.msg}\n`,
@@ -46,7 +48,7 @@ Bot.on?.("request", async(e) => {
             let sendmsg = await (e.bot ?? Bot).pickGroup(e.group_id).sendMsg(msg)
             await redis.set(`yenai:groupAdd:${sendmsg.message_id}`, e.user_id, { EX: 3600 })
           }
-          if (!Config.getNotice(e.self_id, e.group_id).addGroupApplication) return false
+          if (!_cfg.addGroupApplication) return false
           logger.info("[Yenai-Plugin]加群申请")
           msg = [
             segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/0`),
@@ -62,7 +64,7 @@ Bot.on?.("request", async(e) => {
       }
       break
     case "friend":
-      if (!Config.getNotice(e.self_id).friendRequest) return false
+      if (!_cfg.friendRequest) return false
       logger.info("[Yenai-Plugin]好友申请")
       msg = [
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),

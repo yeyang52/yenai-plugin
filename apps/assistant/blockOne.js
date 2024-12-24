@@ -9,6 +9,7 @@ Bot.on("message", async(_e) => {
     const { masterQQ } = Config
     e.isMaster = masterQQ.includes(e.user_id) || masterQQ.includes(String(e.user_id))
   }
+  if (!e.at)e.at = _e.message.find(i => i.type === "at")?.qq
   if (!e.isMaster) return false
   logger.info(`[Yenai-Plugin][拉黑白名单]${e.msg}`)
   const blockOne = new BlockOne(e)
@@ -46,14 +47,16 @@ export class BlockOne extends plugin {
     this._getType("拉")
     this._getBlackResult(/^#拉[黑白](群聊?)?/)
     const { masterQQ } = Config
-    if (!this.blackResult || (this.name == "拉黑" && common.getPermission(new Proxy({
+    const permissions = common.checkPermission(new Proxy({
       get isMaster() {
         return masterQQ.includes(this.user_id) || masterQQ.includes(String(this.user_id))
       },
       user_id: this.blackResult
     }, {
       get: (target, prop, receiver) => target[prop] ?? e[prop]
-    }), "master") === true)) {
+    }), "master", "all", { isReply: false })
+
+    if (!this.blackResult || (this.name == "拉黑" && permissions)) {
       return this.e.reply(`❎ ${this.name}失败，没有键入用户或群号`)
     }
     try {
@@ -97,7 +100,8 @@ export class BlockOne extends plugin {
           await this.e.reply(`✅ 已将${this.blackResult}进行${this.name}处理`)
         }
       } else {
-        await this.e.reply(`❎ 取消失败${this.blackResult}未在${this.name}名单内`)
+        const type = this.name.includes("黑") ? "黑" : "白"
+        await this.e.reply(`❎ 取消失败${this.blackResult}未在${type}名单内`)
       }
     } catch (error) {
       await this.e.reply(`❎ 额...${this.name}失败哩，可能这个淫比较腻害>_<`)

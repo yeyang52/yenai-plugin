@@ -10,16 +10,21 @@ Bot.on?.("message", async(e) => {
   if (Config.masterQQ.includes(e.user_id)) return false
   // 消息通知
   let msg = null
-  let forwardMsg = null
+  let specialMsg = null
+  let rawMsg = null
+  const cfg = Config.getNotice(e.self_id, e.group_id)
+  // 特殊消息处理
+  const msgType = getMsgType(e.message)
+  if (msgType) {
+    specialMsg = msgType.msg
+    rawMsg = [ msgType.type ]
+  } else {
+    rawMsg = e.message
+  }
+
   switch (e.message_type) {
     case "group": {
-      if (!Config.getNotice(e.self_id, e.group_id).groupMessage) return false
-      // 特殊消息处理
-      const arr = getMsgType(e.message)
-      if (arr) {
-        forwardMsg = arr.msg
-        e.message = arr.type
-      }
+      if (!cfg.groupMessage) return false
       logger.info("[Yenai-Plugin]群聊消息")
       msg = [
         segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`),
@@ -29,20 +34,14 @@ Bot.on?.("message", async(e) => {
       `发送人账号：${e.user_id}\n`,
       `发送人昵称：${e.sender.nickname}\n`,
       "消息内容：",
-      ...e.message
+      ...rawMsg
       ]
       break
     }
     case "private": {
       if (e.sub_type === "friend") {
-        if (!Config.getNotice(e.self_id).privateMessage) return false
+        if (!cfg.privateMessage) return false
 
-        // 特殊消息处理
-        const arr = getMsgType(e.message)
-        if (arr) {
-          forwardMsg = arr.msg
-          e.message = arr.type
-        }
         logger.info("[Yenai-Plugin]好友消息")
         msg = [
           segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
@@ -50,7 +49,7 @@ Bot.on?.("message", async(e) => {
           `好友账号：${e.user_id}\n`,
           `好友昵称：${e.sender.nickname}\n`,
           "消息内容：",
-          ...e.message
+          ...rawMsg
         ]
         // 添加提示消息
         const key = `yenai:notice:privateMessage:${e.user_id}`
@@ -63,13 +62,7 @@ Bot.on?.("message", async(e) => {
           )
         }
       } else if (e.sub_type === "group") {
-        if (!Config.getNotice(e.self_id, e.group_id).grouptemporaryMessage) return false
-        // 特殊消息处理
-        const arr = getMsgType(e.message)
-        if (arr) {
-          forwardMsg = arr.msg
-          e.message = arr.type
-        }
+        if (!cfg.grouptemporaryMessage) return false
         logger.info("[Yenai-Plugin]群临时消息")
         // 发送的消息
         msg = [
@@ -78,7 +71,7 @@ Bot.on?.("message", async(e) => {
           `来源群号：${e.sender.group_id}\n`,
           `发送人账号：${e.user_id}\n`,
           "消息内容：",
-          ...e.message
+          ...rawMsg
         ]
         // 添加提示消息
         const key = `yenai:notice:tempprivateMessage:${e.user_id}`
@@ -92,11 +85,13 @@ Bot.on?.("message", async(e) => {
       }
       break
     }
+    default:
+      return false
   }
   if (!msg) return
   // 发送消息
   await common.sendMasterMsg(msg, (e.bot ?? Bot).uin)
-  if (forwardMsg) await common.sendMasterMsg(forwardMsg, (e.bot ?? Bot).uin)
+  if (specialMsg) await common.sendMasterMsg(specialMsg, (e.bot ?? Bot).uin)
 })
 
 /**
@@ -116,6 +111,10 @@ function getMsgType(msg) {
     xml: {
       msg,
       type: "[合并消息]"
+    },
+    json: {
+      msg,
+      type: "[JSON]"
     }
   }
   return msgType[msg[0].type]

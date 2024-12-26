@@ -130,77 +130,92 @@ export class NewHandle extends plugin {
    */
   async Handle(e) {
     const source = await common.takeSourceMsg(e)
-
     if (!source || source.user_id != this.Bot.uin) return false
-
     const sourceMsg = source.raw_message?.split("\n")
-
     if (!sourceMsg) return e.reply("❎ 获取原消息失败，请使用\"同意xxx\"进行处理")
-
     const yes = /同意/.test(e.msg)
+
     if (e.isGroup) {
-      if (!common.checkPermission(e, "admin", "admin")) return
-
-      logger.mark(`${e.logFnc}${yes ? "同意" : "拒绝"}加群通知`)
-
-      let userId = await redis.get(`yenai:groupAdd:${source.message_id}`)
-
-      if (!userId) return e.reply("找不到原消息了，手动同意叭~")
-
-      let member = (await this.Bot.getSystemMsg())
-        .find(item => item.request_type == "group" && item.sub_type == "add" && item.group_id == e.group_id && item.user_id == userId)
-
-      if (_.isEmpty(member)) return e.reply("呜呜呜，没找到这个淫的加群申请(つд⊂)")
-
-      if (/风险/.test(member.tips)) return e.reply("该账号为风险账号请手动处理哦ಠ~ಠ")
-
-      if (await member.approve(yes)) {
-        e.reply(`已${yes ? "同意" : "拒绝"}${member.nickname}(${member.user_id})的加群申请辣٩(๑^o^๑)۶`)
-      } else {
-        e.reply("呜呜呜，处理失败辣(இωஇ)")
-      }
-      return true
+      this.HandleGroupAdd(e, sourceMsg, yes, source)
     } else {
       if (!common.checkPermission(e, "master")) return false
       if (/添加好友申请/.test(sourceMsg[0])) {
-        let qq = sourceMsg[1].match(/[1-9]\d*/g)
-        if (this.Bot.fl.get(Number(qq) || qq)) return e.reply("❎ 已经同意过该申请了哦~")
-
-        logger.mark(`${e.logFnc}${yes ? "同意" : "拒绝"}好友申请`)
-
-        await this.Bot.pickFriend(qq)
-          .setFriendReq("", yes)
-          .then(() => e.reply(`✅ 已${yes ? "同意" : "拒绝"}${qq}的好友申请`))
-          .catch(() => e.reply("❎ 请检查是否已同意该申请"))
+        this.HandleFriendRequest(e, sourceMsg, yes, source)
       } else if (/邀请机器人进群/.test(sourceMsg[0])) {
-        let groupid = sourceMsg[1].match(/[1-9]\d*/g)
-        if (this.Bot.fl.get(Number(groupid))) { return e.reply("❎ 已经同意过该申请了哦~") }
-
-        let qq = sourceMsg[3].match(/[1-9]\d*/g)
-        let seq = sourceMsg[6].match(/[1-9]\d*/g)
-
-        logger.mark(`${e.logFnc}${yes ? "同意" : "拒绝"}群邀请`)
-
-        this.Bot.pickUser(qq)
-          .setGroupInvite(groupid, seq, yes)
-          .then(() => e.reply(`✅ 已${yes ? "同意" : "拒绝"}${qq}的群邀请`))
-          .catch(() => e.reply("❎ 请检查是否已同意该邀请"))
+        this.HandleGroupInvite(e, sourceMsg, yes, source)
       } else if (/加群申请/.test(sourceMsg[0])) {
-        let groupId = sourceMsg[1].match(/\d+/g)
-        let qq = sourceMsg[3].match(/\d+/g)
-
-        let member = (await this.Bot.getSystemMsg()).find(item => item.sub_type == "add" && item.group_id == groupId && item.user_id == qq)
-        if (_.isEmpty(member)) return e.reply("没有找到这个人的加群申请哦")
-
-        let result = member.approve(yes)
-        if (result) {
-          e.reply(`已${yes ? "同意" : "拒绝"}${member.nickname}(${qq})的加群申请`)
-        } else {
-          e.reply("失败了，可能为风险账号请手动处理")
-        }
-      } else {
-        return false
+        this.HandleFriendGroupAdd(e, sourceMsg, yes, source)
       }
+    }
+  }
+
+  async HandleGroupAdd(e, _sourceMsg, yes, source) {
+    if (!common.checkPermission(e, "admin", "admin")) return
+
+    logger.mark(`${e.logFnc}${yes ? "同意" : "拒绝"}加群通知`)
+
+    let userId = await redis.get(`yenai:groupAdd:${source.message_id}`)
+
+    if (!userId) return e.reply("找不到原消息了，手动同意叭~")
+
+    let member = (await this.Bot.getSystemMsg())
+      .find(item => item.request_type == "group" && item.sub_type == "add" && item.group_id == e.group_id && item.user_id == userId)
+
+    if (_.isEmpty(member)) return e.reply("呜呜呜，没找到这个淫的加群申请(つд⊂)")
+
+    if (/风险/.test(member.tips)) return e.reply("该账号为风险账号请手动处理哦ಠ~ಠ")
+
+    if (await member.approve(yes)) {
+      e.reply(`已${yes ? "同意" : "拒绝"}${member.nickname}(${member.user_id})的加群申请辣٩(๑^o^๑)۶`)
+    } else {
+      e.reply("呜呜呜，处理失败辣(இωஇ)")
+    }
+  }
+
+  async HandleFriendRequest(e, sourceMsg, yes) {
+    let qq = sourceMsg[1].match(/[1-9]\d*/g)
+    if (this.Bot.fl.get(Number(qq) || qq)) return e.reply("❎ 已经同意过该申请了哦~")
+
+    logger.mark(`${e.logFnc}${yes ? "同意" : "拒绝"}好友申请`)
+    const data = JSON.parse(await redis.get(`yenai:friendRequest:${qq}`))
+    if (!data) return e.reply("❎ 未获取到该条申请，请手动同意吧")
+
+    await this.Bot.setFriendAddRequest(data.flag, yes)
+      .then(() => e.reply(`✅ 已${yes ? "同意" : "拒绝"}${qq}的好友申请`))
+      .catch(() => e.reply("❎ 请检查是否已同意该申请"))
+  }
+
+  async HandleGroupInvite(e, sourceMsg, yes) {
+    let groupId = sourceMsg[1].match(/[1-9]\d*/g)
+    if (this.Bot.fl.get(Number(groupId))) { return e.reply("❎ 已经同意过该申请了哦~") }
+
+    let qq = sourceMsg[3].match(/[1-9]\d*/g)
+    const data = JSON.parse(await redis.get(`yenai:groupInvite:${groupId}_${qq}`))
+    if (!data) return e.reply("❎ 未获取到该条申请，请手动同意吧")
+    logger.mark(`${e.logFnc}${yes ? "同意" : "拒绝"}群邀请`)
+    if (!common.isTrss) {
+      data.sub_type = undefined
+    }
+    this.Bot.setGroupAddRequest(data.flag, yes, undefined, data.sub_type)
+      .then(() => e.reply(`✅ 已${yes ? "同意" : "拒绝"}${qq}的群邀请`))
+      .catch((err) => {
+        logger.error(err)
+        e.reply("❎ 请检查是否已同意该邀请")
+      })
+  }
+
+  async HandleFriendGroupAdd(e, sourceMsg, yes) {
+    let groupId = sourceMsg[1].match(/\d+/g)
+    let qq = sourceMsg[3].match(/\d+/g)
+
+    let member = (await this.Bot.getSystemMsg()).find(item => item.sub_type == "add" && item.group_id == groupId && item.user_id == qq)
+    if (_.isEmpty(member)) return e.reply("没有找到这个人的加群申请哦")
+
+    let result = member.approve(yes)
+    if (result) {
+      e.reply(`已${yes ? "同意" : "拒绝"}${member.nickname}(${qq})的加群申请`)
+    } else {
+      e.reply("失败了，可能为风险账号请手动处理")
     }
   }
 
@@ -209,7 +224,8 @@ export class NewHandle extends plugin {
     if (!common.checkPermission(e, "master")) return false
     let qq = ""
     let group = ""
-    let msgs = e.message[0].text.split(" ")
+    const message = e.message.filter(i => i.type != "reply")
+    let msgs = message[0].text.split(" ")
     const source = await common.takeSourceMsg(e)
     if (source) {
       let res
@@ -226,24 +242,24 @@ export class NewHandle extends plugin {
       } else {
         return e.reply("❎ 请检查是否引用正确")
       }
-      e.message[0].text = e.message[0].text.replace(/#|回复/g, "").trim()
+      message[0].text = message[0].text.replace(/#|回复/g, "").trim()
     } else {
       if (msgs.length == 1 && !/\d/.test(msgs[0])) {
         return e.reply("❎ QQ号不能为空")
       } else if (/\d/.test(msgs[0])) {
         qq = msgs[0].match(/[1-9]\d*/g)
-        e.message[0].text = msgs.slice(1).join(" ")
+        message[0].text = msgs.slice(1).join(" ")
       } else {
         qq = msgs[1]
-        e.message[0].text = msgs.slice(2).join(" ")
+        message[0].text = msgs.slice(2).join(" ")
       }
     }
-    if (!e.message[0].text) e.message.shift()
+    if (!message[0].text) message.shift()
 
-    if (e.message.length === 0) return e.reply("❎ 消息不能为空")
+    if (message.length === 0) return e.reply("❎ 消息不能为空")
     if (group) {
       logger.mark(`${e.logFnc}回复临时消息`)
-      return this.Bot.sendTempMsg(group, qq, e.message)
+      return this.Bot.sendTempMsg(group, qq, message)
         .then(() => e.reply("✅ 已把消息发给它了哦~"))
         .catch((err) => common.handleException(e, err, { MsgTemplate: "❎ 发送失败\n错误信息为:{error}" }))
     }
@@ -255,7 +271,7 @@ export class NewHandle extends plugin {
     logger.mark(`${e.logFnc}回复好友消息`)
 
     this.Bot.pickFriend(qq)
-      .sendMsg(e.message)
+      .sendMsg(message)
       .then(() => e.reply("✅ 已把消息发给它了哦~"))
       .catch((err) => common.handleException(e, err, { MsgTemplate: "❎ 发送失败\n错误信息为:{error}" }))
   }

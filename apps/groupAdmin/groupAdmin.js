@@ -425,10 +425,18 @@ export class GroupAdmin extends plugin {
     if (!source) return e.reply("请对要加精的消息进行引用")
     let isAdd = e.msg.match(/加|设|移/)?.[0]
     let res
-    if (isAdd == "加" || isAdd == "设") {
-      res = await this.Bot.setEssenceMessage(source.message_id)
-    } else {
-      res = await this.Bot.removeEssenceMessage(source.message_id)
+    try {
+      if (isAdd == "加" || isAdd == "设") {
+        res = await this.Bot.setEssenceMessage(source.message_id)
+      } else {
+        res = await this.Bot.removeEssenceMessage(source.message_id)
+      }
+    } catch (error) {
+      if (error.message.includes("is not a function")) {
+        return e.reply("❎ 该协议端未获取到加精函数")
+      }
+
+      return common.handleException(e, error)
     }
     e.reply(res || `${isAdd}精失败`)
   }

@@ -1,7 +1,7 @@
 export default [
   {
-    component: "Divider",
-    label: "搜图设置"
+    component: "SOFT_GROUP_BEGIN",
+    label: "搜图配置"
   },
   {
     field: "picSearch.isMasterUse",
@@ -29,7 +29,7 @@ export default [
   },
   {
     component: "Divider",
-    label: "Ascii2d相关配置"
+    label: "Ascii2d配置"
   },
   {
     field: "picSearch.ascii2dUsePuppeteer",
@@ -57,7 +57,7 @@ export default [
   },
   {
     component: "Divider",
-    label: "Saucenao相关配置"
+    label: "Saucenao配置"
   },
   {
     field: "picSearch.useAscii2dWhenLowAcc",
@@ -100,7 +100,7 @@ export default [
   },
   {
     component: "Divider",
-    label: "Whatanime相关配置"
+    label: "Whatanime配置"
   },
   {
     field: "picSearch.hideImgWhenWhatanimeR18",

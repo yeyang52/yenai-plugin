@@ -1,7 +1,7 @@
 export default [
   {
-    component: "Divider",
-    label: "群管设置"
+    component: "SOFT_GROUP_BEGIN",
+    label: "群管配置"
   },
   {
     field: "groupAdmin.whiteQQ",

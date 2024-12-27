@@ -1,7 +1,7 @@
 export default [
   {
-    component: "Divider",
-    label: "哔咔设置"
+    component: "SOFT_GROUP_BEGIN",
+    label: "哔咔配置"
   },
   {
     field: "bika.allowPM",

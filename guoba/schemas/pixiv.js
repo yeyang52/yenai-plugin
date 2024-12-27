@@ -1,7 +1,7 @@
 export default [
   {
-    component: "Divider",
-    label: "pixiv设置"
+    component: "SOFT_GROUP_BEGIN",
+    label: "Pixiv配置"
   },
   {
     field: "pixiv.pixivDirectConnection",

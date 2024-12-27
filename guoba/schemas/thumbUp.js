@@ -1,7 +1,7 @@
 export default [
   {
-    component: "Divider",
-    label: "点赞设置"
+    component: "SOFT_GROUP_BEGIN",
+    label: "点赞配置"
   },
   {
     field: "thumbUp.strangeThumbUp",

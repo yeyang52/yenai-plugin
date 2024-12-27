@@ -1,8 +1,8 @@
 import fs from "fs"
 export default [
   {
-    component: "Divider",
-    label: "状态设置"
+    component: "SOFT_GROUP_BEGIN",
+    label: "状态配置"
   },
   {
     field: "state.defaultState",
@@ -56,7 +56,7 @@ export default [
   },
   {
     component: "Divider",
-    label: "状态网络测试设置"
+    label: "网络测试配置"
   },
   {
     field: "state.psTestSites.show",
@@ -110,7 +110,7 @@ export default [
   },
   {
     component: "Divider",
-    label: "状态监控设置"
+    label: "监控配置"
   },
   {
     field: "state.monitor.open",
@@ -144,7 +144,7 @@ export default [
   },
   {
     component: "Divider",
-    label: "状态进程负载设置"
+    label: "进程负载配置"
   },
   {
     field: "state.processLoad.show",
@@ -222,7 +222,7 @@ export default [
   },
   {
     component: "Divider",
-    label: "状态图表设置"
+    label: "图表配置"
   },
   {
     field: "state.chartsCfg.show",
@@ -259,7 +259,7 @@ export default [
   },
   {
     component: "Divider",
-    label: "状态样式设置"
+    label: "样式配置"
   },
   {
     field: "state.style.backdrop",

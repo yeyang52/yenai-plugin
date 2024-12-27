@@ -1,5 +1,9 @@
 export default [
   {
+    component: "SOFT_GROUP_BEGIN",
+    label: "通知配置"
+  },
+  {
     component: "Divider",
     label: "消息通知"
   },
@@ -99,7 +103,7 @@ export default [
   },
   {
     component: "Divider",
-    label: "通知其他设置"
+    label: "通知其他配置"
   },
   {
     field: "notice.default.notificationsAll",
@@ -109,7 +113,7 @@ export default [
   },
   {
     field: "notice.default.msgSaveDeltime",
-    label: "删除缓存时间",
+    label: "缓存删除时间",
     helpMessage: "删除撤回消息保存的时间",
     bottomHelpMessage: "不建议设置太久",
     component: "InputNumber"

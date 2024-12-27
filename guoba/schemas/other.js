@@ -1,7 +1,7 @@
 export default [
   {
-    component: "Divider",
-    label: "其他设置"
+    component: "SOFT_GROUP_BEGIN",
+    label: "其他配置"
   },
   {
     field: "other.autoMaegeCfg",

@@ -350,7 +350,7 @@ export class Assistant extends plugin {
     if (e.message[1]) {
       quits = e.message[1].qq
     } else {
-      quits = quits.match(/[1-9]\d*/g)
+      quits = quits.match(/[1-9]\d*/g)[0]
     }
     if (!quits) return e.reply("❎ 请输入正确的QQ号")
 

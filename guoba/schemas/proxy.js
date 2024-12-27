@@ -1,7 +1,7 @@
 export default [
   {
-    component: "Divider",
-    label: "代理设置"
+    component: "SOFT_GROUP_BEGIN",
+    label: "代理配置"
   },
   {
     field: "proxy.switchProxy",

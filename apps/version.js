@@ -21,8 +21,7 @@ export class NewVersion extends plugin {
       "help/version-info",
       {
         currentVersion: Version.ver,
-        changelogs: Version.logs,
-        elem: "cryo"
+        changelogs: Version.logs
       },
       { e, scale: 1.4 }
     )

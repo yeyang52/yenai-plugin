@@ -1,21 +1,31 @@
+body {
+    background-color: #141726;
+}
+
 .container {
     width: 520px;
     padding: 10px 0 10px 0;
     background-size: 100% 100%;
+    background-color: #141726;
 }
 
 .log-cont {
     background-size: cover;
-    margin: 5px 15px 5px 10px;
-    border-radius: 10px;
+    margin: 20px 25px;
+    border-radius: 15px;
 
     .cont {
         margin: 0;
+        background-color: rgba(43, 47, 59, 0.4901960784);
+        box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.4);
+        border-top: 1px solid rgba(255, 255, 255, 0.3);
+        border-left: 1px solid rgba(255, 255, 255, 0.3);
     }
 
     .cont-title {
         font-size: 16px;
         padding: 10px 20px 6px;
+        border-bottom: 1px solid #b5b5b5;
 
         &.current-version {
             font-size: 20px;
@@ -64,4 +74,50 @@
             white-space: nowrap;
         }
     }
+}
+
+/* cont */
+.cont {
+    border-radius: 10px;
+    background-size: auto 100%;
+    margin: 5px 15px 5px 10px;
+    position: relative;
+    box-shadow: 0 0 1px 0 #ccc, 2px 2px 4px 0 rgba(50, 50, 50, 0.8);
+    overflow: hidden;
+    color: #fff;
+    font-size: 16px;
+
+    &>ul {
+        &.cont-msg {
+            display: block;
+            padding: 5px 10px;
+            background: rgba(0, 0, 0, 0.5);
+        }
+    }
+}
+
+.cont-title {
+    color: #d3bc8e;
+    padding: 10px 20px;
+    text-align: left;
+    border-radius: 10px 10px 0 0;
+
+    span {
+        font-size: 12px;
+        color: #aaa;
+        margin-left: 10px;
+        font-weight: normal;
+    }
+
+    &.border-less {
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+        box-shadow: none;
+        padding-bottom: 5px;
+    }
+}
+
+.cont-body {
+    padding: 10px 15px;
+    font-size: 12px;
+    font-weight: normal;
 }

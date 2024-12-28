@@ -1,8 +1,8 @@
 import _ from "lodash"
-import { status } from "../constants/other.js"
-import { common, QQApi } from "../model/index.js"
-import { sleep } from "../tools/index.js"
-import { API_ERROR } from "../constants/errorMsg.js"
+import { status } from "../../constants/other.js"
+import { common, QQApi } from "../../model/index.js"
+import { sleep } from "../../tools/index.js"
+import { API_ERROR } from "../../constants/errorMsg.js"
 
 // 命令正则
 
@@ -282,8 +282,16 @@ export class Assistant extends plugin {
   async SetSignature(e) {
     if (!common.checkPermission(e, "master")) return
     let signs = e.msg.replace(/#改签名/g, "").trim()
-    await this.Bot.setSignature(signs)
-      .then(() => e.reply("✅ 签名修改成功"))
+    let promiseTask = null
+    if (typeof this.Bot.setSignature === "function") {
+      promiseTask = this.Bot.setSignature(signs)
+    } else if (common.isTrss) {
+      promiseTask = this.Bot.sendApi("set_self_longnick", { longNick: signs })
+    } else {
+      return e.reply("❎ 未获取到修改签名方法")
+    }
+
+    await promiseTask.then(() => e.reply("✅ 签名修改成功"))
       .catch((err) => {
         e.reply("❎ 签名修改失败")
         logger.error(err)
@@ -516,7 +524,17 @@ export class Assistant extends plugin {
   async setModel(e) {
     if (!common.checkPermission(e, "master")) return
     let model = e.msg.replace(/#设置机型/g, "")
-    let res = await new QQApi(e).setModel(model).catch(err => logger.error(err))
-    e.reply(_.get(res, [ "13031", "data", "rsp", "iRet" ]) == 0 ? "设置成功" : "设置失败")
+    let is = false
+    try {
+      let res = await new QQApi(e).setModel(model)
+      e.reply(_.get(res, [ "13031", "data", "rsp", "iRet" ]) == 0 ? "✅ 设置成功" : "❎ 设置失败")
+    } catch (err) {
+      if (common.isTrss) {
+        await this.Bot.sendApi("_set_model_show", { model, model_show: model }).then(_i => (is = true)).catch(_err => logger.error(_err))
+      } else {
+        logger.error(err)
+      }
+    }
+    e.reply(is ? "✅ 设置成功" : "❎ 设置失败")
   }
 }

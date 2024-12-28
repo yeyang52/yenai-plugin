@@ -246,7 +246,7 @@ export const helpList = [
     ]
   },
   {
-    group: "进群验证(更多设置请在config/groupverify.yaml进行设置)",
+    group: "进群验证",
     list: [
       {
         title: "#开启验证",

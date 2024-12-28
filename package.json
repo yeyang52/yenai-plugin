@@ -5,10 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "contributors:add": "all-contributors add",
-    "contributors:generate": "all-contributors generate",
-    "lint": "lint-staged --allow-empty",
-    "commit": "gitmoji --commit"
+    "lint": "lint-staged --allow-empty"
   },
   "imports": {
     "#yenai.common": "./lib/common/common.js",
@@ -34,14 +31,12 @@
     "systeminformation": "^5.23.5"
   },
   "devDependencies": {
-    "all-contributors-cli": "^6.26.1",
     "eslint": "^8.57.1",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsdoc": "^48.11.0",
     "eslint-plugin-promise": "^6.6.0",
     "eslint-import-resolver-custom-alias": "^1.3.2",
-    "gitmoji-cli": "^9.5.0",
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10"
   },

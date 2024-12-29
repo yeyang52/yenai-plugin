@@ -57,3 +57,22 @@ export class groupWhiteListCtrl extends plugin {
     this.reply(`✅ 已${type ? "开启" : "关闭"}白名单自动解禁`)
   }
 }
+
+Bot.on("notice.group.ban", async(e) => {
+  const bot = e.bot ?? Bot
+  /** 处理白名单禁言 */
+  const { groupAdmin } = Config
+  const isMaster = Config.masterQQ?.includes(e.operator_id) || e.operator_id === bot.uin
+  const isWhiteUser = groupAdmin.whiteQQ.includes(e.user_id)
+
+  if (
+    isWhiteUser &&
+        !isMaster &&
+        groupAdmin.noBan &&
+        (e.group.is_admin || e.group.is_owner) &&
+        e.duration !== 0
+  ) {
+    await e.group.muteMember(e.user_id, 0)
+    e.reply("已解除白名单用户的禁言")
+  }
+})

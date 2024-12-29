@@ -101,6 +101,5 @@ export async function getMonitorData() {
 function getChartData(e, cfg) {
   if (cfg !== true && !(cfg === "pro" && e.isPro)) return false
   let check = common.checkIfEmpty(Monitor.chartData.network)
-  console.log(check, Monitor.chartData.network)
   return check ? false : JSON.stringify(Monitor.chartData)
 }

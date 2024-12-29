@@ -1,0 +1,1 @@
+import{i as e}from"./app-470f2fb8.js";import"./framework-cc0a3056.js";const t=()=>e({serverURL:"https://yenai-waline.vercel.app"});export{t as updatePageview};

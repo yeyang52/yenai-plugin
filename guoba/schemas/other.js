@@ -10,6 +10,12 @@ export default [
     component: "Switch"
   },
   {
+    field: "other.githubAssetsImg",
+    label: "github缩略图",
+    bottomHelpMessage: "检测到github链接自动发送缩略图",
+    component: "Switch"
+  },
+  {
     field: "other.renderScale",
     label: "渲染精度",
     component: "InputNumber",

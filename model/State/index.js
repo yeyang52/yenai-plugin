@@ -47,11 +47,13 @@ export async function getData(e) {
   })
 
   const promiseTaskList = [
+    getCopyright(),
     visualDataPromise,
     ...debugTasks
   ]
 
   const [
+    copyright,
     visualData,
     FastFetch,
     HardDisk,
@@ -65,6 +67,7 @@ export async function getData(e) {
   e.isDebug && debugFun.send()
 
   return {
+    // 数据
     BotStatusList,
     redis: redisInfo,
     chartData: getChartData(e, chartsCfg.show),
@@ -79,10 +82,11 @@ export async function getData(e) {
       psTest: _.isEmpty(psTest) ? undefined : psTest
     },
     FastFetch,
-    style,
     processLoad,
+    // 样式
+    style,
     // 版权
-    copyright: await getCopyright(),
+    copyright,
     // 配置
     Config: JSON.stringify(Config.state),
     rawConfig: Config.state,

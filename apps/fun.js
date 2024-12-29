@@ -1,6 +1,6 @@
 import { pandadiuType } from "../constants/fun.js"
 import { common, funApi, uploadRecord } from "../model/index.js"
-
+import { Config } from "#yenai.components"
 /** 开始执行文案 */
 const START_EXECUTION = "椰奶产出中......"
 
@@ -90,6 +90,7 @@ export class Fun extends plugin {
    * @param e
    */
   async GH(e) {
+    if (!Config.other.githubAssetsImg) return
     const api = "https://opengraph.githubassets.com"
 
     let reg = /github.com\/[a-zA-Z0-9-]{1,39}\/[a-zA-Z0-9_-]{1,100}(?:\/(?:pull|issues)\/\d+)?/

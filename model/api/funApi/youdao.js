@@ -1,6 +1,6 @@
 import { youDaoLangType } from "../../../constants/fun.js"
 import md5 from "md5"
-import { API_ERROR } from "./utils.js"
+import { API_ERROR } from "../../../constants/errorMsg.js"
 import _ from "lodash"
 
 /**

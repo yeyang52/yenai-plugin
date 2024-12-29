@@ -1,4 +1,4 @@
-import { API_ERROR } from "./utils.js"
+import { API_ERROR } from "../../../constants/errorMsg.js"
 import _ from "lodash"
 
 /** 随机唱歌/唱鸭 */

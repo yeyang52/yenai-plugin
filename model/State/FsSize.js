@@ -8,15 +8,15 @@ import { getFileSize } from "./utils.js"
  */
 export async function getFsSize() {
   // 去重
-  let HardDisk = _.uniqWith(await si.fsSize(),
+  const fsSize = _.uniqWith(await si.fsSize(),
     (a, b) =>
       a.used === b.used && a.size === b.size && a.use === b.use && a.available === b.available
   )
     .filter(item => item.size && item.used && item.available && item.use)
     // 为空返回false
-  if (_.isEmpty(HardDisk)) return false
+  if (_.isEmpty(fsSize)) return false
   // 数值转换
-  return HardDisk.map(item => {
+  return fsSize.map(item => {
     item.used = getFileSize(item.used)
     item.size = getFileSize(item.size)
     item.use = Math.round(item.use)

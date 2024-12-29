@@ -1,5 +1,7 @@
+> [!TIP]
 > 如果您觉得我们的项目有帮助，请给我们一个星星（Starred）！您的支持对我们非常重要，将激励我们不断改进和提供更好的内容。谢谢！🙏
 
+> [!WARNING]
 > ⚠️注意，该分支为yenai-plugin v2版本 配置文件进行重构无法直接从v1进行迁移 该版本还未完善，请谨慎使用
 
 <img src="resources/img/logo.gif" alt="看板娘" width = "200" align="right">
@@ -34,13 +36,13 @@
 - 使用github
 
 ```sh
-git clone -b master --depth=1 https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
+git clone -b v2 --depth=1 https://github.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 ```
 
 - 使用gitee
 
 ```sh
-git clone -b master --depth=1 https://gitee.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
+git clone -b v2 --depth=1 https://gitee.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 ```
 
 2. 安装依赖(可选：不安装依赖将无法使用一些功能)
@@ -156,7 +158,9 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 
 <br>
 
-更多信息请移步[文档](https://yenai.trss.me)
+> [!TIP]
+> 更多信息可以查看我们的[文档](https://yenai.trss.me)
+
 
 ## 特别鸣谢 ❤️
 
@@ -237,6 +241,3 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
 💬：914247840
 
 ❤️：[打赏](https://yenai.trss.me/donate.html)
-
-![Alt](https://repobeats.axiom.co/api/embed/42b5a7769074be124bd9ab02456897e37d1581f1.svg "Repobeats analytics image")
-[![椰羊/Yenai-Plugin](https://gitee.com/yeyang52/yenai-plugin/widgets/widget_card.svg?colors=4183c4,ffffff,ffffff,e3e9ed,666666,9b9b9b)](https://gitee.com/yeyang52/yenai-plugin)

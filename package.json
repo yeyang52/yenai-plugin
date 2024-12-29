@@ -1,6 +1,6 @@
 {
-  "name": "yenai-plguin",
-  "version": "1.4.0",
+  "name": "yenai-plugin",
+  "version": "2.0.0",
   "description": "Yunzai-Bot插件扩展",
   "main": "index.js",
   "type": "module",
@@ -20,7 +20,7 @@
   },
   "keywords": [
     "Yunzai-Bot",
-    "yenai-plguin"
+    "yenai-plugin"
   ],
   "author": "yeyang",
   "license": "GPL-3.0",

@@ -130,7 +130,7 @@ export class ThumbUp extends plugin {
 // }
 
 const handleMsg = (msg, variable, regex = /{{(.*?)}}/g) => {
-  if (!msg) return false
+  if (!msg || msg == "false") return false
   let parse = parseMessage(msg, regex)
   if (!parse?.length) return false
   let res = parse.map(item => {

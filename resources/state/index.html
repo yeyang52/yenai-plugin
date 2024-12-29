@@ -97,10 +97,10 @@
     </ul>
 </div>
 
-{{if HardDisk}}
+{{if disks.disksSize}}
 <div class="box memory" data-boxInfo="磁盘">
     <ul>
-        {{each HardDisk}}
+        {{each disks.disksSize}}
         <li class="HardDisk_li">
             <div class="word mount">{{$value.mount}}</div>
             <div class="progress">
@@ -111,10 +111,10 @@
         </li>
         {{/each}}
     </ul>
-    {{if disksIO}}
+    {{if disks.disksIo}}
     <div class="speed">
         <p>disksIO</p>
-        <p>读 {{disksIO.rIO_sec}}/s | 写 {{disksIO.wIO_sec}}/s</p>
+        <p>读 {{disks.disksIo.rIO_sec}}/s | 写 {{disks.disksIo.wIO_sec}}/s</p>
     </div>
     {{/if}}
 </div>
@@ -182,16 +182,16 @@
 </div>
 {{/if}}
 
-{{if network || psTest}}
+{{if network.speed || network.psTest}}
 <div class="box" data-boxInfo="网络">
-    {{if network}} {{each network}}
+    {{if network.speed}} {{each network.speed}}
     <div class="speed">
         <p>{{$value.first}}</p>
         <p>{{@$value.tail}}</p>
     </div>
-    {{/each}} {{/if}} {{if network && psTest}}
+    {{/each}} {{/if}} {{if network.speed && network.psTest}}
     <hr style="margin: 5px 0" />
-    {{/if}} {{if psTest}} {{each psTest}}
+    {{/if}} {{if network.psTest}} {{each network.psTest}}
     <div class="speed">
         <p>{{$value.first}}</p>
         <p>{{@$value.tail}}</p>

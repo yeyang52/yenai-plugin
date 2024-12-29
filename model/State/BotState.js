@@ -59,8 +59,6 @@ async function getAvatarColor(url) {
     }
   } catch {
     return {
-      similarColor1: "#fff1eb",
-      similarColor2: "#ace0f9",
       path: url
     }
   }

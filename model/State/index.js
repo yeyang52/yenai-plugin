@@ -13,45 +13,42 @@ import getNode from "./NodeInfo.js"
 import getOtherInfo, { getCopyright } from "./OtherInfo.js"
 import getRAM from "./RAM.js"
 import getSWAP from "./SWAP.js"
-import getRedisInfo from "./redis.js"
-import getStyle from "./style.js"
-import { BuildDebug } from "./debug.js"
-import getProcessLoad from "./processLoad.js"
-import si from "systeminformation"
+import { BuildDebug } from "./Debug.js"
+import getProcessLoad from "./ProcessLoad.js"
+import getRedisInfo from "./Redis.js"
+import getStyle from "./Style.js"
 
-global.yenai_debug ||= {}
-global.yenai_debug.si = si
-
+const SYSTEM_RESOURCE_MAP = {
+  "CPU": getCPU,
+  "RAM": getRAM,
+  "SWAP": getSWAP,
+  "GPU": getGPU,
+  "Node": getNode
+}
 export async function getData(e) {
   e.isPro = e.msg.includes("pro")
   e.isDebug = e.msg.includes("debug")
   // 配置
   const { chartsCfg, systemResources } = Config.state
-  const MAP_FUN = {
-    "CPU": getCPU,
-    "RAM": getRAM,
-    "SWAP": getSWAP,
-    "GPU": getGPU,
-    "Node": getNode
-  }
-  const debugFun = new BuildDebug(e)
 
+  const debugFun = new BuildDebug(e)
+  const systemResourcesList = systemResources.map(i => SYSTEM_RESOURCE_MAP[i]())
   const visualDataPromise = Promise.all(
-    debugFun.adds(systemResources.map(i => MAP_FUN[i]()), systemResources)
+    debugFun.adds(systemResourcesList, systemResources)
   )
-  const debugTaskList = debugFun.adds([
-    getFastFetch(e),
-    getFsSize(),
-    getNetworkTestList(e),
-    getBotState(e),
-    getStyle(),
-    getRedisInfo(e.isPro),
-    getProcessLoad(e)
-  ], [ "FastFetch", "FsSize", "NetworkTest", "BotState", "Style", "Redis", "ProcessLoad" ])
+  const debugTasks = debugFun.addIn({
+    "FastFetch": getFastFetch(e),
+    "FsSize": getFsSize(),
+    "NetworkTest": getNetworkTestList(e),
+    "BotState": getBotState(e),
+    "Style": getStyle(),
+    "Redis": getRedisInfo(e.isPro),
+    "ProcessLoad": getProcessLoad(e)
+  })
 
   const promiseTaskList = [
     visualDataPromise,
-    ...debugTaskList
+    ...debugTasks
   ]
 
   const [
@@ -61,34 +58,34 @@ export async function getData(e) {
     psTest,
     BotStatusList,
     style,
-    redis,
+    redisInfo,
     processLoad
   ] = await debugFun.add(Promise.all(promiseTaskList), "all")
 
   e.isDebug && debugFun.send()
 
-  const chartData = JSON.stringify(
-    common.checkIfEmpty(Monitor.chartData, [ "echarts_theme", "cpu", "ram" ])
-      ? ""
-      : Monitor.chartData
-  )
-
   return {
     BotStatusList,
-    redis,
-    chartData: getShowchart(e, chartsCfg.show) ? chartData : false,
+    redis: redisInfo,
+    chartData: getChartData(e, chartsCfg.show),
     visualData: _.compact(visualData),
     otherInfo: getOtherInfo(e),
-    psTest: _.isEmpty(psTest) ? undefined : psTest,
-    disksIO: getDiskSpeed(),
-    copyright: await getCopyright(),
-    network: getNetwork(),
-    Config: JSON.stringify(Config.state),
-    rawConfig: Config.state,
+    disks: {
+      disksIo: getDiskSpeed(),
+      disksSize: HardDisk
+    },
+    network: {
+      speed: getNetwork(),
+      psTest: _.isEmpty(psTest) ? undefined : psTest
+    },
     FastFetch,
-    HardDisk,
     style,
     processLoad,
+    // 版权
+    copyright: await getCopyright(),
+    // 配置
+    Config: JSON.stringify(Config.state),
+    rawConfig: Config.state,
     time: moment().format("YYYY-MM-DD HH:mm:ss"),
     isPro: e.isPro
   }
@@ -101,8 +98,9 @@ export async function getMonitorData() {
   }
 }
 
-function getShowchart(e, cfg) {
-  if (cfg === true) return true
-  if (cfg === "pro" && e.isPro) return true
-  return false
+function getChartData(e, cfg) {
+  if (cfg !== true && !(cfg === "pro" && e.isPro)) return false
+  let check = common.checkIfEmpty(Monitor.chartData.network)
+  console.log(check, Monitor.chartData.network)
+  return check ? false : JSON.stringify(Monitor.chartData)
 }

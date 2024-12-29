@@ -1,5 +1,5 @@
-import { Circle } from "./utils.js"
 import si from "systeminformation"
+import { Circle } from "./utils.js"
 let cpu = null;
 (async() => {
   cpu = await si.cpu()

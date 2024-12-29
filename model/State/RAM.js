@@ -1,5 +1,5 @@
-import { Circle, getFileSize } from "./utils.js"
 import si from "systeminformation"
+import { Circle, getFileSize } from "./utils.js"
 
 /** 获取当前内存占用 */
 export default async function getMemUsage() {

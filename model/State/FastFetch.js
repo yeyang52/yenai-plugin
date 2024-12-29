@@ -1,6 +1,6 @@
-import { Config } from "../../components/index.js"
 import child_process from "child_process"
 import util from "util"
+import { Config } from "../../components/index.js"
 const execAsync = util.promisify(child_process.exec)
 
 const getFastFetchFun = await initFastFetch()

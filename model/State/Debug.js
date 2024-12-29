@@ -1,4 +1,8 @@
 import { getFileSize } from "./utils.js"
+import si from "systeminformation"
+
+global.yenai_debug ||= {}
+global.yenai_debug.si = si
 
 export class BuildDebug {
   constructor(e) {
@@ -13,6 +17,14 @@ export class BuildDebug {
 
   adds(promises, nameMap) {
     return promises.map((v, i) => this._timePromiseExecution(v, nameMap[i]))
+  }
+
+  addIn(obj) {
+    const res = []
+    for (const key in obj) {
+      res.push(this._timePromiseExecution(obj[key], key))
+    }
+    return res
   }
 
   add(promises, name) {

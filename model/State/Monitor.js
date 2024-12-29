@@ -1,6 +1,6 @@
-import { Config } from "../../components/index.js"
 import _ from "lodash"
 import si from "systeminformation"
+import { Config } from "../../components/index.js"
 
 const CHART_DATA_KEY = "yenai:state:chartData"
 const DEFAULT_INTERVAL = 60 * 1000

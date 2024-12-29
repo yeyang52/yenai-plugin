@@ -1,7 +1,7 @@
 import { Config, Plugin_Path } from "../../components/index.js"
 import request from "../../lib/request/request.js"
 import Monitor from "./Monitor.js"
-import { getFileSize, createAbortCont } from "./utils.js"
+import { createAbortCont, getFileSize } from "./utils.js"
 
 const defList = [
   { name: "Baidu", url: "https://baidu.com" },

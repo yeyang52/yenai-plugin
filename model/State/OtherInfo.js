@@ -2,9 +2,9 @@ import fs from "fs"
 import _ from "lodash"
 import os from "os"
 import path from "path"
+import si from "systeminformation"
 import { Version } from "../../components/index.js"
 import { formatDuration } from "../../tools/index.js"
-import si from "systeminformation"
 
 let osInfo = null
 let loader = null;

@@ -1,8 +1,8 @@
+import fs from "fs"
+import _ from "lodash"
 import { Config } from "../../components/index.js"
 import requset from "../../lib/request/request.js"
 import { createAbortCont } from "./utils.js"
-import fs from "fs"
-import _ from "lodash"
 
 export default async function getStyle() {
   return {

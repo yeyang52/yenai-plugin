@@ -1,7 +1,7 @@
 import _ from "lodash"
-import { getFileSize } from "./utils.js"
-import Monitor from "./Monitor.js"
 import si from "systeminformation"
+import Monitor from "./Monitor.js"
+import { getFileSize } from "./utils.js"
 
 /**
  *  获取硬盘

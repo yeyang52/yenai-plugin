@@ -58,3 +58,32 @@ body {
         padding: 0 3px;
     }
 }
+
+.head-box {
+    border-radius: 15px;
+    padding: 10px 20px;
+    position: relative;
+    color: #fff;
+    margin-top: 30px;
+
+    .title {
+        font-family: Number, "印品南征北战NZBZ体", NZBZ, "汉仪文黑-65W", YS, PingFangSC-Medium, "PingFang SC", sans-serif;
+        font-size: 36px;
+        text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
+
+        .label {
+            display: inline-block;
+            margin-left: 10px;
+        }
+    }
+
+    .label {
+        font-size: 16px;
+        text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
+
+        span {
+            color: #d3bc8e;
+            padding: 0 2px;
+        }
+    }
+}

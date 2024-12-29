@@ -1,6 +1,6 @@
+import _ from "lodash"
 import si from "systeminformation"
 import { Config } from "../../components/index.js"
-import _ from "lodash"
 import { getFileSize } from "./utils.js"
 
 export default async function(e) {

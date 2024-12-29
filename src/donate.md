@@ -17,7 +17,7 @@ order: -1
 如果你觉得插件还不错，可以为作者贡献一杯奶茶。
 :::
 
-| WeChat                                                       | AliPay                                                       | QQ                                                           | [爱发电](https://afdian.net/a/yeyang52)                      |
+| WeChat                                                       | AliPay                                                       | QQ                                                           | [爱发电](https://afdian.com/a/yeyang52)                      |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | <img style="width: 160px" src="/sponsor-qrcode/qrcode-wechat-zan.png" /> | <img style="width: 160px" src="/sponsor-qrcode/qrcode-alipay.png" /> | <img style="width: 160px" src="/sponsor-qrcode/qrcode-qq.png" /> | <img style="width: 160px" src="/sponsor-qrcode/qrcode-afdian.png" /> |
 

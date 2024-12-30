@@ -1,33 +1,21 @@
-import puppeteer from "#yenai.puppeteer"
-import uploadRecord from "../tools/uploadRecord.js"
-import Bika from "./Bika.js"
-import common from "../lib/common/common.js"
-import GroupAdmin from "./GroupAdmin.js"
-import funApi from "./api/funApi.js"
-import Pixiv from "./Pixiv.js"
-import QQApi from "./api/QQApi.js"
-import setu from "./setu.js"
 import Ascii2D from "./PicSearch/ascii2d.js"
 import SauceNAO from "./PicSearch/saucenao.js"
 import WhatAnime from "./PicSearch/whatanime.js"
-import GroupBannedWords from "./GroupBannedWords.js"
-import memes from "./memes.js"
+
 // 导出模块
+export { default as puppeteer } from "#yenai.puppeteer"
+export { default as uploadRecord } from "../tools/uploadRecord.js"
+export { default as Bika } from "./Bika.js"
+export { default as common } from "../lib/common/common.js"
+export { default as GroupAdmin } from "./GroupAdmin.js"
+export { default as funApi } from "./api/funApi.js"
+export { default as Pixiv } from "./Pixiv.js"
+export { default as QQApi } from "./api/QQApi.js"
+export { default as setu } from "./setu.js"
+export { default as GroupBannedWords } from "./GroupBannedWords.js"
+export { default as memes } from "./memes.js"
 export const PicSearch = {
   Ascii2D,
   SauceNAO,
   WhatAnime
-}
-export {
-  puppeteer,
-  common,
-  Pixiv,
-  setu,
-  Bika,
-  uploadRecord,
-  GroupAdmin,
-  QQApi,
-  GroupBannedWords,
-  funApi,
-  memes
 }

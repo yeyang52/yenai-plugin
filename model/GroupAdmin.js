@@ -106,11 +106,12 @@ export default class GroupAdmin {
    * @param {number} groupId 群号
    * @param {number} times 时间数
    * @param {string} unit 单位 (天)
+   * @param _list
    * @returns {Promise<boolean>}
    * @throws {Error} 如果没有符合条件的成员，将抛出一个错误
    */
-  async clearNoactive(groupId, times, unit) {
-    let list = await this.noactiveList(groupId, times, unit)
+  async clearNoactive(groupId, times, unit, _list) {
+    let list = _list || await this.noactiveList(groupId, times, unit)
     list = list.map(item => item.user_id)
     return this.BatchKickMember(groupId, list)
   }
@@ -157,12 +158,13 @@ export default class GroupAdmin {
    * @async
    * @param {string|number} groupId - 群号
    * @param {number} [page] - 分页页码，默认为第一页
+   * @param {Array} _list
    * @returns {Promise<Array<string>>} 包含从未发言成员信息的数组
    * @throws {Error} 如果没有符合条件的成员，将抛出一个错误
    * @throws {Error} 当页码超出范围时抛出错误
    */
-  async getNeverSpeakInfo(groupId, page = 1) {
-    let list = await this.getNeverSpeak(groupId)
+  async getNeverSpeakInfo(groupId, page = 1, _list) {
+    let list = _list || await this.getNeverSpeak(groupId)
     list.sort((a, b) => a.join_time - b.join_time)
     let msg = list.map(item => {
       return [

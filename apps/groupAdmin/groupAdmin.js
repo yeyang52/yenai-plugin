@@ -103,7 +103,8 @@ export class GroupAdmin extends plugin {
 
   async muteMember(e) {
     if (!common.checkPermission(e, "admin", "admin")) return true
-    const qq = e.message.find(item => item.type == "at")?.qq || e.msg.match(/#禁言\s?(\d+)/)?.[1]
+    let qq = e.message.filter(item => item.type == "at").map(item => item.qq)
+    if (qq.length < 2) qq = qq[0] || e.msg.match(/#禁言\s?(\d+)/)?.[1]
     const time = translateChinaNum(e.msg.match(new RegExp(Numreg))?.[0])
     try {
       const res = await new Ga(e).muteMember(e.group_id, qq, e.user_id, time, e.msg.match(new RegExp(TimeUnitReg))?.[0])
@@ -115,7 +116,8 @@ export class GroupAdmin extends plugin {
 
   async noMuteMember(e) {
     if (!common.checkPermission(e, "admin", "admin")) return true
-    const qq = e.message.find(item => item.type == "at")?.qq || e.msg.match(/#解禁(\d+)/)?.[1]
+    let qq = e.message.filter(item => item.type == "at").map(item => item.qq)
+    if (qq.length < 2) qq = qq[0] || e.msg.match(/#解禁(\d+)/)?.[1]
     try {
       const res = await new Ga(e).muteMember(e.group_id, qq, e.user_id, 0)
       e.reply(res)
@@ -133,7 +135,9 @@ export class GroupAdmin extends plugin {
 
   async kickMember(e) {
     if (!common.checkPermission(e, "admin", "admin")) return true
-    const qq = e.message.find(item => item.type == "at")?.qq || e.msg.replace(/#|踢/g, "").trim()
+    let qq = e.message.filter(item => item.type == "at").map(item => item.qq)
+    if (qq.length < 2) qq = qq[0] || e.msg.replace(/#|踢/g, "").trim()
+
     try {
       const res = await new Ga(e).kickMember(e.group_id, qq, e.user_id)
       e.reply(res)
@@ -144,14 +148,20 @@ export class GroupAdmin extends plugin {
 
   async SetAdmin(e) {
     if (!common.checkPermission(e, "master", "owner")) return
-    const qq = e.message.find(item => item.type == "at")?.qq || e.msg.replace(/#|(设置|取消)管理/g, "").trim()
+    let qq = e.message.filter(item => item.type == "at").map(item => item.qq)
+    if (qq.length < 1) qq = [ e.msg.replace(/#|(设置|取消)管理/g, "").trim() ]
     if (!qq || !(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号")
     try {
-      const Member = e.group.pickMember(Number(qq) || qq, true)
-      const Memberinfo = Member?.info || await Member?.getInfo?.()
-      const res = await e.group.setAdmin(qq, /设置管理/.test(e.msg))
-      const name = Memberinfo.card || Memberinfo.nickname || (Number(qq) || qq)
-      e.reply(res ? `✅ 已经把「${name}」设置为管理啦！！` : `✅ 已取消「${name}」的管理`)
+      let add = /设置管理/.test(e.msg)
+      let names = []
+      for (let id of qq) {
+        const Member = e.group.pickMember(Number(id) || id, true)
+        const Memberinfo = Member?.info || await Member?.getInfo?.()
+        await e.group.setAdmin(id, add)
+        const name = Memberinfo.card || Memberinfo.nickname || (Number(id) || id)
+        names.push(name)
+      }
+      e.reply(add ? `✅ 已经把「${names.join("，")}」设置为管理啦！！` : `✅ 已取消「${names.join("，")}」的管理啦！！`)
     } catch {
       e.reply("❎ 这个群没有这个人哦~")
     }

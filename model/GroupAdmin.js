@@ -396,10 +396,10 @@ segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
    * @function muteMember
    * @description 将群成员禁言
    * @param {string|number} groupId - 群号
-   * @param {string|number} userId - QQ 号
+   * @param {string|number|Array<number|string>} userId - QQ 号
    * @param {string|number} executor - 执行操作的管理员 QQ 号
-   * @param {number} [time] - 禁言时长，默认为 5。如果传入 0 则表示解除禁言。
-   * @param {string} [unit] - 禁言时长单位，默认为分钟
+   * @param {number} time - 禁言时长，默认为 5。如果传入 0 则表示解除禁言。
+   * @param {string} unit - 禁言时长单位，默认为分钟
    * @returns {Promise<string>} - 返回操作结果
    * @throws {Error} - 如果缺少必要参数或参数格式不正确，则会抛出错误
    */
@@ -408,70 +408,100 @@ segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
     const group = this.Bot.pickGroup(groupId, true)
     // 判断是否有管理
     if (!group.is_admin && !group.is_owner) throw new ReplyError(ROLE_ERROR)
-    if (!(/\d{5,}/.test(userId))) throw new ReplyError("❎ 请输入正确的QQ号")
 
-    // 判断是否为主人
-    if ((Config.masterQQ?.includes(Number(userId) || String(userId))) && time != 0) throw new ReplyError("❎ 该命令对主人无效")
+    const muteSingleMember = async(id, isMore = false) => {
+      if (!(/\d{5,}/.test(id))) throw new ReplyError("❎ 请输入正确的QQ号")
 
-    const Member = group.pickMember(userId)
-    const Memberinfo = Member?.info || await Member?.getInfo?.()
-    // 判断是否有这个人
-    if (!Memberinfo) throw new ReplyError("❎ 该群没有这个人")
+      // 判断是否为主人
+      if ((Config.masterQQ?.includes(Number(id) || String(id))) && time != 0) throw new ReplyError("❎ 该命令对主人无效")
 
-    // 特殊处理
-    if (Memberinfo.role === "owner") throw new ReplyError("❎ 权限不足，该命令对群主无效")
+      const Member = group.pickMember(id)
+      const Memberinfo = Member?.info || await Member?.getInfo?.()
+      // 判断是否有这个人
+      if (!Memberinfo) throw new ReplyError(`❎ 该群没有${isMore ? id : "这个人"}哦~`)
 
-    const isMaster = Config.masterQQ?.includes(executor)
+      // 特殊处理
+      if (Memberinfo.role === "owner") throw new ReplyError("❎ 权限不足，该命令对群主无效")
 
-    if (Memberinfo.role === "admin") {
-      if (!group.is_owner) throw new ReplyError("❎ 权限不足，需要群主权限")
-      if (!isMaster) throw new ReplyError("❎ 只有主人才能对管理执行该命令")
+      const isMaster = Config.masterQQ?.includes(executor)
+
+      if (Memberinfo.role === "admin") {
+        if (!group.is_owner) throw new ReplyError("❎ 权限不足，需要群主权限")
+        if (!isMaster) throw new ReplyError("❎ 只有主人才能对管理执行该命令")
+      }
+
+      const isWhite = Config.groupAdmin.whiteQQ.includes(Number(id) || String(id))
+
+      if (isWhite && !isMaster && time != 0) throw new ReplyError(`❎ ${isMore ? id : "该用户"}为白名单成员，不可操作`)
+
+      await group.muteMember(id, time * _unit)
+      const memberName = Memberinfo.card || Memberinfo.nickname || id
+      return memberName
     }
 
-    const isWhite = Config.groupAdmin.whiteQQ.includes(Number(userId) || String(userId))
-
-    if (isWhite && !isMaster && time != 0) throw new ReplyError("❎ 该用户为白名单，不可操作")
-
-    await group.muteMember(userId, time * _unit)
-    const memberName = Memberinfo.card || Memberinfo.nickname
-    return time == 0 ? `✅ 已将「${memberName}」解除禁言` : `✅ 已将「${memberName}」禁言${time + unit}`
+    if (Array.isArray(userId)) {
+      const mutedIds = []
+      for (const id of userId) {
+        mutedIds.push(await muteSingleMember(id, true))
+      }
+      return time == 0 ? `✅ 已将「${mutedIds.join("，")}」解除禁言` : `✅ 已将「${mutedIds.join("，")}」禁言${time + unit}`
+    } else {
+      const memberName = await muteSingleMember(userId)
+      return time == 0 ? `✅ 已将「${memberName}」解除禁言` : `✅ 已将「${memberName}」禁言${time + unit}`
+    }
   }
 
   /**
-   * 踢群成员
-   * @param {number} groupId 群号
-   * @param {number} userId 被踢人
-   * @param {number} executor 执行人
-   * @returns {Promise<string>}
+   * @async
+   * @function kickMember
+   * @description 踢出群成员
+   * @param {number|string} groupId - 群号。
+   * @param {number|string|Array<number|string>} userId - 被踢成员的 QQ 号。
+   * @param {number|string} executor - 执行操作的管理员 QQ 号。
+   * @returns {Promise<string>} 返回操作结果的消息。
+   * @throws {ReplyError} 如果群号或成员 QQ 号无效，或者由于权限不足或其他原因导致操作失败，则抛出错误。
    */
   async kickMember(groupId, userId, executor) {
     const group = this.Bot.pickGroup(groupId, true)
 
-    if (!userId || !(/^\d+$/.test(userId))) throw new ReplyError("❎ 请输入正确的QQ号")
     if (!groupId || !(/^\d+$/.test(groupId))) throw new ReplyError("❎ 请输入正确的群号")
 
-    // 判断是否为主人
-    if (Config.masterQQ?.includes(Number(userId) || String(userId))) throw new ReplyError("❎ 该命令对主人无效")
+    const kickSingleMember = async(id, isMore = false) => {
+      if (!id || !(/^\d+$/.test(id))) throw new ReplyError("❎ 请输入正确的QQ号")
 
-    const Member = group.pickMember(userId)
-    const Memberinfo = Member?.info || await Member?.getInfo?.()
-    // 判断是否有这个人
-    if (!Memberinfo) throw new ReplyError("❎ 这个群没有这个人哦~")
-    if (Memberinfo.role === "owner") throw new ReplyError("❎ 权限不足，该命令对群主无效")
+      // 判断是否为主人
+      if (Config.masterQQ?.includes(Number(id) || String(id))) throw new ReplyError("❎ 该命令对主人无效")
 
-    const isMaster = Config.masterQQ?.includes(executor)
+      const Member = group.pickMember(id)
+      const Memberinfo = Member?.info || await Member?.getInfo?.()
+      // 判断是否有这个人
+      if (!Memberinfo) throw new ReplyError(`❎ 这个群没有${isMore ? id : "这个人"}哦~`)
+      if (Memberinfo.role === "owner") throw new ReplyError("❎ 权限不足，该命令对群主无效")
 
-    if (Memberinfo.role === "admin") {
-      if (!group.is_owner) throw new ReplyError("❎ 权限不足，需要群主权限")
-      if (!isMaster) throw new ReplyError("❎ 只有主人才能对管理执行该命令")
+      const isMaster = Config.masterQQ?.includes(executor)
+
+      if (Memberinfo.role === "admin") {
+        if (!group.is_owner) throw new ReplyError("❎ 权限不足，需要群主权限")
+        if (!isMaster) throw new ReplyError("❎ 只有主人才能对管理执行该命令")
+      }
+
+      const isWhite = Config.groupAdmin.whiteQQ.includes(Number(id) || String(id))
+
+      if (isWhite && !isMaster) throw new ReplyError(`❎ ${isMore ? id : "该用户"}是白名单成员，不可操作`)
+
+      const res = await group.kickMember(id)
+      if (!res) throw new ReplyError(`❎ 踢出${id}失败`)
+      return id
     }
 
-    const isWhite = Config.groupAdmin.whiteQQ.includes(Number(userId) || String(userId))
-
-    if (isWhite && !isMaster) throw new ReplyError("❎ 该用户为白名单，不可操作")
-
-    const res = await group.kickMember(userId)
-    if (!res) throw new ReplyError("❎ 踢出失败")
-    return `✅ 已将「${userId}」踢出群聊`
+    if (Array.isArray(userId)) {
+      const kickedIds = []
+      for (const id of userId) {
+        kickedIds.push(await kickSingleMember(id, true))
+      }
+      return `✅ 已将「${kickedIds.join("，")}」踢出群聊`
+    } else {
+      return `✅ 已将「${await kickSingleMember(userId)}」踢出群聊`
+    }
   }
 }

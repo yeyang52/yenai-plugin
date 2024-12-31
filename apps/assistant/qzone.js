@@ -100,45 +100,4 @@ export class Qzone extends plugin {
     msg.push(`\n- [${result.secret ? "私密" : "公开"}] | ${moment(result.t1_ntime * 1000).format("MM/DD HH:mm")}`)
     e.reply(msg)
   }
-
-  /**
-   * 清空说说和留言
-   * @param e
-   */
-  async QzonedelAll(e) {
-    if (!common.checkPermission(e, "master")) return
-    if (/清空说说/.test(e.msg)) {
-      this.setContext("_QzonedelAllContext")
-      e.reply("✳️ 即将删除全部说说请发送：\n" + "------确认清空或取消------")
-      this.e.Qzonedetermine = true
-    } else if (/清空留言/.test(e.msg)) {
-      this.setContext("_QzonedelAllContext")
-      e.reply("✳️ 即将删除全部留言请发送：\n" + "------确认清空或取消------")
-      this.e.Qzonedetermine = false
-    }
-  }
-
-  async _QzonedelAllContext() {
-    let msg = this.e.msg
-    if (/#?确认清空/.test(msg)) {
-      this.finish("_QzonedelAllContext")
-      let result
-      if (this.e.Qzonedetermine) {
-        result = await new QQApi(this.e).delQzoneAll()
-      } else {
-        result = await new QQApi(this.e).delQzoneMsgbAll()
-      }
-
-      this.e.reply(result)
-      return true
-    } else if (/#?取消/.test(msg)) {
-      this.finish("_QzonedelAllContext")
-      this.e.reply("✅ 已取消")
-      return false
-    } else {
-      this.setContext("_QzonedelAllContext")
-      this.e.reply("❎ 请输入:确认清空或取消")
-      return false
-    }
-  }
 }

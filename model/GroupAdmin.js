@@ -6,8 +6,6 @@ import { Time_unit, ROLE_MAP } from "../constants/other.js"
 import formatDuration from "../tools/formatDuration.js"
 import schedule from "node-schedule"
 
-// 无管理文案
-const ROLE_ERROR = "❎ 该命令需要管理员权限"
 let _task = []
 export default class GroupAdmin {
   constructor(e) {
@@ -226,8 +224,8 @@ export default class GroupAdmin {
     let msg = list.slice(0, num)
     msg = msg.map((item, index) => {
       return [
-`第${index + 1}名：\n`,
-segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
+      `第${index + 1}名：\n`,
+      segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
       `\nQQ：${item.user_id}\n`,
       `昵称：${item.card || item.nickname}\n`,
       `最后发言时间：${moment(item.last_sent_time * 1000).format("YYYY-MM-DD HH:mm:ss")}`
@@ -311,9 +309,7 @@ segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
         cron,
         group,
         type,
-        fnc: () => {
-          (Bot[botId] ?? Bot).pickGroup(group).muteAll(type)
-        },
+        fnc: () => (Bot[botId] ?? Bot).pickGroup(group).muteAll(type),
         job: schedule.scheduleJob(cron, async() => {
           try {
             if (task.log == true) {
@@ -376,7 +372,6 @@ segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
         }
       }
     }
-    console.log(taskGroups)
     const result = []
     for (const [ group, item ] of taskGroups) {
       const imageSegment = segment.image(`https://p.qlogo.cn/gh/${group}/${group}/100`)
@@ -406,8 +401,6 @@ segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${item.user_id}`),
   async muteMember(groupId, userId, executor, time = 300, unit = "秒") {
     let _unit = Time_unit[unit.toUpperCase()] ?? (/^\d+$/.test(unit) ? unit : 60)
     const group = this.Bot.pickGroup(groupId, true)
-    // 判断是否有管理
-    if (!group.is_admin && !group.is_owner) throw new ReplyError(ROLE_ERROR)
 
     const muteSingleMember = async(id, isMore = false) => {
       if (!(/\d{5,}/.test(id))) throw new ReplyError("❎ 请输入正确的QQ号")

@@ -27,10 +27,6 @@ export class GroupAdminOther extends plugin {
           fnc: "DaySigned"
         },
         {
-          reg: "^#((今|昨|前|明|后)天|\\d{4}-\\d{1,2}-\\d{1,2})谁生日$",
-          fnc: "groupBirthday"
-        },
-        {
           reg: "^#(查看|获取)?群?发言(榜单|排行)((7|七)天)?",
           fnc: "SpeakRank"
         }
@@ -128,30 +124,6 @@ export class GroupAdminOther extends plugin {
     // 发送消息
     let msg = list.infos.map((item, index) => `${index + 1}:${item.uidGroupNick}-${item.uid}\n打卡时间:${moment(item.signedTimeStamp * 1000).format("YYYY-MM-DD HH:mm:ss")}`).join("\n")
     e.reply(msg)
-  }
-
-  // 查看某天谁生日
-  async groupBirthday(e) {
-    let date = e.msg.match(/^#?(今天|昨天|明天|后天|\d{4}-\d{1,2}-\d{1,2})谁生日$/)[1]
-    if (date == "昨天") {
-      date = moment().subtract(1, "days").format("YYYY-MM-DD")
-    } else if (date == "前天") {
-      date = moment().subtract(2, "days").format("YYYY-MM-DD")
-    } else if (date == "明天") {
-      date = moment().add(1, "days").format("YYYY-MM-DD")
-    } else if (date == "后天") {
-      date = moment().add(2, "days").format("YYYY-MM-DD")
-    } else if (date == "今天") {
-      date = moment().format("YYYY-MM-DD")
-    }
-    e.reply(
-      await puppeteer.Webpage({
-        url: `https://qun.qq.com/qqweb/m/qun/calendar/detail.html?_wv=1031&_bid=2340&src=3&gc=${e.group_id}&type=2&date=${date}`,
-        cookie: common.getck("qun.qq.com", this.Bot, true),
-        emulate: "iPhone 6",
-        font: true
-      })
-    )
   }
 
   // 群数据

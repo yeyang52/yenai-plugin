@@ -4,6 +4,7 @@ import _ from "lodash"
 import moment from "moment"
 import request from "../../lib/request/request.js"
 import { sleep } from "../../tools/index.js"
+import FormData from "form-data"
 
 /** QQ接口 */
 export default class {
@@ -34,12 +35,25 @@ export default class {
    * @returns {object} QQ空间数据
    */
   async getQzone(num = 20, pos = 0) {
-    let url = `https://user.qzone.qq.com/proxy/domain/taotao.qq.com/cgi-bin/emotion_cgi_msglist_v6?uin=${this.Bot.uin}&ftype=0&sort=0&pos=${pos}&num=${num}&replynum=100&g_tk=${this.Bot.bkn}&code_version=1&format=json&need_private_comment=1`
-    return await fetch(url, {
+    const url = "https://user.qzone.qq.com/proxy/domain/taotao.qq.com/cgi-bin/emotion_cgi_msglist_v6"
+    return await request.get(url, {
       headers: {
         Cookie: this.Bot.cookies["qzone.qq.com"]
-      }
-    }).then(res => res.json()).catch(err => logger.error(err))
+      },
+      params: {
+        uin: this.Bot.uin,
+        ftype: 0,
+        sort: 0,
+        pos,
+        num,
+        replynum: 100,
+        g_tk: this.Bot.bkn,
+        code_version: 1,
+        format: "json",
+        need_private_comment: 1
+      },
+      responseType: "json"
+    })
   }
 
   /**
@@ -48,31 +62,25 @@ export default class {
    * @param {string} t1_source t1_source参数
    */
   async delQzone(tid, t1_source) {
-    let url = `https://user.qzone.qq.com/proxy/domain/taotao.qzone.qq.com/cgi-bin/emotion_cgi_delete_v6?&g_tk=${this.Bot.bkn}`
+    const url = "https://user.qzone.qq.com/proxy/domain/taotao.qzone.qq.com/cgi-bin/emotion_cgi_delete_v6"
     // 发送请求
-    return await fetch(url, {
-      method: "POST",
-      body: `hostuin=${this.Bot.uin}&tid=${tid}&t1_source=${t1_source}&code_version=1&format=json`,
+    return await request.post(url, {
       headers: {
-        Cookie: this.Bot.cookies["qzone.qq.com"]
-      }
-    }).then(res => res.json()).catch(err => logger.error(err))
-  }
-
-  /** 删除全部说说 */
-  async delQzoneAll() {
-    let ck = common.getck("qzone.qq.com", this.Bot)
-    return await fetch(`http://xiaobai.klizi.cn/API/qqgn/ss_empty.php?data=&uin=${this.Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}`).then(res => res.text()).catch(err => logger.error(err))
-    // let num = 0
-    // while (true) {
-    //   let list = await this.getQzone(40)
-    //   if (list.total == 0) return num == 0 ? '❎ 说说列表空空' : '✅ 已清空全部说说'
-    //   for (let item of list.msglist) {
-    //     let res = await this.delQzone(item.tid, item.t1_source)
-    //     if (res.code != 0) return `❎ 遇到错误 ${JSON.stringify(res)}`
-    //   }
-    //   num++
-    // }
+        "Cookie": this.Bot.cookies["qzone.qq.com"],
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      params: {
+        g_tk: this.Bot.bkn
+      },
+      data: {
+        hostuin: this.Bot.uin,
+        tid,
+        t1_source,
+        code_version: 1,
+        format: "json"
+      },
+      responseType: "json"
+    })
   }
 
   /**
@@ -81,21 +89,29 @@ export default class {
    * @param img
    */
   async setQzone(con, img) {
-    let ck = common.getck("qzone.qq.com", this.Bot)
-
-    if (img) {
-      let url = `http://xiaobai.klizi.cn/API/qqgn/ss_sendimg.php?uin=${this.Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}&url=${img[0]}&msg=${con}`
-      return await fetch(url).then(res => res.json()).catch(err => logger.error(err))
-    } else {
-      let url = `https://user.qzone.qq.com/proxy/domain/taotao.qzone.qq.com/cgi-bin/emotion_cgi_publish_v6?&g_tk=${this.Bot.bkn}`
-      return await fetch(url, {
-        method: "POST",
-        body: `syn_tweet_verson=1&paramstr=1&con=${con}&feedversion=1&ver=1&ugc_right=1&to_sign=1&hostuin=${this.Bot.uin}&code_version=1&format=json`,
-        headers: {
-          Cookie: this.Bot.cookies["qzone.qq.com"]
-        }
-      }).then(res => res.json()).catch(err => logger.error(err))
-    }
+    const url = "https://user.qzone.qq.com/proxy/domain/taotao.qzone.qq.com/cgi-bin/emotion_cgi_publish_v6"
+    return request.post(url, {
+      headers: {
+        "Cookie": this.Bot.cookies["qzone.qq.com"],
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      params: {
+        g_tk: this.Bot.bkn
+      },
+      data: {
+        syn_tweet_verson: 1,
+        paramstr: 1,
+        con,
+        feedversion: 1,
+        ver: 1,
+        ugc_right: 1,
+        to_sign: 1,
+        hostuin: this.Bot.uin,
+        code_version: 1,
+        format: "json"
+      },
+      responseType: "json"
+    })
   }
 
   /**
@@ -105,12 +121,24 @@ export default class {
    * @returns {*}
    */
   async getQzoneMsgb(num = 0, start = 0) {
-    let url = `https://user.qzone.qq.com/proxy/domain/m.qzone.qq.com/cgi-bin/new/get_msgb?uin=${this.Bot.uin}&hostUin=${this.Bot.uin}&start=${start}&s=0.45779069937151884&format=json&num=${num}&inCharset=utf-8&outCharset=utf-8&g_tk=${this.Bot.bkn}`
-    return await fetch(url, {
+    const url = "https://user.qzone.qq.com/proxy/domain/m.qzone.qq.com/cgi-bin/new/get_msgb"
+    return await request.get(url, {
+      params: {
+        uin: this.Bot.uin,
+        hostUin: this.Bot.uin,
+        start,
+        s: 0.45779069937151884,
+        format: "json",
+        num,
+        inCharset: "utf-8",
+        outCharset: "utf-8",
+        g_tk: this.Bot.bkn
+      },
       headers: {
         cookie: this.Bot.cookies["qzone.qq.com"]
-      }
-    }).then(res => res.json())
+      },
+      responseType: "json"
+    })
   }
 
   /**
@@ -120,34 +148,32 @@ export default class {
    * @returns {*}
    */
   async delQzoneMsgb(id, uinId) {
-    let delurl = `https://h5.qzone.qq.com/proxy/domain/m.qzone.qq.com/cgi-bin/new/del_msgb?&g_tk=${this.Bot.bkn}`
-    return await fetch(delurl, {
-      method: "POST",
+    const url = "https://h5.qzone.qq.com/proxy/domain/m.qzone.qq.com/cgi-bin/new/del_msgb"
+    return await request.post(url, {
       headers: {
-        Cookie: this.Bot.cookies["qzone.qq.com"]
+        "Cookie": this.Bot.cookies["qzone.qq.com"],
+        "Content-Type": "application/x-www-form-urlencoded"
       },
-      body: `hostUin=${this.Bot.uin}&idList=${id}&uinList=${uinId}&format=json&iNotice=1&inCharset=utf-8&outCharset=utf-8&ref=qzone&json=1&g_tk=${this.Bot.bkn}`
-    }).then(res => res.json())
+      params: {
+        g_tk: this.Bot.bkn
+      },
+      data: {
+        hostUin: this.Bot.uin,
+        idList: id,
+        uinList: uinId,
+        format: "json",
+        iNotice: 1,
+        inCharset: "utf-8",
+        outCharset: "utf-8",
+        ref: "qzone",
+        g_tk: this.Bot.bkn,
+        json: 1
+      },
+      responseType: "json"
+    })
   }
 
-  /** 删除全部留言 */
-  async delQzoneMsgbAll() {
-    let ck = common.getck("qzone.qq.com", this.Bot)
-    return await fetch(`http://xiaobai.klizi.cn/API/qqgn/qzone_emptymsgb.php?data=&uin=${this.Bot.uin}&skey=${ck.skey}&pskey=${ck.p_skey}`).then(res => res.text()).catch(err => logger.error(err))
-    // let num = 0
-    // while (true) {
-    //   let list = await this.getQzoneMsgb(40)
-    //   if (list.code != 0) return `❎ 获取列表错误 ${JSON.stringify(list)}`
-    //   if (list.data.total == 0) return num == 0 ? '❎ 留言列表空空' : '✅ 已清空全部留言'
-    //   for (let item of list.data.commentList) {
-    //     let res = await this.delQzoneMsgb(item.id, item.uin)
-    //     if (res.code != 0) return `❎ 遇到错误 ${JSON.stringify(res)}`
-    //   }
-    //   num++
-    // }
-  }
-
-  // ----------------------------------------------------公告---------------------------------------------
+  // -----------------------------公告------------------------------------
   /**
    * 获取群公告
    * @param group_id
@@ -155,10 +181,21 @@ export default class {
    * @returns {object}
    */
   async getAnnouncelist(group_id, s = 0) {
-    let n = s ? 1 : 20
-    let url = `https://web.qun.qq.com/cgi-bin/announce/get_t_list?bkn=${this.Bot.bkn}&qid=${group_id}&ft=23&s=${s - 1}&n=${n}`
-    let res = await fetch(url, { headers: { Cookie: this.Bot.cookies["qun.qq.com"] } }).then(res => res.json()).catch(err => logger.error(err))
-    if (!res) return false
+    const n = s ? 1 : 20
+    const url = "https://web.qun.qq.com/cgi-bin/announce/get_t_list"
+    let res = await request.get(url, {
+      headers: {
+        Cookie: this.Bot.cookies["qun.qq.com"]
+      },
+      params: {
+        bkn: this.Bot.bkn,
+        qid: group_id,
+        ft: 23,
+        s: s - 1,
+        n
+      },
+      responseType: "json"
+    })
     if (s) {
       return {
         text: res.feeds[0].msg.text,
@@ -173,16 +210,57 @@ export default class {
    * 发送群公告
    * @param {number} group_id 发送群号
    * @param {string} msg 发送内容
+   * @param img
    */
-  async setAnnounce(group_id, msg) {
+  async setAnnounce(group_id, msg, img) {
+    const data = {
+      qid: group_id,
+      bkn: this.Bot.bkn,
+      text: msg,
+      pinned: 0,
+      type: 1,
+      settings: "{ is_show_edit_card: 1, tip_window_type: 1, confirm_required: 1 }"
+    }
+    if (img) {
+      const res = await this._uploadImg(img)
+      if (res.ec == 0) {
+        const p = JSON.parse(res.id.replace(/&quot;/g, "\""))
+        data.pic = p.id
+        data.imgWidth = p.w
+        data.imgHeight = p.h
+      }
+    }
     let url = `https://web.qun.qq.com/cgi-bin/announce/add_qun_notice?bkn=${this.Bot.bkn}`
-    return await fetch(url, {
+    return await request.post(url, {
       method: "POST",
-      body: `qid=${group_id}&bkn=${this.Bot.bkn}&text=${msg}&pinned=0&type=1&settings={"is_show_edit_card":1,"tip_window_type":1,"confirm_required":1}`,
+      data,
       headers: {
-        Cookie: this.Bot.cookies["qun.qq.com"]
+        "Cookie": this.Bot.cookies["qun.qq.com"],
+        "Content-Type": "application/x-www-form-urlencoded"
       }
     }).then(res => res.json()).catch(err => logger.error(err))
+  }
+
+  async _uploadImg(url) {
+    const buffer = await request.get(url, { responseType: "buffer" })
+
+    const form = new FormData()
+    form.append("bkn", this.Bot.bkn)
+    form.append("source", "troopNotice")
+    form.append("m", "0")
+    form.append("pic_up", buffer, {
+      filename: "_-1537414416_1735663690596_1735663690653_wifi_0.jpg",
+      contentType: "image/png"
+    })
+    const uploadResponse = await request.post("https://web.qun.qq.com/cgi-bin/announce/upload_img", {
+      body: form,
+      headers: {
+        ...form.getHeaders(),
+        Cookie: this.Bot.cookies["qun.qq.com"]
+      },
+      responseType: "json"
+    })
+    return uploadResponse
   }
 
   /**
@@ -194,14 +272,22 @@ export default class {
     let fid = await this.getAnnouncelist(group_id, num)
     if (!fid) return false
 
-    let url = `https://web.qun.qq.com/cgi-bin/announce/del_feed?bkn=${this.Bot.bkn}`
-    let res = await fetch(url, {
-      method: "POST",
-      body: `bkn=${this.Bot.bkn}&fid=${fid.fid}&qid=${group_id}`,
+    let url = "https://web.qun.qq.com/cgi-bin/announce/del_feed"
+    let res = await request.post(url, {
+      params: {
+        bkn: this.Bot.bkn
+      },
+      data: {
+        bkn: this.Bot.bkn,
+        fid: fid.fid,
+        qid: group_id
+      },
       headers: {
-        Cookie: this.Bot.cookies["qun.qq.com"]
-      }
-    }).then(res => res.json()).catch(err => logger.error(err))
+        "Cookie": this.Bot.cookies["qun.qq.com"],
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      responseType: "json"
+    })
     return {
       ...res,
       text: _.truncate(fid.text)
@@ -268,16 +354,16 @@ export default class {
       3: "3"
     }
     let url = "https://ti.qq.com/cgi-node/friend-auth/set"
-    return await fetch(url, {
-      method: "POST",
-      body: JSON.stringify({
+    return await request.post(url, {
+      body: {
         req: `{"at": ${type[at]},"q": "${q}","a": "${a}","l": [],"viaphone": 0}`
-      }),
+      },
       headers: {
         "Cookie": this.Bot.cookies["ti.qq.com"],
         "Content-type": "application/json"
-      }
-    }).then(res => res.json()).catch(err => logger.error(err))
+      },
+      responseType: "json"
+    })
   }
 
   /**
@@ -285,10 +371,9 @@ export default class {
    * @param {number} isclose 0为开启1为关闭
    */
   async setcyc(isclose) {
-    let url = `https://zb.vip.qq.com/srf/QC_UniBusinessLogicServer_UniBusinessLogicObj/uniSet?g_tk=${this.Bot.bkn}`
-    return await fetch(url, {
-      method: "POST",
-      body: JSON.stringify({
+    const url = "https://zb.vip.qq.com/srf/QC_UniBusinessLogicServer_UniBusinessLogicObj/uniSet"
+    return await request.post(url, {
+      body: {
         stLogin: {
           iKeyType: 1,
           iOpplat: 2,
@@ -307,13 +392,13 @@ export default class {
           ischangecustomtext: 1,
           customtext: ""
         }
-      }
-      ),
+      },
       headers: {
         "Cookie": this.Bot.cookies["vip.qq.com"],
         "Content-type": "application/json"
-      }
-    }).then(res => res.json()).catch(err => logger.error(err))
+      },
+      responseType: "json"
+    })
   }
 
   /**
@@ -321,19 +406,21 @@ export default class {
    * @param groupId
    */
   async signInToday(groupId) {
-    let body = JSON.stringify({
-      dayYmd: moment().format("YYYYMMDD"),
-      offset: 0,
-      limit: 10,
-      uid: String(this.Bot.uin),
-      groupId: String(groupId)
-    })
-    let url = `https://qun.qq.com/v2/signin/trpc/GetDaySignedList?g_tk=${this.getGtk("qun.qq.com", this.Bot)}`
-    return await fetch(url, {
-      method: "POST",
+    const url = "https://qun.qq.com/v2/signin/trpc/GetDaySignedList"
+    return await request.post(url, {
       headers: this.headers,
-      body
-    }).then(res => res.json()).catch(err => logger.error(err))
+      params: {
+        g_tk: this.getGtk("qun.qq.com", this.Bot)
+      },
+      data: {
+        dayYmd: moment().format("YYYYMMDD"),
+        offset: 0,
+        limit: 10,
+        uid: String(this.Bot.uin),
+        groupId: String(groupId)
+      },
+      responseType: "json"
+    }).catch(err => logger.error(err))
   }
 
   /**
@@ -342,10 +429,18 @@ export default class {
    * @param {string} time true为7天false为昨天
    */
   async SpeakRank(groupId, time = false) {
-    let url = `https://qun.qq.com/m/qun/activedata/proxy/domain/qun.qq.com/cgi-bin/manager/report/list?bkn=${this.Bot.bkn}&gc=${groupId}&type=0&start=0&time=${time ? 1 : 0}`
-    return await fetch(url, {
-      headers: this.headers
-    }).then(res => res.json()).catch(err => logger.error(err))
+    const url = "https://qun.qq.com/m/qun/activedata/proxy/domain/qun.qq.com/cgi-bin/manager/report/list"
+    return await request.get(url, {
+      params: {
+        bkn: this.Bot.bkn,
+        gc: groupId,
+        type: 0,
+        start: 0,
+        time: time ? 1 : 0
+      },
+      headers: this.headers,
+      responseType: "json"
+    }).catch(err => logger.error(err))
   }
 
   /**
@@ -354,10 +449,16 @@ export default class {
    * @param {string} time true为7天false为昨天
    */
   async groupData(groupId, time = false) {
-    let url = `https://qun.qq.com/m/qun/activedata/proxy/domain/qun.qq.com/cgi-bin/manager/report/index?gc=${groupId}&time=${time ? 1 : 0}&bkn=${this.Bot.bkn}`
-    return await fetch(url, {
-      headers: this.headers
-    }).then(res => res.json())
+    const url = "https://qun.qq.com/m/qun/activedata/proxy/domain/qun.qq.com/cgi-bin/manager/report/index"
+    return await request.get(url, {
+      params: {
+        gc: groupId,
+        time: time ? 1 : 0,
+        bkn: this.Bot.bkn
+      },
+      headers: this.headers,
+      responseType: "json"
+    })
   }
 
   // ---------------------------------字符---------------------------------------------
@@ -370,18 +471,20 @@ export default class {
    * @returns {*}
    */
   async luckylist(groupId, start = 0, limit = 10) {
-    let body = JSON.stringify({
-      group_code: groupId,
-      start,
-      limit,
-      need_equip_info: true
-    })
-    let url = `https://qun.qq.com/v2/luckyword/proxy/domain/qun.qq.com/cgi-bin/group_lucky_word/word_list?bkn=${this.Bot.bkn}`
-    return await fetch(url, {
-      method: "POST",
+    const url = "https://qun.qq.com/v2/luckyword/proxy/domain/qun.qq.com/cgi-bin/group_lucky_word/word_list"
+    return await request.post(url, {
+      params: {
+        bkn: this.Bot.bkn
+      },
       headers: this.headers,
-      body
-    }).then(res => res.json()).catch(err => logger.error(err))
+      data: {
+        group_code: groupId,
+        start,
+        limit,
+        need_equip_info: true
+      },
+      responseType: "json"
+    }).catch(err => logger.error(err))
   }
 
   /**
@@ -390,16 +493,18 @@ export default class {
    * @param {string} id 字符id
    */
   async equipLucky(group_id, id) {
-    let body = JSON.stringify({
-      group_code: group_id,
-      word_id: id
-    })
-    let url = `https://qun.qq.com/v2/luckyword/proxy/domain/qun.qq.com/cgi-bin/group_lucky_word/equip?bkn=${this.Bot.bkn}`
-    return await fetch(url, {
-      method: "POST",
+    const url = "https://qun.qq.com/v2/luckyword/proxy/domain/qun.qq.com/cgi-bin/group_lucky_word/equip"
+    return await request.post(url, {
+      params: {
+        bkn: this.Bot.bkn
+      },
       headers: this.headers,
-      body
-    }).then(res => res.json()).catch(err => logger.error(err))
+      data: {
+        group_code: group_id,
+        word_id: id
+      },
+      responseType: "json"
+    }).catch(err => logger.error(err))
   }
 
   /**
@@ -408,15 +513,17 @@ export default class {
    * @returns {*}
    */
   async drawLucky(group_id) {
-    let body = JSON.stringify({
-      group_code: group_id
-    })
-    let url = `https://qun.qq.com/v2/luckyword/proxy/domain/qun.qq.com/cgi-bin/group_lucky_word/draw_lottery?bkn=${this.Bot.bkn}`
-    return await fetch(url, {
-      method: "POST",
+    const url = "https://qun.qq.com/v2/luckyword/proxy/domain/qun.qq.com/cgi-bin/group_lucky_word/draw_lottery"
+    return await request.post(url, {
+      params: {
+        bkn: this.Bot.bkn
+      },
       headers: this.headers,
-      body
-    }).then(res => res.json()).catch(err => logger.error(err))
+      data: {
+        group_code: group_id
+      },
+      responseType: "json"
+    }).catch(err => logger.error(err))
   }
 
   /**
@@ -425,16 +532,18 @@ export default class {
    * @param {boolean} type
    */
   async swichLucky(groupId, type) {
-    let body = JSON.stringify({
-      group_code: groupId,
-      cmd: type ? 1 : 2
-    })
-    let url = `https://qun.qq.com/v2/luckyword/proxy/domain/qun.qq.com/cgi-bin/group_lucky_word/setting?bkn=${this.Bot.bkn}`
-    return await fetch(url, {
-      method: "POST",
+    const url = "https://qun.qq.com/v2/luckyword/proxy/domain/qun.qq.com/cgi-bin/group_lucky_word/setting"
+    return await request.post(url, {
+      params: {
+        bkn: this.Bot.bkn
+      },
       headers: this.headers,
-      body
-    }).then(res => res.json()).catch(err => logger.error(err))
+      data: {
+        group_code: groupId,
+        cmd: type ? 1 : 2
+      },
+      responseType: "json"
+    }).catch(err => logger.error(err))
   }
 
   /**
@@ -461,7 +570,7 @@ export default class {
         data,
         statusCode: "json"
       }))
-      await sleep(5000)
+      await sleep(2000)
     }
     return res
   }

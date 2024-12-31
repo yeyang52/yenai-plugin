@@ -107,7 +107,13 @@ export class GroupAdmin extends plugin {
     if (qq.length < 2) qq = qq[0] || e.msg.match(/#禁言\s?(\d+)/)?.[1]
     const time = translateChinaNum(e.msg.match(new RegExp(Numreg))?.[0])
     try {
-      const res = await new Ga(e).muteMember(e.group_id, qq, e.user_id, time, e.msg.match(new RegExp(TimeUnitReg))?.[0])
+      const res = await new Ga(e).muteMember(
+        e.group_id,
+        qq,
+        e.user_id,
+        time,
+        e.msg.match(new RegExp(TimeUnitReg))?.[0]
+      )
       e.reply(res)
     } catch (err) {
       common.handleException(e, err)

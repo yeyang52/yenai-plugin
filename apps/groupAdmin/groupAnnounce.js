@@ -31,7 +31,7 @@ export class GroupAnnounce extends plugin {
     let msg = e.msg.replace(/#发群?公告/g, "").trim()
     if (!msg) return e.reply("❎ 公告不能为空")
 
-    let result = await new QQApi(e).setAnnounce(e.group_id, msg)
+    let result = await new QQApi(e).setAnnounce(e.group_id, msg, e.img?.[0])
 
     if (!result) return e.reply(API_ERROR)
     if (result.ec != 0) {

@@ -355,8 +355,14 @@ export default class {
     }
     let url = "https://ti.qq.com/cgi-node/friend-auth/set"
     return await request.post(url, {
-      body: {
-        req: `{"at": ${type[at]},"q": "${q}","a": "${a}","l": [],"viaphone": 0}`
+      data: {
+        req: JSON.stringify({
+          at: type[at],
+          q,
+          a,
+          l: [],
+          viaphone: 0
+        })
       },
       headers: {
         "Cookie": this.Bot.cookies["ti.qq.com"],

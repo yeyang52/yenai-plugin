@@ -44,9 +44,7 @@ export class NewSearch extends plugin {
     let regRet = searchReg.exec(e.msg)
     if (/(lp|ip)|(i|p|l)(地址|查询)/ig.test(regRet[2])) return e.reply("(;｀O´)o警告！！触发屏蔽词！！！", true)
     let url = SEARCH_MAP[regRet[1]] + encodeURIComponent(regRet[2])
-    const scr = await puppeteer.Webpage({
-      url
-    })
+    const scr = await puppeteer.Webpage(url)
     e.reply([ scr, url ])
   }
 
@@ -59,6 +57,6 @@ export class NewSearch extends plugin {
 
   async bggRank(e) {
     let url = "https://boardgamegeek.com/browse/boardgame"
-    e.reply([ await puppeteer.Webpage({ url }), "目前BGG桌游排行榜如图，访问链接：" + url ])
+    e.reply([ await puppeteer.Webpage(url), "目前BGG桌游排行榜如图，访问链接：" + url ])
   }
 }

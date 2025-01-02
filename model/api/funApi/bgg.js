@@ -14,7 +14,7 @@ export default async function bgg(keyword) {
   const firstGameLink = $(".goods-list.fl").first().find("a").attr("href")
   // 如果搜不到
   if (!firstGameLink) {
-    const screenshot = await puppeteer.Webpage({ url })
+    const screenshot = await puppeteer.Webpage(url)
     return [
       "集石搜索不到该游戏：",
         `搜索地址：${url}`,
@@ -51,7 +51,7 @@ export default async function bgg(keyword) {
     // 如果搜不到
   if (!bgglink) {
     let url = href
-    const screenshot = await puppeteer.Webpage({ url })
+    const screenshot = await puppeteer.Webpage(url)
     return [
       "集石该游戏页面无BGG信息：",
         `搜索地址：${url}`,

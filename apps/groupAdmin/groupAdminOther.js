@@ -40,9 +40,9 @@ export class GroupAdminOther extends plugin {
 
   // 谁是龙王
   async dragonKing(e) {
+    const url = `https://qun.qq.com/interactive/honorlist?gc=${e.group_id}&type=1&_wv=3&_wwv=129`
     // 浏览器截图
-    let screenshot = await puppeteer.Webpage({
-      url: `https://qun.qq.com/interactive/honorlist?gc=${e.group_id}&type=1&_wv=3&_wwv=129`,
+    let screenshot = await puppeteer.Webpage(url, {
       headers: { Cookie: this.Bot.cookies["qun.qq.com"] },
       font: true
     })
@@ -62,8 +62,8 @@ export class GroupAdminOther extends plugin {
    * @param e
    */
   async Group_xj(e) {
-    let screenshot = await puppeteer.Webpage({
-      url: `https://qqweb.qq.com/m/business/qunlevel/index.html?gc=${e.group_id}&from=0&_wv=1027`,
+    const url = `https://qqweb.qq.com/m/business/qunlevel/index.html?gc=${e.group_id}&from=0&_wv=1027`
+    let screenshot = await puppeteer.Webpage(url, {
       cookie: common.getck("qqweb.qq.com", this.Bot, true),
       emulate: "QQTheme",
       font: true
@@ -86,16 +86,16 @@ export class GroupAdminOther extends plugin {
   // 群发言榜单
   async SpeakRank(e) {
     if (!common.checkPermission(e, "all", "admin")) return
-
+    const isSeven = /(7|七)天/.test(e.msg)
+    const url = `https://qun.qq.com/m/qun/activedata/speaking.html?gc=${e.group_id}&time=${isSeven ? 1 : 0}`
     // 图片截图
-    let screenshot = await puppeteer.Webpage({
-      url: `https://qun.qq.com/m/qun/activedata/speaking.html?gc=${e.group_id}&time=${/(7|七)天/.test(e.msg) ? 1 : 0}`,
+    let screenshot = await puppeteer.Webpage(url, {
       headers: { Cookie: this.Bot.cookies["qun.qq.com"] },
       font: true
     })
     if (screenshot) return e.reply(screenshot)
     // 出错后发送文字数据
-    let res = await new QQApi(e).SpeakRank(e.group_id, /(7|七)天/.test(e.msg))
+    let res = await new QQApi(e).SpeakRank(e.group_id, isSeven)
     if (!res) return e.reply(API_ERROR)
     if (res.retcode != 0) return e.reply("❎ 未知错误\n" + JSON.stringify(res))
     let msg = _.take(res.data.speakRank.map((item, index) =>
@@ -106,9 +106,9 @@ export class GroupAdminOther extends plugin {
 
   // 今日打卡
   async DaySigned(e) {
+    const url = `https://qun.qq.com/v2/signin/list?gc=${e.group_id}`
     // 浏览器截图
-    let screenshot = await puppeteer.Webpage({
-      url: `https://qun.qq.com/v2/signin/list?gc=${e.group_id}`,
+    let screenshot = await puppeteer.Webpage(url, {
       emulate: "iPhone 6",
       cookie: common.getck("qun.qq.com", this.Bot, true),
       font: true
@@ -129,23 +129,17 @@ export class GroupAdminOther extends plugin {
   // 群数据
   async groupData(e) {
     if (!common.checkPermission(e, "all", "admin")) return
-
+    const afterLaunch = async(page) => {
+      await page.click("#app > div.tabbar > div.tabbar__time > div.tabbar__time__date")
+      await common.sleep(500)
+      await page.click("#app > div.tabbar > div.tabbar__date-selector > div > div:nth-child(3)")
+      await common.sleep(1000)
+    }
+    const url = `https://qun.qq.com/m/qun/activedata/active.html?_wv=3&_wwv=128&gc=${e.group_id}&src=2`
     // 浏览器截图
-    let screenshot = await puppeteer.Webpage({
-      url: `https://qun.qq.com/m/qun/activedata/active.html?_wv=3&_wwv=128&gc=${e.group_id}&src=2`,
+    let screenshot = await puppeteer.Webpage(url, {
       cookie: common.getck("qun.qq.com", this.Bot, true),
-      click: /(7|七)天/.test(e.msg)
-        ? [
-            {
-              selector: "#app > div.tabbar > div.tabbar__time > div.tabbar__time__date",
-              time: 500
-            },
-            {
-              selector: "#app > div.tabbar > div.tabbar__date-selector > div > div:nth-child(3)",
-              time: 1000
-            }
-          ]
-        : false,
+      afterLaunch: /(7|七)天/.test(e.msg) ? afterLaunch : false,
       font: true
     })
     if (screenshot) return e.reply(screenshot)

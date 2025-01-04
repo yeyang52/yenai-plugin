@@ -7,7 +7,7 @@ print_info() {
 }
 
 echo -n "<div class='box fastFetch' data-boxInfo='FastFetch'>"
-if [ -z "$MSYS" ] && command -v fastfetch &>/dev/null; then
+if command -v fastfetch &>/dev/null; then
   fastfetch --pipe -l none
 else
   pnpx neowofetch --stdout

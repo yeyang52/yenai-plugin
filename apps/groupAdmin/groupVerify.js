@@ -48,7 +48,6 @@ export class GroupVerify extends plugin {
 
     if (qq == "从未发言的人") return this.cmdReverifyNeverSpeak(e)
 
-    if (!(/\d{5,}/.test(qq))) return e.reply("❎ 请输入正确的QQ号")
     qq = Number(qq) || String(qq)
     if (qq == (e.bot ?? Bot).uin) return
 

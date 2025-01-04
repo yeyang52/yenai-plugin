@@ -6,9 +6,10 @@ export const getStatus = function(rote, badge) {
   if (badge) {
     _badge = `<span class="badge">${badge}</span>`
   }
-  if (typeof rote === "number") {
+  if (typeof rote === "number" || typeof rote === "string") {
     return `<div class="cfg-status">${rote}</div>`
   }
+
   if (rote) {
     return _badge + "<div class=\"cfg-status\" >已开启</div>"
   } else {

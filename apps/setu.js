@@ -1,7 +1,7 @@
 import plugin from "../../../lib/plugins/plugin.js"
 import { Config } from "../components/index.js"
 import { setu, common } from "../model/index.js"
-// import { Admin } from "./admin.js"
+import { Admin_Fun } from "./admin/fun.js"
 import translateChinaNum from "../tools/translateChinaNum.js"
 
 const NumReg = "[零一壹二两三四五六七八九十百千万亿\\d]+"
@@ -118,7 +118,7 @@ export class SeSe extends plugin {
     num = translateChinaNum(num[0])
     let type = /撤回间隔/.test(e.msg) ? "recall" : "cd"
     setu.setGroupRecallTimeAndCd(e.group_id, num, type)
-    // new Admin().SeSe_Settings(e)
+    new Admin_Fun().sendImg(e)
     e.reply("OK")
   }
 
@@ -126,7 +126,7 @@ export class SeSe extends plugin {
   async setSeSe(e) {
     let isopen = !!/开启/.test(e.msg)
     setu.setR18(e.group_id, isopen)
-    // new Admin().SeSe_Settings(e)
+    new Admin_Fun().sendImg(e)
     e.reply("OK")
   }
 

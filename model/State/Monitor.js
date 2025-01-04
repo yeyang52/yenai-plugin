@@ -112,7 +112,7 @@ export default new class monitor {
     try {
       await redis.set(CHART_DATA_KEY, JSON.stringify(this.chartData), { EX: 60 * 60 * 12 })
     } catch (error) {
-      logger.error(error)
+      logger.error(`[Yenai-Plugin][Monitor]存储监控信息出错，错误信息，如一直报错可进入配置文件将 ${logger.red("state.yaml > monitor.openRedisSaveData")} 设置为false即可消除报错`, error)
     }
   }
 

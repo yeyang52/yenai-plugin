@@ -23,7 +23,7 @@ export class NewVersion extends plugin {
         currentVersion: Version.ver,
         changelogs: Version.logs
       },
-      { e, scale: 1.4 }
+      { e, scale: 2 }
     )
   }
 }

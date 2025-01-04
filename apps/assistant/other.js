@@ -39,7 +39,7 @@ export class Assistant_Other extends plugin {
    * @param e
    */
   async ImageLink(e) {
-    const sourceFile = await common.gtakeSourceMs(e, { file: true })
+    const sourceFile = await common.takeSourceMsg(e, { file: true })
     if (sourceFile) return e.reply(`下载链接:\n${sourceFile}`, true)
 
     const sourceImg = await common.takeSourceMsg(e, { img: true })
@@ -57,7 +57,7 @@ export class Assistant_Other extends plugin {
       const msg = img.map(i => [ segment.image(i), "\n", i ])
       common.getforwardMsg(e, msg)
     } else {
-      await e.reply([ segment.image(img[0]), "直链:\n", img[0] ])
+      await e.reply([ segment.image(img[0]), "\n", img[0] ])
     }
 
     return true

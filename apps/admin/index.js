@@ -4,16 +4,24 @@ import { getStatus, checkNumberValue, sendImg } from "./_utils.js"
 
 const indexCfgTypeMap = {
   状态: {
-    file: "state",
-    key: "defaultState",
-    type: "boolean"
+    key: "state.defaultState.12354",
+    toString() {
+      return this.key
+    }
   },
   陌生人点赞: "thumbUp.strangeThumbUp",
   渲染精度: {
     type: "number",
-    key: "renderScale",
-    limit: "50-200"
-  }
+    key: "other.renderScale",
+    limit: "50-200",
+    toString() {
+      return this.key
+    }
+  },
+  sese: "other.sese",
+  sesepro: "other.sesepro",
+  涩涩: "other.sese",
+  涩涩pro: "other.sesepro"
 }
 const indexCfgReg = new RegExp(`^#椰奶设置(${Object.keys(indexCfgTypeMap).join("|")})(开启|关闭|(\\d+)秒)$`)
 
@@ -41,15 +49,12 @@ export class Admin_Index extends plugin {
     let regRet = indexCfgReg.exec(e.msg)
     const rawkey = regRet[1]
     let value = regRet[2]
-    let file = "other"
-    let key = indexCfgTypeMap[rawkey]
-    if (typeof key == "object") {
-      const _k = key
-      key = _k.key
-      if (_k.file) {
-        file = _k.file
-      }
-      if (key.type === "number") {
+    let _key = indexCfgTypeMap[rawkey]
+    let [ file, ...key ] = _key.toString().split(".")
+    key = key.join(".")
+
+    if (typeof _key == "object") {
+      if (_key.type === "number") {
         if (!regRet[3]) return
         value = checkNumberValue(regRet[3])
       } else {
@@ -59,8 +64,9 @@ export class Admin_Index extends plugin {
       if (!/(开启)|(关闭)/.test(value)) return
       value = value == "开启"
     }
+
     Config.modify(file, key, value)
-    this.sendImg(e, "index")
+    this.sendImg(e)
   }
 
   async sendImg(e) {
@@ -75,7 +81,7 @@ export class Admin_Index extends plugin {
         系统设置: [
           {
             key: "陌生人点赞",
-            value: getStatus(Config.other.thumbUp.strangeThumbUp),
+            value: getStatus(Config.thumbUp.strangeThumbUp),
             hint: "#椰奶设置陌生人点赞 + 开启/关闭",
             desc: "不活跃的号可能会点赞失败"
           },
@@ -98,6 +104,12 @@ export class Admin_Index extends plugin {
             value: "<div class=\"cfg-status\">>>></div>",
             hint: "#椰奶通知设置",
             desc: "通知设置页面"
+          },
+          {
+            key: "娱乐设置",
+            value: "<div class=\"cfg-status\">>>></div>",
+            hint: "#椰奶娱乐设置",
+            desc: "娱乐设置页面"
           }
         ]
       }

@@ -186,6 +186,7 @@ export class Admin_Notice extends plugin {
     }
     return {
       specialList,
+      label: "#椰奶通知设置",
       list: {
         消息相关: [
           {

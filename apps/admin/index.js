@@ -17,11 +17,7 @@ const indexCfgTypeMap = {
     toString() {
       return this.key
     }
-  },
-  sese: "other.sese",
-  sesepro: "other.sesepro",
-  涩涩: "other.sese",
-  涩涩pro: "other.sesepro"
+  }
 }
 const indexCfgReg = new RegExp(`^#椰奶设置(${Object.keys(indexCfgTypeMap).join("|")})(开启|关闭|(\\d+)秒)$`)
 

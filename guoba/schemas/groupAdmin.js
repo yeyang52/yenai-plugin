@@ -145,7 +145,7 @@ export default [
     component: "InputNumber"
   },
   {
-    field: "groupAdmin.groupVerify.range.max",
+    field: "groupAdmin.groupVerify.DelayTime",
     label: "延迟发送验证时间",
     bottomHelpMessage: "收到进群事件后延迟多少秒再发送验证信息(秒) 确保验证消息在最下面",
     component: "InputNumber"

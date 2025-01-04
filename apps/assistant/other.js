@@ -40,25 +40,26 @@ export class Assistant_Other extends plugin {
    */
   async ImageLink(e) {
     const sourceFile = await common.takeSourceMsg(e, { file: true })
-    if (sourceFile) return e.reply(`下载链接:\n${sourceFile}`)
+    if (sourceFile) return e.reply(`下载链接:\n${sourceFile}`, true)
+
     const sourceImg = await common.takeSourceMsg(e, { img: true })
     const img = sourceImg || e.img
+
     if (_.isEmpty(img)) {
       this.setContext("_ImageLinkContext")
       await this.reply("⚠ 请发送图片")
       return
     }
+
     await e.reply(`✅ 检测到${img.length}张图片`)
+
     if (img.length >= 2) {
-      // 大于两张图片以转发消息发送
-      let msg = []
-      for (let i of img) {
-        msg.push([ segment.image(i), "直链:\n", i ])
-      }
+      const msg = img.map(i => [ segment.image(i), "\n", i ])
       common.getforwardMsg(e, msg)
     } else {
-      await e.reply([ segment.image(img[0]), "直链:\n", img[0] ])
+      await e.reply([ segment.image(img[0]), "\n", img[0] ])
     }
+
     return true
   }
 

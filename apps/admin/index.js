@@ -4,7 +4,7 @@ import { getStatus, checkNumberValue, sendImg } from "./_utils.js"
 
 const indexCfgTypeMap = {
   状态: {
-    key: "state.defaultState.12354",
+    key: "state.defaultState",
     toString() {
       return this.key
     }

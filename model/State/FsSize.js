@@ -38,12 +38,13 @@ function setColor(use) {
  * @returns {object | boolean} 返回一个对象，包含读速度（rx_sec）和写速度（wx_sec），如果无法获取则返回false。
  */
 export function getDiskSpeed() {
-  let disksIO = Monitor.disksIO
-  if (!disksIO || disksIO.rIO_sec == null || disksIO.wIO_sec == null) {
-    return false
-  }
-  return {
-    rIO_sec: getFileSize(disksIO.rIO_sec, { showByte: false, showSuffix: false }),
-    wIO_sec: getFileSize(disksIO.wIO_sec, { showByte: false, showSuffix: false })
-  }
+  let data = Monitor.disksIO
+  if (!data.length) return false
+  data.map(item => {
+    item.rIO_sec = getFileSize(item.rIO_sec, { showByte: false, showSuffix: false })
+    item.wIO_sec = getFileSize(item.wIO_sec, { showByte: false, showSuffix: false })
+    return item
+  })
+
+  return data
 }

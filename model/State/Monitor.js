@@ -1,7 +1,7 @@
 import _ from "lodash"
 import si from "systeminformation"
 import { Config } from "../../components/index.js"
-
+import { getDiskIo } from "./FastFetch.js"
 const CHART_DATA_KEY = "yenai:state:chartData"
 const DEFAULT_INTERVAL = 60 * 1000
 const DEFAULT_SAVE_DATA_NUMBER = 60
@@ -42,7 +42,36 @@ export default new class monitor {
 
     if (this.config?.statusPowerShellStart) si.powerShellStart()
     const cb = (data) => this.handleData(data)
+    await this.fastfetchGetDiskIo()
     this.timer = si.observe(this.valueObject, this.getDataInterval, cb)
+  }
+
+  async fastfetchGetDiskIo() {
+    if (!await getDiskIo()) return false
+    delete this.valueObject.disksIO
+    let errorNum = 0
+    const timer = setInterval(async() => {
+      try {
+        const data = await getDiskIo()
+        if (data && data.length) {
+          this.disksIO = data
+          const { bytesRead, bytesWritten } = data[0]
+          if (_.isNumber(bytesRead) && _.isNumber(bytesWritten)) {
+            this._addData(this.chartData.disksIO.writeSpeed, [ Date.now(), bytesWritten ])
+            this._addData(this.chartData.disksIO.readSpeed, [ Date.now(), bytesRead ])
+          }
+        } else {
+          errorNum++
+        }
+      } catch (err) {
+        errorNum++
+      } finally {
+        if (errorNum > 5) {
+          clearInterval(timer)
+          this.valueObject.disksIO = "wIO_sec,rIO_sec"
+        }
+      }
+    }, this.getDataInterval)
   }
 
   handleData(data) {
@@ -67,9 +96,10 @@ export default new class monitor {
     addDataIfNumber(this.chartData.cpu, currentLoad)
 
     if (_.isNumber(disksIO?.wIO_sec) && _.isNumber(disksIO?.rIO_sec)) {
-      disksIO.wIO_sec = disksIO.wIO_sec * 1024
-      disksIO.rIO_sec = disksIO.rIO_sec * 1024
-      this.disksIO = disksIO
+      disksIO.wIO_sec *= 1024
+      disksIO.rIO_sec *= 1024
+      disksIO.name = "diskIO"
+      this.disksIO = [ disksIO ]
       addDataIfNumber(this.chartData.disksIO.writeSpeed, disksIO.wIO_sec)
       addDataIfNumber(this.chartData.disksIO.readSpeed, disksIO.rIO_sec)
     }

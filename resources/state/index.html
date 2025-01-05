@@ -112,10 +112,12 @@
         {{/each}}
     </ul>
     {{if disks.disksIo}}
+    {{each disks.disksIo}}
     <div class="speed">
-        <p>disksIO</p>
-        <p>读 {{disks.disksIo.rIO_sec}}/s | 写 {{disks.disksIo.wIO_sec}}/s</p>
+        <p>{{$value.name}}</p>
+        <p>读 {{$value.rIO_sec}}/s | 写 {{$value.wIO_sec}}/s</p>
     </div>
+    {{/each}}
     {{/if}}
 </div>
 {{/if}}

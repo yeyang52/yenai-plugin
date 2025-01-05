@@ -39,7 +39,7 @@ function setColor(use) {
  */
 export function getDiskSpeed() {
   let data = Monitor.disksIO
-  if (!data.length) return false
+  if (!data?.length) return false
   data.map(item => {
     item.rIO_sec = getFileSize(item.rIO_sec, { showByte: false, showSuffix: false })
     item.wIO_sec = getFileSize(item.wIO_sec, { showByte: false, showSuffix: false })

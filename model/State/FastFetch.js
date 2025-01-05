@@ -81,7 +81,7 @@ export async function getDiskIo() {
   return data.result.map(i => {
     i.rIO_sec = i.bytesRead
     i.wIO_sec = i.bytesWritten
-    i.name = `diskIO(${i.name})`
+    i.name = `diskIO(${i.name.trim()})`
     return i
   })
 }

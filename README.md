@@ -142,9 +142,9 @@ Tip：具体可使用 **#椰奶设置** 查看
 </details>
 
 <details>
-  <summary>Pixiv功能</summary>
+  <summary>P站功能</summary>
 
-- [x] Pixiv排行榜
+- [x] P站排行榜
 
 - [x] Tag搜图
 
@@ -215,7 +215,7 @@ Tip：具体可使用 **#椰奶群管帮助** 查看
   <summary>哔咔功能</summary>
 
 - [x] 哔咔搜索
-- [x] 哔咔看本子
+- [x] 哔咔看本
 
 </details>
 

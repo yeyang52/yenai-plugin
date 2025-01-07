@@ -1,13 +1,7 @@
 /* eslint-disable import/no-unresolved */
 import { common } from "../model/index.js"
 import { Plugin_Name } from "../components/index.js"
-let Update = null
-try {
-  Update = (await import("../../other/update.js").catch(e => null))?.update
-  Update ||= (await import("../../system/apps/update.ts")).update
-} catch (e) {
-  logger.error(`[Yenai-Plugin]未获取到更新js ${logger.yellow("#椰奶更新")} 将无法使用`)
-}
+import { update as Update } from "../../other/update.js"
 
 export class YenaiUpdate extends plugin {
   constructor() {

@@ -1,6 +1,6 @@
 import _ from "lodash"
 import si from "systeminformation"
-import { Config } from "../../components/index.js"
+import { Config, Log_Prefix } from "../../components/index.js"
 import { getDiskIo } from "./FastFetch.js"
 const CHART_DATA_KEY = "yenai:state:chartData"
 const DEFAULT_INTERVAL = 60 * 1000
@@ -119,7 +119,7 @@ export default new class monitor {
       if (_.isEmpty(data)) clearInterval(this.timer)
       _.forIn(data, (value, key) => {
         if (_.isEmpty(value)) {
-          logger.debug(`[Yenai-Plugin][monitor]获取${key}数据失败，停止获取对应数据`)
+          logger.debug(`${Log_Prefix}[Monitor]获取${key}数据失败，停止获取对应数据`)
           delete this.valueObject[key]
         }
       })
@@ -142,7 +142,7 @@ export default new class monitor {
     try {
       await redis.set(CHART_DATA_KEY, JSON.stringify(this.chartData), { EX: 60 * 60 * 12 })
     } catch (error) {
-      logger.error(`[Yenai-Plugin][Monitor]存储监控信息出错，错误信息，如一直报错可进入配置文件将 ${logger.red("state.yaml > monitor.openRedisSaveData")} 设置为false即可消除报错`, error)
+      logger.error(`${Log_Prefix}[Monitor] 存储监控信息出错，错误信息，如一直报错可进入配置文件将 ${logger.red("state.yaml > monitor.openRedisSaveData")} 设置为false即可消除报错`, error)
     }
   }
 

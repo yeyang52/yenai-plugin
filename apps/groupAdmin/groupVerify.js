@@ -1,4 +1,4 @@
-import { Config } from "../../components/index.js"
+import { Config, Log_Prefix } from "../../components/index.js"
 import { common, GroupAdmin as Ga } from "../../model/index.js"
 import _ from "lodash"
 import { sleep } from "../../tools/index.js"
@@ -134,7 +134,7 @@ export class GroupVerify extends plugin {
 Bot.on?.("notice.group.increase", async(e) => {
   let { openGroup, DelayTime } = Config.groupAdmin.groupVerify
   if (!openGroup.includes(e.group_id)) return
-  logger.mark(`[Yenai-Plugin][进群验证]收到${e.user_id}的进群事件`)
+  logger.mark(`${Log_Prefix}[进群验证]收到${e.user_id}的进群事件`)
   if (!e.group.is_admin && !e.group.is_owner) return
   if (e.user_id == (e.bot ?? Bot).uin) return
   if (Config.masterQQ.includes(e.user_id)) return
@@ -213,7 +213,7 @@ async function verify(userId, groupId, e) {
   if (!e.group.is_admin && !e.group.is_owner) return
   userId = Number(userId)
   groupId = Number(groupId)
-  logger.mark(`[Yenai-Plugin][进群验证]进行${userId}的验证`)
+  logger.mark(`${Log_Prefix}[进群验证]进行${userId}的验证`)
 
   const { times, range, time, remindAtLastMinute } = Config.groupAdmin.groupVerify
   const operator = ops[_.random(0, 1)]
@@ -226,7 +226,7 @@ async function verify(userId, groupId, e) {
   [ m, n ] = [ m >= n ? m : n, m >= n ? n : m ]
 
   const verifyCode = String(operator === "-" ? m - n : m + n)
-  logger.mark(`[Yenai-Plugin][进群验证]答案：${verifyCode}`)
+  logger.mark(`${Log_Prefix}[进群验证]答案：${verifyCode}`)
   const kickTimer = setTimeout(async() => {
     sendMsg(e, [ segment.at(userId), "\n验证超时，移出群聊，请重新申请" ])
 
@@ -281,10 +281,10 @@ async function sendMsg(e, msg) {
         let res = await sendFunction()
         return res
       } catch (error) {
-        logger.debug(`[Yenai-Plugin][进群验证]发送消息失败: ${error.message}`)
+        logger.debug(`${Log_Prefix}[进群验证]发送消息失败: ${error.message}`)
       }
     }
   }
 
-  throw Error("[Yenai-Plugin][进群验证]未获取到发送消息函数")
+  throw Error(`${Log_Prefix}[进群验证]未获取到发送消息函数`)
 }

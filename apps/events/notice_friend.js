@@ -1,5 +1,5 @@
 import { common } from "../../model/index.js"
-import { Config } from "../../components/index.js"
+import { Config, Log_Prefix } from "#yenai.components"
 
 Bot.on?.("notice.friend", async(e) => {
   let msg = null
@@ -7,7 +7,7 @@ Bot.on?.("notice.friend", async(e) => {
   switch (e.sub_type) {
     case "increase": {
       if (!Config.getNotice(e.self_id).friendNumberChange) return false
-      logger.info("[Yenai-Plugin]新增好友")
+      logger.info(`${Log_Prefix} 新增好友`)
       msg = [
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
         `[通知(${e.self_id}) - 新增好友]\n`,
@@ -19,7 +19,7 @@ Bot.on?.("notice.friend", async(e) => {
     /** 好友列表减少 */
     case "decrease": {
       if (!Config.getNotice(e.self_id).friendNumberChange) return false
-      logger.info("[Yenai-Plugin]好友减少")
+      logger.info(`${Log_Prefix} 好友减少`)
       msg = [
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
         `[通知(${e.self_id}) - 好友减少]\n`,
@@ -30,7 +30,7 @@ Bot.on?.("notice.friend", async(e) => {
     }
     case "poke": {
       if (!Config.getNotice(e.self_id).privateMessage) return false
-      logger.info("[Yenai-Plugin]好友戳一戳")
+      logger.info(`${Log_Prefix} 好友戳一戳`)
       msg = [
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
         `[消息(${e.self_id}) - 戳一戳]\n`,

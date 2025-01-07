@@ -1,6 +1,6 @@
 import cfg from "../../../../lib/config/config.js"
 import { common } from "../../model/index.js"
-import { Config } from "../../components/index.js"
+import { Config, Log_Prefix } from "../../components/index.js"
 const ROLE_MAP = {
   admin: "群管理",
   owner: "群主",
@@ -17,7 +17,7 @@ Bot.on?.("request", async(e) => {
         case "invite":
           if (!_cfg.groupInviteRequest) return false
           if (cfg.masterQQ.includes(e.user_id)) return false
-          logger.info("[Yenai-Plugin]邀请机器人进群")
+          logger.info(`${Log_Prefix}邀请机器人进群`)
           msg = [
             segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/0`),
             `[通知(${e.self_id}) - 邀请机器人进群]\n`,
@@ -54,7 +54,7 @@ Bot.on?.("request", async(e) => {
             await redis.set(`yenai:groupAdd:${sendmsg.message_id}`, e.user_id, { EX: 3600 })
           }
           if (!_cfg.addGroupApplication) return false
-          logger.info("[Yenai-Plugin]加群申请")
+          logger.info(`${Log_Prefix}加群申请`)
           msg = [
             segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/0`),
             `[通知(${e.self_id}) - 加群申请]\n`,
@@ -70,7 +70,7 @@ Bot.on?.("request", async(e) => {
       break
     case "friend":
       if (!_cfg.friendRequest) return false
-      logger.info("[Yenai-Plugin]好友申请")
+      logger.info(`${Log_Prefix}好友申请`)
       msg = [
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
         `[通知(${e.self_id}) - 添加好友申请]\n`,

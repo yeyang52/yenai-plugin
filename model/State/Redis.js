@@ -20,7 +20,7 @@ export default async function getRedisInfo(isPro) {
       Keyspace: data.Keyspace
     }
   } catch (error) {
-    logger.log(error)
+    logger.error(error)
     return false
   }
 }

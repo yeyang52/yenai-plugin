@@ -1,9 +1,9 @@
 import { common } from "../../model/index.js"
-import { Config } from "../../components/index.js"
+import { Config, Log_Prefix } from "#yenai.components"
 import formatDuration from "../../tools/formatDuration.js"
 
 function buildMessage(e, type, ext) {
-  logger.info(`[Yenai-Plugin][notice][notice.group]${type}`)
+  logger.info(`${Log_Prefix}[群通知] ${type}`)
   return [
     segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`),
     `[通知(${e.self_id}) - ${type}]\n`,
@@ -75,7 +75,7 @@ function handleAdmin(e, bot, cfg) {
 function handleBan(e, bot, cfg) {
   if (!cfg.botBeenBanned || e.user_id != bot.uin) return false
   if (e.duration == 0) {
-    logger.info("[Yenai-Plugin]机器人被解除禁言")
+    logger.info(`${Log_Prefix} 机器人被解除禁言`)
     return buildMessage(e, "机器人被解除禁言", [
       `处理人账号：${e.operator_id}\n`,
       `处理群号：${e.group_id}`

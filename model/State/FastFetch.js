@@ -1,6 +1,6 @@
 import child_process from "child_process"
 import util from "util"
-import { Config } from "../../components/index.js"
+import { Config, Log_Prefix } from "../../components/index.js"
 
 const execAsync = util.promisify(child_process.exec)
 let directly = false
@@ -17,7 +17,7 @@ export default async function getFastFetch(e) {
   try {
     return await getFastFetchFun()
   } catch (error) {
-    logger.error(`[Yenai-Plugin][状态][FastFetch]Error 无法获取FastFetch 请检查是否使用git bash启动Yunzai-bot或安装手动 fastfetch 项目地址：https://github.com/fastfetch-cli/fastfetch\n错误信息：${error.message}`)
+    logger.error(`${Log_Prefix}[State][FastFetch]Error 无法获取FastFetch 请检查是否使用git bash启动Yunzai-bot或安装手动 fastfetch 项目地址：https://github.com/fastfetch-cli/fastfetch\n错误信息：${error.message}`)
     return ""
   }
 }
@@ -66,7 +66,7 @@ async function initFastFetch() {
   } else if (bashResult.status === "fulfilled") {
     getFastFetchFun = bashGetFastFetch
   } else {
-    logger.debug("[Yenai-Plugin][状态][FastFetch]Both fetch methods failed:", bashResult.reason, directResult.reason)
+    logger.debug(`${Log_Prefix}[状态][FastFetch]Both fetch methods failed:`, bashResult.reason, directResult.reason)
   }
 
   return getFastFetchFun

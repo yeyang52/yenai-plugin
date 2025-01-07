@@ -1,6 +1,6 @@
 import { funApi, common, memes } from "../model/index.js"
 import _ from "lodash"
-import { Config } from "../components/index.js"
+import { Config, Log_Prefix } from "#yenai.components"
 
 !Config.thumbUp.cloneAllThumbUp && Bot.on("message.group", e => {
   if (e?.message?.[0]?.text == "#全部赞我") { (new ThumbUp()).thumbUp(e) }
@@ -170,7 +170,7 @@ function parseMessage(msg, regex) {
     }
     return result
   } catch (error) {
-    logger.error("[Yenai-Plugin][点赞]自定义回复消息错误", error)
+    logger.error(`${Log_Prefix}[点赞]自定义回复消息错误`, error)
     return false
   }
 }

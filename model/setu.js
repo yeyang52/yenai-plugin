@@ -1,5 +1,5 @@
 import { common, Pixiv } from "./index.js"
-import { Plugin_Path, Config, YamlReader } from "../components/index.js"
+import { Plugin_Path, Config, YamlReader, Log_Prefix } from "#yenai.components"
 import _ from "lodash"
 import { setuMsg } from "../constants/msg.js"
 import request from "../lib/request/request.js"
@@ -201,7 +201,7 @@ export default new class setu {
     } else {
       y.set("friendSet.r18", isopen ? 1 : 0)
     }
-    logger.mark(`[Yenai-Plugin][setu][${groupID ? "群聊" : "私聊"}]已${isopen ? "开启" : "关闭"}${groupID ?? "私聊"}的涩涩模式`)
+    logger.mark(`${Log_Prefix}[setu][${groupID ? "群聊" : "私聊"}]已${isopen ? "开启" : "关闭"}${groupID ?? "私聊"}的涩涩模式`)
     return true
   }
 

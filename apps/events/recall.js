@@ -1,4 +1,4 @@
-import { Config } from "../../components/index.js"
+import { Config, Log_Prefix } from "#yenai.components"
 import moment from "moment"
 import { common } from "../../model/index.js"
 
@@ -64,7 +64,7 @@ Bot.on?.("notice.group.recall", async(e) => {
   if (e.operator_id != e.user_id) {
     isManage = `撤回管理：${e.group.pickMember(e.operator_id).card}(${e.operator_id})\n`
   }
-  isManage ? logger.info("[Yenai-Plugin]群聊管理撤回") : logger.info("[Yenai-Plugin]群聊撤回")
+  isManage ? logger.info(`${Log_Prefix} 群聊管理撤回`) : logger.info(`${Log_Prefix} 群聊撤回`)
   // 发送的消息
   msg = [
     segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`),
@@ -87,7 +87,7 @@ Bot.on?.("notice.friend.recall", async(e) => {
 
   if (Config.masterQQ.includes(e.user_id)) return false
 
-  logger.info("[Yenai-Plugin]好友撤回")
+  logger.info(`${Log_Prefix} 好友撤回`)
 
   let rawMsg = JSON.parse(await redis.get(redisKeyPrePrivate + e.message_id))
 

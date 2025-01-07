@@ -1,4 +1,4 @@
-import { Config, Plugin_Path } from "../../components/index.js"
+import { Config, Plugin_Path, Log_Prefix } from "../../components/index.js"
 import request from "../../lib/request/request.js"
 import Monitor from "./Monitor.js"
 import { createAbortCont, getFileSize } from "./utils.js"
@@ -36,7 +36,7 @@ export function getNetworkTestList(e) {
     currentRequests++
     return handleSite(site).finally(() => {
       if (--currentRequests === 0) {
-        logger.debug("[Yenai-Plugin][状态]已完成所有网络测试")
+        logger.debug(`${Log_Prefix}[状态]已完成所有网络测试`)
       }
     })
   }))
@@ -54,7 +54,7 @@ const handleSite = (site) => {
 
 const handleError = (error, siteName) => {
   let errorMsg = "Error"
-  const prefix = "[Yenai-Plugin][状态]"
+  const prefix = `${Log_Prefix}[State]`
   if (error.name === "AbortError") {
     logger.warn(`${prefix}请求 ${siteName} 超时`)
     errorMsg = "Timeout"
@@ -113,7 +113,7 @@ async function getNetworkLatency(url, timeoutTime = 5000, useProxy = false) {
     })
     const endTime = Date.now()
     let delay = endTime - startTime
-    logger.debug(`[Yenai-Plugin][状态][网络测试][${url}] ${logger.blue(status)} ${logger.green(delay + "ms")}`)
+    logger.debug(`${Log_Prefix}[状态][网络测试][${url}] ${logger.blue(status)} ${logger.green(delay + "ms")}`)
 
     const COLOR_DELAY_GOOD = "#188038"
     const COLOR_DELAY_AVERAGE = "#d68100"

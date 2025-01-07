@@ -2,6 +2,7 @@ import { pandadiuType } from "../../../constants/fun.js"
 import _ from "lodash"
 import request from "../../../lib/request/request.js"
 import { load } from "cheerio"
+import { Log_Prefix } from "#yenai.components"
 
 /**
  *
@@ -15,11 +16,11 @@ export async function pandadiu(type = "cos", keywords = "") {
   if (keywords) {
     homeUrl = `${domain}/index.php?m=search&c=index&a=init&typeid=1&siteid=1&q=${keywords}`
   }
-  logger.debug("[Yenai-Plugin][acg]作品索引页：" + homeUrl)
+  logger.debug(`${Log_Prefix}[acg]作品索引页：` + homeUrl)
   const home = await request.get(homeUrl).then(res => res.text())
   const href = _.sample(_.map(load(home)("div.cos-list.clearfix > ul > a, div.cover.mod_imgLight > a"), item => item.attribs.href))
   if (!href) throw new ReplyError("未找到结果")
-  logger.debug("[Yenai-Plugin][acg]图片详情页：" + domain + href)
+  logger.debug(`${Log_Prefix}[acg]图片详情页：` + domain + href)
   const details = await request.get(domain + href).then(res => res.text())
   const $ = load(details)
   const imgs = _.map($("div.con > p > img"), item =>
@@ -40,7 +41,7 @@ export async function pandadiu(type = "cos", keywords = "") {
 export async function coser() {
   const domain = "https://a2cy.com"
   const homeUrl = `${domain}/acg/cos/index_${_.random(1, 30)}.html`
-  logger.debug("[Yenai-Plugin][coser]作品索引页：" + homeUrl)
+  logger.debug(`${Log_Prefix}[coser]作品索引页：` + homeUrl)
   const home = await request.get(homeUrl).then(res => res.text())
   const $ = load(home)
   const href = _.sample(
@@ -50,7 +51,7 @@ export async function coser() {
     )
   )
   if (!href) throw new ReplyError("未知错误")
-  logger.debug("[Yenai-Plugin][coser]图片详情页：" + domain + href)
+  logger.debug(`${Log_Prefix}[coser]图片详情页：` + domain + href)
   const imgPage = await request.get(domain + href).then(res => res.text())
   const $1 = load(imgPage)
   const imgList = _.map(

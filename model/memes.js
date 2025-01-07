@@ -1,6 +1,6 @@
 import fs from "fs"
 import _ from "lodash"
-import { Plugin_Path } from "../components/index.js"
+import { Plugin_Path, Log_Prefix } from "../components/index.js"
 let Jimp = null
 try {
   Jimp = (await import("jimp")).default
@@ -23,7 +23,7 @@ export default new class {
     const buff = await background.getBufferAsync(Jimp.MIME_JPEG)
     // debug
     let kb = (buff.length / 1024).toFixed(2) + "kb"
-    logger.debug(`[Yenai-Plugin][memes]生成zan ${kb}`)
+    logger.debug(`${Log_Prefix}[memes]生成zan ${kb}`)
     return buff
   }
 
@@ -40,7 +40,7 @@ export default new class {
     const buff = await background.getBufferAsync(Jimp.MIME_JPEG)
     // debug
     let kb = (buff.length / 1024).toFixed(2) + "kb"
-    logger.debug(`[Yenai-Plugin][memes]生成crawl ${kb}`)
+    logger.debug(`${Log_Prefix}[memes]生成crawl ${kb}`)
     return buff
   }
 
@@ -55,7 +55,7 @@ export default new class {
     const buff = await images.getBufferAsync(Jimp.MIME_JPEG)
     // debug
     let kb = (buff.length / 1024).toFixed(2) + "kb"
-    logger.debug(`[Yenai-Plugin][memes]生成ganyu ${kb}`)
+    logger.debug(`${Log_Prefix}[memes]生成ganyu ${kb}`)
     return buff
   }
 

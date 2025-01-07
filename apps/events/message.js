@@ -1,5 +1,5 @@
 import { common } from "../../model/index.js"
-import { Config } from "../../components/index.js"
+import { Config, Log_Prefix } from "#yenai.components"
 
 Bot.on?.("message", async(e) => {
   // 判断是否存在消息
@@ -25,7 +25,7 @@ Bot.on?.("message", async(e) => {
   switch (e.message_type) {
     case "group": {
       if (!cfg.groupMessage) return false
-      logger.info("[Yenai-Plugin]群聊消息")
+      logger.info(`${Log_Prefix} 群聊消息`)
       msg = [
         segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/100`),
       `[消息(${e.self_id}) - 群聊消息]\n`,
@@ -42,7 +42,7 @@ Bot.on?.("message", async(e) => {
       if (e.sub_type === "friend") {
         if (!cfg.privateMessage) return false
 
-        logger.info("[Yenai-Plugin]好友消息")
+        logger.info(`${Log_Prefix} 好友消息`)
         msg = [
           segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
           `[消息(${e.self_id}) - 好友消息]\n`,
@@ -63,7 +63,7 @@ Bot.on?.("message", async(e) => {
         }
       } else if (e.sub_type === "group") {
         if (!cfg.grouptemporaryMessage) return false
-        logger.info("[Yenai-Plugin]群临时消息")
+        logger.info(`${Log_Prefix} 群临时消息`)
         // 发送的消息
         msg = [
           segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),

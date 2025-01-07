@@ -1,9 +1,18 @@
 import { Config, Version, YamlReader } from "../../components/index.js"
 import { common } from "../../model/index.js"
+import loader from "../../../../lib/plugins/loader.js"
 
 Bot.on("message", async(_e) => {
   const e = { ..._e }
-  if (!e.msg) e.msg = e.raw_message
+  if (e.msg === undefined) {
+    if (typeof loader.dealEvent === "function") {
+      loader.dealEvent(e)
+    } else if (typeof logger.dealMsg === "function") {
+      logger.dealMsg(e)
+    } else {
+      e.msg = e.raw_message
+    }
+  }
   if (!/^#(取消|(删|移)除)?拉[黑白](群聊?)?/.test(e.msg)) return false
   if (e.isMaster === undefined) {
     const { masterQQ } = Config

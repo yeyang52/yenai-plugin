@@ -36,7 +36,7 @@ export function getNetworkTestList(e) {
     currentRequests++
     return handleSite(site).finally(() => {
       if (--currentRequests === 0) {
-        logger.debug(`${Log_Prefix}[状态]已完成所有网络测试`)
+        logger.debug(`${Log_Prefix}[State] 已完成所有网络测试`)
       }
     })
   }))
@@ -113,7 +113,7 @@ async function getNetworkLatency(url, timeoutTime = 5000, useProxy = false) {
     })
     const endTime = Date.now()
     let delay = endTime - startTime
-    logger.debug(`${Log_Prefix}[状态][网络测试][${url}] ${logger.blue(status)} ${logger.green(delay + "ms")}`)
+    logger.debug(`${Log_Prefix}[State][网络测试][${url}] ${logger.blue(status)} ${logger.green(delay + "ms")}`)
 
     const COLOR_DELAY_GOOD = "#188038"
     const COLOR_DELAY_AVERAGE = "#d68100"

@@ -52,7 +52,12 @@ export class GroupBannedWords extends plugin {
     if (_.isEmpty(bannedWords)) {
       return false
     }
-    const KeyWord = e.raw_message.trim()
+    let KeyWord = null
+    if (e.toString === Object.prototype.toString) {
+      KeyWord = e.raw_message.trim()
+    } else {
+      KeyWord = e.toString().trim()
+    }
     const trimmedKeyWord = this.#trimAlias(KeyWord)
     let data = null
     for (const [ k, v ] of bannedWords) {
@@ -65,14 +70,14 @@ export class GroupBannedWords extends plugin {
     const muteTime = groupBannedWords.getMuteTime(e.group_id)
     const punishments = {
       1: () => e.member.kick(),
-      2: () => this.#mute(muteTime),
+      2: () => e.member.mute(muteTime),
       3: () => e.recall(),
       4: () => {
         e.member.kick()
         e.recall()
       },
       5: () => {
-        this.#mute(muteTime)
+        e.member.mute(muteTime)
         e.recall()
       },
       6: () => {
@@ -102,15 +107,6 @@ export class GroupBannedWords extends plugin {
       ], false, { recallMsg: 30 })
       return "return"
     }
-  }
-
-  /**
-   * 禁言
-   * @param time
-   */
-  #mute(time) {
-    const e = this.e
-    e.member.mute(time)
   }
 
   /**

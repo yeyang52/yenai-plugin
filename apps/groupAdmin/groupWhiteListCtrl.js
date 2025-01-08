@@ -24,6 +24,7 @@ export class GroupWhiteListCtrl extends plugin {
     if (!common.checkPermission(e, "all", "admin", { isReply: false })) return
     if (Config.groupAdmin.blackQQ.includes(e.user_id)) {
       e.group.kickMember(e.user_id)
+      e.reply(`⚠ 已踢出黑名单用户${e.user_id}`)
     }
   }
 
@@ -94,15 +95,15 @@ Bot.on("request.group.add", async(e) => {
   if (!common.checkPermission(e, "all", "admin", { isReply: false })) return
   if (Config.groupAdmin.blackQQ.includes(e.user_id)) {
     e.approve(false)
-    logger.info(`${Log_Prefix} 已拒绝黑马单${e.user_id}的入群申请`)
+    logger.info(`${Log_Prefix} 已拒绝黑名单${e.user_id}的入群申请`)
   }
 })
 
 Bot.on("notice.group.increase", async(e) => {
   if (!common.checkPermission(e, "all", "admin", { isReply: false })) return
   if (Config.groupAdmin.blackQQ.includes(e.user_id)) {
-    logger.info(`${Log_Prefix} 检测到黑马单${e.user_id}加入${e.group_id}，已踢出`)
+    logger.info(`${Log_Prefix} 检测到黑名单${e.user_id}加入${e.group_id}，已踢出`)
     e.group.kickMember(e.user_id)
-    e.group.sendMsg(`⚠ 检测到黑马单${e.user_id}入群，已自动踢出`)
+    e.group.sendMsg(`⚠ 检测到黑名单${e.user_id}入群，已自动踢出`)
   }
 })

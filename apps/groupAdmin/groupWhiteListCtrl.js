@@ -103,6 +103,6 @@ Bot.on("notice.group.increase", async(e) => {
   if (Config.groupAdmin.blackQQ.includes(e.user_id)) {
     logger.info(`${Log_Prefix} 检测到黑马单${e.user_id}加入${e.group_id}，已踢出`)
     e.group.kickMember(e.user_id)
-    e.reply(`⚠ 检测到黑马单${e.user_id}入群，已自动踢出`)
+    e.group.sendMsg(`⚠ 检测到黑马单${e.user_id}入群，已自动踢出`)
   }
 })

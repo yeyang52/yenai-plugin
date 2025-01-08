@@ -10,7 +10,7 @@
 
 # Yenai-Plugin
 
-🐑 **_Yenai-Plugin 是一个 Yunzai-Bot 的扩展插件，提供对 Bot 的一些便捷操作。_**<img src="https://media.giphy.com/media/mGcNjsfWAjY5AEZNw6/giphy.gif" width="50">
+🐑 **_Yenai-Plugin 是一个 Yunzai-Bot 的扩展插件，提供对 Bot 的一些便捷操作。_**
 
 <br><img src="https://count.getloli.com/get/@:yenai-plugin?theme=rule34" /><br>
 
@@ -45,7 +45,7 @@ git clone -b v2 --depth=1 https://github.com/yeyang52/yenai-plugin.git ./plugins
 git clone -b v2 --depth=1 https://gitee.com/yeyang52/yenai-plugin.git ./plugins/yenai-plugin
 ```
 
-2. 安装依赖(可选：不安装依赖将无法使用一些功能)
+2. 安装依赖
 
 ```sh
 pnpm install

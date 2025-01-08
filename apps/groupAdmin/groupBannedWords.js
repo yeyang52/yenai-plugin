@@ -1,6 +1,7 @@
 import { common, GroupBannedWords as groupBannedWords } from "../../model/index.js"
 import { Config } from "../../components/index.js"
 import _ from "lodash"
+import { GroupWhiteListCtrl } from "./groupWhiteListCtrl.js"
 
 export class GroupBannedWords extends plugin {
   constructor() {
@@ -10,7 +11,7 @@ export class GroupBannedWords extends plugin {
       priority: 1,
       rule: [
         {
-          reg: "^#?新增(模糊|精确|正则)?(踢|禁|撤|踢撤|禁撤)?违禁词",
+          reg: "^#?新增(模糊|精确|正则)?(踢|禁|撤|踢撤|禁撤|踢黑)?违禁词",
           fnc: "add"
         },
         {
@@ -73,6 +74,10 @@ export class GroupBannedWords extends plugin {
       5: () => {
         this.#mute(muteTime)
         e.recall()
+      },
+      6: () => {
+        new GroupWhiteListCtrl().addList(e, e.user_id, "add", "blackQQ")
+        e.member.kick()
       }
     }
     const groupPenaltyAction = {
@@ -80,7 +85,8 @@ export class GroupBannedWords extends plugin {
       2: `禁言${muteTime}秒`,
       3: "撤回消息",
       4: "踢出群聊并撤回消息",
-      5: `禁言${muteTime}秒并撤回消息`
+      5: `禁言${muteTime}秒并撤回消息`,
+      6: "踢出群聊并加入黑名单"
     }
     if (punishments[data.penaltyType]) {
       punishments[data.penaltyType]()

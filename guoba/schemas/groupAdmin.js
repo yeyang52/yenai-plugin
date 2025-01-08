@@ -14,6 +14,16 @@ export default [
     }
   },
   {
+    field: "groupAdmin.blackQQ",
+    label: "黑名单QQ",
+    component: "GTags",
+    componentProps: {
+      allowAdd: true,
+      allowDel: true,
+      valueFormatter: ((value) => Number.parseInt(value)).toString()
+    }
+  },
+  {
     field: "groupAdmin.noBan",
     label: "白名单禁言自动解禁",
     component: "Switch"

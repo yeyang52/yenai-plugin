@@ -3,6 +3,7 @@ import { Config } from "../../components/index.js"
 import { Time_unit } from "../../constants/other.js"
 import { GroupAdmin as Ga, GroupBannedWords, common } from "../../model/index.js"
 import { cronValidate, translateChinaNum } from "../../tools/index.js"
+import { GroupWhiteListCtrl } from "./groupWhiteListCtrl.js"
 
 const Numreg = "[零一壹二两三四五六七八九十百千万亿\\d]+"
 const TimeUnitReg = Object.keys(Time_unit).join("|")
@@ -34,7 +35,7 @@ export class GroupAdmin extends plugin {
           fnc: "muteAll"
         },
         {
-          reg: "^#踢(\\d+)?$",
+          reg: "^#踢黑?(\\d+)?$",
           fnc: "kickMember"
         },
         {
@@ -142,8 +143,18 @@ export class GroupAdmin extends plugin {
   async kickMember(e) {
     if (!common.checkPermission(e, "admin", "admin")) return true
     let qq = e.message.filter(item => item.type == "at").map(item => item.qq)
-    if (qq.length < 2) qq = qq[0] || e.msg.replace(/#|踢/g, "").trim()
-
+    if (qq.length < 2) qq = qq[0] || e.msg.replace(/#|踢黑?/g, "").trim()
+    if (/黑/.test(e.msg)) {
+      const _qq = []
+      if (Array.isArray(qq)) {
+        _qq.push(...qq)
+      } else {
+        _qq.push(qq)
+      }
+      for await (let id of _qq) {
+        new GroupWhiteListCtrl().addList(e, id, "add", "blackQQ")
+      }
+    }
     try {
       const res = await new Ga(e).kickMember(e.group_id, qq, e.user_id)
       e.reply(res)

@@ -1,5 +1,11 @@
 #白名单QQ
-whiteQQ: []
+whiteQQ: 
+  - 123456
+
+#黑名单QQ
+blackQQ: 
+  - 123456
+
 #白名单禁言自动解禁
 noBan: false
 

@@ -451,10 +451,11 @@ export default class GroupAdmin {
    * @param {number|string} groupId - 群号。
    * @param {number|string|Array<number|string>} userId - 被踢成员的 QQ 号。
    * @param {number|string} executor - 执行操作的管理员 QQ 号。
+   * @param block - 是否拉黑，默认为 false
    * @returns {Promise<string>} 返回操作结果的消息。
    * @throws {ReplyError} 如果群号或成员 QQ 号无效，或者由于权限不足或其他原因导致操作失败，则抛出错误。
    */
-  async kickMember(groupId, userId, executor) {
+  async kickMember(groupId, userId, executor, block = false) {
     const group = this.Bot.pickGroup(groupId, true)
 
     if (!groupId || !(/^\d+$/.test(groupId))) throw new ReplyError("❎ 请输入正确的群号")
@@ -482,7 +483,7 @@ export default class GroupAdmin {
 
       if (isWhite && !isMaster) throw new ReplyError(`❎ ${isMore ? id : "该用户"}是白名单成员，不可操作`)
 
-      const res = await group.kickMember(id)
+      const res = await group.kickMember(id, block)
       if (!res) throw new ReplyError(`❎ 踢出${id}失败`)
       return id
     }

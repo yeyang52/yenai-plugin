@@ -52,7 +52,7 @@ export class GroupWhiteListCtrl extends plugin {
     if (!isWhite && operation === "del") return this.reply(`❎ 此人未在群管${type}名单中`)
 
     Config.modifyArr("groupAdmin", model, qq, operation)
-    this.reply(`✅ 已${operation === "add" ? "加入" : "删除"}${qq}到群管${type}名单`)
+    e.reply(`✅ 群管${type}名单已${operation === "add" ? "加入" : "删除"}${qq}`)
   }
 
   /**

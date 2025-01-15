@@ -3,47 +3,83 @@ import request from "../../lib/request/request.js"
 import Monitor from "./Monitor.js"
 import { createAbortCont, getFileSize } from "./utils.js"
 
-const defList = [
-  { name: "Baidu", url: "https://baidu.com" },
-  { name: "Google", url: "https://google.com" },
-  { name: "TRSS", url: "https://trss.me" }
-]
+/** 获取当前网速 */
+export function getNetwork() {
+  let network = Monitor.network
+  if (!network || network.length === 0) {
+    return false
+  }
+  let data = []
+  const resPath = Plugin_Path + "/resources/state/icon/"
+  const txImg = `<img src="${resPath + "tx.svg"}">`
+  const rxImg = `<img src="${resPath + "rx.svg"}">`
+
+  for (let v of network) {
+    if (v.rx_sec != null && v.tx_sec != null) {
+      let _rx = getFileSize(v.rx_sec, { showByte: false, showSuffix: false })
+      let _tx = getFileSize(v.tx_sec, { showByte: false, showSuffix: false })
+      data.push({
+        first: v.iface,
+        tail: `↑ ${_tx}/s | ↓ ${_rx}/s`
+      })
+    }
+    if (v.rx_bytes != null && v.tx_bytes != null) {
+      let _rxB = getFileSize(v.rx_bytes)
+      let _txB = getFileSize(v.tx_bytes)
+      data.push({
+        first: "流量",
+        tail: `${txImg} ${_txB} | ${rxImg} ${_rxB}`
+      })
+    }
+  }
+  return data.length === 0 ? false : data
+}
+
 /**
  * 获取网络测试列表。
  * @param e
  * @returns {Promise<Array>} 返回一个Promise，该Promise解析为网络测试结果的数组。
  */
-export function getNetworkTestList(e) {
-  const { psTestSites, psTestTimeout } = Config.state
-  if (!psTestSites) {
-    return Promise.resolve([])
-  }
-  const parsedData = parseConfig(psTestSites, psTestTimeout)
+export async function getNetworkTestList(e) {
+  const { show, list, timeout, concurNum } = Config.state.psTestSites
 
-  if (!parsedData.show) {
-    return Promise.resolve([])
-  }
-  if (parsedData.show === "pro" && !e.isPro) {
-    return Promise.resolve([])
-  }
-  if (parsedData.list.length === 0) {
-    return Promise.resolve([])
+  if (!show || !list.length || (show === "pro" && !e.isPro)) {
+    return false
   }
 
-  // 使用Promise.all集中处理所有Promise
-  let currentRequests = 0
-  return Promise.all(parsedData.list.map((site) => {
-    currentRequests++
-    return handleSite(site).finally(() => {
-      if (--currentRequests === 0) {
-        logger.debug(`${Log_Prefix}[State] 已完成所有网络测试`)
-      }
-    })
-  }))
+  return concurRequests(list, concurNum, timeout)
 }
 
-const handleSite = (site) => {
-  return getNetworkLatency(site.url, site.timeout, site.useProxy)
+const concurRequests = (urls, maxNum, timeout) => {
+  if (urls.length === 0) {
+    return Promise.resolve([])
+  }
+
+  return new Promise((resolve) => {
+    let nextIndex = 0
+    let finishCount = 0
+    const result = []
+    async function _request() {
+      if (nextIndex >= urls.length) return
+      const i = nextIndex
+      const url = urls[nextIndex++]
+      const resp = await handleSite(url, timeout)
+      result[i] = resp
+      finishCount++
+      if (finishCount === urls.length) {
+        logger.debug(`${Log_Prefix}[State] 已完成所有网络测试`)
+        return resolve(result)
+      }
+      _request()
+    }
+    for (let i = 0; i < Math.min(maxNum, urls.length); i++) {
+      _request()
+    }
+  })
+}
+
+const handleSite = (site, timeout) => {
+  return getNetworkLatency(site.url, timeout, site.useProxy)
     .then(res => ({ first: site.name, tail: res }))
     .catch(error => {
       const errorMsg = handleError(error, site.name)
@@ -66,33 +102,7 @@ const handleError = (error, siteName) => {
   }
   return errorMsg
 }
-/**
- * 解析配置参数并返回配置对象。
- * @param {Array | string | boolean} psTestSites - 预期应该是对象包含show,list,timeout
- * @param {number} psTestTimeout - 保留老配置文件psTestTimeout
- * @returns {object} 包含配置信息的对象。
- */
-function parseConfig(psTestSites, psTestTimeout) {
-  let data = {
-    show: "pro",
-    list: [],
-    timeout: psTestTimeout ?? 5000
-  }
 
-  if (Array.isArray(psTestSites)) {
-    data.list = psTestSites
-  } else if (typeof psTestSites === "object") {
-    data = { ...data, ...psTestSites }
-  } else if (
-    (typeof psTestSites === "boolean" && psTestSites === true) ||
-    (typeof psTestSites === "string" && psTestSites === "default")
-  ) {
-    data.show = true
-    data.list = defList
-  }
-
-  return data
-}
 /**
  * 网络测试
  * @param {string} url 测试的url
@@ -146,35 +156,4 @@ async function getNetworkLatency(url, timeoutTime = 5000, useProxy = false) {
   } finally {
     clearTimeout()
   }
-}
-/** 获取当前网速 */
-export function getNetwork() {
-  let network = Monitor.network
-  if (!network || network.length === 0) {
-    return false
-  }
-  let data = []
-  const resPath = Plugin_Path + "/resources/state/icon/"
-  const txImg = `<img src="${resPath + "tx.svg"}">`
-  const rxImg = `<img src="${resPath + "rx.svg"}">`
-
-  for (let v of network) {
-    if (v.rx_sec != null && v.tx_sec != null) {
-      let _rx = getFileSize(v.rx_sec, { showByte: false, showSuffix: false })
-      let _tx = getFileSize(v.tx_sec, { showByte: false, showSuffix: false })
-      data.push({
-        first: v.iface,
-        tail: `↑ ${_tx}/s | ↓ ${_rx}/s`
-      })
-    }
-    if (v.rx_bytes != null && v.tx_bytes != null) {
-      let _rxB = getFileSize(v.rx_bytes)
-      let _txB = getFileSize(v.tx_bytes)
-      data.push({
-        first: "流量",
-        tail: `${txImg} ${_txB} | ${rxImg} ${_rxB}`
-      })
-    }
-  }
-  return data.length === 0 ? false : data
 }

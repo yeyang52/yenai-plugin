@@ -40,6 +40,36 @@ export default [
     component: "Input"
   },
   {
+    field: "groupAdmin.recallMsgPer.bot",
+    label: "撤回bot消息权限",
+    bottomHelpMessage: "#撤回命令",
+    component: "RadioGroup",
+    required: true,
+    componentProps: {
+      options: [
+        { label: "所有人", value: "all" },
+        { label: "管理", value: "admin" },
+        { label: "群主", value: "owner" },
+        { label: "主人", value: "master" }
+      ]
+    }
+  },
+  {
+    field: "groupAdmin.recallMsgPer.member",
+    label: "撤回群员消息权限",
+    bottomHelpMessage: "#撤回命令",
+    component: "RadioGroup",
+    required: true,
+    componentProps: {
+      options: [
+        { label: "所有人", value: "all" },
+        { label: "管理", value: "admin" },
+        { label: "群主", value: "owner" },
+        { label: "主人", value: "master" }
+      ]
+    }
+  },
+  {
     component: "Divider",
     label: "群管投票禁言设置"
   },

@@ -3,6 +3,7 @@ import { status } from "../../constants/other.js"
 import { common, QQApi } from "../../model/index.js"
 import { sleep } from "../../tools/index.js"
 import { API_ERROR } from "../../constants/errorMsg.js"
+import { Config } from "#yenai.components"
 
 // 命令正则
 
@@ -435,13 +436,17 @@ export class Assistant extends plugin {
     if (!source) return false
     let target = e.group ?? e.friend
     let sender = source.sender.user_id
-
+    const isBotMsg = sender == this.Bot.uin
     if (e.isGroup) {
+      const { bot, member } = Config.groupAdmin.recallMsgPer
+      const per = isBotMsg ? bot : member
       /** 群聊判断权限 */
-      if (!common.checkPermission(e, sender == this.Bot.uin ? "all" : "admin")) return logger.warn(`${e.logFnc}该群员权限不足`)
+      if (!common.checkPermission(e, per)) {
+        return logger.warn(`${e.logFnc}该群员权限不足`)
+      }
     } else {
       /** 私聊判断是否为Bot消息 */
-      if (sender != this.Bot.uin) {
+      if (!isBotMsg) {
         return logger.warn(`${e.logFnc}引用不是Bot消息`)
       }
     }

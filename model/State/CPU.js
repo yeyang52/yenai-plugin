@@ -9,7 +9,7 @@ export default async function getCpuInfo() {
     currentLoad: "currentLoad",
     fullLoad: "*"
   })
-  let { manufacturer, speed, cores } = cpu
+  let { manufacturer, speed, cores } = cpu ?? {}
   if (currentLoad == null || currentLoad == undefined) return false
   fullLoad = Math.round(fullLoad)
   manufacturer = manufacturer?.split(" ")?.[0] ?? "unknown"

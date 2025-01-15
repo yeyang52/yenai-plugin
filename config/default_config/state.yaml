@@ -1,14 +1,16 @@
 # 设置为默认状态
 defaultState: false
 
-# 测试访问的网址列表（可空）设置为true或default将使用默认配置
-# show: 是否显示 true - 显示 - false - 不显示 pro - 只有pro显示
-# name: 显示名称
-# url: 要访问的网址
-# timeout: 测试超时时间
-# useProxy: 是否使用插件配置中的代理访问
+# 网络测试
 psTestSites:
+  # 是否显示
+  # true - 显示
+  # false - 不显示
+  # pro - 只有pro显示
   show: pro
+  # name: 显示名称
+  # url: 要访问的网址
+  # useProxy: 是否使用插件配置中的代理访问
   list:
     - name: Baidu
       url: https://baidu.com
@@ -16,7 +18,10 @@ psTestSites:
     - name: Google
       url: https://google.com
       useProxy: true
+  # 测试超时时间
   timeout: 5000
+  # 并发数量
+  concurNum: 5
 
 # 监控任务 该配置均需重启生效
 monitor:

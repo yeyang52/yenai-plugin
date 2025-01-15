@@ -1,9 +1,9 @@
 #白名单QQ
-whiteQQ: 
+whiteQQ:
   - 123456
 
 #黑名单QQ
-blackQQ: 
+blackQQ:
   - 123456
 
 #白名单禁言自动解禁
@@ -52,3 +52,14 @@ groupAddNotice:
   openGroup:
     - 123465
   msg: 有一个加群通知，管理员快去看看吧~
+
+# 撤回消息权限
+# all: 所有人
+# admin: 管理员 + 群主 + 主人
+# owner: 群主 + 主人
+# master: 主人
+recallMsgPer:
+  # 撤回bot消息
+  bot: all
+  # 撤回群员消息
+  member: admin

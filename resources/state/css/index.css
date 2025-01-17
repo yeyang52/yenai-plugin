@@ -124,6 +124,16 @@
   --avatar-main-color: #fff1eb;
   --avatar-similar-color1: #fff1eb;
   --avatar-similar-color2: #ace0f9;
+  --purple: #B4A0D8;
+  --orange: #e0be92;
+  --blue: #aad5e6;
+}
+
+body {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
 .container {
@@ -139,24 +149,17 @@ li {
   list-style: none;
 }
 
-body {
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  justify-content: space-around;
-}
-
 .box {
   margin: 20px 10px;
   padding: 10px;
+  border-radius: 18px;
+  font-weight: 700;
+  position: relative;
   background: rgba(255, 255, 255, 0.45);
   box-shadow: 0 8px 32px 0 rgba(51, 51, 52, 0.5), inset 3px 3px 10px 0px rgba(255, 255, 255, 0.8);
   -webkit-backdrop-filter: blur(10px);
           backdrop-filter: blur(10px);
-  border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.18);
-  font-weight: 700;
-  position: relative;
 }
 .box .time {
   position: absolute;
@@ -173,6 +176,7 @@ body {
   line-height: 22px;
   height: 22px;
 }
+
 .box[data-boxInfo=进程负载] .title {
   display: flex;
   align-items: center;
@@ -195,11 +199,11 @@ body {
   font-size: 17px;
 }
 .box[data-boxInfo=进程负载] .info .list div {
-  border: 1px solid rgba(180, 180, 182, 0.6745098039);
+  border: 1px solid rgba(180, 180, 182, 0.67);
   border-radius: 5px;
   padding: 5px 10px;
   color: #4f5255;
-  background-color: rgba(244, 244, 245, 0.5803921569);
+  background-color: rgba(244, 244, 245, 0.58);
 }
 .box[data-boxInfo=进程负载] .process .title {
   margin: 10px 0;
@@ -227,6 +231,7 @@ body {
 .box[data-boxInfo=进程负载] .process .form .cell:nth-child(3), .box[data-boxInfo=进程负载] .process .form .cell:nth-child(4) {
   text-align: center;
 }
+
 .box[data-boxInfo=redis] .title {
   display: flex;
   align-items: center;
@@ -292,8 +297,8 @@ body {
 }
 .botInfo .avatar-box {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   flex-direction: column;
   margin-right: 5px;
 }
@@ -353,9 +358,6 @@ body {
   display: flex;
   flex-wrap: wrap;
   row-gap: 10px;
-  --purple:#B4A0D8;
-  --orange:#e0be92;
-  --blue:#aad5e6;
 }
 .botInfo .header p span {
   border-radius: 5px;
@@ -411,10 +413,6 @@ body {
 .botInfo .header h1 {
   display: inline-block;
   color: #000;
-}
-
-hr {
-  border-radius: 10px;
 }
 
 .memory li {

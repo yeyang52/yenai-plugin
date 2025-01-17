@@ -1,40 +1,44 @@
 name: 功能建议
-description: 对本插件提出一个功能建议
-title: "[功能建议]: "
-labels: ["enhancement"]
+description: 提出新功能建议或改进意见
+title: "[建议] "
+labels: ["enhancement", "待评估"]
 body:
   - type: markdown
     attributes:
       value: |
-        感谢提出功能建议，我们将仔细考虑！
-  
-  - type: input
-    attributes:
-      label: 问题描述
-      description: 请简要描述您想要的新功能。
-    validations:
-      required: true
-      
-  - type: input
-    attributes:
-      label: 实现方式
-      description: 请简要描述您希望实现这个新功能的方式。
-    validations:
-      required: true
-      
-  - type: input
-    attributes:
-      label: 当前的问题
-      description: 如果没有这个新功能，您当前面临的问题是什么？
-      
+        感谢您为 Yenai-Plugin 提出建议！请详细描述您的想法，这将帮助我们更好地理解和评估。
+
   - type: textarea
     attributes:
-      label: 其他说明
-      description: 如果您有任何其他信息或说明，请在这里补充。
+      label: 功能描述
+      description: 请详细描述您期望的新功能
+      placeholder: 详细描述这个功能是什么，解决什么问题
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 使用场景
+      description: 描述这个功能在什么场景下使用
+      placeholder: 例如：在群聊中需要快速查询某个信息时...
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 实现建议
+      description: 如果您有具体的实现思路，请描述
+      placeholder: 可以通过什么方式实现这个功能
 
   - type: checkboxes
     attributes:
-      label: 意向参与贡献
+      label: 贡献意向
       options:
-        - label: 我有意向参与具体功能的开发实现并将代码贡献到本插件
-          required: false
+        - label: 我愿意参与此功能的开发并提交 PR
+        - label: 我可以协助测试此功能
+        - label: 我可以提供更多建议和反馈
+
+  - type: textarea
+    attributes:
+      label: 补充说明
+      description: 其他需要补充的信息

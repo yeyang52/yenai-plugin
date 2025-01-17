@@ -1,11 +1,35 @@
 ﻿@use 'svg-circle';
 
+// 通用混合器
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin box-title {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    padding-top: 5px;
+    border-bottom: 2px solid #b4b4b6ac;
+}
+
+@mixin glass-effect {
+    background: rgba(255, 255, 255, 0.45);
+    box-shadow: 0 8px 32px 0 rgba(51, 51, 52, 0.5), inset 3px 3px 10px 0px rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+// 通用样式
 %text-overflow-mission {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
+// 变量
 :root {
     --high-color: #d73403;
     --medium-color: #ffa500;
@@ -13,6 +37,17 @@
     --avatar-main-color: #fff1eb;
     --avatar-similar-color1: #fff1eb;
     --avatar-similar-color2: #ace0f9;
+    --purple: #B4A0D8;
+    --orange: #e0be92;
+    --blue: #aad5e6;
+}
+
+// 基础布局
+body {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: space-around;
 }
 
 .container {
@@ -31,23 +66,14 @@ li {
     list-style: none;
 }
 
-body {
-    display: flex;
-    height: 100%;
-    flex-direction: column;
-    justify-content: space-around;
-}
-
+// 通用盒子样式
 .box {
     margin: 20px 10px;
     padding: 10px;
-    background: rgba(255, 255, 255, 0.45);
-    box-shadow: 0 8px 32px 0 rgba(51, 51, 52, 0.5), inset 3px 3px 10px 0px rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(10px);
     border-radius: 18px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
     font-weight: 700;
     position: relative;
+    @include glass-effect;
 
     .time {
         position: absolute;
@@ -66,167 +92,155 @@ body {
             height: 22px;
         }
     }
+}
 
-    &[data-boxInfo="进程负载"] {
-        .title {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            padding-top: 5px;
-            border-bottom: 2px solid #b4b4b6ac;
+// 进程负载盒子
+.box[data-boxInfo="进程负载"] {
+    .title {
+        @include box-title;
 
-            .icon {
-                width: 20px;
-                height: 20px;
-                margin-right: 7px;
-            }
+        .icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 7px;
         }
-
-
-
-        .info {
-            .title {
-                margin-bottom: 10px;
-            }
-
-            .list {
-                display: flex;
-                justify-content: space-around;
-                margin: 10px 0;
-                font-size: 17px;
-
-                div {
-                    border: 1px solid rgba(180, 180, 182, 0.6745098039);
-                    border-radius: 5px;
-                    padding: 5px 10px;
-                    color: #4f5255;
-                    background-color: rgba(244, 244, 245, 0.5803921569);
-
-                }
-            }
-        }
-
-        .process {
-            .title {
-                margin: 10px 0;
-            }
-
-            .form {
-                display: flex;
-                flex-direction: column;
-                font-size: 16px;
-
-
-                .row {
-                    display: flex;
-                }
-
-                .header-row {
-                    font-size: 17px;
-                    color: #494d53;
-                }
-
-                .cell {
-                    flex: 1;
-                    padding: 5px;
-                    text-align: left;
-                    @extend %text-overflow-mission;
-
-                    &:first-child {
-                        flex: 2;
-                    }
-
-                    &:nth-child(3),
-                    &:nth-child(4) {
-                        text-align: center;
-                    }
-                }
-            }
-        }
-
     }
 
-    &[data-boxInfo="redis"] {
+    .info {
         .title {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            padding-top: 5px;
-            border-bottom: 2px solid #b4b4b6ac;
-
-            .icon {
-                width: 18px;
-                height: 18px;
-                margin-right: 5px;
-            }
+            margin-bottom: 10px;
         }
 
-        .info {
+        .list {
             display: flex;
-            gap: 20px;
+            justify-content: space-around;
+            margin: 10px 0;
+            font-size: 17px;
 
-            .redisBox {
-                flex: 1;
-
-                .data {
-                    padding: 10px;
-                    padding-bottom: 5px;
-
-                    .item {
-                        background-color: #f4f4f594;
-                        margin: 5px;
-                        padding: 5px;
-                        font-size: 13px;
-                        border-radius: 5px;
-                        border: 1px solid #b4b4b6ac;
-                        color: #4f5255;
-
-                        .number {
-                            color: #46971d
-                        }
-                    }
-                }
+            div {
+                border: 1px solid rgba(180, 180, 182, 0.67);
+                border-radius: 5px;
+                padding: 5px 10px;
+                color: #4f5255;
+                background-color: rgba(244, 244, 245, 0.58);
             }
         }
+    }
 
-        .keyspace {
-            margin-top: 10px;
+    .process {
+        .title {
+            margin: 10px 0;
+        }
 
-            .data {
+        .form {
+            display: flex;
+            flex-direction: column;
+            font-size: 16px;
+
+            .row {
                 display: flex;
-                flex-direction: column;
-                font-size: 12px;
-                margin: 5px 10px;
+            }
 
-                .row {
-                    display: flex;
-                    flex: 1;
+            .header-row {
+                font-size: 17px;
+                color: #494d53;
+            }
+
+            .cell {
+                flex: 1;
+                padding: 5px;
+                text-align: left;
+                @extend %text-overflow-mission;
+
+                &:first-child {
+                    flex: 2;
                 }
 
-                .header-row {
-                    font-size: 13px;
-                    color: #494d53;
-                }
-
-                .cell {
-                    flex: 1;
-                    padding: 5px;
-                    text-align: left;
+                &:nth-child(3),
+                &:nth-child(4) {
+                    text-align: center;
                 }
             }
         }
     }
 }
 
+// Redis盒子
+.box[data-boxInfo="redis"] {
+    .title {
+        @include box-title;
+
+        .icon {
+            width: 18px;
+            height: 18px;
+            margin-right: 5px;
+        }
+    }
+
+    .info {
+        display: flex;
+        gap: 20px;
+
+        .redisBox {
+            flex: 1;
+
+            .data {
+                padding: 10px;
+                padding-bottom: 5px;
+
+                .item {
+                    background-color: #f4f4f594;
+                    margin: 5px;
+                    padding: 5px;
+                    font-size: 13px;
+                    border-radius: 5px;
+                    border: 1px solid #b4b4b6ac;
+                    color: #4f5255;
+
+                    .number {
+                        color: #46971d
+                    }
+                }
+            }
+        }
+    }
+
+    .keyspace {
+        margin-top: 10px;
+
+        .data {
+            display: flex;
+            flex-direction: column;
+            font-size: 12px;
+            margin: 5px 10px;
+
+            .row {
+                display: flex;
+                flex: 1;
+            }
+
+            .header-row {
+                font-size: 13px;
+                color: #494d53;
+            }
+
+            .cell {
+                flex: 1;
+                padding: 5px;
+                text-align: left;
+            }
+        }
+    }
+}
+
+// Bot信息样式
 .botInfo {
     display: flex;
     justify-content: flex-start;
     align-items: center;
 
     .avatar-box {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        @include flex-center;
         flex-direction: column;
         margin-right: 5px;
 
@@ -236,7 +250,6 @@ body {
             width: 100px;
             border-radius: 50%;
             margin: 0 20px;
-            // box-shadow: 0 0 12px 4px var(--avatar-main-color);
 
             img {
                 width: 100%;
@@ -251,26 +264,19 @@ body {
                 z-index: -1;
                 margin: -5px;
                 border-radius: 50%;
-                // box-shadow: 0 0 12px 7px var(--avatar-main-color);
-                // background: rgba(255, 255, 255, 0.45);
                 box-shadow: -2px 2px 5px 1px rgba(8, 8, 8, 0.5);
-                // backdrop-filter: blur(10px);
             }
         }
 
         .info {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            @include flex-center;
             margin-top: 10px;
 
             .onlineStatus {
                 width: 15px;
                 height: 15px;
                 margin-right: 5px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
+                @include flex-center;
 
                 img {
                     width: 100%;
@@ -282,12 +288,10 @@ body {
                 line-height: 15px;
                 font-size: 11px;
             }
-
-
         }
-
     }
 
+    // Bot信息头部样式
     .header {
         font-size: 14px;
         width: 100%;
@@ -327,16 +331,11 @@ body {
                 }
             }
 
-            --purple:#B4A0D8;
-            --orange:#e0be92;
-            --blue:#aad5e6;
-
             &:nth-child(4) {
 
                 span:nth-child(1),
                 span:nth-child(4) {
                     background: var(--purple);
-
                 }
 
                 span:nth-child(2),
@@ -362,48 +361,30 @@ body {
                 line-height: 14px;
 
                 &.dyeing {
-                    // color: rgb(135, 206, 235);
-                    // text-shadow: 1px 1px 1px #000;
                     padding-left: 5px;
                     text-align: center;
+
+                    &:not(:last-child) {
+                        border-right: 2px solid #2f4f4f;
+                        padding-right: 10px;
+                    }
                 }
-
-                &.dyeing:not(:last-child) {
-                    border-right: 2px solid #2f4f4f;
-                    padding-right: 10px;
-                }
-
-
 
                 &:nth-child(odd):not(:first-child) {
                     padding-left: 10px
                 }
             }
-
         }
 
         h1 {
             @extend %text-overflow-mission;
             display: inline-block;
-            // background-image: linear-gradient(271.14deg,
-            //         #001bff 0.98%,
-            //         #00f0ff 25.79%,
-            //         #fce84a 47.33%,
-            //         #f34628 65.77%,
-            //         #b275ff 91.4%);
             color: #000;
         }
     }
 }
 
-hr {
-    // border: 0;
-    // height: 2px;
-    // background-image: linear-gradient(135deg, #bdc3c7 10%, #2c3e50);
-    border-radius: 10px;
-}
-
-
+// 内存和硬盘样式
 .memory {
     li {
         margin: 10px;
@@ -456,6 +437,7 @@ hr {
     }
 }
 
+// 速度显示样式
 .speed {
     width: 100%;
     display: flex;
@@ -481,7 +463,6 @@ hr {
         }
 
         img {
-            // width: 100%;
             height: 100%;
             vertical-align: sub
         }

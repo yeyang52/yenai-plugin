@@ -1,16 +1,40 @@
-name: 其他问题及意见反馈
-description: 插件使用上的问题反馈、功能失效等。
-title: "[问题反馈]: "
+name: 使用咨询
+description: 插件使用问题或其他咨询
+title: "[咨询] "
 labels: ["question"]
-body:  
-  - type: input
+body:
+  - type: markdown
     attributes:
-      label: 反馈内容
-      description: 请简要描述您需要反馈的内容。
-    validations:
-      required: true
+      value: |
+        提问前请确保：
+        1. 已仔细阅读过文档
+        2. 已在 issues 中搜索过类似问题
 
   - type: textarea
     attributes:
-      label: 其他说明
-      description: 如果您有任何其他信息或补充说明，请在这里添加。
+      label: 问题描述
+      description: 请详细描述您的问题
+      placeholder: 请尽可能详细地描述您遇到的问题
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: 相关功能
+      description: 请说明问题涉及的功能模块
+      placeholder: 例如：表情包制作、群管功能等
+
+  - type: textarea
+    attributes:
+      label: 环境信息
+      description: 如果是使用问题，请提供您的使用环境
+      placeholder: |
+        - Yunzai 版本：
+        - Node.js 版本：
+        - 操作系统：
+        - 插件版本：
+
+  - type: textarea
+    attributes:
+      label: 补充说明
+      description: 其他需要补充的信息

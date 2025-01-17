@@ -1,107 +1,116 @@
 name: Bug 报告
-description: 创建一份报告来帮助我们改进
-title: "[bug]："
-labels: ["bug"]
+description: 创建一份 Bug 报告以帮助我们改进
+title: "[Bug] "
+labels: ["bug", "待处理"]
 body:
   - type: markdown
     attributes:
       value: |
-        感谢对项目的支持与关注。在提出问题之前，请确保你已查看相关开发或使用文档：
-        - [Yenai-Plugin文档](https://yenai.trss.me)
+        感谢您对项目的支持与关注！提交 Bug 报告前，请确保：
+        1. 已查看 [Yenai-Plugin 文档](https://yenai.trss.me)
+        2. 已经使用最新版本的插件
+        3. 已经搜索过现有 issues，确认没有重复问题
 
   - type: checkboxes
     attributes:
-      label: 这个问题是否已经存在？
+      label: 提交前检查
       options:
-        - label: 我已经搜索过[现有的问题](https://gitee.com/yeyang52/yenai-plugin/issues)并未发现相同问题
+        - label: 我已确认使用的是最新版本的 Yenai-Plugin
+          required: true
+        - label: 我已搜索过[现有 issues](https://gitee.com/yeyang52/yenai-plugin/issues)，确认没有重复问题
           required: true
 
-  - type: input
+  - type: dropdown
     attributes:
-      label: Yunzai版本
-      description: 您使用的哪个版本的Yunzai
-      placeholder: Miao-Yunzai
-      value: Miao-Yunzai
+      label: Yunzai 版本
+      options:
+        - Miao-Yunzai
+        - TRSS-Yunzai
+        - Yunzai-Bot
+        - 其他
     validations:
       required: true
 
   - type: input
     attributes:
-      label: Node.js版本
-      description: 使用`node -v`获取
+      label: Node.js 版本
+      description: 请运行 `node -v` 获取版本号
+      placeholder: 例如：v16.20.0
 
-  - type: input
+  - type: dropdown
     attributes:
-      label: 协议端名称
-      description: 您是使用的哪个协议出现的问题？
-      placeholder: ICQQ
-      value: ICQQ
+      label: 使用的协议端
+      options:
+        - ICQQ
+        - go-cqhttp
+        - ComWeChat
+        - WeChat
+        - 其他
     validations:
       required: true
 
-  - type: input
+  - type: dropdown
     attributes:
       label: 操作系统
-      description: 您的Yunzai使用的是哪个操作系统
-      placeholder: 如Windows 10, MacOS, Mojave, Ubuntu 20.04等
+      options:
+        - Windows
+        - Linux
+        - MacOS
+        - Android
+        - 其他
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 问题描述
+      description: 请简要描述您遇到的问题
+    validations:
+      required: true
 
   - type: textarea
     attributes:
       label: 复现步骤
-      description: 请尽量详细地描述你的操作过程，以便我们更好地理解问题。
+      description: 请详细描述如何复现这个问题
       placeholder: |
-        1. 第一步
-        2. 第二步
-        3. 第三步
-        ...
+        1. 进入「...」界面
+        2. 点击「...」按钮
+        3. 发送「...」指令
+        4. 出现问题
     validations:
       required: true
 
   - type: textarea
     attributes:
-      label: 预期行为
-      description: 描述您期望在完成上述步骤后，系统应有的正确行为或输出。
+      label: 期望行为
+      description: 描述您期望看到的结果
 
   - type: textarea
     attributes:
       label: 实际行为
-      description: 描述系统实际的行为或输出。
+      description: 描述实际发生的情况
     validations:
       required: true
 
   - type: textarea
     attributes:
-      label: 错误日志或截图
-      description: 如果有的话，请附上相关错误日志或截图。请确保不包含敏感信息。
-      placeholder: |
-        在这里上传截图或错误日志
-
-  - type: textarea
-    attributes:
-      label: 其他说明
-      description: 如果您有任何其他信息或说明，请在这里补充。
-
-  - type: input
-    attributes:
-      label: 特殊配置
-      description: 是否有进行任何特别的插件配置或修改？
-      placeholder: 修改过xx配置文件xx字段为xx
+      label: 错误日志
+      description: 请提供相关的错误日志（如果有）
+      render: shell
 
   - type: dropdown
     attributes:
-      label: 复现频率
-      description: 问题出现的频率
+      label: 问题频率
       options:
-        - 仅这一次
-        - 偶尔出现
-        - 经常出现
-        - 每次出现
+        - 必现（100%）
+        - 经常（约75%）
+        - 偶尔（约50%）
+        - 较少（约25%）
+        - 随机（无规律）
     validations:
       required: true
 
-  - type: input
+  - type: textarea
     attributes:
-      label: Yenai-Plugin版本
-      description: 请确保您已使用最新版本的Yenai-Plugin，以避免已知问题。
-      placeholder: latest
-      value: latest
+      label: 补充说明
+      description: 其他需要补充的信息

@@ -42,9 +42,17 @@ body:
       label: 使用的协议端
       options:
         - ICQQ
-        - go-cqhttp
+        - OneBotv11
         - ComWeChat
-        - WeChat
+        - GSUIDCore
+        - QQBot
+        - QQ频道
+        - 微信
+        - KOOK
+        - Telegram
+        - Discord
+        - OPQBot
+        - Lagrange
         - 其他
     validations:
       required: true
@@ -73,10 +81,8 @@ body:
       label: 复现步骤
       description: 请详细描述如何复现这个问题
       placeholder: |
-        1. 进入「...」界面
-        2. 点击「...」按钮
-        3. 发送「...」指令
-        4. 出现问题
+        1. 发送「...」指令
+        2. 出现问题
     validations:
       required: true
 

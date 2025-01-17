@@ -3,39 +3,25 @@ import moment from "moment"
 import { Config } from "../../components/index.js"
 import common from "../../lib/common/common.js"
 import getBotState from "./BotState.js"
-import getCPU from "./CPU.js"
 import getFastFetch from "./FastFetch.js"
 import { getDiskSpeed, getFsSize } from "./FsSize.js"
-import getGPU from "./GPU.js"
 import Monitor from "./Monitor.js"
 import { getNetwork, getNetworkTestList } from "./Network.js"
-import getNode from "./NodeInfo.js"
 import getOtherInfo, { getCopyright } from "./OtherInfo.js"
-import getRAM from "./RAM.js"
-import getSWAP from "./SWAP.js"
 import { BuildDebug } from "./Debug.js"
 import getProcessLoad from "./ProcessLoad.js"
 import getRedisInfo from "./Redis.js"
 import getStyle from "./Style.js"
+import getSystemResources from "./SystemResources/index.js"
 
-const SYSTEM_RESOURCE_MAP = {
-  "CPU": getCPU,
-  "RAM": getRAM,
-  "SWAP": getSWAP,
-  "GPU": getGPU,
-  "Node": getNode
-}
 export async function getData(e) {
   e.isPro = e.msg.includes("pro")
   e.isDebug = e.msg.includes("debug")
-  // 配置
-  const { chartsCfg, systemResources } = Config.state
-
   const debugFun = new BuildDebug(e)
-  const systemResourcesList = systemResources.map(i => SYSTEM_RESOURCE_MAP[i]())
-  const visualDataPromise = Promise.all(
-    debugFun.adds(systemResourcesList, systemResources)
-  )
+  e.debugFun = debugFun
+
+  // 配置
+  const { chartsCfg } = Config.state
   const debugTasks = debugFun.addIn({
     "FastFetch": getFastFetch(e),
     "FsSize": getFsSize(),
@@ -48,7 +34,7 @@ export async function getData(e) {
 
   const promiseTaskList = [
     getCopyright(),
-    visualDataPromise,
+    getSystemResources(e),
     ...debugTasks
   ]
 

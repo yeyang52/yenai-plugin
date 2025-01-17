@@ -35,8 +35,5 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsdoc": "^48.11.0",
     "eslint-plugin-promise": "^6.6.0"
-  },
-  "optionalDependencies": {
-    "abort-controller": "^3.0.0"
   }
 }

@@ -1,5 +1,4 @@
 import si from "systeminformation"
-import { Circle } from "./utils.js"
 import { Log_Prefix } from "#yenai.components"
 let isGPU = false;
 
@@ -32,7 +31,7 @@ export default async function getGPU() {
     temperatureGpu && (temperatureGpu = temperatureGpu + "℃")
     // powerDraw && (powerDraw = powerDraw + "W")
     return {
-      ...Circle(utilizationGpu / 100),
+      percentage: utilizationGpu / 100,
       inner: Math.round(utilizationGpu) + "%",
       title: "GPU",
       info: [

@@ -1,4 +1,4 @@
-import { Circle, getFileSize } from "./utils.js"
+import { getFileSize } from "../utils.js"
 import si from "systeminformation"
 export default async function getSwapInfo() {
   const swapData = await si.get({
@@ -11,7 +11,7 @@ export default async function getSwapInfo() {
   const formatSwapused = getFileSize(swapused)
 
   return {
-    ...Circle(swapUsagePercentage / 100),
+    percentage: swapUsagePercentage / 100,
     inner: `${Math.round(swapUsagePercentage)}%`,
     title: "SWAP",
     info: [ `${formatSwapused} / ${formatSwaptotal}` ]

@@ -1,5 +1,5 @@
 import si from "systeminformation"
-import { Circle, getFileSize } from "./utils.js"
+import { getFileSize } from "../utils.js"
 
 /** 获取当前内存占用 */
 export default async function getMemUsage() {
@@ -18,7 +18,7 @@ export default async function getMemUsage() {
   // const buffcacheInner = isBuff ? `/${Math.round(buffcachePercentage * 100)}` : ""
 
   return {
-    ...Circle(activePercentage),
+    percentage: activePercentage,
     inner: `${Math.round(activePercentage * 100)}%`,
     title: "RAM",
     info: [
@@ -26,7 +26,7 @@ export default async function getMemUsage() {
         isBuff ? `缓冲区/缓存 ${buffcacheMem}` : ""
     ],
     buffcache: {
-      ...Circle(usedPercentage),
+      percentage: usedPercentage,
       color: "#bcbbbbb0",
       isBuff
     }

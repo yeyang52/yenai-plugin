@@ -41,31 +41,11 @@ export function getFileSize(size, { decimalPlaces = 2, showByte = true, showSuff
   return buildSizeString(size / precalculated[unitIndex], units[unitIndex])
 }
 
-/**
- *  圆形进度条渲染
- * @param {number} res 百分比小数
- * @returns {{per:number,color:string}} per - stroke-dashoffset属性 color - 进度条颜色
- */
-export function Circle(res) {
-  let perimeter = 3.14 * 80
-  let per = perimeter - perimeter * res
-  let color = "--low-color"
-  if (res >= 0.9) {
-    color = "--high-color"
-  } else if (res >= 0.8) {
-    color = "--medium-color"
-  }
-  return {
-    per,
-    color: `var(${color})`
-  }
-}
-
 export async function createAbortCont(timeoutMs) {
   let AbortController
 
   try {
-    AbortController = globalThis.AbortController || (await import("abort-controller")).AbortController
+    AbortController = globalThis.AbortController
   } catch (error) {
     logger.error("无法加载AbortController:", error)
     throw new Error("网络请求控制器加载失败")

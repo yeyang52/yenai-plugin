@@ -80,10 +80,11 @@
                         </radialGradient>
                     </defs> -->
                     {{if group.title == "RAM" && group?.buffcache?.isBuff}}
-                    <circle id="circle" stroke="{{group.buffcache?.color}}"
-                        style="stroke-dashoffset:{{group.buffcache?.per}}"></circle>
+                    <circle id="circle" stroke="{{group.buffcache?.percentage?.color}}"
+                        style="stroke-dashoffset:{{group.buffcache?.percentage?.per}}"></circle>
                     {{/if}}
-                    <circle id="circle" stroke="{{group.color}}" style="stroke-dashoffset:{{group.per}}"></circle>
+                    <circle id="circle" stroke="{{group.percentage.color}}"
+                        style="stroke-dashoffset:{{group.percentage.per}}"></circle>
                 </svg>
             </div>
             <article>

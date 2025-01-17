@@ -1,5 +1,5 @@
 import os from "os"
-import { Circle, getFileSize } from "./utils.js"
+import { getFileSize } from "../utils.js"
 
 /** 获取nodejs内存情况 */
 export default async function getNodeInfo() {
@@ -13,7 +13,7 @@ export default async function getNodeInfo() {
   // 占用率
   let occupy = (memory.rss / (os.totalmem() - os.freemem())).toFixed(2)
   return {
-    ...Circle(occupy),
+    percentage: occupy,
     inner: Math.round(occupy * 100) + "%",
     title: "Node",
     info: [

@@ -22,9 +22,6 @@ export default async function getSystemResources(e) {
       if (i.percentage !== undefined) {
         i.percentage = Circle(i.percentage)
       }
-      if (i.buffcache?.percentage !== undefined) {
-        i.buffcache.percentage = Circle(i.buffcache.percentage)
-      }
       return i
     })
   })
@@ -32,7 +29,7 @@ export default async function getSystemResources(e) {
   return visualDataPromise
 }
 
-function Circle(res) {
+export function Circle(res) {
   let perimeter = 3.14 * 80
   let per = perimeter - perimeter * res
   let color = "--low-color"

@@ -1,9 +1,7 @@
 import Ver from "./components/Version.js"
 import chalk from "chalk"
 import Data from "./components/Data.js"
-import fs from "fs"
 import { Log_Prefix } from "#yenai.components"
-
 logger.info(chalk.rgb(253, 235, 255)("----ヾ(￣▽￣)Bye~Bye~----"))
 logger.info(chalk.rgb(134, 142, 204)(`椰奶插件${Ver.ver}初始化~`))
 logger.info(chalk.rgb(253, 235, 255)("-------------------------"))
@@ -16,17 +14,14 @@ global.ReplyError = class ReplyError extends Error {
 }
 // 加载监听事件
 const eventsPath = "./plugins/yenai-plugin/apps/events"
-const events = fs.readdirSync(eventsPath)
-  .filter(file => file.endsWith(".js"))
-for (const File of events) {
-  try {
-    logger.debug(`${Log_Prefix} 加载监听事件：${File}`)
-    await import(`./apps/events/${File}`)
-  } catch (e) {
-    logger.error(`${Log_Prefix} 监听事件错误：${File}`)
+const events = Data.readDirRecursive(eventsPath, "js")
+Promise.all(events.map(async file => {
+  logger.debug(`${Log_Prefix} 加载监听事件：${file}`)
+  return import(`./apps/events/${file}`).catch(e => {
+    logger.error(`${Log_Prefix} 监听事件错误：${file}`)
     logger.error(e)
-  }
-}
+  })
+})).catch(err => logger.error(err))
 
 const appsPath = "./plugins/yenai-plugin/apps"
 const jsFiles = Data.readDirRecursive(appsPath, "js", "events")

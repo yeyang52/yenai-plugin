@@ -1,6 +1,6 @@
 import si from "systeminformation"
 import { getFileSize } from "../utils.js"
-
+import { Circle } from "./index.js"
 /** 获取当前内存占用 */
 export default async function getMemUsage() {
   const { mem: { total, used, active, buffcache } } = await si.get({
@@ -26,8 +26,10 @@ export default async function getMemUsage() {
         isBuff ? `缓冲区/缓存 ${buffcacheMem}` : ""
     ],
     buffcache: {
-      percentage: usedPercentage,
-      color: "#bcbbbbb0",
+      percentage: {
+        ...Circle(usedPercentage),
+        color: "#bcbbbbb0"
+      },
       isBuff
     }
   }

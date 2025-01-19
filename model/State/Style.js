@@ -34,6 +34,9 @@ export async function getBackground() {
     const buffBase64 = arrayBufferToBase64(buffer)
     return `data:image/jpeg;base64,${buffBase64}`
   } catch (err) {
+    if (err.message.includes("aborted")) {
+      err.message = "请求超时"
+    }
     const bg = getDefaultBackdrop(backdropDefault)
     backdrop && logger.warn(`${Log_Prefix}[State] 背景图请求失败，使用默认背景图 ${logger.yellow(bg.fileName)} ，错误原因: ${logger.red(err.message)}`)
     return bg.path

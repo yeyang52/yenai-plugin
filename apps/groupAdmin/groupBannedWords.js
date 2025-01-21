@@ -1,5 +1,5 @@
 import { common, GroupBannedWords as groupBannedWords } from "../../model/index.js"
-import { Config } from "../../components/index.js"
+import { Config, Log_Prefix } from "../../components/index.js"
 import _ from "lodash"
 import { GroupWhiteListCtrl } from "./groupWhiteListCtrl.js"
 
@@ -11,7 +11,7 @@ export class GroupBannedWords extends plugin {
       priority: 1,
       rule: [
         {
-          reg: "^#?新增(模糊|精确|正则)?(踢|禁|撤|踢撤|禁撤|踢黑)?违禁词",
+          reg: "^#?新增(模糊|精确|正则1|正则2|正则)?(踢|禁|撤|踢撤|禁撤|踢黑)?违禁词",
           fnc: "add"
         },
         {
@@ -37,10 +37,31 @@ export class GroupBannedWords extends plugin {
         {
           reg: "^#切换头衔屏蔽词匹配(模式)?$",
           fnc: "ProhibitedTitlePattern"
+        },
+        {
+          reg: "^#?违禁词帮助$",
+          fnc: "help"
         }
       ]
 
     })
+  }
+
+  async help(e) {
+    const msg = [
+      "该命令匹配正则：",
+      "^#?新增(模糊|精确|正则1|正则2|正则)?(踢|禁|撤|踢撤|禁撤|踢黑)?违禁词",
+      "-------------------",
+      "支持的模式：模糊，精确，正则1，正则2",
+      "支持的处理方式：踢，禁，撤，踢撤，禁撤，踢黑",
+      "-------------------",
+      "命令示例：",
+      "\"#新增违禁词123\" --- 默认添加精确禁违禁词",
+      "\"#新增正则1违禁词^123456$\" --- 该种方法需将\"\\\"转义，如：\\d+\\d+\\d+，默认添加正则为正则1",
+      "\"#新增正则2违禁词/^123456$/\" --- 该种方法无需转义",
+      "\"#新增模糊踢违禁词123\" --- 添加模糊匹配处理方法为踢出群聊的正则"
+    ].join("\n")
+    e.reply(msg)
   }
 
   async accept(e) {
@@ -130,19 +151,35 @@ export class GroupBannedWords extends plugin {
   async add(e) {
     if (!common.checkPermission(e, "admin", "admin")) return false
     let word = this.#trimAlias(e.raw_message)
-    word = word.match(/^#?新增(模糊|精确|正则)?(踢|禁|撤|踢撤|禁撤)?违禁词(.*)$/)
-    if (!word[3]) return e.reply("需要添加的屏蔽词为空")
+    let [ , matchType, penaltyType, words ] = word.match(/^#?新增(模糊|精确|正则1|正则2|正则)?(踢|禁|撤|踢撤|禁撤)?违禁词(.*)$/)
+
+    if (!words) return this.help(e)
     // 校验正则
-    if (word[1] === "正则") {
+    if (/正则(1|2)?/.test(matchType)) {
       try {
-        global.eval(word[3])
-      } catch {
-        return e.reply("正则表达式错误")
+        if (matchType == "正则2") {
+          global.eval(words)
+        } else {
+          words = new RegExp(words)
+        }
+      } catch (error) {
+        logger.error(`${Log_Prefix} 违禁词正则错误`, error)
+        let msg = [
+          "❎ 正则表达式错误",
+          "-------------------",
+          "使用示例：",
+          "#新增正则违禁词^123456$",
+          "该种方法需将\"\\\"转义，如：\\d+\\d+\\d+",
+          "-------------------",
+          "#新增正则2违禁词/^123456$/",
+          "改种方法无需转义，如：/^123456$/"
+        ].join("\n")
+        return e.reply(msg)
       }
     }
     try {
       let res = groupBannedWords.addBannedWords(
-        e.group_id, word[3].trim(), word[1], word[2], e.user_id
+        e.group_id, words.trim(), matchType, penaltyType, e.user_id
       )
       e.reply([
         "✅ 成功添加屏蔽词\n",

@@ -1,18 +1,25 @@
 import _ from "lodash"
 import moment from "moment"
-import fetch from "node-fetch"
 import { Config } from "../components/index.js"
 import request from "../lib/request/request.js"
 import { rankType } from "../constants/pixiv.js"
 import { pixivMsg } from "../constants/msg.js"
 import PixivApi from "./Pixiv/api.js"
+import hibiApi from "./Pixiv/hibiApi.js"
 /** API请求错误文案 */
 
 export default new class Pixiv {
   constructor() {
     this.ranktype = rankType
-    this.domain = `${Config.pixiv.hibiAPI}/api/pixiv`
-    this.PixivClient = new PixivApi(Config.pixiv.refresh_token)
+    this._PixivClient = new PixivApi(Config.pixiv.refresh_token)
+  }
+
+  get PixivClient() {
+    if (this._PixivClient.auth) {
+      return this._PixivClient
+    } else {
+      return hibiApi
+    }
   }
 
   async loginInfo() {
@@ -61,12 +68,7 @@ export default new class Pixiv {
    */
   async illust(ids, filter = false) {
     const params = { id: ids }
-    let res = null
-    if (this.PixivClient.auth) {
-      res = await this.PixivClient.illust(params)
-    } else {
-      res = await request.get(`${this.domain}/illust`, { params }).then(res => res.json())
-    }
+    let res = await this.PixivClient.illust(params)
     if (res.error) throw new ReplyError(res.error?.user_message || "无法获取数据")
     let illust = this._format(res.illust)
     let { id, title, user, tags, total_bookmarks, total_view, url, create_date, x_restrict, illust_ai_type } = illust
@@ -129,12 +131,8 @@ export default new class Pixiv {
       page,
       date
     }
-    let res = null
-    if (this.PixivClient.auth) {
-      res = await this.PixivClient.rank(params)
-    } else {
-      res = await request.get(`${this.domain}/rank`, { params }).then(res => res.json())
-    }
+    let res = await this.PixivClient.rank(params)
+
     if (res.error) throw new ReplyError(res.error.message)
     if (_.isEmpty(res.illusts)) throw new ReplyError("暂无数据，请等待榜单更新哦(。-ω-)zzz")
 
@@ -222,12 +220,7 @@ export default new class Pixiv {
       page,
       order: "popular_desc"
     }
-    let res = null
-    if (this.PixivClient.auth) {
-      res = await this.PixivClient.search(params)
-    } else {
-      res = await request.get(`${this.domain}/search`, { params }).then(res => res.json())
-    }
+    let res = await this.PixivClient.search(params)
     if (res.error) throw new ReplyError(res.error.message)
     if (_.isEmpty(res.illusts)) throw new ReplyError("宝~没有数据了哦(๑＞︶＜)و")
     let sortIllusts = _.orderBy(res.illusts, "total_bookmarks", "desc")
@@ -263,12 +256,7 @@ export default new class Pixiv {
    * @returns {Array}
    */
   async PopularTags() {
-    let res = null
-    if (this.PixivClient.auth) {
-      res = await this.PixivClient.tags()
-    } else {
-      res = await fetch(`${this.domain}/tags`).then(res => res.json())
-    }
+    let res = await this.PixivClient.tags()
 
     if (!res.trend_tags) throw new ReplyError("呜呜呜，没有获取到数据(๑ १д१)")
 
@@ -298,16 +286,7 @@ export default new class Pixiv {
   async userIllust(keyword, page = 1, isfilter = true) {
     // 关键词搜索
     if (!/^\d+$/.test(keyword)) {
-      let wordlist = null
-      if (this.PixivClient.auth) {
-        wordlist = await this.PixivClient.search_user({ word: keyword })
-      } else {
-        wordlist = await request.get(`${this.domain}/search_user`, {
-          params: {
-            word: keyword
-          }
-        }).then(res => res.json())
-      }
+      let wordlist = await this.PixivClient.search_user({ word: keyword })
       if (_.isEmpty(wordlist.user_previews)) throw new ReplyError("呜呜呜，人家没有找到这个淫d(ŐдŐ๑)")
       keyword = wordlist.user_previews[0].user.id
     }
@@ -315,12 +294,7 @@ export default new class Pixiv {
       id: keyword,
       page
     }
-    let res = null
-    if (this.PixivClient.auth) {
-      res = await this.PixivClient.member_illust(params)
-    } else {
-      res = await request.get(`${this.domain}/member_illust`, { params }).then(res => res.json())
-    }
+    let res = await this.PixivClient.member_illust(params)
 
     if (res.error) throw new ReplyError(res.error.message)
     // 没有作品直接返回信息
@@ -370,12 +344,7 @@ export default new class Pixiv {
       page,
       size: 10
     }
-    let user = null
-    if (this.PixivClient.auth) {
-      user = await this.PixivClient.search_user(params)
-    } else {
-      user = await request.get(`${this.domain}/search_user`, { params }).then(res => res.json())
-    }
+    let user = await this.PixivClient.search_user(params)
     if (user.error) throw new ReplyError(user.error.message)
     if (_.isEmpty(user.user_previews)) throw new ReplyError("呜呜呜，人家没有找到这个淫d(ŐдŐ๑)")
 
@@ -383,7 +352,7 @@ export default new class Pixiv {
       let { id, name, profile_image_urls } = item.user
       let ret = [
         `${(page - 1) * 10 + index + 1}、`,
-        await this._requestPixivImg(profile_image_urls),
+        await this._requestPixivImg(profile_image_urls.medium),
         `\nid: ${id}\n`,
         `name: ${name}\n`,
         "作品:\n"
@@ -429,12 +398,7 @@ export default new class Pixiv {
    */
   async relatedIllust(pid, isfilter = true) {
     let params = { id: pid }
-    let res = null
-    if (this.PixivClient.auth) {
-      res = await this.PixivClient.related(params)
-    } else {
-      res = await request.get(`${this.domain}/related`, { params }).then(res => res.json())
-    }
+    let res = await this.PixivClient.related(params)
     if (res.error) throw new ReplyError(res.error.user_message)
     if (_.isEmpty(res.illusts)) throw new ReplyError("呃...没有数据(•ิ_•ิ)")
 
@@ -497,6 +461,7 @@ export default new class Pixiv {
    * @returns {Promise}
    */
   async illustRecommended(num) {
+    if (!this._PixivClient.auth) throw new ReplyError("该功能需要登录才能使用")
     let list = await this.PixivClient.illustRecommended()
     return Promise.all(_.take(list.illusts, num).map(async(item) => {
       let { id, title, user, tags, total_bookmarks, image_urls } = this._format(item)
@@ -518,12 +483,12 @@ export default new class Pixiv {
    * @returns {Promise}
    */
   async _requestPixivImg(url) {
-    // url = url.replace("i.pximg.net", this.proxy)
     const _url = new URL(url)
     _url.host = this.proxy
     logger.debug(`pixiv getImg URL: ${_url}`)
-    let headers = /s.pximg.net/.test(_url) ? undefined : this.headers
-    return request.proxyRequestImg(_url, { headers })
+    return request.proxyRequestImg(_url, {
+      headers: this.headers
+    })
   }
 
   /**

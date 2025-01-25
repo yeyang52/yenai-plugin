@@ -1,4 +1,4 @@
-import { Config } from "../../components/index.js"
+import { Config, Log_Prefix } from "../../components/index.js"
 import moment from "moment"
 import request from "../../lib/request/request.js"
 import md5 from "md5"
@@ -34,13 +34,13 @@ export async function login(refresh_token) {
     data,
     headers: _headers
   }).then(res => res.json())
-  if (error) throw new ReplyError(`[Yenai][Pixiv]login Error Response: ${error}`)
+  if (error) throw new ReplyError(`${Log_Prefix}[Pixiv]login Error Response: ${error}`)
 
   if (response.access_token) {
     const { id, name, account } = response.user
-    logger.info(`[Yenai][Pixiv]login ${logger.yellow(`${name}(${id}) @${account}`)} ${logger.green("success")}`)
+    logger.info(`${Log_Prefix}[Pixiv]login ${logger.yellow(`${name}(${id}) @${account}`)} ${logger.green("success")}`)
   } else {
-    logger.error(`[Yenai][Pixiv]login ${logger.red("fail")}`)
+    logger.error(`${Log_Prefix}[Pixiv]login ${logger.red("fail")}`)
   }
   return response
 }

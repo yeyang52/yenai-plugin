@@ -2,6 +2,7 @@ import request, { qs } from "../../lib/request/request.js"
 import moment from "moment"
 import { login, headers } from "./login.js"
 import { timeToSeconds, getNoonTomorrow } from "./utils.js"
+import { Log_Prefix } from "#yenai.components"
 
 export default class PixivApi {
   constructor(refresh_token) {
@@ -11,11 +12,12 @@ export default class PixivApi {
     this.refresh_token = refresh_token
     this.access_token = null
     this.auth = null
+    this.login()
   }
 
   async login() {
     if (!this.refresh_token) {
-      throw new ReplyError("[Yenai][Pixiv] 未配置refresh_token刷新令牌")
+      throw new ReplyError(`${Log_Prefix}[Pixiv] 未配置refresh_token刷新令牌`)
     }
     const response = await login(this.refresh_token)
     this.access_token = response.access_token

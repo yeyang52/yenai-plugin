@@ -11,7 +11,7 @@ import hibiApi from "./Pixiv/hibiApi.js"
 export default new class Pixiv {
   constructor() {
     this.ranktype = rankType
-    this._PixivClient = new PixivApi(Config.pixiv.refresh_token)
+    this._PixivClient = Config.pixiv.refresh_token && new PixivApi(Config.pixiv.refresh_token)
   }
 
   get PixivClient() {

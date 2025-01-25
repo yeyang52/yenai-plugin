@@ -48,7 +48,7 @@ export class GroupBannedWords extends plugin {
   }
 
   get message() {
-    if (e.toString === Object.prototype.toString) {
+    if (this.e.toString === Object.prototype.toString) {
       return this.e.raw_message.trim()
     } else {
       return this.e.toString().trim()

@@ -154,7 +154,7 @@ export class GroupBannedWords extends plugin {
   async add(e) {
     if (!common.checkPermission(e, "admin", "admin")) return false
     let word = this.#trimAlias(this.message)
-    let [ , matchType, penaltyType, words ] = word.match(/^#?新增(模糊|精确|正则1|正则2|正则)?(踢|禁|撤|踢撤|禁撤)?违禁词(.*)$/)
+    let [ , matchType, penaltyType, words ] = word.match(/#?新增(模糊|精确|正则1|正则2|正则)?(踢|禁|撤|踢撤|禁撤)?违禁词(.*)/)
 
     if (!words) return this.help(e)
     // 校验正则

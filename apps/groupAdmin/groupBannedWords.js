@@ -47,6 +47,14 @@ export class GroupBannedWords extends plugin {
     })
   }
 
+  get message() {
+    if (e.toString === Object.prototype.toString) {
+      return this.e.raw_message.trim()
+    } else {
+      return this.e.toString().trim()
+    }
+  }
+
   async help(e) {
     const msg = [
       "该命令匹配正则：",
@@ -73,13 +81,8 @@ export class GroupBannedWords extends plugin {
     if (_.isEmpty(bannedWords)) {
       return false
     }
-    let KeyWord = null
-    if (e.toString === Object.prototype.toString) {
-      KeyWord = e.raw_message.trim()
-    } else {
-      KeyWord = e.toString().trim()
-    }
-    const trimmedKeyWord = this.#trimAlias(KeyWord)
+    
+    const trimmedKeyWord = this.#trimAlias(this.message)
     let data = null
     for (const [ k, v ] of bannedWords) {
       if (k.test(trimmedKeyWord)) {
@@ -150,7 +153,7 @@ export class GroupBannedWords extends plugin {
 
   async add(e) {
     if (!common.checkPermission(e, "admin", "admin")) return false
-    let word = this.#trimAlias(e.raw_message)
+    let word = this.#trimAlias(this.message)
     let [ , matchType, penaltyType, words ] = word.match(/^#?新增(模糊|精确|正则1|正则2|正则)?(踢|禁|撤|踢撤|禁撤)?违禁词(.*)$/)
 
     if (!words) return this.help(e)
@@ -195,7 +198,7 @@ export class GroupBannedWords extends plugin {
 
   async del(e) {
     if (!common.checkPermission(e, "admin", "admin")) return false
-    let word = this.#trimAlias(e.raw_message)
+    let word = this.#trimAlias(this.message)
     word = word.replace(/#?删除违禁词/, "").trim()
     if (!word) return e.reply("需要删除的屏蔽词为空")
     try {
@@ -207,7 +210,7 @@ export class GroupBannedWords extends plugin {
   }
 
   async query(e) {
-    let word = this.#trimAlias(e.raw_message)
+    let word = this.#trimAlias(this.message)
     word = word.replace(/#?查看违禁词/, "").trim()
     if (!word) return e.reply("需要查询的屏蔽词为空")
     try {

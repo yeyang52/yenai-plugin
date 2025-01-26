@@ -15,7 +15,7 @@ export default new class Pixiv {
   }
 
   get PixivClient() {
-    if (this._PixivClient.auth) {
+    if (this._PixivClient?.auth) {
       return this._PixivClient
     } else {
       return hibiApi

@@ -30,7 +30,7 @@ export class ThumbUp extends plugin {
     const DO_ZAN = "赞"
     const DO_CHAO = "超"
     const cfg = Config.thumbUp
-    if (!cfg.enable) return e.reply(cfg.closeTips, true)
+    if (!cfg.enable) return cfg.closeTips && e.reply(cfg.closeTips, true)
     let doType = DO_ZAN
     let userId = e.user_id
     let isSelf = true

@@ -4,6 +4,18 @@ export default [
     label: "点赞配置"
   },
   {
+    field: "thumbUp.enable",
+    label: "点赞总开关",
+    bottomHelpMessage: "关闭后所有人将无法点赞",
+    component: "Switch"
+  },
+  {
+    field: "thumbUp.closeTips",
+    label: "点赞关闭提示",
+    bottomHelpMessage: "点赞关闭时回复的消息，填空则不回复",
+    component: "Input"
+  },
+  {
     field: "thumbUp.strangeThumbUp",
     label: "陌生人点赞",
     bottomHelpMessage: "开启后赞我功能将可以陌生人点赞，不活跃的号有可能被风控",

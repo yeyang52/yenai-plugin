@@ -1,3 +1,8 @@
+# 点赞开关
+enable: true
+# 点赞关闭提示
+# 留空不发
+closeTips: ""
 # 陌生人点赞
 strangeThumbUp: true
 # 点赞成功消息 设置为空或false则不会回复

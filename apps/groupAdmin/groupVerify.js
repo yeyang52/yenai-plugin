@@ -13,8 +13,12 @@ export class GroupVerify extends plugin {
       priority: 5,
       rule: [
         {
-          reg: "^#重新验证(\\d+|从未发言的人)?$",
+          reg: "^#重新验证(\\d+)?$",
           fnc: "cmdReverify"
+        },
+        {
+          reg: "^#重新验证从未发言的人$",
+          fnc: "cmdReverifyNeverSpeak"
         },
         {
           reg: "^#绕过验证(\\d+)?$",
@@ -46,12 +50,12 @@ export class GroupVerify extends plugin {
     let qq = e.message.find(item => item.type == "at")?.qq
     if (!qq) qq = e.msg.replace(/#|重新验证/g, "").trim()
 
-    if (qq == "从未发言的人") return this.cmdReverifyNeverSpeak(e)
-
     qq = Number(qq) || String(qq)
     if (qq == (e.bot ?? Bot).uin) return
 
-    let info = e.group.pickMember(qq).info
+    const member = await e.group.pickMember(qq)
+    let info = member?.info || await member?.getInfo?.()
+
     if (!info) return e.reply("❎ 目标群成员不存在")
     if (info.role === "owner" || info.role === "admin") return e.reply("❎ 该命令对群主或管理员无效")
 

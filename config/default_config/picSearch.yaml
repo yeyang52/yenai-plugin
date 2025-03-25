@@ -28,4 +28,4 @@ useAscii2dWhenLowAcc: true
 # 是否在 saucenao 搜索失败时自动使用 ascii2d
 useAscii2dWhenFailed: true
 # Ascii2d 403解决方案使用cf反代 https://github.com/Tsuk1ko/cq-picsearcher-bot/wiki/ascii2d-403-%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88
-Ascii2dHost: "https://ascii2d.net"
+Ascii2dHost: "https://ascii2d.obfs.dev"

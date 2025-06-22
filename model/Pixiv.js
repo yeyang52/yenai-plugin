@@ -531,7 +531,6 @@ export default new class Pixiv {
       image_urls.original = meta_single_page.original_image_url
       url = [ image_urls ]
     }
-    console.log(url)
     return url.map(item => item[this.Config.sendImgQuality])
   }
 }()

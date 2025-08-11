@@ -17,7 +17,7 @@ export default async function getCpuInfo() {
     inner: Math.round(currentLoad) + "%",
     title: "CPU",
     detailed: brand || false,
-    info: [ `${manufacturer} ${cores}核 ${speed}GHz` ]
+    info: [ `${manufacturer} ${cores}核 ${speed ? `${speed}GHz` : ""}` ]
 
   }
 }

@@ -32,24 +32,26 @@ function handleDecrease(e, bot, cfg) {
       `操作人账号：${e.operator_id}\n`,
       `解散群号：${e.group_id}`
     ])
-  } else if (e.user_id === bot.uin && e.operator_id !== bot.uin) {
+  } else if ((e.user_id === bot.uin && e.operator_id !== bot.uin) || e.sub_type === "kick_me") {
     if (!cfg.groupNumberChange) return false
     return buildMessage(e, "机器人被踢", [
       `操作人账号：${e.operator_id}\n`,
       `被踢群号：${e.group_id}`
     ])
-  } else if (e.user_id === bot.uin && e.operator_id === bot.uin) {
-    if (!cfg.groupNumberChange) return false
-    return buildMessage(e, "机器人退群", [ `退出群号：${e.group_id}` ])
-  } else if (e.operator_id === e.user_id) {
+  } else if ((e.operator_id === e.user_id) || e.sub_type === "leave") {
     if (!cfg.groupMemberNumberChange) return false
-    return buildMessage(e, "群员退群", [
-      `退群人账号：${e.user_id}\n`,
-      `退群人昵称：${e.member.nickname}\n`,
-      `退群人群名片：${e.member.card}\n`,
-      `退出群号：${e.group_id}`
-    ])
-  } else if (e.operator_id !== e.user_id) {
+    if (e.user_id === bot.uin) {
+      if (!cfg.groupNumberChange) return false
+      return buildMessage(e, "机器人退群", [ `退出群号：${e.group_id}` ])
+    } else {
+      return buildMessage(e, "群员退群", [
+        `退群人账号：${e.user_id}\n`,
+        `退群人昵称：${e.member.nickname}\n`,
+        `退群人群名片：${e.member.card}\n`,
+        `退出群号：${e.group_id}`
+      ])
+    }
+  } else if ((e.operator_id !== e.user_id) || e.sub_type === "kick") {
     if (!cfg.groupMemberNumberChange) return false
     return buildMessage(e, "群员被踢", [
       `操作人账号：${e.operator_id}\n`,

@@ -32,13 +32,13 @@ function handleDecrease(e, bot, cfg) {
       `操作人账号：${e.operator_id}\n`,
       `解散群号：${e.group_id}`
     ])
-  } else if ((e.user_id === bot.uin && e.operator_id !== bot.uin) || e.sub_type === "kick_me") {
+  } else if (e.user_id === bot.uin && e.operator_id !== bot.uin) {
     if (!cfg.groupNumberChange) return false
     return buildMessage(e, "机器人被踢", [
       `操作人账号：${e.operator_id}\n`,
       `被踢群号：${e.group_id}`
     ])
-  } else if ((e.operator_id === e.user_id) || e.sub_type === "leave") {
+  } else if (!e.operator_id || (e.operator_id === e.user_id)) {
     if (!cfg.groupMemberNumberChange) return false
     if (e.user_id === bot.uin) {
       if (!cfg.groupNumberChange) return false
@@ -51,7 +51,7 @@ function handleDecrease(e, bot, cfg) {
         `退出群号：${e.group_id}`
       ])
     }
-  } else if ((e.operator_id !== e.user_id) || e.sub_type === "kick") {
+  } else if (e.operator_id !== e.user_id) {
     if (!cfg.groupMemberNumberChange) return false
     return buildMessage(e, "群员被踢", [
       `操作人账号：${e.operator_id}\n`,

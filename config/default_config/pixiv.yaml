@@ -7,11 +7,12 @@ pixivImageProxy: i.pixiv.re
 # 每名用户每日次数限制（0 则无限制）
 limit: 30
 
-# 使用的hibiapi地址 https://github.com/mixmoe/HibiAPI
+# 使用的hibiapi地址 不填使用内置
+# https://github.com/mixmoe/HibiAPI
 # 默认：https://hibi.Yunzai-Bot.com
 # 备1：https://dengfenglai-hibiapi.hf.space
 # 备2：https://hibiapi.dengfenglai.workers.dev
-hibiAPI: https://hibi.Yunzai-Bot.com
+hibiAPI: ""
 
 # Pixiv 登录凭证刷新令牌 (Refresh Token)
 # 获取方法请参考: https://github.com/mixmoe/HibiAPI/issues/53

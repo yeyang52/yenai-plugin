@@ -8,11 +8,12 @@ bikaDirectConnection: false
 bikaImageProxy: s3.go2778.com/static
 # 哔咔图片质量，可选值 ['low', 'medium', 'high', 'original'] 质量依次从低到高
 imageQuality: medium
-# 使用的hibiapi地址 https://github.com/mixmoe/HibiAPI
+# 使用的hibiapi地址 不填使用内置
+# https://github.com/mixmoe/HibiAPI
 # 默认：https://hibi.Yunzai-Bot.com
 # 抱脸：https://dengfenglai-hibiapi.hf.space
 # cloudflare：https://hibiapi.dengfenglai.workers.dev
-hibiAPI: https://hibi.Yunzai-Bot.com
+hibiAPI: ""
 # 哔咔搜索排序方式：dd（最新发布）、da（最早发布）、ld（最多喜欢）、vd（最多浏览）
 searchSort: ld
 # 隐藏哔咔搜索简略图

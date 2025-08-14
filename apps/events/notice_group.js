@@ -18,8 +18,8 @@ function handleIncrease(e, bot, cfg) {
   } else {
     if (!cfg.groupMemberNumberChange) return false
     return buildMessage(e, "新增群员", [
-      `群号：${e.group_id}`,
-      `新成员账号：${e.user_id}`,
+      `群号：${e.group_id}\n`,
+      `新成员账号：${e.user_id}\n`,
       `新成员昵称：${e.nickname ?? "未知"}`
     ])
   }

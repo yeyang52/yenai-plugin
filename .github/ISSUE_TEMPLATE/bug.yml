@@ -43,6 +43,8 @@ body:
       options:
         - ICQQ
         - OneBotv11
+        - NapCat
+        - Philia
         - ComWeChat
         - GSUIDCore
         - QQBot

@@ -179,7 +179,7 @@ Bot.on?.("message.group", async(e) => {
     const { remainTimes } = temp[`${e.group_id}:${e.user_id}`]
 
     if (remainTimes > 0) {
-      await e.group.recallMsg(e)
+      await e.group.recallMsg(e.message_id)
 
       const msg = `\n❎ 验证失败\n你还有「${remainTimes}」次机会\n请发送「${nums[0]} ${operator} ${nums[1]}」的运算结果`
       return await sendMsg(e, [ segment.at(e.user_id), msg ])

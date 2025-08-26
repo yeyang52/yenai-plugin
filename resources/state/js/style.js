@@ -38,3 +38,15 @@ document.addEventListener("DOMContentLoaded", function() {
     element.style.color = redisInfoValColor ?? "#485ab6"
   })
 })
+
+const hardDiskLieElements = document.querySelectorAll(".HardDisk_li .mount")
+let maxWidth = -Infinity
+hardDiskLieElements.forEach(item => {
+  const width = item.offsetWidth
+  if (width > maxWidth) maxWidth = width
+})
+
+// 再统一设置所有元素宽度为最大宽度
+hardDiskLieElements.forEach(item => {
+  item.style.width = maxWidth + "px"
+})

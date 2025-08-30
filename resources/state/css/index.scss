@@ -60,6 +60,12 @@ body {
     }
 
     width: 650px;
+
+    &>.box:nth-child(2) {
+        margin-top: 0;
+    }
+
+    position: relative;
 }
 
 li {
@@ -74,6 +80,9 @@ li {
     font-weight: 700;
     position: relative;
     @include glass-effect;
+
+    break-inside: avoid;
+    display: block;
 
     .time {
         position: absolute;
@@ -478,4 +487,12 @@ li {
             vertical-align: sub
         }
     }
+}
+
+.copyright.abs {
+    position: absolute;
+    left: 50%;
+    bottom: 10px; // 距离底部10px，可根据需要调整
+    transform: translateX(-50%);
+    width: max-content;
 }

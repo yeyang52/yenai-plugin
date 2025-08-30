@@ -26,17 +26,39 @@ documentElement.style.setProperty("--low-color", low)
 // 根据圆环数量调整宽度
 const mainHardwareElement = document.querySelectorAll(".mainHardware li")
 const containerElement = document.querySelector(".container")
+let containerElementWidth = 650
+let columnCount = 1
 if (mainHardwareElement.length === 4) {
-  containerElement.style.width = "700px"
+  containerElementWidth = 700
 } else if (mainHardwareElement.length === 5) {
-  containerElement.style.width = "750px"
+  containerElementWidth = 750
 }
+const containerElementHeight = containerElement.offsetHeight
+
+if (containerElementHeight > 1200) {
+  columnCount = 2
+}
+if (containerElementHeight > 2400) {
+  columnCount = 3
+}
+
+if (columnCount >= 2) {
+  containerElement.style.columnCount = columnCount
+  containerElementWidth *= columnCount
+  containerElement.style.paddingBottom = "70px"
+}
+containerElement.style.width = containerElementWidth + "px"
 
 document.addEventListener("DOMContentLoaded", function() {
   const redisValElement = document.querySelectorAll(".redisBox .number")
   redisValElement.forEach(element => {
     element.style.color = redisInfoValColor ?? "#485ab6"
   })
+
+  if (columnCount >= 2) {
+    const copyrightElement = document.querySelector(".copyright")
+    copyrightElement.classList.add("abs")
+  }
 })
 
 const hardDiskLieElements = document.querySelectorAll(".HardDisk_li .mount")

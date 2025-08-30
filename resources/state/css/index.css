@@ -147,6 +147,10 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
   width: 650px;
+  position: relative;
+}
+.container > .box:nth-child(2) {
+  margin-top: 0;
 }
 
 li {
@@ -164,6 +168,9 @@ li {
   -webkit-backdrop-filter: blur(10px);
           backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.18);
+  -moz-column-break-inside: avoid;
+       break-inside: avoid;
+  display: block;
 }
 .box .time {
   position: absolute;
@@ -492,4 +499,13 @@ li {
 .speed p img {
   height: 100%;
   vertical-align: sub;
+}
+
+.copyright.abs {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  width: -moz-max-content;
+  width: max-content;
 }/*# sourceMappingURL=index.css.map */

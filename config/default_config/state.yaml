@@ -112,6 +112,8 @@ chartsCfg:
 
 # 样式
 style:
+  # 是否启用多列布局 账号数过多时自动切换234列布局
+  startColumn: true
   # 远程背景图片api，设置为false则一直使用默认背景
   backdrop: "https://t.alcy.cc/mp"
   # 当api请求失败时使用的默认背景图，请放置在resources/state/img/bg目录下

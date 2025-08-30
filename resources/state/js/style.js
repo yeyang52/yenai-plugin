@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 
 const {
-  BotNameColor, progressBarColor, redisInfoValColor
+  BotNameColor, progressBarColor, redisInfoValColor, startColumn
 } = Config.style
 // 修改BotNameColor
 const botNameElements = document.querySelectorAll(".header h1")
@@ -27,48 +27,51 @@ documentElement.style.setProperty("--low-color", low)
 const mainHardwareElement = document.querySelectorAll(".mainHardware li")
 const containerElement = document.querySelector(".container")
 let containerElementWidth = 650
-let columnCount = 1
 if (mainHardwareElement.length === 4) {
   containerElementWidth = 700
 } else if (mainHardwareElement.length === 5) {
   containerElementWidth = 750
 }
-const containerElementHeight = containerElement.offsetHeight
 
-if (containerElementHeight > 1200) {
+// 多列布局
+let columnCount = 1
+const containerElementHeight = containerElement.offsetHeight
+if (containerElementHeight > 3600) {
+  columnCount = 4
+} else if (containerElementHeight > 2400) {
+  columnCount = 3
+} else if (containerElementHeight > 1200) {
   columnCount = 2
 }
-if (containerElementHeight > 2400) {
-  columnCount = 3
-}
 
-if (columnCount >= 2) {
+if (columnCount >= 2 && startColumn) {
   containerElement.style.columnCount = columnCount
   containerElementWidth *= columnCount
+  // 版权居中
   containerElement.style.paddingBottom = "70px"
+  document.addEventListener("DOMContentLoaded", function() {
+    const copyrightElement = document.querySelector(".copyright")
+    copyrightElement.classList.add("abs")
+  })
 }
 containerElement.style.width = containerElementWidth + "px"
 
+// 自定义redis颜色
 document.addEventListener("DOMContentLoaded", function() {
   const redisValElement = document.querySelectorAll(".redisBox .number")
   redisValElement.forEach(element => {
     element.style.color = redisInfoValColor ?? "#485ab6"
   })
-
-  if (columnCount >= 2) {
-    const copyrightElement = document.querySelector(".copyright")
-    copyrightElement.classList.add("abs")
-  }
 })
-
+// 硬盘统一宽度
 const hardDiskLieElements = document.querySelectorAll(".HardDisk_li .mount")
 let maxWidth = -Infinity
-hardDiskLieElements.forEach(item => {
-  const width = item.offsetWidth
-  if (width > maxWidth) maxWidth = width
-})
-
-// 再统一设置所有元素宽度为最大宽度
-hardDiskLieElements.forEach(item => {
-  item.style.width = maxWidth + "px"
-})
+if (hardDiskLieElements.length >= 2) {
+  hardDiskLieElements.forEach(item => {
+    const width = item.offsetWidth
+    if (width > maxWidth) maxWidth = width
+  })
+  hardDiskLieElements.forEach(item => {
+    item.style.width = maxWidth + "px"
+  })
+}

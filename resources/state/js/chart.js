@@ -3,8 +3,8 @@ const chartBoxElement = document.querySelector(".box[data-boxInfo=图表]")
 if (chartData) {
 // 图表
   // echarts.registerTheme("westeros", chartCfg.echarts_theme)
-  const { titleColor, titleText, themeCfg, color } = Config.chartsCfg
-  const chart = echarts.init(document.getElementById("Chart"), themeCfg, {
+  const { titleColor, titleText, color } = Config.chartsCfg
+  const chart = echarts.init(document.getElementById("Chart"), "westeros", {
     renderer: "svg"
   })
   const by = (value) => {
@@ -62,6 +62,7 @@ if (chartData) {
         markPoint: {
           data: [ { type: "max", name: "Max", label: { formatter: by } } ]
         },
+        smooth: true,
         data: chartData.network.upload
       },
       {
@@ -72,6 +73,7 @@ if (chartData) {
         markPoint: {
           data: [ { type: "max", name: "Max", label: { formatter: by } } ]
         },
+        smooth: true,
         data: chartData.network.download
       }
       // {

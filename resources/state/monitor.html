@@ -3,7 +3,6 @@
 {{block 'css'}}
 <link rel="stylesheet" href="{{_res_path}}state/css/index.css">
 <script src="{{_res_path}}state/js/modules/echarts.min.js"></script>
-<script src="{{_res_path}}state/js/modules/theme/westeros.js"></script>
 <style>
     .container {
         background-image:url({{backdrop}})
@@ -41,9 +40,13 @@
             fontFamily: 'FZB, Number, "汉仪文黑-65W", YS, PingFangSC-Medium, "PingFang SC", sans-serif'
         },
         legend: {},
+        color: [
+            "#2ec7c9",
+            "#b6a2de"
+        ],
         grid: {
             left: '1%',
-            right: '1%',
+            right: '5%',
             bottom: '0',
             containLabel: true
         },
@@ -99,6 +102,7 @@
                             { type: 'max', name: 'Max', label: { formatter: (value) => value.value.toFixed(1) + '%' } }
                         ]
                     },
+                    smooth: true,
                     data: chartData.cpu
                 }
             ]
@@ -134,6 +138,7 @@
                         ]
                     },
                     stack: 'total',
+                    smooth: true,
                     data: chartData.ram
                 }
             ]
@@ -160,25 +165,27 @@
                 {
                     name: '上行',
                     type: 'line',
-                    // areaStyle: {},
+                    areaStyle: {},
                     showSymbol: false,
                     markPoint: {
                         data: [
                             { type: 'max', name: 'Max', label: { formatter: formatByte() } }
                         ]
                     },
+                    smooth: true,
                     data: upload
                 },
                 {
                     name: '下行',
                     type: 'line',
-                    // areaStyle: {},
+                    areaStyle: {},
                     showSymbol: false,
                     markPoint: {
                         data: [
                             { type: 'max', name: 'Max', label: { formatter: formatByte() } }
                         ]
                     },
+                    smooth: true,
                     emphasis: {
                         focus: 'series'
                     },
@@ -208,19 +215,20 @@
                 {
                     name: '读',
                     type: 'line',
-                    // areaStyle: {},
+                    areaStyle: {},
                     showSymbol: false,
                     markPoint: {
                         data: [
                             { type: 'max', name: 'Max', label: { formatter: formatByte() } }
                         ]
                     },
+                    smooth: true,
                     data: readSpeed
                 },
                 {
                     name: '写',
                     type: 'line',
-                    // areaStyle: {},
+                    areaStyle: {},
                     showSymbol: false,
                     markPoint: {
                         data: [
@@ -236,6 +244,7 @@
                     emphasis: {
                         focus: 'series'
                     },
+                    smooth: true,
                     data: writeSpeed
                 },
             ]

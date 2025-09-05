@@ -5,6 +5,7 @@ import { QQApi } from "./index.js"
 import { Time_unit, ROLE_MAP } from "../constants/other.js"
 import formatDuration from "../tools/formatDuration.js"
 import schedule from "node-schedule"
+import common from "../lib/common/common.js"
 
 let _task = []
 export default class GroupAdmin {
@@ -199,7 +200,7 @@ export default class GroupAdmin {
         msg.push("检测到批量删除出错，尝试单个删除，该方法可能导致风控，请注意...")
         for (let a of arr) {
           msg.push(await this.kickMember(groupId, a, this.Bot.uin))
-          await Bot.sleep(Math.random() * 5 + 1)
+          await common.sleep(Math.random() * 5 + 1)
         }
       } else {
         msg.push("成功清理如下人员\n" + i.ul.map((item, index) =>

@@ -72,6 +72,6 @@ if (hardDiskLieElements.length >= 2) {
     if (width > maxWidth) maxWidth = width
   })
   hardDiskLieElements.forEach(item => {
-    item.style.width = maxWidth + "px"
+    item.style.width = maxWidth + 0.3 + "px"
   })
 }

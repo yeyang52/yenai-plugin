@@ -275,6 +275,12 @@ export default [
     label: "样式配置"
   },
   {
+    field: "state.style.startColumn",
+    label: "多列布局",
+    bottomHelpMessage: "账号数过多时自动切换2.3.4列布局",
+    component: "Switch"
+  },
+  {
     field: "state.style.backdrop",
     label: "远程图片Api",
     component: "Input"

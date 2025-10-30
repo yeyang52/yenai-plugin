@@ -4,7 +4,10 @@ import { Config, Log_Prefix } from "../../components/index.js"
 
 const execAsync = util.promisify(child_process.exec)
 let directly = false
-const getFastFetchFun = await initFastFetch()
+let getFastFetchFun = null;
+(async() => {
+  getFastFetchFun = await initFastFetch()
+})()
 
 /**
  * 获取FastFetch

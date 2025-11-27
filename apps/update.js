@@ -24,7 +24,6 @@ export class YenaiUpdate extends plugin {
 
   async update(e = this.e) {
     if (!common.checkPermission(e, "master")) return
-    e.isMaster = true
     e.msg = `#${e.msg.includes("强制") ? "强制" : ""}更新yenai-plugin`
     const up = new Update(e)
     up.e = e
@@ -35,7 +34,6 @@ export class YenaiUpdate extends plugin {
     // eslint-disable-next-line new-cap
     let Update_Plugin = new Update()
     Update_Plugin.e = this.e
-    Update_Plugin.reply = this.reply
 
     if (Update_Plugin.getPlugin(Plugin_Name)) {
       this.e.reply(await Update_Plugin.getLog(Plugin_Name))

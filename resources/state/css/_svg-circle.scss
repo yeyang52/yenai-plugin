@@ -3,7 +3,7 @@
     /* 背景颜色 */
     --back-bg: #c5ccda;
     /* 定义宽度 */
-    --w: 100px;
+    --w: 110px;
     --back-shadow: #fff;
     /* 父容器gap间距 */
     --gap: 8px;
@@ -12,7 +12,7 @@
     /* 文本颜色 */
     --text-color: #514f4f;
     /* 定义stroke的宽度 */
-    --stroke: 12px;
+    --stroke: 13px;
     /* svg环形宽度 更正内容*/
     --circle: calc(var(--inner) - var(--stroke));
     /* 第三层圆形宽度 */
@@ -128,6 +128,12 @@
             color: #2f4f4f;
             margin-top: 5px;
         }
+    }
+
+    .li {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
 }

@@ -4,7 +4,7 @@
   /* 背景颜色 */
   --back-bg: #c5ccda;
   /* 定义宽度 */
-  --w: 100px;
+  --w: 110px;
   --back-shadow: #fff;
   /* 父容器gap间距 */
   --gap: 8px;
@@ -13,7 +13,7 @@
   /* 文本颜色 */
   --text-color: #514f4f;
   /* 定义stroke的宽度 */
-  --stroke: 12px;
+  --stroke: 13px;
   /* svg环形宽度 更正内容*/
   --circle: calc(var(--inner) - var(--stroke));
   /* 第三层圆形宽度 */
@@ -114,6 +114,11 @@
   color: #2f4f4f;
   margin-top: 5px;
 }
+.mainHardware .li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
 .speed p, .HardDisk_li .mount, .botInfo .header h1, .box[data-boxInfo=进程负载] .process .form .cell {
   overflow: hidden;
@@ -159,18 +164,20 @@ li {
 
 .box {
   margin: 20px 10px;
-  padding: 10px;
+  position: relative;
+  -moz-column-break-inside: avoid;
+       break-inside: avoid;
+  display: block;
+}
+.box:not(.clear-style) {
   border-radius: 18px;
   font-weight: 700;
-  position: relative;
   background: rgba(255, 255, 255, 0.45);
   box-shadow: 0 8px 32px 0 rgba(51, 51, 52, 0.5), inset 3px 3px 10px 0px rgba(255, 255, 255, 0.8);
   -webkit-backdrop-filter: blur(10px);
           backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.18);
-  -moz-column-break-inside: avoid;
-       break-inside: avoid;
-  display: block;
+  padding: 10px;
 }
 .box .time {
   position: absolute;

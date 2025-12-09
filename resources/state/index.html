@@ -141,6 +141,17 @@
 {{if redis}}
 <div class="box" data-boxInfo="redis">
     <div class="info">
+        <div class="server redisBox">
+            <div class="title">
+                <img src="{{_res_path}}state/icon/服务器.png" class="icon">
+                服务器
+            </div>
+            <div class="data">
+                <div class="item">Redis版本: <span class="number">{{redis.redis_version}}</span></div>
+                <div class="item">进程ID: <span class="number">{{redis.process_id}}</span></div>
+                <div class="item">运行时间: <span class="number">{{redis.uptime}}</span></div>
+            </div>
+        </div>
         <div class="mem redisBox">
             <div class="title">
                 <img src="{{_res_path}}state/icon/内存.png" class="icon">
@@ -264,12 +275,6 @@
         <p>{{@$value.tail}}</p>
     </div>
     {{/each}}
-    {{if redis}}
-    <div class="speed">
-        <p>redis运行</p>
-        <p>{{redis.uptime}}</p>
-    </div>
-    {{/if}}
 </div>
 {{/if}}
 

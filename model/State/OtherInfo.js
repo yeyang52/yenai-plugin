@@ -43,17 +43,24 @@ function getSystime() {
   return formatDuration(os.uptime(), "dd天hh小时mm分", false)
 }
 
+let pluginNumCache = 0
 function getPluginNum(e) {
-  // 获取插件数量插件包目录包含package.json才被视为一个插件包
+  let plugins = 0
   const dir = "./plugins"
-  const dirArr = fs.readdirSync(dir, { withFileTypes: true })
-  const exc = [ "example" ]
-  const plugin = dirArr.filter(i =>
-    i.isDirectory() &&
+  if (!pluginNumCache) {
+    // 获取插件数量插件包目录包含package.json才被视为一个插件包
+    const dirArr = fs.readdirSync(dir, { withFileTypes: true })
+    const exc = [ "example" ]
+    const plugin = dirArr.filter(i =>
+      i.isDirectory() &&
     fs.existsSync(path.join(dir, i.name, "package.json")) &&
     !exc.includes(i.name)
-  )
-  const plugins = plugin?.length
+    )
+    pluginNumCache = plugin.length
+    plugins = plugin.length
+  } else {
+    plugins = pluginNumCache
+  }
   // 获取js插件数量，以.js结尾的文件视为一个插件
   const jsDir = path.join(dir, "example")
   let js = 0
@@ -74,16 +81,16 @@ function getPluginNum(e) {
   return pluginsStr
 }
 
+let copyrightCache = ""
 export async function getCopyright() {
-  const { node, v8, git, redis } = await si.versions("node,v8,git,redis")
+  if (copyrightCache) return copyrightCache
+  const { node, v8, git } = await si.versions("node,v8,git")
   let v = `Created By ${Version.name}<span class="version">${Version.yunzai}</span> & Yenai-Plugin<span class="version">v${Version.ver}</span>`
   v += "<br>"
   v += `Node <span class="version">v${node}</span> & V8 <span class="version">v${v8}</span>`
   if (git) {
     v += ` & Git <span class="version">v${git}</span>`
   }
-  if (redis) {
-    v += ` & Redis <span class="version">v${redis}</span>`
-  }
+  copyrightCache = v
   return v
 }

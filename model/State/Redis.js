@@ -9,8 +9,11 @@ export default async function getRedisInfo(isPro) {
     const { used_memory_human, used_memory_peak_human, used_memory_lua_human } = data.Memory
     const { connected_clients } = data.Clients
     const { total_connections_received, total_commands_processed } = data.Stats
+    const { redis_version, process_id } = data.Server
     return {
-      uptime: formatDuration(data.Server.uptime_in_seconds, "dd天hh小时mm分", false),
+      uptime: formatDuration(data.Server.uptime_in_seconds, "ddd hhh mmm", false),
+      redis_version,
+      process_id,
       used_memory_human,
       used_memory_peak_human,
       used_memory_lua_human,

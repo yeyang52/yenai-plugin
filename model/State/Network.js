@@ -1,7 +1,8 @@
-import { Config, Plugin_Path, Log_Prefix } from "../../components/index.js"
+import { Config, Log_Prefix } from "../../components/index.js"
 import request from "../../lib/request/request.js"
 import Monitor from "./Monitor.js"
 import { createAbortCont, getFileSize } from "./utils.js"
+import _ from "lodash"
 
 /** 获取当前网速 */
 export function getNetwork() {
@@ -9,30 +10,26 @@ export function getNetwork() {
   if (!network || network.length === 0) {
     return false
   }
-  let data = []
-  const resPath = Plugin_Path + "/resources/state/icon/"
-  const txImg = `<img src="${resPath + "tx.svg"}">`
-  const rxImg = `<img src="${resPath + "rx.svg"}">`
-
-  for (let v of network) {
-    if (v.rx_sec != null && v.tx_sec != null) {
-      let _rx = getFileSize(v.rx_sec, { showByte: false, showSuffix: false })
-      let _tx = getFileSize(v.tx_sec, { showByte: false, showSuffix: false })
-      data.push({
-        first: v.iface,
-        tail: `↑ ${_tx}/s | ↓ ${_rx}/s`
-      })
+  let data = network?.[0]
+  let result = {}
+  if (data) {
+    if (data.rx_sec != null && data.tx_sec != null) {
+      let _rx = getFileSize(data.rx_sec, { showByte: false, aloneUnit: true })
+      let _tx = getFileSize(data.tx_sec, { showByte: false, aloneUnit: true })
+      result.speed = {}
+      result.speed.download = _rx
+      result.speed.upload = _tx
     }
-    if (v.rx_bytes != null && v.tx_bytes != null) {
-      let _rxB = getFileSize(v.rx_bytes)
-      let _txB = getFileSize(v.tx_bytes)
-      data.push({
-        first: "流量",
-        tail: `${txImg} ${_txB} | ${rxImg} ${_rxB}`
-      })
+    if (data.rx_bytes != null && data.tx_bytes != null) {
+      let _rxB = getFileSize(data.rx_bytes, { aloneUnit: true })
+      let _txB = getFileSize(data.tx_bytes, { aloneUnit: true })
+      result.traffic = {}
+      result.traffic.download = _rxB
+      result.traffic.upload = _txB
     }
   }
-  return data.length === 0 ? false : data
+
+  return _.isEmpty(result) ? false : result
 }
 
 /**
@@ -80,11 +77,11 @@ const concurRequests = (urls, maxNum, timeout) => {
 
 const handleSite = (site, timeout) => {
   return getNetworkLatency(site.url, timeout, site.useProxy)
-    .then(res => ({ first: site.name, tail: res }))
+    .then(res => ({ name: site.name, status: res.status, delay: res.delay }))
     .catch(error => {
       const errorMsg = handleError(error, site.name)
       const errorSpan = `<span style='color:#F44336'>${errorMsg}</span>`
-      return { first: site.name, tail: errorSpan }
+      return { name: site.name, status: "", delay: errorSpan }
     })
 }
 
@@ -152,7 +149,10 @@ async function getNetworkLatency(url, timeoutTime = 5000, useProxy = false) {
               ? COLOR_STATUS_INFO
               : ""
 
-    return `<span style='color:${statusColor}'>${status}</span> | <span style='color:${color}'>${delay}ms</span>`
+    return {
+      status: `<span style='color:${statusColor}'>${status}</span>`,
+      delay: `<span style='color:${color}'>${delay}ms</span>`
+    }
   } finally {
     clearTimeout()
   }

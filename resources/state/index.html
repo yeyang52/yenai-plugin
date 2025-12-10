@@ -138,6 +138,91 @@
 </div>
 {{/if}}
 
+{{if network.speed || network.psTest}}
+<div class="box" data-boxInfo="网络">
+    {{if network.speed}}
+    <div class="networkInfo">
+        <div class="title">
+            <img src="../../../../../plugins/yenai-plugin/resources/state/icon/网络.png" class="icon">
+            网络信息
+            </img>
+        </div>
+        <div class="data">
+            <div class="upload">
+                <div class="icon">
+                    <img src="../../../../../plugins/yenai-plugin/resources/state/icon/上传.png">
+                </div>
+                <div class="info">
+                    <p class="text">上传速度</p>
+                    <p class="networkData">{{network.speed.speed.upload.size}}<span
+                            class="unit">{{network.speed.speed.upload.suffix}}/s</span>
+                    </p>
+                </div>
+            </div>
+            <div class="download">
+                <div class="icon">
+                    <img src="../../../../../plugins/yenai-plugin/resources/state/icon/下载.png">
+                </div>
+                <div class="info">
+                    <p class="text">下载速度</p>
+                    <p class="networkData">{{network.speed.speed.download.size}}<span
+                            class="unit">{{network.speed.speed.download.suffix}}/s</span></p>
+                </div>
+            </div>
+            {{if network.speed.traffic}}
+            <div class="uploadVolume">
+                <div class="icon">
+                    <img src="../../../../../plugins/yenai-plugin/resources/state/icon/上传流量.png">
+                </div>
+                <div class="info">
+                    <p class="text">上传量</p>
+                    <p class="networkData">{{network.speed.traffic.upload.size}}
+                        <span class="unit">{{network.speed.traffic.upload.suffix}}</span>
+                    </p>
+                </div>
+            </div>
+            <div class="downloadVolume">
+                <div class="icon">
+                    <img src="../../../../../plugins/yenai-plugin/resources/state/icon/下载流量.png">
+                </div>
+                <div class="info">
+                    <p class="text">下载量</p>
+                    <p class="networkData">{{network.speed.traffic.download.size}}
+                        <span class="unit">{{network.speed.traffic.download.suffix}}</span>
+                    </p>
+                </div>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+    {{/if}} {{if network.psTest}}
+    <div class="psTest">
+        <div class="title">
+            <img src="../../../../../plugins/yenai-plugin/resources/state/icon/网络测试.png" class="icon">
+            网络测试
+            </img>
+        </div>
+        <div class="data">
+            <div class="row header-row">
+                <div class="cell">Name</div>
+                <div class="cell">状态码</div>
+                <div class="cell">延迟</div>
+            </div>
+            {{each network.psTest}}
+            <div class="row">
+                <div class="cell">{{$value.name}}</div>
+                <div class="cell">{{@$value.status}}</div>
+                <div class="cell">{{@$value.delay}}</div>
+            </div>
+            {{/each}}
+
+        </div>
+    </div>
+    {{/if}}
+</div>
+{{/if}}
+
+
 {{if redis}}
 <div class="box" data-boxInfo="redis">
     <div class="info">
@@ -200,23 +285,7 @@
 </div>
 {{/if}}
 
-{{if network.speed || network.psTest}}
-<div class="box" data-boxInfo="网络">
-    {{if network.speed}} {{each network.speed}}
-    <div class="speed">
-        <p>{{$value.first}}</p>
-        <p>{{@$value.tail}}</p>
-    </div>
-    {{/each}} {{/if}} {{if network.speed && network.psTest}}
-    <hr style="margin: 5px 0" />
-    {{/if}} {{if network.psTest}} {{each network.psTest}}
-    <div class="speed">
-        <p>{{$value.first}}</p>
-        <p>{{@$value.tail}}</p>
-    </div>
-    {{/each}} {{/if}}
-</div>
-{{/if}}
+
 
 {{if processLoad}}
 <div class="box" data-boxInfo="进程负载">
@@ -269,6 +338,11 @@
 
 {{if otherInfo}}
 <div class="box" data-boxInfo="其他">
+    <div class="title">
+        <img src="../../../../../plugins/yenai-plugin/resources/state/icon/进程信息.png" class="icon">
+        其他信息
+        </img>
+    </div>
     {{each otherInfo}}
     <div class="speed">
         <p>{{$value.first}}</p>

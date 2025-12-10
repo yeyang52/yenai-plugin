@@ -5,9 +5,10 @@
  * @param {number} options.decimalPlaces - 小数点保留位数，默认为2
  * @param {boolean} options.showByte - 是否在大小小于1KB时显示字节单位B，默认为true
  * @param {boolean} options.showSuffix - 是否在单位后面显示缩写，默认为true
+ * @param options.aloneUnit - 是否单独返回数值和单位，默认为false 返回为包含size和suffix的对象
  * @returns {string} 转换后的文件大小字符串
  */
-export function getFileSize(size, { decimalPlaces = 2, showByte = true, showSuffix = true } = {}) {
+export function getFileSize(size, { decimalPlaces = 2, showByte = true, showSuffix = true, aloneUnit = false } = {}) {
   // 检查 size 是否为 null 或 undefined
   if (size === null || size === undefined) return 0 + "B"
 
@@ -31,6 +32,12 @@ export function getFileSize(size, { decimalPlaces = 2, showByte = true, showSuff
   // 使用一个函数来构建返回的字符串
   const buildSizeString = (value, unit, _showSuffix = showSuffix) => {
     const suffix = ` ${unit}${_showSuffix ? "B" : ""}`
+    if (aloneUnit) {
+      return {
+        size: value.toFixed(decimalPlaces),
+        suffix
+      }
+    }
     return value.toFixed(decimalPlaces) + suffix
   }
 

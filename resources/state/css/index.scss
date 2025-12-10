@@ -203,13 +203,6 @@ li {
             height: 18px;
             margin-right: 5px;
         }
-
-        .runTime {
-            font-size: 15px;
-            color: #383838;
-            text-decoration: underline;
-            margin-left: 3px;
-        }
     }
 
     .info {
@@ -513,4 +506,124 @@ li {
     bottom: 10px; // 距离底部10px，可根据需要调整
     transform: translateX(-50%);
     width: max-content;
+}
+
+.box[data-boxInfo="其他"] {
+    --border-color: rgba(68, 68, 68, 0.67);
+    --interval: 10px;
+
+    .title {
+        @include box-title;
+        margin-bottom: var(--interval);
+        border-bottom: 1px solid var(--border-color);
+
+        .icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 7px;
+        }
+    }
+
+    .speed {
+        margin: 0px 10px;
+        margin-bottom: var(--interval);
+        padding-bottom: var(--interval);
+        border-bottom: 1px dashed var(--border-color);
+        width: auto;
+        height: auto;
+    }
+
+    p:first-child {
+        color: #3d3e3e;
+    }
+}
+
+.box[data-boxInfo="网络"] {
+
+
+    .title {
+        @include box-title;
+        margin-bottom: 20px;
+
+        .icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 7px;
+        }
+    }
+
+    .networkInfo {
+        .data {
+            display: grid;
+            margin: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+
+            >div {
+                border: 1px solid rgba(180, 180, 182, 0.67);
+                border-radius: 5px;
+                padding: 5px 10px;
+                background-color: rgba(244, 244, 245, 0.58);
+                display: flex;
+                align-items: center;
+
+                .icon {
+                    width: 50px;
+                    height: 50px;
+                    margin-right: 10px;
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                    }
+                }
+
+                .info {
+                    .text {
+                        color: #4f5255;
+                        margin-bottom: 5px;
+                    }
+
+                    .networkData {
+                        .unit {
+                            font-size: 13px;
+                            color: #4f5255
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+
+
+    .psTest {
+        .data {
+            display: flex;
+            flex-direction: column;
+            font-size: 14px;
+            margin: 5px 10px;
+
+            .row {
+                display: flex;
+                flex: 1;
+            }
+
+            .header-row {
+                font-size: 15px;
+                color: #494d53;
+            }
+
+            .cell {
+                flex: 1;
+                padding: 5px;
+                text-align: left;
+
+                &:first-child {
+                    flex: 3;
+                }
+            }
+        }
+    }
 }

@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const chartBoxElement = document.querySelector(".box[data-boxInfo=图表]")
+const chartBoxElement = document.querySelector(".chartBox")
 if (chartData) {
 // 图表
   // echarts.registerTheme("westeros", chartCfg.echarts_theme)

@@ -130,13 +130,6 @@
 
 <script src="{{_res_path}}state/js/style.js"></script>
 
-{{if chartData}}
-<div class="box" data-boxInfo="图表">
-    <div id="Chart" style="height: 300px"></div>
-    <script src="{{_res_path}}state/js/modules/echarts.min.js"></script>
-    <script src="{{_res_path}}state/js/chart.js"></script>
-</div>
-{{/if}}
 
 {{if network.speed || network.psTest}}
 <div class="box" data-boxInfo="网络">
@@ -144,9 +137,16 @@
     <div class="networkInfo">
         <div class="title">
             <img src="../../../../../plugins/yenai-plugin/resources/state/icon/网络.png" class="icon">
-            网络信息
+            网络状态
             </img>
         </div>
+        {{if chartData}}
+        <div class="chartBox">
+            <div id="Chart" style="height: 200px"></div>
+            <script src="{{_res_path}}state/js/modules/echarts.min.js"></script>
+            <script src="{{_res_path}}state/js/chart.js"></script>
+        </div>
+        {{/if}}
         <div class="data">
             <div class="upload">
                 <div class="icon">
@@ -199,7 +199,7 @@
     <div class="psTest">
         <div class="title">
             <img src="../../../../../plugins/yenai-plugin/resources/state/icon/网络测试.png" class="icon">
-            网络测试
+            网站测试
             </img>
         </div>
         <div class="data">

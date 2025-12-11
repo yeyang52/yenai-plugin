@@ -80,8 +80,8 @@ const handleSite = (site, timeout) => {
     .then(res => ({ name: site.name, status: res.status, delay: res.delay }))
     .catch(error => {
       const errorMsg = handleError(error, site.name)
-      const errorSpan = `<span style='color:#F44336'>${errorMsg}</span>`
-      return { name: site.name, status: "", delay: errorSpan }
+      const errorSpan = (errorMsg) => `<span style='color:#F44336'>${errorMsg}</span>`
+      return { name: site.name, status: errorSpan("-"), delay: errorSpan(errorMsg) }
     })
 }
 

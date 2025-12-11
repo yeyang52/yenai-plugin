@@ -143,6 +143,7 @@ body {
   height: 100%;
   flex-direction: column;
   justify-content: space-around;
+  color: #000;
 }
 
 .container {
@@ -555,18 +556,25 @@ li {
   padding: 10px;
   padding-top: 5px;
   border-bottom: 2px solid rgba(180, 180, 182, 0.6745098039);
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 .box[data-boxInfo=网络] .title .icon {
   width: 20px;
   height: 20px;
   margin-right: 7px;
 }
+.box[data-boxInfo=网络] .chartBox {
+  border: 1px solid rgba(180, 180, 182, 0.67);
+  border-radius: 10px;
+  padding: 5px 10px;
+  margin: 20px;
+  background-color: rgba(244, 244, 245, 0.58);
+}
 .box[data-boxInfo=网络] .networkInfo .data {
   display: grid;
   margin: 20px;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
+  gap: 20px 40px;
 }
 .box[data-boxInfo=网络] .networkInfo .data > div {
   border: 1px solid rgba(180, 180, 182, 0.67);
@@ -586,17 +594,20 @@ li {
   height: 100%;
 }
 .box[data-boxInfo=网络] .networkInfo .data > div .info .text {
-  color: #4f5255;
-  margin-bottom: 5px;
+  color: #696d70;
+  margin-bottom: 3px;
+}
+.box[data-boxInfo=网络] .networkInfo .data > div .info .networkData {
+  font-size: 20px;
 }
 .box[data-boxInfo=网络] .networkInfo .data > div .info .networkData .unit {
   font-size: 13px;
-  color: #4f5255;
+  color: #696d70;
 }
 .box[data-boxInfo=网络] .psTest .data {
   display: flex;
   flex-direction: column;
-  font-size: 14px;
+  font-size: 17px;
   margin: 5px 10px;
 }
 .box[data-boxInfo=网络] .psTest .data .row {
@@ -604,7 +615,7 @@ li {
   flex: 1;
 }
 .box[data-boxInfo=网络] .psTest .data .header-row {
-  font-size: 15px;
+  font-size: 18px;
   color: #494d53;
 }
 .box[data-boxInfo=网络] .psTest .data .cell {

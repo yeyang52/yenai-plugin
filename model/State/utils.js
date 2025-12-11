@@ -24,7 +24,7 @@ export function getFileSize(size, { decimalPlaces = 2, showByte = true, showSuff
   // 提前计算 powers of 1024
   const precalculated = powers.map(power => Math.pow(num, power))
 
-  let unitIndex = 0
+  let unitIndex = 1
   while (size >= precalculated[unitIndex + 1] && unitIndex < precalculated.length - 1) {
     unitIndex++
   }

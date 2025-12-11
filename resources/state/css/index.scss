@@ -471,9 +471,9 @@ li {
 
 // 速度显示样式
 .speed {
-    width: 100%;
+    // width: 100%;
     display: flex;
-    height: 25px;
+    // height: 25px;
     line-height: 25px;
 
     p {
@@ -530,8 +530,6 @@ li {
         margin-bottom: var(--interval);
         padding-bottom: var(--interval);
         border-bottom: 1px dashed var(--border-color);
-        width: auto;
-        height: auto;
     }
 
     p:first-child {
@@ -568,17 +566,27 @@ li {
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 20px 40px;
 
+            .upload,
+            .uploadVolume {
+                background: rgba(255, 251, 250, 0.6);
+            }
+
+            .download,
+            .downloadVolume {
+                background: rgba(240, 247, 255, 0.6);
+            }
+
             >div {
                 border: 1px solid rgba(180, 180, 182, 0.67);
                 border-radius: 5px;
-                padding: 5px 10px;
+                padding: 10px;
                 background-color: rgba(244, 244, 245, 0.58);
                 display: flex;
                 align-items: center;
 
                 .icon {
-                    width: 50px;
-                    height: 50px;
+                    width: 40px;
+                    height: 40px;
                     margin-right: 10px;
 
                     img {
@@ -594,7 +602,7 @@ li {
                     }
 
                     .networkData {
-                        font-size: 20px;
+                        font-size: 19px;
 
                         .unit {
                             font-size: 13px;
@@ -614,7 +622,9 @@ li {
             display: flex;
             flex-direction: column;
             font-size: 17px;
-            margin: 5px 10px;
+            margin: 0px 20px;
+            margin-bottom: 10px;
+
 
             .row {
                 display: flex;
@@ -629,11 +639,13 @@ li {
             .cell {
                 flex: 1;
                 padding: 5px;
-                text-align: left;
+                text-align: center;
 
                 &:first-child {
                     flex: 3;
+                    text-align: left;
                 }
+
             }
         }
     }

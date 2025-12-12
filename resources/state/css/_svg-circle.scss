@@ -24,7 +24,6 @@
     width: 100%;
     display: flex;
     justify-content: space-around;
-    // font-weight: 700;
 
     .container-box {
         width: var(--w);
@@ -116,6 +115,7 @@
         summary {
             font-size: 22px;
             margin-top: 5px;
+            font-weight: 700;
         }
 
         .detailed {

@@ -3,7 +3,7 @@ const chartBoxElement = document.querySelector(".chartBox")
 if (chartData) {
 // 图表
   // echarts.registerTheme("westeros", chartCfg.echarts_theme)
-  const { titleColor, titleText, color } = Config.chartsCfg
+  const { color } = Config.chartsCfg
   const chart = echarts.init(document.getElementById("Chart"), "westeros", {
     renderer: "svg"
   })
@@ -23,16 +23,16 @@ if (chartData) {
       fontFamily: "FZB, Number, \"汉仪文黑-65W\", YS, PingFangSC-Medium, \"PingFang SC\""
     },
     color,
-    title: {
-      text: titleText,
-      textStyle: {
-        color: titleColor,
-        textShadowBlur: 1,
-        textShadowColor: "#000",
-        textShadowOffsetX: 1,
-        textShadowOffsetY: 1
-      }
-    },
+    // title: {
+    //   text: titleText,
+    //   textStyle: {
+    //     color: titleColor,
+    //     textShadowBlur: 1,
+    //     textShadowColor: "#000",
+    //     textShadowOffsetX: 1,
+    //     textShadowOffsetY: 1
+    //   }
+    // },
     legend: {},
     grid: {
       left: "1%",

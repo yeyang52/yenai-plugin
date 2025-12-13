@@ -3,7 +3,6 @@ import util from "util"
 import { Config, Log_Prefix } from "../../components/index.js"
 
 const execAsync = util.promisify(child_process.exec)
-let directly = false
 let getFastFetchFun = null;
 (async() => {
   getFastFetchFun = await initFastFetch()
@@ -65,7 +64,6 @@ async function initFastFetch() {
 
   if (directResult.status === "fulfilled") {
     getFastFetchFun = directlyGetFastFetch
-    directly = true
   } else if (bashResult.status === "fulfilled") {
     getFastFetchFun = bashGetFastFetch
   } else {
@@ -76,15 +74,19 @@ async function initFastFetch() {
 }
 
 export async function getDiskIo() {
-  if (!directly) return false
-  let { stdout } = await execAsync("fastfetch -s diskio --format json")
-  if (!stdout) return false
-  let data = JSON.parse(stdout)[0]
-  if (data.error) return false
-  return data.result.map(i => {
-    i.rIO_sec = i.bytesRead
-    i.wIO_sec = i.bytesWritten
-    i.name = `diskIO(${i.name.trim()})`
-    return i
-  })
+  try {
+    let { stdout } = await execAsync("fastfetch -s diskio --format json")
+    if (!stdout) return false
+    let data = JSON.parse(stdout)[0]
+    if (data.error) return false
+    return data.result.map(i => {
+      i.rIO_sec = i.bytesRead
+      i.wIO_sec = i.bytesWritten
+      i.name = `diskIO(${i.name.trim()})`
+      return i
+    })
+  } catch (error) {
+    logger.debug(`${Log_Prefix}[State][FastFetch] 获取DiskIO失败：`, error)
+    return false
+  }
 }

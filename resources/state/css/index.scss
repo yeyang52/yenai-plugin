@@ -125,8 +125,9 @@ li {
         .list {
             display: flex;
             justify-content: space-around;
-            margin: 10px 0;
+            margin: 10px;
             font-size: 17px;
+            gap: 20px;
 
             div {
                 border: 1px solid rgba(180, 180, 182, 0.67);
@@ -134,6 +135,7 @@ li {
                 padding: 5px 10px;
                 color: #4f5255;
                 background-color: rgba(244, 244, 245, 0.58);
+                flex: 1;
             }
         }
     }
@@ -147,6 +149,7 @@ li {
             display: flex;
             flex-direction: column;
             font-size: 16px;
+            margin: 0px 10px;
 
             .row {
                 display: flex;
@@ -482,12 +485,13 @@ li {
         &:first-child {
             flex: 0 0 32%;
             max-width: 32%;
-            font-weight: 700;
         }
 
         &:last-child {
             flex: 1 1 68%;
             text-align: right;
+            font-weight: 700;
+            color: #333;
         }
 
         img {
@@ -508,7 +512,7 @@ li {
 
 .box[data-boxInfo="其他"] {
     --border-color: rgba(68, 68, 68, 0.67);
-    --interval: 9px;
+    --interval: 10px;
 
     .title {
         @include box-title;
@@ -529,14 +533,6 @@ li {
         padding-bottom: var(--interval);
         border-bottom: 1px dashed var(--border-color);
         font-size: 16px;
-    }
-
-    p:last-child {
-        color: #222;
-    }
-
-    p:first-child {
-        color: #333;
     }
 }
 
@@ -572,28 +568,19 @@ li {
         .data {
             display: grid;
             margin: 20px;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px 40px;
-
-            // .upload,
-            // .uploadVolume {
-            //     background: rgba(255, 251, 250, 0.6);
-            // }
-
-            // .download,
-            // .downloadVolume {
-            //     background: rgba(240, 247, 255, 0.6);
-            // }
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            white-space: nowrap;
 
             >div {
                 border-radius: 5px;
-                padding: 10px;
+                padding: 7px;
                 display: flex;
                 align-items: center;
 
                 .icon {
-                    width: 40px;
-                    height: 40px;
+                    width: 30px;
+                    height: 30px;
                     margin-right: 10px;
 
                     img {
@@ -603,19 +590,21 @@ li {
                 }
 
                 .info {
+                    font-size: 13px;
+
                     .text {
                         color: #696d70;
                         margin-bottom: 3px;
                     }
 
                     .networkData {
-                        font-size: 19px;
+                        font-size: 15px;
                         font-weight: 700;
 
                         .unit {
-                            font-size: 13px;
                             color: #696d70;
                             font-weight: 500;
+                            font-size: 12px;
                         }
                     }
                 }
@@ -667,19 +656,6 @@ li {
         /* 使条目更紧凑 */
         min-height: 28px;
         font-size: 13px;
-
-        p {
-            margin: 0;
-            padding: 0;
-
-            &:first-child {
-                color: #333;
-            }
-
-            &:last-child {
-                color: #222;
-            }
-        }
 
         /* 在条目较多时，减少视觉冗余 */
         &:last-child {

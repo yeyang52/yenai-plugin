@@ -101,10 +101,10 @@ chartsCfg:
   # false - 不显示
   # pro - pro显示
   show: true
-  # 标题颜色
-  titleColor: "#84A0DF"
-  # 标题文字
-  titleText: "Network"
+  # # 标题颜色
+  # titleColor: "#84A0DF"
+  # # 标题文字
+  # titleText: "Network"
   # 调色盘
   color:
     - "#2ec7c9"

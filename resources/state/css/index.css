@@ -40,6 +40,7 @@
   top: 50%;
   transform: translate(-50%, -50%);
   color: var(--text-color);
+  font-weight: 700;
 }
 .mainHardware .circle-outer {
   position: relative;
@@ -208,8 +209,9 @@ li {
 .box[data-boxInfo=进程负载] .info .list {
   display: flex;
   justify-content: space-around;
-  margin: 10px 0;
+  margin: 10px;
   font-size: 17px;
+  gap: 20px;
 }
 .box[data-boxInfo=进程负载] .info .list div {
   border: 1px solid rgba(180, 180, 182, 0.67);
@@ -217,6 +219,7 @@ li {
   padding: 5px 10px;
   color: #4f5255;
   background-color: rgba(244, 244, 245, 0.58);
+  flex: 1;
 }
 .box[data-boxInfo=进程负载] .process .title {
   margin: 10px 0;
@@ -225,6 +228,7 @@ li {
   display: flex;
   flex-direction: column;
   font-size: 16px;
+  margin: 0px 10px;
 }
 .box[data-boxInfo=进程负载] .process .form .row {
   display: flex;
@@ -498,11 +502,12 @@ li {
 .speed p:first-child {
   flex: 0 0 32%;
   max-width: 32%;
-  font-weight: 700;
 }
 .speed p:last-child {
   flex: 1 1 68%;
   text-align: right;
+  font-weight: 700;
+  color: #333;
 }
 .speed p img {
   vertical-align: middle;
@@ -521,7 +526,7 @@ li {
 
 .box[data-boxInfo=其他] {
   --border-color: rgba(68, 68, 68, 0.67);
-  --interval: 9px;
+  --interval: 10px;
 }
 .box[data-boxInfo=其他] .title {
   display: flex;
@@ -544,12 +549,6 @@ li {
   padding-bottom: var(--interval);
   border-bottom: 1px dashed var(--border-color);
   font-size: 16px;
-}
-.box[data-boxInfo=其他] p:last-child {
-  color: #222;
-}
-.box[data-boxInfo=其他] p:first-child {
-  color: #333;
 }
 
 .box[data-boxInfo=网络] .title {
@@ -578,36 +577,40 @@ li {
 .box[data-boxInfo=网络] .networkInfo .data {
   display: grid;
   margin: 20px;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px 40px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  white-space: nowrap;
 }
 .box[data-boxInfo=网络] .networkInfo .data > div {
   border-radius: 5px;
-  padding: 10px;
+  padding: 7px;
   display: flex;
   align-items: center;
 }
 .box[data-boxInfo=网络] .networkInfo .data > div .icon {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   margin-right: 10px;
 }
 .box[data-boxInfo=网络] .networkInfo .data > div .icon img {
   width: 100%;
   height: 100%;
 }
+.box[data-boxInfo=网络] .networkInfo .data > div .info {
+  font-size: 13px;
+}
 .box[data-boxInfo=网络] .networkInfo .data > div .info .text {
   color: #696d70;
   margin-bottom: 3px;
 }
 .box[data-boxInfo=网络] .networkInfo .data > div .info .networkData {
-  font-size: 19px;
+  font-size: 15px;
   font-weight: 700;
 }
 .box[data-boxInfo=网络] .networkInfo .data > div .info .networkData .unit {
-  font-size: 13px;
   color: #696d70;
   font-weight: 500;
+  font-size: 12px;
 }
 .box[data-boxInfo=网络] .psTest .data {
   display: flex;
@@ -641,16 +644,6 @@ li {
   min-height: 28px;
   font-size: 13px;
   /* 在条目较多时，减少视觉冗余 */
-}
-.box[data-boxInfo=FastFetch] .speed p {
-  margin: 0;
-  padding: 0;
-}
-.box[data-boxInfo=FastFetch] .speed p:first-child {
-  color: #333;
-}
-.box[data-boxInfo=FastFetch] .speed p:last-child {
-  color: #222;
 }
 .box[data-boxInfo=FastFetch] .speed:last-child {
   border-bottom: none;

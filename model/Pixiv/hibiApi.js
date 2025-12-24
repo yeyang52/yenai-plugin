@@ -3,7 +3,7 @@ import request from "#yenai.request"
 
 export default new class HibiAPI {
   constructor() {
-    this.domain = `${Config.pixiv.hibiAPI ?? "https://hibi.Yunzai-Bot.com"}/api/pixiv`
+    this.domain = `${Config.pixiv.hibiAPI || "https://hibi.Yunzai-Bot.com"}/api/pixiv`
   }
 
   async illust(params) {

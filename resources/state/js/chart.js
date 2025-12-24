@@ -35,8 +35,8 @@ if (chartData) {
     // },
     legend: {},
     grid: {
-      left: "1%",
-      right: "5%",
+      left: "2%",
+      right: "2%",
       bottom: "0",
       containLabel: true
     },

@@ -4,7 +4,7 @@ import { Config } from "../components/index.js"
 
 export default new (class {
   constructor() {
-    this.domain = `${Config.bika.hibiAPI ?? "https://hibi.Yunzai-Bot.com"}/api/bika`
+    this.domain = `${Config.bika.hibiAPI || "https://hibi.Yunzai-Bot.com"}/api/bika`
     this.hearder = {
       headers: {
         "x-image-quality": Config.bika.imageQuality

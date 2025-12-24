@@ -125,9 +125,10 @@ li {
         .list {
             display: flex;
             justify-content: space-around;
-            margin: 10px;
+            margin: 10px 20px;
             font-size: 17px;
             gap: 20px;
+            text-align: center;
 
             div {
                 border: 1px solid rgba(180, 180, 182, 0.67);
@@ -516,7 +517,7 @@ li {
 
     .title {
         @include box-title;
-        margin-bottom: var(--interval);
+        margin-bottom: calc(var(--interval) + 5px);
         border-bottom: 1px solid var(--border-color);
 
         .icon {
@@ -533,6 +534,11 @@ li {
         padding-bottom: var(--interval);
         border-bottom: 1px dashed var(--border-color);
         font-size: 16px;
+
+        &:last-child {
+            border-bottom: none;
+            margin-bottom: 0px
+        }
     }
 }
 

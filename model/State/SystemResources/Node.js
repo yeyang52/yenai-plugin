@@ -16,6 +16,7 @@ export default async function getNodeInfo() {
     percentage: occupy,
     inner: Math.round(occupy * 100) + "%",
     title: "Node",
+    detailed: process.version,
     info: [
         `总 ${rss}`,
         `${heapTotal} | ${heapUsed}`

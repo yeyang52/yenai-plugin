@@ -110,6 +110,10 @@
 .mainHardware article .detailed {
   font-size: 12px;
   color: #5f5d5d;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 140px;
 }
 .mainHardware article p {
   font-size: 12px;

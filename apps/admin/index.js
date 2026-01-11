@@ -52,7 +52,7 @@ export class Admin_Index extends plugin {
     if (typeof _key == "object") {
       if (_key.type === "number") {
         if (!regRet[3]) return
-        value = checkNumberValue(regRet[3])
+        value = checkNumberValue(regRet[3], _key.limit)
       } else {
         value = value == "开启"
       }
@@ -66,6 +66,7 @@ export class Admin_Index extends plugin {
   }
 
   async sendImg(e) {
+    if (!common.checkPermission(e, "master")) return
     let data = this.getIndexSetData()
     return sendImg(e, data)
   }

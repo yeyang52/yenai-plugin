@@ -37,7 +37,7 @@ function isPlatformWin() {
 }
 
 async function directlyGetFastFetch() {
-  let { stdout } = await execAsync("fastfetch --pipe -l none")
+  let { stdout } = await execAsync("fastfetch --pipe -l none --config ./plugins/yenai-plugin/resources/state/fastfetch/config.jsonc")
 
   let output = "<div class='box fastFetch' data-boxInfo='FastFetch'>"
   output += _printInfo(stdout)
@@ -46,7 +46,7 @@ async function directlyGetFastFetch() {
 }
 
 async function bashGetFastFetch() {
-  let { stdout } = await execAsync("bash plugins/yenai-plugin/resources/state/state.sh")
+  let { stdout } = await execAsync("bash plugins/yenai-plugin/resources/state/fastfetch/fastfetch.sh")
   return stdout.trim()
 }
 function _printInfo(input) {

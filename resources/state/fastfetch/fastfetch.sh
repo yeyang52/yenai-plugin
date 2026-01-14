@@ -8,7 +8,7 @@ print_info() {
 
 echo -n "<div class='box fastFetch' data-boxInfo='FastFetch'>"
 if command -v fastfetch &>/dev/null; then
-  fastfetch --pipe -l none
+  fastfetch --pipe -l none --config ./plugins/yenai-plugin/resources/state/fastfetch/config.jsonc
 else
   pnpx neowofetch --stdout
 fi | print_info ": "

@@ -36,13 +36,13 @@ class Config {
 
   async mergeCfg(cfgPath, defPath, name) {
     // 默认文件未变化不合并
-    let defData = fs.readFileSync(defPath, "utf8")
+    let defData = fs.statSync(defPath).mtimeMs
     let redisData = await redis.get(`yenai:mergeCfg:${name}`)
-    if (defData == redisData) return
+    if (defData <= Number(redisData)) return
     redis.set(`yenai:mergeCfg:${name}`, defData)
 
     const userDoc = YAML.parseDocument(fs.readFileSync(cfgPath, "utf8"))
-    const defDoc = YAML.parseDocument(defData)
+    const defDoc = YAML.parseDocument(fs.readFileSync(defPath, "utf8"))
     let isUpdate = false
     const maege = (user, def) => {
       const existingKeys = new Map()
@@ -61,7 +61,43 @@ class Config {
         }
       }
     }
+
+    // 标记用户配置中已废弃/默认不存在的字段，给 key 添加注释提示
+    const markDeprecated = (user, def) => {
+      const defKeys = new Map()
+      for (const item of def) {
+        defKeys.set(item.key.value, item)
+      }
+
+      for (const item of user) {
+        const keyNode = item.key
+        const keyName = keyNode.value
+
+        // 如果默认配置里没有该 key，则标记为已废弃
+        if (!defKeys.has(keyName)) {
+          const note = " !!! 该配置已废弃 (Deprecated) !!!"
+          const existing = keyNode.commentBefore || ""
+          if (!existing.includes("已废弃") && !existing.includes("Deprecated")) {
+            keyNode.commentBefore = existing ? `${note}\n${existing}` : note
+            isUpdate = true
+            logger.warn(`${Log_Prefix}[废弃配置][${name}] 配置字段 ${logger.red(keyName)} 已废弃`)
+          }
+        } else {
+          // 如果是 map，继续递归比对内部字段
+          const defItem = defKeys.get(keyName)
+          if (YAML.isMap(item.value) && defItem && YAML.isMap(defItem.value)) {
+            markDeprecated(item.value.items, defItem.value.items)
+          }
+        }
+      }
+    }
+
     maege(userDoc.contents.items, defDoc.contents.items)
+
+    if (name !== "notice.yaml" && name !== "setu.yaml") {
+      markDeprecated(userDoc.contents.items, defDoc.contents.items)
+    }
+
     let yaml = userDoc.toString()
     isUpdate && fs.writeFileSync(cfgPath, yaml, "utf8")
   }

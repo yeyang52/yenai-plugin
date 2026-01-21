@@ -21,7 +21,7 @@ export default async function getBotState(e) {
     const verKey = e.isPro ? "version" : "ver"
     const platform = apk
       ? `${apk.display} v${apk[verKey]}`
-      : version?.version ?? "未知"
+      : version?.version ?? false
 
     const messageCount = await getMessageCount(bot)
 

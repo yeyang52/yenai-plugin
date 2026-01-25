@@ -268,6 +268,7 @@ li {
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    margin: 8px 0;
 
     .avatar-box {
         @include flex-center;
@@ -349,7 +350,7 @@ li {
     // Bot信息头部样式
     .header {
         font-size: 14px;
-        width: 100%;
+        width: 75%;
         color: #000;
 
         hr {
@@ -363,7 +364,7 @@ li {
             flex-wrap: wrap;
             row-gap: 10px;
 
-            span {
+            >span {
                 border-radius: 5px;
                 box-shadow: -2px 2px 3px rgba(8, 8, 8, 0.5);
                 padding: 0px 5px;
@@ -404,6 +405,12 @@ li {
                     background: var(--blue);
                 }
             }
+
+            .suffix {
+                font-size: 12px;
+                color: #171717;
+                background: none !important;
+            }
         }
 
         table {
@@ -433,9 +440,16 @@ li {
         }
 
         h1 {
-            @extend %text-overflow-mission;
-            display: inline-block;
+
+            display: flex;
+            align-items: center;
             color: #000;
+            width: 100%;
+
+            .name {
+                @extend %text-overflow-mission;
+                max-width: 75%;
+            }
 
             .platform {
                 font-size: 12px;
@@ -513,7 +527,7 @@ li {
     height: 25px;
     padding: 0px 10px;
     font-size: 16px;
-    line-height: 1;
+    line-height: 25px;
 
     p {
         @extend %text-overflow-mission;

@@ -27,7 +27,12 @@
             </div>
         </div>
         <div class="header">
-            <h1>{{$value.nickname}}{{if $value.platform}}<span class="platform">{{$value.platform}}</span>{{/if}}</h1>
+            <h1>
+                <div class="name">{{$value.nickname}}</div>
+                {{if $value.platform}}
+                <div class="platform">{{$value.platform}}</div>
+                {{/if}}
+            </h1>
             <hr noshade>
             <p>
                 <span style="background: #d799de">
@@ -44,7 +49,7 @@
                 {{if v}}
                 <span>
                     <img src="{{_res_path}}state/icon/{{i}}.png">
-                    {{v}}
+                    {{@v}}
                 </span>
                 {{/if}}
                 {{/each}}
@@ -52,7 +57,7 @@
                 {{if v}}
                 <span>
                     <img src="{{_res_path}}state/icon/{{i}}.png">
-                    {{v}}
+                    {{@v}}
                 </span>
                 {{/if}}
                 {{/each}}

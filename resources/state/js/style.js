@@ -26,11 +26,9 @@ documentElement.style.setProperty("--low-color", low)
 // 根据圆环数量调整宽度
 const mainHardwareElement = document.querySelectorAll(".mainHardware li")
 const containerElement = document.querySelector(".container")
-let containerElementWidth = 650
-if (mainHardwareElement.length === 4) {
-  containerElementWidth = 700
-} else if (mainHardwareElement.length === 5) {
-  containerElementWidth = 750
+let containerElementWidth = 700
+if (mainHardwareElement.length === 5) {
+  containerElementWidth += 50
 }
 
 // 多列布局

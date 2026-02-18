@@ -30,13 +30,15 @@ function handleDecrease(e, bot, cfg) {
     if (!cfg.groupNumberChange) return false
     return buildMessage(e, "群聊被解散", [
       `操作人账号：${e.operator_id}\n`,
-      `解散群号：${e.group_id}`
+      `解散群号：${e.group_id}\n`,
+      `解散群名称：${e.group_name}`
     ])
   } else if (e.user_id === bot.uin && e.operator_id !== bot.uin) {
     if (!cfg.groupNumberChange) return false
     return buildMessage(e, "机器人被踢", [
       `操作人账号：${e.operator_id}\n`,
-      `被踢群号：${e.group_id}`
+      `被踢群号：${e.group_id}\n`,
+      `被踢群名称：${e.group_name}`
     ])
   } else if (!e.operator_id || (e.operator_id === e.user_id)) {
     if (!cfg.groupMemberNumberChange) return false
@@ -46,9 +48,10 @@ function handleDecrease(e, bot, cfg) {
     } else {
       return buildMessage(e, "群员退群", [
         `退群人账号：${e.user_id}\n`,
-        `退群人昵称：${e.member.nickname}\n`,
-        `退群人群名片：${e.member.card}\n`,
-        `退出群号：${e.group_id}`
+        `退群人昵称：${e.member.nickname ?? "未知"}\n`,
+        `退群人群名片：${e.member.card ?? "未知"}\n`,
+        `退出群号：${e.group_id}\n`,
+        `退出群名称：${e.group_name}`
       ])
     }
   } else if (e.operator_id !== e.user_id) {
@@ -56,9 +59,10 @@ function handleDecrease(e, bot, cfg) {
     return buildMessage(e, "群员被踢", [
       `操作人账号：${e.operator_id}\n`,
       `被踢人账号：${e.user_id}\n`,
-      `被踢人昵称：${e.member.nickname}\n`,
-      `被踢人群名片：${e.member.card}\n`,
-      `被踢群号：${e.group_id}`
+      `被踢人昵称：${e.member.nickname ?? "未知"}\n`,
+      `被踢人群名片：${e.member.card ?? "未知"}\n`,
+      `被踢群号：${e.group_id}\n`,
+      `被踢群名称：${e.group_name}`
     ])
   }
 }

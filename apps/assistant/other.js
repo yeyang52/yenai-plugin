@@ -11,7 +11,7 @@ export class Assistant_Other extends plugin {
       priority: 500,
       rule: [
         {
-          reg: "^#取直链",
+          reg: "^#获?取直链",
           fnc: "ImageLink"
         },
         {

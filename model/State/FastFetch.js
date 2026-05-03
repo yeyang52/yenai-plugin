@@ -67,7 +67,7 @@ async function initFastFetch() {
   } else if (bashResult.status === "fulfilled") {
     getFastFetchFun = bashGetFastFetch
   } else {
-    logger.debug(`${Log_Prefix}[状态][FastFetch]Both fetch methods failed:`, bashResult.reason, directResult.reason)
+    logger.debug(`${Log_Prefix}[State][FastFetch]Both fetch methods failed:`, bashResult.reason, directResult.reason)
   }
 
   return getFastFetchFun
@@ -86,7 +86,26 @@ export async function getDiskIo() {
       return i
     })
   } catch (error) {
-    logger.debug(`${Log_Prefix}[State][FastFetch] 获取DiskIO失败：`, error)
+    logger.debug(`${Log_Prefix}[State][FastFetch][DiskIO] 获取DiskIO失败：`, error)
+    return false
+  }
+}
+export async function getNetIo() {
+  try {
+    let { stdout } = await execAsync("fastfetch -s netIO --format json")
+    if (!stdout) return false
+    let data = JSON.parse(stdout)[0]
+    if (data.error) return false
+    return data.result.map(i => {
+      i.rx_sec = i.rxBytes
+      i.tx_sec = i.txBytes
+      i.iface = i.name
+      i.rx_bytes = 0
+      i.tx_bytes = 0
+      return i
+    })
+  } catch (error) {
+    logger.debug(`${Log_Prefix}[State][FastFetch][NetIO] 获取NetIO失败：`, error)
     return false
   }
 }

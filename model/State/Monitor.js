@@ -1,7 +1,7 @@
 import _ from "lodash"
 import si from "systeminformation"
 import { Config, Log_Prefix } from "../../components/index.js"
-import { getDiskIo } from "./FastFetch.js"
+import { getDiskIo, getNetIo } from "./FastFetch.js"
 const CHART_DATA_KEY = "yenai:state:chartData"
 const DEFAULT_INTERVAL = 60 * 1000
 const DEFAULT_SAVE_DATA_NUMBER = 60
@@ -9,6 +9,7 @@ const DEFAULT_SAVE_DATA_NUMBER = 60
 export default new class monitor {
   constructor() {
     this.checkDataNum = 0
+    this.checkNetIoDataNum = 0
     this.network = null
     this.disksIO = null
     this.chartData = {
@@ -42,36 +43,7 @@ export default new class monitor {
 
     if (this.config?.statusPowerShellStart) si.powerShellStart()
     const cb = (data) => this.handleData(data)
-    await this.fastfetchGetDiskIo()
     this.timer = si.observe(this.valueObject, this.getDataInterval, cb)
-  }
-
-  async fastfetchGetDiskIo() {
-    if (!await getDiskIo()) return false
-    delete this.valueObject.disksIO
-    let errorNum = 0
-    const timer = setInterval(async() => {
-      try {
-        const data = await getDiskIo()
-        if (data && data.length) {
-          this.disksIO = data
-          const { bytesRead, bytesWritten } = data[0]
-          if (_.isNumber(bytesRead) && _.isNumber(bytesWritten)) {
-            this._addData(this.chartData.disksIO.writeSpeed, [ Date.now(), bytesWritten ])
-            this._addData(this.chartData.disksIO.readSpeed, [ Date.now(), bytesRead ])
-          }
-        } else {
-          errorNum++
-        }
-      } catch (err) {
-        errorNum++
-      } finally {
-        if (errorNum > 5) {
-          clearInterval(timer)
-          this.valueObject.disksIO = "wIO_sec,rIO_sec"
-        }
-      }
-    }, this.getDataInterval)
   }
 
   handleData(data) {
@@ -115,16 +87,102 @@ export default new class monitor {
   }
 
   checkData(data) {
-    if (this.checkDataNum < 5) {
+    if (this.checkDataNum <= 5) {
       if (_.isEmpty(data)) clearInterval(this.timer)
       _.forIn(data, (value, key) => {
         if (_.isEmpty(value)) {
-          logger.debug(`${Log_Prefix}[Monitor]获取${key}数据失败，停止获取对应数据`)
+          if (key === "disksIO") {
+            logger.debug(`${Log_Prefix}[Monitor][DisksIO]获取${key}数据失败，尝试使用FastFetch获取DiskIO数据`)
+            this.fastfetchGetDiskIo()
+          } else {
+            logger.debug(`${Log_Prefix}[Monitor]获取${key}数据失败，停止获取对应数据`)
+          }
           delete this.valueObject[key]
+        } else if (key === "networkStats") {
+          if (!this.checkNetIoData(value)) {
+            logger.debug(`${Log_Prefix}[Monitor][Network]获取${key}数据失败，尝试使用FastFetch获取NetworkIO数据`)
+            this.fastfetchGetNetIo()
+            delete this.valueObject[key]
+          }
         }
       })
       this.checkDataNum++
     }
+  }
+
+  _isValidNetIoData(value) {
+    return _.isArray(value) && value.length > 0 && _.isNumber(value[0]?.rx_sec) && _.isNumber(value[0]?.tx_sec)
+  }
+
+  checkNetIoData(value) {
+    if (this._isValidNetIoData(value)) {
+      return true
+    }
+
+    this.checkNetIoDataNum++
+    return this.checkNetIoDataNum < 3
+  }
+
+  async _startFastFetchTimer(fetcher, onSuccess, logLabel) {
+    const initialData = await fetcher()
+    if (!_.isArray(initialData) || !initialData.length) return false
+    onSuccess(initialData)
+
+    let errorNum = 0
+    let busy = false
+    const timer = setInterval(async() => {
+      if (busy) return
+      busy = true
+      try {
+        const data = await fetcher()
+        if (_.isArray(data) && data.length) {
+          onSuccess(data)
+        } else {
+          logger.debug(`${Log_Prefix}[Monitor][FastFetch][${logLabel}]第${errorNum + 1}次使用FastFetch获取${logLabel}数据无效：`, data)
+          errorNum++
+        }
+      } catch (err) {
+        logger.debug(`${Log_Prefix}[Monitor][FastFetch][${logLabel}]第${errorNum + 1}次使用FastFetch获取${logLabel}数据失败：`, err)
+        errorNum++
+      } finally {
+        busy = false
+        if (errorNum >= 3) {
+          logger.debug(`${Log_Prefix}[Monitor][FastFetch][${logLabel}]尝试使用FastFetch获取${logLabel}数据失败超过3次，停止尝试`)
+          clearInterval(timer)
+        }
+      }
+    }, this.getDataInterval)
+    return timer
+  }
+
+  async fastfetchGetNetIo() {
+    return this._startFastFetchTimer(
+      getNetIo,
+      (data) => {
+        this.network = data
+        const { rx_sec, tx_sec } = data[0]
+        if (_.isNumber(rx_sec) && _.isNumber(tx_sec)) {
+          this._addData(this.chartData.network.download, [ Date.now(), rx_sec ])
+          this._addData(this.chartData.network.upload, [ Date.now(), tx_sec ])
+        }
+      },
+      "NetIo"
+    )
+  }
+
+  async fastfetchGetDiskIo() {
+    return this._startFastFetchTimer(
+      getDiskIo,
+      (data) => {
+        this.disksIO = data
+        const { bytesRead, bytesWritten } = data[0]
+        if (_.isNumber(bytesRead) && _.isNumber(bytesWritten)) {
+          this._addData(this.chartData.disksIO.writeSpeed, [ Date.now(), bytesWritten ])
+          this._addData(this.chartData.disksIO.readSpeed, [ Date.now(), bytesRead ])
+        }
+      },
+      "DisksIO"
+    )
   }
 
   async getRedisChartData() {

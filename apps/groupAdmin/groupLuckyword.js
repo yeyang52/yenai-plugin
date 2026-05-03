@@ -47,7 +47,7 @@ export class GroupLuckyword extends plugin {
 
     if (!res) return e.reply(API_ERROR)
     if (res.retcode == 11004) return e.reply("❎ 今天已经抽过了，明天再来抽取吧")
-    if (res.retcode != 0) return e.reply("❎ 错误\n" + JSON.stringify(res.data))
+    if (res.retcode != 0) return e.reply("❎ 错误\n" + JSON.stringify(res.data || res.msg))
 
     if (res.data.word_info) {
       let { wording, word_desc } = res.data.word_info.word_info

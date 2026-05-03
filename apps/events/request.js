@@ -7,9 +7,19 @@ const ROLE_MAP = {
   member: "群员"
 }
 
-Bot.on?.("request", async(e) => {
+Bot.on?.("request", async (e) => {
   let msg = ""
   const _cfg = Config.getNotice(e.self_id, e.group_id)
+  let nickname = e.nickname
+  if (!nickname) {
+    try {
+      const info = await Bot.pickFriend(e.user_id).getInfo()
+      nickname = info.nickname || "未知"
+    }
+    catch {
+      nickname = "未知"
+    }
+  }
   switch (e.request_type) {
     case "group":
       switch (e.sub_type) {
@@ -21,11 +31,11 @@ Bot.on?.("request", async(e) => {
           msg = [
             segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/0`),
             `[通知(${e.self_id}) - 邀请机器人进群]\n`,
-              `目标群号：${e.group_id}\n`,
-              `目标群名：${e.group_name || "未知"}\n`,
-              `邀请人账号：${e.user_id}\n`,
-              `邀请人昵称：${e.nickname || "未知"}\n`,
-              `邀请人群身份：${ROLE_MAP[e.role] || "未知"}\n`
+            `目标群号：${e.group_id}\n`,
+            `目标群名：${e.group_name || "未知"}\n`,
+            `邀请人账号：${e.user_id}\n`,
+            `邀请人昵称：${nickname || "未知"}\n`,
+            `邀请人群身份：${ROLE_MAP[e.role] || "未知"}\n`
           ]
           redis.set(`yenai:groupInvite:${e.group_id}_${e.user_id}`, JSON.stringify({
             user_id: e.user_id,
@@ -46,7 +56,7 @@ Bot.on?.("request", async(e) => {
               `${Config.groupAdmin.groupAddNotice.msg}\n`,
               segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
               `QQ号：${e.user_id}\n`,
-              `昵称：${e.nickname}\n`,
+              `昵称：${nickname}\n`,
               `${e.comment}`
             ]
             if (e.inviter_id !== undefined) { msg.push(`邀请人：${e.inviter_id}`) }
@@ -58,12 +68,12 @@ Bot.on?.("request", async(e) => {
           msg = [
             segment.image(`https://p.qlogo.cn/gh/${e.group_id}/${e.group_id}/0`),
             `[通知(${e.self_id}) - 加群申请]\n`,
-              `群号：${e.group_id}\n`,
-              `群名：${e.group_name}\n`,
-              `账号：${e.user_id}\n`,
-              `昵称：${e.nickname}`,
-              e.tips ? `\nTip：${e.tips}` : "",
-              `\n${e.comment}`
+            `群号：${e.group_id}\n`,
+            `群名：${e.group_name}\n`,
+            `账号：${e.user_id}\n`,
+            `昵称：${nickname}`,
+            e.tips ? `\nTip：${e.tips}` : "",
+            `\n${e.comment}`
           ]
           break
       }
@@ -74,10 +84,10 @@ Bot.on?.("request", async(e) => {
       msg = [
         segment.image(`https://q1.qlogo.cn/g?b=qq&s=100&nk=${e.user_id}`),
         `[通知(${e.self_id}) - 添加好友申请]\n`,
-          `申请人账号：${e.user_id}\n`,
-          `申请人昵称：${e.nickname || "未知"}\n`,
-          `申请来源：${e.source || "未知"}\n`,
-          `附加信息：${e.comment || "无附加信息"}\n`
+        `申请人账号：${e.user_id}\n`,
+        `申请人昵称：${nickname || "未知"}\n`,
+        `申请来源：${e.source || "未知"}\n`,
+        `附加信息：${e.comment || "无附加信息"}\n`
       ]
       redis.set(`yenai:friendRequest:${e.user_id}`, JSON.stringify({
         user_id: e.user_id,
@@ -87,7 +97,7 @@ Bot.on?.("request", async(e) => {
         msg.push("Tip：已被 Yunzai 自动处理")
       } else {
         msg.push(
-            `-------------\n可回复：#同意好友申请${e.user_id} \n或引用该消息回复"同意"或"拒绝"`
+          `-------------\n可回复：#同意好友申请${e.user_id} \n或引用该消息回复"同意"或"拒绝"`
         )
       }
       break

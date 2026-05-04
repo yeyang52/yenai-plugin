@@ -298,7 +298,7 @@
             <div>运行中: <span style="color: #54ad57;">{{processLoad.running}}</span></div>
             <div>阻塞: <span style="color: #cc8823;">{{processLoad.blocked}}</span></div>
             <div>休眠: <span style="color: #3698e8;">{{processLoad.sleeping}}</span></div>
-            <div>未知: <span style="color: #e54c41;">{{processLoad.unknown}}</span></div>
+            <div>未知: <span>{{processLoad.unknown}}</span></div>
         </div>
     </div>
     <div class="process">
@@ -319,7 +319,7 @@
             {{if v === "hr"}}
             <hr style="margin: 5px 0" />
             {{else}}
-            <div class="row">
+            <div class="row" data-state="{{v.state}}">
                 <div class="cell">{{v.name}}</div>
                 {{if v.pid !== false}}
                 <div class="cell">{{v.pid}}</div>

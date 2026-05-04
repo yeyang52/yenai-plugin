@@ -154,6 +154,15 @@ li {
 
             .row {
                 display: flex;
+
+                &[data-state="running"] {
+                    color: rgb(58 159 62);
+                }
+
+                &[data-state="blocked"] {
+                    color: rgb(204 136 35);
+                }
+
             }
 
             .header-row {

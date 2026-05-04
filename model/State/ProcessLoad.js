@@ -66,7 +66,7 @@ export default async function(e) {
     const processChild = getProcessChild(ps.list, result.map(i => i.pid))
     ps.list = result.map(item => {
       if (item === "hr") return item
-      const { name, command, pid, cpu, memRss, childNums } = item
+      const { name, command, pid, cpu, memRss, childNums, state } = item
       const childNum = childNums ?? processChild[pid]?.length
       const child = childNum > 0 ? `(${childNum})` : ""
       const handleName = (showCmd ? command : name) + child
@@ -74,7 +74,8 @@ export default async function(e) {
         name: handleName,
         pid,
         cpu: cpu.toFixed(1) + "%",
-        mem: getFileSize(memRss * 1024)
+        mem: getFileSize(memRss * 1024),
+        state
       }
     })
     return ps

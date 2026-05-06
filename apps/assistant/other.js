@@ -1,5 +1,5 @@
 import _ from "lodash"
-import { Config } from "../../components/index.js"
+import { Config, Log_Prefix } from "../../components/index.js"
 import { common } from "../../model/index.js"
 import cfg from "../../../../lib/config/config.js"
 
@@ -32,6 +32,10 @@ export class Assistant_Other extends plugin {
         }
       ]
     })
+  }
+
+  get Bot() {
+    return this.e.bot ?? Bot
   }
 
   /**
@@ -116,8 +120,19 @@ export class Assistant_Other extends plugin {
    */
   async imageOcr(e) {
     try {
-      const imageOcr = e.bot?.imageOcr?.bind(e.bot) || Bot.imageOcr
-      if (!imageOcr) return this.reply("❎ 当前协议暂不支持OCR")
+      let imageOcr = e.bot?.imageOcr?.bind(e.bot) || Bot.imageOcr
+      if (!imageOcr && !common.isTrss) return this.reply("❎ 当前协议暂不支持OCR")
+      // NapCatQQ ocr接口
+      if (!imageOcr) {
+        imageOcr = async(image) => {
+          return await this.Bot.sendApi("ocr_image", { image })
+            .then(data => {
+              return {
+                wordslist: data.data.map(i => ({ words: i.text }))
+              }
+            })
+        }
+      }
       const sourceImg = await common.takeSourceMsg(e, { img: true })
       const img = sourceImg || e.img
       if (_.isEmpty(img)) {
@@ -131,7 +146,7 @@ export class Assistant_Other extends plugin {
       return true
     } catch (error) {
       e.reply("❎ 获取失败,请稍后再试")
-      logger.error("获取OCR错误:", error)
+      logger.error(`${Log_Prefix}[imageOcr]获取OCR错误:`, error)
     }
   }
 

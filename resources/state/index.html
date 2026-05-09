@@ -13,8 +13,10 @@
 <script>
     var chartData = JSON.parse(`{{@chartData}}`)
     var Config = JSON.parse(`{{@Config}}`)
+    var redisChartData = JSON.parse(`{{@redis.connectionData}}`)
     var _res_path = `{{_res_path}}`
 </script>
+<script src="{{_res_path}}state/js/modules/echarts.min.js"></script>
 {{each BotStatusList}}
 <div class="box">
     <div class="botInfo">
@@ -142,7 +144,6 @@
         {{if chartData}}
         <div class="chartBox">
             <div id="Chart" style="height: 250px"></div>
-            <script src="{{_res_path}}state/js/modules/echarts.min.js"></script>
             <script src="{{_res_path}}state/js/chart.js"></script>
         </div>
         {{/if}}
@@ -221,42 +222,44 @@
 </div>
 {{/if}}
 
-
 {{if redis}}
 <div class="box" data-boxInfo="redis">
-    <div class="info">
-        <div class="server redisBox">
-            <div class="title">
-                <img src="{{_res_path}}state/icon/服务器.png" class="icon">
-                服务器
+    <div class="title">
+        <img src="../../../../../plugins/yenai-plugin/resources/state/icon/redis.png" alt="Redis" class="icon">
+        Redis 服务器
+        </img>
+    </div>
+    <div class="data">
+        <div class="info">
+            <div class="state">
+                <span>状态</span>
+                <span class="runState">运行中</span>
             </div>
-            <div class="data">
-                <div class="item">Redis版本: <span class="number">{{redis.redis_version}}</span></div>
-                <div class="item">进程ID: <span class="number">{{redis.process_id}}</span></div>
-                <div class="item">运行时间: <span class="number">{{redis.uptime}}</span></div>
+            <div class="version">
+                <span>版本</span>
+                <span>{{redis.redis_version}}</span>
             </div>
-        </div>
-        <div class="mem redisBox">
-            <div class="title">
-                <img src="{{_res_path}}state/icon/内存.png" class="icon">
-                内存
-            </div>
-            <div class="data">
-                <div class="item">已用内存: <span class="number">{{redis.used_memory_human}}</span></div>
-                <div class="item">内存占用峰值: <span class="number">{{redis.used_memory_peak_human}}</span></div>
-                <div class="item">Lua占用内存: <span class="number">{{redis.used_memory_lua_human}}</span></div>
+            <div class="runTime">
+                <div>运行时间</div>
+                <div class="redisTime">{{redis.uptime}}</div>
             </div>
         </div>
-        <div class="stats redisBox">
-            <div class="title">
-                <img src="{{_res_path}}state/icon/温度计.png" class="icon">
-                状态
+        <div class="redisMemory">
+            <div>内存使用</div>
+            <div class="memDataNum">{{redis.used_memory_human}}</div>
+            <div class="progressBar">
+                <div class="progress" style="width: {{redis.memoryUsage}};"></div>
             </div>
-            <div class="data">
-                <div class="item">客户端连接数: <span class="number">{{redis.connected_clients}}</span></div>
-                <div class="item">历史连接数: <span class="number">{{redis.total_connections_received}}</span></div>
-                <div class="item">历史命令数: <span class="number">{{redis.total_commands_processed}}</span></div>
-            </div>
+            <div class="memData">占用物理内存的 {{redis.memoryUsage}}</div>
+            <div class="memData">峰值: {{redis.used_memory_peak_human}}</div>
+        </div>
+        <div class="connected">
+            <div>连接数</div>
+            <div class="connectedNum">{{redis.connected_clients}}</div>
+            <div class="connectedChart" id="connectedChart"></div>
+            <script src="../../../../../plugins/yenai-plugin/resources/state/js/connectedChart.js"></script>
+            <div>客户端: {{redis.connected_clients}}</div>
+            <div>阻塞:{{redis.blocked_clients}}</div>
         </div>
     </div>
     <div class="keyspace">
@@ -283,8 +286,6 @@
     </div>
 </div>
 {{/if}}
-
-
 
 {{if processLoad}}
 <div class="box" data-boxInfo="进程负载">

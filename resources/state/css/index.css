@@ -282,37 +282,88 @@ li {
   padding: 10px;
   padding-top: 5px;
   border-bottom: 2px solid rgba(180, 180, 182, 0.6745098039);
+  border: none;
 }
 .box[data-boxInfo=redis] .title .icon {
   width: 18px;
   height: 18px;
   margin-right: 5px;
 }
-.box[data-boxInfo=redis] .info {
-  display: grid;
-  gap: 10px 20px;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-  white-space: nowrap;
-}
-.box[data-boxInfo=redis] .info .redisBox {
-  flex: 1;
-}
-.box[data-boxInfo=redis] .info .redisBox .data {
+.box[data-boxInfo=redis] > .data {
+  display: flex;
+  height: 170px;
+  border: 1px solid rgba(180, 180, 182, 0.67);
+  background-color: rgba(244, 244, 245, 0.58);
+  border-radius: 10px;
+  margin: 0 10px;
+  margin-bottom: 10px;
   padding: 10px;
-  padding-bottom: 5px;
+  font-size: 15px;
+  color: #232323;
 }
-.box[data-boxInfo=redis] .info .redisBox .data .item {
-  background-color: rgba(244, 244, 245, 0.5803921569);
-  margin: 5px;
-  padding: 5px;
-  font-size: 13px;
-  border-radius: 5px;
-  border: 1px solid rgba(180, 180, 182, 0.6745098039);
-  color: #4f5255;
+.box[data-boxInfo=redis] > .data > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
-.box[data-boxInfo=redis] .info .redisBox .data .item .number {
-  color: #46971d;
+.box[data-boxInfo=redis] > .data .info {
+  padding-right: 20px;
+}
+.box[data-boxInfo=redis] > .data .info div:has(span) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.box[data-boxInfo=redis] > .data .info .runState {
+  background: #E9FBF4;
+  color: #45BC83;
+  border-radius: 50px;
+  padding: 3px 5px;
+}
+.box[data-boxInfo=redis] > .data .info .runTime {
+  border-top: rgba(188, 188, 188, 0.7254901961) 1px solid;
+  padding-top: 10px;
+}
+.box[data-boxInfo=redis] > .data .info .runTime div {
+  margin-bottom: 5px;
+}
+.box[data-boxInfo=redis] > .data .info .runTime .redisTime {
+  text-align: right;
+}
+.box[data-boxInfo=redis] > .data .redisMemory {
+  padding: 0 20px;
+  border-left: rgba(188, 188, 188, 0.7254901961) 1px solid;
+  border-right: rgba(188, 188, 188, 0.7254901961) 1px solid;
+}
+.box[data-boxInfo=redis] > .data .redisMemory .memDataNum {
+  font-size: 20px;
   font-weight: 700;
+}
+.box[data-boxInfo=redis] > .data .redisMemory .progressBar {
+  background: #E6E7EB;
+  height: 5px;
+  border-radius: 20px;
+  margin: 11px 0;
+}
+.box[data-boxInfo=redis] > .data .redisMemory .progressBar .progress {
+  background: #8E8691;
+  height: 5px;
+  border-radius: inherit;
+  width: 20%;
+}
+.box[data-boxInfo=redis] > .data .redisMemory .progressBar .memData {
+  font-size: 12px;
+}
+.box[data-boxInfo=redis] > .data .connected {
+  padding-left: 20px;
+}
+.box[data-boxInfo=redis] > .data .connected .connectedNum {
+  font-size: 20px;
+  font-weight: 700;
+}
+.box[data-boxInfo=redis] > .data .connected .connectedChart {
+  height: 20px;
 }
 .box[data-boxInfo=redis] .keyspace {
   margin-top: 10px;

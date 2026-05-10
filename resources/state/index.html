@@ -68,6 +68,50 @@
     </div>
 </div>
 {{/each}}
+<div class="box clear-style" data-boxInfo="系统信息">
+    <div>
+        <div class="sysTitle">
+            <img src="../../../../../plugins/yenai-plugin/resources/state/icon/系统.png" class="icon">
+            系统
+            </img>
+        </div>
+        <div class="sysData">
+            <div class="main">{{otherInfo.osInfo.main}}</div>
+            <div class="secondary">{{otherInfo.osInfo.secondary}}</div>
+        </div>
+    </div>
+    <div>
+        <div class="sysTitle">
+            <img src="../../../../../plugins/yenai-plugin/resources/state/icon/主机名.png" class="icon">
+            主机名
+            </img>
+        </div>
+        <div class="sysData">
+            <div class="main">{{otherInfo.hostname.main}}</div>
+        </div>
+    </div>
+    <div>
+        <div class="sysTitle">
+            <img src="../../../../../plugins/yenai-plugin/resources/state/icon/time.png" class="icon">
+            运行时间
+            </img>
+        </div>
+        <div class="sysData">
+            <div class="main">{{otherInfo.sysTime.main}}</div>
+        </div>
+    </div>
+    <div>
+        <div class="sysTitle">
+            <img src="../../../../../plugins/yenai-plugin/resources/state/icon/插件.png" class="icon">
+            插件数
+            </img>
+        </div>
+        <div class="sysData">
+            <div class="main">{{otherInfo.pluginNum.main}}</div>
+            <div class="secondary">{{otherInfo.pluginNum.secondary}}</div>
+        </div>
+    </div>
+</div>
 <div class="box" data-boxInfo="主硬件">
     <div class="time">{{time}} {{isPro ? '状态Pro' : ''}}</div>
     <ul class="mainHardware">
@@ -333,22 +377,6 @@
         </div>
     </div>
 
-</div>
-{{/if}}
-
-{{if otherInfo}}
-<div class="box" data-boxInfo="其他">
-    <div class="title">
-        <img src="../../../../../plugins/yenai-plugin/resources/state/icon/进程信息.png" class="icon">
-        其他信息
-        </img>
-    </div>
-    {{each otherInfo}}
-    <div class="speed">
-        <p>{{$value.first}}</p>
-        <p>{{@$value.tail}}</p>
-    </div>
-    {{/each}}
 </div>
 {{/if}}
 

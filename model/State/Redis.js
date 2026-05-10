@@ -35,7 +35,7 @@ export default async function getRedisInfo(isPro) {
     const { redis_version, process_id } = data.Server
     const memoryUsage = (used_memory / os.totalmem() * 100).toFixed(2) + "%"
     return {
-      uptime: formatDuration(data.Server.uptime_in_seconds, "ddd hhh mmm", false),
+      uptime: formatDuration(data.Server.uptime_in_seconds, "d天 hh:mm:ss"),
       connectionData: JSON.stringify(connectionData),
       redis_version,
       process_id,

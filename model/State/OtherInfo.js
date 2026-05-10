@@ -1,46 +1,50 @@
 import fs from "fs"
-import _ from "lodash"
 import os from "os"
 import path from "path"
 import si from "systeminformation"
 import { Version } from "../../components/index.js"
 import { formatDuration } from "../../tools/index.js"
 
-let osInfo = null
-let loader = null;
+let osInfo = null;
 
 (async() => {
   osInfo = await si.osInfo()
 })()
 
-try {
-  // eslint-disable-next-line import/no-unresolved
-  loader = (await import("../../../../lib/plugins/loader.js")).default
-} catch {
-
-}
 export default function otherInfo(e) {
-  let otherInfo = []
-  // 其他信息
-  otherInfo.push({
-    first: "系统",
-    tail: osInfo?.distro
-  })
-  // 插件数量
-  otherInfo.push({
-    first: "插件",
-    tail: getPluginNum(e)
-  })
-  otherInfo.push({
-    first: "系统运行",
-    tail: getSystime()
-  })
+  let otherInfo = {
+    osInfo: {
+      main: osInfo?.platform,
+      secondary: osInfo?.distro
+    },
+    hostname: {
+      main: osInfo.hostname
+    },
+    sysTime: {
+      main: getSystime()
+    },
+    pluginNum: getPluginNum(e)
+  }
+  // // 其他信息
+  // otherInfo.push({
+  //   first: "系统",
+  //   tail: osInfo?.distro
+  // })
+  // // 插件数量
+  // otherInfo.push({
+  //   first: "插件",
+  //   tail: getPluginNum(e)
+  // })
+  // otherInfo.push({
+  //   first: "系统运行",
+  //   tail: getSystime()
+  // })
 
-  return _.compact(otherInfo)
+  return otherInfo
 }
 
 function getSystime() {
-  return formatDuration(os.uptime(), "dd天hh小时mm分", false)
+  return formatDuration(os.uptime(), "dd天 hh:mm:ss")
 }
 
 let pluginNumCache = 0
@@ -72,13 +76,16 @@ function getPluginNum(e) {
     logger.debug(error)
   }
 
-  const pluginsStr = `${plugins ?? 0} plugins | ${js ?? 0} js`
-  if (loader && e.isPro) {
-    const { priority, task } = loader
-    const loaderStr = `${priority?.length} fnc | ${task?.length} task`
-    return `${pluginsStr} | ${loaderStr}`
+  // const pluginsStr = `${plugins ?? 0} plugins | ${js ?? 0} js`
+  // if (loader && e.isPro) {
+  //   const { priority, task } = loader
+  //   const loaderStr = `${priority?.length} fnc | ${task?.length} task`
+  //   return `${pluginsStr} | ${loaderStr}`
+  // }
+  return {
+    main: plugins ?? 0,
+    secondary: (js ?? 0) + "js"
   }
-  return pluginsStr
 }
 
 let copyrightCache = ""

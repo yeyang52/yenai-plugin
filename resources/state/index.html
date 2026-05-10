@@ -150,15 +150,43 @@
 
 {{if disks.disksSize}}
 <div class="box memory" data-boxInfo="磁盘">
+    <div class="title">
+        <img src="../../../../../plugins/yenai-plugin/resources/state/icon/redis.png" class="icon">
+        磁盘使用
+        </img>
+    </div>
     <ul>
         {{each disks.disksSize}}
         <li class="HardDisk_li">
-            <div class="word mount">{{$value.mount}}</div>
-            <div class="progress">
-                <div class="word">{{$value.used}} / {{$value.size}}</div>
-                <div class="current" style="width:{{$value.use}}%;background:{{$value.color}}"></div>
+            <div class="left">
+                <div class="container-box" data-num="{{$value.use}}%" id="box">
+                    <div class="circle-outer"></div>
+                    <svg>
+                        <circle id="circle" stroke="{{$value.color}}" style="stroke-dashoffset:{{$value.per}}">
+                        </circle>
+                    </svg>
+                </div>
             </div>
-            <div class="percentage">{{$value.use}}%</div>
+            <div class="right">
+                <div class="fs">
+                    <div class="name">{{$value.mount}}</div>
+                    <div class="size">{{$value.used}} / {{$value.size}}</div>
+                </div>
+                <div class="progress">
+                    <div class="bar" style="width: {{$value.use}}%;background: {{$value.color}};"></div>
+                </div>
+                <div class="fsInfo">
+                    <div>
+                        <div class="icon" style="background: {{$value.color}};"></div>
+                        已使用 {{$value.used}}
+                    </div>
+                    <div>
+                        <div class="icon" style="background: #8E8691;"></div>
+                        未使用 {{$value.available}}
+                    </div>
+                    <div>文件系统 {{$value.type}} </div>
+                </div>
+            </div>
         </li>
         {{/each}}
     </ul>

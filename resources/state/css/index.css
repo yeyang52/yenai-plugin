@@ -20,20 +20,24 @@
   --center: calc(var(--circle) - var(--stroke));
 }
 
-.mainHardware {
+.mainHardware,
+.HardDisk_li .left {
   width: 100%;
   display: flex;
   justify-content: space-around;
 }
-.mainHardware .container-box {
+.mainHardware .container-box,
+.HardDisk_li .left .container-box {
   width: var(--w);
   height: var(--w);
   position: relative;
 }
-.mainHardware {
+.mainHardware,
+.HardDisk_li .left {
   /* 添加百分比显示文字 */
 }
-.mainHardware .container-box::after {
+.mainHardware .container-box::after,
+.HardDisk_li .left .container-box::after {
   content: attr(data-num);
   position: absolute;
   font-size: 20px;
@@ -43,28 +47,34 @@
   color: var(--text-color);
   font-weight: 700;
 }
-.mainHardware .circle-outer {
+.mainHardware .circle-outer,
+.HardDisk_li .left .circle-outer {
   position: relative;
   width: 100%;
   height: 100%;
   border-radius: 50%;
   background: var(--bg);
 }
-.mainHardware .circle-outer::before {
+.mainHardware .circle-outer::before,
+.HardDisk_li .left .circle-outer::before {
   width: var(--inner);
   height: var(--inner);
   box-shadow: inset 8px 8px 10px var(--back-bg), inset -4px -4px 8px var(--back-shadow);
 }
-.mainHardware .circle-outer::after {
+.mainHardware .circle-outer::after,
+.HardDisk_li .left .circle-outer::after {
   width: var(--center);
   height: var(--center);
   box-shadow: 6px 6px 8px var(--back-bg), -2px -2px 8px var(--back-shadow);
 }
-.mainHardware {
+.mainHardware,
+.HardDisk_li .left {
   /* 合并代码 */
 }
 .mainHardware .circle-outer::before,
-.mainHardware .circle-outer::after {
+.mainHardware .circle-outer::after,
+.HardDisk_li .left .circle-outer::before,
+.HardDisk_li .left .circle-outer::after {
   content: "";
   position: absolute;
   left: 50%;
@@ -73,7 +83,8 @@
   border-radius: 50%;
   background: var(--bg);
 }
-.mainHardware svg {
+.mainHardware svg,
+.HardDisk_li .left svg {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -82,7 +93,8 @@
   z-index: 1;
   transform: rotate(-90deg);
 }
-.mainHardware svg circle {
+.mainHardware svg circle,
+.HardDisk_li .left svg circle {
   cy: calc(var(--circle) / 2);
   cx: calc(var(--circle) / 2);
   r: calc(var(--circle) / 2);
@@ -98,7 +110,8 @@
   stroke-dashoffset: calc(3.14 * var(--circle));
   stroke-width: var(--stroke);
 }
-.mainHardware article {
+.mainHardware article,
+.HardDisk_li .left article {
   width: 100px;
   text-align: center;
   display: flex;
@@ -106,12 +119,14 @@
   align-items: center;
   white-space: nowrap;
 }
-.mainHardware article summary {
+.mainHardware article summary,
+.HardDisk_li .left article summary {
   font-size: 22px;
   margin-top: 5px;
   font-weight: 700;
 }
-.mainHardware article .detailed {
+.mainHardware article .detailed,
+.HardDisk_li .left article .detailed {
   font-size: 12px;
   color: #5f5d5d;
   overflow: hidden;
@@ -119,12 +134,14 @@
   white-space: nowrap;
   max-width: 140px;
 }
-.mainHardware article p {
+.mainHardware article p,
+.HardDisk_li .left article p {
   font-size: 12px;
   color: #2f4f4f;
   margin-top: 5px;
 }
-.mainHardware .li {
+.mainHardware .li,
+.HardDisk_li .left .li {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -533,34 +550,90 @@ li {
   border-radius: 5px;
 }
 
+.memory .title {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  padding-top: 5px;
+  border-bottom: 2px solid rgba(180, 180, 182, 0.6745098039);
+  margin-bottom: 10px;
+}
+.memory .title .icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 7px;
+}
 .memory li {
   margin: 10px;
   display: flex;
+  border: 1px solid rgba(180, 180, 182, 0.67);
+  background-color: rgba(244, 244, 245, 0.58);
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 14px;
+  color: #434242;
 }
-.memory hr {
-  margin-bottom: 10px;
+.memory .left {
+  /* 定义宽度 */
+  --w: 65px;
+  --back-shadow: #fff;
+  /* 父容器gap间距 */
+  --gap: 5px;
+  /* 第二层圆形宽度 */
+  --inner: calc(var(--w) - var(--gap));
+  /* 文本颜色 */
+  --text-color: #514f4f;
+  /* 定义stroke的宽度 */
+  --stroke: 6px;
+  /* svg环形宽度 更正内容*/
+  --circle: calc(var(--inner) - var(--stroke));
+  /* 第三层圆形宽度 */
+  --center: calc(var(--circle) - var(--stroke));
+  width: 12%;
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
 }
-.memory .progress {
+.memory .left .container-box::after {
+  font-size: 16px;
+  font-weight: normal;
+}
+.memory .right {
   flex: 1;
-  height: 25px;
-  background: #c1c1c1;
-  margin: 0 5px;
-  position: relative;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid #929292;
 }
-.memory .progress .current {
-  background: #90ee90;
-  height: 25px;
+.memory .right .fs {
+  display: flex;
+  justify-content: space-between;
+}
+.memory .right .fs .name {
+  color: #000;
+}
+.memory .right .progress {
+  background: #E6E7EB;
+  height: 5px;
+  border-radius: 20px;
+  margin: 11px 0;
+}
+.memory .right .progress .bar {
+  background: #8E8691;
+  height: 5px;
   border-radius: inherit;
+  width: 20%;
 }
-.memory .progress .word {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  white-space: nowrap;
+.memory .right .fsInfo {
+  display: flex;
+  justify-content: space-between;
+}
+.memory .right .fsInfo > div {
+  display: flex;
+  align-items: center;
+}
+.memory .right .fsInfo > div .icon {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #45BC83;
+  margin-right: 5px;
 }
 
 .HardDisk_li .mount {

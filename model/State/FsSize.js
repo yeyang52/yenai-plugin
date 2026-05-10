@@ -17,10 +17,13 @@ export async function getFsSize() {
   if (_.isEmpty(fsSize)) return false
   // 数值转换
   return fsSize.map(item => {
+    if (item.mount == "/") item.mount += " (根目录)"
     item.used = getFileSize(item.used)
     item.size = getFileSize(item.size)
+    item.available = getFileSize(item.available)
     item.use = Math.round(item.use)
     item.color = setColor(item.use)
+    item.per = Circle(item.use / 100)
     return item
   })
 }
@@ -47,4 +50,9 @@ export function getDiskSpeed() {
   })
 
   return data
+}
+function Circle(res) {
+  let perimeter = 3.14 * 54
+  let per = perimeter - perimeter * res
+  return per
 }

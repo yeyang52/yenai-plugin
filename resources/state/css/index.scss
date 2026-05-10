@@ -551,39 +551,124 @@ li {
 
 // 内存和硬盘样式
 .memory {
+    .title {
+        @include box-title;
+        margin-bottom: 10px;
+
+        .icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 7px;
+        }
+    }
+
     li {
         margin: 10px;
         display: flex;
+        border: 1px solid rgba(180, 180, 182, 0.67);
+        background-color: rgba(244, 244, 245, 0.58);
+        border-radius: 10px;
+        padding: 10px;
+        font-size: 14px;
+        color: #434242;
     }
 
-    hr {
-        margin-bottom: 10px;
+    .left {
+        /* 定义宽度 */
+        --w: 65px;
+        --back-shadow: #fff;
+        /* 父容器gap间距 */
+        --gap: 5px;
+        /* 第二层圆形宽度 */
+        --inner: calc(var(--w) - var(--gap));
+        /* 文本颜色 */
+        --text-color: #514f4f;
+        /* 定义stroke的宽度 */
+        --stroke: 6px;
+        /* svg环形宽度 更正内容*/
+        --circle: calc(var(--inner) - var(--stroke));
+        /* 第三层圆形宽度 */
+        --center: calc(var(--circle) - var(--stroke));
+        width: 12%;
+        display: flex;
+        align-items: center;
+        margin-right: 10px;
+
+        .container-box::after {
+            font-size: 16px;
+            font-weight: normal;
+        }
     }
 
-    .progress {
+    .right {
         flex: 1;
-        height: 25px;
-        background: #c1c1c1;
-        margin: 0 5px;
-        position: relative;
-        border-radius: 8px;
-        overflow: hidden;
-        border: 1px solid #929292;
 
-        .current {
-            background: #90ee90;
-            height: 25px;
-            border-radius: inherit;
+        .fs {
+            display: flex;
+            justify-content: space-between;
+
+            .name {
+                color: #000;
+            }
         }
 
-        .word {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            white-space: nowrap;
+        .progress {
+            background: #E6E7EB;
+            height: 5px;
+            border-radius: 20px;
+            margin: 11px 0;
+
+            .bar {
+                background: #8E8691;
+                height: 5px;
+                border-radius: inherit;
+                width: 20%;
+            }
+        }
+
+        .fsInfo {
+            display: flex;
+            justify-content: space-between;
+
+            >div {
+                display: flex;
+                align-items: center;
+
+                .icon {
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    background: #45BC83;
+                    margin-right: 5px
+                }
+            }
         }
     }
+
+    // .progress {
+    //     flex: 1;
+    //     height: 25px;
+    //     background: #c1c1c1;
+    //     margin: 0 5px;
+    //     position: relative;
+    //     border-radius: 8px;
+    //     overflow: hidden;
+    //     border: 1px solid #929292;
+
+    //     .current {
+    //         background: #90ee90;
+    //         height: 25px;
+    //         border-radius: inherit;
+    //     }
+
+    //     .word {
+    //         position: absolute;
+    //         left: 50%;
+    //         top: 50%;
+    //         transform: translate(-50%, -50%);
+    //         white-space: nowrap;
+    //     }
+    // }
 }
 
 .HardDisk_li {

@@ -20,7 +20,8 @@
 }
 
 
-.mainHardware {
+.mainHardware,
+.HardDisk_li .left {
     width: 100%;
     display: flex;
     justify-content: space-around;

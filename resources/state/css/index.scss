@@ -16,6 +16,12 @@
     border-bottom: 2px solid #b4b4b6ac;
 }
 
+%box-bag {
+    // border: 1px solid rgba(255, 255, 255, 0.836);
+    background-color: rgba(255, 255, 255, 0.646);
+    border-radius: 10px;
+}
+
 @mixin glass-effect {
     background: rgba(255, 255, 255, 0.45);
     box-shadow: 0 8px 32px 0 rgba(51, 51, 52, 0.5), inset 3px 3px 10px 0px rgba(255, 255, 255, 0.8);
@@ -75,7 +81,7 @@ li {
     list-style: none;
 }
 
-@mixin box-bg-style {
+%box-bg-style {
     border-radius: 18px;
 
     @include glass-effect;
@@ -87,7 +93,7 @@ li {
     position: relative;
 
     &:not(.clear-style) {
-        @include box-bg-style;
+        @extend %box-bg-style;
         padding: 10px;
     }
 
@@ -131,11 +137,10 @@ li {
             text-align: center;
 
             div {
-                border: 1px solid rgba(180, 180, 182, 0.67);
+                @extend %box-bag;
                 border-radius: 5px;
                 padding: 5px 10px;
                 color: #4f5255;
-                background-color: rgba(244, 244, 245, 0.58);
                 flex: 1;
             }
         }
@@ -215,10 +220,8 @@ li {
     }
 
     .data {
+        @extend %box-bag;
         padding: 10px;
-        border: 1px solid rgba(180, 180, 182, 0.67);
-        background-color: rgba(244, 244, 245, 0.58);
-        border-radius: 10px;
         margin: 5px 10px;
     }
 
@@ -249,7 +252,7 @@ li {
             }
 
             .runState {
-                background: #E9FBF4;
+                // background: #E9FBF4;
                 color: #45BC83;
                 border-radius: 50px;
                 padding: 3px 5px;
@@ -563,11 +566,9 @@ li {
     }
 
     li {
+        @extend %box-bag;
         margin: 10px;
         display: flex;
-        border: 1px solid rgba(180, 180, 182, 0.67);
-        background-color: rgba(244, 244, 245, 0.58);
-        border-radius: 10px;
         padding: 10px;
         font-size: 14px;
         color: #434242;
@@ -645,30 +646,12 @@ li {
         }
     }
 
-    // .progress {
-    //     flex: 1;
-    //     height: 25px;
-    //     background: #c1c1c1;
-    //     margin: 0 5px;
-    //     position: relative;
-    //     border-radius: 8px;
-    //     overflow: hidden;
-    //     border: 1px solid #929292;
-
-    //     .current {
-    //         background: #90ee90;
-    //         height: 25px;
-    //         border-radius: inherit;
-    //     }
-
-    //     .word {
-    //         position: absolute;
-    //         left: 50%;
-    //         top: 50%;
-    //         transform: translate(-50%, -50%);
-    //         white-space: nowrap;
-    //     }
-    // }
+    .speed {
+        @extend %box-bag;
+        padding: 10px;
+        margin: 10px;
+        height: auto
+    }
 }
 
 .HardDisk_li {
@@ -750,8 +733,7 @@ li {
 
         .chartBox,
         .data>div {
-            border: 1px solid rgba(180, 180, 182, 0.67);
-            background-color: rgba(244, 244, 245, 0.58);
+            @extend %box-bag;
         }
 
         .chartBox {
@@ -869,7 +851,7 @@ li {
     gap: 10px;
 
     >div {
-        @include box-bg-style;
+        @extend %box-bg-style;
         // height: 150px;
         flex: 1;
         padding: 20px;

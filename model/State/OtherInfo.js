@@ -83,8 +83,8 @@ function getPluginNum(e) {
   //   return `${pluginsStr} | ${loaderStr}`
   // }
   return {
-    main: plugins ?? 0,
-    secondary: (js ?? 0) + "js"
+    main: (plugins ?? 0) + " plugins",
+    secondary: (js ?? 0) + " js"
   }
 }
 

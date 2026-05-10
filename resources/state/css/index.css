@@ -147,6 +147,12 @@
   align-items: center;
 }
 
+.box[data-boxInfo=网络] .networkInfo .chartBox,
+.box[data-boxInfo=网络] .networkInfo .data > div, .memory .speed, .memory li, .box[data-boxInfo=redis] .data, .box[data-boxInfo=进程负载] .info .list div {
+  background-color: rgba(255, 255, 255, 0.646);
+  border-radius: 10px;
+}
+
 .speed p, .HardDisk_li .mount, .botInfo .header h1 .name, .box[data-boxInfo=进程负载] .process .form .cell {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -192,16 +198,19 @@ li {
   list-style: none;
 }
 
-.box {
-  margin: 20px 10px;
-  position: relative;
-}
-.box:not(.clear-style) {
+.box[data-boxInfo=系统信息] > div, .box:not(.clear-style) {
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.45);
   box-shadow: 0 8px 32px 0 rgba(51, 51, 52, 0.5), inset 3px 3px 10px 0px rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.box {
+  margin: 20px 10px;
+  position: relative;
+}
+.box:not(.clear-style) {
   padding: 10px;
 }
 .box {
@@ -243,11 +252,9 @@ li {
   text-align: center;
 }
 .box[data-boxInfo=进程负载] .info .list div {
-  border: 1px solid rgba(180, 180, 182, 0.67);
   border-radius: 5px;
   padding: 5px 10px;
   color: #4f5255;
-  background-color: rgba(244, 244, 245, 0.58);
   flex: 1;
 }
 .box[data-boxInfo=进程负载] .process .title {
@@ -308,9 +315,6 @@ li {
 }
 .box[data-boxInfo=redis] .data {
   padding: 10px;
-  border: 1px solid rgba(180, 180, 182, 0.67);
-  background-color: rgba(244, 244, 245, 0.58);
-  border-radius: 10px;
   margin: 5px 10px;
 }
 .box[data-boxInfo=redis] > .data {
@@ -335,7 +339,6 @@ li {
   align-items: center;
 }
 .box[data-boxInfo=redis] > .data .info .runState {
-  background: #E9FBF4;
   color: #45BC83;
   border-radius: 50px;
   padding: 3px 5px;
@@ -566,9 +569,6 @@ li {
 .memory li {
   margin: 10px;
   display: flex;
-  border: 1px solid rgba(180, 180, 182, 0.67);
-  background-color: rgba(244, 244, 245, 0.58);
-  border-radius: 10px;
   padding: 10px;
   font-size: 14px;
   color: #434242;
@@ -635,6 +635,11 @@ li {
   background: #45BC83;
   margin-right: 5px;
 }
+.memory .speed {
+  padding: 10px;
+  margin: 10px;
+  height: auto;
+}
 
 .HardDisk_li .mount {
   min-width: 15px;
@@ -698,11 +703,6 @@ li {
   width: 20px;
   height: 20px;
   margin-right: 7px;
-}
-.box[data-boxInfo=网络] .networkInfo .chartBox,
-.box[data-boxInfo=网络] .networkInfo .data > div {
-  border: 1px solid rgba(180, 180, 182, 0.67);
-  background-color: rgba(244, 244, 245, 0.58);
 }
 .box[data-boxInfo=网络] .networkInfo .chartBox {
   padding: 5px 10px;
@@ -794,11 +794,6 @@ li {
   gap: 10px;
 }
 .box[data-boxInfo=系统信息] > div {
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.45);
-  box-shadow: 0 8px 32px 0 rgba(51, 51, 52, 0.5), inset 3px 3px 10px 0px rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
   flex: 1;
   padding: 20px;
 }

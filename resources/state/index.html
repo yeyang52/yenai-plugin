@@ -37,11 +37,11 @@
             </h1>
             <hr noshade>
             <p>
-                <span style="background: #d799de">
+                <span style="background: #d799de" class="botVersion">
                     <img src="../../../../../plugins/yenai-plugin/resources/state/icon/机器人.png">
                     {{$value.botVersion}}
                 </span>
-                <span style="background: #CBC7C8">
+                <span style="background: #CBC7C8" class="botRunTime">
                     <img src="../../../../../plugins/yenai-plugin/resources/state/icon/时间.png">
                     Bot已运行 {{$value.botRunTime}}
                 </span>
@@ -49,7 +49,7 @@
             <p>
                 {{each $value.countContacts v i}}
                 {{if v}}
-                <span>
+                <span class="contacts">
                     <img src="{{_res_path}}state/icon/{{i}}.png">
                     {{@v}}
                 </span>
@@ -57,7 +57,7 @@
                 {{/each}}
                 {{each $value.messageCount v i}}
                 {{if v}}
-                <span>
+                <span class="contacts">
                     <img src="{{_res_path}}state/icon/{{i}}.png">
                     {{@v}}
                 </span>

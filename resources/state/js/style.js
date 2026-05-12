@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 
 const {
-  BotNameColor, progressBarColor, redisInfoValColor, startColumn
+  BotNameColor, progressBarColor, redisInfoValColor, startColumn, botInfoColor
 } = Config.style
 // 修改BotNameColor
 const botNameElements = document.querySelectorAll(".header h1")
@@ -21,7 +21,11 @@ const { high, medium, low } = progressBarColor
 const documentElement = document.documentElement
 documentElement.style.setProperty("--high-color", high)
 documentElement.style.setProperty("--medium-color", medium)
-documentElement.style.setProperty("--low-color", low)
+if (low instanceof Array && low.length > 0) {
+  documentElement.style.setProperty("--low-color", low[0])
+} else {
+  documentElement.style.setProperty("--low-color", low)
+}
 
 // 根据圆环数量调整宽度
 const mainHardwareElement = document.querySelectorAll(".mainHardware li")
@@ -73,3 +77,9 @@ if (hardDiskLieElements.length >= 2) {
     item.style.width = maxWidth + 0.3 + "px"
   })
 }
+
+document.querySelector(".botVersion").style.background = botInfoColor.botVersion
+document.querySelector(".botRunTime").style.background = botInfoColor.botRunTime
+document.querySelectorAll(".contacts").forEach((element, key) => {
+  element.style.background = botInfoColor.contacts[key % botInfoColor.contacts.length]
+})

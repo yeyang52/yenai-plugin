@@ -2,7 +2,7 @@ import _ from "lodash"
 import si from "systeminformation"
 import Monitor from "./Monitor.js"
 import { getFileSize } from "./utils.js"
-
+import { Config } from "../../components/index.js"
 /**
  *  获取硬盘
  */
@@ -16,24 +16,31 @@ export async function getFsSize() {
     // 为空返回false
   if (_.isEmpty(fsSize)) return false
   // 数值转换
+  let n = 0
+  let { style } = Config.state
   return fsSize.map(item => {
     if (item.mount == "/") item.mount += " (根目录)"
+    let userColor = null
+    if (style.progressBarColor.low instanceof Array && style.progressBarColor.low.length > 0) {
+      userColor = style.progressBarColor.low[n % style.progressBarColor.low.length]
+      n++
+    }
     item.used = getFileSize(item.used)
     item.size = getFileSize(item.size)
     item.available = getFileSize(item.available)
     item.use = Math.round(item.use)
-    item.color = setColor(item.use)
+    item.color = setColor(item.use, userColor)
     item.per = Circle(item.use / 100)
     return item
   })
 }
-function setColor(use) {
+function setColor(use, userColor) {
   if (use >= 90) {
     return "var(--high-color)"
   } else if (use >= 70) {
     return "var(--medium-color)"
   }
-  return "var(--low-color)"
+  return userColor ?? "var(--low-color)"
 }
 
 /**

@@ -316,12 +316,37 @@ export default [
   {
     field: "state.style.progressBarColor.low",
     label: "进度条正常颜色",
-    component: "GColorPicker"
+    component: "GTags",
+    bottomHelpMessage: "支持多种颜色 从低到高依次使用 不足从头取 当只有一种颜色时所有进度条都使用同一种颜色",
+    componentProps: {
+      allowAdd: true,
+      allowDel: true
+    }
   },
   {
     field: "state.style.redisInfoValColor",
     label: "redis值颜色",
     component: "GColorPicker"
+  },
+  {
+    field: "state.style.botInfoColor.botVersion",
+    label: "bot版本颜色",
+    component: "GColorPicker"
+  },
+  {
+    field: "state.style.botInfoColor.botRunTime",
+    label: "bot运行时间颜色",
+    component: "GColorPicker"
+  },
+  {
+    field: "state.style.botInfoColor.contacts",
+    label: "联系人信息颜色",
+    component: "GTags",
+    bottomHelpMessage: "支持多种颜色 从低到高依次使用 不足从头取 当只有一种颜色时所有信息都使用同一种颜色",
+    componentProps: {
+      allowAdd: true,
+      allowDel: true
+    }
   }
 ]
 function getBackdropDirectory() {

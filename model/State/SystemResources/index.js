@@ -13,14 +13,20 @@ const SYSTEM_RESOURCE_MAP = {
 }
 
 export default async function getSystemResources(e) {
-  const { systemResources } = Config.state
+  const { systemResources, style } = Config.state
   const systemResourcesList = systemResources.map(i => SYSTEM_RESOURCE_MAP[i]())
   const visualDataPromise = Promise.all(
     e.debugFun.adds(systemResourcesList, systemResources)
   ).then(r => {
+    let n = 0
     return r.map(i => {
       if (i.percentage !== undefined) {
-        i.percentage = Circle(i.percentage)
+        let userColor = null
+        if (style.progressBarColor.low instanceof Array && style.progressBarColor.low.length > 0) {
+          userColor = style.progressBarColor.low[n % style.progressBarColor.low.length]
+          n++
+        }
+        i.percentage = Circle(i.percentage, userColor)
       }
       return i
     })
@@ -29,17 +35,17 @@ export default async function getSystemResources(e) {
   return visualDataPromise
 }
 
-export function Circle(res) {
+export function Circle(res, userColor) {
   let perimeter = 3.14 * 89
   let per = perimeter - perimeter * res
-  let color = "--low-color"
+  let color = userColor ?? "var(--low-color)"
   if (res >= 0.9) {
-    color = "--high-color"
+    color = "var(--high-color)"
   } else if (res >= 0.8) {
-    color = "--medium-color"
+    color = "var(--medium-color)"
   }
   return {
     per,
-    color: `var(${color})`
+    color
   }
 }

@@ -317,12 +317,20 @@
             </div>
         </div>
         <div class="redisMemory">
-            <div>内存使用</div>
+            <div>内存使用
+                {{if !redis.maxmemory}}
+                <span style="font-size: 13px;color: #5b5b5b;">(未设置限制)</span>
+                {{/if}}
+            </div>
             <div class="memDataNum">{{redis.used_memory_human}}</div>
             <div class="progressBar">
                 <div class="progress" style="width: {{redis.memoryUsage}};"></div>
             </div>
+            {{if redis.maxmemory}}
+            <div class="memData">限制: {{redis.maxmemory}}</div>
+            {{else}}
             <div class="memData">占用物理内存的 {{redis.memoryUsage}}</div>
+            {{/if}}
             <div class="memData">峰值: {{redis.used_memory_peak_human}}</div>
         </div>
         <div class="connected">

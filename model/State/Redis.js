@@ -1,4 +1,5 @@
 import { formatDuration } from "../../tools/index.js"
+import { getFileSize } from "./utils.js"
 import { Config } from "../../components/index.js"
 import os from "os"
 
@@ -29,11 +30,12 @@ export default async function getRedisInfo(isPro) {
   if (showRedisInfo === "pro" && !isPro) return false
   try {
     let data = parseInfo(await redis.info())
+    let maxmemory = await redis.configGet("maxmemory").then(res => +res.maxmemory)
     const { used_memory, used_memory_human, used_memory_peak_human } = data.Memory
     const { connected_clients, blocked_clients } = data.Clients
     const { total_connections_received, total_commands_processed } = data.Stats
     const { redis_version, process_id } = data.Server
-    const memoryUsage = (used_memory / os.totalmem() * 100).toFixed(2) + "%"
+    const memoryUsage = (used_memory / (maxmemory || os.totalmem()) * 100).toFixed(2) + "%"
     return {
       uptime: formatDuration(data.Server.uptime_in_seconds, "dd天 hh:mm:ss"),
       connectionData: JSON.stringify(connectionData),
@@ -46,7 +48,8 @@ export default async function getRedisInfo(isPro) {
       blocked_clients,
       total_connections_received,
       total_commands_processed,
-      Keyspace: data.Keyspace
+      Keyspace: data.Keyspace,
+      maxmemory: maxmemory === 0 ? false : getFileSize(maxmemory)
     }
   } catch (error) {
     logger.error(error)

@@ -8,7 +8,7 @@ let connectionData = []
 
 let connectionDataInterval = setInterval(async() => {
   try {
-    const data = parseInfo(await redis.info())
+    const data = parseInfo(await redis.info("clients"))
     const timestamp = Date.now()
 
     // 添加新数据

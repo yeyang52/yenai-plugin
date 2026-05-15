@@ -137,11 +137,11 @@ style:
   # bot信息颜色
   botInfoColor:
     # bot版本颜色
-    botVersion: "#d799de"
+    botVersion: "#d799deb3"
     # bot运行时间颜色
-    botRunTime: "#CBC7C8"
+    botRunTime: "#CBC7C8b3"
     # 联系人信息颜色 从第一个板块开始取色，取完后从头开始取
     contacts:
-      - "#B4A0D8"
-      - "#e0be92"
-      - "#aad5e6"
+      - "#B4A0D8b3"
+      - "#e0be92b3"
+      - "#aad5e6b3"

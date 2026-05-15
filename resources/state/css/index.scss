@@ -44,9 +44,9 @@
     --avatar-main-color: #fff1eb;
     --avatar-similar-color1: #fff1eb;
     --avatar-similar-color2: #ace0f9;
-    --purple: #B4A0D8;
-    --orange: #e0be92;
-    --blue: #aad5e6;
+    --purple: #B4A0D8b3;
+    --orange: #e0be92b3;
+    --blue: #aad5e6b3;
 }
 
 // 基础布局
@@ -361,37 +361,59 @@ li {
     .avatar-box {
         @include flex-center;
         flex-direction: column;
-        margin-right: 5px;
+        margin-left: 20px;
+        margin-right: 30px;
         position: relative;
 
         .avatar {
             position: relative;
             height: 100px;
             width: 100px;
-            border-radius: 50%;
-            margin: 0 20px;
+            border-radius: 25%;
 
             img {
                 width: 100%;
                 height: 100%;
-                border-radius: 50%;
+                border-radius: inherit;
             }
 
             &::before {
                 content: '';
                 position: absolute;
-                inset: 0;
+                inset: -5px;
                 z-index: -1;
-                margin: -5px;
-                border-radius: 50%;
+                // margin: -5px;
+                border-radius: inherit;
                 box-shadow: -2px 2px 5px 1px rgba(8, 8, 8, 0.5);
+            }
+
+            &::after {
+                content: "";
+                position: absolute;
+                inset: -0.8em;
+                background: radial-gradient(circle at top center,
+                        rgba(255, 200, 135, 0.6) 0%,
+                        transparent 50%),
+                    radial-gradient(circle at top left,
+                        rgba(102, 190, 240, 0.6) 0%,
+                        transparent 50%),
+                    radial-gradient(circle at top right,
+                        rgba(255, 100, 100, 0.6) 0%,
+                        transparent 50%),
+                    radial-gradient(circle at bottom center,
+                        rgba(147, 112, 190, 0.6) 0%,
+                        transparent 80%);
+                border-radius: inherit;
+                filter: blur(0.4em);
+                opacity: 1;
+                z-index: -2;
             }
         }
 
         .onlineStatus {
             position: absolute;
-            bottom: -3px;
-            right: 25px;
+            bottom: -6px;
+            right: -10px;
             width: 20px;
             height: 20px;
             border-radius: 50%;
@@ -453,10 +475,10 @@ li {
             row-gap: 10px;
 
             >span {
-                border-radius: 5px;
+                border-radius: 6px;
                 box-shadow: -2px 2px 3px rgba(8, 8, 8, 0.5);
-                padding: 0px 5px;
-                margin-right: 8px;
+                padding: 0px 8px;
+                margin-right: 7px;
                 white-space: nowrap;
 
                 img {
@@ -468,11 +490,11 @@ li {
 
             &:nth-child(3) {
                 span:nth-child(1) {
-                    background: #d799de;
+                    background: #d799deb3;
                 }
 
                 span:nth-child(2) {
-                    background: #CBC7C8;
+                    background: #CBC7C8b3;
                 }
             }
 
@@ -544,8 +566,8 @@ li {
                 margin-left: 10px;
                 font-weight: 500;
                 color: #ffffff;
-                background: #7a7a7a;
-                padding: 3px 5px;
+                background: #646464b3;
+                padding: 5px 8px;
                 border-radius: 5px;
             }
         }

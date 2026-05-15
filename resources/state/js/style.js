@@ -55,6 +55,7 @@ if (columnCount >= 2 && startColumn) {
     const copyrightElement = document.querySelector(".copyright")
     copyrightElement.classList.add("abs")
   })
+  document.querySelector(".box").style.marginTop = "0"
 }
 containerElement.style.width = containerElementWidth + "px"
 
@@ -77,9 +78,12 @@ if (hardDiskLieElements.length >= 2) {
     item.style.width = maxWidth + 0.3 + "px"
   })
 }
-
-document.querySelector(".botVersion").style.background = botInfoColor.botVersion
-document.querySelector(".botRunTime").style.background = botInfoColor.botRunTime
+document.querySelectorAll(".botVersion").forEach((element, key) => {
+  element.style.background = botInfoColor.botVersion
+})
+document.querySelectorAll(".botRunTime").forEach((element, key) => {
+  element.style.background = botInfoColor.botRunTime
+})
 document.querySelectorAll(".contacts").forEach((element, key) => {
   element.style.background = botInfoColor.contacts[key % botInfoColor.contacts.length]
 })

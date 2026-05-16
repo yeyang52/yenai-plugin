@@ -38,11 +38,11 @@ if (mainHardwareElement.length === 5) {
 // 多列布局
 let columnCount = 1
 const containerElementHeight = containerElement.offsetHeight
-if (containerElementHeight > 3600) {
+if (containerElementHeight > 4500) {
   columnCount = 4
-} else if (containerElementHeight > 2400) {
+} else if (containerElementHeight > 2900) {
   columnCount = 3
-} else if (containerElementHeight > 1200) {
+} else if (containerElementHeight > 1700) {
   columnCount = 2
 }
 
@@ -81,8 +81,8 @@ if (hardDiskLieElements.length >= 2) {
 document.querySelectorAll(".botVersion").forEach((element, key) => {
   element.style.background = botInfoColor.botVersion
 })
-document.querySelectorAll(".botRunTime").forEach((element, key) => {
-  element.style.background = botInfoColor.botRunTime
+document.querySelectorAll(".platform").forEach((element, key) => {
+  element.style.background = botInfoColor.platform
 })
 document.querySelectorAll(".contacts").forEach((element, key) => {
   element.style.background = botInfoColor.contacts[key % botInfoColor.contacts.length]

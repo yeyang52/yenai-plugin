@@ -29,22 +29,21 @@
             </div>
         </div>
         <div class="header">
+            <!-- <div class="botrunTime">Bot运行中 {{$value.botRunTime}}</div> -->
             <h1>
                 <div class="name">{{$value.nickname}}</div>
-                {{if $value.platform}}
-                <div class="platform">{{$value.platform}}</div>
-                {{/if}}
             </h1>
-            <hr noshade>
             <p>
                 <span style="background: #d799de" class="botVersion">
                     <img src="../../../../../plugins/yenai-plugin/resources/state/icon/机器人.png">
                     {{$value.botVersion}}
                 </span>
-                <span style="background: #CBC7C8" class="botRunTime">
-                    <img src="../../../../../plugins/yenai-plugin/resources/state/icon/时间.png">
-                    Bot已运行 {{$value.botRunTime}}
+                {{if $value.platform}}
+                <span style="background: #CBC7C8" class="platform">
+                    <img src="../../../../../plugins/yenai-plugin/resources/state/icon/platform.png">
+                    {{$value.platform}}
                 </span>
+                {{/if}}
             </p>
             <p>
                 {{each $value.countContacts v i}}

@@ -1,31 +1,51 @@
 {
   "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/master/doc/json_schema.json",
+  "logo": {
+    "type": "none"
+  },
+  "display": {
+    "key": {
+      "type": "both"
+      // "paddingLeft": 4
+    }
+  },
   "modules": [
-    "title",
-    "separator",
-    "os",
-    "host",
-    "kernel",
-    "uptime",
-    "packages",
-    "shell",
-    "display",
-    "de",
-    "wm",
-    "wmtheme",
-    "icons",
-    "font",
-    "cursor",
-    "terminal",
-    "terminalfont",
-    "cpu",
-    "gpu",
-    "memory",
-    "swap",
-    "disk",
-    "battery",
-    "poweradapter",
-    "break",
-    "colors"
+    {
+      "key": "(#6670F6)OS",
+      "keyColor": "#6670F6",
+      "type": "os"
+    },
+    {
+      "key": "(#6640F6)内核",
+      "keyColor": "#6640F6",
+      "type": "kernel"
+    },
+    {
+      "key": "(#95959B)CPU",
+      "keyColor": "#95959B",
+      "type": "cpu"
+    },
+    {
+      "key": "(#AFCD9C)GPU {}",
+      "keyColor": "#AFCD9C",
+      "type": "gpu",
+      "format": "{name}"
+    },
+    {
+      "key": "(#788760)内存 {}",
+      "keyColor": "#788760",
+      "type": "physicalmemory"
+    },
+    {
+      "key": "(#7C92CE)主板",
+      "keyColor": "#7C92CE",
+      "type": "board",
+      "format": "{name}"
+    },
+    {
+      "key": "(#776FA4)BIOS",
+      "keyColor": "#776FA4",
+      "type": "bios"
+    }
   ]
 }

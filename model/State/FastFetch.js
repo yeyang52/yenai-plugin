@@ -37,10 +37,13 @@ function isPlatformWin() {
 }
 
 async function directlyGetFastFetch() {
-  let { stdout } = await execAsync("fastfetch --pipe -l none --config ./plugins/yenai-plugin/resources/state/fastfetch/config.jsonc")
+  let { stdout } = await execAsync("fastfetch --config ./plugins/yenai-plugin/resources/state/fastfetch/config.jsonc")
 
   let output = "<div class='box fastFetch' data-boxInfo='FastFetch'>"
+  output += "<div class='title'><img src=\"../../../../../plugins/yenai-plugin/resources/state/icon/设置.png\" class='icon'>系统信息</div>"
+  output += "<div class='content'>"
   output += _printInfo(stdout)
+  output += "</div>"
   output += "</div>"
   return output
 }
@@ -50,8 +53,12 @@ async function bashGetFastFetch() {
   return stdout.trim()
 }
 function _printInfo(input) {
-  const lines = input.split("\n").filter(i => i.includes(":")).map(line => line.replace(/: /, "</p><p>"))
-  return lines.map(line => `<div class='speed'><p>${line}</p></div>`).join("")
+  const regex = /^(.*)\s+\((#[0-9A-Fa-f]{6})\)(.*?): (.*)/
+  const lines = input.split("\n").filter(i => i.includes(":")).map(line => {
+    const match = line.match(regex)
+    return `<div class='speed'><p><span class="icon" style="color:${match[2]}">${match[1]}</span>${match[3]}</p><p>${match[4]}</p></div>`
+  })
+  return lines.join("")
 }
 
 async function initFastFetch() {

@@ -6,16 +6,16 @@ print_info() {
   done
 }
 
-echo -n "<div class='box fastFetch' data-boxInfo='FastFetch'>"
+echo -n "<div class='box' data-boxInfo='FastFetch'>"
 if command -v fastfetch &>/dev/null; then
-  fastfetch --pipe -l none --config ./plugins/yenai-plugin/resources/state/fastfetch/config.jsonc
+  fastfetch --pipe -l none
 else
   pnpx neowofetch --stdout
 fi | print_info ": "
 echo "</div>"
 
 if command -v getprop &>/dev/null; then
-  echo -n "<div class='box fastFetch' data-boxInfo='安卓'>"
+  echo -n "<div class='box' data-boxInfo='安卓'>"
   echo "设备代号：$(getprop ro.product.device)
 设备型号：$(getprop ro.product.marketname) ($(getprop ro.product.name))
 认证型号：$(getprop ro.product.model)

@@ -7,6 +7,10 @@
   font-family: "NZBZ";
   src: url("./font/NZBZ.woff") format("woff"), url("./font/NZBZ.ttf") format("truetype");
 }
+@font-face {
+  font-family: "MapleMono";
+  src: url(./font/MapleMono-NF-Regular.ttf) format("truetype");
+}
 .font-YS {
   font-family: "汉仪文黑-65W", YS, PingFangSC-Medium, "PingFang SC", sans-serif;
 }

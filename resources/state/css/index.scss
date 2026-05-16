@@ -463,11 +463,6 @@ li {
         width: 75%;
         color: #000;
 
-        hr {
-            margin: 5px 0px;
-
-        }
-
         p {
             margin-top: 10px;
             display: flex;
@@ -555,23 +550,41 @@ li {
             align-items: center;
             color: #000;
             width: 100%;
+            border-bottom: #c0bfc1 1px dashed;
+            padding-bottom: 5px;
 
             .name {
                 @extend %text-overflow-mission;
                 max-width: 75%;
             }
 
-            .platform {
-                font-size: 12px;
-                margin-left: 10px;
-                font-weight: 500;
-                color: #ffffff;
-                background: #646464b3;
-                padding: 5px 8px;
-                border-radius: 5px;
-            }
+        }
+
+        .botrunTime {
+            position: absolute;
+            right: 5%;
+            top: 10%;
+            font-size: 12px;
+            margin-left: 10px;
+            font-weight: 500;
+            // color: #ffffff;
+            background: radial-gradient(circle at top center,
+                    rgba(255, 200, 135, 0.6) 0%,
+                    transparent 50%),
+                radial-gradient(circle at top left,
+                    rgba(102, 190, 240, 0.6) 0%,
+                    transparent 50%),
+                radial-gradient(circle at top right,
+                    rgba(255, 100, 100, 0.6) 0%,
+                    transparent 50%),
+                radial-gradient(circle at bottom center,
+                    rgba(147, 112, 190, 0.6) 0%,
+                    transparent 80%);
+            padding: 5px 8px;
+            border-radius: 5px;
         }
     }
+
 }
 
 // 内存和硬盘样式
@@ -860,6 +873,44 @@ li {
         &:last-child {
             border-bottom: none;
         }
+    }
+}
+
+.fastFetch {
+    .title {
+        @include box-title;
+        margin-bottom: 10px;
+
+        .icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 7px;
+        }
+    }
+
+    .speed {
+        p:first-child {
+            max-width: 20%;
+        }
+
+        p:last-child {
+            text-align: left;
+        }
+
+        margin-bottom: 5px;
+    }
+
+    .icon {
+        font-family: "MapleMono";
+        margin-right: 10px;
+        font-size: 14px;
+    }
+
+    .content {
+        column-count: 2;
+        margin: 5px 10px;
+        padding: 5px 10px;
+        @extend %box-bag;
     }
 }
 

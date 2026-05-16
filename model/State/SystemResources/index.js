@@ -36,7 +36,7 @@ export default async function getSystemResources(e) {
 }
 
 export function Circle(res, userColor) {
-  let perimeter = 3.14 * 89
+  let perimeter = 3.14 * 88
   let per = perimeter - perimeter * res
   let color = userColor ?? "var(--low-color)"
   if (res >= 0.9) {

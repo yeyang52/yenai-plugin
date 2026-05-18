@@ -670,6 +670,12 @@ li {
   flex: 0 0 50%;
   max-width: 50%;
 }
+.memory .speed p:last-child {
+  font-weight: 500;
+}
+.memory .speed p:last-child span {
+  color: #000;
+}
 
 .HardDisk_li .mount {
   min-width: 15px;

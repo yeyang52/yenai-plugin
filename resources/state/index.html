@@ -194,7 +194,9 @@
     {{each disks.disksIo}}
     <div class="speed">
         <p>{{$value.name}}</p>
-        <p>R - {{$value.rIO_sec}}/s W - {{$value.wIO_sec}}/s{{if $value.tIO_sec}} T - {{$value.tIO_sec}}/s{{/if}}</p>
+        <p>R {{@$value.rIO_sec}}/s - W {{@$value.wIO_sec}}/s{{if $value.tIO_sec}} - T
+            {{@$value.tIO_sec}}/s{{/if}}
+        </p>
     </div>
     {{/each}}
     {{/if}}

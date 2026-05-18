@@ -51,9 +51,9 @@ export function getDiskSpeed() {
   let data = Monitor.disksIO
   if (!data?.length) return false
   data.map(item => {
-    item.rIO_sec = getFileSize(item.rIO_sec, { showByte: false })
-    item.wIO_sec = getFileSize(item.wIO_sec, { showByte: false })
-    item.tIO_sec = item.tIO_sec !== undefined ? getFileSize(item.tIO_sec, { showByte: false }) : false
+    item.rIO_sec = "<span>" + getFileSize(item.rIO_sec, { showByte: false }) + "</span>"
+    item.wIO_sec = "<span>" + getFileSize(item.wIO_sec, { showByte: false }) + "</span>"
+    item.tIO_sec = item.tIO_sec !== undefined ? "<span>" + getFileSize(item.tIO_sec, { showByte: false }) + "</span>" : false
     return item
   })
 

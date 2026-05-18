@@ -710,6 +710,14 @@ li {
             max-width: 50%;
         }
 
+        p:last-child {
+            font-weight: 500;
+
+            span {
+                color: #000
+            }
+        }
+
 
     }
 }

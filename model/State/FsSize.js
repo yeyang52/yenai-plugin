@@ -53,6 +53,7 @@ export function getDiskSpeed() {
   data.map(item => {
     item.rIO_sec = getFileSize(item.rIO_sec, { showByte: false })
     item.wIO_sec = getFileSize(item.wIO_sec, { showByte: false })
+    item.tIO_sec = item.tIO_sec !== undefined ? getFileSize(item.tIO_sec, { showByte: false }) : false
     return item
   })
 

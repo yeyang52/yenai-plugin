@@ -28,7 +28,7 @@ export default new class monitor {
       networkStats: "rx_sec,tx_sec,iface,rx_bytes,tx_bytes",
       currentLoad: "currentLoad",
       mem: "active",
-      disksIO: "wIO_sec,rIO_sec"
+      disksIO: "wIO_sec,rIO_sec,tIO_sec"
     }
 
     this.config = Config.state.monitor
@@ -70,7 +70,7 @@ export default new class monitor {
     if (_.isNumber(disksIO?.wIO_sec) && _.isNumber(disksIO?.rIO_sec)) {
       disksIO.wIO_sec *= 1024
       disksIO.rIO_sec *= 1024
-      disksIO.name = "diskIO"
+      disksIO.name = "Disk IO"
       this.disksIO = [ disksIO ]
       addDataIfNumber(this.chartData.disksIO.writeSpeed, disksIO.wIO_sec)
       addDataIfNumber(this.chartData.disksIO.readSpeed, disksIO.rIO_sec)

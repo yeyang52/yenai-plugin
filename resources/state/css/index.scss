@@ -578,29 +578,29 @@ li {
 
         }
 
-        .botrunTime {
-            position: absolute;
-            right: 5%;
-            top: 10%;
-            font-size: 12px;
-            margin-left: 10px;
-            font-weight: 500;
-            // color: #ffffff;
-            background: radial-gradient(circle at top center,
-                    rgba(255, 200, 135, 0.6) 0%,
-                    transparent 50%),
-                radial-gradient(circle at top left,
-                    rgba(102, 190, 240, 0.6) 0%,
-                    transparent 50%),
-                radial-gradient(circle at top right,
-                    rgba(255, 100, 100, 0.6) 0%,
-                    transparent 50%),
-                radial-gradient(circle at bottom center,
-                    rgba(147, 112, 190, 0.6) 0%,
-                    transparent 80%);
-            padding: 5px 8px;
-            border-radius: 5px;
-        }
+        // .botrunTime {
+        //     position: absolute;
+        //     right: 5%;
+        //     top: 10%;
+        //     font-size: 12px;
+        //     margin-left: 10px;
+        //     font-weight: 500;
+        //     // color: #ffffff;
+        //     background: radial-gradient(circle at top center,
+        //             rgba(255, 200, 135, 0.6) 0%,
+        //             transparent 50%),
+        //         radial-gradient(circle at top left,
+        //             rgba(102, 190, 240, 0.6) 0%,
+        //             transparent 50%),
+        //         radial-gradient(circle at top right,
+        //             rgba(255, 100, 100, 0.6) 0%,
+        //             transparent 50%),
+        //         radial-gradient(circle at bottom center,
+        //             rgba(147, 112, 190, 0.6) 0%,
+        //             transparent 80%);
+        //     padding: 5px 8px;
+        //     border-radius: 5px;
+        // }
     }
 
 }
@@ -898,7 +898,7 @@ li {
 /* 新增：fastFetch 模块内部条目样式（仅新增，不改动盒子样式） */
 .box[data-boxInfo="FastFetch"] {
     .speed {
-        padding: 6px 10px;
+        padding: 0;
         /* 使条目更紧凑 */
         // min-height: 28px;
         font-size: 14px;
@@ -946,7 +946,7 @@ li {
     .content {
         column-count: 2;
         margin: 5px 10px;
-        padding: 5px 10px;
+        padding: 5px 15px;
         @extend %box-bag;
     }
 }

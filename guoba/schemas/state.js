@@ -334,6 +334,11 @@ export default [
     component: "GColorPicker"
   },
   {
+    field: "state.style.botInfoColor.platform",
+    label: "bot平台颜色",
+    component: "GColorPicker"
+  },
+  {
     field: "state.style.botInfoColor.botRunTime",
     label: "bot运行时间颜色",
     component: "GColorPicker"

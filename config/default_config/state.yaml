@@ -140,6 +140,8 @@ style:
     botVersion: "#FBE0F3"
     # bot平台颜色
     platform: "#F0EDF2"
+    # bot运行时间颜色
+    botRunTime: "#F1EBFA"
     # 联系人信息颜色 从第一个板块开始取色，取完后从头开始取
     contacts:
       - "#F1EDFE"

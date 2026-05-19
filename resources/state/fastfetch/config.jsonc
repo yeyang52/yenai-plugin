@@ -46,6 +46,26 @@
       "key": "(#776FA4)BIOS",
       "keyColor": "#776FA4",
       "type": "bios"
+    },
+    {
+      "key": "(#F4A460)包",
+      "keyColor": "#F4A460",
+      "type": "packages"
+    },
+    {
+      "key": "(#82df0e)主机",
+      "keyColor": "#82df0e",
+      "type": "host"
+    },
+    {
+      "key": "(#20B2AA)终端",
+      "keyColor": "#20B2AA",
+      "type": "shell"
+    },
+    {
+      "key": "(#FF69B4)分辨率",
+      "keyColor": "#FF69B4",
+      "type": "display"
     }
   ]
 }

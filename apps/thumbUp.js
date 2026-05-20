@@ -1,4 +1,5 @@
-import { funApi, common, memes } from "../model/index.js"
+// import { funApi, common, memes } from "../model/index.js"
+import { funApi, memes } from "../model/index.js"
 import _ from "lodash"
 import { Config, Log_Prefix } from "#yenai.components"
 
@@ -70,7 +71,8 @@ export class ThumbUp extends plugin {
         res = await thumbUpApi.thumbUp(userId, 10)
       } catch (error) {
         logger.error(error)
-        return common.handleException(e, error)
+        // return common.handleException(e, error)
+        return false
       }
 
       logger.debug(`${e.logFnc}给${userId}点赞`, res)

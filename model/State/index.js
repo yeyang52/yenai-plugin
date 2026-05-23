@@ -41,7 +41,7 @@ export async function getData(e) {
   const [
     copyright,
     visualData,
-    FastFetch,
+    fastFetch,
     HardDisk,
     psTest,
     BotStatusList,
@@ -67,7 +67,7 @@ export async function getData(e) {
       speed: getNetwork(),
       psTest: _.isEmpty(psTest) ? undefined : psTest
     },
-    FastFetch,
+    fastFetch,
     processLoad,
     // 样式
     style,

@@ -798,17 +798,6 @@ li {
   margin-right: 6px;
 }
 
-/* 新增：fastFetch 模块内部条目样式（仅新增，不改动盒子样式） */
-.box[data-boxInfo=FastFetch] .speed {
-  padding: 0;
-  /* 使条目更紧凑 */
-  font-size: 14px;
-  /* 在条目较多时，减少视觉冗余 */
-}
-.box[data-boxInfo=FastFetch] .speed:last-child {
-  border-bottom: none;
-}
-
 .fastFetch .title {
   display: flex;
   align-items: center;
@@ -825,6 +814,8 @@ li {
 .fastFetch .speed {
   height: 35px;
   gap: 15px;
+  font-size: 15px;
+  padding: 0;
 }
 .fastFetch .speed p:first-child {
   max-width: 22%;
@@ -840,8 +831,11 @@ li {
   font-size: 15px;
 }
 .fastFetch .content {
-  -moz-column-count: 2;
-       column-count: 2;
+  display: grid;
+  grid-template-columns: repeat(2, 50%);
+  -moz-column-gap: 10px;
+       column-gap: 10px;
+  row-gap: 5px;
   margin: 5px 10px;
   padding: 5px 15px;
 }

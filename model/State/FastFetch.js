@@ -3,26 +3,34 @@ import util from "util"
 import { Config, Log_Prefix } from "../../components/index.js"
 
 const execAsync = util.promisify(child_process.exec)
-let getFastFetchFun = null;
-(async() => {
-  getFastFetchFun = await initFastFetch()
-})()
+// let getFastFetchFun = null;
+// (async() => {
+//   getFastFetchFun = await initFastFetch()
+// })()
 
 /**
  * 获取FastFetch
  * @param e
  */
 export default async function getFastFetch(e) {
-  if (!isFeatureVisible(e.isPro)) return ""
-  if (!getFastFetchFun) return ""
+  if (!isFeatureVisible(e.isPro)) return false
 
   try {
     return await getFastFetchFun()
   } catch (error) {
     logger.error(`${Log_Prefix}[State][FastFetch]Error 无法获取FastFetch 请检查是否使用git bash启动Yunzai-bot或手动安装 fastfetch 项目地址：https://github.com/fastfetch-cli/fastfetch\n错误信息：${error.message}`)
-    return ""
+    return false
   }
 }
+
+async function getFastFetchFun() {
+  try {
+    return await directlyGetFastFetch
+  } catch (error) {
+    return await getNeowofetch()
+  }
+}
+
 function isFeatureVisible(isPro) {
   const { showFastFetch } = Config.state
   if (showFastFetch === true) return true
@@ -38,46 +46,32 @@ function isPlatformWin() {
 
 async function directlyGetFastFetch() {
   let { stdout } = await execAsync("fastfetch --config ./plugins/yenai-plugin/resources/state/fastfetch/config.jsonc")
-
-  let output = "<div class='box fastFetch' data-boxInfo='FastFetch'>"
-  output += "<div class='title'><img src=\"../../../../../plugins/yenai-plugin/resources/state/icon/设置.png\" class='icon'>系统信息</div>"
-  output += "<div class='content'>"
-  output += _printInfo(stdout)
-  output += "</div>"
-  output += "</div>"
-  return output
-}
-
-async function bashGetFastFetch() {
-  let { stdout } = await execAsync("bash plugins/yenai-plugin/resources/state/fastfetch/fastfetch.sh")
-  return stdout.trim()
-}
-function _printInfo(input) {
   const regex = /^(.*)\s+\((#[0-9A-Fa-f]{6})\)(.*?): (.*)/
-  const lines = input.split("\n").filter(i => i.includes(":")).map(line => {
+  const lines = stdout.split("\n").filter(i => i.includes(":")).map(line => {
     const match = line.match(regex)
-    return `<div class='speed'><p><span class="icon" style="color:${match[2]}">${match[1]}</span>${match[3]}</p><p>${match[4]}</p></div>`
+    return {
+      icon: {
+        color: match[2],
+        icon: match[1]
+      },
+      key: match[3],
+      value: match[4]
+    }
   })
-  return lines.join("")
+
+  logger.debug(`${Log_Prefix}[State][FastFetch] fastfetch执行结果：`, lines)
+  return lines
 }
 
-async function initFastFetch() {
-  let getFastFetchFun = null
-
-  const [ bashResult, directResult ] = await Promise.allSettled([
-    bashGetFastFetch(),
-    directlyGetFastFetch()
-  ])
-
-  if (directResult.status === "fulfilled") {
-    getFastFetchFun = directlyGetFastFetch
-  } else if (bashResult.status === "fulfilled") {
-    getFastFetchFun = bashGetFastFetch
-  } else {
-    logger.debug(`${Log_Prefix}[State][FastFetch]Both fetch methods failed:`, bashResult.reason, directResult.reason)
-  }
-
-  return getFastFetchFun
+async function getNeowofetch() {
+  let { stdout } = await execAsync("pnpx neowofetch --stdout")
+  return stdout.split("\n").filter(i => i.includes(":")).map(line => {
+    let res = line.split(": ")
+    return {
+      key: res[0],
+      value: res[1]
+    }
+  })
 }
 
 export async function getDiskIo() {

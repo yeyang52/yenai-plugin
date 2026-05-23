@@ -421,6 +421,29 @@
 </div>
 {{/if}}
 
-{{@FastFetch}}
+{{if fastFetch}}
+
+<div class='box fastFetch' data-boxInfo='FastFetch'>
+    <div class='title'>
+        <img src="../../../../../plugins/yenai-plugin/resources/state/icon/设置.png" class='icon'>系统信息
+    </div>
+    <div class='content'>
+        {{each fastFetch}}
+        <div class='speed'>
+            <p>
+                {{if $value.icon}}
+                <span class="icon" style="color:{{$value.icon.color}}">{{$value.icon.icon}}</span>
+                {{/if}}
+                {{$value.key}}
+            </p>
+            <p>{{$value.value}}</p>
+        </div>
+        {{/each}}
+    </div>
+</div>
+
+{{/if}}
+
+
 
 {{/block}}

@@ -25,7 +25,7 @@ export default async function getFastFetch(e) {
 
 async function getFastFetchFun() {
   try {
-    return await directlyGetFastFetch
+    return await directlyGetFastFetch()
   } catch (error) {
     return await getNeowofetch()
   }

@@ -53,7 +53,7 @@ Bot.on?.("notice.group.recall", async(e) => {
     // 正常处理
     forwardMsg = await Bot.makeForwardMsg([
       {
-        message: rawMsg,
+        message: filterSpecialMsgType(rawMsg),
         nickname: e.group.pickMember(e.user_id).card,
         user_id: e.user_id
       }
@@ -128,11 +128,22 @@ function getSpecialMsgType(rawMsg) {
     },
     xml: {
       msg: () => rawMsg,
-      type: "[合并消息]"
+      type: "[XML]"
     },
     json: {
       msg: () => rawMsg,
       type: "[JSON]"
-    }
+    },
   }
+}
+function filterSpecialMsgType(msg) {
+  return msg.map(i => {
+    switch (i.type) {
+      case "markdown":
+        return i.content
+      case "button":
+        return JSON.stringify(i.content)
+    }
+    return i
+  })
 }

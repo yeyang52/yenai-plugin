@@ -77,6 +77,7 @@ export class GroupBannedWords extends plugin {
     if (!e.message || e.isMaster || e.member?.is_owner || e.member?.is_admin || isWhite) {
       return false
     }
+    if (!common.checkPermission(e, "all", "admin", { isReply: false })) return false
     const bannedWords = groupBannedWords.initTextArr(e.group_id)
     if (_.isEmpty(bannedWords)) {
       return false

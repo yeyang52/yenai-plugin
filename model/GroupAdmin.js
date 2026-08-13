@@ -392,8 +392,8 @@ export default class GroupAdmin {
    * @function muteMember
    * @description 将群成员禁言
    * @param {string|number} groupId - 群号
-   * @param {string|number|Array<number|string>} userId - QQ 号
-   * @param {string|number} executor - 执行操作的管理员 QQ 号
+   * @param {string|number|Array<number|string>} userId - 适配器用户 ID
+   * @param {string|number} executor - 执行操作的管理员用户 ID
    * @param {number} time - 禁言时长，默认为 5。如果传入 0 则表示解除禁言。
    * @param {string} unit - 禁言时长单位，默认为分钟
    * @returns {Promise<string>} - 返回操作结果
@@ -404,32 +404,31 @@ export default class GroupAdmin {
     const group = this.Bot.pickGroup(groupId, true)
 
     const muteSingleMember = async(id, isMore = false) => {
-      if (!(/\d{5,}/.test(id))) throw new ReplyError("❎ 请输入正确的QQ号")
+      if (id === undefined || id === null || String(id).trim() === "") throw new ReplyError("❎ 请输入正确的用户ID")
+      const normalizedId = String(id)
 
       // 判断是否为主人
-      if ((Config.masterQQ?.includes(Number(id) || String(id))) && time != 0) throw new ReplyError("❎ 该命令对主人无效")
+      if (Config.masterQQ?.some(value => String(value) === normalizedId) && time != 0) throw new ReplyError("❎ 该命令对主人无效")
 
-      const Member = group.pickMember(id)
+      const Member = group.pickMember?.(id)
       const Memberinfo = Member?.info || await Member?.getInfo?.()
-      // 判断是否有这个人
-      if (!Memberinfo) throw new ReplyError(`❎ 该群没有${isMore ? id : "这个人"}哦~`)
 
-      // 特殊处理
-      if (Memberinfo.role === "owner") throw new ReplyError("❎ 权限不足，该命令对群主无效")
+      // 仅在适配器提供成员资料时进行角色检查
+      if (Memberinfo?.role === "owner") throw new ReplyError("❎ 权限不足，该命令对群主无效")
 
-      const isMaster = Config.masterQQ?.includes(executor)
+      const isMaster = Config.masterQQ?.some(value => String(value) === String(executor))
 
-      if (Memberinfo.role === "admin") {
+      if (Memberinfo?.role === "admin") {
         if (!group.is_owner) throw new ReplyError("❎ 权限不足，需要群主权限")
         if (!isMaster) throw new ReplyError("❎ 只有主人才能对管理执行该命令")
       }
 
-      const isWhite = Config.groupAdmin.whiteQQ.includes(Number(id) || String(id))
+      const isWhite = Config.groupAdmin.whiteQQ.some(value => String(value) === normalizedId)
 
       if (isWhite && !isMaster && time != 0) throw new ReplyError(`❎ ${isMore ? id : "该用户"}为白名单成员，不可操作`)
 
       await group.muteMember(id, time * _unit)
-      const memberName = Memberinfo.card || Memberinfo.nickname || id
+      const memberName = Memberinfo?.card || Memberinfo?.nickname || id
       return memberName
     }
 

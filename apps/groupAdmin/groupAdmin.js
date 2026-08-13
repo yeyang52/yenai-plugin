@@ -13,6 +13,20 @@ const noactivereg = new RegExp(`^#(查看|清理|获取)(${Numreg})个?(${TimeUn
 /** 我要自闭正则 */
 const Autisticreg = new RegExp(`^#?我要(自闭|禅定)(${Numreg})?个?(${TimeUnitReg})?$`, "i")
 
+/**
+ * 从标准 at 消息段提取适配器用户 ID
+ * @param {object} e 消息事件
+ * @returns {Array<string|number>} 用户 ID 列表
+ */
+function getAtUserIds(e) {
+  const selfIds = new Set([ e.self_id, e.bot?.uin ].filter(Boolean).map(String))
+  return e.message
+    .filter(item => item.type === "at" && item.is_you !== true && item.is_you !== "true")
+    .map(item => item.qq)
+    .filter(id => id !== undefined && id !== null && String(id).trim() !== "")
+    .filter(id => String(id) !== "all" && !selfIds.has(String(id)))
+}
+
 Ga.loadRedisMuteTask()
 
 export class GroupAdmin extends plugin {
@@ -104,13 +118,13 @@ export class GroupAdmin extends plugin {
 
   async muteMember(e) {
     if (!common.checkPermission(e, "admin", "admin")) return true
-    let qq = e.message.filter(item => item.type == "at").map(item => item.qq)
-    if (qq.length < 2) qq = qq[0] || e.msg.match(/#禁言\s?(\d+)/)?.[1]
+    const targets = getAtUserIds(e)
+    const userId = targets.length > 1 ? targets : targets[0] || e.msg.match(/#禁言\s?(\d+)/)?.[1]
     const time = translateChinaNum(e.msg.match(new RegExp(Numreg))?.[0])
     try {
       const res = await new Ga(e).muteMember(
         e.group_id,
-        qq,
+        userId,
         e.user_id,
         time,
         e.msg.match(new RegExp(TimeUnitReg))?.[0]
@@ -123,10 +137,10 @@ export class GroupAdmin extends plugin {
 
   async noMuteMember(e) {
     if (!common.checkPermission(e, "admin", "admin")) return true
-    let qq = e.message.filter(item => item.type == "at").map(item => item.qq)
-    if (qq.length < 2) qq = qq[0] || e.msg.match(/#解禁(\d+)/)?.[1]
+    const targets = getAtUserIds(e)
+    const userId = targets.length > 1 ? targets : targets[0] || e.msg.match(/#解禁(\d+)/)?.[1]
     try {
-      const res = await new Ga(e).muteMember(e.group_id, qq, e.user_id, 0)
+      const res = await new Ga(e).muteMember(e.group_id, userId, e.user_id, 0)
       e.reply(res)
     } catch (err) {
       common.handleException(e, err)

@@ -8,11 +8,16 @@ import { Config } from "../../components/index.js"
  */
 export async function getFsSize() {
   // 去重
-  const fsSize = _.uniqWith(await si.fsSize(),
+  let fsSize = _.uniqWith(await si.fsSize(),
     (a, b) =>
       a.used === b.used && a.size === b.size && a.use === b.use && a.available === b.available
   )
+  // macOS: 根目录"/"显示的是系统快照卷用量，真正的用户数据在 /System/Volumes/Data，
+  // 将其用量合并到根目录上展示，避免根目录百分比失真
+  mergeRootWithDataVolume(fsSize)
+  fsSize = fsSize
     .filter(item => item.size && item.used && item.available && item.use)
+    .filter(item => !isHiddenMount(item))
     // 为空返回false
   if (_.isEmpty(fsSize)) return false
   // 数值转换
@@ -63,4 +68,35 @@ function Circle(res) {
   let perimeter = 3.14 * 54
   let per = perimeter - perimeter * res
   return per
+}
+
+/**
+ * 判断是否为不需要展示的挂载
+ * macOS 系统内部卷、隐藏挂载（如 Time Machine 的 .timemachine、NFS 备份快照等）
+ */
+function isHiddenMount(item) {
+  const mount = item.mount || ""
+  // macOS 系统内部卷
+  if (mount.startsWith("/System/Volumes/")) return true
+  // 隐藏目录挂载（如 /Volumes/.timemachine 下的 NAS/Time Machine 挂载）
+  if (mount.split("/").some(seg => seg.startsWith("."))) return true
+  // Time Machine 备份快照（NFS 挂载的 com.apple.TimeMachine.* 快照）
+  if ((item.fs || "").startsWith("com.apple.TimeMachine.")) return true
+  return false
+}
+
+/**
+ * macOS 根目录 "/" 显示的是系统快照卷（sealed system volume）的用量，
+ * 真正的用户数据在 /System/Volumes/Data，这里把它的数据合并到根目录上展示
+ */
+function mergeRootWithDataVolume(list) {
+  const root = list.find(item => item.mount === "/")
+  const data = list.find(item => item.mount === "/System/Volumes/Data")
+  if (root && data) {
+    root.fs = data.fs
+    root.used = data.used
+    root.size = data.size
+    root.available = data.available
+    root.use = data.use
+  }
 }

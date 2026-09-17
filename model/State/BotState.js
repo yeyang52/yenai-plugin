@@ -86,8 +86,8 @@ async function getMessageCount(bot) {
   const screenshot = values[2] || values[3] || 0
 
   return {
-    sent: fmt(sent, "收"),
-    recv: fmt(recv, "发"),
+    sent: fmt(sent, "发"),
+    recv: fmt(recv, "收"),
     screenshot: fmt(screenshot, "图片")
   }
 }
